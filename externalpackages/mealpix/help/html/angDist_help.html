@@ -1,0 +1,158 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>angDist</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="angDist_help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>angDist</h1><!--introduction--><p>Compute angular distance between pixel centers or points on the sphere</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Input Arguments</a></li><li><a href="#3">Return Arguments</a></li><li><a href="#4">Description</a></li><li><a href="#5">v0 or v1 specified as numeric arrays</a></li><li><a href="#6">pix0 or pix1 specified as cell arrays</a></li><li><a href="#7">Example</a></li><li><a href="#8">See also</a></li><li><a href="#9">Requires</a></li></ul></div><h2>Syntax<a name="1"></a></h2><pre> rad = angDist(v0,v1,'Param1',Value1,'Param2',Value2,...)</pre><h2>Input Arguments<a name="2"></a></h2><pre>v0, v1      (numerical or cell) array of points on sphere</pre><pre>Param       Value
+'nSide'     HEALPix resolution parameter (integer power 2)
+'nest'      nested indexing (true | {false})</pre><h2>Return Arguments<a name="3"></a></h2><pre> rad     array of angular distances (radians)</pre><h2>Description<a name="4"></a></h2><p>angDist computes the angular distances between points on the sphere. Points may be specified as MEALPix pixel numbers, spherical coordinate location vectors, or cartesian coordinate vectors. Cartesian coordinate input vectors need not be normalized.</p><p>Either or both of v0, v1  may be a scalar; otherwise they must both be the same size. When one is a scalar than the distance is computed between that point and all the points specified in the complementary argument. When pix0 and pix1 are arrays then the distances are returned between the corresponding points in the two arrays.</p><p>If any location is specified as a pixel number than nSide must be specified. The indexing scheme for pixels center locations defaults to ring; to specify nested indexing set the 'nest' parameter to true.</p><h2>v0 or v1 specified as numeric arrays<a name="5"></a></h2><p>If all points in v0 are pixel numbers then v0 may be specified as a numeric array (similarly v1, mutatis mundis). then nSide must be specified. Pixels numbers may be specified in ring indexing or nested indexing. For nested indexing the nest flag must be specified as true.</p><h2>pix0 or pix1 specified as cell arrays<a name="6"></a></h2><p>Either or both pix0 or pix1 may be specified as a cell array, in which case each cell specifies a location on the sphere as either a pixel number, a two-component ([theta; phi]) spherical coordinate vector, or a three component ([x;y;z]) cartesian vector. nSide must be specified if any location is identified as a pixel center.</p><h2>Example<a name="7"></a></h2><pre class="codeinput"> <span class="comment">% angular distance from pole to equator:</span>
+ v0 = {[0;0;1]}; <span class="comment">% north pole</span>
+ v1 = {[1;0;0]}; <span class="comment">% point on equator</span>
+ rad = angDist(v0, v1);
+
+ <span class="comment">% angular distance from pole to pixels 1, 17, 33 for nSide = 4:</span>
+ v0 = {[0;0;1]};
+ rad = angDist([1, 17, 33], v0, <span class="string">'nSide'</span>, 4)
+
+ <span class="comment">% angular distance from pixels 1 to 4, 2 to 5, and 3 to 6 for nSide = 8:</span>
+ rad = angDist([1, 2, 3], [4, 5, 6],<span class="string">'nSide'</span>,8)
+</pre><pre class="codeoutput">
+rad =
+
+    0.2045    0.6224    0.8411
+
+
+rad =
+
+    0.1443    0.2609    0.3013
+
+</pre><h2>See also<a name="8"></a></h2><p>queryDisc</p><h2>Requires<a name="9"></a></h2><p>pix2vec, ang2vec</p><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% angDist 
+% Compute angular distance between pixel centers or points on the sphere 
+
+%% Syntax
+%   rad = angDist(v0,v1,'Param1',Value1,'Param2',Value2,...)
+
+%% Input Arguments
+%  v0, v1      (numerical or cell) array of points on sphere
+%
+%  Param       Value
+%  'nSide'     HEALPix resolution parameter (integer power 2)
+%  'nest'      nested indexing (true | {false})
+
+%% Return Arguments
+%   rad     array of angular distances (radians)
+
+%% Description
+% angDist computes the angular distances between points on the sphere.
+% Points may be specified as MEALPix pixel numbers, spherical coordinate
+% location vectors, or cartesian coordinate vectors. Cartesian coordinate
+% input vectors need not be normalized. 
+%
+% Either or both of v0, v1  may be a scalar; otherwise they must both be
+% the same size. When one is a scalar than the distance is computed between
+% that point and all the points specified in the complementary argument.
+% When pix0 and pix1 are arrays then the distances are returned between the
+% corresponding points in the two arrays.
+%
+% If any location is specified as a pixel number than nSide must be
+% specified. The indexing scheme for pixels center locations defaults to
+% ring; to specify nested indexing set the 'nest' parameter to true. 
+
+%% v0 or v1 specified as numeric arrays
+% If all points in v0 are pixel numbers then v0 may be specified as a
+% numeric array (similarly v1, mutatis mundis). then nSide must be specified.
+% Pixels numbers may be specified in ring indexing or nested indexing. For
+% nested indexing the nest flag must be specified as true. 
+
+%% pix0 or pix1 specified as cell arrays
+% Either or both pix0 or pix1 may be specified as a cell array, in which
+% case each cell specifies a location on the sphere as either a pixel
+% number, a two-component ([theta; phi]) spherical coordinate vector, or a
+% three component ([x;y;z]) cartesian vector. nSide must be specified if
+% any location is identified as a pixel center. 
+
+%% Example
+ % angular distance from pole to equator:
+ v0 = {[0;0;1]}; % north pole
+ v1 = {[1;0;0]}; % point on equator
+ rad = angDist(v0, v1);
+ 
+ % angular distance from pole to pixels 1, 17, 33 for nSide = 4:
+ v0 = {[0;0;1]};
+ rad = angDist([1, 17, 33], v0, 'nSide', 4)
+
+ % angular distance from pixels 1 to 4, 2 to 5, and 3 to 6 for nSide = 8:
+ rad = angDist([1, 2, 3], [4, 5, 6],'nSide',8)
+
+%% See also
+% queryDisc
+
+%% Requires
+% pix2vec, ang2vec
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

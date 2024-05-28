@@ -1,0 +1,24 @@
+51a54,76
+> /** This constructor is provided for the ISSM software, to run serial
+>  * Dakota in a parallel MPI ring: */
+> ParallelLibrary::ParallelLibrary(char* serial_mode):
+>	  mpiManager(dummy_mpi_mgr), programOptions(dummy_prg_opt),
+>	    outputManager(dummy_out_mgr), dummyFlag(true), outputTimings(false)
+> {
+>   initialize_timers();
+> 
+>   // do not initialize MPI.  Get worldRank/worldSize if available
+>   ParallelLevel pl;
+> #ifdef HAVE_MPI // mpi available, we still don't want to run in parallel for Dakota!
+>   pl.serverIntraComm = MPI_COMM_NULL;
+>   Cout << "Running Dakota 6.1 MPI executable in serial mode on CPU 0 for ISSM." << std::endl;
+> #else // mpi not available
+>   pl.serverIntraComm = MPI_COMM_NULL;
+>   Cout << "Running Dakota 6.1 serial executable in serial mode for ISSM." << std::endl;
+> #endif // HAVE_MPI
+> 
+>   parallelLevels.push_back(pl);
+>   increment_parallel_configuration();
+> }
+> 
+> 

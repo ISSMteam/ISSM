@@ -1,0 +1,119 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Functions by Category</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-20"><meta name="DC.source" content="helpfuncbycat.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Functions by Category</h1><!--introduction--><p>MEALPix Toolbox Version 3.0 21 February 2011</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Coordinate Conversions</a></li><li><a href="#2">Coordinate-Pixel Conversions</a></li><li><a href="#3">Functions on the sphere</a></li><li><a href="#4">Map Statistics</a></li><li><a href="#5">Pixel Indexing Conversions</a></li><li><a href="#6">Pixel Topology</a></li><li><a href="#7">Plotting</a></li><li><a href="#8">Resolution Relations</a></li></ul></div><h2>Coordinate Conversions<a name="1"></a></h2><div><ul><li><a href="ang2vec_help.html"><tt>ang2vec</tt></a>    - Convert from spherical to cartesian coordinates</li><li><a href="vec2ang_help.html"><tt>vec2ang</tt></a>    - Convert cartesian direction vector to position angle on sphere</li></ul></div><h2>Coordinate-Pixel Conversions<a name="2"></a></h2><div><ul><li><a href="ang2pix_help.html"><tt>ang2pix</tt></a>    - Convert spherical coordinate location to HEALPix pixel number</li><li><a href="pix2ang_help.html"><tt>pix2ang</tt></a>    - Find spherical coordinate location of HEALPix pixels</li><li><a href="pix2vec_help.html"><tt>pix2vec</tt></a>    - Convert HEALPix pixel numbers to (x,y,z) unit vector</li><li><a href="ring2z_help.html"><tt>ring2z</tt></a>     - Find HEALPix ring number corresponding to a given z coordinate</li><li><a href="vec2pix_help.html"><tt>vec2pix</tt></a>    - Convert cartesian direction vectors to MEALPix pixel numbers</li><li><a href="z2ring_help.html"><tt>z2ring</tt></a>     - Find HEALPix ring numbers from direction vector z coordinate</li></ul></div><h2>Functions on the sphere<a name="3"></a></h2><div><ul><li><a href="alm2pix_help.html"><tt>alm2pix</tt></a>    - Evaluate spherical harmonic function expansion on HEALPix pixels</li><li><a href="angDist_help.html"><tt>angDist</tt></a>    - Computes angular distance on the unit sphere</li><li><a href="pix2alm_help.html"><tt>pix2alm</tt></a>    - Find spherical harmonic decomposition of function on sphere</li><li><a href="ylm_help.html"><tt>ylm</tt></a>        - returns spherical harmonic basis <img src="helpfuncbycat_eq71008.png" alt="$Y_L^M$"> on the HEALPix sphere</li></ul></div><h2>Map Statistics<a name="4"></a></h2><div><ul><li><a href="alm2spec_help.html"><tt>alm2spec</tt></a>   - valuate angular power spectral density</li><li><a href="hpStat_help.html"><tt>hpStat</tt></a>     - Compute descriptive statistics of a pixel value list</li></ul></div><h2>Pixel Indexing Conversions<a name="5"></a></h2><div><ul><li><a href="nest2ring_help.html"><tt>nest2ring</tt></a>  - Convert MEALPix pixel numbers from nest to ring indexing</li><li><a href="ring2nest_help.html"><tt>ring2nest</tt></a>  - Convert MEALPix pixel numbers from ring to nest indexing</li></ul></div><h2>Pixel Topology<a name="6"></a></h2><div><ul><li><a href="corners_help.html"><tt>corners</tt></a>    - Find pixel corners</li><li><a href="inRing_help.html"><tt>inRing</tt></a>     - return pixels in ring or ring section</li><li><a href="pix2xy_help.html"><tt>pix2xy</tt></a>     - Find pixel cartesian face coordinates</li><li><a href="queryDisc_help.html"><tt>queryDisc</tt></a>  - Find all pixels whose centers are within a specified disc</li><li><a href="xy2pix_help.html"><tt>xy2pix</tt></a>     - gives the pixel number ipix (NESTED) of ix, iy and face_num</li></ul></div><h2>Plotting<a name="7"></a></h2><div><ul><li><a href="hp3d_help.html"><tt>hp3d</tt></a>       - Plots a HEALPix dataset on a 3D sphere</li></ul></div><h2>Resolution Relations<a name="8"></a></h2><div><ul><li><a href="nPix2nSide_help.html"><tt>nPix2nSide</tt></a> - Convert number of pixels to number of facet side subdivisions</li><li><a href="nSide2nPix_help.html"><tt>nSide2nPix</tt></a> - Convert resolution parameter to number of pixels</li><li><a href="nSide2res_help.html"><tt>nSide2res</tt></a>  - Calculates angular resolution of a HEALPix map in arcsec</li><li><a href="res2nSide_help.html"><tt>res2nSide</tt></a>  - Finds minimum base pixel sub-division for required resolution</li></ul></div><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Functions by Category
+% MEALPix Toolbox
+% Version 3.0
+% 21 February 2011
+ 
+%% Coordinate Conversions
+% * <ang2vec_help.html |ang2vec|>    - Convert from spherical to cartesian coordinates
+% * <vec2ang_help.html |vec2ang|>    - Convert cartesian direction vector to position angle on sphere
+
+%% Coordinate-Pixel Conversions
+% * <ang2pix_help.html |ang2pix|>    - Convert spherical coordinate location to HEALPix pixel number
+% * <pix2ang_help.html |pix2ang|>    - Find spherical coordinate location of HEALPix pixels
+% * <pix2vec_help.html |pix2vec|>    - Convert HEALPix pixel numbers to (x,y,z) unit vector
+% * <ring2z_help.html |ring2z|>     - Find HEALPix ring number corresponding to a given z coordinate
+% * <vec2pix_help.html |vec2pix|>    - Convert cartesian direction vectors to MEALPix pixel numbers
+% * <z2ring_help.html |z2ring|>     - Find HEALPix ring numbers from direction vector z coordinate
+
+%% Functions on the sphere
+% * <alm2pix_help.html |alm2pix|>    - Evaluate spherical harmonic function expansion on HEALPix pixels
+% * <angDist_help.html |angDist|>    - Computes angular distance on the unit sphere
+% * <pix2alm_help.html |pix2alm|>    - Find spherical harmonic decomposition of function on sphere
+% * <ylm_help.html |ylm|>        - returns spherical harmonic basis $Y_L^M$ on the HEALPix sphere
+
+%% Map Statistics
+% * <alm2spec_help.html |alm2spec|>   - valuate angular power spectral density
+% * <hpStat_help.html |hpStat|>     - Compute descriptive statistics of a pixel value list
+
+%% Pixel Indexing Conversions
+% * <nest2ring_help.html |nest2ring|>  - Convert MEALPix pixel numbers from nest to ring indexing
+% * <ring2nest_help.html |ring2nest|>  - Convert MEALPix pixel numbers from ring to nest indexing
+
+%% Pixel Topology
+% * <corners_help.html |corners|>    - Find pixel corners
+% * <inRing_help.html |inRing|>     - return pixels in ring or ring section
+% * <pix2xy_help.html |pix2xy|>     - Find pixel cartesian face coordinates
+% * <queryDisc_help.html |queryDisc|>  - Find all pixels whose centers are within a specified disc
+% * <xy2pix_help.html |xy2pix|>     - gives the pixel number ipix (NESTED) of ix, iy and face_num
+
+%% Plotting
+% * <hp3d_help.html |hp3d|>       - Plots a HEALPix dataset on a 3D sphere
+
+%% Resolution Relations
+% * <nPix2nSide_help.html |nPix2nSide|> - Convert number of pixels to number of facet side subdivisions
+% * <nSide2nPix_help.html |nSide2nPix|> - Convert resolution parameter to number of pixels
+% * <nSide2res_help.html |nSide2res|>  - Calculates angular resolution of a HEALPix map in arcsec 
+% * <res2nSide_help.html |res2nSide|>  - Finds minimum base pixel sub-division for required resolution
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+
+##### SOURCE END #####
+--></body></html>

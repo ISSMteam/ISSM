@@ -1,0 +1,77 @@
+%Start defining model parameters here
+CO2_temp = 150; CO2_n = 7;
+CO2_meltingPoint = 195; CO2_latentHeat = 199000;
+CO2_rhoIce = 1562; CO2_heatCapacity = 700; CO2_thermalCond = 0.5;
+CO2_dynViscosity = 13.72e-6; CO2_rhoLiquidZeroDeg = 929;
+md.materials.rho_ice = CO2_rhoIce;
+md.materials.rho_freshwater = CO2_rhoLiquidZeroDeg;
+md.materials.thermalconductivity = CO2_thermalCond;
+md.materials.heatcapacity = CO2_heatCapacity;
+md.materials.meltingpoint = CO2_meltingPoint;
+md.materials.latentheat = CO2_latentHeat;
+md.materials.mu_water = CO2_dynViscosity; 
+
+%Geometry
+hmin=300;
+hmax=1000;
+ymin=min(md.mesh.y);
+ymax=max(md.mesh.y);
+xmin=min(md.mesh.x);
+xmax=max(md.mesh.x);
+md.geometry.thickness=hmax+(hmin-hmax)*(md.mesh.y-ymin)/(ymax-ymin)+0.1*(hmin-hmax)*(md.mesh.x-xmin)/(xmax-xmin);
+md.geometry.base=-md.materials.rho_ice/md.materials.rho_water*md.geometry.thickness+20.;
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+
+%Initial velocity 
+x     = archread('../Data/SquareSheetConstrained.arch','x');
+y     = archread('../Data/SquareSheetConstrained.arch','y');
+vx    = archread('../Data/SquareSheetConstrained.arch','vx');
+vy    = archread('../Data/SquareSheetConstrained.arch','vy');
+index = archread('../Data/SquareSheetConstrained.arch','index');
+
+x = x{1};
+y = y{1};
+vx = vx{1};
+vy = vy{1};
+index = index{1};
+md.initialization.vx=InterpFromMeshToMesh2d(index,x,y,vx,md.mesh.x,md.mesh.y);
+md.initialization.vy=InterpFromMeshToMesh2d(index,x,y,vy,md.mesh.x,md.mesh.y);
+clear vx vy x y index;
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature=CO2_temp*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=nye(md.initialization.temperature,1);
+md.materials.rheology_n=CO2_n*ones(md.mesh.numberofelements,1);
+
+%Surface mass balance and basal melting
+md.smb.mass_balance=10*ones(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate=5*ones(md.mesh.numberofvertices,1);
+md.basalforcings.groundedice_melting_rate=5*ones(md.mesh.numberofvertices,1);
+
+%Friction
+md.friction.coefficient=20*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Numerical parameters
+md.masstransport.stabilization=1;
+md.thermal.stabilization=1;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.stressbalance.restol=0.05;
+md.stressbalance.reltol=0.05;
+md.steadystate.reltol=0.05;
+md.stressbalance.abstol=NaN;
+md.timestepping.time_step=1;
+md.timestepping.final_time=3;
+md.groundingline.migration='None';
+
+%Deal with boundary conditions:
+md=SetIceSheetBC(md);
+
+%Change name so that no tests have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

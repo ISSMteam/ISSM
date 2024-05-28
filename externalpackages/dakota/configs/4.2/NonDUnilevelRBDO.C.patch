@@ -1,0 +1,10 @@
+1052,1053c1052,1057
+< 	  s << "  Importance Factor for variable " << setw(11)
+< 	    << uv_labels[j].data() << " = " << impFactor[i][j] << '\n';
+---
+> 	  // add sensitivity output to importance factors (jes, 8/06/10)
+> 	  s << "  Importance Factor for variable " << setiosflags(ios::left)
+> 	    << setw(11) << uv_labels[j].data() << " = "
+> 	    << resetiosflags(ios::adjustfield) << setw(write_precision+7)
+> 	    << impFactor[i][j] << "  Sensitivity = " << setw(write_precision+7)
+> 	    << fnGradsMeanX(i, j) << '\n';

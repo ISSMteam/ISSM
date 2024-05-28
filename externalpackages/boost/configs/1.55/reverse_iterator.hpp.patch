@@ -1,0 +1,4 @@
+64c64
+<       return reverse_iterator<BidirectionalIterator>(x);
+---
+>       return boost::reverse_iterator<BidirectionalIterator>(x);

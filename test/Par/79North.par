@@ -1,0 +1,63 @@
+%Start defining model parameters here
+
+%Geometry and observation
+x = archread('../Data/79North.arch','x');
+y = archread('../Data/79North.arch','y');
+vx = archread('../Data/79North.arch','vx');
+vy = archread('../Data/79North.arch','vy');
+index = archread('../Data/79North.arch','index');
+surface = archread('../Data/79North.arch','surface');
+thickness = archread('../Data/79North.arch','thickness');
+x = x{1};
+y = y{1};
+vx = vx{1};
+vy = vy{1};
+index = index{1};
+surface = surface{1};
+thickness = thickness{1};
+md.initialization.vx =InterpFromMeshToMesh2d(index,x,y,vx,md.mesh.x,md.mesh.y);
+md.initialization.vy =InterpFromMeshToMesh2d(index,x,y,vy,md.mesh.x,md.mesh.y);
+md.geometry.surface  =InterpFromMeshToMesh2d(index,x,y,surface,md.mesh.x,md.mesh.y);
+md.geometry.thickness=InterpFromMeshToMesh2d(index,x,y,thickness,md.mesh.x,md.mesh.y);
+md.geometry.base=md.geometry.surface-md.geometry.thickness;
+clear surface thickness vx vy x y index;
+
+%Materials
+md.initialization.temperature=(273-20)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+
+%Friction
+md.friction.coefficient=50.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Ice shelf melting and surface mass balance 
+md.basalforcings.floatingice_melting_rate=zeros(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate(find(md.mask.ocean_levelset<0.))=0.;
+md.basalforcings.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
+md.smb.mass_balance=15.*ones(md.mesh.numberofvertices,1);
+
+%Numerical parameters
+md.masstransport.stabilization=1;
+md.thermal.stabilization=1;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.timestepping.time_step=1.;
+md.timestepping.final_time=3.;
+md.stressbalance.restol=0.05;
+md.stressbalance.reltol=0.005;
+md.steadystate.reltol=0.005;
+md.stressbalance.abstol=NaN;
+md.groundingline.migration='None';
+
+%Boundary conditions:
+md=SetMarineIceSheetBC(md);
+pos=find(md.mesh.vertexonboundary);
+md.balancethickness.spcthickness(pos)=md.geometry.thickness(pos);
+md.masstransport.spcthickness(pos)=md.geometry.thickness(pos);
+
+%Change name so that no test have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

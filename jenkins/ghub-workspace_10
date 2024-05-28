@@ -1,0 +1,87 @@
+# NOTE: 
+# - Run `use -p anaconda-7` to activate environment before compiling external 
+#	packages or ISSM.
+# - with-numthreads value set based on result of `getconf _NPROCESSORS_ONLN`.
+#
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=${ISSM_DIR} \
+	--disable-static \
+	--enable-development \
+	--enable-debugging \
+	--with-numthreads=16 \
+	--with-python-version=3.8 \
+	--with-python-dir=/apps/share64/debian10/anaconda/anaconda-7 \
+	--with-python-numpy-dir=/apps/share64/debian10/anaconda/anaconda-7/lib/python3.8/site-packages/numpy \
+	--with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+	--with-mpi-include="${ISSM_EXT_DIR}/petsc/install/include" \
+	--with-mpi-libflags="-L${ISSM_EXT_DIR}/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+	--with-blas-lapack-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-metis-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-parmetis-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-scalapack-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-mumps-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-hdf5-dir="${ISSM_EXT_DIR}/hdf5/install" \
+	--with-petsc-dir="${ISSM_EXT_DIR}/petsc/install" \
+	--with-gsl-dir="${ISSM_EXT_DIR}/gsl/install" \
+	--with-boost-dir="/apps/share64/debian10/anaconda/anaconda-7/pkgs/boost-cpp-1.78.0-h75c5d50_1" \
+	--with-dakota-dir="${ISSM_EXT_DIR}/dakota/install" \
+	--with-chaco-dir="${ISSM_EXT_DIR}/chaco/install" \
+	--with-proj-dir="${ISSM_EXT_DIR}/proj/install" \
+	--with-triangle-dir="${ISSM_EXT_DIR}/triangle/install" \
+	--with-m1qn3-dir="${ISSM_EXT_DIR}/m1qn3/install" \
+	--with-semic-dir=${ISSM_EXT_DIR}/semic/install \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools	install-linux.sh
+	cmake		install.sh
+	petsc		install-3.17-linux.sh
+	gsl			install.sh
+	dakota		install-6.2-ghub-workspace_10.sh
+	chaco		install-linux.sh
+	curl		install-7-linux.sh
+	hdf5		install-1-parallel.sh
+	netcdf		install-4.7-parallel.sh
+	proj		install-6.sh
+	gdal		install-3-ghub-workspace_10.sh
+	gshhg		install.sh
+	gmt			install-6-linux.sh
+	gmsh		install-4-linux.sh
+	triangle	install-linux.sh
+	m1qn3		install-linux.sh
+	semic		install.sh
+	shell2junit	install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=0
+PYTHON_TEST=0
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation
+#
+NUMCPUS_INSTALL=4
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=0
+
+# Nightly run options
+MATLAB_NROPTIONS=""
+PYTHON_NROPTIONS=""

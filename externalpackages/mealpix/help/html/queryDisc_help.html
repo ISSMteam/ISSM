@@ -1,0 +1,145 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>queryDisc</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="queryDisc_help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>queryDisc</h1><!--introduction--><p>Find all pixels whose centers are within a specified disc</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Input Arguments</a></li><li><a href="#3">Return Arguments</a></li><li><a href="#4">Example</a></li><li><a href="#5">See also</a></li><li><a href="#6">Requires</a></li></ul></div><h2>Syntax<a name="1"></a></h2><pre>pix = queryDisc(nSide,c0,r,'Param1',Value1,...)</pre><h2>Input Arguments<a name="2"></a></h2><pre>nSide     HEALPix resolution parameter
+c0        disc center. May be specified as a pixel number, spherical
+          coordinate location [theta, phi] in rads, or as a cartesian
+          unit vector [x;y;z].
+r         disc radius (radians)</pre><pre>Param     Value
+'nest'    pixels are returned using nested indexing (true | {false})</pre><h2>Return Arguments<a name="3"></a></h2><pre>pix      list of pixels in disc</pre><h2>Example<a name="4"></a></h2><pre class="codeinput">nSide=32;
+<span class="comment">% Pixels within pi/10 radians of north pole</span>
+pix = queryDisc(nSide,[0;0;1],pi/10);
+numel(pix)
+nSide2nPix(nSide)*((pi/10)/(4*pi))
+<span class="comment">% Pixels within pi/10 radians of south pole</span>
+pix = queryDisc(nSide,[0;0;-1],pi/10);
+numel(pix)
+<span class="comment">% Pixels within pi/10 radians of 0 long, lat</span>
+pix = queryDisc(nSide,[1;0;0],pi/10);
+numel(pix)
+</pre><pre class="codeoutput">
+ans =
+
+   312
+
+
+ans =
+
+  307.2000
+
+
+ans =
+
+   312
+
+
+ans =
+
+   302
+
+</pre><h2>See also<a name="5"></a></h2><p>queryPolygon, queryStrip, queryTriangle</p><h2>Requires<a name="6"></a></h2><p>pix2vec, ang2vec, angDist</p><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% queryDisc
+% Find all pixels whose centers are within a specified disc
+
+%% Syntax
+%  pix = queryDisc(nSide,c0,r,'Param1',Value1,...)
+
+%% Input Arguments
+%  nSide     HEALPix resolution parameter
+%  c0        disc center. May be specified as a pixel number, spherical
+%            coordinate location [theta, phi] in rads, or as a cartesian
+%            unit vector [x;y;z].   
+%  r         disc radius (radians)
+% 
+%  Param     Value
+%  'nest'    pixels are returned using nested indexing (true | {false})
+
+%% Return Arguments
+%  pix      list of pixels in disc
+
+%% Example
+nSide=32;
+% Pixels within pi/10 radians of north pole
+pix = queryDisc(nSide,[0;0;1],pi/10);
+numel(pix)
+nSide2nPix(nSide)*((pi/10)/(4*pi))
+% Pixels within pi/10 radians of south pole
+pix = queryDisc(nSide,[0;0;-1],pi/10);
+numel(pix)
+% Pixels within pi/10 radians of 0 long, lat
+pix = queryDisc(nSide,[1;0;0],pi/10);
+numel(pix)
+
+%% See also
+% queryPolygon, queryStrip, queryTriangle
+
+%% Requires
+% pix2vec, ang2vec, angDist
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

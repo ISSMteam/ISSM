@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -z "$EXECUTION_DIR" ];
+then
+	EXECUTION_DIR="$ISSM_DIR/execution"
+fi
+
+DIR=$(ls -rtd1 $EXECUTION_DIR/* | tail -n1)
+vim $DIR/*.errlog

@@ -1,0 +1,426 @@
+Only in src/code/assign: assign.o
+diff -rc src/code/assign/assign_out.c old/code/assign/assign_out.c
+*** src/code/assign/assign_out.c	2010-07-16 16:28:47.352242454 -0700
+--- old/code/assign/assign_out.c	1995-08-08 14:32:10.000000000 -0700
+***************
+*** 3,9 ****
+   * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
+  
+  #include	<stdio.h>
+- #include	"defs.h"
+  
+  static void assign_out_normal(), assign_out_inv();
+  
+--- 3,8 ----
+Only in src/code/assign: assign_out.o
+Only in src/code/assign: mapper.o
+Only in src/code/assign: median.o
+Only in src/code/assign: merge_assign.o
+Only in src/code/assign: rec_median.o
+Only in src/code/assign: rotate.o
+Only in src/code/assign: y2x.o
+Only in src/code/bpmatch: checkbp.o
+Only in src/code/bpmatch: genvals2d.o
+Only in src/code/bpmatch: genvals3d.o
+Only in src/code/bpmatch: inits2d.o
+Only in src/code/bpmatch: inits3d.o
+Only in src/code/bpmatch: map2d.o
+Only in src/code/bpmatch: map3d.o
+Only in src/code/bpmatch: movevtxs.o
+Only in src/code/bpmatch: sorts2d.o
+Only in src/code/bpmatch: sorts3d.o
+Only in src/code: chacominusblas.a
+Only in src/code/coarsen: coarsen1.o
+Only in src/code/coarsen: coarsen.o
+Only in src/code/coarsen: interpolate.o
+Only in src/code/coarsen: makeccoords.o
+Only in src/code/coarsen: makefgraph.o
+Only in src/code/coarsen: makev2cv.o
+Only in src/code/coarsen: maxmatch1.o
+Only in src/code/coarsen: maxmatch2.o
+Only in src/code/coarsen: maxmatch3.o
+Only in src/code/coarsen: maxmatch4.o
+Only in src/code/coarsen: maxmatch5.o
+Only in src/code/coarsen: maxmatch.o
+Only in src/code/connect: add_edges.o
+Only in src/code/connect: connected.o
+Only in src/code/connect: find_edges.o
+Only in src/code/eigen: bidir.o
+Only in src/code/eigen: bisect.o
+Only in src/code/eigen: checkeig_ext.o
+Only in src/code/eigen: checkeig.o
+Only in src/code/eigen: checkorth.o
+Only in src/code/eigen: cksturmcnt.o
+Only in src/code/eigen: eigensolve.o
+diff -rc src/code/eigen/get_extval.c old/code/eigen/get_extval.c
+*** src/code/eigen/get_extval.c	2010-07-16 16:28:47.353242463 -0700
+--- old/code/eigen/get_extval.c	1995-08-08 14:32:20.000000000 -0700
+***************
+*** 4,10 ****
+  
+  #include <math.h>
+  #include <stdio.h>
+- #include "defs.h"
+  
+  /* Finds first extended eigenpair of system corresponding to
+     tridiagonal T using using Rafael's bisection technique. */
+--- 4,9 ----
+Only in src/code/eigen: get_extval.o
+Only in src/code/eigen: get_ritzvals.o
+Only in src/code/eigen: lanc_seconds.o
+Only in src/code/eigen: lanczos_ext_float.o
+Only in src/code/eigen: lanczos_ext.o
+Only in src/code/eigen: lanczos_FO.o
+Only in src/code/eigen: lanczos_SO_float.o
+Only in src/code/eigen: lanczos_SO.o
+Only in src/code/eigen: lanpause.o
+Only in src/code/eigen: makeorthlnk.o
+Only in src/code/eigen: mkeigvecs.o
+Only in src/code/eigen: mkscanlist.o
+Only in src/code/eigen: orthog1.o
+Only in src/code/eigen: orthogonalize.o
+Only in src/code/eigen: orthogvec.o
+Only in src/code/eigen: ql.o
+Only in src/code/eigen: rqi_ext.o
+Only in src/code/eigen: rqi.o
+Only in src/code/eigen: scale_diag.o
+Only in src/code/eigen: scanmax.o
+Only in src/code/eigen: scanmin.o
+Only in src/code/eigen: solistout.o
+Only in src/code/eigen: sorthog.o
+Only in src/code/eigen: splarax.o
+Only in src/code/eigen: sturmcnt.o
+Only in src/code/eigen: Tevec.o
+Only in src/code/eigen: tri_solve.o
+Only in src/code/eigen: warnings.o
+Only in src/code/graph: check_graph.o
+Only in src/code/graph: free_graph.o
+Only in src/code/graph: graph_out.o
+Only in src/code/graph: reformat.o
+Only in src/code/graph: subgraph.o
+Only in src/code/inertial: eigenvec2.o
+Only in src/code/inertial: eigenvec3.o
+Only in src/code/inertial: inertial1d.o
+Only in src/code/inertial: inertial2d.o
+Only in src/code/inertial: inertial3d.o
+Only in src/code/inertial: inertial.o
+Only in src/code/inertial: make_subgeom.o
+Only in src/code/input: check_input.o
+Only in src/code/input: input_assign.o
+Only in src/code/input: input_geom.o
+Only in src/code/input: input_graph.o
+Only in src/code/input: input.o
+Only in src/code/input: read_params.o
+Only in src/code/input: read_val.o
+Only in src/code/input: reflect_input.o
+Only in src/code/internal: check_internal.o
+Only in src/code/internal: force_internal.o
+Only in src/code/internal: improve_internal.o
+Only in src/code/klspiff: bilistops.o
+Only in src/code/klspiff: buckets1.o
+Only in src/code/klspiff: buckets_bi.o
+Only in src/code/klspiff: buckets.o
+Only in src/code/klspiff: coarsen_kl.o
+Only in src/code/klspiff: compress_ewgts.o
+Only in src/code/klspiff: count_weights.o
+Only in src/code/klspiff: kl_init.o
+Only in src/code/klspiff: kl_output.o
+Only in src/code/klspiff: klspiff.o
+Only in src/code/klspiff: make_bndy_list.o
+Only in src/code/klspiff: make_kl_list.o
+Only in src/code/klspiff: nway_kl.o
+Only in src/code/klvspiff: bpm_improve.o
+Only in src/code/klvspiff: bucketsv.o
+Only in src/code/klvspiff: clear_dvals.o
+Only in src/code/klvspiff: coarsen_klv.o
+Only in src/code/klvspiff: countup_vtx_sep.o
+Only in src/code/klvspiff: find_bndy.o
+Only in src/code/klvspiff: flatten.o
+Only in src/code/klvspiff: flow.o
+Only in src/code/klvspiff: klv_init.o
+Only in src/code/klvspiff: klvspiff.o
+Only in src/code/klvspiff: make_bpgraph.o
+Only in src/code/klvspiff: make_sep_list.o
+diff -rc src/code/klvspiff/matching.c old/code/klvspiff/matching.c
+*** src/code/klvspiff/matching.c	2010-07-16 16:28:47.356242493 -0700
+--- old/code/klvspiff/matching.c	1996-03-11 10:24:25.000000000 -0800
+***************
+*** 6,12 ****
+     code provided by Ed Rothberg at SGI. */
+  
+  #include <stdio.h>
+- #include "defs.h"
+  
+  #define  TRUE  1
+  #define  FALSE 0
+--- 6,11 ----
+Only in src/code/klvspiff: matching.o
+Only in src/code/klvspiff: nway_klv.o
+diff -rc src/code/main/defs.h old/code/main/defs.h
+*** src/code/main/defs.h	2010-07-16 16:28:47.359242522 -0700
+--- old/code/main/defs.h	1995-08-08 14:32:41.000000000 -0700
+***************
+*** 1,39 ****
+! #ifndef _CHACO_DEFS_H_
+! #define _CHACO_DEFS_H_
+! 
+  #define TRUE		1
+  #define FALSE		0
+  
+! #ifndef _HAVE_CHACO_ //protect ISSM compilation. This symbol is defined when we compile ISSM
+! 
+! 	#define	max(A, B)	((A) > (B) ? (A) : (B))
+! 	#define	min(A, B)	((A) < (B) ? (A) : (B))
+! 	#define sign(A)		((A) <  0  ? -1  :  1)
+! 	#define absval(A)	((A) <  0  ? -(A): (A))
+! 
+! 	/* Define constants that are needed in various places */
+! 	#define	PI	3.141592653589793
+! 	#define	TWOPI	6.283185307179586
+! 	#define HALFPI  1.570796326794896
+! 
+!     #define check_graph chaco_check_graph
+! 
+! 
+! 	#ifdef MATLAB
+! 		#include "mat.h"
+! 		#include "mex.h"
+! 		#include "matrix.h"
+! 	   
+! 		#define printf mexPrintf
+! 		#define fprintf(file,...) (file == stdout || file == stderr ? mexPrintf(__VA_ARGS__) : fprintf(file,__VA_ARGS__))
+! 		#define malloc mxMalloc
+! 		#define calloc mxCalloc
+! 		#define realloc mxRealloc
+! 		#define free mxFree
+! 		#define exit(status) mexErrMsgTxt("exit=" #status)
+! 
+! 	#endif
+! 
+! #endif  //#ifndef _HAVE_CHACO_ 
+! 
+! #endif //ifndef _CHACO_DEFS_H_
+--- 1,11 ----
+! #define	max(A, B)	((A) > (B) ? (A) : (B))
+! #define	min(A, B)	((A) < (B) ? (A) : (B))
+! #define sign(A)		((A) <  0  ? -1  :  1)
+! #define absval(A)	((A) <  0  ? -(A): (A))
+  #define TRUE		1
+  #define FALSE		0
+  
+! /* Define constants that are needed in various places */
+! #define	PI	3.141592653589793
+! #define	TWOPI	6.283185307179586
+! #define HALFPI  1.570796326794896
+Only in src/code/main: interface.o
+Only in src/code/main: main.o
+diff -rc src/code/main/params.h old/code/main/params.h
+*** src/code/main/params.h	2010-07-16 16:28:47.361242541 -0700
+--- old/code/main/params.h	1995-08-08 14:32:43.000000000 -0700
+***************
+*** 1,12 ****
+- #ifndef _CHACO_PARAMS_H_
+- #define _CHACO_PARAMS_H_
+- 
+- 
+  #define NAME_LENGTH	80	/* Maximum length of file name */
+  #define LINE_LENGTH	200	/* Length of input files read at once */
+  
+  #define MAXDIMS		3	/* Most cuts allowed at one time */
+  #define MAXSETS		8	/* 2^MAXDIMS */
+- 
+- 
+- #endif //ifndef _CHACO_PARAMS_H_
+--- 1,5 ----
+Only in src/code/main: user_params.o
+Only in src/code/misc: count.o
+Only in src/code/misc: countup_cube.o
+Only in src/code/misc: countup_mesh.o
+Only in src/code/misc: countup.o
+Only in src/code/misc: define_subcubes.o
+Only in src/code/misc: define_submeshes.o
+Only in src/code/misc: divide_procs.o
+Only in src/code/misc: find_maxdeg.o
+Only in src/code/misc: make_maps.o
+Only in src/code/misc: make_setlists.o
+Only in src/code/misc: make_subgoal.o
+Only in src/code/misc: make_term_props.o
+Only in src/code/misc: merge_goals.o
+Only in src/code/misc: perturb.o
+Only in src/code/misc: sequence.o
+Only in src/code/misc: simple_part.o
+Only in src/code/misc: time_kernels.o
+diff -rc src/code/misc/timing.c old/code/misc/timing.c
+*** src/code/misc/timing.c	2010-07-16 16:28:47.366242590 -0700
+--- old/code/misc/timing.c	1997-01-03 09:10:52.000000000 -0800
+***************
+*** 3,9 ****
+   * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
+  
+  #include   <stdio.h>
+- #include   "defs.h"
+  
+  /* Timing parameters. */
+  
+--- 3,8 ----
+Only in src/code/misc: timing.o
+Only in src/code/optimize: determinant.o
+Only in src/code/optimize: func2d.o
+Only in src/code/optimize: func3d.o
+Only in src/code/optimize: opt2d.o
+Only in src/code/optimize: opt3d.o
+Only in src/code/refine_map: compute_cube_edata.o
+Only in src/code/refine_map: compute_cube_vdata.o
+Only in src/code/refine_map: compute_mesh_edata.o
+Only in src/code/refine_map: compute_mesh_vdata.o
+Only in src/code/refine_map: find_edge_cube.o
+Only in src/code/refine_map: find_edge_mesh.o
+Only in src/code/refine_map: init_cube_edata.o
+Only in src/code/refine_map: init_mesh_edata.o
+Only in src/code/refine_map: make_comm_graph.o
+Only in src/code/refine_map: refine_cube.o
+Only in src/code/refine_map: refine_map.o
+Only in src/code/refine_map: refine_mesh.o
+Only in src/code/refine_map: update_cube_edata.o
+Only in src/code/refine_map: update_cube_vdata.o
+Only in src/code/refine_map: update_mesh_edata.o
+Only in src/code/refine_map: update_mesh_vdata.o
+Only in src/code/refine_part: kl_refine.o
+Only in src/code/refine_part: make_maps_ref.o
+Only in src/code/refine_part: make_terms_ref.o
+Only in src/code/refine_part: refine_part.o
+Only in src/code/submain: balance.o
+Only in src/code/submain: divide.o
+Only in src/code/submain: submain.o
+Only in src/code/symmlq: aprod.o
+Only in src/code/symmlq: msolve.o
+Only in src/code/symmlq: pow_dd.o
+diff -rc src/code/symmlq/symmlqblas.f old/code/symmlq/symmlqblas.f
+*** src/code/symmlq/symmlqblas.f	2010-07-21 18:09:10.370123273 -0700
+--- old/code/symmlq/symmlqblas.f	2010-07-21 14:02:09.633743650 -0700
+***************
+*** 16,22 ****
+  c     uses unrolled loops for increments equal to one.
+  c     jack dongarra, linpack, 3/11/78.
+  c
+!       double precision dx(1),dy(1),da
+        integer i,incx,incy,ix,iy,m,mp1,n
+  c
+        if(n.le.0)return
+--- 16,22 ----
+  c     uses unrolled loops for increments equal to one.
+  c     jack dongarra, linpack, 3/11/78.
+  c
+!       double precision dx(*),dy(*),da
+        integer i,incx,incy,ix,iy,m,mp1,n
+  c
+        if(n.le.0)return
+Only in src/code/symmlq: symmlqblas.o
+Only in src/code/symmlq: symmlq.o
+Only in src/code/tinvit: epslon.o
+Only in src/code/tinvit: pythag.o
+Only in src/code/tinvit: tinvit.o
+Only in src/code/util: affirm.o
+Only in src/code/util: array_alloc_2D.o
+diff -rc src/code/util/bail.c old/code/util/bail.c
+*** src/code/util/bail.c	2010-07-16 16:28:47.368242609 -0700
+--- old/code/util/bail.c	1995-08-08 14:33:01.000000000 -0700
+***************
+*** 4,10 ****
+  
+  #include	<stdio.h>
+  #include	<string.h>
+- #include	"defs.h"
+  
+  /* Wrapper for exit() - print message and exit with status code. Exit code
+     of 0 indicates normal termination. Exit code of 1 indicates early 
+--- 4,9 ----
+***************
+*** 15,20 ****
+--- 14,20 ----
+  int       status;
+  {
+      extern FILE *Output_File;		/* Output file or NULL */
++     void      exit();
+  
+      if (msg != NULL && (int) strlen(msg) > 0) {
+          printf("%s\n", msg);
+Only in src/code/util: bail.o
+Only in src/code/util: bit_reverse.o
+diff -rc src/code/util/checkpnt.c old/code/util/checkpnt.c
+*** src/code/util/checkpnt.c	2010-07-16 16:28:47.370242629 -0700
+--- old/code/util/checkpnt.c	1995-08-08 14:33:01.000000000 -0700
+***************
+*** 4,10 ****
+  
+  #include	<stdio.h>
+  #include	<string.h>
+- #include	"defs.h"
+  
+  /* Debug break point. */
+  void      checkpnt(tag)
+--- 4,9 ----
+Only in src/code/util: checkpnt.o
+Only in src/code/util: cpvec.o
+Only in src/code/util: dot.o
+diff -rc src/code/util/doubleout.c old/code/util/doubleout.c
+*** src/code/util/doubleout.c	2010-07-16 16:28:47.372242648 -0700
+--- old/code/util/doubleout.c	1995-08-08 14:33:02.000000000 -0700
+***************
+*** 3,9 ****
+   * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
+  
+  #include  <stdio.h>
+- #include  "defs.h"
+  
+  /* Print a double precision number with filtering format to screen. */
+  void      doubleout(number, mode)
+--- 3,8 ----
+Only in src/code/util: doubleout.o
+Only in src/code/util: gray.o
+Only in src/code/util: input_int.o
+Only in src/code/util: machine_params.o
+Only in src/code/util: makevwsqrt.o
+Only in src/code/util: mergesort.o
+Only in src/code/util: mkvec.o
+Only in src/code/util: normalize.o
+Only in src/code/util: norm.o
+Only in src/code/util: randomize.o
+Only in src/code/util: scadd.o
+Only in src/code/util: seconds.o
+Only in src/code/util: setvec.o
+Only in src/code/util: shell_sort.o
+diff -rc src/code/util/smalloc.c old/code/util/smalloc.c
+*** src/code/util/smalloc.c	2010-07-16 16:28:47.375242677 -0700
+--- old/code/util/smalloc.c	1996-03-11 10:44:07.000000000 -0800
+***************
+*** 4,10 ****
+  
+  #include <stdio.h>
+  #include <malloc.h>
+- #include "defs.h"
+  
+  static int nmalloc = 0;		/* number of calls to malloc */
+  static int nfree = 0;		/* number of calls to free */
+--- 4,9 ----
+Only in src/code/util: smalloc.o
+diff -rc src/code/util/strout.c old/code/util/strout.c
+*** src/code/util/strout.c	2010-07-16 16:28:47.377242697 -0700
+--- old/code/util/strout.c	1995-08-08 14:33:05.000000000 -0700
+***************
+*** 4,10 ****
+  
+  #include	<stdio.h>
+  #include	<string.h>
+- #include	"defs.h"
+  
+  /* Wrapper for a printf statement with a string as only arg.
+     Prints to screen and to output file if there is one. */
+--- 4,9 ----
+Only in src/code/util: strout.o
+Only in src/code/util: tri_prod.o
+Only in src/code/util: true_or_false.o
+Only in src/code/util: update.o
+Only in src/code/util: vecout.o
+Only in src/code/util: vecran.o
+Only in src/code/util: vecscale.o

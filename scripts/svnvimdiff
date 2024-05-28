@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#get files to check
+if [ $# -eq 0 ]
+then
+	echo "no file specified"
+	return
+fi
+
+#first, check that all files exist
+for FILE in $*
+do
+	if [ ! -f "$FILE" ]
+	then
+		echo "File $FILE not found!" >&2   # Error message to stderr.
+		exit 1
+	fi 
+done
+
+#svn diff all files
+for FILE in $*
+do
+
+	FILENAME=$(basename $FILE);
+	EXT=${FILENAME/*./}
+	RELEASE=$(svn info $FILE | grep "Revision" | awk '{ print $2 }')
+
+	YOUFILE="YOUR_FILE"."$EXT"
+	SVNFILE="SVN_FILE"."$EXT"
+
+	echo "Downloading current $FILENAME in svn repository"
+	mv $FILE $YOUFILE
+	svn update -q $FILE
+	mv $FILE $SVNFILE
+
+	vimdiff $YOUFILE $SVNFILE
+
+	echo "Reverting to local version of $FILENAME"
+	svn update -q -r$RELEASE $FILE
+	wait #wait till svn has downloaded the file otherwise it could be lost!
+	mv $YOUFILE $FILE
+	touch $FILE
+	rm $SVNFILE
+done

@@ -1,0 +1,13 @@
+--- ./externalpackages/autotools/install/bin/automake	2015-09-24 19:26:11.796659200 -0700
++++ /home/daeden/tmp/automake	2015-09-25 11:32:53.557609300 -0700
+@@ -702,8 +702,8 @@
+ 		   'compile' => "\$(CXX) @cpplike_flags \$(AM_CXXFLAGS) \$(CXXFLAGS)",
+ 		   'ccer' => 'CXX',
+ 		   'compiler' => 'CXXCOMPILE',
+-		   'compile_flag' => '-c',
+-		   'output_flag' => '-o',
++		   'compile_flag' => '/c',
++		   'output_flag' => '/Fo:',
+ 		   'libtool_tag' => 'CXX',
+ 		   'lder' => 'CXXLD',
+ 		   'ld' => '$(CXX)',

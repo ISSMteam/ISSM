@@ -1,0 +1,119 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>xy2pix</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="xy2pix_help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>xy2pix</h1><!--introduction--><p>Find (nest indexed) MEALPix pixel number corresponding to a pixel index on a HEALPix face</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Input Arguments</a></li><li><a href="#3">Return Arguments</a></li><li><a href="#4">Description</a></li><li><a href="#5">Example</a></li><li><a href="#6">See also</a></li></ul></div><h2>Syntax<a name="1"></a></h2><p>ipix = xy2pix(nSide, ix, iy, nFace)</p><h2>Input Arguments<a name="2"></a></h2><pre>nside     HEALPix resolution parameter (power of 2)
+ix,iy     integer pixel location on face (1 &lt;= ix, iy &lt;= nSide)
+nFace     HEALPix face  number (1 &lt;= nFace &lt;= 12)</pre><p>One or both ix and iy may be scalars. If neither is a scalar both must have the same size.</p><h2>Return Arguments<a name="3"></a></h2><pre>ipix      NESTED pixel index for given x,y on the face</pre><h2>Description<a name="4"></a></h2><p>At lowest resolution HEALPix divides the sphere into 12 faces, each with its own coordinate system. Each face is further subdivided in a regular fashion as the resolution parameter is increased. Given a face number (from 1 to 12), a resolution parameter, and a location on the face XY2PIX identifies the pixel number (in the nested indexing scheme).</p><h2>Example<a name="5"></a></h2><pre class="codeinput">nSide = 4;
+nFace = 3;
+ix = [1 2; 1 2];
+iy = [1 1; 2 2];
+nPix = xy2pix(nSide,ix,iy,nFace)
+</pre><pre class="codeoutput">
+nPix =
+
+    49    50
+    51    52
+
+</pre><h2>See also<a name="6"></a></h2><p>pix2xy</p><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% xy2pix
+% Find (nest indexed) MEALPix pixel number corresponding to a pixel index
+% on a HEALPix face 
+
+%% Syntax
+% ipix = xy2pix(nSide, ix, iy, nFace)
+
+%% Input Arguments
+%  nside     HEALPix resolution parameter (power of 2)
+%  ix,iy     integer pixel location on face (1 <= ix, iy <= nSide)
+%  nFace     HEALPix face  number (1 <= nFace <= 12)
+%
+% One or both ix and iy may be scalars. If neither is a scalar both must
+% have the same size. 
+
+%% Return Arguments
+%  ipix      NESTED pixel index for given x,y on the face
+
+%% Description
+% At lowest resolution HEALPix divides the sphere into 12 faces, each with
+% its own coordinate system. Each face is further subdivided in a regular
+% fashion as the resolution parameter is increased. Given a face number
+% (from 1 to 12), a resolution parameter, and a location on the face XY2PIX
+% identifies the pixel number (in the nested indexing scheme).
+
+%% Example
+nSide = 4;
+nFace = 3;
+ix = [1 2; 1 2]; 
+iy = [1 1; 2 2];
+nPix = xy2pix(nSide,ix,iy,nFace)
+
+%% See also
+% pix2xy
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

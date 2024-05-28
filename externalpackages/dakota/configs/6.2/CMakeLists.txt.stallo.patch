@@ -1,0 +1,9 @@
+229c229,231
+< option(BUILD_SHARED_LIBS "Build shared libraries?" ON)
+---
+> option(BUILD_SHARED_LIBS "Build shared libraries?" ON)
+> find_package(Threads)
+> 
+237a240,241
+> set(BLAS_LIBS "-Wl,--no-as-needed -L/global/hds/software/cpu/eb3/imkl/11.2.3.187-iimpi-7.3.5-GNU-4.9.3-2.25/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -L/lib64/libc.so.6 -L/lib64/ -lpthread -lm -ldl")
+> set(LAPACK_LIBS "-Wl,--no-as-needed -L/global/hds/software/cpu/eb3/imkl/11.2.3.187-iimpi-7.3.5-GNU-4.9.3-2.25/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -L/lib64/libc.so.6 -L/lib64/ -lpthread -lm -ldl")

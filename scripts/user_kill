@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#get jobs to be killed
+if [ $# -eq 0 ]
+then
+	echo "no job specified"
+	return
+fi
+
+#kill jobs
+for JOB in $*
+do
+
+	#if [[ "$HOSTNAME" != "metro.jpl.nasa.gov" ]]
+	#then
+	#	echo "cannot use user_kill for now"
+	#	exit
+	#fi
+
+	#if [[ $1 == "screen" ]]
+	#then
+	#	echo "cannot kill screen for now!"
+	#	exit 1
+	#fi
+
+
+
+	#if [[ $1 == "matlab" ]]
+	#then
+	#	echo "cannot kill matlab for now!"
+	#	exit 1
+	#fi
+
+	if [ "$JOB" = "konsole" ]; then
+		echo "cannot kill konsole for now!"
+		exit 1
+	fi
+
+	echo "killing $JOB"
+
+	for i in `ps aux | grep $JOB | grep -v grep | grep -v user_kill | awk '{printf("%s\n",$2);}'`; 
+	do 
+		kill -9 $i;
+	done;
+done

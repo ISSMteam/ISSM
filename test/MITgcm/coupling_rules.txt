@@ -1,0 +1,125 @@
+Rules for coupling ISSM and MITgcm:
+
+* 
+>>>> CREATE A FILE WITH ALL THE NAMES AND TAGS FOR THE INFORMATION EXCHANGE INCLUDING:
+CouplingTime           1           Real*8  10001000
+IceModelTime           1           Real*8  10001001
+OceanModelTime         1           Real*8  10001002
+Nx                     1           Integer 10001003
+Ny                     1           Integer 10001004
+xC                     Nx*Ny       Real*8  10001005
+yC                     Nx*Ny       Real*8  10001006
+OceanMelt              Nx*Ny       Real*8  10001007
+    melt_mesh[i]=-melt_mesh[i]/rho_ice; //heat flux provided by ocean is in kg/m^2/s
+IceBase                Nx*Ny       Real*8  10001008
+    in m, 0 is sea level, negative is below sea level, 9999 is no ice
+
+>>>> INITIALIZATION FROM SCRATCH
+IceModelTime   = 0
+OceanModelTime = 0
+
+Initialization:
+  I1. ISSM sends CouplingTime, the interval at which we couple
+  I2. MITgcm sends grid size (NX and NY)
+  I3. MITgcm sends grid coordinates of center of cells
+      (longitude -180 <= XC < 180 and latitude YC)
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C4. ISSM sends IceModelTime=0 base to MITgcm
+      (base should be 9999 in areas not covered by ice grid)
+  C5o. MITgcm integrates from OceanModelTime=0
+                           to OceanModelTime=CouplingTime
+
+First Recurrent Coupling Exchange:
+IceModelTime   = 0
+OceanModelTime = CouplingTime
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C3. MITgcm sends
+      0 <= OceanModelTime < CouplingTime
+      time-mean melt rate to ISSM
+  C4. ISSM sends IceModelTime=0 base to MITgcm
+      (this is duplicate of Initialization)
+  C5i. ISSM integrates from IceModelTime=0
+                         to IceModelTime=CouplingTime
+  C5o. MITgcm integrates from OceanModelTime=CouplingTime
+                           to OceanModelTime=2*CouplingTime
+
+...
+
+Coupling Exchange N:
+IceModelTime   = (N-1) * CouplingTime
+OceanModelTime =   N   * CouplingTime
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C3. MITgcm sends
+      (N-1)*CouplingTime <= OceanModelTime < N*CouplingTime
+      time-mean melt rate to ISSM
+  C4. ISSM sends IceModelTime=(N-1)*CouplingTime base to MITgcm
+  C5i. ISSM integrates from IceModelTime=(N-1)*CouplingTime
+                         to IceModelTime=N*CouplingTime
+  C5o. MITgcm integrates from OceanModelTime=N*CouplingTime
+                           to OceanModelTime=(N+1)*CouplingTime
+
+Termination:
+IceModelTime   =   N   * CouplingTime
+OceanModelTime = (N+1) * CouplingTime
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C3. MITgcm sends
+      N*CouplingTime <= OceanModelTime < (N+1)*CouplingTime
+      time-mean melt rate to ISSM
+  Ti. ISSM saves to restart files the IceModelTime=N state and
+       the N*CouplingTime to (N+1)*CouplingTime mean melt rate
+  To. MITgcm saves to restart files
+       the OceanModelTime=(N+1)*CouplingTime state
+
+
+>>>> RESTART FROM SAVED STATE
+IceModelTime   =   N   * CouplingTime
+OceanModelTime = (N+1) * CouplingTime
+
+  - ISSM reads from restart files the IceModelTime=N state and
+      the N*CouplingTime to (N+1)*CouplingTime mean melt rate
+      
+  - MITgcm reads from restart files
+      the OceanModelTime=(N+1)*CouplingTime state
+
+Initialization:
+  I1. ISSM sends CouplingTime
+  I2. MITgcm sends grid size (NX and NY)
+  I3. MITgcm sends grid coordinates (XC and YC)
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C4. ISSM sends IceModelTime=N base to MITgcm
+  C5i. ISSM integrates from IceModelTime=N*CouplingTime
+                         to IceModelTime=(N+1)*CouplingTime
+  C5o. MITgcm integrates from OceanModelTime=(N+1)*CouplingTime
+                          to OceanModelTime=(N+2)*CouplingTime
+
+First Recurrent Coupling Exchange:
+IceModelTime   = (N+1)   * CouplingTime
+OceanModelTime = (N+2) * CouplingTime
+  C1. ISSM sends ice model time IceTimeTag
+  C2. MITgcm sends ocean model time OceanTimeTag
+  C3. MITgcm sends
+      (N+1)*CouplingTime <= OceanModelTime < (N+2)*CouplingTime
+      time-mean melt rate to ISSM
+  C4. ISSM sends IceModelTime=(N+1)*CouplingTime base to MITgcm
+  C5i. ISSM integrates from IceModelTime=(N+1)*CouplingTime
+                         to IceModelTime=(N+2)*CouplingTime
+  C5o. MITgcm integrates from OceanModelTime=(N+2)*CouplingTime
+                           to OceanModelTime=(N+3)*CouplingTime
+
+...
+
+
+TODO/WISH LIST
+* finish initialization 
+   - MITgcm runs 1 time step with ocean ice base, not from ISSM
+* do other time steps (coupling time = N)
+* ISSM works on interpolation
+* 1 + 1 = 2 (so pickup working)
+* change MITgcm to include new base and changes in ocean
+* make sure that RunCoupledMITgcmISSM and RunCoupledMITgcmISSM2
+  can produce the same results!

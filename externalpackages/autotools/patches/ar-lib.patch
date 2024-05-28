@@ -1,0 +1,11 @@
+--- ar-lib	2017-08-30 21:58:06.863512300 -0700
++++ /home/Daniel/issm/trunk/aux-config/ar-lib	2017-08-30 21:58:01.291710300 -0700
+@@ -226,7 +226,7 @@
+   else
+     $AR -NOLOGO -LIST "$archive" | sed -e 's/\\/\\\\/g' | while read member
+     do
+-      $AR -NOLOGO -EXTRACT:"$member" "$archive" || exit $?
++      $AR -NOLOGO -EXTRACT:"$(echo $member | tr -d '\r')" "$archive" || exit $?
+     done
+   fi
+ 

@@ -1,0 +1,4 @@
+284c284
+<       set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+---
+>       set(CMAKE_INSTALL_RPATH "@executable_path/../lib;${LIBGFORTRAN_ROOT}")

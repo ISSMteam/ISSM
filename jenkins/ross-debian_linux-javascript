@@ -1,0 +1,59 @@
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=${ISSM_DIR} \
+	--disable-shared \
+	--enable-development \
+	--enable-debugging \
+	--with-cxxoptflags="-g -O2 -fPIC -std=c++11" \
+	--with-javascript \
+	--without-fortran \
+	--without-Sealevelchange \
+	--without-Love \
+	--without-kml \
+	--without-kriging \
+	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools	install-linux.sh
+	cmake		install.sh
+	emscripten	install.sh
+	gsl			install-javascript.sh
+	triangle	install-linux-javascript.sh
+	shell2junit	install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=0
+PYTHON_TEST=0
+JAVASCRIPT_TEST=1
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+#		compilation.
+#
+NUMCPUS_INSTALL=8
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=2
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information.
+#
+MATLAB_NROPTIONS=""
+PYTHON_NROPTIONS=""

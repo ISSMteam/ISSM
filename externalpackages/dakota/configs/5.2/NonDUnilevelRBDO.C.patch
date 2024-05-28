@@ -1,0 +1,7 @@
+1046a1047
+> 	  // add sensitivity output to importance factors (jes, 8/06/10)
+1048c1049,1050
+< 	    << uv_labels[j].data() << " = " << impFactor[i][j] << '\n';
+---
+> 	    << uv_labels[j].data() << " = " << impFactor[i][j]
+> 	    << "  Sensitivity = " << fnGradsMeanX(i,j) << '\n';

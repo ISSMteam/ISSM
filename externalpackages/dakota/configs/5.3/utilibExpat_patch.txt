@@ -1,0 +1,58 @@
+Index: CMakeLists.txt
+===================================================================
+--- CMakeLists.txt	(revision 1968)
++++ CMakeLists.txt	(working copy)
+@@ -30,6 +30,17 @@
+ if(UTILIB_YES_MEMDEBUG)
+   add_definitions(-DUTILIB_YES_MEMDEBUG=1)
+ endif()
++option(UTILIB_HAVE_EXPAT "Enable expat in utilib" OFF)
++if (UTILIB_HAVE_EXPAT)
++  find_package(EXPAT)
++  if (EXPAT_FOUND)
++    # Use the same definition as autotools build
++    add_definitions("-DUTILIB_HAVE_EXPAT_H")
++    # TODO: add include path (EXPAT_INCLUDE_DIRS) in relevant subdirs?
++  else()
++    message(WARNING "expat requested, but not found")
++  endif()
++endif()
+ 
+ #inspect the system so that we can generate utilib_config.h 
+ include(CheckFunctionExists)
+@@ -47,7 +58,6 @@
+ CHECK_INCLUDE_FILES("windows.h;dbghelp.h" UTILIB_HAVE_DBGHELP_H)
+ CHECK_INCLUDE_FILE(err.h UTILIB_HAVE_ERR_H)
+ CHECK_INCLUDE_FILE(execinfo.h UTILIB_HAVE_EXECINFO_H)
+-CHECK_INCLUDE_FILE(expat.h UTILIB_HAVE_EXPAT_H)
+ CHECK_INCLUDE_FILE(float.h UTILIB_HAVE_FLOAT_H)
+ CHECK_INCLUDE_FILE(limits.h UTILIB_HAVE_LIMITS_H)
+ CHECK_INCLUDE_FILE(strings.h UTILIB_HAVE_STRINGS_H)
+@@ -57,9 +67,7 @@
+ CHECK_INCLUDE_FILE(values.h UTILIB_HAVE_VALUES_H)
+ CHECK_INCLUDE_FILE(windows.h UTILIB_HAVE_WINDOWS_H)
+ 
+-find_library(EXPAT_LIB expat)
+ 
+-
+ # Use common HAVE_BOOST to indicate usage of Boost across packages
+ # Ultimately need to #define UTILIB_HAVE_BOOST if used 
+ set(HAVE_BOOST OFF CACHE BOOL "Should Utilib use BOOST?")
+
+
+Index: CMakeLists.txt
+===================================================================
+--- src/libs/CMakeLists.txt	2013/03/25 19:19:06	1970
++++ src/libs/CMakeLists.txt	2013/03/25 19:51:47	1971
+@@ -77,8 +77,9 @@
+   list(APPEND libs ${MPI_LIBRARY})
+ endif()
+ 
+-if(UTILIB_HAVE_EXPAT_H AND EXPAT_LIB)
+-  list(APPEND libs ${EXPAT_LIB})
++if(UTILIB_HAVE_EXPAT AND EXPAT_FOUND)
++  include_directories(${EXPAT_INCLUDE_DIRS})
++  list(APPEND libs ${EXPAT_LIBRARIES})
+ endif()
+ if(MSVC)
+   list(APPEND libs dbghelp)

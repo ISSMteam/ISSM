@@ -1,0 +1,44 @@
+%Start defining model parameters here
+
+% Set up bed topography and ice geometry for a tilted 500m thick slab
+md.geometry.base = .02*md.mesh.x;
+md.geometry.bed = md.geometry.base;
+md.geometry.surface = .02*md.mesh.x + 500;
+md.geometry.thickness = md.geometry.surface - md.geometry.bed;
+
+% Define ice sliding velocity (m/yr) 
+md.initialization.vx = 10^-6*md.constants.yts*ones(md.mesh.numberofvertices,1);
+md.initialization.vy = zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+% Materials
+% Ice flow law parameter (note that the standard parameter A=B^(-3))
+md.materials.rheology_B= (5e-25)^(-1/3)*ones(md.mesh.numberofvertices,1);
+md.initialization.temperature=(273)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+%Calving
+md.calving.calvingrate=zeros(md.mesh.numberofvertices,1);
+%md.calving.spclevelset=NaN(md.mesh.numberofvertices,1);
+
+% Friction law and coefficient
+md.friction=frictionshakti(md.friction);
+md.friction.coefficient=20.*ones(md.mesh.numberofvertices,1);
+
+%Numerical parameters
+%md.stressbalance.viscosity_overshoot=0.0;
+md.masstransport.stabilization=1.;
+md.thermal.stabilization=1.;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.stressbalance.restol=0.05;
+md.steadystate.reltol=0.05;
+md.stressbalance.reltol=0.05;
+md.stressbalance.abstol=NaN;
+md.timestepping.time_step=1.;
+md.timestepping.final_time=3.;
+
+%Boundary conditions:
+md=SetIceSheetBC(md);

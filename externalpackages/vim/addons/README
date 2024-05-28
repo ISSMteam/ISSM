@@ -1,0 +1,5 @@
+To use ISSM's settings for vim:
+
+1. Add the settings from vimrc to your .vimrc file
+
+2. Add softlinks from vim to your .vim directory

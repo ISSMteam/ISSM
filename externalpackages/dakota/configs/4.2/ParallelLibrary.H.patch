@@ -1,0 +1,3 @@
+346a347,348
+>   /// library mode constructor, serial mode
+>   ParallelLibrary(char*  serial_mode);

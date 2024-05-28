@@ -1,0 +1,11 @@
+--- src/config/BuildSystem/config/setCompilers.py	2024-02-26 19:09:17
++++ ./setCompilers.py	2024-03-07 16:15:42
+@@ -2442,7 +2442,7 @@
+       languages.append('FC')
+     for language in languages:
+       self.pushLanguage(language)
+-      for testFlag in ['-Wl,-ld_classic', '-Wl,-bind_at_load', '-Wl,-commons,use_dylibs', '-Wl,-search_paths_first', '-Wl,-no_compact_unwind']:
++      for testFlag in ['-Wl,-ld_classic', '-Wl,-search_paths_first', '-Wl,-no_compact_unwind']:
+         if self.checkLinkerFlag(testFlag, filterAlways=1):
+           # expand to CC_LINKER_FLAGS or CXX_LINKER_FLAGS or FC_LINKER_FLAGS
+           linker_flag_var = langMap[language]+'_LINKER_FLAGS'

@@ -1,0 +1,18 @@
+# ***************
+# Open boundaries
+# ***************
+ &OBCS_PARM01
+ OB_Iwest = 40*1,
+ OB_Ieast = 40*-1,
+#
+ useOBCSprescribe = .TRUE.,
+#
+ OBWsFile = 'OBs.bin',
+ OBWtFile = 'OBt.bin',
+ OBWuFile = 'OBu.bin',
+ OBWvFile = 'zeros.bin',
+ OBEsFile = 'OBs.bin',
+ OBEtFile = 'OBt.bin',
+ OBEuFile = 'OBu.bin',
+ OBEvFile = 'zeros.bin',
+ &

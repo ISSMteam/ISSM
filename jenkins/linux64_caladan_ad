@@ -1,0 +1,60 @@
+MATLAB_PATH="/usr/local/MATLAB/R2015a"
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=$ISSM_DIR\
+	--disable-static \
+	--prefix=$ISSM_DIR \
+	--without-kriging \
+	--without-kml \
+	--without-Sealevelchange \
+	--with-gsl-dir=$ISSM_DIR/externalpackages/gsl/install \
+	--with-adolc-dir=$ISSM_DIR/externalpackages/adolc/install \
+	--with-matlab-dir=$MATLAB_PATH \
+	--with-triangle-dir=$ISSM_DIR/externalpackages/triangle/install
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools	install-linux.sh
+	cmake		install.sh
+	mpich		install-3.2-linux64.sh
+	petsc		install-3.7-linux64.sh
+	gsl			install.sh
+	triangle	install-linux.sh
+	adolc		install.sh
+	shell2junit	install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=1
+PYTHON_TEST=0
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation
+#
+NUMCPUS_INSTALL=2
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=1
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information
+#
+MATLAB_NROPTIONS="'benchmark','adolc','id',[3001:3019]"
+PYTHON_NROPTIONS=""

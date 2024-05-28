@@ -1,0 +1,759 @@
+# This holds the errors to be suppressed from valgrind report for ISSM.
+# See: http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress
+#
+# to add errors:
+#   1. in m/classes/clusters/generic.m,
+#      add: --gen-suppressions=all
+#   2. in the errlog, copy and paste the suppression log
+#      in this file.
+
+#OS specific errors{{{
+#http://stackoverflow.com/questions/14474691/wifstream-with-imbue-locale-produces-valgrind-errors (larsen)
+{
+   <OS1>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZNSt10moneypunctIwLb1EED1Ev
+   fun:_ZNSt10moneypunctIwLb1EED0Ev
+}
+{
+   <OS0>
+   Memcheck:Addr8
+   fun:wcscmp
+   fun:_ZNSt10moneypunctIwLb0EED1Ev
+   fun:_ZNSt10moneypunctIwLb0EED0Ev
+   fun:_ZNSt6locale5_ImplD1Ev
+   fun:_ZNSt6localeD1Ev
+   fun:__cxa_finalize
+   obj:/u/astrid-r1b/morlighe/issmjpl/cron/trunk-jpl/externalpackages/boost/install/lib/libboost_filesystem.so.1.49.0
+   obj:/u/astrid-r1b/morlighe/issmjpl/cron/trunk-jpl/externalpackages/boost/install/lib/libboost_filesystem.so.1.49.0
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <OS2>
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+}
+{
+	<Libgfortranronne>
+	  Memcheck:Cond
+	  obj:/usr/lib/x86_64-linux-gnu/libgfortran.so.3.0.0
+	  obj:/usr/lib/x86_64-linux-gnu/libgfortran.so.3.0.0
+	  obj:/usr/lib/x86_64-linux-gnu/libgfortran.so.3.0.0
+	  fun:call_init.part.0
+	  fun:call_init
+	  fun:_dl_init
+	  obj:/lib/x86_64-linux-gnu/ld-2.15.so
+	  obj:*
+	  obj:*
+	  obj:*
+	  obj:*
+	  obj:*
+}
+{
+	<OS3>
+	  Memcheck:Cond
+	  fun:index
+	  fun:expand_dynamic_string_token
+	  fun:_dl_map_object
+	  fun:map_doit
+	  fun:_dl_catch_error
+	  fun:do_preload
+	  fun:handle_ld_preload
+	  fun:dl_main
+	  fun:_dl_sysdep_start
+	  fun:_dl_start_final
+	  fun:_dl_start
+	  obj:/lib/x86_64-linux-gnu/ld-2.19.so
+	  obj:*
+	  obj:*
+}
+{
+	<OS4>
+	  Memcheck:Cond
+	  fun:index
+	  fun:expand_dynamic_string_token
+	  fun:fillin_rpath
+	  fun:_dl_init_paths
+	  fun:dl_main
+	  fun:_dl_sysdep_start
+	  fun:_dl_start_final
+	  fun:_dl_start
+	  obj:/lib/x86_64-linux-gnu/ld-2.19.so
+	  obj:*
+	  obj:*
+	  obj:*
+	  obj:*
+}
+#}}}
+#PETSc {{{
+{
+   <petsc0>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:maybe_complete
+   fun:PMPI_Waitany
+   fun:MatStashScatterGetMesg_Private
+   fun:MatAssemblyEnd_MPIAIJ
+   fun:MatAssemblyEnd
+}
+{
+   <petsc1>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:maybe_complete
+   fun:PMPI_Waitany
+   fun:VecStashScatterGetMesg_Private
+   fun:VecAssemblyEnd_MPI
+   fun:VecAssemblyEnd
+   fun:_ZN8PetscVec8AssembleEv
+}
+{
+   <petsc2>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:_Z14VecToMPISerialPPdP6_p_Veci
+   fun:_ZN8PetscVec11ToMPISerialEv
+}
+{
+   <petsc3>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:maybe_complete
+   fun:PMPI_Waitany
+   fun:VecScatterCreate_PtoS
+   fun:VecScatterCreate
+   fun:MatSetUpMultiply_MPIAIJ
+   fun:MatAssemblyEnd_MPIAIJ
+   fun:MatAssemblyEnd
+}
+{
+   <mumps0>
+   Memcheck:Leak
+   fun:malloc
+   fun:mumps_397.3148
+   fun:__mumps_static_mapping_MOD_mumps_369
+   fun:dmumps_537_
+   fun:dmumps_26_
+   fun:dmumps_
+   fun:dmumps_f77_
+   fun:dmumps_c
+   fun:MatLUFactorSymbolic_AIJMUMPS
+   fun:MatLUFactorSymbolic
+   fun:PCSetUp_LU
+   fun:PCSetUp
+}
+{
+   <mumps1>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:mpi_recv
+   fun:dmumps_664_
+}
+{
+   <mumps2>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:maybe_complete
+   fun:PMPI_Waitany
+   fun:mpi_waitany
+   fun:dmumps_664_
+}
+{
+   <mumps3>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:mpi_recv
+   fun:dmumps_282_
+}
+{
+   <mumps4>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:mpi_recv
+   fun:dmumps_255_
+}
+{
+   <mumps5>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:maybe_complete
+   fun:PMPI_Wait
+   fun:PMPI_WAIT
+   fun:dmumps_255_
+}
+{
+   <mump6>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:mpi_recv
+   fun:dmumps_638_
+}
+{
+   <mumps7>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:PMPI_Recv
+   fun:mpi_recv
+   fun:dmumps_640.3488
+}
+{
+   <mumps8>
+   Memcheck:User
+   fun:PMPI_Get_count
+   fun:MPI_GET_COUNT
+   fun:dmumps_638_
+}
+{
+   <mumps9>
+   Memcheck:User
+   fun:check_mem_is_defined_untyped
+   fun:PMPI_Pack
+   fun:PMPI_PACK
+   fun:__dmumps_comm_buffer_MOD_dmumps_62
+}
+{
+   <mumps10>
+   Memcheck:User
+   fun:check_mem_is_defined_untyped
+   fun:PMPI_Pack
+   fun:PMPI_PACK
+   fun:__dmumps_comm_buffer_MOD_dmumps_62
+}
+{
+	<mumps11>
+	  Memcheck:User
+	  fun:check_mem_is_defined_untyped
+	  fun:PMPI_Isend
+	  fun:libparmetis__gkMPI_Isend
+	  fun:libparmetis__CommInterfaceData
+	  fun:libparmetis__CompactGraph
+	  fun:libparmetis__MultilevelOrder
+	  fun:ParMETIS_V32_NodeND
+	  fun:ParMETIS_V3_NodeND
+	  fun:mumps_parmetis_
+}
+{
+	<mumps12>
+	  Memcheck:User
+	  fun:check_mem_is_defined_untyped
+	  fun:PMPI_Bcast
+	  fun:MPI_BCAST
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_718
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_717
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_715
+}
+{
+	<mumps13>
+	  Memcheck:Leak
+	  fun:malloc
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_775
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_720
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_715
+}
+{
+	<mump14>
+	  Memcheck:Leak
+	  fun:malloc
+	  fun:mumps_754_
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_781
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_720
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_715
+	  fun:dmumps_26_
+	  fun:dmumps_
+	  fun:dmumps_f77_
+	  fun:dmumps_c
+	  fun:MatLUFactorSymbolic_AIJMUMPS
+	  fun:MatLUFactorSymbolic
+	  fun:PCSetUp_LU
+}
+{
+	<mumps15>
+	  Memcheck:Cond
+	  fun:MPIC_Waitall
+	  fun:MPIR_Alltoall_intra
+	  fun:MPIR_Alltoall
+	  fun:MPIR_Alltoall_impl
+	  fun:PMPI_Alltoall
+	  fun:PMPI_ALLTOALL
+	  fun:dmumps_numvolsndrcv_
+	  fun:dmumps_simscaleabsuns_
+	  fun:dmumps_simscaleabs_
+	  fun:dmumps_fac_driver_
+	  fun:dmumps_
+	  fun:dmumps_f77_
+}
+{
+	<mumps16>
+	  Memcheck:Cond
+	  fun:MPIC_Waitall
+	  fun:MPIR_Alltoall_intra
+	  fun:MPIR_Alltoall
+	  fun:MPIR_Alltoall_impl
+	  fun:PMPI_Alltoall
+	  fun:PMPI_ALLTOALL
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_build_dist_graph
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_parmetis_ord
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_do_par_ord
+	  fun:__dmumps_parallel_analysis_MOD_dmumps_ana_f_par
+	  fun:dmumps_ana_driver_
+	  fun:dmumps_
+}
+
+{
+	<iparmetis1>
+	  Memcheck:Cond
+	  fun:MPIC_Waitall
+	  fun:MPIR_Scatterv
+	  fun:MPIR_Scatterv_impl
+	  fun:PMPI_Scatterv
+	  fun:libparmetis__gkMPI_Scatterv
+	  fun:libparmetis__InitMultisection
+	  fun:libparmetis__Order_Partition
+	  fun:libparmetis__Order_Partition_Multiple
+	  fun:libparmetis__MultilevelOrder
+	  fun:ParMETIS_V32_NodeND
+	  fun:ParMETIS_V3_NodeND
+	  fun:mumps_parmetis_
+}
+#}}}
+{
+   <main1>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   fun:mca_base_var_enum_create_flag
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libopen-pal.so.20.10.1
+   fun:mca_base_framework_register
+   fun:mca_base_framework_open
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main2>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   fun:mca_base_var_enum_create_flag
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main3>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:mca_base_component_repository_open
+   fun:mca_base_component_find
+   fun:mca_base_framework_components_register
+   fun:mca_base_framework_register
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main4>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:*
+   obj:*
+   fun:orte_oob_base_select
+   fun:orte_ess_base_app_setup
+   obj:*
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main5>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:PMIx_Store_internal
+   fun:pmix1_store_local
+   fun:orte_ess_base_app_setup
+   obj:*
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main6>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:*
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <main7>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:opal_free_list_grow_st
+   fun:opal_rb_tree_init
+   obj:*
+   obj:*
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libopen-pal.so.20.10.1
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+   fun:main
+}
+{
+   <Z15>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:ompi_mtl_base_select
+   obj:*
+   fun:mca_pml_base_select
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   fun:_Z15EnvironmentInitiPPc
+}
+{
+   <clone1>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:start_thread
+   fun:clone
+}
+{
+   <clone2>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libopen-rte.so.20.10.1
+   fun:orte_oob_base_set_addr
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libopen-pal.so.20.10.1
+   fun:start_thread
+   fun:clone
+}
+{
+   <clone3>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:start_thread
+   fun:clone
+}
+{
+   <clone4>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/openmpi/mca_pmix_pmix112.so
+   fun:start_thread
+   fun:clone
+}
+{
+   <dlopen>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   obj:*
+   fun:call_init
+   fun:_dl_init
+   fun:dl_open_worker
+   fun:_dl_catch_exception
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_exception
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_2.2.5
+}
+{
+   <ompi1>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   fun:hwloc_topology_set_xmlbuffer
+   obj:*
+   fun:orte_init
+   fun:ompi_mpi_init
+}
+{
+   <pmpi1>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:lt__malloc
+   fun:lt__zalloc
+   obj:/usr/lib/x86_64-linux-gnu/libltdl.so.7.3.1
+   fun:lt_dlopenadvise
+   obj:*
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   fun:hwloc_topology_init
+   obj:*
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+}
+{
+   <pmpi2>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   fun:hwloc_topology_set_xmlbuffer
+   obj:*
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+}
+{
+   <hwloc>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   obj:*
+   fun:__pthread_once_slow
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   obj:/usr/lib/x86_64-linux-gnu/libhwloc.so.5.7.6
+   fun:hwloc_topology_set_xmlbuffer
+}
+{
+   <petsc4>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:PetscCommDuplicate
+   fun:PetscHeaderCreate_Private
+   fun:MatCreate
+}
+{
+   <petsc5>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:PetscCommDuplicate
+   fun:PetscHeaderCreate_Private
+   fun:MatCreate
+}
+{
+   <petsc6>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:PetscCommDuplicate
+   fun:PetscHeaderCreate_Private
+   fun:VecCreate
+}
+{
+   <petsc7>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:_Z20PetscInitializeMUMPSP6_p_MatP9Mat_MUMPS
+   obj:/usr/lib/x86_64-linux-gnu/libpetsc_real.so.3.7.7
+   fun:MatGetFactor
+}
+{
+   <mumps17>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:MPI_COMM_DUP
+   fun:dmumps_ini_driver_
+   fun:dmumps_
+}
+{
+   <mumps18>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:MPI_COMM_DUP
+   fun:dmumps_ini_driver_
+   fun:dmumps_
+}
+{
+   <mumps19>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:MPI_COMM_DUP
+   fun:dmumps_
+   fun:dmumps_f77_
+}
+{
+   <mumps20>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_dup_with_info
+   fun:PMPI_Comm_dup
+   fun:MPI_COMM_DUP
+   fun:dmumps_
+   fun:dmumps_f77_
+}
+{
+   <mumps21>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_split
+   fun:PMPI_Comm_split
+   fun:MPI_COMM_SPLIT
+   fun:dmumps_fac_driver_
+   fun:dmumps_
+}
+{
+   <mumps22>
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   obj:*
+   fun:mca_coll_base_comm_select
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   obj:/usr/lib/x86_64-linux-gnu/openmpi/lib/libmpi.so.20.10.1
+   fun:opal_progress
+   fun:ompi_comm_activate
+   fun:ompi_comm_split
+   fun:PMPI_Comm_split
+   fun:MPI_COMM_SPLIT
+   fun:dmumps_fac_driver_
+   fun:dmumps_
+}

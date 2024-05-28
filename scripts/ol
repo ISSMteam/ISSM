@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#Get the runme file, read it, and display steps
+rm -rf orglist_temporary_file
+LIST=$(cat runme.m | grep perform | grep if | sed "s/'/ /g" | awk '{print $3}')
+
+COUNT=0;
+echo "Available steps"
+for STEP in $LIST
+do
+	let COUNT=$COUNT+1
+	printf '%3i: %s\n' $COUNT $STEP
+done

@@ -1,0 +1,25 @@
+{
+	"expdisp":
+	  {
+		"inputs":
+		  [
+			 {"name":"filename1", "kind":"required",   "type":"filepath=*.exp"},
+			 {"name":"varargin", "kind":"optional", "multiplicity":"append"}
+		]
+	  },
+	"expread":
+	  {
+		"inputs":
+		  [
+			 {"name":"filename1", "kind":"required",   "type":"filepath=*.exp"}
+		]
+	  },
+	"exptool":
+	  {
+		"inputs":
+		  [
+			 {"name":"filename1", "kind":"required",   "type":"filepath=*.exp"},
+			 {"name":"varargin", "kind":"optional", "multiplicity":"append"}
+		]
+	  }
+}

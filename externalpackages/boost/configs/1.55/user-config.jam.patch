@@ -1,0 +1,4 @@
+42c42
+< # using gcc ;
+---
+> using darwin : std0x : "/usr/local/gfortran/bin/x86_64-apple-darwin10-g++" : <cxxflags>-std=gnu++0x;  

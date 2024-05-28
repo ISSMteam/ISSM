@@ -1,0 +1,19 @@
+%Test Name: PigStressFS
+md=triangle(model(),'../Exp/Pig.exp',20000.);
+md=setmask(md,'../Exp/PigShelves.exp','../Exp/PigIslands.exp');
+md=parameterize(md,'../Par/Pig.par');
+md=extrude(md,3,0.9);
+md=setflowequation(md,'FS','all');
+md.cluster=generic('name',oshostname(),'np',3);
+md=solve(md,'Stressbalance');
+
+%Fields and tolerances to track changes
+field_names     ={'Vx','Vy','Vz','Vel','Pressure'};
+field_tolerances={1e-09,1e-09,1e-09,1e-09,1e-09};
+field_values={...
+	(md.results.StressbalanceSolution.Vx),...
+	(md.results.StressbalanceSolution.Vy),...
+	(md.results.StressbalanceSolution.Vz),...
+	(md.results.StressbalanceSolution.Vel),...
+	(md.results.StressbalanceSolution.Pressure),...
+	};

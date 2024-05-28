@@ -1,0 +1,8 @@
+766c766
+<   /*char output_string[32], message_string[32], title_string[32],
+---
+>   char output_string[32], message_string[32], title_string[32],
+802c802
+<   check_error(err_code, "lhs_files");*/
+---
+>   check_error(err_code, "lhs_files");

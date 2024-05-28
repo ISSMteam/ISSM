@@ -1,0 +1,24 @@
+%Start defining model parameters here
+
+disp('      creating thickness');
+hmin = 300;
+hmax = 1000;
+ymin = min(md.mesh.y);
+ymax = max(md.mesh.y);
+md.geometry.thickness = hmax+(hmin-hmax)*(md.mesh.y-ymin)/(ymax-ymin);
+md.geometry.base      = -md.materials.rho_ice/md.materials.rho_water*md.geometry.thickness;
+md.geometry.surface   = md.geometry.base+md.geometry.thickness;
+
+disp('      creating drag');
+md.friction.coefficient=200*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p = ones(md.mesh.numberofelements,1);
+md.friction.q = ones(md.mesh.numberofelements,1);
+
+disp('      creating flow law paramter');
+md.materials.rheology_B=1.8*10^8*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B(find(md.mesh.x<md.mesh.y))=1.4*10^8;
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+
+disp('      creating boundary conditions');
+md=SetIceShelfBC(md,'Front.exp');

@@ -1,0 +1,96 @@
+[33m25 05 2016 12:30:24.724:WARN [karma]: [39mNo captured browser, open http://localhost:9876/
+[32m25 05 2016 12:30:24.739:INFO [karma]: [39mKarma v0.13.22 server started at http://localhost:9876/
+[32m25 05 2016 12:30:24.748:INFO [launcher]: [39mStarting browser PhantomJS
+[32m25 05 2016 12:30:24.761:INFO [launcher]: [39mStarting browser Chrome
+[32m25 05 2016 12:30:25.074:INFO [PhantomJS 2.1.1 (Linux 0.0.0)]: [39mConnected on socket /#i_VVBy7PWCXJ5G9nAAAA with id 65168602
+[32m25 05 2016 12:30:25.680:INFO [Chrome 50.0.2661 (Linux 0.0.0)]: [39mConnected on socket /#qVA7hCT_IQ1EwaMFAAAB with id 22865988
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2KLOG: 'creating model'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2KLOG: 'meshing'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2KPhantomJS 2.1.1 (Linux 0.0.0) test101 contains test101 FAILED
+	TypeError: undefined is not a function (evaluating 'Module.HEAPF64.slice(indexptr /8, indexptr/8 + nel*3)') in /home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js (line 11457)
+	TriMesh@/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:11457:36
+	triangle@/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:6734:26
+	/home/andy/Programming/Research/runtest2/scripts/helpers/1.spec.js:7:17
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) (0 secs / 0.207 secs)
+[1A[2KPhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+
+[1A[2K[1A[2KPhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'creating model'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'meshing'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'parameterization'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '      boundary conditions for stressbalance model: setting spc as zero'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '      no smb.mass_balance specified: values set as zero'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '      no basalforcings.groundedice_melting_rate specified: values set as zero'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '      no basalforcings.floatingice_melting_rate specified: values set as zero'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '      no balancethickness.thickening_rate specified: values set as zero'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'marshalling file test101.bin'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'running issm locally'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: ''
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'Ice Sheet System Model (ISSM) version  4.9'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '(website: http://issm.jpl.nasa.gov contact: issm@jpl.nasa.gov)'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: ''
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'call computational core:'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '   computing new velocity'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '   computing velocities'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: ''
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: '??? Error in ==> /Users/larour/issm-trunks/trunk-jpl-js/src/c/./classes/Elements/Element.cpp:941'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: 'GetInputListOnNodes error message: Input IceMaskNodeActivation not found in element'
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) LOG: ''
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 0 of 1 SUCCESS (0 secs / 0 secs)
+[1A[2K[1A[2KChrome 50.0.2661 (Linux 0.0.0) test101 contains test101 FAILED
+	Error: ReadData error message: cannot read data of type 0
+	    at Error (native)
+	    at ReadData (/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:10905:14)
+	    at parseresultsfrombuffer (/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:10831:12)
+	    at loadresultsfrombuffer (/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:10770:13)
+	    at solve (/home/andy/Programming/Research/runtest2/lib/bin/issm-binaries.js:11057:8)
+	    at Object.<anonymous> (/home/andy/Programming/Research/runtest2/scripts/helpers/1.spec.js:15:12)
+PhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) (0 secs / 3.247 secs)
+[1A[2K[1A[2KPhantomJS 2.1.1 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (0.046 secs / 0.207 secs)
+Chrome 50.0.2661 (Linux 0.0.0): Executed 1 of 1 (1 FAILED) ERROR (3.302 secs / 3.247 secs)

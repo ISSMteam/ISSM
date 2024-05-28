@@ -1,0 +1,17 @@
+function data = marshallcostfunctions(cost_functions)
+	pos=find(cost_functions==101); data(pos) = {'SurfaceAbsVelMisfit'};
+	pos=find(cost_functions==102); data(pos) = {'SurfaceRelVelMisfit'};
+	pos=find(cost_functions==103); data(pos) = {'SurfaceLogVelMisfit'};
+	pos=find(cost_functions==104); data(pos) = {'SurfaceLogVxVyMisfit'};
+	pos=find(cost_functions==105); data(pos) = {'SurfaceAverageVelMisfit'};
+	pos=find(cost_functions==201); data(pos) = {'ThicknessAbsMisfit'};
+	pos=find(cost_functions==501); data(pos) = {'DragCoefficientAbsGradient'};
+	pos=find(cost_functions==502); data(pos) = {'RheologyBbarAbsGradient'};
+	pos=find(cost_functions==503); data(pos) = {'ThicknessAbsGradient'};
+	pos=find(cost_functions==504); data(pos) = {'ThicknessAlongGradient'};
+	pos=find(cost_functions==505); data(pos) = {'ThicknessAcrossGradient'};
+	pos=find(cost_functions==506); data(pos) = {'BalancethicknessMisfit'};
+	pos=find(cost_functions==507); data(pos) = {'RheologyBAbsGradient'};
+	pos=find(cost_functions==508); data(pos) = {'RheologyBInitialguessMisfit'};
+	pos=find(cost_functions==510); data(pos) = {'ThicknessPositive'};
+	pos=find(cost_functions==601); data(pos) = {'SurfaceAbsMisfit'};

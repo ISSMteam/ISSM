@@ -1,0 +1,62 @@
+MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2023b"))
+
+ISSM_CONFIG='\
+	--prefix=${ISSM_DIR} \
+	--enable-standalone-executables \
+	--enable-standalone-modules \
+	--enable-standalone-libraries \
+	--disable-dependency-tracking \
+	--with-vendor="win-msys2" \
+	--with-matlab-dir="${MATLAB_PATH}" \
+	--with-fortran-lib="-Wl,-L/c/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0 -Wl,-lgfortran" \
+	--with-mpi-include="${MSMPI_ROOT}/include" \
+	--with-mpi-libdir="-Wl,-L${MSMPI_ROOT}/lib" \
+	--with-mpi-libflags="-Wl,-lmsmpi" \
+	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	msmpi		install-static.sh
+	petsc		install-3.14-win-msys2-mingw-msmpi-static.sh
+	triangle	install-win-msys2-mingw-static.sh
+	m1qn3		install-win-msys2-mingw-static.sh
+	semic		install.sh
+	shell2junit	install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=0
+PYTHON_TEST=0
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation
+#
+NUMCPUS_INSTALL=4
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=2
+
+# Nightly run options
+#
+MATLAB_NROPTIONS=""
+PYTHON_NROPTIONS=""

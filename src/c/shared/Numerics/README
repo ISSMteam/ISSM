@@ -1,0 +1,9 @@
+
+DO NOT MODIFY the following files:
+- Verbosity.cpp
+- src/m/shared/Verb*.m
+all these files are automatically synchronized with Verbosity.h
+
+TO ADD A VERBOSITY LEVEL:
+add the corresponding line to Verbosity.h
+and execute synchronizing script.

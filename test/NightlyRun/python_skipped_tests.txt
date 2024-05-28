@@ -1,0 +1,22 @@
+%Get full list with:
+%  for i in test*.m; do NAME=$(echo $i | sed -e "s/\.m//"); %if [ ! -f $NAME.py ]; then echo $NAME; fi; done
+
+test218    needs Dakota
+test234    needs Dakota
+test235    needs Dakota
+test412    needs Dakota
+test413    needs Dakota
+test414    needs Dakota
+test417    needs Dakota
+test418    needs Dakota
+test420    needs Dakota
+
+test1401,test1402
+Roundoff error in ComputeHessian and ComputeMetric causes different meshes
+from matlab, specifically in the handling of 0/0=nan, eps/0=inf, etc.  Since
+the mesh is of a different size, NR fails.  (Note Matlab test1402 currently
+fails.)
+
+test1109,test1110
+Ugly crashes in solver, but same behavior as Matlab.
+

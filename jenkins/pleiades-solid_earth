@@ -1,0 +1,85 @@
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=$ISSM_DIR \
+	--enable-development \
+	--enable-standalone-libraries \
+	--with-wrappers=no \
+	--with-vendor="intel-pleiades-mpi" \
+	--with-cxxoptflags="-O3 " \
+	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
+	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
+	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
+	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
+	--with-mpi-include=" " \
+	--with-mpi-libflags=" -lmpi" \
+	--with-mkl-libflags="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm" \
+	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-scalapack-lib="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/libmkl_scalapack_lp64.so" \
+	--with-graphics-lib="/usr/lib64/libX11.so" \
+	--with-fortran-lib="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64_lin/ -lifcore -lifport -lgfortran" \
+	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+# NOTE:
+# - Python 3 is installed only as a build system for GSL
+# - shell2junit is included to run test suites via jenkins.sh
+#
+EXTERNALPACKAGES="
+	python		install-3-linux.sh
+	petsc		install-3.14-pleiades.sh
+	zlib		install-1.sh
+	hdf5		install-1.sh
+	gsl			install-pleiades.sh
+	boost		install-1.55-pleiades.sh
+	dakota		install-6.2-pleiades.sh
+	chaco		install-linux.sh
+	curl		install-7-linux.sh
+	netcdf		install-4.sh
+	sqlite		install.sh
+	proj		install-6.sh
+	gdal		install-3.sh
+	gshhg		install.sh
+	gmt			install-6-linux.sh
+	gmsh		install-4-linux.sh
+	triangle	install-linux.sh
+	m1qn3		install-linux.sh
+	semic		install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=0
+PYTHON_TEST=0
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation.
+#
+NUMCPUS_INSTALL=8
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=1
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information.
+#
+MATLAB_NROPTIONS=""
+PYTHON_NROPTIONS=""

@@ -1,0 +1,133 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>vec2pix</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="vec2pix_help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>vec2pix</h1><!--introduction--><p>Convert cartesian direction vectors to MEALPix pixel numbers</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Input Arguments</a></li><li><a href="#3">Return Arguments</a></li><li><a href="#4">Example</a></li><li><a href="#5">See also</a></li><li><a href="#6">Requires</a></li></ul></div><h2>Syntax<a name="1"></a></h2><pre>nPix = vec2pix(nSide,xyz,'Param1',Value1,...);</pre><h2>Input Arguments<a name="2"></a></h2><pre>nSide     HEALPix resolution parameter
+xyz       cell array of [3,1] cartesian direction vectors</pre><pre>Param     Value
+'nest'    use nested indexing (true | {false})</pre><h2>Return Arguments<a name="3"></a></h2><pre>nPix      size(xyz) pixel number array</pre><h2>Example<a name="4"></a></h2><p>Find pixels corresponding to a [4,5] set of (unnormalized) cartesian vectors:</p><pre class="codeinput">nSide = 4;
+xyz0 = squeeze(num2cell(2*rand(3,4,5)-1,1));
+nPix = vec2pix(nSide,xyz0)
+
+<span class="comment">% Find the normalized vectors corresponding to the pixels</span>
+xyz1 = pix2vec(nSide,nPix);
+
+<span class="comment">% Find angular distance from vectors to pixels</span>
+d = angDist(xyz0,xyz1)
+</pre><pre class="codeoutput">
+nPix =
+
+    28   157     2   112    58
+   120    37    44   140   153
+    82   121    68   127    25
+   165    29    51   140    42
+
+
+d =
+
+    0.1107    0.0752    0.1586    0.0250    0.1124
+    0.0695    0.1483    0.1005    0.1260    0.1347
+    0.0588    0.0572    0.0838    0.1210    0.0761
+    0.1156    0.1455    0.1688    0.0376    0.1256
+
+</pre><h2>See also<a name="5"></a></h2><p>ang2pix, pix2ang, pix2vec</p><h2>Requires<a name="6"></a></h2><p>ring2nest</p><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% vec2pix
+% Convert cartesian direction vectors to MEALPix pixel numbers
+
+%% Syntax
+%  nPix = vec2pix(nSide,xyz,'Param1',Value1,...);
+
+%% Input Arguments
+%  nSide     HEALPix resolution parameter
+%  xyz       cell array of [3,1] cartesian direction vectors
+%  
+%  Param     Value
+%  'nest'    use nested indexing (true | {false})
+
+%% Return Arguments
+%  nPix      size(xyz) pixel number array
+
+%% Example
+% Find pixels corresponding to a [4,5] set of (unnormalized) cartesian
+% vectors:
+nSide = 4;
+xyz0 = squeeze(num2cell(2*rand(3,4,5)-1,1));
+nPix = vec2pix(nSide,xyz0)
+
+% Find the normalized vectors corresponding to the pixels
+xyz1 = pix2vec(nSide,nPix);
+
+% Find angular distance from vectors to pixels
+d = angDist(xyz0,xyz1)
+
+%% See also
+% ang2pix, pix2ang, pix2vec
+
+%% Requires
+% ring2nest
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

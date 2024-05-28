@@ -1,0 +1,182 @@
+7/15/09:
+
+[jschierm@astrid chaco]$ diff Makefile_old Makefile
+27c27,28
+< MATLAB =        /usr/local/libexec/matlab
+---
+> #MATLAB =        /usr/local/libexec/matlab
+> MATLAB =        /usr/local/matlab780
+30c31,32
+< CHACO =         ../../Chaco-2.0/code
+---
+> #CHACO =         ../../Chaco-2.0/code
+> CHACO =         ../../Chaco-2.2/code
+34,35c36,37
+< #CC =            gcc 
+< CC =            cc 
+---
+> CC =            gcc 
+> #CC =            cc 
+39,40c41,44
+< AR =             /usr/ccs/bin/ar rcv   # for solaris 2
+< RANLIB =         /usr/ccs/bin/ranlib   # for solaris 2
+---
+> #AR =             /usr/ccs/bin/ar rcv   # for solaris 2
+> AR =             /usr/bin/ar rcv   # for solaris 2
+> #RANLIB =         /usr/ccs/bin/ranlib   # for solaris 2
+> RANLIB =         /usr/bin/ranlib   # for solaris 2
+91a96,97  [missing symbols]
+>               ${CHACO}/klvspiff/flatten.c \
+>               ${CHACO}/klvspiff/flow.c \
+99a106  [missing symbols]
+>               ${CHACO}/coarsen/makeccoords.c \
+102a110  [missing symbols]
+>               ${CHACO}/coarsen/makefgraph.c \
+108a117  [missing symbols]
+>               ${CHACO}/coarsen/maxmatch5.c \
+254a264,267
+> #mlchaco:     ${MLFILES.c} chaco.a Makefile
+> #             mex -V4 -output mlchaco ${MLFILES.c} chaco.a -I${CHACO}/main
+> #             mv mlchaco.mex* ${DEST_DIR}
+> 
+256c269
+<               mex -V4 -output mlchaco ${MLFILES.c} chaco.a -I${CHACO}/main
+---
+>               mex -output mlchaco -largeArrayDims ${MLFILES.c} chaco.a -I${CHACO}/main
+
+[jschierm@astrid chaco]$ diff mlchaco_old.c mlchaco.c
+34a35
+> #include <time.h>      /*  CLOCKS_PER_SEC  */
+56,61c57,62
+< void mexFunction(    
+<     int         nlhs,           /* number of expected outputs */
+<     Matrix      *plhs[],        /* matrix pointer array returning outputs */
+<     int         nrhs,           /* number of inputs */
+<     Matrix      *prhs[]         /* matrix pointer array for inputs */
+<     )
+---
+> void mexFunction(
+>     int           nlhs,           /* number of expected outputs */
+>     mxArray       *plhs[],        /* array of pointers to output arguments
+>     */
+>     int           nrhs,           /* number of inputs */
+>     const mxArray *prhs[]         /* array of pointers to input arguments */
+> )
+87a89
+>     mwIndex *mwstart,*mwadjacency;
+104c106,110
+<     start = mxGetJc(A_in);
+---
+> /*    start = mxGetJc(A_in);*/
+>     mwstart = mxGetJc(A_in);
+>     start = mxMalloc((mxGetN(A_in)+1)*sizeof(int));
+>     for (i=0; i<(mxGetN(A_in)+1); i++)
+>         start[i]= (int)mwstart[i];
+106c112,116
+<     adjacency = mxGetIr(A_in);
+---
+> /*    adjacency = mxGetIr(A_in);*/
+>     mwadjacency = mxGetIr(A_in);
+>     adjacency = mxMalloc(mxGetNzmax(A_in)*sizeof(int));
+>     for (i=0; i<mxGetNzmax(A_in); i++)
+>         adjacency[i]= (int)mwadjacency[i];
+169c181
+<       plhs [1] = mxCreateFull (1, 1, REAL) ;
+---
+>       plhs [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+173c185
+<       ((double) CLK_TCK) ;
+---
+>       ((double) CLOCKS_PER_SEC) ;
+179c191
+<         map_out = mxCreateFull(1,nvtxs,REAL);
+---
+>         map_out = mxCreateDoubleMatrix(1,nvtxs,mxREAL);
+185a198,199
+>     if (start != NULL) mxFree((char *) start);
+>     if (adjacency != NULL) mxFree((char *) adjacency);
+
+
+7/29/09:
+
+[jschierm@astrid chaco]$ diff mlchaco_old.c mlchaco.c
+131,132c141,144
+<     outassignname = NULL;
+<     outfilename = NULL;
+---
+> /*    outassignname = NULL;
+>     outfilename = NULL;*/
+>     outassignname = "chaco_assign.txt";
+>     outfilename = "chaco_out.txt";
+
+7/30/09:
+
+[jschierm@astrid chaco]$ diff Makefile_old Makefile
+27c27,28
+< MATLAB =        /usr/local/libexec/matlab
+---
+> #MATLAB =        /usr/local/libexec/matlab
+> MATLAB =        /usr/local/pkgs/matlab-7.6
+37c39,40
+< CFLAGS =        -Xa -G -xO4 -xcg92
+---
+> #CFLAGS =        -Xa -G -xO4 -xcg92
+> CFLAGS =        -Xa -G -xO4 -xcg92 -DMATLAB
+45,47d49  [using Chaco versions with MATLAB switch]
+<               ${MLCHACO}/chaco_check_graph.c \
+<               ${MLCHACO}/check_input.c \
+<                 ${MLCHACO}/smalloc.c \
+48a51,53
+> #             ${MLCHACO}/chaco_check_graph.c \
+> #             ${MLCHACO}/check_input.c \
+> #                ${MLCHACO}/smalloc.c \
+55a61
+>               ${CHACO}/input/check_input.c \
+61a68
+>               ${CHACO}/graph/check_graph.c \
+91a99  [compared CHFILES with Chaco Makefile CHFILES]
+>               ${CHACO}/klvspiff/flow.c \
+97a106  [compared CHFILES with Chaco Makefile CHFILES]
+>               ${CHACO}/klvspiff/flatten.c \
+100c109,110  [compared CHFILES with Chaco Makefile CHFILES]
+<               ${CHACO}/coarsen/makecgraph.c \
+---
+>               ${CHACO}/coarsen/makefgraph.c \
+>               ${CHACO}/coarsen/makeccoords.c \
+102d111  [compared CHFILES with Chaco Makefile CHFILES]
+<               ${CHACO}/coarsen/countcedges.c \
+108a118  [compared CHFILES with Chaco Makefile CHFILES]
+>               ${CHACO}/coarsen/maxmatch5.c \
+234a245
+>               ${CHACO}/util/smalloc.c \
+245a257,258
+> #             ${CHACO}/main/user_params.c \
+> #             ${CHACO}/util/bail.c \
+254a268,271
+> #mlchaco:     ${MLFILES.c} chaco.a Makefile
+> #             mex -V4 -output mlchaco ${MLFILES.c} chaco.a -I${CHACO}/main
+> #             mv mlchaco.mex* ${DEST_DIR}
+> 
+256c273
+<               mex -V4 -output mlchaco ${MLFILES.c} chaco.a -I${CHACO}/main
+---
+>               mex -output mlchaco -largeArrayDims -DMATLAB ${MLFILES.c}
+>               chaco.a -I${CHACO}/main
+
+5/25/10:
+
+- reorganized chaco.m and mlchaco.c drivers into Chaco.c matlab-layer (independent of chaco) and Chacox.c x-layer (independent of matlab).
+
+5/26/10:
+
+- added mexchaco target to Makefile (and related changes).
+
+5/27/10
+
+- added define for exit(status) to ${CHACO}/main/defs.h so that local bail.c is
+  unnecessary.
+
+6/15/10:
+
+- separated chaco x-layer from meshpart build.
+

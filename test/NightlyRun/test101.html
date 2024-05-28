@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head><title>ISSM Web APP &mdash; Beta</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<!-- Includes {{{-->
+<script type="text/javascript" src="../../../ext/jquery-1.11.3/jquery-1-11-3.min.js"></script>
+<script type="text/javascript" src="../../../ext/gl-matrix-2.3.2/gl-matrix-min.js"></script>
+<script type="text/javascript" src="../../../ext/litegl-0.99.0/litegl.min.js"></script>
+<script type="text/javascript" src="../../../ext/hammer-2.0.8/hammer.min.js"></script>
+<script type="text/javascript" src="../../../js/vesl.js"></script>
+<script type="text/javascript" src="../../../js/helpers.js"></script>
+<script type="text/javascript" src="../../bin/issm-bin.js"> </script>
+<script type="text/javascript" src="../../bin/issm-prebin.js"> </script>
+<script type="text/javascript" src="../../bin/IssmModule.js"></script>
+<script type="text/javascript" src="../Exp/Square.js"></script>
+<script type="text/javascript" src="../Par/SquareShelfConstrained.js"></script>
+<script type="text/javascript" src="../Data/SquareShelfConstrained.data.js"></script>
+<!-- Includes }}}-->
+</head>
+<script type="text/javascript" async>
+function run() {
+
+	console.log('creating model'); 
+	var md = new model();
+
+	console.log('meshing');
+	triangle(md,square[0],50000); 
+	
+	console.log('parameterization');
+	setmask(md,'all','');
+	parameterize(md);
+	setflowequation(md,'SSA','all');
+	md.verbose.solution=1;  md.verbose.convergence=0;
+
+	console.log('solve');
+	md=solve(md,'Stressbalance','checkconsistency','no');
+	
+	console.log(md.results[0]['Vel']);
+	
+	plotmodel(md,
+		'canvasid#all', 'issm-sim-canvas',
+		'colorbarid', 'issm-sim-canvas-colorbar',
+		'colorbar','on',
+		'caxis', [ArrayMin(md.results[0]['Vel']), ArrayMax(md.results[0]['Vel'])],
+		'data',md.results[0]['Vel'],
+		'data','mesh');
+}
+</script>
+<body onload="run()"> 
+
+<canvas id="issm-sim-canvas"></canvas>
+<canvas id="issm-sim-canvas-colorbar"></canvas>
+<canvas id="issm-sim-canvas-overlay"></canvas>
+</body> 
+</html>

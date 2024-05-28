@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS "-L/nasa/intel/mkl/10.0.011/lib/em64t/ -lmkl -lmkl_lapack -liomp5 -lpthread")
+> set(LAPACK_LIBS "-L/nasa/intel/mkl/10.0.011/lib/em64t/ -lmkl -lmkl_lapack -liomp5 -lpthread")

@@ -1,0 +1,20 @@
+%Ok, start defining model parameters here
+
+disp('      creating thickness');
+md.geometry.surface=-md.mesh.x*tan(0.5*pi/180.);
+md.geometry.base=md.geometry.surface-1000.+500.*sin(md.mesh.x*2.*pi/max(md.mesh.x)).*sin(md.mesh.y*2.*pi/max(md.mesh.x));
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+
+disp('      creating drag');
+md.friction.coefficient=200.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=6.8067*10^7*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+disp('      boundary conditions for stressbalance model');
+%Create node on boundary first (because we cannot use mesh)
+md=SetIceSheetBC(md);

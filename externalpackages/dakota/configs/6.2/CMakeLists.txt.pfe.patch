@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS "-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core")
+> set(LAPACK_LIBS "-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core")

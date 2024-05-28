@@ -1,0 +1,16 @@
+4,8c4,8
+< set(DAKOTA_HAVE_MPI TRUE CACHE BOOL "Enable MPI in DAKOTA?")
+< set(ENABLE_DAKOTA_DOCS TRUE CACHE BOOL "Enable DAKOTA documentation build")
+< set(ENABLE_SPEC_MAINT TRUE CACHE BOOL 
+<   "Enable DAKOTA specification maintenance mode?")
+< set(PECOS_ENABLE_TESTS TRUE CACHE BOOL "Enable Pecos-specific tests?")
+---
+> #set(DAKOTA_HAVE_MPI TRUE CACHE BOOL "Enable MPI in DAKOTA?")
+> #set(ENABLE_DAKOTA_DOCS TRUE CACHE BOOL "Enable DAKOTA documentation build")
+> #set(ENABLE_SPEC_MAINT TRUE CACHE BOOL 
+> #  "Enable DAKOTA specification maintenance mode?")
+> #set(PECOS_ENABLE_TESTS TRUE CACHE BOOL "Enable Pecos-specific tests?")
+14c14
+< #set(HAVE_X_GRAPHICS OFF CACHE BOOL "Disable dependency on X libraries" FORCE)
+---
+> set(HAVE_X_GRAPHICS OFF CACHE BOOL "Disable dependency on X libraries" FORCE)

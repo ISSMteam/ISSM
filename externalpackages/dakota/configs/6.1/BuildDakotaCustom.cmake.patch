@@ -1,0 +1,26 @@
+64,65c64,65
+< #set( DAKOTA_HAVE_MPI ON
+< #     CACHE BOOL "Build with MPI enabled" FORCE)
+---
+> set( DAKOTA_HAVE_MPI OFF
+>      CACHE BOOL "Build with MPI disabled" FORCE)
+73,77c73,77
+< #set(BOOST_ROOT
+< #    "path/to/custom/Boost/install/directory"
+< #    CACHE PATH "Use non-standard Boost install" FORCE)
+< #set( Boost_NO_SYSTEM_PATHS TRUE
+< #     CACHE BOOL "Supress search paths other than BOOST_ROOT" FORCE)
+---
+> set(BOOST_ROOT
+>     "$ENV{ISSM_DIR}/externalpackages/boost/install"
+>     CACHE PATH "Use non-standard Boost install" FORCE)
+> set( Boost_NO_SYSTEM_PATHS TRUE
+>      CACHE BOOL "Supress search paths other than BOOST_ROOT" FORCE)
+91,93c91,93
+< #set( CMAKE_INSTALL_PREFIX
+< #     "/path/to/Dakota/installation"
+< #     CACHE PATH "Path to Dakota installation" )
+---
+> set( CMAKE_INSTALL_PREFIX
+>      "$ENV{ISSM_DIR}/externalpackages/dakota/install"
+>      CACHE PATH "Path to Dakota installation" )

@@ -1,0 +1,25 @@
+--- src/src/dakota_data_io.hpp	2015-05-08 06:16:00.000000000 -0700
++++ dakota_data_io.hpp	2024-05-10 13:34:37.815553408 -0700
+@@ -136,6 +136,22 @@
+ 
+ namespace Dakota {
+ 
++// Forward declarations
++
++/// global std::istream extraction operator for std::vector
++template <typename T>
++inline std::istream& operator>>(std::istream& s, std::vector<T>& data);
++
++
++/// global std::ostream insertion operator for std::vector
++template <typename T>
++inline std::ostream& operator<<(std::ostream& s, const std::vector<T>& data);
++
++
++/// global std::ostream insertion operator for std::list
++template <typename T>
++inline std::ostream& operator<<(std::ostream& s, const std::list<T>& data);
++
+ // -----------------------
+ // templated I/O functions
+ // -----------------------

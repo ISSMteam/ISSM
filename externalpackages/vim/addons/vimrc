@@ -1,0 +1,245 @@
+
+" General setup{{{
+" ----------------------------------------------------------------------
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+" UNIX special
+set shell=/bin/bash  
+" jingle bells, jingle bells, hingle bells, ....
+set errorbells
+" keep 100 lines of command line history
+set history=100
+" show the cursor position all the time
+set ruler
+" display incomplete commands
+set showcmd	
+" display curent mode
+set showmode
+" encoding
+set encoding=utf-8
+"----------------------------------------------------------------------}}}
+" Text-Formatting, Identing, Tabbing{{{
+" ----------------------------------------------------------------------
+" allow backspacing (to delete) over everything in insert mode
+set backspace=indent,eol,start
+" number of spaces the tab stands for
+set tabstop=3
+" number of spaces the softtab (>>) stands for
+set softtabstop=3 
+" number of spaces used for (auto)indenting
+set shiftwidth=3
+" a <tab> in an indent inserts 'shiftwidth' spaces (not tabstop)
+set smarttab
+" always set autoindenting on
+set autoindent
+"smartindenting useful (use '=')
+set smartindent
+
+"base folds on markers
+set foldmethod=marker
+set foldtext=IssmFoldText()
+" -----------------------------------------------------------}}}
+" Backups {{{
+" -----------------------------------------------------------
+" updatecount   number of characters typed to cause a swap file update (0->disable)
+set uc=0
+" make no backups
+set nobackup
+" -----------------------------------------------------------}}}
+" Searching, Substituting {{{
+" -----------------------------------------------------------
+" select case-insenitive search
+"set ignorecase 
+" No ignorecase if Uppercase chars in search
+"set scs
+" change the way backslashes are used in search patterns (. instead of \.)
+set magic
+" begin search at top when EOF reached
+set wrapscan
+" jump to matches during entering the pattern
+set sm
+" do incremental searching 
+set incsearch   
+"highlight all matches
+set hlsearch
+" Do not toggle 'g' and 'c' with :s///gc
+set noedcompatible
+
+" use 'g'-flag when substituting (subst. all matches in that line, not only
+" first) to turn off, use g
+set gdefault
+" how command line completion works (use tab to complete the file name)
+set wildmode=list:longest,list:full
+" ignore some files for filename completion
+set wildignore=*.o,*.r,*.so,*.sl,*.tar,*.tgz
+" some filetypes got lower priority
+set su=.h,.bak,~,.o,.info,.swp,.obj
+" ----------------------------------------------------------------------}}}
+" Colors and theme {{{
+" ----------------------------------------------------------------------
+" use 256 colors
+"set t_Co=8
+set t_Co=256
+" backgrounb color
+"set background=light
+"set background=dark
+" colorscheme
+"colorscheme issm_white
+colorscheme issm_black
+" ----------------------------------------------------------------------}}}
+
+" Mappings{{{
+" ----------------------------------------------------------------------
+"stop highlightings when spce is pressed
+nnoremap <silent> <Space> :silent noh<Bar>echo<CR> 
+
+"increment number
+nnoremap <C-i> <C-a>
+
+"line numbering in flip-flop
+map num :set number!<CR>
+
+" save & "make" the current file in all modes
+map <F8> :w <Enter> :make <Enter><Enter>
+map! <F8>  <ESC> :w <Enter> :make <Enter><Enter>
+" make update: nice for longer documents
+map <F7> :w <Enter> :make update <Enter><Enter>
+map! <F7> <ESC> :w <Enter> :make update <Enter><Enter>
+
+
+"use paste P: re-indent and re-format at the same time
+":nnoremap <Esc>P P'[v']=
+:nnoremap <Esc>p p'[v']=
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+" ----------------------------------------------------------------------}}}
+" Autocommands {{{
+" ----------------------------------------------------------------------
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Enable file type detection.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+  "filetype plugin on
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=0
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif |
+	 \ for fnum in range(1,foldlevel('.')) |
+	 \   exe ":foldopen" |
+	 \ endfor
+
+  "scripts must be executable
+  autocmd BufWritePost   *.sh         !chmod +x %
+
+endif " has("autocmd")
+" ----------------------------------------------------------------------}}}
+" Matlab special {{{
+" ----------------------------------------------------------------------
+"" associate *.par with matlab filetype
+au BufRead,BufNewFile *.par setfiletype matlab
+au BufRead,BufNewFile *.tpl setfiletype html
+" ----------------------------------------------------------------------}}}
+" C special{{{
+" ----------------------------------------------------------------------
+"indenting for C-code
+set cindent
+" and here some nice options for cindenting
+set cinoptions={.5s,+.5s,t0,n-2,p2s,(03s,=.5s,>1s,=1s,:1s 
+" hash sign identation
+set cinkeys-=0#
+" ----------------------------------------------------------------------}}}
+" TEX special{{{
+" ----------------------------------------------------------------------
+au BufRead,BufNewFile *.tex,*.html,*.txt set textwidth=100     "100 caracters max (See gq command)
+au BufRead,BufNewFile *.tex,*.html,*.txt set formatoptions=cqt "automatic wraping
+au BufRead,BufNewFile *.tex,*.html,*.txt set wrapmargin=0      "no margin
+au BufRead,BufNewFile *.cls setfiletype tex
+
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
+" 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
+" The following changes the default filetype back to 'tex':
+let g:tex_flavor='latex'
+" ----------------------------------------------------------------------}}}
+" FORTRAN special{{{
+" ----------------------------------------------------------------------
+au BufRead,BufNewFile *.src setfiletype fortran
+" ----------------------------------------------------------------------}}}
+" InsertTabWrapper{{{
+" ----------------------------------------------------------------------
+function! InsertTabWrapper(direction) 
+let col = col('.') - 1 
+if !col || getline('.')[col - 1] !~ '\k' 
+   return "\<tab>" 
+elseif "backward" == a:direction 
+   return "\<c-p>" 
+else 
+   return "\<c-n>" 
+endif 
+endfunction 
+
+inoremap <tab> <c-r>=InsertTabWrapper ("forward")<cr>
+inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
+
+"source ~/.exrc 
+set wildmenu
+
+"Change to directory of current file automatically
+autocmd BufEnter * lcd %:p:h
+" ----------------------------------------------------------------------}}}
+
+" Abbreviations {{{
+" ----------------------------------------------------------------------
+func Eatchar(pat)
+	let c = nr2char(getchar())
+	return (c =~ a:pat) ? '' : c
+endfunc
+au BufRead,BufNewFile *.html   iabbr <silent> H1 <h1></h1><Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.html   iabbr <silent> H2 <h2></h2><Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.html   iabbr <silent> H3 <h3></h3><Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.html   iabbr <silent> CO <code></code><Left><Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.html   iabbr <silent> PP <p></p><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.jl     iabbr <silent> p1  println("")<Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.m      iabbr <silent> p1  disp('');<Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.m      iab <expr> p0  "disp('-------------- file: ".expand('%')." line: ".line(".")."');"
+au BufRead,BufNewFile *.c*,*.h iabbr <silent> p1  printf("\n");<Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.c*,*.h iabbr <silent> ER  _error_("");<Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.py     iabbr <silent> ER  raise NameError('')<Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.m      iabbr <silent> ER  error('');<Left><Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.jl     iabbr <silent> ER  error("")<Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.c*     ab VV VecView(ug,PETSC_VIEWER_STDOUT_WORLD);
+au BufRead,BufNewFile *.c*,*.h ab AS _assert_();<Left><Left><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *jl      iab <expr> p0  "print(\"-------------- file: ".expand('%')." line: $(@__LINE__)\\n\")"
+au BufRead,BufNewFile *.c*,*.h iab <expr> p0  "printf(\"-------------- file: ".expand('%')." line: %i\\n\",__LINE__);"
+au BufRead,BufNewFile *.c*,*.h iab <expr> pp0 "PetscSynchronizedPrintf(MPI_COMM_WORLD,\"-------------- file: ".expand('%')." line: %i\\n\",__LINE__);\nPetscSynchronizedFlush(MPI_COMM_WORLD);"
+"tex
+au BufRead,BufNewFile *.tex iab EQ 
+			\\begin{equation}
+			\<CR>\end{equation}<up><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.tex iab IT 
+			\\begin{itemize}
+			\<CR>\item 
+			\<CR>\end{itemize}<up><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.tex iab EN 
+			\\begin{enumerate}
+			\<CR>\item 
+			\<CR>\end{enumerate}<up><C-R>=Eatchar('\s')<CR>
+au BufRead,BufNewFile *.tex ab (()) \left( \right)
+"}}}
+" Skeletons {{{
+au BufNewFile letter.tex   0r ~/.vim/xtr/skeleton/letter.tex
+"}}}
+" Copy and Paste{{{
+"vmap <C-c> y:call system("pbcopy", getreg("\""))<CR>
+"nmap <C-v> :call setreg("\"",system("pbpaste"))<CR>p
+"}}}

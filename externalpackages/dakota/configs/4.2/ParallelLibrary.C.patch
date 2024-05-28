@@ -1,0 +1,34 @@
+134a135
+>   initialized=0; //we run serially all the time!
+165a167,197
+> /** This constructor is provided for the Issm software, to run serial 
+>  * Dakota in a parallel MPI ring: */
+> ParallelLibrary::ParallelLibrary(char* serial_mode): worldRank(0), worldSize(1),
+>   mpirunFlag(false), ownMPIFlag(false), dryRunFlag(false), dummyFlag(false),
+>   stdOutputFlag(false), stdErrorFlag(false), startClock(0),
+>   stdOutputFilename(NULL), stdErrorFilename(NULL), readRestartFilename(NULL),
+>   writeRestartFilename(NULL), stopRestartEvals(0),
+>   currPLIter(parallelLevels.end()), currPCIter(parallelConfigurations.end())
+> {
+>   startClock   = clock();
+> #ifdef DAKOTA_UTILIB
+>   utilib::exception_mngr::set_mode(utilib::exception_mngr::Abort);
+>   startCPUTime = CPUSeconds();       // see utilib/src/sys/seconds.cpp
+>   startWCTime  = WallClockSeconds(); // see utilib/src/sys/seconds.cpp
+> #endif // DAKOTA_UTILIB
+> 
+>   // do not initialize MPI.  Get worldRank/worldSize if available
+>   ParallelLevel pl;
+> #ifdef HAVE_MPI // mpi available, we still don't want to run in parallel for  Dakota!
+>   pl.serverIntraComm = MPI_COMM_NULL;
+>   Cout << "Running Dakota in serial mode on CPU 0, inside an MPI ring.";
+> #else // mpi not available
+>   pl.serverIntraComm = MPI_COMM_NULL;
+>   Cout << "Running Dakota in serial mode.\n";
+> #endif // HAVE_MPI
+> 
+>   parallelLevels.insert(pl);
+>   currPLIter = parallelLevels.begin();
+>   increment_parallel_configuration();
+> }
+> 

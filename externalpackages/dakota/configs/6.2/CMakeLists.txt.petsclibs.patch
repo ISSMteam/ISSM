@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS "-L$ENV{ISSM_DIR}/externalpackages/petsc/install/lib -lfblas -L/usr/lib/gcc/x86_64-linux-gnu/4.9 -lgfortran")
+> set(LAPACK_LIBS "-L$ENV{ISSM_DIR}/externalpackages/petsc/install/lib -lflapack -L/usr/lib/gcc/x86_64-linux-gnu/4.9 -lgfortran")

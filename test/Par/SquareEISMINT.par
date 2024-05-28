@@ -1,0 +1,45 @@
+%Ok, start defining model parameters here
+
+disp('      creating thickness');
+ymin=min(md.mesh.y);
+ymax=max(md.mesh.y);
+md.geometry.thickness=500.*ones(md.mesh.numberofvertices,1);
+md.geometry.base=-md.materials.rho_ice/md.materials.rho_water*md.geometry.thickness;
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+
+disp('      creating drag');
+md.friction.coefficient=200.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('      creating initial values');
+md.initialization.temperature=(273.-20.)*ones(md.mesh.numberofvertices,1);
+md.initialization.vx=zeros(md.mesh.numberofvertices,1);
+md.initialization.vy=zeros(md.mesh.numberofvertices,1);
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.vel=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=1.7687*10^8*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+disp('      creating surface mass balance');
+md.smb.mass_balance=0.2*ones(md.mesh.numberofvertices,1); %0m/a
+md.basalforcings.floatingice_melting_rate=0.*ones(md.mesh.numberofvertices,1); %0m/a
+md.basalforcings.groundedice_melting_rate=0.*ones(md.mesh.numberofvertices,1); %0m/a
+
+disp('      boundary conditions');
+md=SetMarineIceSheetBC(md,'../Exp/SquareFrontEISMINT.exp');
+
+%Evolution of the ice shelf
+pos=find(md.mesh.y==200000.); %nodes on the upper boundary condition
+md.balancethickness.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.balancethickness.spcthickness(pos)=500.;
+md.masstransport.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.masstransport.spcthickness(pos)=500.;
+md.masstransport.stabilization=0; %Better result with no artificial diffusivity
+md.thermal.stabilization=0;
+md.timestepping.final_time=500.;
+md.timestepping.time_step=1;

@@ -1,0 +1,14 @@
+4,7c4,7
+< set(DAKOTA_HAVE_MPI TRUE CACHE BOOL "Enable MPI in DAKOTA?")
+< set(ENABLE_DAKOTA_DOCS TRUE CACHE BOOL "Enable DAKOTA documentation build")
+< set(ENABLE_SPEC_MAINT TRUE CACHE BOOL 
+<   "Enable DAKOTA specification maintenance mode?")
+---
+> #set(DAKOTA_HAVE_MPI TRUE CACHE BOOL "Enable MPI in DAKOTA?")
+> #set(ENABLE_DAKOTA_DOCS TRUE CACHE BOOL "Enable DAKOTA documentation build")
+> #set(ENABLE_SPEC_MAINT TRUE CACHE BOOL 
+> #  "Enable DAKOTA specification maintenance mode?")
+13c13
+< #set(HAVE_X_GRAPHICS OFF CACHE BOOL "Disable dependency on X libraries" FORCE)
+---
+> set(HAVE_X_GRAPHICS OFF CACHE BOOL "Disable dependency on X libraries" FORCE)

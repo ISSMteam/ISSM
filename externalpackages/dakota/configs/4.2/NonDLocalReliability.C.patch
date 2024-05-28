@@ -1,0 +1,7 @@
+2276a2277
+> 	  // add sensitivity output to importance factors (jes, 8/06/10)
+2280c2281,2282
+< 	    << impFactor[i][j] << '\n';
+---
+> 	    << impFactor[i][j] << "  Sensitivity = " << setw(write_precision+7)
+> 	    << fnGradsMeanX(i, j) << '\n';

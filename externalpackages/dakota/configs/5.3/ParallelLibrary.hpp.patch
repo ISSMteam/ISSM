@@ -1,0 +1,3 @@
+358a359,360
+>   /// library mode constructor, serial mode (for the ISSM software)
+>   ParallelLibrary(char* serial_mode);

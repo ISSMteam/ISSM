@@ -1,0 +1,71 @@
+MATLAB_PATH="/usr/local/MATLAB/R2015a"
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=$ISSM_DIR \
+	--disable-static \
+	--without-kriging \
+	--without-kml \
+	--without-Sealevelchange \
+	--with-gsl-dir=$ISSM_DIR/externalpackages/gsl/install \
+	--with-adolc-dir=$ISSM_DIR/externalpackages/adolc/install \
+	--with-ampi-dir=$ISSM_DIR/externalpackages/adjoinablempi/install \
+	--with-matlab-dir=$MATLAB_PATH \
+	--with-metis-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-mpi-include=$ISSM_DIR/externalpackages/mpich/install/include \
+	--with-mpi-libflags="-L$ISSM_DIR/externalpackages/mpich/install/lib -lmpi" \
+	--with-mumps-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-blas-lapack-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-numthreads=4 \
+	--with-scalapack-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-triangle-dir=$ISSM_DIR/externalpackages/triangle/install \
+	--with-fortran-lib="-L/usr/lib/gcc/x86_64-linux-gnu/4.9 -lgfortran" \
+	--enable-development
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools		install-linux.sh
+	cmake			install.sh
+	mpich			install-3.2-linux64.sh
+	petsc			install-3.7-linux64.sh
+	gsl				install.sh
+	triangle		install-linux.sh
+	adjoinablempi	install.sh
+	adolc			install-with_ampi.sh
+	shell2junit		install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=1
+PYTHON_TEST=0
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation
+#
+NUMCPUS_INSTALL=2
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=1
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information
+#
+MATLAB_NROPTIONS="'benchmark','adolc','id',[3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009, 3010, 3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3119]"
+PYTHON_NROPTIONS=""

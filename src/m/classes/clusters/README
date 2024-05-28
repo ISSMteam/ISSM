@@ -1,0 +1,12 @@
+This directory holds classes corresponding to every cluster 
+that can be used. 
+
+Why classes? 
+Because handling the specificity of every cluster is hard in a general 
+code. Having classes with generic methods, such as: BuildQueueScript, 
+LaunchQueueJob,  and internal data corresponding to every cluster's specificity 
+is much more manageable and powerful.
+
+How to add your cluster? 
+use an existing cluster script, such as pfe.m, and rename it to your cluster name.
+update the methods.

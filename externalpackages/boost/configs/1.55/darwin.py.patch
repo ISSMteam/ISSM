@@ -1,0 +1,4 @@
+40c40
+< toolset.flags ('darwin.compile', 'OPTIONS', None, ['-Wno-long-double', '-no-cpp-precomp'])
+---
+> toolset.flags ('darwin.compile', 'OPTIONS', None, ['-Wno-long-double'])

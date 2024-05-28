@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS $ENV{BLAS_LIBS})
+> set(LAPACK_LIBS $ENV{LAPACK_LIBS})

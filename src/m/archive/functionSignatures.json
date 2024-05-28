@@ -1,0 +1,10 @@
+{
+	"archread":
+	  {
+		"inputs":
+		  [
+			 {"name":"filename1", "kind":"required",   "type":"filepath=*.arch"},
+			 {"name":"varargin", "kind":"optional", "multiplicity":"append"}
+		]
+	  }
+}

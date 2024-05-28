@@ -1,0 +1,5 @@
+109a110,113
+> 
+>   //close the input file
+>   fclose(nidrin);
+> 

@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS "-L/opt/intel/composer_xe_2013.5.192/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -L/usr/lib64/ -lpthread -lm")
+> set(LAPACK_LIBS "-L/opt/intel/composer_xe_2013.5.192/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -L/usr/lib64/ -lpthread -lm")

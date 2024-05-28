@@ -1,0 +1,95 @@
+%Start defining model parameters here
+x = md.mesh.x;
+y = md.mesh.y;
+xmin = min(x);
+xmax = max(x);
+ymin = min(y);
+ymax = max(y);
+Lx = (xmax-xmin);
+Ly = (ymax-ymin);
+xm = (xmin+xmax)/2.;
+ym = (ymin+ymax)/2.;
+
+%Geometry: U-shaped valley in y direction
+thk_center = 1000.;
+thk_margin = 0.5*thk_center;
+bmax = 0.;
+bmin = -thk_center*md.materials.rho_ice/md.materials.rho_water;
+
+alpha = 2./3.;
+slope = 0.9*(bmin-bmax)*(x-xmin)/(Lx*alpha) + 0.1*(bmin-bmax)*(y-ymin)/(Ly) + bmax;
+md.geometry.surface = (thk_center+bmax) + slope ;
+md.geometry.base = bmax + slope + 4./Ly^2*(thk_center-thk_margin)*(y-ym).^2;
+md.geometry.thickness = md.geometry.surface - md.geometry.base;
+md.geometry.bed = md.geometry.base;
+
+%Mask
+md.mask.ice_levelset = x - alpha*Lx;
+md.mask.ocean_levelset = ones(md.mesh.numberofvertices,1);
+
+%Initial velocity 
+md.initialization.vx = zeros(md.mesh.numberofvertices,1);
+md.initialization.vy = zeros(md.mesh.numberofvertices,1);
+md.initialization.vz = zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure = zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature = (273.15-5.)*ones(md.mesh.numberofvertices,1);
+md.initialization.waterfraction = zeros(md.mesh.numberofvertices,1);
+md.initialization.watercolumn = zeros(md.mesh.numberofvertices,1);
+md.materials.rheology_B = paterson(md.initialization.temperature);
+md.materials.rheology_n = 3.*ones(md.mesh.numberofelements,1);
+
+%Thermal
+md.thermal.isenthalpy = 0;
+md.thermal.spctemperature = NaN(md.mesh.numberofvertices,1);
+
+%Groundingline
+md.groundingline.migration = 'SubelementMigration';
+
+%Surface mass balance and basal melting
+md.smb.mass_balance = 0.3*ones(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate = md.smb.mass_balance;
+md.basalforcings.groundedice_melting_rate = md.smb.mass_balance;
+
+%Friction
+md.friction.coefficient = 20.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.)) = 0.;
+md.friction.p = ones(md.mesh.numberofelements,1);
+md.friction.q = ones(md.mesh.numberofelements,1);
+
+%Transient
+md.transient.isstressbalance = 1;
+md.transient.ismovingfront = 1;
+md.transient.ismasstransport = 0;
+md.transient.isthermal = 0;
+md.transient.isgroundingline = 1;
+
+%Stressbalance
+md.stressbalance.maxiter = 100;
+md.stressbalance.restol = 0.05;
+md.stressbalance.reltol = 0.05;
+md.stressbalance.abstol = NaN;
+
+%Masstransport;
+md.calving.calvingrate = 0.*ones(md.mesh.numberofvertices,1);
+md.frontalforcings.meltingrate = 0.*ones(md.mesh.numberofvertices,1);
+md.levelset.spclevelset=NaN(md.mesh.numberofvertices,1);
+md.masstransport.stabilization = 1.;
+
+%Numerical parameters
+md.thermal.stabilization = 1.;
+md.settings.waitonlock = 30;
+md.steadystate.reltol = 0.05;
+md.timestepping.time_step = 1.;
+md.timestepping.final_time = 3.;
+
+%Verbose
+md.verbose = verbose(0);
+
+%Deal with boundary conditions:
+md = SetIceShelfBC(md);
+
+%Change name so that no test have the same name;
+A = dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

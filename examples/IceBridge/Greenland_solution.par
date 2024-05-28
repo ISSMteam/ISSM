@@ -1,0 +1,103 @@
+%Name and Coordinate system
+md.miscellaneous.name='SeaRISEgreenland';
+md.mesh.epsg=3413;
+
+disp('   Loading SeaRISE data from NetCDF');
+ncdata='../Data/Greenland_5km_dev1.2.nc';
+x1    = ncread(ncdata,'x1');
+y1    = ncread(ncdata,'y1');
+usrf  = ncread(ncdata,'usrf')';
+topg  = ncread(ncdata,'topg')';
+velx  = ncread(ncdata,'surfvelx')';
+vely  = ncread(ncdata,'surfvely')';
+temp  = ncread(ncdata,'airtemp2m')';
+smb   = ncread(ncdata,'smb')';
+gflux = ncread(ncdata,'bheatflx')';
+
+disp('   Interpolating surface and bedrock');
+md.geometry.base     = InterpFromGridToMesh(x1,y1,topg,md.mesh.x,md.mesh.y,0);
+md.geometry.surface = InterpFromGridToMesh(x1,y1,usrf,md.mesh.x,md.mesh.y,0);
+
+disp('   Constructing thickness');
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+
+%Set min thickness to 1 meter
+pos0=find(md.geometry.thickness<=0);
+md.geometry.thickness(pos0)=1;
+md.geometry.surface=md.geometry.thickness+md.geometry.base;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Reading IceBridge data for Jakobshavn
+disp('      reading IceBridge Jakobshavn bedrock');
+fid  = fopen('../Data/Jakobshavn_2008_2011_Composite_XYZGrid.txt');
+titles = fgets(fid); 
+data = fscanf(fid,'%g,%g,%g,%g,%g',[5 266400])';
+fclose(fid);
+
+[xi,yi]= ll2xy(md.mesh.lat,md.mesh.long,+1,45,70);
+bed  = flipud(reshape(data(:,5),[360 740])); bed(find(bed==-9999))=NaN;
+surf  = flipud(reshape(data(:,4),[360 740])); surf(find(surf==-9999))=NaN;
+bedy = flipud(reshape(data(:,1),[360 740]));
+bedx = flipud(reshape(data(:,2),[360 740]));
+
+%Insert Icebridge bed and recalculate thickness
+bed_jks=InterpFromGridToMesh(bedx(1,:)',bedy(:,1),bed,xi,yi,NaN);
+surf_jks=InterpFromGridToMesh(bedx(1,:)',bedy(:,1),surf,xi,yi,NaN);
+in=ContourToMesh(md.mesh.elements,md.mesh.x,md.mesh.y,...
+	   'Jak_grounded.exp','node',1);
+bed_jks(~in)=NaN;
+surf_jks(~in)=NaN;
+pos=find(~isnan(bed_jks));
+md.geometry.base(pos)=bed_jks(pos);
+md.geometry.surface(pos)=surf_jks(pos);
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+disp('   Interpolating velocities ');
+md.inversion.vx_obs  = InterpFromGridToMesh(x1,y1,velx,md.mesh.x,md.mesh.y,0);
+md.inversion.vy_obs  = InterpFromGridToMesh(x1,y1,vely,md.mesh.x,md.mesh.y,0);
+md.inversion.vel_obs = sqrt(md.inversion.vx_obs.^2+md.inversion.vy_obs.^2);
+md.initialization.vx = md.inversion.vx_obs;
+md.initialization.vy = md.inversion.vy_obs;
+md.initialization.vz = zeros(md.mesh.numberofvertices,1);
+md.initialization.vel= md.inversion.vel_obs;
+
+disp('   Interpolating temperatures');
+md.initialization.temperature=InterpFromGridToMesh(x1,y1,temp,md.mesh.x,md.mesh.y,0)+273.15;
+
+disp('   Interpolating surface mass balance');
+md.smb.mass_balance=InterpFromGridToMesh(x1,y1,smb,md.mesh.x,md.mesh.y,0);
+md.smb.mass_balance=md.smb.mass_balance*md.materials.rho_water/md.materials.rho_ice;
+
+disp('   Construct basal friction parameters');
+md.friction.coefficient=30*ones(md.mesh.numberofvertices,1);
+pos=find(md.mask.ocean_levelset<0);
+md.friction.coefficient(pos)=0; %no friction applied on floating ice
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('   Construct ice rheological properties');
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.friction.q=ones(md.mesh.numberofelements,1);
+md.friction.p=ones(md.mesh.numberofelements,1);
+
+disp('   Set other boundary conditions');
+md.mask.ice_levelset(md.mesh.vertexonboundary==1)=0;
+md.basalforcings.groundedice_melting_rate = zeros(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate = zeros(md.mesh.numberofvertices,1);
+md.thermal.spctemperature     = [md.initialization.temperature;1]; %impose observed temperature on surface
+md.masstransport.spcthickness    = NaN*ones(md.mesh.numberofvertices,1);
+
+disp('   Set geothermal heat flux');
+md.basalforcings.geothermalflux=InterpFromGridToMesh(x1,y1,gflux,md.mesh.x,md.mesh.y,0);
+
+disp('   Set Pressure');
+md.initialization.pressure=md.materials.rho_ice*md.constants.g*md.geometry.thickness;
+
+disp('   Single point constraints');
+%Initialize single point constraint arrays
+md.stressbalance.referential=NaN*ones(md.mesh.numberofvertices,6);
+md.stressbalance.spcvx = NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvy = NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvz = NaN*ones(md.mesh.numberofvertices,1);

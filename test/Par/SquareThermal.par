@@ -1,0 +1,46 @@
+%Ok, start defining model parameters here
+
+md.timestepping.time_step=0;
+md.groundingline.migration='None';
+
+disp('      creating thickness');
+h=1000.;
+md.geometry.thickness=h*ones(md.mesh.numberofvertices,1);
+md.geometry.base=-1000.*ones(md.mesh.numberofvertices,1);
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+
+disp('      creating velocities');
+md.initialization.vx=zeros(md.mesh.numberofvertices,1);
+md.initialization.vy=zeros(md.mesh.numberofvertices,1);
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+
+disp('      creating drag');
+md.friction.coefficient=200.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('      creating temperatures');
+md.initialization.temperature=(273.-20.)*ones(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+md.initialization.waterfraction=zeros(md.mesh.numberofvertices,1);
+md.initialization.watercolumn=zeros(md.mesh.numberofvertices,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+disp('      creating surface mass balance');
+md.smb.mass_balance=ones(md.mesh.numberofvertices,1)/md.constants.yts; %1m/a
+md.basalforcings.groundedice_melting_rate=0.*ones(md.mesh.numberofvertices,1)/md.constants.yts; %1m/a
+md.basalforcings.floatingice_melting_rate=0.*ones(md.mesh.numberofvertices,1)/md.constants.yts; %1m/a
+
+%Deal with boundary conditions:
+
+disp('      boundary conditions for stressbalance model');
+md=SetMarineIceSheetBC(md,'../Exp/SquareFront.exp');
+
+disp('      boundary conditions for thermal model');
+md.thermal.spctemperature(:)=md.initialization.temperature;
+md.basalforcings.geothermalflux=zeros(md.mesh.numberofvertices,1); 
+md.basalforcings.geothermalflux(find(md.mask.ocean_levelset>0.))=1.*10^-3; %1 mW/m^2

@@ -1,0 +1,74 @@
+--- ./install/share/aclocal/libtool.m4	2015-09-25 15:51:40.870862200 -0700
++++ /home/daeden/tmp/libtool.m4	2015-09-25 15:42:15.385935100 -0700
+@@ -2382,7 +2382,7 @@
+     # Native MSVC
+     libname_spec='$name'
+     soname_spec='${libname}`echo ${release} | $SED -e 's/[[.]]/-/g'`${versuffix}${shared_ext}'
+-    library_names_spec='${libname}.dll.lib'
++    library_names_spec='${libname}${shrext_cmds}'
+ 
+     case $build_os in
+     mingw*)
+@@ -3142,7 +3142,7 @@
+ case $host_os in
+   cygwin* | mingw* | pw32* | cegcc*)
+     if test "$GCC" != yes; then
+-      reload_cmds=false
++      reload_cmds='lib /OUT:$output$reload_objs'
+     fi
+     ;;
+   darwin*)
+@@ -4752,7 +4752,7 @@
+       _LT_TAGVAR(exclude_expsyms, $1)=['[_]+GLOBAL_OFFSET_TABLE_|[_]+GLOBAL__[FID]_.*|[_]+head_[A-Za-z0-9_]+_dll|[A-Za-z0-9_]+_dll_iname']
+ 
+       if $LD --help 2>&1 | $GREP 'auto-import' > /dev/null; then
+-        _LT_TAGVAR(archive_cmds, $1)='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
++        _LT_TAGVAR(archive_cmds, $1)='$CC /LD $libobjs $deplibs $compiler_flags /OUT:$output_objdir/$soname '
+ 	# If the export-symbols file already is a .def file (1st line
+ 	# is EXPORTS), use it as is; otherwise, prepend...
+ 	_LT_TAGVAR(archive_expsym_cmds, $1)='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -4761,7 +4761,7 @@
+ 	  echo EXPORTS > $output_objdir/$soname.def;
+ 	  cat $export_symbols >> $output_objdir/$soname.def;
+ 	fi~
+-	$CC -shared $output_objdir/$soname.def $libobjs $deplibs $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
++	$CC /LD $output_objdir/$soname.def $libobjs $deplibs $compiler_flags /OUT:$output_objdir/$soname '
+       else
+ 	_LT_TAGVAR(ld_shlibs, $1)=no
+       fi
+@@ -5136,7 +5136,7 @@
+ 	  else
+ 	    sed -e 's/\\\\\\\(.*\\\\\\\)/-link\\\ -EXPORT:\\\\\\\1/' < $export_symbols > $output_objdir/$soname.exp;
+ 	  fi~
+-	  $CC -o $tool_output_objdir$soname $libobjs $compiler_flags $deplibs "@$tool_output_objdir$soname.exp" -Wl,-DLL,-IMPLIB:"$tool_output_objdir$libname.dll.lib"~
++	  $CC -o $tool_output_objdir$soname $libobjs $compiler_flags $deplibs~
+ 	  linknames='
+ 	# The linker will not automatically build a static lib if we build a DLL.
+ 	# _LT_TAGVAR(old_archive_from_new_cmds, $1)='true'
+@@ -6135,7 +6135,7 @@
+ 	    else
+ 	      $SED -e 's/\\\\\\\(.*\\\\\\\)/-link\\\ -EXPORT:\\\\\\\1/' < $export_symbols > $output_objdir/$soname.exp;
+ 	    fi~
+-	    $CC -o $tool_output_objdir$soname $libobjs $compiler_flags $deplibs "@$tool_output_objdir$soname.exp" -Wl,-DLL,-IMPLIB:"$tool_output_objdir$libname.dll.lib"~
++	    $CC -o $tool_output_objdir$soname $libobjs $compiler_flags $deplibs~
+ 	    linknames='
+ 	  # The linker will not automatically build a static lib if we build a DLL.
+ 	  # _LT_TAGVAR(old_archive_from_new_cmds, $1)='true'
+@@ -6168,7 +6168,7 @@
+ 	  _LT_TAGVAR(enable_shared_with_static_runtimes, $1)=yes
+ 
+ 	  if $LD --help 2>&1 | $GREP 'auto-import' > /dev/null; then
+-	    _LT_TAGVAR(archive_cmds, $1)='$CC -shared -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
++	    _LT_TAGVAR(archive_cmds, $1)='$CC /LD -nostdlib $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags /OUT:$output_objdir/$soname '
+ 	    # If the export-symbols file already is a .def file (1st line
+ 	    # is EXPORTS), use it as is; otherwise, prepend...
+ 	    _LT_TAGVAR(archive_expsym_cmds, $1)='if test "x`$SED 1q $export_symbols`" = xEXPORTS; then
+@@ -6177,7 +6177,7 @@
+ 	      echo EXPORTS > $output_objdir/$soname.def;
+ 	      cat $export_symbols >> $output_objdir/$soname.def;
+ 	    fi~
+-	    $CC -shared -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags -o $output_objdir/$soname ${wl}--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
++	    $CC /LD -nostdlib $output_objdir/$soname.def $predep_objects $libobjs $deplibs $postdep_objects $compiler_flags /OUT:$output_objdir/$soname '
+ 	  else
+ 	    _LT_TAGVAR(ld_shlibs, $1)=no
+ 	  fi

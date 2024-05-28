@@ -1,0 +1,61 @@
+<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="optional">
+    <?xml-stylesheet type="text/xsl"href="optional"?>
+    <!-- info.xml file for the MEALPix toolbox -->
+    <!-- Version 1.0 -->
+    <!-- Copyright 2010 Lee Samuel Finn.-->
+    
+    <!-- Supply the following six elements in the order specified -->
+    <!-- (Required) element; matlabrelease content is not currently used -->
+    <matlabrelease>2010b</matlabrelease>
+    <!-- (Required) The name element appears in the Contents pane -->
+    <name>MEALPix</name>
+    <!-- (Required) The type elementidentifies your package; pick one: -->
+    <!-- matlab, toolbox, simulink, blockset, links_targets  -->
+    <type>toolbox</type>
+    <!-- (Optional) icon file to display in the Start button -->
+    <icon></icon>
+    <!-- (Required if you supply help) relative path to help (HTML) folder -->
+    <help_location>./help</help_location>
+    <!-- (Required if you supply help) icon used in the Help browser TOC -->
+    <help_contents_icon>$toolbox/matlab/icons/bookicon.gif</help_contents_icon>
+    
+    <!-- - - - - - - - - - - - -  Start menu - - - - - - - - - - - - - - - -->
+    <!-- Optional list of entries to display on Start Menu -->
+    <!-- Callback items are function calls or commands for toolbox -->
+    <!-- Refresh the Start button to see your entries -->
+    <!-- Remove this list if you do not want a Start button entry -->
+    <list>
+         <listitem>
+            <!-- The label provides the text for this menu item --> 
+            <label>MEALPix Toolbox Documentation</label>
+            <!-- This callback is a command to open your documentation -->
+            <callback>web ./helpfiles/mytoolbox_product_page.html -helpbrowser</callback>
+              <!-- Menu item icon (a toolbox icon from the help browser ) -->
+              <icon>$toolbox/matlab/icons/bookicon.gif</icon>
+        </listitem>
+        <!-- <listitem> -->
+            <!-- A menu item label for a opening a GUI  -->
+            <!-- <label>MyToolbox GUI</label> -->
+            <!-- A command to open a GUI, if any -->
+            <!-- <callback>mytoolboxgui</callback> -->
+            <!-- The icon for this menu item -->
+            <!-- <icon>$toolbox/matlab/icons/figureicon.gif</icon> -->
+        <!-- </listitem> -->
+        <!-- <listitem> -->
+            <!-- A menu item label for a opening a demo -->
+            <!-- <label>MyToolbox Demo</label> -->
+            <!-- A command to open a demo if any -->
+            <!-- <callback>mytoolboxdemo</callback> -->
+            <!-- The icon for this menu item -->
+            <!-- <icon>HelpIcon.DEMOS</icon> -->
+        <!-- </listitem> -->
+        <listitem>
+             <!-- Include call to open your Web site, if any -->
+           <label>MEALPix Toolbox Web Site</label>
+            <callback>web http://gwastro.org -browser;</callback>
+            <icon>$docroot/techdoc/matlab_env/examples/webicon.gif</icon>
+        </listitem>
+        <!-- Add listitems for other features of your toolbox... -->
+    </list>
+</productinfo>

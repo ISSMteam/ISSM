@@ -1,0 +1,51 @@
+% creating thickness
+md.geometry.bed=-100-abs(md.mesh.x)/1000;
+md.geometry.base=-90*ones(md.mesh.numberofvertices,1);
+md.geometry.surface=10*ones(md.mesh.numberofvertices,1);
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+md.mask.ocean_levelset=-1*ones(md.mesh.numberofvertices,1);
+
+% creating basal drag
+md.friction.coefficient=sqrt(10^7)*ones(md.mesh.numberofvertices,1); %q=1.
+md.friction.p=3*ones(md.mesh.numberofelements,1);
+md.friction.q=zeros(md.mesh.numberofelements,1);
+
+% creating flow law paramter
+md.materials.rheology_B=1/((10^-25)^(1/3))*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+md.materials.rheology_law='None';
+
+% creating boundary conditions
+md=SetIceShelfBC(md,'./front.exp');
+md.stressbalance.spcvx=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvy=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvz=NaN*ones(md.mesh.numberofvertices,1);
+pos=find((md.mesh.y<50000.1 & md.mesh.y>49999.9) | (md.mesh.y<0.1 & md.mesh.y>-0.1));
+md.stressbalance.spcvy(pos)=0;
+pos2=find(md.mesh.x<0.1 & md.mesh.x>-0.1);
+md.stressbalance.spcvx(pos2)=0;
+md.stressbalance.spcvz(pos)=NaN;
+md.stressbalance.spcvz(pos2)=NaN;
+
+% creating forcing conditions
+md.smb.mass_balance=0.5*ones(md.mesh.numberofvertices,1);
+md.basalforcings.geothermalflux=0.5*ones(md.mesh.numberofvertices,1);
+md.thermal.spctemperature=NaN*ones(md.mesh.numberofvertices,1);
+md.groundingline.migration='SubelementMigration';
+
+% setting parameters
+md.materials.rho_ice=900;
+md.materials.rho_water=1000;
+md.constants.g=9.8;
+md.constants.yts=3600*24*365;
+md.transient.isthermal=0;
+md.transient.isgroundingline=1;
+md.stressbalance.isnewton=0;
+
+% setting inital condition
+md.initialization.vx=ones(md.mesh.numberofvertices,1);
+md.initialization.vy=ones(md.mesh.numberofvertices,1);
+md.initialization.vz=ones(md.mesh.numberofvertices,1);
+md.initialization.vel=sqrt(2)*ones(md.mesh.numberofvertices,1);
+md.initialization.pressure=md.constants.g*md.materials.rho_ice*md.geometry.thickness;
+md.initialization.temperature=273*ones(md.mesh.numberofvertices,1);

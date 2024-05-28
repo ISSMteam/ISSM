@@ -1,0 +1,118 @@
+%Start defining model parameters here
+
+di=md.materials.rho_ice/md.materials.rho_water;
+rad=1.e6;
+shelfextent=2.e5;
+%Geometry
+hmin=300.;
+hmax=1000.;
+radius=sqrt((md.mesh.x).*md.mesh.x+(md.mesh.y).*md.mesh.y);
+ymin=min(radius);
+ymax=max(radius);
+md.geometry.thickness=hmax+(hmin-hmax)*(radius-ymin)/(ymax-ymin);
+md.geometry.base=-md.materials.rho_ice/md.materials.rho_water*md.geometry.thickness;
+
+pos=find(md.mask.ocean_levelset>0.);
+md.geometry.base(pos)=md.geometry.base(pos)-300.*(radius(pos)-(rad-shelfextent))/(rad-shelfextent);
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+
+pos=find(radius<200000);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+pos=find(md.mesh.x<0.2*1.e6 & md.mesh.x>-0.2*1.e6 & md.mesh.y>0.);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+pos=find(md.mesh.x<0.1*1.e6 & md.mesh.x>-0.1*1.e6 & md.mesh.y<-0.5*1.e6 & md.mesh.y>-0.6*1.e6);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+%plug holes into the ice sheet, to test for grounding line migration. 
+di=md.materials.rho_ice/md.materials.rho_water;
+rad=sqrt(md.mesh.x.^2+md.mesh.y.^2);
+pos=find(rad<200000.);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+pos=find(md.mesh.x<0.2*1.e6 & md.mesh.x>-0.2*1.e6 & md.mesh.y>0.);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+pos=find(md.mesh.x<0.1*1.e6 & md.mesh.x>-0.1*1.e6 & md.mesh.y<-0.5*1.e6 & md.mesh.y>-0.6*1.e6);
+md.geometry.thickness(pos)=100.;
+md.geometry.base(pos)=-di*md.geometry.thickness(pos)-20.;
+md.geometry.surface(pos)=md.geometry.base(pos)+md.geometry.thickness(pos);
+
+%Initial velocity 
+md.initialization.vx=zeros(md.mesh.numberofvertices,1);
+md.initialization.vy=zeros(md.mesh.numberofvertices,1);
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature=(273.-20.)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+%Surface mass balance and basal melting
+md.smb.mass_balance=-10.*ones(md.mesh.numberofvertices,1);
+md.basalforcings.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
+pos=find(md.mask.ocean_levelset>0.);md.basalforcings.groundedice_melting_rate(pos)=10.;
+md.basalforcings.floatingice_melting_rate=zeros(md.mesh.numberofvertices,1);
+md.basalforcings.geothermalflux=ones(md.mesh.numberofvertices,1);
+
+%Friction
+radius=1.e6;
+shelfextent=2.e5;
+md.friction.coefficient=20.*ones(md.mesh.numberofvertices,1);
+xelem=md.mesh.x(md.mesh.elements)*[1;1;1]/3.;
+yelem=md.mesh.y(md.mesh.elements)*[1;1;1]/3.;
+rad=sqrt(xelem.^2+yelem.^2);
+flags=zeros(md.mesh.numberofelements,1);
+pos=find(rad>=(radius-shelfextent));
+md.friction.coefficient(md.mesh.elements(pos,:))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Numerical parameters
+md.masstransport.stabilization=1;
+md.thermal.stabilization=1;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.stressbalance.restol=0.05;
+md.stressbalance.reltol=0.05;
+md.steadystate.reltol=0.05;
+md.stressbalance.abstol=NaN;
+md.timestepping.time_step=5.;
+md.timestepping.final_time=5.;
+
+%bathymetry and grounding line migration:
+md.groundingline.migration='AggressiveMigration';
+md.geometry.bed=md.geometry.base;
+pos=find(md.mask.ocean_levelset<0.); md.geometry.bed(pos)=md.geometry.base(pos)-900.;
+
+%Deal with boundary conditions:
+md.stressbalance.spcvx=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvy=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvz=NaN*ones(md.mesh.numberofvertices,1);
+
+pos=find(md.mesh.x==0 & md.mesh.y==0);
+md.stressbalance.spcvx(pos)=0;
+md.stressbalance.spcvy(pos)=0;
+
+md.mask.ice_levelset(find(md.mesh.vertexonboundary))=0;
+md.balancethickness.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.masstransport.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.referential=NaN*ones(md.mesh.numberofvertices,6);
+md.stressbalance.loadingforce=0*ones(md.mesh.numberofvertices,3);
+md.thermal.spctemperature=737.*ones(md.mesh.numberofvertices,1);
+
+%Change name so that no test have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

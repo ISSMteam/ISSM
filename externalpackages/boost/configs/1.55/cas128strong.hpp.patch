@@ -1,0 +1,17 @@
+199c199
+<     explicit base_atomic(value_type const& v) BOOST_NOEXCEPT : v_(0)
+---
+>     explicit base_atomic(value_type const& v) BOOST_NOEXCEPT 
+200a201
+> 	memset(&v_, 0, sizeof(v_));
+207c208,209
+<         storage_type value_s = 0;
+---
+> 	storage_type value_s;
+> 	memset(&value_s, 0, sizeof(value_s));
+250c252,254
+<         storage_type expected_s = 0, desired_s = 0;
+---
+> 	storage_type expected_s, desired_s; 
+> 	memset(&expected_s, 0, sizeof(expected_s));
+> 	memset(&desired_s, 0, sizeof(desired_s));

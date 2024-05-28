@@ -1,0 +1,4 @@
+47a48,50
+> set(BUILD_STATIC_LIBS ON CACHE BOOL "Set to ON to build static libraries" FORCE)
+> set(BUILD_SHARED_LIBS OFF CACHE BOOL "Set to ON to build DSO libraries" FORCE)
+> 

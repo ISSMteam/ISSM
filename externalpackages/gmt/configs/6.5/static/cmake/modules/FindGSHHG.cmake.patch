@@ -1,0 +1,13 @@
+--- src/cmake/modules/FindGSHHG.cmake	2024-01-07 01:32:40
++++ FindGSHHG.cmake	2024-03-20 12:30:46
+@@ -52,6 +52,10 @@
+ set (GSHHG_MIN_REQUIRED_VERSION
+ 	"${GSHHG_MIN_REQUIRED_VERSION_MAJOR}.${GSHHG_MIN_REQUIRED_VERSION_MINOR}.${GSHHG_MIN_REQUIRED_VERSION_PATCH}")
+ 
++# Temporary hack to bypass failure of compilation of code to find GSHHG
++set (GSHHG_FOUND TRUE)
++set (GSHHG_VERSION "2.3.4" CACHE INTERNAL "GSHHG version")
++
+ # check GSHHG version
+ if (_GSHHG_FILE AND NOT GSHHG_FOUND)
+ 	if (NOT CMAKE_CROSSCOMPILING)

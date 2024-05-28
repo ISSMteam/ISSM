@@ -1,0 +1,32 @@
+%Ok, start defining model parameters here
+
+disp('      creating thickness');
+data=archread('../Data/ISMIPE.arch','data');
+data = data{1};
+md.geometry.surface=zeros(md.mesh.numberofvertices,1);
+md.geometry.base=zeros(md.mesh.numberofvertices,1);
+for i=1:md.mesh.numberofvertices
+	y=md.mesh.y(i);
+	point1=floor(y/100.)+1;
+	point2=min(point1+1,51);
+	coeff=(y-(point1-1.)*100.)/100.;
+	md.geometry.base(i)=(1.-coeff)*data(point1,2)+coeff*data(point2,2);
+	md.geometry.surface(i)=(1.-coeff)*data(point1,3)+coeff*data(point2,3);
+end
+
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+md.geometry.thickness(find(~md.geometry.thickness))=0.01;
+md.geometry.base=md.geometry.surface-md.geometry.thickness;
+
+disp('      creating drag');
+md.friction.coefficient=zeros(md.mesh.numberofvertices,1);
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=6.8067*10^7*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+disp('      boundary conditions for stressbalance model:');
+%Create node on boundary first (because we can not use mesh)
+md=SetIceSheetBC(md);

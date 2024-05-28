@@ -1,0 +1,9 @@
+2587a2588
+> 	  // add sensitivity output to importance factors (jes, 8/06/10)
+2592c2593,2596
+< 	    << std::setw(width) << impFactor(j,i) << '\n';
+---
+> 	    << std::setw(width) << impFactor(j,i)
+> 	    << "  Sensitivity = "
+> 	    << std::resetiosflags(std::ios::adjustfield)
+> 	    << std::setw(width) << fnGradsMeanX(j,i) << '\n';

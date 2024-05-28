@@ -1,0 +1,72 @@
+MATLAB_PATH="/usr/local/MATLAB/R2015a"
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--disable-static \
+	--with-matlab-dir=$MATLAB_PATH \
+	--with-triangle-dir=$ISSM_DIR/externalpackages/triangle/install \
+	--with-mpi-include=$ISSM_DIR/externalpackages/mpich/install/include  \
+	--with-mpi-libflags="-L$ISSM_DIR/externalpackages/mpich/install/lib -lmpi" \
+	--with-petsc-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-metis-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-mumps-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-blas-lapack-dir=$ISSM_DIR/externalpackages/petsc/install \
+	--with-scalapack-dir=$ISSM_DIR/externalpackages/petsc/install/ \
+	--with-python-dir=/usr\
+	--with-python-numpy-dir=/usr/lib/python2.7/dist-packages/numpy\
+	--with-chaco-dir="$ISSM_DIR/externalpackages/chaco/install" \
+	--with-dakota-dir=$ISSM_DIR/externalpackages/dakota/install \
+	--with-boost-dir=$ISSM_DIR/externalpackages/boost/install/ \
+	--with-fortran-lib="-L/usr/lib/gcc/x86_64-linux-gnu/4.9/ -lgfortran" \
+	--with-m1qn3-dir=$ISSM_DIR/externalpackages/m1qn3/install \
+	--with-numthreads=4 \
+	--enable-development \
+	--enable-debugging '
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools	install.sh
+	cmake		install.sh
+	mpich		install-3.2-linux64.sh
+	petsc		install-3.7-linux64.sh
+	triangle	install-linux64.sh
+	boost		install-1.7-linux.sh
+	dakota		install-6.2-linux64.sh
+	chaco		install-linux.sh
+	m1qn3		install-linux.sh
+	shell2junit	install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=1
+PYTHON_TEST=1
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation
+#
+NUMCPUS_INSTALL=4
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=2
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information
+#
+PYTHON_NROPTIONS="--exclude 701 702 435"
+MATLAB_NROPTIONS="'exclude',[701,702,435]"

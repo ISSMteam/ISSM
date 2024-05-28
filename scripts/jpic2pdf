@@ -1,0 +1,80 @@
+#!/bin/bash
+#Transform a pst from JPicEdt to a nice pdf
+
+# Generate temporary directory ($$ = process ID)
+TMPDIR=/tmp/jpic2pdf$$
+if [ -e $TMPDIR ] ; then
+	echo "$0: Temporary directory $TMPDIR already exists." 1>&2
+	exit 1
+fi
+mkdir $TMPDIR
+HOMEDIR="`pwd`" || exit 1
+
+#get input files
+if [ $# -eq 0 ]
+then
+	echo "No input file specified, exiting..." >&2
+	exit 1
+else
+	FILES=$*
+fi
+
+#convert files
+for FILE in $FILES
+do
+	#get file name without pst extension
+	NAME=$(echo $FILE | sed -e "s/.pst//g")
+
+	#transform equation only if begin{eqution} is found
+	echo "converting $FILE"
+	#Header
+	(
+	cat << ENDHEADER
+\documentclass[11pt,a0paper,landscape]{article}
+\usepackage{color}
+\usepackage[dvips]{graphicx}
+\usepackage[left=0cm, right=0cm, top=0cm, bottom=0cm]{geometry}  % margins
+\usepackage{array, multirow}
+\usepackage{amsmath,amsfonts,amssymb,mathrsfs,bm}
+\usepackage{pstricks}
+\pagestyle{empty}
+%\pagecolor{white}
+\definecolor{darkblue}{RGB}{0,0,170}
+\definecolor{darkgreen}{RGB}{0,140,0}
+\begin{document}
+ENDHEADER
+	) > $TMPDIR/out.tex
+
+	#File
+	cat $FILE >> $TMPDIR/out.tex
+
+	#Footer
+	(
+	cat << ENDFOOTER
+\end{document}
+ENDFOOTER
+) >> $TMPDIR/out.tex
+
+	cd "$TMPDIR"
+	latex -interaction=batchmode out.tex > /dev/null
+	ls
+
+	#check that the dvi has been generated
+	if [ ! -f "./out.dvi" ]; then
+		latex  -halt-on-error -interaction=errorstopmode out.tex
+		echo "latex compilation failed, See above" 1>&2
+		exit 1
+	fi
+	cd "$HOMEDIR"
+	dvips -o $TMPDIR/out.eps -E $TMPDIR/out.dvi 2> /dev/null
+	dvipdf $TMPDIR/out.dvi $TMPDIR/out.pdf
+	mv $TMPDIR/out.pdf $NAME.pdf
+
+	echo "cropping $FILE"
+	pdfcrop -noverbose $NAME.pdf $NAME.pdf
+done
+
+# Cleanup
+rm -rf $TMPDIR
+#mv $TMPDIR .
+exit 0

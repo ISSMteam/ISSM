@@ -1,0 +1,7 @@
+33,34c33,35
+<         || BOOST_WORKAROUND(BOOST_INTEL_CXX_VERSION, BOOST_TESTED_AT(810)) \
+<         )
+---
+> 		 )
+> //        || BOOST_WORKAROUND(BOOST_INTEL_CXX_VERSION, BOOST_TESTED_AT(810)) \
+> //        )

@@ -1,0 +1,4 @@
+95a96,98
+>   
+>   //close the input file
+>   fclose(nidrin);

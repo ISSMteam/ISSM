@@ -1,0 +1,11 @@
+DO NOT MODIFY the following files:
+- StringToEnumx.cpp
+- EnumToStringx.cpp
+all these files are automatically synchronized with EnumDefinitions.h
+
+TO ADD AN ENUM:
+- add the desired, new Enums to EnumDefinitions.h
+- execute `./Synchronize.sh`
+
+NOTE:	Even when Synchronize.sh is run from this directory, ISSM_DIR must be 
+		defined correctly

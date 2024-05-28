@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "jquery": "^3.0.0",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-jasmine-jquery": "^0.1.1",
+    "karma-junit-reporter": "^1.0.0",
+    "karma-phantomjs-launcher": "^1.0.1",
+    "karma-requirejs": "^1.0.0",
+    "mathjs": "^3.2.1",
+    "phantomjs-prebuilt": "^2.1.7",
+    "requirejs": "^2.2.0"
+  }
+}

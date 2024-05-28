@@ -1,0 +1,65 @@
+%Start defining model parameters here
+
+%Geometry
+hmin=300;
+hmax=1000;
+ymin=min(md.mesh.y);
+ymax=max(md.mesh.y);
+xmin=min(md.mesh.x);
+xmax=max(md.mesh.x);
+md.geometry.thickness=hmax+(hmin-hmax)*(md.mesh.y-ymin)/(ymax-ymin)+0.1*(hmin-hmax)*(md.mesh.x-xmin)/(xmax-xmin);
+md.geometry.base=-md.materials.rho_ice/md.materials.rho_water*md.geometry.thickness;
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+md.geometry.bed=md.geometry.base-10;
+
+%Initial velocity 
+x     = archread([issmdir() '/test/Data/SquareShelfConstrained.arch'],'x');
+y     = archread([issmdir() '/test/Data/SquareShelfConstrained.arch'],'y');
+vx    = archread([issmdir() '/test/Data/SquareShelfConstrained.arch'],'vx');
+vy    = archread([issmdir() '/test/Data/SquareShelfConstrained.arch'],'vy');
+index = archread([issmdir() '/test/Data/SquareShelfConstrained.arch'],'index');
+x = x{1};
+y = y{1};
+vx = vx{1};
+vy = vy{1};
+index = index{1};
+md.initialization.vx=InterpFromMeshToMesh2d(index,x,y,vx,md.mesh.x,md.mesh.y);
+md.initialization.vy=InterpFromMeshToMesh2d(index,x,y,vy,md.mesh.x,md.mesh.y);
+clear vx vy x y index;
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature=(273-20)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+
+%Surface mass balance and basal melting
+md.smb.mass_balance=10*ones(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate=5*ones(md.mesh.numberofvertices,1);
+md.basalforcings.groundedice_melting_rate=5*ones(md.mesh.numberofvertices,1);
+
+%Friction
+md.friction.coefficient=20*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Numerical parameters
+md.masstransport.stabilization=1;
+md.thermal.stabilization=1;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.stressbalance.restol=0.05;
+md.stressbalance.reltol=0.05;
+md.steadystate.reltol=0.05;
+md.stressbalance.abstol=NaN;
+md.timestepping.time_step=1;
+md.timestepping.final_time=3;
+
+%Deal with boundary conditions:
+md=SetIceShelfBC(md);
+
+%Change name so that no tests have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

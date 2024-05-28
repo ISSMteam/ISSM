@@ -1,0 +1,60 @@
+%Name and Coordinate system
+md.miscellaneous.name='Jakobshavn';
+md.mesh.epsg=3413;
+
+%Load SeaRISE dataset
+disp('   Loading SeaRISE data from NetCDF');
+ncdata = '../Data/Greenland_5km_dev1.2.nc';
+x1    = ncread(ncdata,'x1');
+y1    = ncread(ncdata,'y1');
+thk   = ncread(ncdata,'thk')';
+topg  = ncread(ncdata,'topg')';
+velx  = ncread(ncdata,'surfvelx')';
+vely  = ncread(ncdata,'surfvely')';
+temp  = ncread(ncdata,'airtemp2m')';
+smb   = ncread(ncdata,'smb')';
+
+disp('   Interpolating thicknesses');
+md.geometry.thickness=InterpFromGridToMesh(x1,y1,thk,md.mesh.x,md.mesh.y,0);
+pos0=find(md.geometry.thickness<=10);
+md.geometry.thickness(pos0)=10;
+
+disp('   Interpolating bedrock topography');
+md.geometry.base = InterpFromGridToMesh(x1,y1,topg,md.mesh.x,md.mesh.y,0);
+
+disp('   Constructing surface elevation');
+md.geometry.surface=md.geometry.thickness+md.geometry.base;
+
+disp('   Interpolating velocities');
+md.inversion.vx_obs  = InterpFromGridToMesh(x1,y1,velx,md.mesh.x,md.mesh.y,0);
+md.inversion.vy_obs  = InterpFromGridToMesh(x1,y1,vely,md.mesh.x,md.mesh.y,0);
+md.inversion.vel_obs = sqrt(md.inversion.vx_obs.^2+md.inversion.vy_obs.^2);
+md.initialization.vx = md.inversion.vx_obs;
+md.initialization.vy = md.inversion.vy_obs;
+md.initialization.vel= md.inversion.vel_obs;
+
+disp('   Interpolating temperatures');
+md.initialization.temperature=InterpFromGridToMesh(x1,y1,temp,md.mesh.x,md.mesh.y,0)+273.15; %convert to Kelvin
+
+disp('   Interpolating surface mass balance');
+md.smb.mass_balance=InterpFromGridToMesh(x1,y1,smb,md.mesh.x,md.mesh.y,0);
+md.smb.mass_balance=md.smb.mass_balance*md.materials.rho_water/md.materials.rho_ice;
+
+disp('   Construct basal friction parameters');
+md.friction.coefficient=30*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('   Construct ice rheological properties');
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.damage.D=zeros(md.mesh.numberofvertices,1);
+%Reduce viscosity along the shear margins
+weakb=ContourToMesh(md.mesh.elements,md.mesh.x,md.mesh.y,'WeakB.exp','node',2);
+pos=find(weakb);md.materials.rheology_B(pos)=.3*md.materials.rheology_B(pos);
+
+disp('   Set other boundary conditions');
+md=SetMarineIceSheetBC(md,'./Front.exp');
+md.basalforcings.floatingice_melting_rate=zeros(md.mesh.numberofvertices,1);
+md.basalforcings.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);

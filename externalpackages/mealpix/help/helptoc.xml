@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding="utf-8"?>
+
+<toc version="2.0">
+  <!-- First tocitem specifies top level in Help browser Contents pane -->
+  <!-- This can be a roadmap page, as shown below, or a content page -->
+  <tocitem target="html/mealpix_product_page.html">MEALPix Toolbox
+    <!-- Nest tocitems to create hierarchical entries in  Contents-->
+    <!-- To include icons, use the following syntax for tocitems: -->
+    <!-- <tocitem target="html/foo.html" image="HelpIcon.NAME"> -->
+    <!-- Title-of-Section </tocitem> -->
+    <!-- where NAME is one of the following (use capital letters): -->
+    <!-- FUNCTION, USER_GUIDE, EXAMPLES, BLOCK, GETTING_STARTED, -->
+    <!-- DEMOS, RELEASE_NOTES --> 
+    <!-- Icon images used for these entries are also stored in -->
+    <!-- matlabroot/toolbox/matlab/icons -->
+    <!-- A Getting Started Guide usually comes first -->
+    <tocitem target="html/mealpix_gs_top.html" image="HelpIcon.GETTING_STARTED">
+      Getting Started with the MEALPix Toolbox
+      <tocitem target="html/mealpix_overview.html">Overview</tocitem>
+      <tocitem target="html/mealpix_reqts.html">System Requirements</tocitem>
+      <tocitem target="html/mealpix_install.html">Installation</tocitem>
+      <tocitem target="html/mealpix_healpix.html">MEALPix for the HEALPix User</tocitem>
+      <tocitem target="html/mealpix_bugreport.html">Reporting problems</tocitem>
+      <tocitem target="html/mealpix_references.html">References</tocitem>
+      <tocitem target="html/mealpix_notices.html">Notices</tocitem>
+    </tocitem>
+    <!-- User Guide comes next -->
+    <!--
+    <tocitem target="html/mealpix_ug_intro.html" 
+             image="HelpIcon.USER_GUIDE">MEALPix Toolbox User Guide
+      <tocitem target="html/mytbx_ch_1.html">Setting Up MEALPix Toolbox
+      </tocitem>
+      <tocitem target="html/mytbx_ch_2.html">Chapter 2
+      </tocitem>
+      <tocitem target="html/mytbx_ch_3.html">Chapter 3
+        <tocitem target="html/mytbx_ch_3a.html">Subsection a
+        </tocitem>
+      </tocitem>
+    </tocitem>
+    -->
+    <!-- Function reference next -->
+    <!-- First item is page describing function categories, if any -->
+    <tocitem target="html/helpfuncbycat.html" 
+             image="HelpIcon.FUNCTION">Function Reference
+      <!-- First category, with link to anchor in above page -->
+      <tocitem target="html/helpfuncbycat.html#1">Coordinate Conversions
+        <!-- Inside category, list its functions alphabetically -->
+        <tocitem target="html/ang2vec_help.html">ang2vec</tocitem>
+        <tocitem target="html/vec2ang_help.html">vec2ang</tocitem>
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#2">Coordinate-Pixel Conversions
+        <tocitem target="html/ang2pix_help.html" image="HelpIcon.FUNCTION">ang2pix</tocitem>
+        <tocitem target="html/pix2ang_help.html" image="HelpIcon.FUNCTION">pix2ang</tocitem>
+        <tocitem target="html/pix2vec_help.html" image="HelpIcon.FUNCTION">pix2vec</tocitem>
+        <tocitem target="html/ring2z_help.html" image="HelpIcon.FUNCTION">ring2z</tocitem>
+        <tocitem target="html/vec2pix_help.html" image="HelpIcon.FUNCTION">vec2pix</tocitem>
+        <tocitem target="html/z2ring_help.html" image="HelpIcon.FUNCTION">z2ring</tocitem>
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#3">Functions on the sphere
+        <tocitem target="html/alm2pix_help.html" image="HelpIcon.FUNCTION">alm2pix</tocitem>
+        <tocitem target="html/angDist_help.html" image="HelpIcon.FUNCTION">angDist</tocitem>
+        <tocitem target="html/pix2alm_help.html" image="HelpIcon.FUNCTION">pix2alm</tocitem>
+        <tocitem target="html/ylm_help.html" image="HelpIcon.FUNCTION">ylm</tocitem>
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#4">Map Statistics        
+        <tocitem target="html/alm2spec_help.html" image="HelpIcon.FUNCTION">alm2spec</tocitem>
+        <tocitem target="html/hpStat_help.html" image="HelpIcon.FUNCTION">hpStat</tocitem>
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#5">Pixel Indexing Conversions
+        <!-- Inside category, list its functions alphabetically -->
+        <tocitem target="html/nest2ring_help.html" image="HelpIcon.FUNCTION">nest2ring</tocitem>
+        <tocitem target="html/ring2nest_help.html" image="HelpIcon.FUNCTION">ring2nest</tocitem>
+        <!-- ... -->
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#6">Pixel Topology               
+        <tocitem target="html/corners_help.html" image="HelpIcon.FUNCTION">corners</tocitem>
+        <tocitem target="html/inRing_help.html" image="HelpIcon.FUNCTION">inRing</tocitem>
+        <tocitem target="html/pix2xy_help.html" image="HelpIcon.FUNCTION">pix2xy</tocitem>
+        <tocitem target="html/queryDisc_help.html" image="HelpIcon.FUNCTION">queryDisc</tocitem>
+        <!-- 
+        <tocitem target="html/queryPolygon_help.html" image="HelpIcon.FUNCTION">queryPolygon</tocitem>
+        <tocitem target="html/queryStrip_help.html" image="HelpIcon.FUNCTION">queryStrip</tocitem>
+        <tocitem target="html/queryTriangle_help.html" image="HelpIcon.FUNCTION">queryTriangle</tocitem>
+        <tocitem target="html/regrade_help.html" image="HelpIcon.FUNCTION">regrade</tocitem>
+        -->
+        <tocitem target="html/xy2pix_help.html" image="HelpIcon.FUNCTION">xy2pix</tocitem>
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#7">Plotting
+        <!-- Inside category, list its functions alphabetically -->
+        <tocitem target="html/hp3d_help.html" image="HelpIcon.FUNCTION">hp3d</tocitem>
+        <!-- ... -->
+      </tocitem>
+      <tocitem target="html/helpfuncbycat.html#8">Resolution relations  
+        <tocitem target="html/nPix2nSide_help.html" image="HelpIcon.FUNCTION">nPix2nSide</tocitem>
+        <tocitem target="html/nSide2nPix_help.html" image="HelpIcon.FUNCTION">nSide2nPix</tocitem>
+        <tocitem target="html/nSide2res_help.html" image="HelpIcon.FUNCTION">nSide2res</tocitem>
+        <tocitem target="html/res2nSide_help.html" image="HelpIcon.FUNCTION">res2nSide</tocitem>
+        <!-- ... -->
+      </tocitem>
+      <!-- Second category, with link to anchor in above page -->
+    </tocitem>
+    <!-- Optional List of Examples, with hyperlinks to examples in other files -->
+    <!-- 
+    <tocitem target="html/mytbx_example.html" 
+             image="HelpIcon.HelpIcon.EXAMPLES">MEALPix Toolbox Examples
+    </tocitem>
+    -->
+    <!-- Optional Release Notes,-->
+    <!--
+    <tocitem target="html/releaseNotes.html" 
+             image="HelpIcon.HelpIcon.RELEASE_NOTES">MEALPix Toolbox Release Notes
+    </tocitem>
+    -->
+    <!-- Optional link or links to your or other Web sites -->
+    <tocitem target="http://gwastro.org" 
+             image="$toolbox/matlab/icons/webicon.gif">MEALPix Toolbox Web Site
+    </tocitem>
+  </tocitem>
+</toc>

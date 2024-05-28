@@ -1,0 +1,4 @@
+270c270
+<   reverse_iterator       rbegin(){return make_reverse_iterator(end());}
+---
+>   reverse_iterator       rbegin(){return boost::make_reverse_iterator(end());}

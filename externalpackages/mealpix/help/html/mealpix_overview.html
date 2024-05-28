@@ -1,0 +1,101 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Product Overview</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="mealpix_overview.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Product Overview</h1><!--introduction--><p>MEALPix is a native Matlab implementation of a substantial subset of the <a href="http://healpix.jpl.nasa.gov/">HEALPix</a> subroutine library. It supports the fast and accurate statistical and astrophysical analysis of massive full-sky data sets. HEALPix is supported by NASA and ESO, used extensively by the WMAP and PLANCK missions, and is part of the official FITS World Coordinate System.</p><p>MEALPix provides fully vectorized functions for</p><div><ul><li>Conversion between position angles, cartesian direction vectors, and HEALPix ring and nest pixel indexing schemes;</li></ul></div><div><ul><li>Spherical harmonic resolution and analysis of functions on the sphere;</li></ul></div><div><ul><li>Nearest pixel identification (pixels within a given disc, pixels in a ring, pixels in a HEALPix face).</li></ul></div><p>MEALPix was created from the Fortran90 implementation <a href="http://healpix.jpl.nasa.gov">HEALPix</a> via a combination of hand coding and machine assisted conversion of the HEALPix F90 source code. Some routines were hand-coded based on the documented functionality of the F90 subroutines on which they were based. Other routines were hand-coded via inspection of the HEALPix F90 implementation source. Still other routines were machine converted from F90 to Matlab&#8482; using <a href="http://www.mathworks.com/matlabcentral/fileexchange/5260">f2matlab</a>. In this latter case the resulting Matlab&#8482; source was then hand-modified to vectorize the computations and take advantage of Matlab&#8482; data types and other functions.</p><!--/introduction--><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Product Overview
+% MEALPix is a native Matlab implementation of a substantial subset of the 
+% <http://healpix.jpl.nasa.gov/ HEALPix> subroutine library. It supports
+% the fast and accurate statistical and astrophysical analysis of massive
+% full-sky data sets. HEALPix is supported by NASA and ESO, used
+% extensively by the WMAP and PLANCK missions, and is part of the official 
+% FITS World Coordinate System.
+%
+% MEALPix provides fully vectorized functions for 
+%
+% * Conversion between position angles, cartesian direction vectors, and
+% HEALPix ring and nest pixel indexing schemes; 
+%
+% * Spherical harmonic resolution and analysis of functions on the sphere; 
+%
+% * Nearest pixel identification (pixels within a given disc, pixels in a
+% ring, pixels in a HEALPix face). 
+%
+% MEALPix was created from the Fortran90 implementation
+% <http://healpix.jpl.nasa.gov HEALPix> via a combination of hand coding
+% and machine assisted conversion of the HEALPix F90 source code. Some
+% routines were hand-coded based on the documented functionality of the F90
+% subroutines on which they were based. Other routines were hand-coded via
+% inspection of the HEALPix F90 implementation source. Still other routines
+% were machine converted from F90 to Matlab(TM) using
+% <http://www.mathworks.com/matlabcentral/fileexchange/5260 f2matlab>. In
+% this latter case the resulting Matlab(TM) source was then hand-modified
+% to vectorize the computations and take advantage of Matlab(TM) data types
+% and other functions.
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

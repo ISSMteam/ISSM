@@ -1,0 +1,4 @@
+276c276
+< 	     std::cout << ss << std::endl;
+---
+> 	     std::cout << ss.str() << std::endl;

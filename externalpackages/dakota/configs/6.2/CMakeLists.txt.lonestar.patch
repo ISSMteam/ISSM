@@ -1,0 +1,6 @@
+156c153,155
+< # TODO: Can't this be integrated into the following logic?
+---
+> # TODO: Can't this be integrated into the following logic?
+> set(BLAS_LIBS "-L$TACC_MKL_LIB -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm")
+> set(LAPACK_LIBS "-L$TACC_MKL_LIB -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm")

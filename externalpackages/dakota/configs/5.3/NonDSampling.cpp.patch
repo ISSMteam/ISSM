@@ -1,0 +1,25 @@
+703,709c703,710
+<   if (!subIteratorFlag) {
+<     nonDSampCorr.compute_correlations(vars_samples, resp_samples);
+<     // archive the correlations to the results DB
+<     nonDSampCorr.archive_correlations(run_identifier(), resultsDB,
+< 				      cv_labels, div_labels, drv_labels,
+< 				      iteratedModel.response_labels());
+<   }
+---
+> //don't compute for now, too expensive.
+> //  if (!subIteratorFlag) {
+> //    nonDSampCorr.compute_correlations(vars_samples, resp_samples);
+> //    // archive the correlations to the results DB
+> //    nonDSampCorr.archive_correlations(run_identifier(), resultsDB,
+> //				      cv_labels, div_labels, drv_labels,
+> //				      iteratedModel.response_labels());
+> //  }
+1196,1197c1197,1200
+<     nonDSampCorr.print_correlations(s, cv_labels, div_labels, drv_labels,
+< 				    iteratedModel.response_labels());
+---
+> 
+> //don't output for now.
+> //    nonDSampCorr.print_correlations(s, cv_labels, div_labels, drv_labels,
+> //				    iteratedModel.response_labels());

@@ -1,0 +1,47 @@
+%Ok, start defining model parameters here
+md.verbose=2;
+
+disp('      creating thickness');
+md.geometry.surface=-md.mesh.x*tan(3.*pi/180.);
+%md.geometry.base=md.geometry.surface-1000.;
+md.geometry.base=md.geometry.surface-1000.+100.*exp(-((md.mesh.x-max(md.mesh.x)/2.).^2+(md.mesh.y-max(md.mesh.y)/2.).^2)/(10000.^2));
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+
+disp('      creating drag');
+md.friction.coefficient=sqrt(md.constants.yts/(2.140373*10^-7*1000.))*ones(md.mesh.numberofvertices,1);
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=zeros(md.mesh.numberofelements,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=1.4734*10^14*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_n=1.*ones(md.mesh.numberofelements,1);
+md.materials.rheology_law='None';
+
+disp('      boundary conditions for stressbalance model');
+%Create node on boundary first (because we cannot use mesh)
+md=SetIceSheetBC(md);
+md.stressbalance.spcvx=100.*ones(md.mesh.numberofvertices,1);
+md.initialization.vx=zeros(md.mesh.numberofvertices,1);
+md.initialization.vy=zeros(md.mesh.numberofvertices,1);
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.vel=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+md.initialization.temperature=255.*ones(md.mesh.numberofvertices,1);
+pos=find(md.mesh.x==min(md.mesh.x) | md.mesh.x==max(md.mesh.x) | md.mesh.y==min(md.mesh.y) | md.mesh.y==max(md.mesh.y));
+md.balancethickness.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.balancethickness.spcthickness(pos)=md.geometry.thickness(pos);
+md.masstransport.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
+md.masstransport.spcthickness(pos)=md.geometry.thickness(pos);
+md.thermal.spctemperature=255.*ones(md.mesh.numberofvertices,1);
+md.basalforcings.geothermalflux=0.4*ones(md.mesh.numberofvertices,1);
+
+%Parallel options
+md.mesh.average_vertex_connectivity=200;
+
+%Transient options
+md.timestepping.time_step=1.;
+md.timestepping.final_time=10.;
+md.masstransport.stabilization=1;
+md.thermal.stabilization=1;
+md.thermal.penalty_threshold=10^5;
+md.transient.isthermal=0;

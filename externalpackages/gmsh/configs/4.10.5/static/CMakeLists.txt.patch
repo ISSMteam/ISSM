@@ -1,0 +1,9 @@
+858,861c860,862
+<     find_library(METIS_LIB metis PATH_SUFFIXES lib)
+<     find_path(METIS_INC "metis.h" PATH_SUFFIXES include)
+<     if(ENABLE_SYSTEM_CONTRIB AND METIS_LIB AND METIS_INC)
+<       message(STATUS "Using system version of METIS")
+---
+>     if(METIS_ROOT)
+>       find_library(METIS_LIB metis PATHS ${METIS_ROOT} PATH_SUFFIXES lib)
+>       find_path(METIS_INC "metis.h" PATHS ${METIS_ROOT} PATH_SUFFIXES include)

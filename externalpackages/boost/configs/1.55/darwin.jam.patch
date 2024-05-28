@@ -1,0 +1,4 @@
+587c587
+<     "$(.LIBTOOL)" -static -o "$(<:T)"  $(ARFLAGS)  "$(>:T)"
+---
+>     /usr/bin/libtool -static -o "$(<:T)"  $(ARFLAGS)  "$(>:T)"

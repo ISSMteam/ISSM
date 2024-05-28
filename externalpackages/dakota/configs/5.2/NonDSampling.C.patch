@@ -1,0 +1,14 @@
+438,439c438,440
+<   if (!subIteratorFlag)
+<     nonDSampCorr.compute_correlations(vars_samples, resp_samples);
+---
+> //don't compute for now, too expensive.
+> //  if (!subIteratorFlag)
+> //    nonDSampCorr.compute_correlations(vars_samples, resp_samples);
+894,895c895,897
+<     nonDSampCorr.print_correlations(s, cv_labels, div_labels, drv_labels,
+<       iteratedModel.response_labels());
+---
+> //don't output for now.
+> //    nonDSampCorr.print_correlations(s, cv_labels, div_labels, drv_labels,
+> //      iteratedModel.response_labels());

@@ -1,0 +1,86 @@
+7/13/09:
+
+[jschierm@astrid Chaco-2.2]$ diff ../chaco/code/Makefile code
+5,6c5,8  [fPIC required, CFLAGS and OFLAGS copied from Cielo gccopts_v75.sh for glnxa64]
+< CFLAGS =      -O2
+< OFLAGS =      -O2
+---
+> #CFLAGS =     -O2
+> #OFLAGS =     -O2
+> CFLAGS =      -fPIC -fno-omit-frame-pointer -D_GNU_SOURCE -pthread -fexceptions
+> OFLAGS =      -O -DNDEBUG
+34a37,38  [added for meshpart chaco.a library, specified by its makefile]
+>               coarsen/makecgraph.c \
+>               coarsen/countcedges.c \
+
+7/30/09:
+
+[jschierm@astrid main]$ diff defs_old.h defs.h
+11a12,26  [for running as a matlab mex function]
+> 
+> #ifdef MATLAB
+>     #include "mat.h"
+>     #include "mex.h"
+>     #include "matrix.h"
+>    
+>     #define printf mexPrintf
+>     #define malloc mxMalloc
+>     #define calloc mxCalloc
+>     #define realloc mxRealloc
+>     #define free mxFree
+> 
+>     #define check_graph chaco_check_graph
+> #endif
+> 
+
+added #include "defs.h" to the following:
+assign/assign_out.c
+eigen/get_extval.c
+klvspiff/matching.c
+misc/timing.c
+util/bail.c
+util/checkpnt.c
+util/doubleout.c
+util/smalloc.c
+util/strout.c
+
+[jschierm@astrid code]$ diff Makefile_old Makefile | more
+4,5c4,9
+< IFLAG =               -Imain
+< CFLAGS =      -O2
+---
+> IFLAG =               -Imain -I/usr/local/pkgs/matlab-7.6/extern/include
+> #CFLAGS =     -O2
+> #OFLAGS =     -O2
+> #CFLAGS =     -fPIC -fno-omit-frame-pointer -D_GNU_SOURCE -pthread
+> -fexceptions
+> CFLAGS =      -fPIC -fno-omit-frame-pointer -pthread -fexceptions -DMATLAB
+> #CFLAGS =     -fPIC -fno-omit-frame-pointer -pthread -fexceptions
+
+8/25/09:
+
+added macro for fprintf to capture missing output:
+[jschierm@astrid main]$ diff defs_old.h defs.h
+11a12,27
+> 
+> #ifdef MATLAB
+>     #include "mat.h"
+>     #include "mex.h"
+>     #include "matrix.h"
+>    
+>     #define printf mexPrintf
+>     #define fprintf(file,...) (file == stdout || file == stderr ? mexPrintf(__VA_ARGS__) : fprintf(file,__VA_ARGS__))
+>     #define malloc mxMalloc
+>     #define calloc mxCalloc
+>     #define realloc mxRealloc
+>     #define free mxFree
+> 
+>     #define check_graph chaco_check_graph
+> #endif
+> 
+
+6/15/10:
+
+- moved check_graph rename outside of MATLAB compiler directive.
+- created library chaco.a (without MATLAB compiler directive) for Chaco x-layer to link and implemented it in chaco stand-alone link.
+

@@ -1,0 +1,76 @@
+%Geometry specific to Experiments C and D  
+rad=800000;
+nv=md.mesh.numberofvertices; 
+for i=1:nv,
+	dist=sqrt(md.mesh.x(i).^2+md.mesh.y(i)^2);
+	if (dist <= rad)
+		md.geometry.thickness(i)=3000.0;
+	else
+		md.geometry.thickness(i)=0; 
+	end
+end
+md.geometry.thickness=md.geometry.thickness';
+md.geometry.base=zeros(md.mesh.numberofvertices,1); 
+md.geometry.surface=md.geometry.thickness+md.geometry.base; 
+
+%Ice density used for benchmarking, not 917 kg/m^3
+md.materials.rho_ice=1000; %kg m^3
+
+%GIA parameters specific to Experiments A  and B
+md.gia=giaivins();
+md.gia.mantle_viscosity=10^21*ones(md.mesh.numberofvertices,1);    %in Pa.s
+md.gia.lithosphere_thickness=100*ones(md.mesh.numberofvertices,1); %in km
+md.materials.lithosphere_shear_modulus=6.7*10^10;                  %in Pa
+md.materials.lithosphere_density=3.32;                             %in g/cm^3
+md.materials.mantle_shear_modulus=1.45*10^11;                      %in Pa
+md.materials.mantle_density=3.34;                                  %in g/cm^3
+
+%Initial velocity 
+x     = archread('../Data/SquareSheetConstrained.arch','x');
+y     = archread('../Data/SquareSheetConstrained.arch','y');
+vx    = archread('../Data/SquareSheetConstrained.arch','vx');
+vy    = archread('../Data/SquareSheetConstrained.arch','vy');
+index = archread('../Data/SquareSheetConstrained.arch','index');
+
+x = x{1};
+y = y{1};
+vx = vx{1};
+vy = vy{1};
+index = index{1};
+
+md.initialization.vx=InterpFromMeshToMesh2d(index,x,y,vx,md.mesh.x,md.mesh.y);
+md.initialization.vy=InterpFromMeshToMesh2d(index,x,y,vy,md.mesh.x,md.mesh.y);
+clear vx vy x y index;
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature=(273.-20.)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+%Friction
+md.friction.coefficient=20.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Numerical parameters
+md.groundingline.migration='None';
+md.masstransport.stabilization=1.;
+md.thermal.stabilization=1.;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.stressbalance.restol=0.05;
+md.steadystate.reltol=0.05;
+md.stressbalance.reltol=0.05;
+md.stressbalance.abstol=NaN;
+md.timestepping.time_step=1.;
+md.timestepping.final_time=3.;
+
+%Boundary conditions:
+md=SetIceSheetBC(md);
+
+%Change name so that no test have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

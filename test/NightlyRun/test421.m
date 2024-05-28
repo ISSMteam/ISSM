@@ -1,0 +1,19 @@
+%Test Name: SquareSheetShelfStressHOFS3dTiling
+md=triangle(model(),'../Exp/Square.exp',180000.);
+md=setmask(md,'../Exp/SquareShelf.exp','');
+md=parameterize(md,'../Par/SquareSheetShelf.par');
+md=extrude(md,5,1.);
+md=setflowequation(md,'FS','../Exp/SquareHalfRight.exp','fill','HO');
+md.cluster=generic('name',oshostname(),'np',3);
+md=solve(md,'Stressbalance');
+
+%Fields and tolerances to track changes
+field_names     ={'Vx','Vy','Vz','Vel','Pressure'};
+field_tolerances={2e-06,2e-06,2e-05,2e-06,3e-06};
+field_values={...
+	(md.results.StressbalanceSolution.Vx),...
+	(md.results.StressbalanceSolution.Vy),...
+	(md.results.StressbalanceSolution.Vz),...
+	(md.results.StressbalanceSolution.Vel),...
+	(md.results.StressbalanceSolution.Pressure),...
+	};

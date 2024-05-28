@@ -1,0 +1,53 @@
+disp('      creating thickness');
+hmin=0.01;
+hmax=2756.7;
+radius=sqrt((md.mesh.x).^2+(md.mesh.y).^2);
+radiusmax=max(radius);
+radius(find(radius>(1.-10^-9)*radiusmax))=radiusmax;    %eliminate roundoff issues in next statement
+md.geometry.thickness=hmin*ones(size(md.mesh.x,1),1)+hmax*(4.*((1./2.)^(4./3.)*ones(size(md.mesh.x,1),1)-((radius)./(2.*radiusmax)).^(4./3.))).^(3./8.);
+md.geometry.base=0.*md.geometry.thickness;
+md.geometry.surface=md.geometry.base+md.geometry.thickness;
+
+disp('      creating drag');
+md.friction.coefficient=20.*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+disp('      creating temperatures');
+tmin=238.15; %K
+st=1.67*10^-2/1000.; %k/m
+md.initialization.temperature=tmin+st*radius;
+md.basalforcings.geothermalflux=4.2*10^-2*ones(md.mesh.numberofvertices,1);
+
+disp('      creating flow law parameter');
+md.materials.rheology_B=6.81*10^7*ones(md.mesh.numberofvertices,1); %to have the same B as the analytical solution 
+md.materials.rheology_n=3.*ones(md.mesh.numberofelements,1);
+
+disp('      creating surface mass balance');
+smb_max=0.5; %m/yr
+sb=10^-2/1000.; %m/yr/m
+rel=450.*1000.; %m
+md.smb.mass_balance=min(smb_max,sb*(rel-radius));
+
+disp('      creating velocities');
+constant=0.3;
+md.inversion.vx_obs=constant/2.*md.mesh.x.*(md.geometry.thickness).^-1;
+md.inversion.vy_obs=constant/2.*md.mesh.y.*(md.geometry.thickness).^-1;
+md.inversion.vel_obs=sqrt((md.inversion.vx_obs).^2+(md.inversion.vy_obs).^2);
+md.initialization.vx=zeros(md.mesh.numberofvertices,1);
+md.initialization.vy=zeros(md.mesh.numberofvertices,1);
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Deal with boundary conditions:
+disp('      boundary conditions for stressbalance model:');
+md=SetMarineIceSheetBC(md,'./RoundFront.exp');
+
+radius=sqrt((md.mesh.x).^2+(md.mesh.y).^2);
+pos=find(radius==min(radius));
+md.mesh.x(pos)=0.; md.mesh.y(pos)=0.; %the closest node to the center is changed to be exactly at the center
+
+md.stressbalance.spcvx(pos)=0.;
+md.stressbalance.spcvy(pos)=0.;
+md.stressbalance.spcvz(pos)=0.;

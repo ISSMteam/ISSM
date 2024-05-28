@@ -1,0 +1,84 @@
+MATLAB_PATH="/usr/local/MATLAB/R2023b"
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=${ISSM_DIR} \
+	--disable-static \
+	--enable-development \
+	--enable-debugging \
+	--with-numthreads=4 \
+	--without-kriging \
+	--without-kml \
+	--without-Love \
+	--with-matlab-dir=${MATLAB_PATH} \
+	--with-python-version=3.7 \
+	--with-python-dir=/usr \
+	--with-python-numpy-dir=/usr/local/lib/python3.7/dist-packages/numpy \
+	--with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include  \
+	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+	--with-ampi-dir=${ISSM_DIR}/externalpackages/adjoinablempi/install \
+	--with-metis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
+	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
+	--with-adolc-dir=${ISSM_DIR}/externalpackages/adolc/install \
+	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+# NOTE: The PETSc libraries are compiled but not used as they conflict with
+#		ADOL-C: PETSc is really just being used as an installer for other
+#		external packages.
+#
+EXTERNALPACKAGES="
+	autotools		install-linux.sh
+	cmake			install.sh
+	petsc			install-3.20-linux.sh
+	gsl				install.sh
+	triangle		install-linux.sh
+	adjoinablempi	install-linux.sh
+	adolc			install-with_ampi.sh
+	semic			install.sh
+	shell2junit		install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# PYTHON and MATLAB testing
+MATLAB_TEST=1
+PYTHON_TEST=1
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+# 		compilation.
+#
+NUMCPUS_INSTALL=8
+
+# Number of CPUs used in the nightly runs
+NUMCPUS_RUN=2
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information.
+#
+# NOTE:
+# - test3010 is skipped because it triggers GEMB module and a subsequent
+#	failure on ampioff configuration (really, likely a segmentation fault)
+#
+MATLAB_NROPTIONS="'benchmark','adolc','exclude',[3010 3019 3020 3021 3110]"
+PYTHON_NROPTIONS="--benchmark adolc --exclude 3010 3019 3020 3021 3110"

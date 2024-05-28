@@ -1,0 +1,4 @@
+We put here all old classes so that matlab can still load old models
+When an object is renamed or deleted, matlab is not able to load it
+anymore. We keep it here so that matlab can load the object (just remove all
+methods)

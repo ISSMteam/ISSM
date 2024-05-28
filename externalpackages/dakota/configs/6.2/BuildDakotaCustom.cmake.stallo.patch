@@ -1,0 +1,42 @@
+52,55c52,55
+< #set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} <flag>" 
+< #     CACHE STRING "C Flags my platform" )
+< #set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} <flag>"
+< #     CACHE STRING "CXX Flags for my platform" )
+---
+> set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -L/lib64/libc.so.6 -L/lib64/ -lpthread -ldl -lm" 
+>      CACHE STRING "C Flags my platform" )
+> set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -L/lib64/libc.so.6 -L/lib64/ -lpthread -ldl -lm"
+>      CACHE STRING "CXX Flags for my platform" )
+67a68,78
+> set( DAKOTA_HAVE_MPI ON
+>  CACHE BOOL "Always build with MPI enabled" FORCE)
+> set( MPI_INCLUDE_PATH
+>  "/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/include64/"
+>  CACHE FILEPATH "Use installed MPI headers" FORCE)
+> set( MPI_LIBRARY
+>  "/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/lib64/libmpi.so"
+>  CACHE FILEPATH "Use installed MPI library" FORCE)
+> set( MPI_EXTRA_LIBRARY
+>  "/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/lib64/libmpi.so"
+> CACHE FILEPATH "Use MPI extra libraries" FORCE)
+73,77c84,88
+< #set(BOOST_ROOT
+< #    "path/to/custom/Boost/install/directory"
+< #    CACHE PATH "Use non-standard Boost install" FORCE)
+< #set( Boost_NO_SYSTEM_PATHS TRUE
+< #     CACHE BOOL "Supress search paths other than BOOST_ROOT" FORCE)
+---
+> set(BOOST_ROOT
+>     "$ENV{ISSM_DIR}/externalpackages/boost/install"
+>     CACHE PATH "Use non-standard Boost install" FORCE)
+> set( Boost_NO_SYSTEM_PATHS TRUE
+>      CACHE BOOL "Supress search paths other than BOOST_ROOT" FORCE)
+91,93c102,104
+< #set( CMAKE_INSTALL_PREFIX
+< #     "/path/to/Dakota/installation"
+< #     CACHE PATH "Path to Dakota installation" )
+---
+> set( CMAKE_INSTALL_PREFIX
+>      "$ENV{ISSM_DIR}/externalpackages/dakota/install"
+>      CACHE PATH "Path to Dakota installation" )

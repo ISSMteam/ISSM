@@ -1,0 +1,144 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>pix2vec</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2011-02-19"><meta name="DC.source" content="pix2vec_help.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>pix2vec</h1><!--introduction--><p>Convert MEALPix pixel numbers to cartesian location vectors</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Input Arguments</a></li><li><a href="#3">Return Arguments</a></li><li><a href="#4">Example</a></li><li><a href="#5">See also</a></li><li><a href="#6">Requires</a></li></ul></div><h2>Syntax<a name="1"></a></h2><pre>[x,y,z] = pix2vec(nSide,pix,'Param1',Value1,...)
+xyz = pix2vec(nSide,pix,'Param1',Value1,...)</pre><h2>Input Arguments<a name="2"></a></h2><pre>nSide       HEALPix resolution parameter
+pix         (optional) numeric array of pixel numbers</pre><pre>Param       Value
+'nest'      indexing scheme is nested (true | {false})</pre><h2>Return Arguments<a name="3"></a></h2><pre>x,y,z       size(pix) size(pix) numeric array of unit vector coordinate
+            components corresponding to pixels pix
+xyz         size(pix) size(pix) cell array of cartesian unit vectors
+            corresponding to pixels pix</pre><h2>Example<a name="4"></a></h2><pre class="codeinput">nSide = 2^4;
+nPix = nSide2nPix(nSide);
+pix0 = reshape(1:6,3,2);
+pix1 = reshape(nPix+(-5:0),3,2);
+pix = [pix0,pix1];
+xyz = pix2vec(nSide,pix);
+xyzn = pix2vec(nSide,pix,<span class="string">'nest'</span>,true);
+size(xyz)
+[xyz{1},xyz{end}]
+[xyzn{1},xyzn{end}]
+</pre><pre class="codeoutput">
+ans =
+
+     3     4
+
+
+ans =
+
+    0.0361    0.0361
+    0.0361   -0.0361
+    0.9987   -0.9987
+
+
+ans =
+
+    0.7065    0.7065
+    0.7065   -0.7065
+    0.0417   -0.0417
+
+</pre><h2>See also<a name="5"></a></h2><p>ang2pix, pix2ang, vec2pix</p><h2>Requires<a name="6"></a></h2><p>nest2ring</p><p>Copyright 2010-2011 Lee Samuel Finn. <a href="mealpix_notices.html">Terms of Use</a>.</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% pix2vec
+% Convert MEALPix pixel numbers to cartesian location vectors
+
+%% Syntax
+%  [x,y,z] = pix2vec(nSide,pix,'Param1',Value1,...)
+%  xyz = pix2vec(nSide,pix,'Param1',Value1,...)
+
+%% Input Arguments
+%  nSide       HEALPix resolution parameter
+%  pix         (optional) numeric array of pixel numbers
+%
+%  Param       Value
+%  'nest'      indexing scheme is nested (true | {false}) 
+
+%% Return Arguments
+%  x,y,z       size(pix) size(pix) numeric array of unit vector coordinate
+%              components corresponding to pixels pix
+%  xyz         size(pix) size(pix) cell array of cartesian unit vectors
+%              corresponding to pixels pix
+
+%% Example
+nSide = 2^4;
+nPix = nSide2nPix(nSide);
+pix0 = reshape(1:6,3,2);
+pix1 = reshape(nPix+(-5:0),3,2);
+pix = [pix0,pix1];
+xyz = pix2vec(nSide,pix);
+xyzn = pix2vec(nSide,pix,'nest',true);
+size(xyz)
+[xyz{1},xyz{end}]
+[xyzn{1},xyzn{end}]
+
+%% See also
+% ang2pix, pix2ang, vec2pix
+
+%% Requires
+% nest2ring
+
+%%
+% Copyright 2010-2011 Lee Samuel Finn. <mealpix_notices.html Terms of Use>.
+##### SOURCE END #####
+--></body></html>

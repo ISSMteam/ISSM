@@ -1,0 +1,8 @@
+chaco build must be able to see malloc.h
+sudo ln -s /usr/include/malloc/malloc.h /usr/include/malloc.h
+or else make sure you include the malloc directory in path
+
+if on sierra, you must download a version of malloc.h -
+one can be found here: http://web.mit.edu/jhawk/mnt/spo/phone-project/include/malloc.h
+place this file in /usr/local/include/, and run the sierra install script 
+

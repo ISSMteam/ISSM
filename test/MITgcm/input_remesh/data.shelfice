@@ -1,0 +1,16 @@
+# ===================================
+# | Parameters for SHELFICE package |
+# ===================================
+ &SHELFICE_PARM01
+ SHELFICEconserve = .TRUE.,
+ SHELFICEboundaryLayer = .TRUE.,
+ SHELFICEMassStepping = .TRUE.,
+ SHELFICEtopoFile='icetopo.bin',
+ SHELFICEwriteState = .TRUE.,
+ SHELFICEMassStepping = .TRUE.,
+ SHELFICEremeshFrequency = 600.0,
+ SHELFICEsplitThreshold = 1.12,
+ SHELFICEmergeThreshold = 0.10,
+ SHELFICEmassFile='shelficemass.bin',
+ SHELFICEMassDynTendFile='shelfice_dmdt.bin',
+ &

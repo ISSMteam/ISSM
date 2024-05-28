@@ -1,0 +1,84 @@
+MATLAB_PATH="/usr/local/MATLAB/R2020a"
+
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
+ISSM_CONFIG='\
+	--prefix=${ISSM_DIR} \
+	--disable-static \
+	--enable-development \
+	--enable-debugging \
+	--with-numthreads=4 \
+	--with-matlab-dir=${MATLAB_PATH} \
+	--with-python-dir=/usr \
+	--with-python-numpy-dir=/usr/lib64/python2.7/site-packages/numpy/core/include/numpy \
+	--with-fortran-lib="-L/usr/lib/gcc/x86_64-redhat-linux/7 -lgfortran" \
+	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
+	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpifort -lmpi" \
+	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-metis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-hdf5-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-petsc-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-boost-dir=${ISSM_DIR}/externalpackages/boost/install \
+	--with-proj-dir=${ISSM_DIR}/externalpackages/proj/install \
+	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
+	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+'
+
+#-------------------#
+# External Packages #
+#-------------------#
+
+EXTERNALPACKAGES="
+	autotools		install-linux.sh
+	cmake			install.sh
+	petsc			install-3.14-linux.sh
+	boost			install-1.7-linux.sh
+	curl			install-7-linux.sh
+	netcdf			install-4.7-parallel.sh
+	proj			install-6.sh
+	gdal			install-3-python.sh
+	gshhg			install.sh
+	gmt				install-6-linux.sh
+	gmsh			install-4-linux.sh
+	triangle		install-linux.sh
+	m1qn3			install-linux.sh
+	semic			install.sh
+	shell2junit		install.sh
+"
+
+#---------#
+# Testing #
+#---------#
+
+# Test suites
+MATLAB_TEST=1
+PYTHON_TEST=1
+JAVASCRIPT_TEST=0
+EXAMPLES_TEST=0
+
+# Number of CPUs used in ISSM compilation
+#
+# NOTE: One is usually safer as some packages are very sensitive to parallel
+#       compilation.
+#
+NUMCPUS_INSTALL=8
+
+# Number of cpus used in the nightly runs
+#
+# NOTE: Possible problem of access to all_vertices.txt if more than 1.
+#
+NUMCPUS_RUN=1
+
+# Nightly run options
+#
+# See documentation in test/NightlyRun/runme.* for more information.
+#
+# NOTE:
+# - Test 2021 is excluded as Gmsh produces different-sized meshes on macOS and Linux for 3d objects (archives are generated on macOS).
+#
+MATLAB_NROPTIONS="'benchmark','slc','exclude',[2021]"
+PYTHON_NROPTIONS="--benchmark slc --exclude 2021"

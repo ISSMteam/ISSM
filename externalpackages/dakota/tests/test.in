@@ -1,0 +1,36 @@
+method,
+	nond_sampling
+	  seed             = 1234
+	  rng                rnum2
+	  samples          = 2000
+	  sample_type        lhs
+	  distribution cumulative
+	  num_probability_levels = 9 
+	  probability_levels =
+	    0.0001 0.001 0.01 0.25 0.5 0.75 0.99 0.999
+	    0.9999
+
+model,
+	single
+
+variables,
+	normal_uncertain = 2
+	  nuv_means =
+	    1 1 
+	  nuv_std_deviations =
+	    0.1 0.1 
+	  nuv_descriptors =
+	    'x1' 'x2'
+
+interface,
+	direct
+	  analysis_driver = 'plugin_text_book'
+       evaluation_scheduling master 
+       processors_per_evaluation = 3
+
+responses,
+	num_response_functions = 1
+	response_descriptors =
+	  'MaxVel' 
+	no_gradients
+	no_hessians

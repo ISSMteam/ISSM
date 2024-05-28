@@ -1,0 +1,90 @@
+--- src/cmake/modules/FindGDAL.cmake	2024-01-07 01:32:40
++++ FindGDAL.cmake	2024-03-31 19:36:43
+@@ -81,12 +81,25 @@
+ 			ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+ 			OUTPUT_VARIABLE GDAL_CONFIG_LIBS)
+ 		if (GDAL_CONFIG_LIBS)
+-			string (REGEX MATCHALL "-l[^ ]+" _gdal_dashl ${GDAL_CONFIG_LIBS})
+-			string (REGEX REPLACE "-l" "" _gdal_lib "${_gdal_dashl}")
+-			string (REGEX MATCHALL "-L[^ ]+" _gdal_dashL ${GDAL_CONFIG_LIBS})
+-			string (REGEX REPLACE "-L" "" _gdal_libpath "${_gdal_dashL}")
++			string (REGEX MATCHALL "(^| )-l[^ ]+" _gdal_dashl ${GDAL_CONFIG_LIBS})
++			string (REGEX REPLACE "(^| )-l" "" _gdal_lib "${_gdal_dashl}")
++			string (REGEX MATCHALL "(^| )-L[^ ]+" _gdal_dashL ${GDAL_CONFIG_LIBS})
++			string (REGEX REPLACE "(^| )-L" "" _gdal_libpath "${_gdal_dashL}")
+ 		endif (GDAL_CONFIG_LIBS)
++		execute_process (COMMAND ${GDAL_CONFIG} --dep-libs
++			ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
++			OUTPUT_VARIABLE GDAL_CONFIG_DEP_LIBS)
++		if (GDAL_CONFIG_DEP_LIBS)
++			string (REGEX MATCHALL "(^| )-l[^ ]+" _gdal_dashl ${GDAL_CONFIG_DEP_LIBS})
++			string (REGEX REPLACE "(^| )-l" "" _gdal_dep_lib "${_gdal_dashl}")
++			string (REGEX MATCHALL "(^| )-L[^ ]+" _gdal_dashL ${GDAL_CONFIG_DEP_LIBS})
++			string (REGEX REPLACE "(^| )-L" "" _gdal_dep_libpath "${_gdal_dashL}")
++		endif (GDAL_CONFIG_DEP_LIBS)
+ 	endif (GDAL_CONFIG)
++	if (_gdal_dep_lib)
++		list (REMOVE_DUPLICATES _gdal_dep_lib)
++		list (REMOVE_ITEM _gdal_dep_lib gdal)
++	endif (_gdal_dep_lib)
+ endif (UNIX AND NOT GDAL_FOUND)
+ 
+ find_path (GDAL_INCLUDE_DIR gdal.h
+@@ -129,6 +142,57 @@
+ 	/usr/local
+ )
+ 
++# find all libs that gdal-config --dep-libs reports
++foreach (_extralib ${_gdal_dep_lib})
++	find_library (_found_lib_${_extralib}
++		NAMES ${_extralib}
++		HINTS
++		${HDF5_ROOT}
++		$ENV{HDF5_ROOT}
++		${NETCDF_ROOT}
++		$ENV{NETCDF_ROOT}
++		${ZLIB_ROOT}
++		$ENV{ZLIB_ROOT}
++		${CURL_ROOT}
++		$ENV{CURL_ROOT}
++		PATH_SUFFIXES lib
++		PATHS 
++		${_gdal_dep_libpath}
++	)
++	list (APPEND GDAL_LIBRARY ${_found_lib_${_extralib}})
++endforeach (_extralib)
++
++# append manually-supplied libs
++# find all manually-supplied libs
++if (GDAL_EXTRA_LIBS)
++	# Ensure -l is preceded by whitespace to not match
++	# '-l' in '-L/usr/lib/x86_64-linux-gnu/hdf5/serial'
++	string (REGEX MATCHALL "(^| )-l[^ ]+" _gdal_extra_lib_dashl ${GDAL_EXTRA_LIBS})
++	string (REGEX REPLACE "(^| )-l" "" _gdal_extra_lib "${_gdal_extra_lib_dashl}")
++	string (REGEX MATCHALL "(^| )-L[^ ]+" _gdal_extra_lib_dashL ${GDAL_EXTRA_LIBS})
++	string (REGEX REPLACE "(^| )-L" "" _gdal_extra_libpath "${_gdal_extra_lib_dashL}")
++	foreach (_extralib ${_gdal_extra_lib})
++		find_library (_found_lib_${_extralib}
++			NAMES ${_extralib}
++			PATH_SUFFIXES lib
++			PATHS 
++			${_gdal_extra_libpath}
++		)
++		list (APPEND GDAL_LIBRARY ${_found_lib_${_extralib}})
++	endforeach (_extralib)
++	# Retrieve static library names
++	string(REGEX MATCHALL "[-_/a-zA-Z0-9]+\\.a" _gdal_extra_static_lib "${GDAL_EXTRA_LIBS}")
++	foreach (_extralib ${_gdal_extra_static_lib})
++		find_library (${_extralib}
++			NAMES ${_extralib}
++			PATH_SUFFIXES lib
++			PATHS 
++			${_gdal_extra_libpath}
++		)
++		list (APPEND GDAL_LIBRARY ${_extralib})
++	endforeach (_extralib)
++endif (GDAL_EXTRA_LIBS)
++
+ include (FindPackageHandleStandardArgs)
+ find_package_handle_standard_args (GDAL DEFAULT_MSG GDAL_LIBRARY GDAL_INCLUDE_DIR)
+ 

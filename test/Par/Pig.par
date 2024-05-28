@@ -1,0 +1,65 @@
+%Start defining model parameters here
+
+%Geometry and observation
+x         = archread('../Data/Pig.arch','x');
+y         = archread('../Data/Pig.arch','y');
+vx_obs    = archread('../Data/Pig.arch','vx_obs');
+vy_obs    = archread('../Data/Pig.arch','vy_obs');
+index     = archread('../Data/Pig.arch','index');
+surface   = archread('../Data/Pig.arch','surface');
+thickness = archread('../Data/Pig.arch','thickness');
+bed       = archread('../Data/Pig.arch','bed');
+
+x			 = x{1};
+y			 = y{1};
+vx_obs	 = vx_obs{1};
+vy_obs	 = vy_obs{1};
+index		 = index{1};
+surface	 = surface{1};
+thickness = thickness{1};
+bed       = bed{1};
+
+md.inversion.vx_obs   =InterpFromMeshToMesh2d(index,x,y,vx_obs,md.mesh.x,md.mesh.y);
+md.inversion.vy_obs   =InterpFromMeshToMesh2d(index,x,y,vy_obs,md.mesh.x,md.mesh.y);
+md.geometry.surface  =InterpFromMeshToMesh2d(index,x,y,surface,md.mesh.x,md.mesh.y);
+md.geometry.thickness=InterpFromMeshToMesh2d(index,x,y,thickness,md.mesh.x,md.mesh.y);
+md.geometry.base=md.geometry.surface-md.geometry.thickness;
+md.geometry.bed =md.geometry.base;
+pos = find(md.mask.ocean_levelset<0);
+md.geometry.bed(pos) =InterpFromMeshToMesh2d(index,x,y,bed,md.mesh.x(pos),md.mesh.y(pos));
+clear surface thickness vx_obs vy_obs x y index;
+md.initialization.vx=md.inversion.vx_obs;
+md.initialization.vy=md.inversion.vy_obs;
+md.initialization.vz=zeros(md.mesh.numberofvertices,1);
+md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
+
+%Materials
+md.initialization.temperature=(273-20)*ones(md.mesh.numberofvertices,1);
+md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
+md.initialization.temperature=md.initialization.temperature;
+
+%Friction
+md.friction.coefficient=50*ones(md.mesh.numberofvertices,1);
+md.friction.coefficient(find(md.mask.ocean_levelset<0.))=0.;
+md.friction.p=ones(md.mesh.numberofelements,1);
+md.friction.q=ones(md.mesh.numberofelements,1);
+
+%Numerical parameters
+md.masstransport.stabilization=1;
+md.verbose=verbose(0);
+md.settings.waitonlock=30;
+md.timestepping.time_step=1;
+md.timestepping.final_time=2;
+md.stressbalance.restol=0.05;
+md.stressbalance.reltol=1;
+md.steadystate.reltol=1;
+md.stressbalance.abstol=NaN;
+md.groundingline.migration='None';
+
+%Boundary conditions:
+md=SetMarineIceSheetBC(md);
+
+%Change name so that no test have the same name
+A=dbstack;
+if (length(A)>2), md.miscellaneous.name=A(3).file(1:end-2); end

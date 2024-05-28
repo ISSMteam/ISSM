@@ -1,0 +1,15 @@
+--- surface_physics.f90	2018-12-10 08:27:55.000000000 +0100
++++ my_surface_physics.f90	2018-12-10 08:58:14.000000000 +0100
+@@ -775,9 +775,9 @@
+         n_ksub        = par%n_ksub
+ 
+         ! Read parameters from input namelist file
+-        open(7,file=trim(filename))
+-        read(7,nml=surface_physics)
+-        close(7)
++        !open(7,file=trim(filename))
++        !read(7,nml=surface_physics)
++        !close(7)
+ !         write(*,nml=surface_physics)
+ 
+         ! Store local parameter values in output object
