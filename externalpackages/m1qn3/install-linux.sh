@@ -23,6 +23,7 @@ rm -rf m1qn3-${VER}-distrib
 
 # Apply patches to src
 patch src/src/m1qn3.f patch/m1qn3.f.patch
+patch src/blas/ddot.f patch/ddot.f.patch
 
 # Compile and install
 if which mpifort 2>/dev/null; then

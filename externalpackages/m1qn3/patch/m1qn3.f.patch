@@ -1,5 +1,52 @@
---- src/src/m1qn3.f	2009-10-20 03:39:35
-+++ m1qn3.f	2024-05-06 11:12:30
+--- src/src/m1qn3.f	2024-05-28 16:31:58.142939793 -0400
++++ src2/src/m1qn3.f	2024-05-28 16:32:13.778621263 -0400
+@@ -124,7 +124,7 @@
+ c
+ c --- function
+ c
+-      double precision ddot,dnrmi
++      double precision ddot_m1qn3,dnrmi
+ c
+ c --- stop if reverse < 0 (m1qn3 should not be called with reverse < 0)
+ c
+--- src/src/m1qn3.f	2009-10-20 06:39:35.000000000 -0400
++++ m1qn3.f	2024-05-28 16:21:01.271069359 -0400
+@@ -373,7 +373,7 @@
+      &        /5x,"number of simulations: ",i13
+      &        /5x,"realized relative precision on g: ",1pd9.2)
+       if (normtype.eq.'two') then
+-          gnorm = sqrt(ddot(n,g,1,g,1))
++          gnorm = sqrt(ddot_m1qn3(n,g,1,g,1))
+       elseif (normtype.eq.'sup') then
+           gnorm = dnrmi(n,g)
+       elseif (normtype.eq.'dfn') then
+@@ -432,7 +432,7 @@
+ c
+ c         function
+ c
+-      double precision ddot,dnrmi
++      double precision ddot_m1qn3,dnrmi
+ c
+ c --- possible jumps
+ c     9998: call of the simulator in m1qn3a with indic = 1
+@@ -462,7 +462,7 @@
+       call prosca (n,g,g,ps,izs,rzs,dzs)
+       gnorm = dsqrt(ps)
+       if (normtype.eq.'two') then
+-          gnorms = sqrt(ddot(n,g,1,g,1))
++          gnorms = sqrt(ddot_m1qn3(n,g,1,g,1))
+       elseif (normtype.eq.'sup') then
+           gnorms = dnrmi(n,g)
+       elseif (normtype.eq.'dfn') then
+@@ -789,7 +789,7 @@
+ c
+       call prosca(n,g,g,ps,izs,rzs,dzs)
+       if (normtype.eq.'two') then
+-          gnorm = sqrt(ddot(n,g,1,g,1))
++          gnorm = sqrt(ddot_m1qn3(n,g,1,g,1))
+       elseif (normtype.eq.'sup') then
+           gnorm = dnrmi(n,g)
+       elseif (normtype.eq.'dfn') then
 @@ -802,7 +802,7 @@
       &        "  iter  simul  stepsize            f                |g|",
       &        "       |g|/|g0|"
