@@ -1,0 +1,16 @@
+*.a
+*.al
+*.la
+*.lo
+*.mexa64
+*.o
+*.pyc
+*.pyo
+*.so
+*.so.[0-9]*
+__pycache__
+.dirstamp
+.deps
+.DS_Store
+.libs
+Makefile.in
