@@ -1,5 +1,5 @@
---- src/src/m1qn3.f	2024-05-28 16:31:58.142939793 -0400
-+++ src2/src/m1qn3.f	2024-05-28 16:32:13.778621263 -0400
+--- src/src/m1qn3.f	2009-10-20 03:39:35
++++ m1qn3.f	2024-05-29 11:49:22
 @@ -124,7 +124,7 @@
  c
  c --- function
@@ -9,8 +9,6 @@
  c
  c --- stop if reverse < 0 (m1qn3 should not be called with reverse < 0)
  c
---- src/src/m1qn3.f	2009-10-20 06:39:35.000000000 -0400
-+++ m1qn3.f	2024-05-28 16:21:01.271069359 -0400
 @@ -373,7 +373,7 @@
       &        /5x,"number of simulations: ",i13
       &        /5x,"realized relative precision on g: ",1pd9.2)
