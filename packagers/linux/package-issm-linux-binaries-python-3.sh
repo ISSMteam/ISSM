@@ -30,6 +30,8 @@ alias grep=$(which grep)
 
 ## Constants
 #
+LIBGCC="/usr/lib/x86_64-linux-gnu/libgcc_s.so.1" # Important that this is the library itself
+LIBGCC_DIST="${ISSM_DIR}/lib/libgcc_s.so.1" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 LIBGFORTRAN="/usr/lib/x86_64-linux-gnu/libgfortran.so.5.0.0" # Important that this is the library itself
 LIBGFORTRAN_DIST="${ISSM_DIR}/lib/libgfortran.so.5" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 LIBGMT="${ISSM_DIR}/externalpackages/gmt/install/lib/libgmt.so.6.5.0" # Important that this is the library itself
@@ -72,6 +74,7 @@ echo "Modify generic"
 cat generic_static.py | sed -e "s/generic_static/generic/g" > generic.py
 
 echo "Moving certain shared libraries to lib/"
+cp ${LIBGCC} ${LIBGCC_DIST} 2>/dev/null
 cp ${LIBGFORTRAN} ${LIBGFORTRAN_DIST} 2>/dev/null
 cp ${LIBQUADMATH} ${LIBQUADMATH_DIST} 2>/dev/null
 cp ${LIBGMT} ${LIBGMT_DIST} 2>/dev/null
