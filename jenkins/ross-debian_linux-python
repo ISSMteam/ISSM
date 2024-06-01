@@ -67,4 +67,4 @@ NUMCPUS_RUN=2
 # - Tests 234, 418, and 420 are excluded because of large errors
 #
 MATLAB_NROPTIONS=""
-PYTHON_NROPTIONS="--exclude_name 'Dakota' --exclude 234 418 420"
+PYTHON_NROPTIONS="--exclude Dakota 234 418 420"

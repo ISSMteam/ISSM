@@ -506,7 +506,7 @@ if [ $PYTHON_TEST -eq 1 ]; then
 	done
 
 	# Check that Python did not exit in error
-	pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error" python_log.log`
+	pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error|error:" python_log.log`
 
 	if [ $pythonExitedInError -ne 0 ]; then
 		echo "----------Python exited in error!----------"
