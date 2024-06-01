@@ -33,7 +33,7 @@ rm python.log 2> /dev/null
 
 # Check that Python did not exit in error
 pythonExitCode=`echo $?`
-pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error" python.log`
+pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error|error:" python.log`
 
 if [[ ${pythonExitCode} -ne 0 || ${pythonExitedInError} -ne 0 ]]; then
 	echo "----------Python exited in error!----------"
