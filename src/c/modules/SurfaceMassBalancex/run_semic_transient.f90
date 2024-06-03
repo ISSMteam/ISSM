@@ -8,7 +8,7 @@ subroutine run_semic_transient(nx, ntime, nloop, sf_in, rf_in, swd_in, lwd_in, w
       Tamp, &
       tmin, tmax, tmid, mcrit, w_crit, tau_a, tau_f, afac, verbose, &
       tsurf_out, smb_out, smbi_out, smbs_out, saccu_out, smelt_out,  refr_out, alb_out, & 
-      alb_snow_out,hsnow_out,hice_out,qmr_out) !{{{
+      alb_snow_out,hsnow_out,hice_out,qmr_out,runoff_out) !{{{
 
    use utils
    use surface_physics
@@ -60,6 +60,7 @@ subroutine run_semic_transient(nx, ntime, nloop, sf_in, rf_in, swd_in, lwd_in, w
    double precision, intent(out), dimension(nx):: hice_out    
    double precision, intent(out), dimension(nx):: hsnow_out   
    double precision, intent(out), dimension(nx):: qmr_out     
+   double precision, intent(out), dimension(nx):: runoff_out     
 
    double precision :: total_time, start, finish
 
@@ -238,6 +239,7 @@ subroutine run_semic_transient(nx, ntime, nloop, sf_in, rf_in, swd_in, lwd_in, w
             hsnow_out         =surface%now%hsnow
             hice_out          =surface%now%hice
             qmr_out           =surface%now%qmr_res
+            runoff_out        =surface%now%runoff   ! runoff values. [m/sec]
          end if
       end do
    end do

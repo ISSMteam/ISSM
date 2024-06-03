@@ -94,7 +94,7 @@ class SMBsemic(object):
         s += '{}\n'.format(fielddisplay(self, 'desfac', 'desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)'))
         s += '{}\n'.format(fielddisplay(self, 'rdl', 'longwave downward radiation decrease (default is 0.29 [W/m^2/km]; Marty et al. 2002)'))
         s += '{}\n'.format(fielddisplay(self, 's0gcm', 'GCM reference elevation; (default is 0) [m]'))
-        s += '{}\n'.format(fielddisplay(self,'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)'))
+        s += '{}\n'.format(fielddisplay(self, 'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)'))
         if self.ismethod: # transient mode
             s += '{}\n'.format(fielddisplay(self,'desfacElevation','desertification elevation (default is 2000 m; Vizcaino et al. 2010)'))
             s += '{}\n'.format(fielddisplay(self,'Tamp','amplitude of diurnal cycle [K]'))
@@ -127,11 +127,13 @@ class SMBsemic(object):
             s += '{}\n'.format(fielddisplay(self, 'tmin', 'minimum temperature for which albedo decline become effective. (default: 263.15 K)[unit: K])'))
             s += '{}\n'.format(fielddisplay(self, 'tmax', 'maxmium temperature for which albedo decline become effective. This value should be fixed. (default: 273.15 K)[unit: K])'))
         elif self.albedo_scheme == 2:
-            s += '\n\tSEMIC snow albedo parameters of ISBA.? where is citation?\n'
+            s += '\n\tSEMIC snow albedo parameters of ISB (Douville et al., 1995).\n'
             s += '{}\n'.format(fielddisplay(self, 'mcrit', 'critical melt rate (default: 6e-8) [unit: m/sec]'))
             s += '{}\n'.format(fielddisplay(self, 'wcrit', 'critical liquid water content (default: 15) [unit: kg/m2]'))
             s += '{}\n'.format(fielddisplay(self, 'tau_a', 'dry albedo decline [unit: 1/day]'))
             s += '{}\n'.format(fielddisplay(self, 'tau_f', 'wet albedo decline [unit: 1/day]'))
+            s += '\n\tReference'
+            s += '\tDouville, H., Royer, J.-F., and Mahfouf, J.-F.: A new snow parameterization for the Météo-France climate model. Part I: validation in stand-alone experiments, Climate Dynamics, 12, 21–35, https://doi.org/10.1007/s003820050092, 1995.'
         elif self.albedo_scheme == 3:
             s += '\n\tSEMIC snow albedo parameters of Denby et al. (2002 Tellus)\n'
             s += '{}\n'.format(fielddisplay(self,'mcrit','critical melt rate (defaut: 6e-8) [unit: m/sec]'))
@@ -174,7 +176,7 @@ class SMBsemic(object):
             list = ['default','SmbMassBalance', 'SmbMassBalanceSnow', 'SmbMassBalanceIce',
                   'SmbMelt', 'SmbRefreeze','SmbAccumulation',
                   'SmbHIce', 'SmbHSnow', 'SmbAlbedo', 'SmbAlbedoSnow', 'TemperatureSEMIC',
-                  'SmbSemicQmr', 'TotalSmb', 'TotalSmbMelt', 'TotalSmbRefreeze']
+                  'SmbSemicQmr', 'TotalSmb', 'TotalSmbMelt', 'TotalSmbRefreeze', 'SmbRunoff']
         else:
             list = ['default','SmbMassBalance']
         return list
