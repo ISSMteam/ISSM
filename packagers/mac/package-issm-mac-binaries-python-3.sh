@@ -25,16 +25,6 @@
 # Expand aliases within the context of this script
 shopt -s expand_aliases
 
-# NOTE: For some reason, calling svn from within the context of this script 
-#		gives,
-#
-#			svn: command not found
-#
-#		even though it is installed via Homebrew and available at the following 
-#		path.
-#
-alias svn=$(which svn)
-
 ## Override certain other aliases
 #
 alias cp=$(which cp)
@@ -157,7 +147,7 @@ if [ ${skip_tests} -eq 0 ]; then
 
 	# Check that Python did not exit in error
 	pythonExitCode=`echo $?`
-	pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error" python.log`
+	pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error|error:" python.log`
 
 	if [[ ${pythonExitCode} -ne 0 || ${pythonExitedInError} -ne 0 ]]; then
 		echo "----------Python exited in error!----------"
@@ -187,7 +177,7 @@ fi
 
 # Create package
 cd ${ISSM_DIR}
-svn cleanup --remove-ignored --remove-unversioned test # Clean up test directory (before copying to package)
+git clean -d -f test # Clean up test directory (before copying to package)
 echo "Copying assets to package: ${PKG}"
 cp -rf bin examples lib scripts share test ${PKG}
 mkdir ${PKG}/execution
