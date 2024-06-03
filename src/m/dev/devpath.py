@@ -24,8 +24,6 @@ if ISSM_DIR + '/test/NightlyRun' not in sys.path:
     sys.path.append(ISSM_DIR + '/test/NightlyRun')
 if ISSM_DIR + '/lib' not in sys.path:
     sys.path.append(ISSM_DIR + '/lib')
-if ISSM_DIR + '/lib-precompiled' not in sys.path:
-    sys.path.append(ISSM_DIR + '/lib-precompiled') # load precompiled MEX files; remove after MEX file compilation is supported on Silicon-based Macs
 if ISSM_DIR + '/src/wrappers/python/.libs' not in sys.path:
     sys.path.append(ISSM_DIR + '/src/wrappers/python/.libs')
 

@@ -38,10 +38,5 @@ else
 	fprintf('\n  ISSM development path correctly loaded\n\n');
 end
 
-warning ('off','all');
-addpath([ISSM_DIR '/lib-precompiled']); %load MEX files (precompiled; remove after MEX file compilation is supported on Silicon-based Macs)
-warning ('on','all');
-clear ISSM_DIR;
-
 %disable matlab bell!
 beep off;
