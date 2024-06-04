@@ -44,6 +44,7 @@ LIBQUADMATH_DIST="${ISSM_DIR}/lib/libquadmath.so.0" # Important the file name ma
 ## Environment
 #
 export PATH="${ISSM_DIR}/bin:$(getconf PATH)" # Ensure that we pick up binaries from 'bin' directory rather than 'externalpackages'
+source ~/.venv/issm/bin/activate
 
 ## Parse options
 #
