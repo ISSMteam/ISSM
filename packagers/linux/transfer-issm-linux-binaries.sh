@@ -16,7 +16,7 @@
 
 # Transfer package to ISSM Web site
 echo "Transferring package to ISSM Web site"
-scp -i ~/.ssh/debian_12_vm_to_ross ${COMPRESSED_PKG} jenkins@ross.ics.uci.edu:/var/www/html/${COMPRESSED_PKG}
+scp -i ~/.ssh/debian_12_vm-to-ross ${COMPRESSED_PKG} jenkins@ross.ics.uci.edu:/var/www/html/${COMPRESSED_PKG}
 
 if [ $? -ne 0 ]; then
 	echo "Transfer failed! Verify connection then build this project again (with -t/--transferonly option to skip building and packaging)."
