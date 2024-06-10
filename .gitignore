@@ -1,3 +1,5 @@
+# Compiled source #
+#==================
 *.a
 *.al
 *.la
@@ -9,8 +11,63 @@
 *.so
 *.so.[0-9]*
 __pycache__
+bin/
+
+# OS generated files #
+#=====================
+.DS_Store
+
+# Autotools #
+#============
+.libs
 .dirstamp
 .deps
-.DS_Store
-.libs
 Makefile.in
+Makefile
+aclocal.m4
+config.h
+config.h.in
+config.h.in~
+config.log
+config.status
+configure
+configure.sh
+libtool
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+src/Makefile
+src/c/Makefile
+src/c/issm
+src/c/issm_slc
+src/c/kriging
+src/m/Makefile
+src/wrappers/Makefile
+src/wrappers/javascript/Makefile
+src/wrappers/matlab/Makefile
+src/wrappers/python/Makefile
+stamp-h1
+autom4te.cache
+aux-config
+
+# External Packages #
+#====================
+externalpackages/autotools/*.tar.gz
+externalpackages/autotools/install
+externalpackages/autotools/src
+externalpackages/m1qn3/*.tgz
+externalpackages/m1qn3/src
+externalpackages/petsc/install
+externalpackages/petsc/*.gz
+externalpackages/petsc/src
+externalpackages/triangle/install
+externalpackages/triangle/*.zip
+externalpackages/valgrind/install
+externalpackages/valgrind/src
+
+# Nightly runs #
+#===============
+test/NightlyRun/*.tar.gz
+test/NightlyRun/*.bin
