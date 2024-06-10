@@ -19,12 +19,14 @@ bin/
 
 # Autotools #
 #============
-.libs
-.dirstamp
 .deps
+.dirstamp
+.libs
 Makefile.in
 Makefile
 aclocal.m4
+autom4te.cache
+aux-config
 config.h
 config.h.in
 config.h.in~
@@ -33,6 +35,7 @@ config.status
 configure
 configure.sh
 libtool
+stamp-h1
 m4/libtool.m4
 m4/ltoptions.m4
 m4/ltsugar.m4
@@ -48,9 +51,6 @@ src/wrappers/Makefile
 src/wrappers/javascript/Makefile
 src/wrappers/matlab/Makefile
 src/wrappers/python/Makefile
-stamp-h1
-autom4te.cache
-aux-config
 
 # External Packages #
 #====================
@@ -59,15 +59,14 @@ externalpackages/autotools/install
 externalpackages/autotools/src
 externalpackages/m1qn3/*.tgz
 externalpackages/m1qn3/src
-externalpackages/petsc/install
 externalpackages/petsc/*.gz
 externalpackages/petsc/src
-externalpackages/triangle/install
 externalpackages/triangle/*.zip
+externalpackages/triangle/install
 externalpackages/valgrind/install
 externalpackages/valgrind/src
 
 # Nightly runs #
 #===============
-test/NightlyRun/*.tar.gz
 test/NightlyRun/*.bin
+test/NightlyRun/*.tar.gz
