@@ -24,7 +24,7 @@ def gmshplanet(*args):
     """
 
     # Get Gmsh version
-    subproc_args = 'gmsh -info 2>&1 | command grep \'Version\' | sed -e \'s/Version[[:blank:]]*:[[:blank:]]//\' | cut -d \'.\' -f1'
+    subproc_args = 'gmsh -info 2>&1 | grep \'Version\' | sed -e \'s/Version[[:blank:]]*:[[:blank:]]//\' | cut -d \'.\' -f1'
     subproc = subprocess.Popen(subproc_args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     outs, errs = subproc.communicate()
     try:
