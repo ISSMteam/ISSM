@@ -43,7 +43,7 @@ function mesh=gmshplanet(varargin)
 		setenv('PATH', [gmshpath ':' getenv('PATH')]);
 
 		%Get Gmsh version
-		[s,r]=system(['gmsh -info | command grep ''Version'' | sed -e ''s/Version[[:blank:]]*:[[:blank:]]//'' | cut -d ''.'' -f1']);
+		[s,r]=system(['gmsh -info | grep ''Version'' | sed -e ''s/Version[[:blank:]]*:[[:blank:]]//'' | cut -d ''.'' -f1']);
 		if contains(r, 'dyld'),
 			error(['gmshplanet: ' r]);
 		end
