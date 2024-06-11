@@ -5,9 +5,8 @@ import sys
 # Recover ISSM_DIR and USERNAME
 ISSM_DIR = os.getenv('ISSM_DIR')
 USERNAME = os.getenv('USER')
-JPL_SVN = os.getenv('JPL_SVN')
 if ISSM_DIR is None:
-    raise NameError('"ISSM_DIR" environment variable is empty! You should define ISSM_DIR in your .cshrc or .bashrc!')
+    raise NameError('"ISSM_DIR" environment variable is empty. You should define ISSM_DIR in your .zshrc or .bashrc')
 
 # Go through src/m and append any directory that contains a *.py file to PATH
 for root, dirs, files in os.walk(ISSM_DIR + '/src/m'):
@@ -26,15 +25,6 @@ if ISSM_DIR + '/lib' not in sys.path:
     sys.path.append(ISSM_DIR + '/lib')
 if ISSM_DIR + '/src/wrappers/python/.libs' not in sys.path:
     sys.path.append(ISSM_DIR + '/src/wrappers/python/.libs')
-
-# If using clusters, we need to have the path to the cluster settings directory
-if JPL_SVN is not None:
-    jpl_path = JPL_SVN + '/usr/' + USERNAME
-    if os.path.exists(jpl_path):
-        if jpl_path not in sys.path:
-            sys.path.append(jpl_path)
-    else:
-        print('Warning: devpath.py: cluster settings should be in {}'.format(jpl_path))
 
 try: # Avoid circular import
     from runme import runme  # First, because plotmodel may fail
