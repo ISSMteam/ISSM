@@ -39,7 +39,6 @@ cd ${PETSC_DIR}
 	--download-mumps=1 \
 	--download-parmetis=1 \
 	--download-scalapack=1 \
-	--download-cmake=1 \
 	--download-zlib=1
 
 # Compile and install
