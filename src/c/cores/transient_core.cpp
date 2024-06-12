@@ -15,10 +15,7 @@
 #include "../shared/shared.h"
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
-
-#ifdef _HAVE_CODIPACK_
-extern CoDi_global codi_global;
-#endif
+#include "../toolkits/codipack/CoDiPackGlobal.h"
 
 /*Prototypes*/
 void transient_step(FemModel* femmodel);
@@ -303,10 +300,10 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	std::vector<IssmDouble> dt_all;
 	std::vector<int>        checkpoint_steps;
 	int                     Ysize = 0;
+	CoDi_global            codi_y_data = {};
 	CountDoublesFunctor   *hdl_countdoubles = NULL;
 	RegisterInputFunctor  *hdl_regin        = NULL;
 	RegisterOutputFunctor *hdl_regout       = NULL;
-	SetAdjointFunctor     *hdl_setadjoint   = NULL;
 
 	while(time < finaltime - (yts*DBL_EPSILON)){ //make sure we run up to finaltime.
 
@@ -371,7 +368,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 
 	/*Initialize model state adjoint (Yb)*/
 	double *Yb  = xNewZeroInit<double>(Ysize);
-	int    *Yin = xNewZeroInit<int>(Ysize);
 
 	/*Get final Ysize*/
 	hdl_countdoubles = new CountDoublesFunctor();
@@ -380,20 +376,13 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	delete hdl_countdoubles;
 
 	/*Start tracing*/
-#if _CODIPACK_MAJOR_==2
-	auto& tape_codi = IssmDouble::getTape();
-#elif _CODIPACK_MAJOR_==1
-	auto& tape_codi = IssmDouble::getGlobalTape();
-#else
-#error "_CODIPACK_MAJOR_ not supported"
-#endif
-	tape_codi.setActive();
+	codi_global.start();
 
 	/*Reverse dependent (f)*/
-	hdl_regin = new RegisterInputFunctor(Yin,Ysize);
+	hdl_regin = new RegisterInputFunctor(&codi_y_data);
 	femmodel->Marshall(hdl_regin);
 	delete hdl_regin;
-	if(my_rank==0) for(int i=0; i < Xsize; i++) tape_codi.registerInput(X[i]);
+	if(my_rank==0) for(int i=0; i < Xsize; i++) codi_global.registerInput(X[i]);
 	SetControlInputsFromVectorx(femmodel,X);
 	
 	IssmDouble J     = 0.;
@@ -412,36 +401,28 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	Jlist[count] = J.getValue();
 	_assert_(count == num_responses);
 
-	#if defined(_HAVE_CODIPACK_)
-	tape_codi.registerOutput(J);
-	#if _CODIPACK_MAJOR_==2
-	codi_global.output_indices.push_back(J.getIdentifier());
-	#elif _CODIPACK_MAJOR_==1
-	codi_global.output_indices.push_back(J.getGradientData());
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
-	#endif
+	codi_global.registerOutput(J);
 
-	tape_codi.setPassive();
+	codi_global.stop();
 
 	if(VerboseAutodiff())_printf0_("   CoDiPack fos_reverse\n");
-	if(my_rank==0) tape_codi.setGradient(codi_global.output_indices[0],1.0);
-	tape_codi.evaluate();
+	if(my_rank==0) codi_global.setGradient(0, 1.0);
+	codi_global.evaluate();
 
 	/*Initialize Xb and Yb*/
 	double *Xb  = xNewZeroInit<double>(Xsize);
-	for(int i=0;i<Xsize  ;i++) Xb[i] += X[i].gradient();
-	for(int i=0;i<Ysize_i;i++) Yb[i]  = tape_codi.gradient(Yin[i]);
+	codi_global.updateFullGradient(Xb, Xsize);
+	codi_y_data.getFullGradient(Yb, Ysize);
 
 	/*reverse loop for transient step (G)*/
 	for(vector<int>::reverse_iterator iter = checkpoint_steps.rbegin(); iter != checkpoint_steps.rend(); iter++){
 
 		/*Restore model from this step*/
 		int reverse_step = *iter;
-		tape_codi.reset();
 		femmodel->RestartAD(reverse_step);
-		tape_codi.setActive();
+
+		codi_y_data.clear();
+		codi_global.start();
 
 		/*Get new Ysize*/
 		hdl_countdoubles = new CountDoublesFunctor();
@@ -450,12 +431,12 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 		delete hdl_countdoubles;
 
 		/*We need to store the CoDiPack identifier here, since y is overwritten.*/
-		hdl_regin = new RegisterInputFunctor(Yin,Ysize);
+		hdl_regin = new RegisterInputFunctor(&codi_y_data);
 		femmodel->Marshall(hdl_regin);
 		delete hdl_regin;
 
 		/*Tell codipack that X is the independent*/
-		for(int i=0; i<Xsize; i++) tape_codi.registerInput(X[i]);
+		for(int i=0; i<Xsize; i++) codi_global.registerInput(X[i]);
 		SetControlInputsFromVectorx(femmodel,X);
 
 		/*Get New state*/
@@ -487,29 +468,27 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 		}
 
 		/*Register output*/
-		hdl_regout = new RegisterOutputFunctor();
+		hdl_regout = new RegisterOutputFunctor(&codi_y_data);
 		femmodel->Marshall(hdl_regout);
 		delete hdl_regout;
 
 		/*stop tracing*/
-		tape_codi.setPassive();
+		codi_global.stop();
 
 		/*Reverse transient step (G)*/
 		/* Using y_b here to seed the next reverse iteration there y_b is always overwritten*/
-		hdl_setadjoint = new SetAdjointFunctor(Yb,Ysize);
-		femmodel->Marshall(hdl_setadjoint);
-		delete hdl_setadjoint;
+		codi_y_data.setFullGradient(Yb, Ysize);
 
 		if(VerboseSolution()) _printf0_("computing gradient...\n");
-		tape_codi.evaluate();
+		codi_global.evaluate();
 
 		/* here we access the gradient data via the stored identifiers.*/
-		for(int i=0; i<Ysize_i; i++) Yb[i]  = tape_codi.gradient(Yin[i]);
-		for(int i=0; i<Xsize;   i++) Xb[i] += X[i].gradient();
+		codi_global.updateFullGradient(Xb, Xsize);
+		codi_y_data.getFullGradient(Yb, Ysize);	// Yb is overwritten here.
 	}
 
 	/*Clear tape*/
-	tape_codi.reset();
+	codi_global.clear();
 
 	/*Broadcast gradient to other ranks (make sure to sum all gradients)*/
 	ISSM_MPI_Allreduce(Xb,G,Xsize,ISSM_MPI_PDOUBLE,ISSM_MPI_SUM,IssmComm::GetComm());
@@ -524,7 +503,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	xDelete<IssmDouble>(X);
 	xDelete<double>(Xb);
 	xDelete<double>(Yb);
-	xDelete<int>(Yin);
 	xDelete<int>(control_enum);
 	return J.getValue();
 }/*}}}*/

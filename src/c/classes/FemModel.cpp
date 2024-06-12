@@ -21,10 +21,7 @@
 #include "./Inputs/ElementInput.h"
 #include "./Inputs/TransientInput.h"
 
-#if _HAVE_CODIPACK_
-#include <sstream> // for output of the CoDiPack tape
-extern CoDi_global codi_global;
-#endif
+#include "../toolkits/codipack/CoDiPackGlobal.h"
 
 #if defined(_HAVE_NEOPZ_) && !defined(_HAVE_AD_)
 #include <TPZRefPatternDataBase.h>
@@ -2350,16 +2347,6 @@ void FemModel::RequestedDependentsx(void){/*{{{*/
 		if(num_dependents){
 			IssmPDouble* dependents=xNew<IssmPDouble>(num_dependents);
 
-			#if defined(_HAVE_CODIPACK_)
-			#if _CODIPACK_MAJOR_==2
-			auto& tape_codi = IssmDouble::getTape();
-			#elif _CODIPACK_MAJOR_==1
-			auto& tape_codi = IssmDouble::getGlobalTape();
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-			#endif
-
 			/*Go through our dependent variables, and compute the response:*/
 			int my_rank=IssmComm::GetRank();
 			int i = 0;
@@ -2369,15 +2356,7 @@ void FemModel::RequestedDependentsx(void){/*{{{*/
 				IssmDouble output_value = dep->GetValue();
 				if (my_rank==0) {
 					#if defined(_HAVE_CODIPACK_)
-						tape_codi.registerOutput(output_value);
-						dependents[i] = output_value.getValue();
-						#if _CODIPACK_MAJOR_==2
-						codi_global.output_indices.push_back(output_value.getIdentifier());
-						#elif _CODIPACK_MAJOR_==1
-						codi_global.output_indices.push_back(output_value.getGradientData());
-						#else
-						#error "_CODIPACK_MAJOR_ not supported"
-						#endif
+						codi_global.registerOutput(output_value);
 					#else
 						output_value>>=dependents[i];
 					#endif
