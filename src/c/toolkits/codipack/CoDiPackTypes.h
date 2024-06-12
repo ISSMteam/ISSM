@@ -11,7 +11,11 @@
 
 #include <codi.hpp>
 
-using CoDiReal = codi::RealReverse;
+#ifndef CODIPACK_TYPE
+#define CODIPACK_TYPE codi::RealReverse
+#endif
+
+using CoDiReal = CODIPACK_TYPE;
 
 #endif /* _HAVE_CODIPACK_ */
 #endif /* SRC_C_TOOLKITS_CODIPACK_CODIPACKTYPES_H_ */
