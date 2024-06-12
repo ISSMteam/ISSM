@@ -116,6 +116,12 @@ AM_LDFLAGS += -Wl,-lbacktrace
 if !MSYS2
 AM_LDFLAGS += -Wl,-static -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN'
 endif
+if MAC
+if HAVE_FORTRANDIR
+AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+endif
+AM_LDFLAGS += -Wl,-rpath,'/usr/local/gfortran/lib'
+endif
 endif
 endif
 
