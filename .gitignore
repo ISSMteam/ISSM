@@ -36,11 +36,7 @@ configure
 configure.sh
 libtool
 stamp-h1
-m4/libtool.m4
-m4/ltoptions.m4
-m4/ltsugar.m4
-m4/ltversion.m4
-m4/lt~obsolete.m4
+m4
 src/Makefile
 src/c/Makefile
 src/c/issm
@@ -54,16 +50,14 @@ src/wrappers/python/Makefile
 
 # External Packages #
 #====================
+externalpackages/*/install
 externalpackages/autotools/*.tar.gz
-externalpackages/autotools/install
 externalpackages/autotools/src
 externalpackages/m1qn3/*.tgz
 externalpackages/m1qn3/src
 externalpackages/petsc/*.gz
 externalpackages/petsc/src
 externalpackages/triangle/*.zip
-externalpackages/triangle/install
-externalpackages/valgrind/install
 externalpackages/valgrind/src
 
 # Nightly runs #
