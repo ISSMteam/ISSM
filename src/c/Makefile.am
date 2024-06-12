@@ -786,6 +786,7 @@ if MAC
 if HAVE_FORTRANDIR
 AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
+AM_LDFLAGS += -Wl,-rpath,'/usr/local/gfortran/lib'
 endif
 endif
 
