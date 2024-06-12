@@ -18,9 +18,7 @@
 #include "../solutionsequences/solutionsequences.h"
 /*}}}*/
 
-#ifdef _HAVE_CODIPACK_
-CoDi_global codi_global = {};
-#endif
+
 void ad_core(FemModel* femmodel){
 
 	/*diverse: */
@@ -325,20 +323,10 @@ void ad_core(FemModel* femmodel){
 			if(VerboseAutodiff())_printf0_("   start CoDiPack ad core\n");
 
 			/*First, stop tracing: */
-			#if _CODIPACK_MAJOR_==2
-			auto& tape_codi = IssmDouble::getTape();
-			#elif _CODIPACK_MAJOR_==1
-			auto& tape_codi = IssmDouble::getGlobalTape();
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-
-			tape_codi.setPassive();
+			codi_global.stop();
 
 			if(VerboseAutodiff()){ /*{{{*/
 				if(my_rank == 0) {
-					// FIXME codi "just because" for now
-					tape_codi.printStatistics(std::cout);
 					codi_global.print(std::cout);
 				}
 			}
@@ -362,21 +350,16 @@ void ad_core(FemModel* femmodel){
 				/*retrieve direction index: */
 				femmodel->parameters->FindParam(&aDepIndex,AutodiffFosReverseIndexEnum);
 				if (my_rank==0) {
-					if (aDepIndex<0 || aDepIndex>=num_dependents
-							|| codi_global.output_indices.size() <= aDepIndex){
+					if (aDepIndex<0 || aDepIndex>=num_dependents){
 						_error_("index value for AutodiffFosReverseIndexEnum should be in [0,num_dependents-1]");
 					}
-					tape_codi.setGradient(codi_global.output_indices[aDepIndex], 1.0);
+					codi_global.setGradient(aDepIndex, 1.0);
 				}
 
-				tape_codi.evaluate();
+				codi_global.evaluate();
 
 				weightVectorTimesJac=xNew<double>(num_independents);
-				/*call driver: */
-				auto in_size = codi_global.input_indices.size();
-				for(size_t i = 0; i < in_size; ++i) {
-					weightVectorTimesJac[i] = tape_codi.getGradient(codi_global.input_indices[i]);
-				}
+				codi_global.getFullGradient(weightVectorTimesJac, num_independents);
 
 				/*add to results*/
 				femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,AutodiffJacobianEnum,weightVectorTimesJac,num_independents,1,0,0.0));
