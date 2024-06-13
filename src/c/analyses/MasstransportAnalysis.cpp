@@ -1197,6 +1197,10 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 }/*}}}*/
 void           MasstransportAnalysis::FctKMatrix(Matrix<IssmDouble>** pKff,Matrix<IssmDouble>** pKfs,FemModel* femmodel){/*{{{*/
 
+	int domaintype;
+	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
+	if(domaintype!=Domain2DhorizontalEnum) _error_("domain type "<<EnumToStringx(domaintype)<<" not supported yet");
+
 	/*Output*/
 	Matrix<IssmDouble>* Kff = NULL;
 	Matrix<IssmDouble>* Kfs = NULL;
