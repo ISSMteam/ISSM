@@ -1,10 +1,3 @@
-/*
- * CoDiPackGlobal.h
- *
- *  Created on: Jul 20, 2016
- *      Author: a_h_ck
- */
-
 #ifndef SRC_C_TOOLKITS_CODIPACK_CODIPACKGLOBAL_H_
 #define SRC_C_TOOLKITS_CODIPACK_CODIPACKGLOBAL_H_
 

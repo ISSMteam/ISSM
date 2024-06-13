@@ -52,23 +52,10 @@ src/wrappers/python/Makefile
 # External Packages #
 #====================
 externalpackages/*/install
-externalpackages/autotools/*.tar.gz
-externalpackages/autotools/src
-externalpackages/m1qn3/*.tgz
-externalpackages/m1qn3/src
-externalpackages/petsc/*.gz
-externalpackages/petsc/src
-externalpackages/triangle/*.zip
-externalpackages/valgrind/src
+externalpackages/*/src
+externalpackages/*/*.zip
 externalpackages/*/*.gz
-externalpackages/adolc/src/
-externalpackages/gsl/install/
-externalpackages/gsl/src/
-externalpackages/m1qn3/install/
-externalpackages/petsc/install/
-externalpackages/proj/install/
-externalpackages/proj/src/
-externalpackages/triangle/src/
+externalpackages/*/*.tgz
 
 # Nightly runs #
 #===============
