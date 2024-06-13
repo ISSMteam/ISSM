@@ -1,10 +1,3 @@
-/*
- * CoDiPackTypes.h
- *
- *  Created on: Jul 20, 2016
- *      Author: a_h_ck
- */
-
 #ifndef SRC_C_TOOLKITS_CODIPACK_CODIPACKTYPES_H_
 #define SRC_C_TOOLKITS_CODIPACK_CODIPACKTYPES_H_
 
