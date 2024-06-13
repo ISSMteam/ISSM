@@ -27,11 +27,7 @@
 #include "../shared/io/io.h"
 #include "../shared/shared.h"
 #include "../classes/Inputs/TransientInput.h"
-
-#ifdef _HAVE_CODIPACK_
-extern CoDi_global codi_global;
-#include <sstream> // for output of the CoDiPack tape
-#endif
+#include "../toolkits/codipack/CoDiPackGlobal.h"
 
 /*IoConstant class and methods*/
 IoConstant::IoConstant(){/*{{{*/
@@ -2246,24 +2242,12 @@ void  IoModel::FetchIndependentConstant(int* pXcount,IssmPDouble* X,const char* 
 		/*Now, before we even broadcast this to other nodes, declare the scalar  as an independent variable!. If we
 		 *have been supplied an X vector, use it instead of what we just read: */
 		#if defined(_HAVE_CODIPACK_)
-			// FIXME codi here we just assign instead of using "operator <<="
 			if(X){
 				scalar=X[Xcount];
 			} else {
 				scalar=pscalar;
 			}
-			#if _CODIPACK_MAJOR_==2
-			auto& tape_codi = IssmDouble::getTape();
-			tape_codi.registerInput(scalar);
-			codi_global.input_indices.push_back(scalar.getIdentifier());
-			#elif _CODIPACK_MAJOR_==1
-			auto& tape_codi = IssmDouble::getGlobalTape();
-			tape_codi.registerInput(scalar);
-			codi_global.input_indices.push_back(scalar.getGradientData());
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-
+			codi_global.registerInput(scalar);
 		#else
 			if(X){
 				scalar<<=X[Xcount];
@@ -2333,40 +2317,16 @@ void  IoModel::FetchIndependentData(int* pXcount,IssmPDouble* X,const char* data
 			/*Now, before we even broadcast this to other nodes, declare the whole matrix as a independent variable!
 			  If we have been supplied an X vector, use it instead of what we just read: */
 			#if defined(_HAVE_CODIPACK_)
-				// FIXME codi here we just assign instead of using "operator <<="
-				#if _CODIPACK_MAJOR_==2
-				auto& tape_codi = IssmDouble::getTape();
-				#elif _CODIPACK_MAJOR_==1
-				auto& tape_codi = IssmDouble::getGlobalTape();
-				#else
-				#error "_CODIPACK_MAJOR_ not supported"
-				#endif
-
 				if(X){
 					for (int i=0;i<M*N;i++) {
 						matrix[i]=X[Xcount+i];
-						tape_codi.registerInput(matrix[i]);
-						#if _CODIPACK_MAJOR_==2
-						codi_global.input_indices.push_back(matrix[i].getIdentifier());
-						#elif _CODIPACK_MAJOR_==1
-						codi_global.input_indices.push_back(matrix[i].getGradientData());
-						#else
-						#error "_CODIPACK_MAJOR_ not supported"
-						#endif
-
+						codi_global.registerInput(matrix[i]);
 					}
 				}
 				else{
 					for (int i=0;i<M*N;i++) {
 						matrix[i]=buffer[i];
-						tape_codi.registerInput(matrix[i]);
-						#if _CODIPACK_MAJOR_==2
-						codi_global.input_indices.push_back(matrix[i].getIdentifier());
-						#elif _CODIPACK_MAJOR_==1
-						codi_global.input_indices.push_back(matrix[i].getGradientData());
-						#else
-						#error "_CODIPACK_MAJOR_ not supported"
-						#endif
+						codi_global.registerInput(matrix[i]);
 					}
 				}
 			#else /*ADOLC*/
@@ -3235,38 +3195,7 @@ void  IoModel::StartTrace(bool trace){/*{{{*/
 
 		#elif defined(_HAVE_CODIPACK_)
 		//fprintf(stderr, "*** Codipack IoModel::StartTrace\n");
-		/*
-		 * FIXME codi
-		 * - ADOL-C variant uses fine grained tracing with various arguments
-		 * - ADOL-C variant sets a garbage collection parameter for its tape
-		 * -> These parameters are not read for the CoDiPack ISSM version!
-		 */
-		#if _CODIPACK_MAJOR_==2
-		auto& tape_codi = IssmDouble::getTape();
-		#elif _CODIPACK_MAJOR_==1
-		auto& tape_codi = IssmDouble::getGlobalTape();
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-
-		tape_codi.setActive();
-		#if _AD_TAPE_ALLOC_
-		//alloc_profiler.Tag(StartInit, true);
-		IssmDouble x_t(1.0), y_t(1.0);
-		tape_codi.registerInput(y_t);
-		int codi_allocn = 0;
-		this->FetchData(&codi_allocn,"md.autodiff.tapeAlloc");
-		for(int i = 0;i < codi_allocn;++i) {
-			x_t = y_t * y_t;
-		}
-		/*
-		std::stringstream out_s;
-		IssmDouble::getTape().printStatistics(out_s);
-		_printf0_("StartTrace::Tape Statistics	   : TapeAlloc count=[" << codi_allocn << "]\n" << out_s.str());
-		*/
-		tape_codi.reset();
-		//alloc_profiler.Tag(FinishInit, true);
-		#endif
+		codi_global.start();
 		#endif
 	}
 
