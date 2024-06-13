@@ -253,7 +253,6 @@ issm_sources += \
 	./cores/WrapperPreCorePointerFromSolutionEnum.cpp \
 	./cores/CorePointerFromSolutionEnum.cpp \
 	./cores/ad_core.cpp \
-	./cores/adgradient_core.cpp \
 	./main/EnvironmentInit.cpp \
 	./main/EnvironmentFinalize.cpp \
 	./analyses/EnumToAnalysis.cpp \

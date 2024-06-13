@@ -71,117 +71,45 @@ void CountDoublesFunctor::call(IssmDouble* & value,int size){/*{{{*/
 	if(value) this->double_count+= size;
 }/*}}}*/
 
-RegisterInputFunctor::RegisterInputFunctor(int* identifiers_in,int size_max_in) : MarshallHandle(AD_REGISTERINPUT){/*{{{*/
-	this->double_count = 0;
-	this->identifiers  = identifiers_in;
-	this->size_max         = size_max_in;
-	#if _CODIPACK_MAJOR_==2
-	this->tape_codi    = &(IssmDouble::getTape());
-	#elif _CODIPACK_MAJOR_==1
-	this->tape_codi    = &(IssmDouble::getGlobalTape());
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
+RegisterInputFunctor::RegisterInputFunctor(CoDi_global *data) : MarshallHandle(AD_REGISTERINPUT){/*{{{*/
+	this->data = data;
 
 }/*}}}*/
 void RegisterInputFunctor::Echo(void){/*{{{*/
 	printf("RegisterInputFunctor Echo:\n");
-	printf("   double_count: %i\n",double_count);
+	printf("   double_count: %i\n",(int)data->input_indices.size());
 }/*}}}*/
 void RegisterInputFunctor::call(IssmDouble & value){/*{{{*/
-	_assert_(this->double_count<size_max);
-
 	/*Comment out this assert, some parameters are NaN (e.g. abstol) by default*/
 	//_assert_(!xIsNan<IssmDouble>(value));
 
-	this->tape_codi->registerInput(value);
-	#if _CODIPACK_MAJOR_==2
-	this->identifiers[this->double_count] = value.getIdentifier();
-	#elif _CODIPACK_MAJOR_==1
-	this->identifiers[this->double_count] = value.getGradientData();
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
-
-	this->double_count++;
+	this->data->registerInput(value);
 }/*}}}*/
 void RegisterInputFunctor::call(IssmDouble* & value,int size){/*{{{*/
 	if(value){
 		for(int i=0;i<size;i++){
-			_assert_(this->double_count<size_max);
 			_assert_(!xIsNan<IssmDouble>(value[i]));
-			this->tape_codi->registerInput(value[i]);
-			#if _CODIPACK_MAJOR_==2
-			this->identifiers[this->double_count] = value[i].getIdentifier();
-			#elif _CODIPACK_MAJOR_==1
-			this->identifiers[this->double_count] = value[i].getGradientData();
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-
-			this->double_count++;
+			this->data->registerInput(value[i]);
 		}
 	}
 }/*}}}*/
 
-RegisterOutputFunctor::RegisterOutputFunctor(void) : MarshallHandle(AD_REGISTEROUTPUT){/*{{{*/
-	this->double_count = 0;
-	#if _CODIPACK_MAJOR_==2
-	this->tape_codi    = &(IssmDouble::getTape());
-	#elif _CODIPACK_MAJOR_==1
-	this->tape_codi    = &(IssmDouble::getGlobalTape());
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
+RegisterOutputFunctor::RegisterOutputFunctor(CoDi_global *data) : MarshallHandle(AD_REGISTEROUTPUT){/*{{{*/
+	this->data = data;
 }/*}}}*/
 void RegisterOutputFunctor::Echo(void){/*{{{*/
 	printf("RegisterOutputFunctor Echo:\n");
-	printf("   double_count: %i\n",double_count);
+	printf("   double_count: %i\n", (int)data->output_indices.size());
 }/*}}}*/
 void RegisterOutputFunctor::call(IssmDouble & value){/*{{{*/
 	//_assert_(!xIsNan<IssmDouble>(value));
-	this->tape_codi->registerOutput(value);
-	this->double_count++;
+	this->data->registerOutput(value);
 }/*}}}*/
 void RegisterOutputFunctor::call(IssmDouble* & value,int size){/*{{{*/
 	if(value){
 		for(int i=0;i<size;i++){
 			_assert_(!xIsNan<IssmDouble>(value[i]));
-			this->tape_codi->registerOutput(value[i]);
-			this->double_count++;
-		}
-	}
-}/*}}}*/
-
-SetAdjointFunctor::SetAdjointFunctor(double* adjoint_in,int size_max_in) : MarshallHandle(AD_SETADJOINT){/*{{{*/
-	this->double_count = 0;
-	this->adjoint      = adjoint_in;
-	this->size_max     = size_max_in;
-	#if _CODIPACK_MAJOR_==2
-	this->tape_codi    = &(IssmDouble::getTape());
-	#elif _CODIPACK_MAJOR_==1
-	this->tape_codi    = &(IssmDouble::getGlobalTape());
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
-}/*}}}*/
-void SetAdjointFunctor::Echo(void){/*{{{*/
-	printf("SetAdjointFunctor Echo:\n");
-	printf("   double_count: %i\n",double_count);
-}/*}}}*/
-void SetAdjointFunctor::call(IssmDouble & value){/*{{{*/
-	_assert_(this->double_count<size_max);
-	_assert_(!xIsNan<IssmDouble>(this->adjoint[this->double_count]));
-	value.gradient() = this->adjoint[this->double_count];
-	this->double_count++;
-}/*}}}*/
-void SetAdjointFunctor::call(IssmDouble* & value,int size){/*{{{*/
-	if(value){
-		for(int i=0;i<size;i++){
-			_assert_(this->double_count<size_max);
-			_assert_(!xIsNan<IssmDouble>(this->adjoint[this->double_count]));
-			value[i].gradient() = this->adjoint[this->double_count];
-			this->double_count++;
+			this->data->registerOutput(value[i]);
 		}
 	}
 }/*}}}*/
