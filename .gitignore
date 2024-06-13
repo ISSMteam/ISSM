@@ -12,6 +12,7 @@
 *.so.[0-9]*
 __pycache__
 bin/
+lib/
 
 # OS generated files #
 #=====================
@@ -65,6 +66,15 @@ externalpackages/triangle/*.zip
 externalpackages/triangle/install
 externalpackages/valgrind/install
 externalpackages/valgrind/src
+externalpackages/*/*.gz
+externalpackages/adolc/src/
+externalpackages/gsl/install/
+externalpackages/gsl/src/
+externalpackages/m1qn3/install/
+externalpackages/petsc/install/
+externalpackages/proj/install/
+externalpackages/proj/src/
+externalpackages/triangle/src/
 
 # Nightly runs #
 #===============
