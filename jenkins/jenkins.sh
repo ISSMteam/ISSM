@@ -58,17 +58,24 @@ fi
 echo "======================================================";
 echo "             Determining installation type            "
 echo "======================================================";
-if [ -a ${ISSM_DIR}/.issm ]; then
-	# Get list of changed files
-	#
-	CHANGES=$(git diff --name-only ORIG_HEAD HEAD)
+if [ -f ${ISSM_DIR}/.PREV_COMMIT ]; then
+	# Fetch main branch from remote origin (this does not affect local files 
+	# like `git pull` would)
+	git fetch --quiet origin main
 
-	# Print list of changed files
-	echo "   "
-	echo "List of changed files"
-	echo "---------------------"
-	echo "${CHANGES}"
-	echo "   "
+	# Retrieve previous commit SHA
+	PREV_COMMIT=$(cat ${ISSM_DIR}/.PREV_COMMIT)
+
+	# Get list of changed files
+	CHANGES=$(git diff --name-only ${PREV_COMMIT} FETCH_HEAD)
+
+	if [ ! "${CHANGES}" == "" ]; then
+		# Print list of changed files
+		echo "   "
+		echo "List of changed files"
+		echo "---------------------"
+		echo "${CHANGES}"
+	fi
 
 	# If the contents of the externalpackages directory were modified in any
 	# way, check for changed external packages
@@ -102,10 +109,8 @@ if [ -a ${ISSM_DIR}/.issm ]; then
 		ISSM_COMPILATION="no"
 	fi
 else
-	# Write out hidden file so we know next time that this script it run, it is 
-	# not on a fresh copy of the repo (this is really only useful when running 
-	# this script manually, i.e. *not* on Jenkins)
-	touch ${ISSM_DIR}/.issm
+	# Write out hidden file containing this commit's SHA
+	git rev-parse HEAD > ${ISSM_DIR}/.PREV_COMMIT
 
 	echo "Fresh copy of repository; building everything"
 	echo "-- checking for changed externalpackages... yes"
