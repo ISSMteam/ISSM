@@ -80,6 +80,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
+        export ISSM_DIR=${PWD}
         ./jenkins/jenkins.sh ./jenkins/github-linux-basic-codeql
 
     - name: Perform CodeQL Analysis
