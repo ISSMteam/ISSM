@@ -75,6 +75,7 @@ if [ -f ${ISSM_DIR}/.PREV_COMMIT ]; then
 		echo "List of changed files"
 		echo "---------------------"
 		echo "${CHANGES}"
+		echo "   "
 	fi
 
 	# If the contents of the externalpackages directory were modified in any
