@@ -5,6 +5,7 @@
 ISSM_CONFIG='\
 	--prefix=${ISSM_DIR} \
 	--disable-static \
+	--with-wrappers=no \
 	--enable-development \
 	--enable-debugging \
 	--with-numthreads=4 \
