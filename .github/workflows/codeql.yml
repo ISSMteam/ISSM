@@ -80,6 +80,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
+        echo 'Compile external packages and ISSM'
         export ISSM_DIR=${PWD}
         ./jenkins/jenkins.sh ./jenkins/github-linux-basic-codeql
 
