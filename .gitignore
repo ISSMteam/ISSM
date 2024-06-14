@@ -14,7 +14,7 @@ __pycache__
 bin/
 lib/
 
-# OS generated files #
+# OS-generated files #
 #=====================
 .DS_Store
 
@@ -28,6 +28,7 @@ Makefile
 aclocal.m4
 autom4te.cache
 aux-config
+confdefs.h
 config.h
 config.h.in
 config.h.in~
@@ -41,6 +42,8 @@ m4
 src/Makefile
 src/c/Makefile
 src/c/issm
+src/c/issm_dakota
+src/c/issm_post
 src/c/issm_slc
 src/c/kriging
 src/m/Makefile
@@ -51,13 +54,24 @@ src/wrappers/python/Makefile
 
 # External Packages #
 #====================
+externalpackages/*/build
+externalpackages/*/compil.log
 externalpackages/*/install
 externalpackages/*/src
 externalpackages/*/*.zip
 externalpackages/*/*.gz
 externalpackages/*/*.tgz
+externalpackages/chaco/chaco_guide.pdf
+
+# Nightly logs #
+#===============
+nightlylog
 
 # Nightly runs #
 #===============
 test/NightlyRun/*.bin
 test/NightlyRun/*.tar.gz
+
+# Custom build files #
+#=====================
+.issm
