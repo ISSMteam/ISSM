@@ -9,7 +9,7 @@
 #include "../ModelProcessorx.h"
 
 void UpdateParametersTransient(Parameters* parameters,IoModel* iomodel){/*{{{*/
-	
+
 	bool isgroundingline;
 	int numoutputs;
 	char** requestedoutputs;
@@ -21,5 +21,3 @@ void UpdateParametersTransient(Parameters* parameters,IoModel* iomodel){/*{{{*/
       iomodel->DeleteData(&requestedoutputs,numoutputs,"md.groundingline.requested_outputs");
 	}
 }/*}}}*/
-
-

@@ -190,7 +190,6 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 		}
 		return;
 	}
-	
 
 	/*Basins are supposed to accumulate loads and hand them over to the Earth
 	  for slr computations every "frequency" time steps. If we are here, we
@@ -295,7 +294,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing GRD patterns\n");
 
-
 	/*retrieve parameters: {{{*/ 
 	femmodel->parameters->FindParam(&scaleoceanarea,SolidearthSettingsOceanAreaScalingEnum);
 	barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
@@ -347,7 +345,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		if (loads->sealevelloads){
 			xMemCpy<IssmDouble>(oldsealevelloads,loads->sealevelloads,nel);
 		}
-
 
 		/*convolve load and sealevel loads on oceans:*/
 		loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
@@ -537,7 +534,7 @@ void              coupleroutput_core(FemModel* femmodel){  /*{{{*/
 
 	count++;
 	femmodel->parameters->SetParam(count,SealevelchangeRunCountEnum); 
-	
+
 	if(iscoupling){
 		/*transfer sea level back to ice caps:*/
 		TransferSealevel(femmodel,SealevelEnum);
@@ -626,7 +623,6 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 
 	/*recover x,y,z and areas from elements: */
 	ElementCoordinatesx(&xxe,&yye,&zze,&areae,femmodel->elements);
-
 
 	/*Compute element ids, used to speed up computations in convolution phase:{{{*/
 	lids=xNew<int>(femmodel->vertices->Size());
@@ -803,7 +799,6 @@ bool slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_rel,Iss
 		nS+=pow(RSLg[e]/rho_water/totaloceanarea,2.0);
 		nS_old+=pow(RSLg_old[e]/rho_water/totaloceanarea,2.0);
 	}
-	
 
 	if (xIsNan<IssmDouble>(ndS)){
 		_error_("convergence criterion is NaN (RSL_old=" << nS_old << " RSL=" << nS << ")");
@@ -966,7 +961,6 @@ void PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoads* loa
 			femmodel->parameters->SetParam(viscouspolarmotion,viscousnumsteps,3,SealevelchangeViscousPolarMotionEnum);
 		}
 	}
-	
 
 	/*Assign output pointers:*/
 	polarmotionvector[0]=m1[0];
@@ -992,7 +986,7 @@ void PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoads* loa
 
 } /*}}}*/
 void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
-	
+
 	IssmDouble* viscouspolarmotion=NULL;
 	IssmDouble* viscoustimes=NULL;
 	int         viscousnumsteps;
@@ -1003,10 +997,10 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 	bool        rotation=false;
 	IssmDouble  currenttime;
 	IssmDouble  lincoeff=0;
-		
+
 	femmodel->parameters->FindParam(&viscous,SolidearthSettingsViscousEnum);
 	femmodel->parameters->FindParam(&rotation,SolidearthSettingsRotationEnum);
-	
+
 	if(viscous){
 		femmodel->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
 		femmodel->parameters->FindParam(&viscoustimes,NULL,SealevelchangeViscousTimesEnum);
@@ -1038,7 +1032,6 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 			femmodel->parameters->SetParam(viscouspolarmotion,viscousnumsteps,3,SealevelchangeViscousPolarMotionEnum);
 		}
 
-
 		/*update viscous inputs:*/
 		for(Object* & object : femmodel->elements->objects){
 			Element* element = xDynamicCast<Element*>(object);
@@ -1055,7 +1048,6 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 		xDelete<IssmDouble>(viscoustimes);
 		if (rotation) 	xDelete<IssmDouble>(viscouspolarmotion);
 	}
-
 
 }
 void        ConserveOceanMass(FemModel* femmodel,GrdLoads* loads, IssmDouble offset, SealevelGeometry* slgeom){ /*{{{*/

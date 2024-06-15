@@ -563,7 +563,6 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 	IssmDouble  timespan,mid_step;
 	int         found,start_offset,end_offset,input_offset;
 
-
 	/*go through the timesteps, and grab offset for start and end*/
 	found=binary_search(&start_offset,start_time,this->timesteps,this->numtimesteps);
 	if(!found) _error_("Input not found (is TransientInput sorted ?)");

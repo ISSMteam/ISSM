@@ -39,7 +39,7 @@ Cfdragcoeffabsgradtransient::Cfdragcoeffabsgradtransient(char* in_name, int in_d
 
 	this->name		= xNew<char>(strlen(in_name)+1);
 	xMemCpy<char>(this->name,in_name,strlen(in_name)+1);
-	
+
 	this->num_datatimes = in_num_datatimes;
 
 	/*Allocate arrays*/
@@ -132,7 +132,7 @@ IssmDouble Cfdragcoeffabsgradtransient::Response(FemModel* femmodel){/*{{{*/
 	/*recover time parameters: */
 	IssmDouble time;
 	femmodel->parameters->FindParam(&time,TimeEnum);
-	
+
 	/*Find closest datatime that is less than time*/
 	int pos=-1;
 	for(int i=0;i<this->num_datatimes;i++){
@@ -154,7 +154,7 @@ IssmDouble Cfdragcoeffabsgradtransient::Response(FemModel* femmodel){/*{{{*/
 	if(this->passedflags[pos]){
 		return this->J;
 	}
-	
+
 	/*Calculate cost function for this time slice*/
 	IssmDouble J_part=0.;
 	IssmDouble J_sum=0.;
@@ -169,7 +169,7 @@ IssmDouble Cfdragcoeffabsgradtransient::Response(FemModel* femmodel){/*{{{*/
 
 	this->passedflags[pos]= true;
 	this->J += J_sum;
-	
+
 	return this->J;
 }/*}}}*/
 IssmDouble Cfdragcoeffabsgradtransient::Cfdragcoeffabsgradtransient_Calculation(Element* element){/*{{{*/
@@ -217,7 +217,6 @@ IssmDouble Cfdragcoeffabsgradtransient::Cfdragcoeffabsgradtransient_Calculation(
 		default:
 			drag_input = basalelement->GetInput(FrictionCoefficientEnum); _assert_(drag_input);
 	}
-
 
 	/* Start  looping on the number of gaussian points: */
 	Gauss* gauss=basalelement->NewGauss(2);

@@ -655,7 +655,6 @@ void MumpsSolve_codi_b(void* tape_in,void* data_in,void* ra) {/*{{{*/
 	//IssmDouble::TapeType& tape = (IssmDouble::TapeType&)tape_in;
 	IssmDouble::TapeType& tape = IssmDouble::getGlobalTape();
 
-
 	IssmDouble::Real* valueATrans;
 	IssmDouble::GradientData* indexATrans;
 	int* irnATrans;

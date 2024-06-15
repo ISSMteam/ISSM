@@ -10,7 +10,6 @@
 
 void StochasticForcingx(FemModel* femmodel){/*{{{*/
 
-
    /*Retrieve parameters*/
    bool randomflag;
    int M,N,numfields,numtcov,my_rank;
@@ -35,7 +34,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
    femmodel->parameters->FindParam(&dt,TimesteppingTimeStepEnum);
    femmodel->parameters->FindParam(&starttime,TimesteppingStartTimeEnum);
    femmodel->parameters->FindParam(&tstep_stoch,StochasticForcingTimestepEnum);
-	
+
 	/*Check if we use HydroarmaPw*/
 	bool ispwHydro;
 	femmodel->parameters->FindParam(&ispwHydro,HydrologyIsWaterPressureArmaEnum);
@@ -88,7 +87,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
       for(int k=0;k<dimensions[j];k++){
          noisefield[k]=noiseterms[i+k];
       }
-     
+
 		int dimensionid;
 
 		/*Deal with the ARMA models*/

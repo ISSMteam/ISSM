@@ -441,7 +441,7 @@ ElementMatrix* Channel::CreateKMatrixHydrologyGlaDS(void){/*{{{*/
 		dphimds = rho_water*g*(db[0]*tx + db[1]*ty);
 		Ngrad   = fabs(dphids);
 		if(Ngrad<AEPS) Ngrad = AEPS;
-		
+
 		/*Compute the effective conductivity Kc = k h^alpha |grad Phi|^{beta-2} (same for sheet) and use transition model if specified*/
 		IssmDouble Kc;
 		IssmDouble Ks;
@@ -500,7 +500,7 @@ ElementMatrix* Channel::CreateKMatrixHydrologyGlaDS(void){/*{{{*/
 		}
 		else{
 			v1 = 2./pow(n,n)*A*S*(pow(fabs(phi_0-phi),n-1.)*( - n));
-		
+
 		}
 
 		for(int i=0;i<numnodes;i++){
@@ -593,7 +593,6 @@ ElementVector* Channel::CreatePVectorHydrologyGlaDS(void){/*{{{*/
 		H_input->GetInputValue(&H,gauss);
 		hr_input->GetInputValue(&h_r,gauss);
 
-		
 		/*Get values for a few potentials*/
 		phi_0   = rho_water*g*b + rho_ice*g*H;
 		if(isincludesheetthickness) phi_0 += rho_water*g*h;
@@ -601,7 +600,6 @@ ElementVector* Channel::CreatePVectorHydrologyGlaDS(void){/*{{{*/
 		dphimds = rho_water*g*(db[0]*tx + db[1]*ty);
 		Ngrad   = fabs(dphids);
 		if(Ngrad<AEPS) Ngrad = AEPS;
-
 
 		/*Approx. discharge in the sheet flowing folwing in the direction of the channel ofver a width lc, use transition model if specified*/
 		IssmDouble Ks;
@@ -741,7 +739,6 @@ void           Channel::UpdateChannelCrossSection(void){/*{{{*/
 	b_input->GetInputDerivativeValue(&db[0],&xyz_list_tria[0][0],gauss);
 	H_input->GetInputValue(&H,gauss);
 	hr_input->GetInputValue(&h_r,gauss);
-
 
 	/*Get values for a few potentials*/
 	phi_0   = rho_water*g*b + rho_ice*g*H;

@@ -1472,7 +1472,6 @@ void  IoModel::FetchData(IssmPDouble** pscalar,const char* data_name){/*{{{*/
    }
    ISSM_MPI_Bcast(scalar,1,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
-
    /*Assign output pointers: */
    *pscalar=scalar;
 }

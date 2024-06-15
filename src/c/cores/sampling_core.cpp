@@ -74,5 +74,4 @@ void sampling_core(FemModel* femmodel){
 	/*profiler*/
 	femmodel->profiler->Stop(SAMPLINGCORE);
 
-
 }
