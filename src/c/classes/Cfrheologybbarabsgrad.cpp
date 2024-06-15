@@ -88,7 +88,7 @@ int Cfrheologybbarabsgrad::Id(void){/*{{{*/
 }
 /*}}}*/
 void Cfrheologybbarabsgrad::Marshall(MarshallHandle* marshallhandle){/*{{{*/
-	
+
 	/*ok, marshall operations: */
 	int object_enum=CfrheologybbarabsgradEnum;
 	marshallhandle->call(object_enum);

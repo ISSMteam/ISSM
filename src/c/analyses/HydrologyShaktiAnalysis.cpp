@@ -632,7 +632,6 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 						+beta*sqrt(vx*vx+vy*vy)
 						));
 
-
 		totalweights +=gauss->weight*Jdet;
 
 		/* Compute basal water flux */

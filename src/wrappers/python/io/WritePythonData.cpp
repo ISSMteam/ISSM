@@ -85,7 +85,6 @@ void WriteData(PyObject* py_tuple, int index, double* vector, int M){
 	npy_intp  dim   = 10;
 	PyObject *array = NULL;
 
-
 	/*copy vector: */
 	double* vector_python=xNew<double>(M);
 	memcpy(vector_python,vector,M*sizeof(double));

@@ -18,7 +18,6 @@
 #include "../solutionsequences/solutionsequences.h"
 /*}}}*/
 
-
 void ad_core(FemModel* femmodel){
 
 	/*diverse: */

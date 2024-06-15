@@ -91,7 +91,7 @@ WRAPPER(M1qn3_python){
 	IssmPDouble* G = xNew<IssmPDouble>(n); for (int i=0;i<n;i++)G[i]=Gs[i*priorn+0];
 	IssmPDouble* X = xNew<IssmPDouble>(n); for (int i=0;i<n;i++)X[i]=Xs[i*priorn+0];
 	f = Js[0];
-	
+
 	/*Allocate m1qn3 working arrays (see doc)*/
 	long      m   = 100;
 	long      ndz = 4*n+m*(2*n+1);
@@ -143,7 +143,6 @@ WRAPPER(M1qn3_python){
 
 }
 
-
 #ifdef _HAVE_M1QN3_
 void fakesimul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float rzs[1],void* dzs){
 
@@ -151,7 +150,7 @@ void fakesimul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],fl
 	double* Xs=ds->Xs;
 	double* Gs=ds->Gs;
 	double* Js=ds->Js;
-	
+
 	/*Are we done? : */
 	if(ds->counter+1==ds->priorn){
 		*indic=0;

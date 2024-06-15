@@ -326,7 +326,6 @@ ElementMatrix* DebrisAnalysis::CreateKMatrix(Element* element){/*{{{*/
 					}
 				}
 
-
 				/*Advection matrix - part 2, B*/
 				for(int i=0;i<numnodes;i++){
 					for(int j=0;j<numnodes;j++){

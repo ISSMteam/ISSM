@@ -384,7 +384,7 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	delete hdl_regin;
 	if(my_rank==0) for(int i=0; i < Xsize; i++) codi_global.registerInput(X[i]);
 	SetControlInputsFromVectorx(femmodel,X);
-	
+
 	IssmDouble J     = 0.;
 	int        count = 0;
 	DataSet* dependent_objects=((DataSetParam*)femmodel->parameters->FindParamObject(AutodiffDependentObjectsEnum))->value;

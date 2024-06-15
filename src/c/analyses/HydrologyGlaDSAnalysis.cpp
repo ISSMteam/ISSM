@@ -114,7 +114,7 @@ void HydrologyGlaDSAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 	int    meltflag;	
 	iomodel->FindConstant(&meltflag,"md.hydrology.melt_flag");
-	
+
 	/*Now, do we really want GlaDS?*/
 	if(hydrology_model!=HydrologyGlaDSEnum) return;
 
@@ -282,11 +282,11 @@ ElementMatrix* HydrologyGlaDSAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		hr_input->GetInputValue(&h_r,gauss);
 		b_input->GetInputValue(&b,gauss);
 		H_input->GetInputValue(&H,gauss);
-		
+
 		/*Get norm of gradient of hydraulic potential and make sure it is >0*/
 		IssmDouble normgradphi = sqrt(dphi[0]*dphi[0] + dphi[1]*dphi[1]);
 		if(normgradphi < AEPS) normgradphi = AEPS;
-		
+
 		/*Use transition model if specified*/
 		IssmDouble nu = mu_water/rho_water;
 		IssmDouble coeff;
@@ -545,7 +545,7 @@ void           HydrologyGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* solut
          /*Get norm of gradient of hydraulic potential and make sure it is >0*/
          IssmDouble normgradphi = sqrt(dphi[0]*dphi[0] + dphi[1]*dphi[1]);
          if(normgradphi < AEPS) normgradphi = AEPS;
-         
+
          /*If omega is zero, use standard model, otherwise transition model*/
          IssmDouble nu = mu_water/rho_water;
 			IssmDouble coeff;
@@ -560,7 +560,7 @@ void           HydrologyGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* solut
 
 			vx[iv] = -coeff/max(AEPS,h)*dphi[0];
 			vy[iv] = -coeff/max(AEPS,h)*dphi[1];
-				
+
 			d[iv] = coeff*normgradphi;
 		}
 	}
@@ -831,7 +831,7 @@ void HydrologyGlaDSAnalysis::UpdateEffectivePressure(Element* element){/*{{{*/
 	}
 
 	element->AddInput(EffectivePressureEnum,N,element->FiniteElement());
-	
+
 	/*Clean up and return*/
 	delete gauss;
 	xDelete<IssmDouble>(N);

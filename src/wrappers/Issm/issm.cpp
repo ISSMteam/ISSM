@@ -31,7 +31,7 @@ extern "C" {
 
 		/*Delete Model: */
 		delete femmodel;
-		
+
 		/*Finalize environment:*/
 		EnvironmentFinalize();
 

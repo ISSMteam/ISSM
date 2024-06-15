@@ -145,7 +145,6 @@ void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* paramet
 		PCFieldSplitSetIS(pc,PETSC_NULLPTR,isp);
 		#endif
 
-
 	}
 
 	/*If there is an initial guess for the solution, use it

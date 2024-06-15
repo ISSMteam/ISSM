@@ -121,7 +121,6 @@ void HydrologyDCInefficientAnalysis::UpdateElements(Elements* elements,Inputs* i
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.sediment_transmitivity",HydrologydcSedimentTransmitivityEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.mask_thawed_node",HydrologydcMaskThawedNodeEnum);
 
-
 	if(iomodel->domaintype!=Domain2DhorizontalEnum){
 		iomodel->FetchDataToInput(inputs,elements,"md.mesh.vertexonbase",MeshVertexonbaseEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.mesh.vertexonsurface",MeshVertexonsurfaceEnum);

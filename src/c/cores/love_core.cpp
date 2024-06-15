@@ -253,7 +253,7 @@ template <> void                           allgesv<__float128>(int* pnyi, int* p
 	mplapackint ldb=*pldb;
 	mplapackint info=0;
 	qipiv=xNewZeroInit<mplapackint>(*pnyi);
-	
+
 	Rgesv(nyi, nrhs, yilocal, lda, qipiv, rhslocal, ldb, info);
 
 	for (int i;i=0;i<*pnyi) ipiv[i]=qipiv[i];
@@ -340,7 +340,6 @@ template<typename doubletype> void         postwidder_transform(doubletype* Love
 
 	indf=(t*2*NTit)*(sh_nmax+1)+d;
 	doubletype* LoveM = xNew<doubletype>(NTit);
-
 
 	// test variation across frequencies tested, something with little frequency dependence is not worth going through PW tranform
 	// that transform would also be numerically unstable
@@ -436,7 +435,7 @@ template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, do
 
 		//interpolation abscissa
 		t=(z1-z[iz1])/(z[iz1+1]-z[iz1]);
-		
+
 		//cubic spline functions
 		h00=2.0*pow(t,3)-3.0*pow(t,2)+1.0;
 		h10=pow(t,3)-2.0*pow(t,2)+t;
@@ -485,7 +484,6 @@ template <> IssmComplex muEBM<IssmComplex>(int layer_index, IssmComplex omega, M
 	hf21=HypergeomTableLookup<IssmComplex>(z1, alpha, h2, z, nz, nalpha);
 	hf12=HypergeomTableLookup<IssmComplex>(z2, alpha, h1, z, nz, nalpha);
 	hf22=HypergeomTableLookup<IssmComplex>(z2, alpha, h2, z, nz, nalpha);
-
 
 	//Ivins et al (2020) p11
 	U1=(pow(tauh,alpha)-pow(taul,alpha))/alpha-pow(omega,2.0)/(2.0+alpha)*(pow(tauh,2.0+alpha)*hf11-pow(taul,2.0+alpha)*hf12);
@@ -761,7 +759,6 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 			dr = (xmax -xmin)/reCast<doubletype>(nstep);
 			x=xmin;
 
-
 				//fixme
 				g=GetGravity<doubletype>((xmin+xmax)/2.0*ra,layer_index,femmodel,matlitho,vars);
 
@@ -920,7 +917,6 @@ template <typename doubletype> void        propagate_yi_euler(doubletype* y, dou
 	//femmodel->parameters->FindParam(&nstep,LoveIntStepsPerLayerEnum); 
 	nstep=vars->nstep[layer_index];
 
-
 	doubletype* dydx=xNewZeroInit<doubletype>(6);
 	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
@@ -1020,7 +1016,6 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	doubletype  g0,r0,mu0, GG;
 	IssmDouble mu0p, GGp;
 
-
 	femmodel->parameters->FindParam(&mu0p,LoveMu0Enum);
 	femmodel->parameters->FindParam(&GGp,LoveGravitationalConstantEnum);
 
@@ -1030,10 +1025,9 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	GG=GGp;
 	nyi=vars->nyi;
 
-
 	doubletype g=GetGravity<doubletype>(r,layer_index,femmodel,matlitho,vars);
 	doubletype la,mu,ro;
-	
+
 	int i=layer_index-1;
 	if (layer_index==0) i=layer_index;
 
@@ -1080,7 +1074,6 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	yi[5+nyi*1]=-cst/(r*g0);
 	yi[5+nyi*2]=reCast<doubletype>(deg)/(r*g0);
 
-
 	/*doubletype vp2 = (la + 2.0*mu)/ro;
 	yi[0+nyi*0]=1.0*r/ra;
 	yi[0+nyi*1]=1.0/(r*ra);
@@ -1106,8 +1099,6 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	yi[5+nyi*1]=-cst/(r*g0);
 	yi[5+nyi*2]=deg/(r*g0);*/
 
-
-
 }/*}}}*/
 template <typename doubletype> void        Coremantle_boundaryconditions(doubletype* yi, int layer_index, int deg, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
 	//fills the boundary conditions at the bottom of layer[layer_index] in yi[0:2][0:5]
@@ -1117,7 +1108,6 @@ template <typename doubletype> void        Coremantle_boundaryconditions(doublet
 	doubletype ra=matlitho->radius[matlitho->numlayers];
 	doubletype  g0,r0,mu0, GG;
 	IssmDouble mu0p, GGp;
-
 
 	femmodel->parameters->FindParam(&mu0p,LoveMu0Enum);
 	femmodel->parameters->FindParam(&GGp,LoveGravitationalConstantEnum);
@@ -1130,7 +1120,6 @@ template <typename doubletype> void        Coremantle_boundaryconditions(doublet
 
 	doubletype ro=matlitho->density[layer_index-1];
 
-	
 	if (!matlitho->issolid[layer_index]) _error_("Love core error: CMB conditions requested but layer " << layer_index << " (mantle side) is not solid");
 	if (matlitho->issolid[layer_index-1]) _error_("Love core error: CMB conditions requested but layer " << layer_index-1 << " (outer core) is solid");
 
@@ -1196,8 +1185,6 @@ template <typename doubletype> void        build_yi_system(doubletype* yi, int d
 
 	doubletype ystart[6];
 	for (int k=0;k<6;k++) ystart[k]=0.0;		
-
-
 
 	for (int i = starting_layer; i<matlitho->numlayers;i++){ 
 		ici=i-starting_layer;
@@ -1399,7 +1386,6 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 	bool exit=false;
 	int lda,ldb;
 
-
 	for(;!exit;){ //cycles of: attempt to solve the yi system, then delete a layer if necessary
 		lda=nyi;
 		ldb=nyi;
@@ -1413,7 +1399,7 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 				yilocal[i+j*nyi]=yi[i+j*nyi];
 			}
 		}
-		
+
 		if (debug){
 			IssmDouble*  yidebug=xNew<IssmDouble>(nyi*nyi);
 			IssmDouble*  rhsdebug=xNew<IssmDouble>(nyi);
@@ -1459,7 +1445,6 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 			}
 			_error_("love core error in DGESV : LAPACK linear equation solver couldn't resolve the system");
 		}
-
 
 		*loveh = rhslocal[nyi-3]*ra*g0;
 		*lovel = rhslocal[nyi-2]*ra*g0;
@@ -1679,7 +1664,7 @@ template <typename doubletype> void        compute_love_numbers(LoveNumbers<doub
 		for (int fr=0;fr<nfreq;fr++){
 			omega=angular_frequency<doubletype>(frequencies[fr]);
 			vars->ifreq=fr;
-			
+
 			//precompute yi coefficients that depend on degree and frequency
 			fill_yi_prefactor<doubletype>(yi_prefactor, &deg,&omega,femmodel, matlitho,vars);
 
@@ -1719,8 +1704,6 @@ template <typename doubletype> void        compute_love_numbers(LoveNumbers<doub
 		}
 	}
 
-
-
 	if (VerboseSolution() && Elastic  && verbosecpu) _printf_("\n");
 	xDelete<doubletype>(yi);
 	xDelete<doubletype>(yi_righthandside);
@@ -1747,7 +1730,6 @@ template <typename doubletype> LoveVariables<doubletype>*	love_init(FemModel* fe
 	int*	    deg_layer_delete;
 	int*	    nstep;
 
-	
 	femmodel->parameters->FindParam(&GGp,LoveGravitationalConstantEnum);
 	femmodel->parameters->FindParam(&minsteps, LoveMinIntegrationStepsEnum);
 	femmodel->parameters->FindParam(&dr, LoveMaxIntegrationdrEnum);
@@ -1781,7 +1763,6 @@ template <typename doubletype> LoveVariables<doubletype>*	love_init(FemModel* fe
 	r0=r[numlayers];
 	starting_layer=0;
 	nyi=6*(numlayers-starting_layer+1);
-
 
 	if(VerboseSolution() && verbosecpu){
 		_printf_("     Surface gravity: " << g0 << " m.s^-2\n");
@@ -1937,7 +1918,6 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 	}
 	/*}}}*/
 
-
 	//Temporal love numbers
 	if (istemporal && !complex_computation){
 		/*Initialize*/
@@ -1963,7 +1943,6 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 		pmtf_orthot_local=xNewZeroInit<doubletype>(3*nt_local);
 
 		love_freq_to_temporal<doubletype>(Lovet_local,Tidalt_local,pmtf_colineart_local,pmtf_orthot_local,Lovef_local,Tidalf_local,frequencies_local,femmodel,verbosecpu);
-
 
 		if(VerboseSolution() && verbosecpu) _printf_("   Assembling parralel vectors...");
 
@@ -2039,7 +2018,7 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 			femmodel->parameters->AddObject(new DoubleMatParam(LovePolarMotionTransferFunctionOrthogonalEnum,pmtf_orthotDouble,nt,1));
 		}
 		/*}}}*/	
-	
+
 		/*Add into external results*/
 		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveKtEnum,LovetDouble_local->K,nt,sh_nmax+1,0,0));
 		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveHtEnum,LovetDouble_local->H,nt,sh_nmax+1,0,0));
@@ -2122,7 +2101,6 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 				femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveKernelsEnum,LovefDouble->Kernels,nfreq,(sh_nmax+1)*(matlitho->numlayers+1)*6,0,0));
 			}
 		}
-
 
 		delete Lovef_local;
 		delete LovefDouble;

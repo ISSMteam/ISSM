@@ -174,4 +174,3 @@ void Subglacialdischargearmax(FemModel* femmodel){/*{{{*/
    xDelete<IssmDouble>(polyparams);
    xDelete<IssmDouble>(datebreaks);
 }/*}}}*/
-

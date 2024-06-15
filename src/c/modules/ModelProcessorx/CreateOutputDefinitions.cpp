@@ -387,12 +387,12 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				iomodel->FetchMultipleData(&cfdraggradt_name_s,&num_cfdragcoeffabsgradtransients,                                                        "md.cfdragcoeffabsgradtransient.name");
 				iomodel->FetchMultipleData(&cfdraggradt_definitionstring_s,&num_cfdragcoeffabsgradtransients,                                            "md.cfdragcoeffabsgradtransient.definitionstring");
 				iomodel->FetchMultipleData(&cfdraggradt_weights_s,&cfdraggradt_weights_M_s,&cfdraggradt_weights_N_s,&test,             "md.cfdragcoeffabsgradtransient.weights");
-					
+
 				for(j=0;j<num_cfdragcoeffabsgradtransients;j++){
-               
+
 					/*Check that we can use P1 inputs*/
 					if (cfdraggradt_weights_M_s[j]!=iomodel->numberofvertices+1)  _error_("weights should be a P1 time series");
-					
+
 					/*extract data times from last row of observations*/
 					IssmDouble *datatimes = xNew<IssmDouble>(cfdraggradt_weights_N_s[j]);
 					for(int k=0;k<cfdraggradt_weights_N_s[j];k++) datatimes[k] = (cfdraggradt_weights_s[j])[cfdraggradt_weights_N_s[j]*(cfdraggradt_weights_M_s[j]-1)+k];
@@ -507,7 +507,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				for(j=0;j<num_cfrheologybbarabsgradtransients;j++){
 
 					if (cfrheogradt_weights_M_s[j]!=iomodel->numberofvertices+1) _error_("weights should be a P1 time series");
-					
+
 					/*extract data times from last row of observations*/
 					IssmDouble *datatimes = xNew<IssmDouble>(cfrheogradt_weights_N_s[j]);
 					for(int k=0;k<cfrheogradt_weights_N_s[j];k++) datatimes[k] = (cfrheogradt_weights_s[j])[cfrheogradt_weights_N_s[j]*(cfrheogradt_weights_M_s[j]-1)+k];
@@ -524,7 +524,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 					}
 				}
-				
+
 				/*Free resources:*/
             for(j=0;j<num_cfrheologybbarabsgradtransients;j++){
                char* string=NULL;

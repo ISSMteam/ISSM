@@ -409,7 +409,6 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 }/*}}}*/
 void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 
-
 	/*Intermediaries*/
 	long    omode;
 	double  f,dxmin,dfmin_frac,gttol;
@@ -539,7 +538,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		aX[i] = reCast<IssmDouble>(X[i]);
 		aG[i] = reCast<IssmDouble>(G[i]);
 	}
-	
+
 	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
 	SetControlInputsFromVectorx(femmodel,aX);
 	xDelete(aX);
