@@ -184,7 +184,7 @@ fi
 
 # Create package
 cd ${ISSM_DIR}
-svn cleanup --remove-ignored --remove-unversioned test # Clean up test directory (before copying to package)
+git clean -d -f test # Clean up test directory (before copying to package)
 echo "Copying assets to package: ${PKG}"
 cp -rf bin examples lib scripts share test ${PKG}
 mkdir ${PKG}/execution

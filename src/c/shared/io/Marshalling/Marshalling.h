@@ -9,6 +9,7 @@
 #include "../../Exceptions/exceptions.h"
 #include "../../MemOps/MemOps.h"
 #include "../../Numerics/recast.h"
+#include "../../../toolkits/codipack/CoDiPackGlobal.h"
 
 /*Define Marshall operation Enums first*/
 enum MarshallOpEnum{
@@ -19,7 +20,6 @@ enum MarshallOpEnum{
 	AD_COUNTDOUBLES,
 	AD_REGISTERINPUT,
 	AD_REGISTEROUTPUT,
-	AD_SETADJOINT,
 #endif
 };
 
@@ -107,13 +107,6 @@ class SizeCheckpointFunctor:  public MarshallHandle{ /*{{{*/
 		}
 };/*}}}*/
 #if defined(_HAVE_CODIPACK_) && !defined(_WRAPPERS_)
-#if _CODIPACK_MAJOR_==2
-using Tape = typename IssmDouble::Tape;
-#elif _CODIPACK_MAJOR_==1
-using Tape = typename IssmDouble::TapeType;
-#else
-#error "_CODIPACK_MAJOR_ not supported"
-#endif
 class CountDoublesFunctor:    public MarshallHandle{ /*{{{*/
 
 	private:
@@ -131,13 +124,10 @@ class CountDoublesFunctor:    public MarshallHandle{ /*{{{*/
 class RegisterInputFunctor:   public MarshallHandle{ /*{{{*/
 
 	private:
-		int  double_count;
-		int *identifiers;
-		int  size_max;
-		Tape *tape_codi;
+		CoDi_global *data;
 
 	public:
-		RegisterInputFunctor(int* identifiers_in,int size_max_in);
+		RegisterInputFunctor(CoDi_global *data);
 		void Echo(void);
 		template<typename T> void call(T & value){/*General case: do nothing*/}
 		template<typename T> void call(T* & value,int size){/*General case: do nothing*/}
@@ -147,27 +137,10 @@ class RegisterInputFunctor:   public MarshallHandle{ /*{{{*/
 class RegisterOutputFunctor:  public MarshallHandle{ /*{{{*/
 
 	private:
-		int   double_count;
-		Tape *tape_codi;
+		CoDi_global *data;
 
 	public:
-		RegisterOutputFunctor(void);
-		void Echo(void);
-		template<typename T> void call(T & value){/*General case: do nothing*/}
-		template<typename T> void call(T* & value,int size){/*General case: do nothing*/}
-		void call(IssmDouble & value);
-		void call(IssmDouble* & value,int size);
-}; /*}}}*/
-class SetAdjointFunctor:      public MarshallHandle{ /*{{{*/
-
-	private:
-		int     double_count;
-		int     size_max;
-		Tape   *tape_codi;
-		double *adjoint;
-
-	public:
-		SetAdjointFunctor(double* adjoint_in,int size_max_in);
+		RegisterOutputFunctor(CoDi_global *data);
 		void Echo(void);
 		template<typename T> void call(T & value){/*General case: do nothing*/}
 		template<typename T> void call(T* & value,int size){/*General case: do nothing*/}
@@ -185,7 +158,6 @@ template<typename T> void MarshallHandle::call(T & value){
 		case AD_COUNTDOUBLES:  {CountDoublesFunctor*   temp = xDynamicCast<CountDoublesFunctor*>(this);    temp->call(value); break;}
 		case AD_REGISTERINPUT: {RegisterInputFunctor*  temp = xDynamicCast<RegisterInputFunctor*>(this);   temp->call(value); break;}
 		case AD_REGISTEROUTPUT:{RegisterOutputFunctor* temp = xDynamicCast<RegisterOutputFunctor*>(this);  temp->call(value); break;}
-		case AD_SETADJOINT:    {SetAdjointFunctor*     temp = xDynamicCast<SetAdjointFunctor*>(this);      temp->call(value); break;}
 #endif
 		default: _error_("Operation "<<OperationNumber()<<" not supported yet");
 	}
@@ -199,7 +171,6 @@ template<typename T> void MarshallHandle::call(T* & value,int size){
 		case AD_COUNTDOUBLES:  {CountDoublesFunctor*   temp = xDynamicCast<CountDoublesFunctor*>(this);    temp->call(value,size); break;}
 		case AD_REGISTERINPUT: {RegisterInputFunctor*  temp = xDynamicCast<RegisterInputFunctor*>(this);   temp->call(value,size); break;}
 		case AD_REGISTEROUTPUT:{RegisterOutputFunctor* temp = xDynamicCast<RegisterOutputFunctor*>(this);  temp->call(value,size); break;}
-		case AD_SETADJOINT:    {SetAdjointFunctor*     temp = xDynamicCast<SetAdjointFunctor*>(this);      temp->call(value,size); break;}
 #endif
 		default: _error_("Operation "<<OperationNumber() <<" not supported yet");
 	}

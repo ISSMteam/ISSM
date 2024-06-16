@@ -2063,7 +2063,7 @@ void       Tria::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* f
 
 	/*Recover parameters and values*/
 	Element::GetInputListOnVertices(&gl[0],distance_enum);
-	
+
 	/*Determine where to apply sub-element melt using intrusion distance*/
 	for(int i=0; i<NUMVERTICES; i++){
 		gl[i] -= intrusion_distance;
@@ -5847,7 +5847,7 @@ IssmDouble Tria::TotalSmb(bool scaled){/*{{{*/
 	 * http://en.wikipedia.org/wiki/Triangle
 	 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
 	base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));	// area of element in m2
-	
+
 	/*Now get the average SMB over the element*/
 	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 	if(lsf[0]*lsf[1]<=0 || lsf[0]*lsf[2]<=0 || lsf[1]*lsf[2]<=0){
@@ -5857,12 +5857,12 @@ IssmDouble Tria::TotalSmb(bool scaled){/*{{{*/
       IssmDouble* weights       = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble* smb_vertices  = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble f1,f2,phi;
-		
+
 		Element::GetInputListOnVertices(&smb_vertices[0],SmbMassBalanceEnum);
 		GetFractionGeometry(weights,&phi,&point,&f1,&f2,&mainlyice,lsf);
 		smb = 0.0;
 		for(int i=0;i<NUMVERTICES;i++) smb += weights[i]*smb_vertices[i];
-	
+
 		if(scaled==true){
          IssmDouble* scalefactor_vertices = xNew<IssmDouble>(NUMVERTICES);
          Element::GetInputListOnVertices(&scalefactor_vertices[0],MeshScaleFactorEnum);
@@ -5887,7 +5887,7 @@ IssmDouble Tria::TotalSmb(bool scaled){/*{{{*/
 		}
 		else scalefactor=1.0;
 	}
-	
+
    Total_Smb=rho_ice*base*smb*scalefactor;	// smb on element in kg s-1
 
 	/*Return: */
@@ -5913,7 +5913,7 @@ IssmDouble Tria::TotalSmbMelt(bool scaled){/*{{{*/
 	 * http://en.wikipedia.org/wiki/Triangle
 	 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
 	base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));	// area of element in m2
-	
+
 	/*Now get the average SMB over the element*/
 	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 	if(lsf[0]*lsf[1]<=0 || lsf[0]*lsf[2]<=0 || lsf[1]*lsf[2]<=0){
@@ -5923,12 +5923,12 @@ IssmDouble Tria::TotalSmbMelt(bool scaled){/*{{{*/
       IssmDouble* weights       = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble* smbmelt_vertices  = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble f1,f2,phi;
-		
+
 		Element::GetInputListOnVertices(&smbmelt_vertices[0],SmbMeltEnum);
 		GetFractionGeometry(weights,&phi,&point,&f1,&f2,&mainlyice,lsf);
 		smbmelt = 0.0;
 		for(int i=0;i<NUMVERTICES;i++) smbmelt += weights[i]*smbmelt_vertices[i];
-	
+
 		if(scaled==true){
          IssmDouble* scalefactor_vertices = xNew<IssmDouble>(NUMVERTICES);
          Element::GetInputListOnVertices(&scalefactor_vertices[0],MeshScaleFactorEnum);
@@ -5953,7 +5953,7 @@ IssmDouble Tria::TotalSmbMelt(bool scaled){/*{{{*/
 		}
 		else scalefactor=1.0;
 	}
-	
+
    Total_Melt=rho_ice*base*smbmelt*scalefactor;	// smbmelt on element in kg s-1
 
 	/*Return: */
@@ -5979,7 +5979,7 @@ IssmDouble Tria::TotalSmbRefreeze(bool scaled){/*{{{*/
 	 * http://en.wikipedia.org/wiki/Triangle
 	 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
 	base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));	// area of element in m2
-	
+
 	/*Now get the average SMB over the element*/
 	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 	if(lsf[0]*lsf[1]<=0 || lsf[0]*lsf[2]<=0 || lsf[1]*lsf[2]<=0){
@@ -5989,12 +5989,12 @@ IssmDouble Tria::TotalSmbRefreeze(bool scaled){/*{{{*/
       IssmDouble* weights       = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble* smbrefreeze_vertices  = xNew<IssmDouble>(NUMVERTICES);
       IssmDouble f1,f2,phi;
-		
+
 		Element::GetInputListOnVertices(&smbrefreeze_vertices[0],SmbRefreezeEnum);
 		GetFractionGeometry(weights,&phi,&point,&f1,&f2,&mainlyice,lsf);
 		smbrefreeze = 0.0;
 		for(int i=0;i<NUMVERTICES;i++) smbrefreeze += weights[i]*smbrefreeze_vertices[i];
-	
+
 		if(scaled==true){
          IssmDouble* scalefactor_vertices = xNew<IssmDouble>(NUMVERTICES);
          Element::GetInputListOnVertices(&scalefactor_vertices[0],MeshScaleFactorEnum);
@@ -6019,7 +6019,7 @@ IssmDouble Tria::TotalSmbRefreeze(bool scaled){/*{{{*/
 		}
 		else scalefactor=1.0;
 	}
-	
+
    Total_Refreeze=rho_ice*base*smbrefreeze*scalefactor;	// smbrefreeze on element in kg s-1
 
 	/*Return: */
@@ -6878,7 +6878,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	int intmax=pow(2,16)-1;
 
 	int* activevertices=xNew<int>(n_activevertices[this->lid]);
-	
+
 	int av=0;
 
 	for (int i=0;i<3;i++){
@@ -7224,7 +7224,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	}
 	xDelete<int*>(AlphaIndex);
 	if(horiz) xDelete<int*>(AzimIndex); 
-	
+
 	/*}}}*/
 	return;
 
@@ -7715,7 +7715,6 @@ void       Tria::SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads*
 	int  size;
 	int  nel,nbar;
 
-
 	this->parameters->FindParam(&sal,SolidearthSettingsSelfAttractionEnum);
 	this->parameters->FindParam(&viscous,SolidearthSettingsViscousEnum);
 	this->parameters->FindParam(&rotation,SolidearthSettingsRotationEnum);
@@ -7985,7 +7984,6 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 		horiz_projectionsub[l]=xNewZeroInit<IssmDouble>(loads->nactivesubloads[l]);
 	}
 
-
 	//Convolution
 	//av=0;
 	for(av=0;av<n_activevertices;av++) { //vertices
@@ -8058,7 +8056,6 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 		//av+=1;
 	} /*}}}*/
 
-
 	//free resources
 	xDelete<IssmDouble>(horiz_projection);
 	xDelete<IssmDouble>(projected_loads);
@@ -8070,14 +8067,12 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 
 } /*}}}*/
 
-
 void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDouble* grdfield, SealevelGeometry* slgeom, int nel, bool percpu, int viscousenum, bool computefuture) { /*{{{*/
 
 	//This function aligns grdfield with the requested output format: in a size 3 vector or in a size numberofvertices vector
 	// if compute viscous is on, we also interpolate the field timewise given the current timestepping as well as collect viscous deformation and update the viscous deformation time series for future time steps
 	int i,e,l,t,a, index, nbar, av, n_activevertices;
 	int nt=1;
-
 
 	//viscous
 	bool computeviscous=false;
@@ -8109,7 +8104,6 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 		}
 		else nt=1;
 	}
-	
 
 	if(!computeviscous){ /*{{{*/
 		/*elastic or self attraction only case
@@ -8141,7 +8135,6 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 			//if(slgeom->lids[this->vertices[i]->lid]!=this->lid)continue;
 			grdfield[i*nt+0]+=viscousfield[i*viscousnumsteps+viscousindex]; 
 		}
-
 
 		/* Map new grdfield generated by present-day loads onto viscous time vector*/
 		if(computefuture){

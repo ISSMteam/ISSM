@@ -109,14 +109,20 @@ endif
 # - On macOS, static linking of binaries is not supported.
 #
 if STANDALONE_MODULES
-if MAC
-AM_LDFLAGS += -Wl,-rpath,'@rpath'
+	if MAC
+		AM_LDFLAGS += -Wl,-rpath,'@rpath'
+	else
+		AM_LDFLAGS += -Wl,-lbacktrace
+		if !MSYS2
+			AM_LDFLAGS += -Wl,-static -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN'
+		endif
+	endif
 else
-AM_LDFLAGS += -Wl,-lbacktrace
-if !MSYS2
-AM_LDFLAGS += -Wl,-static -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN'
-endif
-endif
+	if MAC
+		if HAVE_FORTRANDIR
+			AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+		endif
+	endif
 endif
 
 AM_CXXFLAGS += -fPIC -D_WRAPPERS_

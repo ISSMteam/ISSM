@@ -65,7 +65,7 @@ void OceanExchangeDatax(FemModel* femmodel, bool init_stage){
 			ISSM_MPI_Recv(oceangridx,ngrids_ocean,ISSM_MPI_DOUBLE,0,10001005,tomitgcmcomm,&status);
 			ISSM_MPI_Recv(oceangridy,ngrids_ocean,ISSM_MPI_DOUBLE,0,10001006,tomitgcmcomm,&status);
 		}
-		
+
 		ISSM_MPI_Bcast(oceangridx,ngrids_ocean,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
 		ISSM_MPI_Bcast(oceangridy,ngrids_ocean,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
 		femmodel->parameters->SetParam(oceangridx,ngrids_ocean,OceanGridXEnum);
@@ -76,7 +76,6 @@ void OceanExchangeDatax(FemModel* femmodel, bool init_stage){
 		femmodel->parameters->FindParam(&oceangridx,&ngrids_ocean,OceanGridXEnum);
 		femmodel->parameters->FindParam(&oceangridy,&ngrids_ocean,OceanGridYEnum);
 	}
-
 
 	/*Interpolate ice thickness and mask onto ocean grid*/
 	femmodel->GetMesh(femmodel->vertices,femmodel->elements,&x_ice,&y_ice,&index_ice);

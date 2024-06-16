@@ -253,7 +253,6 @@ issm_sources += \
 	./cores/WrapperPreCorePointerFromSolutionEnum.cpp \
 	./cores/CorePointerFromSolutionEnum.cpp \
 	./cores/ad_core.cpp \
-	./cores/adgradient_core.cpp \
 	./main/EnvironmentInit.cpp \
 	./main/EnvironmentFinalize.cpp \
 	./analyses/EnumToAnalysis.cpp \
@@ -772,21 +771,21 @@ endif
 # - On macOS, static linking of binaries is not supported.
 #
 if STANDALONE_EXECUTABLES
-if MAC
-AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
+	if MAC
+		AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
+	else
+		if MSYS2
+			AM_LDFLAGS += -Wl,-static
+		else
+			AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
+		endif
+	endif
 else
-if MSYS2
-AM_LDFLAGS += -Wl,-static
-else
-AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
-endif
-endif
-else
-if MAC
-if HAVE_FORTRANDIR
-AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
-endif
-endif
+	if MAC
+		if HAVE_FORTRANDIR
+			AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+		endif
+	endif
 endif
 
 if VERSION

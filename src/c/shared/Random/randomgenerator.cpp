@@ -165,7 +165,6 @@ namespace rnd{
   }
   /*}}}*/
 
-
   /* Exponential distribution */
 
   exponential_distribution::exponential_distribution(){/*{{{*/

@@ -1408,7 +1408,7 @@ void       Penta::GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, i
 	}
 	if(trapezeisnegative) phi = 1.-f1*f2;
 	else                  phi = f1*f2;
-	
+
 	/*Compute weights*/
 	Gauss* gauss = this->NewGauss(point,f1,f2,1-trapezeisnegative,2);
 
@@ -1424,7 +1424,7 @@ void       Penta::GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, i
 	/*Normalizing to phi such that weights provide coefficients for integration over subelement (for averaging:phi*weights)*/
    if(total_weight>0.) for(int i=0;i<NUMVERTICES2D;i++) weights[i] = weights[i]*phi/total_weight;
 	else for(int i=0;i<NUMVERTICES2D;i++) weights[i] = 0.0;
-	
+
 	/*Assign output pointers*/
 	*pphi               = phi;
 	*ppoint1            = point;
@@ -2231,13 +2231,13 @@ IssmDouble Penta::IceVolume(bool scaled){/*{{{*/
 			lsf2d[i]   = lsf[i];
 		}
 		GetFractionGeometry2D(&weights[0],&phi,&point,&f1,&f2,&istrapneg,lsf2d);
-		
+
 		IssmDouble basetot;
 		height = 0.0;
 		for(int i=0;i<NUMVERTICES2D;i++) height += weights[i]/phi*heights[i];
 		basetot = 1./2.*fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
 		base    = basetot*phi;	
-	
+
 		/*Account for scaling factor averaged over subelement 2D area*/
 		if(scaled==true){
 			IssmDouble scalefactor_vertices[NUMVERTICES];
@@ -2254,13 +2254,13 @@ IssmDouble Penta::IceVolume(bool scaled){/*{{{*/
 		 * http://en.wikipedia.org/wiki/Pentangle
 		 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
 		base = 1./2.*fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
-	
+
 		if(scaled==true){ //scale for area projection correction
 			Input* scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
 			scalefactor_input->GetInputAverage(&scalefactor);
 			base=base*scalefactor;
 		}
-	
+
 		/*Now get the average height*/
 		height = 1./3.*((xyz_list[3][2]-xyz_list[0][2])+(xyz_list[4][2]-xyz_list[1][2])+(xyz_list[5][2]-xyz_list[2][2]));
 	}

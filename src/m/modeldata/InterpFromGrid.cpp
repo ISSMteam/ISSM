@@ -333,7 +333,7 @@ bool binary_search_increasing(int* pindex,double target,double* list,int n){
 
 	/*Assign output pointers:*/
 	*pindex=index;
-	
+
 	/*Return result: */
 	return found;
 }/*}}}*/
@@ -394,7 +394,6 @@ void  dataderivatives(double* A,double* x,double* y,double* data,int dataM,int d
     *     +--+-------+-----> x
     *        j       j+1
 	 */
-
 
    /*Function at corners*/
    A[0] = f(m1,n1); // f(0,0)

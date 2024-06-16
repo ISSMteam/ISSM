@@ -19,7 +19,6 @@ void GroundinglineMigrationx(Elements* elements,Nodes* nodes, Vertices* vertices
 
 	if(VerboseModule()) _printf0_("   Migrating grounding line based on "<<EnumToStringx(migration_style)<<"\n");
 
-
 	switch(migration_style){
 		case SoftMigrationEnum:
 			ToolkitsOptionsFromAnalysis(parameters,DefaultAnalysisEnum);

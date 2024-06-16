@@ -32,12 +32,12 @@ typedef std::complex<double> IssmPComplex;/*for passive variables*/
 
 #elif defined(_HAVE_CODIPACK_) && !defined(_WRAPPERS_)
 /*CoDiPack typedefs*/
-#include <codi.hpp>
-//typedef codi::RealReverseIndex          IssmDouble;
-typedef codi::RealReverse               IssmDouble;
-typedef std::complex<codi::RealReverse> IssmComplex;
-typedef double                          IssmPDouble;
-typedef IssmComplex                     IssmPComplex;
+#include "../../toolkits/codipack/CoDiPackTypes.h"
+
+typedef CoDiReal               IssmDouble;
+typedef std::complex<CoDiReal> IssmComplex;
+typedef double                 IssmPDouble;
+typedef IssmComplex            IssmPComplex;
 
 #else 
 /*Non-AD typedefs*/

@@ -227,7 +227,7 @@ fi
 
 # Create package
 cd ${ISSM_DIR}
-svn cleanup --remove-ignored --remove-unversioned test # Clean up test directory (before copying to package)
+git clean -d -f test # Clean up test directory (before copying to package)
 echo "Copying assets to package: ${PKG}"
 # NOTE: We do not copy lib directory to package as MATLAB seems to perform differently under Windows and so we package all DDL's and MEX-files in bin directory
 cp -rf bin examples scripts share test ${PKG}

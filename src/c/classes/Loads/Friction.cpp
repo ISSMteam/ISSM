@@ -499,7 +499,7 @@ void Friction::GetAlpha2Coulomb(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
       /*Compute effective pressure directly*/
       Neff = EffectivePressure(gauss);
    }
-	
+
 	/*Get velocity magnitude*/
 	IssmDouble vmag = VelMag(gauss);
 
@@ -913,7 +913,6 @@ void Friction::GetAlpha2Schoof(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	element->GetInputValue(&Cmax,gauss,FrictionCmaxEnum);
 	element->GetInputValue(&C,gauss,FrictionCEnum);
 	element->GetInputValue(&m,gauss,FrictionMEnum);
-
 
 	/*Get effective pressure*/
 	bool ispwStochastic;

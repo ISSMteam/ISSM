@@ -155,7 +155,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.groundedice_melting_rate",BasalforcingsGroundediceMeltingRateEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
-	
+
 	if(isgroundingline) 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.bed",BedEnum);
 	/*Initialize ThicknessResidual input*/
 	InputUpdateFromConstantx(inputs,elements,0.,ThicknessResidualEnum);
@@ -1196,6 +1196,10 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	return pe;
 }/*}}}*/
 void           MasstransportAnalysis::FctKMatrix(Matrix<IssmDouble>** pKff,Matrix<IssmDouble>** pKfs,FemModel* femmodel){/*{{{*/
+
+	int domaintype;
+	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
+	if(domaintype!=Domain2DhorizontalEnum) _error_("domain type "<<EnumToStringx(domaintype)<<" not supported yet");
 
 	/*Output*/
 	Matrix<IssmDouble>* Kff = NULL;

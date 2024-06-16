@@ -44,6 +44,7 @@ LIBQUADMATH_DIST="${ISSM_DIR}/lib/libquadmath.so.0" # Important the file name ma
 ## Environment
 #
 export PATH="${ISSM_DIR}/bin:$(getconf PATH)" # Ensure that we pick up binaries from 'bin' directory rather than 'externalpackages'
+source ~/.venv/issm/bin/activate
 
 ## Parse options
 #
@@ -184,7 +185,7 @@ fi
 
 # Create package
 cd ${ISSM_DIR}
-svn cleanup --remove-ignored --remove-unversioned test # Clean up test directory (before copying to package)
+git clean -d -f test # Clean up test directory (before copying to package)
 echo "Copying assets to package: ${PKG}"
 cp -rf bin examples lib scripts share test ${PKG}
 mkdir ${PKG}/execution

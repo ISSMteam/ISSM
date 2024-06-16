@@ -684,7 +684,7 @@ void CholeskyRealPositiveDefinite(IssmDouble* Lchol, IssmDouble* A, int ndim) { 
 		for(int j=0;j<=i;j++){
 			IssmDouble sum=0.;
 			for(int k=0;k<j;k++) sum += Lchol[i*ndim+k]*Lchol[j*ndim+k];
-			
+
 			if(i==j) Lchol[i*ndim+j] = sqrt(A[i*ndim+j]-sum);
 			else Lchol[i*ndim+j]     = 1./Lchol[j*ndim+j] * (A[i*ndim+j]-sum);
 		}
