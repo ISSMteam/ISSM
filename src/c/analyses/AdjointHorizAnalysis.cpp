@@ -324,13 +324,11 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHO(Element* element){/*{{{*
 				Ke->values[4*numnodes*(4*i+1)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb1j*eb1i+viscosity[4]*(esh1j*eb1i+eb1j*esh1i)+viscosity[5]*esh1j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(eb1i*basis[j]+eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(esh1i*basis[j]+esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
 				Ke->values[4*numnodes*(4*i+2)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb1j*eb2i+viscosity[2]*(esh1j*eb2i+eb1j*esh2i)+viscosity[4]*esh1j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2i*basis[j]);
 				Ke->values[4*numnodes*(4*i+3)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb1j*eb2i+viscosity[4]*(esh1j*eb2i+eb1j*esh2i)+viscosity[5]*esh1j*esh2i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*eb2i*basis[j]+vyshear*eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2i*basis[j]+vyshear*esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vyshear*basis[j]*basis[i]);
-				
 
 				Ke->values[4*numnodes*(4*i+0)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb2j*eb1i+viscosity[1]*(esh2j*eb1i+eb2j*esh1i)+viscosity[2]*esh2j*esh1i);
 				Ke->values[4*numnodes*(4*i+1)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2j*basis[i]);
 				Ke->values[4*numnodes*(4*i+2)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb2j*eb2i+viscosity[1]*(esh2j*eb2i+eb2j*esh2i)+viscosity[2]*esh2j*esh2i);
 				Ke->values[4*numnodes*(4*i+3)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb2i+viscosity[2]*(esh2j*eb2i+eb2j*esh2i)+viscosity[4]*esh2j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh2j*basis[i]);
-
 
 				Ke->values[4*numnodes*(4*i+0)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb1i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh1i*basis[j]);
 				Ke->values[4*numnodes*(4*i+1)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb2j*eb1i+viscosity[4]*(esh2j*eb1i+eb2j*esh1i)+viscosity[5]*esh2j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vyshear*eb1i*basis[j]+vxshear*eb2j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2j*basis[i]+vyshear*esh1i*basis[j])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
@@ -392,7 +390,6 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 
 	/*Second part of the Gateau derivative if requested*/
 
-
 	/*Fetch number of nodes and dof for this finite element*/
    int numnodes = basalelement->GetNumberOfNodes();
    IssmDouble* dbasis = xNew<IssmDouble>(2*numnodes); // like SSA
@@ -410,7 +407,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 	/* Start  looping on the number of gaussian points: */
    Gauss* gauss      = element->NewGauss(10);
    Gauss* gauss_base = basalelement->NewGauss();
-	
+
 	GaussSeg* gauss_seg=new GaussSeg(5);
 
    while(gauss->next()){
@@ -445,7 +442,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 			e1[0] = 2.0*epsilon[0]+epsilon[1];
 			e1[1] = epsilon[2];
 			e1[2] = epsilon[3];
-	
+
 			e2[0] = epsilon[2];
 			e2[1] = epsilon[0]+2.0*epsilon[1];
 			e2[2] = epsilon[4];
@@ -456,7 +453,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 					e2phi1i = e2[0]*dbasis[0*numnodes+i]+e2[1]*dbasis[1*numnodes+i];
 					e1phi1j = e1[0]*dbasis[0*numnodes+j]+e1[1]*dbasis[1*numnodes+j];
 					e2phi1j = e2[0]*dbasis[0*numnodes+j]+e2[1]*dbasis[1*numnodes+j];
-	
+
 					e1phi2i = (1-pow(zeta, n+1))*(e1[0]*dbasis[0*numnodes+i]+e1[1]*dbasis[1*numnodes+i])+(n+1)/thickness*pow(zeta, n)*e1[2]*basis[i];
 					e2phi2i = (1-pow(zeta, n+1))*(e2[0]*dbasis[0*numnodes+i]+e2[1]*dbasis[1*numnodes+i])+(n+1)/thickness*pow(zeta, n)*e2[2]*basis[i];
 					e1phi2j = (1-pow(zeta, n+1))*(e1[0]*dbasis[0*numnodes+j]+e1[1]*dbasis[1*numnodes+j])+(n+1)/thickness*pow(zeta, n)*e1[2]*basis[j];
@@ -466,12 +463,12 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 					Ke->values[4*numnodes*(4*i+1)+4*j+0]+=gauss->weight*Jdet*effmu*mu*e1phi2i*e1phi1j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+2)+4*j+0]+=gauss->weight*Jdet*effmu*mu*e2phi1i*e1phi1j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+3)+4*j+0]+=gauss->weight*Jdet*effmu*mu*e2phi2i*e1phi1j*thickness*0.5*gauss_seg->weight;
-					
+
 					Ke->values[4*numnodes*(4*i+0)+4*j+1]+=gauss->weight*Jdet*effmu*mu*e1phi1i*e1phi2j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+1)+4*j+1]+=gauss->weight*Jdet*effmu*mu*e1phi2i*e1phi2j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+2)+4*j+1]+=gauss->weight*Jdet*effmu*mu*e2phi1i*e1phi2j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+3)+4*j+1]+=gauss->weight*Jdet*effmu*mu*e2phi2i*e1phi2j*thickness*0.5*gauss_seg->weight;
-					
+
 					Ke->values[4*numnodes*(4*i+0)+4*j+2]+=gauss->weight*Jdet*effmu*mu*e1phi1i*e2phi1j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+1)+4*j+2]+=gauss->weight*Jdet*effmu*mu*e1phi2i*e2phi1j*thickness*0.5*gauss_seg->weight;
 					Ke->values[4*numnodes*(4*i+2)+4*j+2]+=gauss->weight*Jdet*effmu*mu*e2phi1i*e2phi1j*thickness*0.5*gauss_seg->weight;
@@ -1177,7 +1174,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorMOLHO(Element* element){/*{{{*
 
 		basalelement->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		basalelement->NodalFunctions(basis, gauss);
-      
+
 		thickness_input->GetInputValue(&thickness,gauss);
       n_input->GetInputValue(&n,gauss);
 		vx_input->GetInputValue(&vx,gauss);
@@ -1883,7 +1880,7 @@ void           AdjointHorizAnalysis::GradientJBbarMOLHO(Element* element,Vector<
 		adjointshy_input->GetInputDerivativeValue(&dadjshy[0],xyz_list,gauss);
 		adjointshx_input->GetInputValue(&adjshx, gauss);
 		adjointshy_input->GetInputValue(&adjshy, gauss);
-		
+
 		basalelement->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		basalelement->NodalFunctionsP1(basis,gauss);
 

@@ -7,11 +7,7 @@
 #include "../classes/classes.h"
 #include "../shared/shared.h"
 #include "../modules/modules.h"
-
-#ifdef _HAVE_CODIPACK_
-extern CoDi_global codi_global;
-#include <sstream> // for output of the CoDiPack tape
-#endif
+#include "../toolkits/codipack/CoDiPackGlobal.h"
 
 #ifdef _HAVE_AD_
 void simul_starttrace2(FemModel* femmodel){/*{{{*/
@@ -43,37 +39,7 @@ void simul_starttrace2(FemModel* femmodel){/*{{{*/
 	#elif defined(_HAVE_CODIPACK_)
 
 		//fprintf(stderr, "*** Codipack IoModel::StartTrace\n");
-		/*
-		 * FIXME codi
-		 * - ADOL-C variant uses fine grained tracing with various arguments
-		 * - ADOL-C variant sets a garbage collection parameter for its tape
-		 * -> These parameters are not read for the CoDiPack ISSM version!
-		 */
-		#if _CODIPACK_MAJOR_==2
-		auto& tape_codi = IssmDouble::getTape();
-		#elif _CODIPACK_MAJOR_==1
-		auto& tape_codi = IssmDouble::getGlobalTape();
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-
-		tape_codi.setActive();
-		#if _AD_TAPE_ALLOC_
-		//alloc_profiler.Tag(StartInit, true);
-		IssmDouble x_t(1.0), y_t(1.0);
-		tape_codi.registerInput(y_t);
-		int codi_allocn = 0;
-		femmodel->parameters->FindParam(&codi_allocn,AutodiffTapeAllocEnum);
-		for(int i = 0;i < codi_allocn;++i) {
-			x_t = y_t * y_t;
-		}
-		/*
-		std::stringstream out_s;
-		IssmDouble::getTape().printStatistics(out_s);
-		_printf0_("StartTrace::Tape Statistics	   : TapeAlloc count=[" << codi_allocn << "]\n" << out_s.str());
-		*/
-		#endif
-
+		codi_global.start();
 	#else
 	_error_("not implemented");
 	#endif
@@ -127,21 +93,6 @@ void simul_stoptrace2(){/*{{{*/
 		}
 		delete [] sstats;
 		#endif
-
-		#ifdef _HAVE_CODIPACK_
-		#ifdef _AD_TAPE_ALLOC_
-		//_printf_("Allocation time  P(" << my_rank << "): " << alloc_profiler.DeltaTime(StartInit, FinishInit) << "\n");
-		#endif
-		std::stringstream out_s;
-		#if _CODIPACK_MAJOR_==2
-		IssmDouble::getTape().printStatistics(out_s);
-		#elif _CODIPACK_MAJOR_==1
-		IssmDouble::getGlobalTape().printStatistics(out_s);
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-		_printf0_("CoDiPack Profiling::Tape Statistics :\n" << out_s.str());
-		#endif
 	} /*}}}*/
 
 	#elif defined(_HAVE_CODIPACK_)
@@ -154,12 +105,10 @@ void simul_stoptrace2(){/*{{{*/
 	#error "_CODIPACK_MAJOR_ not supported"
 	#endif
 
-	tape_codi.setPassive();
+	codi_global.stop();
 	if(VerboseAutodiff()){
 		int my_rank=IssmComm::GetRank();
 		if(my_rank == 0) {
-			// FIXME codi "just because" for now
-			tape_codi.printStatistics(std::cout);
 			codi_global.print(std::cout);
 		}
 	}
@@ -212,27 +161,11 @@ void controlvalidation_core(FemModel* femmodel){
 	simul_starttrace2(femmodel);
 	IssmDouble* aX=xNew<IssmDouble>(n);
 
-	#if _CODIPACK_MAJOR_==2
-	auto& tape_codi = IssmDouble::getTape();
-	#elif _CODIPACK_MAJOR_==1
-	auto& tape_codi = IssmDouble::getGlobalTape();
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
-
-	codi_global.input_indices.clear();
+	codi_global.start();
 	if(my_rank==0){
 		for (int i=0;i<n;i++) {
 			aX[i]=X0[i];
-			tape_codi.registerInput(aX[i]);
-			#if _CODIPACK_MAJOR_==2
-			codi_global.input_indices.push_back(aX[i].getIdentifier());
-			#elif _CODIPACK_MAJOR_==1
-			codi_global.input_indices.push_back(aX[i].getGradientData());
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-
+			codi_global.registerInput(aX[i]);
 		}
 	}
 	SetControlInputsFromVectorx(femmodel,aX);
@@ -242,15 +175,10 @@ void controlvalidation_core(FemModel* femmodel){
 	solutioncore(femmodel);
 
 	/*Get Dependents*/
-	int         num_dependents;
-	IssmPDouble *dependents;
 	DataSet     *dependent_objects = ((DataSetParam*)femmodel->parameters->FindParamObject(AutodiffDependentObjectsEnum))->value;
 	IssmDouble	J=0.;
-	femmodel->parameters->FindParam(&num_dependents,AutodiffNumDependentsEnum);
 
 	/*Go through our dependent variables, and compute the response:*/
-	dependents=xNew<IssmPDouble>(num_dependents);
-	codi_global.output_indices.clear();
 	int i=-1;
 	for(Object* & object:dependent_objects->objects){
 		DependentObject* dep=xDynamicCast<DependentObject*>(object);
@@ -260,16 +188,7 @@ void controlvalidation_core(FemModel* femmodel){
 
 		_printf0_("=== output ="<<output_value<<" \n");
 		if(my_rank==0) {
-			tape_codi.registerOutput(output_value);
-			dependents[i] = output_value.getValue();
-			#if _CODIPACK_MAJOR_==2
-			codi_global.output_indices.push_back(output_value.getIdentifier());
-			#elif _CODIPACK_MAJOR_==1
-			codi_global.output_indices.push_back(output_value.getGradientData());
-			#else
-			#error "_CODIPACK_MAJOR_ not supported"
-			#endif
-
+			codi_global.registerOutput(output_value);
 			J+=output_value;
 		}
 	}
@@ -279,18 +198,15 @@ void controlvalidation_core(FemModel* femmodel){
 	simul_stoptrace2();
 	/*initialize direction index in the weights vector: */
 	if(my_rank==0){
-		tape_codi.setGradient(codi_global.output_indices[0],1.0);
+		codi_global.setGradient(0, 1.0); // TODO: This is different form J. Also: Only one output is seeded and not all.
 	}
-	tape_codi.evaluate();
+	codi_global.evaluate();
 
 	/*Get gradient for this dependent */
-	auto in_size = codi_global.input_indices.size();
-	for(size_t i = 0; i < in_size; ++i) {
-		G[i] = tape_codi.getGradient(codi_global.input_indices[i]);
-	}
+	codi_global.getFullGradient(G, n);
 
 	/*Clear tape*/
-	tape_codi.reset();
+	codi_global.clear();
 /*}}}*/
 	#else
 	/*{{{*/

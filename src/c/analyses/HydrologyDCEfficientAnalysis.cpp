@@ -314,7 +314,6 @@ ElementVector* HydrologyDCEfficientAnalysis::CreatePVector(Element* element){/*{
 	ElementVector* pe    = basalelement->NewElementVector();
 	IssmDouble*    basis = xNew<IssmDouble>(numnodes);
 
-
 	/*Retrieve all inputs and parameters*/
 	basalelement->GetVerticesCoordinates(&xyz_list);
 	basalelement->FindParam(&dt,TimesteppingTimeStepEnum);

@@ -407,7 +407,6 @@ void SolverxSeq_codi_b(void* tape_in,void* data_in,void* ra) {/*{{{*/
 	data->getData(indexX);
 	data->getData(n);
 
-
 	// create the adjoint vector for x and reset the adjoint values on the tape
 	IssmDouble::GradientValue* adjX = xNew<IssmDouble::GradientValue>(n);
 	getVectorAdjoint(tape, indexX, adjX, n);

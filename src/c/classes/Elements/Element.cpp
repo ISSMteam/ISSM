@@ -183,7 +183,7 @@ void       Element::ArmaProcess(bool isstepforarma,int arorder,int maorder,int n
    else noiseterm = 0.0;
    this->inputs->GetArray(arenum_type,this->lid,&valuesautoregression,&M);
    this->inputs->GetArray(maenum_type,this->lid,&valuesmovingaverage,&M);
-	
+
 	/*If not ARMA model timestep: take the old values of variable*/
    if(isstepforarma==false){
       for(int i=0;i<numvertices;i++) varlist[i]=valuesautoregression[i];
@@ -201,7 +201,7 @@ void       Element::ArmaProcess(bool isstepforarma,int arorder,int maorder,int n
 
 			/*Stochastic variable value*/
          varlist[v] = sumpoly[0]+autoregressionterm+movingaverageterm+noiseterm;
-      
+
 			/*Impose zero-bound*/
 			if(outenum_type == ThermalForcingEnum || outenum_type == FrontalForcingsSubglacialDischargeEnum) varlist[v] = max(varlist[v],0.0);
 
@@ -323,7 +323,6 @@ void       Element::CalvingRateToVector(){/*{{{*/
          calvingratey[iv] = c*dphidy/dphi;
 		}
 	}
-
 
 	/*Add to inputs*/
 	this->AddInput(CalvingratexEnum,&calvingratex[0],P1DGEnum);
@@ -2519,7 +2518,7 @@ void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, I
 		lapserates_b[ii] = lapserates[basinid*numelevbins*12+mindex*numelevbins+ii];
 		if(lapserates_b[ii]!=0) isadjustsmb=true;
 	}
-	
+
 	/*Adjust SMB if any lapse rate value is non-zero*/
 	if(isadjustsmb){
 
@@ -2812,7 +2811,7 @@ void       Element::MismipFloatingiceMeltingRate(){/*{{{*/
 
 }/*}}}*/
 void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{{{*/
-	
+
 	/*Variable declaration*/
 	bool ratevariable;
    const int numvertices = this->GetNumberOfVertices();
@@ -2839,7 +2838,7 @@ void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{
          ratevariable   = false;
 			break;
 	}
-	
+
 	/*Evaluate the month index now and at (now-timestepjump)*/
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&time,TimeEnum);
@@ -2894,7 +2893,7 @@ void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{
 	xDelete<IssmDouble>(varlistinput);
 }/*}}}*/
 void       Element::MonthlyPiecewiseLinearEffectBasin(int nummonthbreaks,IssmDouble* monthlyintercepts,IssmDouble* monthlytrends,IssmDouble* monthlydatebreaks,int enum_type){/*{{{*/
-	
+
 	/*Variable declaration*/
    const int numvertices = this->GetNumberOfVertices();
 	int basinid,mindex,basinenum_type,varenum_type,indperiod;
@@ -2913,7 +2912,7 @@ void       Element::MonthlyPiecewiseLinearEffectBasin(int nummonthbreaks,IssmDou
          varenum_type   = ThermalForcingEnum;
          break;
 	}
-	
+
 	/*Evaluate the month index*/
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&time,TimeEnum);
@@ -3849,7 +3848,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
         IssmDouble* albedo=xNew<IssmDouble>(NUM_VERTICES);
         IssmDouble* summeralbedo=xNew<IssmDouble>(NUM_VERTICES); 
         IssmDouble* accu=xNew<IssmDouble>(NUM_VERTICES);
-        
+
         // climate inputs
         IssmDouble* temperature=xNew<IssmDouble>(NUM_VERTICES_DAYS_PER_YEAR);
         IssmDouble* precip=xNew<IssmDouble>(NUM_VERTICES_DAYS_PER_YEAR);
@@ -4017,11 +4016,11 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                         IssmDouble Eps=0.95;   //              thermal emissivity
                         IssmDouble Sigma=5.67E-08;// Wm^-2K^-4    Stefan Boltzmann constant
                         IssmDouble Gamma=180.;    // m^-1         wind speed attenuation        234
-                
+
                         // Calculate effective albedo
                         IssmDouble Alphaeff,Alphaeff_cleanice;
                         IssmDouble mean_ela,delta=2000;
-                        
+
                         // compute cleanice albedo based on previous SMB distribution
                         //if(step==1){
                                 mean_ela=3000; //FIXME
@@ -4031,7 +4030,6 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                         Alphaeff_cleanice=icealbedo+(snowalbedo-icealbedo)*(1+tanh(PI*(surface[iv]-mean_ela)/delta))/2;
                         Alphaeff=Alphaeff_cleanice; // will be updated below
 
-                        
                         accu[iv]=0.;
                         for (int iday=0;iday<365;iday++) {
 
@@ -4075,7 +4073,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                                         IssmDouble sn_prev;
                                         sn_prev=snowheight[iv];
                                         snowheight[iv]=sn_prev+(-CleanIceDailyMelt*yts/365);//P
-                                        
+
                                         if(snowheight[iv]<=0) snowheight[iv]=0.;
                                         if(snowheight[iv]<=0.0001){
                                                 p=debris_here*PhiD/(2*0.2*0.01); //Eq. 51 from Evatt et al 2015 without source term g*t

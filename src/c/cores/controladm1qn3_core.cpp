@@ -10,9 +10,8 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 
-#ifdef _HAVE_CODIPACK_
-extern CoDi_global codi_global;
-#include <sstream> // for output of the CoDiPack tape
+#if _HAVE_CODIPACK_
+#include "../toolkits/codipack/CoDiPackGlobal.h"
 #include <fenv.h>
 double transient_ad(FemModel* femmodel, double* G,double* Jlist);
 #endif
@@ -69,38 +68,7 @@ void simul_starttrace(FemModel* femmodel){/*{{{*/
 	#elif defined(_HAVE_CODIPACK_)
 
 		//fprintf(stderr, "*** Codipack IoModel::StartTrace\n");
-		/*
-		 * FIXME codi
-		 * - ADOL-C variant uses fine grained tracing with various arguments
-		 * - ADOL-C variant sets a garbage collection parameter for its tape
-		 * -> These parameters are not read for the CoDiPack ISSM version!
-		 */
-		#if _CODIPACK_MAJOR_==2
-		auto& tape_codi = IssmDouble::getTape();
-		#elif _CODIPACK_MAJOR_==1
-		auto& tape_codi = IssmDouble::getGlobalTape();
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-
-		tape_codi.setActive();
-		#if _AD_TAPE_ALLOC_
-		//alloc_profiler.Tag(StartInit, true);
-		IssmDouble x_t(1.0), y_t(1.0);
-		tape_codi.registerInput(y_t);
-		int codi_allocn = 0;
-		femmodel->parameters->FindParam(&codi_allocn,AutodiffTapeAllocEnum);
-		for(int i = 0;i < codi_allocn;++i) {
-			x_t = y_t * y_t;
-		}
-		/*
-		std::stringstream out_s;
-		IssmDouble::getTape().printStatistics(out_s);
-		_printf0_("StartTrace::Tape Statistics	   : TapeAlloc count=[" << codi_allocn << "]\n" << out_s.str());
-		*/
-		//alloc_profiler.Tag(FinishInit, true);
-		#endif
-
+		codi_global.start();
 	#else
 	_error_("not implemented");
 	#endif
@@ -154,40 +122,14 @@ void simul_stoptrace(){/*{{{*/
 		}
 		delete [] sstats;
 		#endif
-
-		#ifdef _HAVE_CODIPACK_
-		#ifdef _AD_TAPE_ALLOC_
-		//_printf_("Allocation time  P(" << my_rank << "): " << alloc_profiler.DeltaTime(StartInit, FinishInit) << "\n");
-		#endif
-		std::stringstream out_s;
-		#if _CODIPACK_MAJOR_==2
-		IssmDouble::getTape().printStatistics(out_s);
-		#elif _CODIPACK_MAJOR_==1
-		IssmDouble::getGlobalTape().printStatistics(out_s);
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-		_printf0_("CoDiPack Profiling::Tape Statistics :\n" << out_s.str());
-		#endif
 	} /*}}}*/
 
 	#elif defined(_HAVE_CODIPACK_)
 
-	/*Get Tape*/
-	#if _CODIPACK_MAJOR_==2
-	auto& tape_codi = IssmDouble::getTape();
-	#elif _CODIPACK_MAJOR_==1
-	auto& tape_codi = IssmDouble::getGlobalTape();
-	#else
-	#error "_CODIPACK_MAJOR_ not supported"
-	#endif
-
-	tape_codi.setPassive();
+	codi_global.stop();
 	if(VerboseAutodiff()){
 		int my_rank=IssmComm::GetRank();
 		if(my_rank == 0) {
-			// FIXME codi "just because" for now
-			tape_codi.printStatistics(std::cout);
 			codi_global.print(std::cout);
 		}
 	}
@@ -274,28 +216,10 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 		}
 		#elif defined(_HAVE_CODIPACK_)
 
-		/*Get tape*/
-		#if _CODIPACK_MAJOR_==2
-		auto& tape_codi = IssmDouble::getTape();
-		#elif _CODIPACK_MAJOR_==1
-		auto& tape_codi = IssmDouble::getGlobalTape();
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
-
-		codi_global.input_indices.clear();
 		if(my_rank==0){
 			for (int i=0;i<intn;i++) {
 				aX[i]=X[i];
-				tape_codi.registerInput(aX[i]);
-				#if _CODIPACK_MAJOR_==2
-				codi_global.input_indices.push_back(aX[i].getIdentifier());
-				#elif _CODIPACK_MAJOR_==1
-				codi_global.input_indices.push_back(aX[i].getGradientData());
-				#else
-				#error "_CODIPACK_MAJOR_ not supported"
-				#endif
-
+				codi_global.registerInput(aX[i]);
 			}
 		}
 		#else
@@ -320,9 +244,6 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 
 		/*Go through our dependent variables, and compute the response:*/
 		dependents=xNew<IssmPDouble>(num_dependents);
-		#if defined(_HAVE_CODIPACK_)
-		codi_global.output_indices.clear();
-		#endif
 		int i=-1;
 		for(Object* & object:dependent_objects->objects){
 			i++;
@@ -340,14 +261,8 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 		}
 
 		#if defined(_HAVE_CODIPACK_)
-		tape_codi.registerOutput(J);
-		#if _CODIPACK_MAJOR_==2
-		codi_global.output_indices.push_back(J.getIdentifier());
-		#elif _CODIPACK_MAJOR_==1
-		codi_global.output_indices.push_back(J.getGradientData());
-		#else
-		#error "_CODIPACK_MAJOR_ not supported"
-		#endif
+		// TODO: Registration of output values is more fine grained for ADOL-c.
+		codi_global.registerOutput(J);
 		#endif
 
 		/*Turning off trace tape*/
@@ -418,17 +333,12 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 		#elif defined(_HAVE_CODIPACK_)
 		/*Get gradient for CoDiPack{{{*/
 		if(VerboseAutodiff())_printf0_("   CoDiPack fos_reverse\n");
-		if(my_rank==0) tape_codi.setGradient(codi_global.output_indices[0],1.0);
-		tape_codi.evaluate();
-
-		auto in_size = codi_global.input_indices.size();
-		for(size_t i = 0; i < in_size; ++i){
-			_assert_(i<num_independents);
-			totalgradient[i] = tape_codi.getGradient(codi_global.input_indices[i]);
-		}
+		if(my_rank==0) codi_global.setGradient(0, 1.0);
+		codi_global.evaluate();
+		codi_global.getFullGradient(totalgradient, num_independents);
 
 		/*Clear tape*/
-		tape_codi.reset();
+		codi_global.clear();
 		/*}}}*/
 		#else
 		_error_("not suppoted");
@@ -498,7 +408,6 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	xDelete<double>(scaling_factors);
 }/*}}}*/
 void controladm1qn3_core(FemModel* femmodel){/*{{{*/
-
 
 	/*Intermediaries*/
 	long    omode;
@@ -629,7 +538,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		aX[i] = reCast<IssmDouble>(X[i]);
 		aG[i] = reCast<IssmDouble>(G[i]);
 	}
-	
+
 	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
 	SetControlInputsFromVectorx(femmodel,aX);
 	xDelete(aX);

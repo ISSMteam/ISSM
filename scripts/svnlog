@@ -1,3 +1,0 @@
-#!/bin/bash
-
-svn log $1 | perl -e 'print reverse<>'

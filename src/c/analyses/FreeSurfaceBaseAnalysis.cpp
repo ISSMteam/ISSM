@@ -360,7 +360,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Get basal element*/
 	element->FindParam(&domaintype,DomainTypeEnum);
-	
+
 	switch(domaintype){
 		case Domain2DhorizontalEnum:
 			basalelement = element;
@@ -439,7 +439,6 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 
 		basalelement->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		basalelement->NodalFunctions(basis,gauss);
-
 
 		vz_input->GetInputValue(&vz,gauss);  
 		gmb_input->GetInputValue(&gmb,gauss);

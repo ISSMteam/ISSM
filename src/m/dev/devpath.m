@@ -9,7 +9,7 @@ else
 end
 
 if (isempty(ISSM_DIR)),
-	error('''ISSM_DIR'' environment variable is empty! You should define ISSM_DIR in your .cshrc or .bashrc!');
+	error('''ISSM_DIR'' environment variable is empty. You should define ISSM_DIR in your .zshrc or .bashrc');
 end
 
 %Now add all issm code paths necessary to run issm smoothly. 
@@ -32,16 +32,11 @@ addpath(recursivepath([ISSM_DIR '/externalpackages/pcatool']));
 
 %Check on any warning messages that might indicate that the paths were not correct. 
 if ~isempty(lastwarn),
-	fprintf('\n  Error trying to setup ''ISSM'' code paths. Try and update the ISSM_DIR variable in your .cshrc or .bashrc!\n');
+	fprintf('\n  Error trying to setup ''ISSM'' code paths. Try and update the ISSM_DIR variable in your .zshrc or .bashrc\n');
 	fprintf('  ''ISSM'' will not  work at all until this is resolved\n\n');
 else
 	fprintf('\n  ISSM development path correctly loaded\n\n');
 end
-
-warning ('off','all');
-addpath([ISSM_DIR '/lib-precompiled']); %load MEX files (precompiled; remove after MEX file compilation is supported on Silicon-based Macs)
-warning ('on','all');
-clear ISSM_DIR;
 
 %disable matlab bell!
 beep off;

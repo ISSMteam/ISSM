@@ -46,7 +46,6 @@ GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	sealevelloads=NULL;
 	subsealevelloads=NULL;
 
-
 }; /*}}}*/
 GrdLoads::~GrdLoads(){ /*{{{*/
 
@@ -64,7 +63,6 @@ GrdLoads::~GrdLoads(){ /*{{{*/
 		if (combined_subloads[i]) xDelete<IssmDouble>(combined_subloads[i]);
 		if (combined_subloads_index[i]) xDelete<int>(combined_subloads_index[i]);
 	}
-
 
 }; /*}}}*/
 
@@ -202,7 +200,6 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 		}
 	}
 
-
 	//subloads
 	for(l=0;l<SLGEOM_NUMLOADS;l++){
 		nactivesubloads[l]=0;
@@ -244,7 +241,6 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 				}
 			}
 		}
-
 
 		/*for(l=0;l<SLGEOM_NUMLOADS;l++){
 			nbar=slgeom->nbar[l];

@@ -8,7 +8,6 @@
 #include "./../../classes/Inputs/DatasetInput.h"
 #include "../InputDuplicatex/InputDuplicatex.h"
 
-
 void FloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 
 	/*Intermediaties*/

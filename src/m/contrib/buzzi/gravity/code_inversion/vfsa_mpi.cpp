@@ -137,7 +137,7 @@ double coolshed(double T0,double k,double c,double D);
 /*}}}*/
 
 int main(int argc,char *argv[]){/*{{{*/
-	
+
 	int my_rank,num_procs;
 
 	MPI_Init(&argc, &argv);
@@ -162,7 +162,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	Matrix *Pobs=new Matrix(nx*ny,2); /* data positions */
 	makep(Pobs,nx,ny,dx,dy);
 	// Pobs->Echo();
-
 
 	Matrix *Pp=new Matrix(mx*my,2); /* prisms positions */
 	makep(Pp,mx,my,dx,dy);
@@ -195,7 +194,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	vec2grid(Pobs,xobs,yobs,nx,ny);
 	//	xobs->Echo();
 	//	yobs->Echo();
-
 
 	double mmax  = 1000;               /* max value for layer interfaces */
 	double mmax2 = 1000;
@@ -268,7 +266,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	//	bathy->Echo();
 
 	/* id of grid to evaluate misfit */
-
 
 	ifstream file4("evalidzach.txt");
 	Matrix * evalid= new Matrix(nx*ny,1);

@@ -120,7 +120,7 @@ int  ControlParam::ObjectEnum(void){/*{{{*/
 void  ControlParam::GetParameterValue(IssmDouble** poutput,int* pN, const char* data){/*{{{*/
 
 	IssmDouble* output=xNew<IssmDouble>(N);
-	
+
 	if(strcmp(data,"value")==0){
 		xMemCpy<IssmDouble>(output,value,N);
 	}
@@ -136,7 +136,7 @@ void  ControlParam::GetParameterValue(IssmDouble** poutput,int* pN, const char* 
 	else{
 		_error_("Data " << data << " not supported yet");
 	}
-	
+
 	/*Assign output pointers:*/
 	if(pN) *pN=N;
 	*poutput=output;
@@ -212,7 +212,7 @@ void  ControlParam::GetParameterValue(IssmDouble** poutput, int* pN){/*{{{*/
 	_assert_(M==1);
 	IssmDouble* output=xNew<IssmDouble>(N);
 	xMemCpy<IssmDouble>(output,value,N);
-	
+
 	/*Assign output pointers:*/
 	if(pN) *pN=N;
 	*poutput=output;

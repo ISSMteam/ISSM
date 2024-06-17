@@ -180,7 +180,6 @@ int main(){/*{{{*/
 	makep(Pobs,nx,ny,dx,dy);
 // Pobs->Echo();
 
-
 	Matrix *Pp=new Matrix(mx*my,2); /* data positions */
 	makep(Pp,mx,my,dx,dy);
 // Pp->Echo();
@@ -189,7 +188,7 @@ int main(){/*{{{*/
 	double  rhow = 1030;          /* water density   */
 // double  rhos = 2013;		      /* sediment density */
 	double  rhoc = 2670;          /* bedrock density */
-	
+
 	Matrix *Rho  = new Matrix(1,2);
 	Rho->SetValue(0,0,rhoi);
 	Rho->SetValue(0,1,rhow);
@@ -200,7 +199,7 @@ int main(){/*{{{*/
 	Matrix *rho2  = new Matrix(1,2);
 	rho2->SetValue(0,0,rhoi-rhoc);
 	rho2->SetValue(0,1,rhow-rhoc);
-	
+
 	double ctr=1;            /* parameter for filtering */
 	double sd=0.1;
 
@@ -250,7 +249,7 @@ int main(){/*{{{*/
 	}
 	file1.close();
 //	gobs->Echo();
-	
+
 	/* load data about the ice thickness */
 
 	ifstream file2("store_flag_icethick500.txt");
@@ -272,9 +271,8 @@ int main(){/*{{{*/
 	}
 	file3.close();
 //	bathy->Echo();
-	
-	/* id of grid to evaluate misfit */
 
+	/* id of grid to evaluate misfit */
 
 	ifstream file4("store_flag_eval500.txt");
 	Matrix * evalid= new Matrix(mx*my,1);
@@ -284,7 +282,7 @@ int main(){/*{{{*/
 	}
 	file4.close();
 //	evalid->Echo();
-	
+
 	/* initial guess of the model */
 
 	ifstream file5("m0_140114b.txt");
@@ -553,7 +551,7 @@ double misfit(Matrix* m0,Matrix* evalid,Matrix* gobs,double dlevel,Matrix* Pobs,
 	double b=0;
 	double e=0;
 	msplit(m0,m1,m2,dlevel);
-	
+
 	/*Multithreaded core*/
 	int       num_threads = 8;
 	AppStruct usr;

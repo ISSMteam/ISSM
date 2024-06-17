@@ -14,7 +14,7 @@ void TriangleUsage(void){/*{{{*/
 	_printf_("\n");
 }/*}}}*/
 WRAPPER(Triangle_python){
-	
+
 	/*intermediary: */
 	double    area;
 	Contours *domain = NULL;

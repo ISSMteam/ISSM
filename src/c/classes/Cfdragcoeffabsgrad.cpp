@@ -181,7 +181,6 @@ IssmDouble Cfdragcoeffabsgrad::Cfdragcoeffabsgrad_Calculation(Element* element){
 			drag_input = basalelement->GetInput(FrictionCoefficientEnum); _assert_(drag_input);
 	}
 
-
 	/* Start  looping on the number of gaussian points: */
 	Gauss* gauss=basalelement->NewGauss(2);
 	while(gauss->next()){
