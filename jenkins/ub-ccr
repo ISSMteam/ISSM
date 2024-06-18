@@ -1,6 +1,3 @@
-# NOTE: This configuration adds solid earth and Dakota capabilities to the 
-#		basic build.
-
 #--------------------#
 # ISSM Configuration #
 #--------------------#
@@ -8,29 +5,23 @@
 ISSM_CONFIG='\
 	--prefix="${ISSM_DIR}" \
 	--disable-static \
-	--enable-development \
-	--enable-debugging \
 	--with-numthreads=1 \
 	--with-python-version=3.9 \
 	--with-python-dir=/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/Compiler/gcccore/11.2.0/python/3.9.6 \
 	--with-python-numpy-dir=/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/MPI/gcc/11.2.0/openmpi/4.1.1/scipy-bundle/2021.10/lib/python3.9/site-packages/numpy \
 	--with-fortran-lib="-L/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/Core/gcccore/11.2.0/lib64 -lgfortran" \
-	--with-mpi-include="${ISSM_EXT_DIR}/petsc/install/include" \
-	--with-mpi-libflags="-L${ISSM_EXT_DIR}/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
-	--with-blas-lapack-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-metis-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-parmetis-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-scalapack-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-mumps-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-hdf5-dir="${ISSM_EXT_DIR}/hdf5/install" \
-	--with-petsc-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-gsl-dir="${ISSM_EXT_DIR}/gsl/install" \
-	--with-boost-dir="${ISSM_EXT_DIR}/boost/install" \
-	--with-dakota-dir="${ISSM_EXT_DIR}/dakota/install" \
-	--with-chaco-dir="${ISSM_EXT_DIR}/chaco/install" \
-	--with-triangle-dir="${ISSM_EXT_DIR}/triangle/install" \
-	--with-m1qn3-dir="${ISSM_EXT_DIR}/m1qn3/install" \
-	--with-semic-dir="${ISSM_EXT_DIR}/semic/install" \
+	--with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
+	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
 #-------------------#
@@ -38,15 +29,7 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	autotools		install-linux.sh
-	cmake			install.sh
-	petsc			install-3.14-linux.sh
-	gsl				install.sh
-	boost			install-1.7-linux.sh
-	dakota			install-6.2-linux.sh
-	chaco			install-linux.sh
-	hdf5			install-1-parallel.sh
-	netcdf			install-4.7-parallel.sh
+	petsc			install-3.21-linux.sh
 	triangle		install-linux.sh
 	m1qn3			install-linux.sh
 	semic			install.sh
