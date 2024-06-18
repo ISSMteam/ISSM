@@ -91,7 +91,7 @@ classdef SMBsemic
 				list = {'default','SmbMassBalance','SmbMassBalanceSnow','SmbMassBalanceIce',...
 					'SmbMelt','SmbRefreeze','SmbAccumulation',...
 					'SmbHIce','SmbHSnow','SmbAlbedo','SmbAlbedoSnow','TemperatureSEMIC',...
-					'SmbSemicQmr','TotalSmb','TotalSmbMelt','TotalSmbRefreeze'};
+					'SmbSemicQmr','TotalSmb','TotalSmbMelt','TotalSmbRefreeze','SmbRunoff'};
 			else
 				list = {'default','SmbMassBalance'};
 			end
@@ -143,9 +143,10 @@ classdef SMBsemic
 			% for slater
 			self.tmin  = 263.15;
 			self.tmax  = 273.15;
-			% for isba & denby
+			% for ISBA & denby
 			self.mcrit = 6e-8;
-			% for isba
+			% for ISBA
+			% value from Douville et al. (1995)
 			self.tau_a = 0.008;
 			self.tau_f = 0.24;
 			self.wcrit = 15.0;
@@ -235,7 +236,6 @@ classdef SMBsemic
 			fielddisplay(self,'desfac','desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)');
 			fielddisplay(self,'rdl','longwave downward radiation decrease (default is 0.29 [W/m^2/km]; Marty et al. 2002)');
 			fielddisplay(self,'s0gcm','GCM reference elevation; (default is 0) [m]');
-			fielddisplay(self,'albedo_scheme','albedom scheme. 0: none, 1: (default is 0)');
 
 			fielddisplay(self,'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)');
 			if self.ismethod == 1 % transient mode
@@ -251,7 +251,7 @@ classdef SMBsemic
 				fielddisplay(self,'rcrit','critical refreezing height for albedo [no unit]');
 
 				disp(sprintf('\nSEMIC albedo parameters.'));
-				fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: isba, 3: denby, 4: alex (default is 0)');
+				fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: denby, 3: isba, 4: alex (default is 0)');
 				fielddisplay(self,'alb_smax','maximum snow albedo (default: 0.79)');
 				fielddisplay(self,'alb_smin','minimum snow albedo (default: 0.6)');
 				fielddisplay(self,'albi','background albedo for bare ice (default: 0.41)');
@@ -272,11 +272,13 @@ classdef SMBsemic
 				fielddisplay(self,'tmin','minimum temperature for which albedo decline become effective. (default: 263.15 K)[unit: K])');
 				fielddisplay(self,'tmax','maxmium temperature for which albedo decline become effective. This value should be fixed. (default: 273.15 K)[unit: K])');
 			elseif self.albedo_scheme == 2
-				disp(sprintf('\n\tSEMIC snow albedo parameters for ISBA.? where is citation?'));
+				disp(sprintf('\n\tSEMIC snow albedo parameters for ISBA (Douville et al., 1995).'));
 				fielddisplay(self,'mcrit','critical melt rate (default: 6e-8) [unit: m/sec]');
 				fielddisplay(self,'wcrit','critical liquid water content (default: 15) [unit: kg/m2]');
 				fielddisplay(self,'tau_a','dry albedo decline [unit: 1/day]');
 				fielddisplay(self,'tau_f','wet albedo decline [unit: 1/day]');
+				disp(sprintf('\n\tReference'));
+				disp(sprintf('\tDouville, H., Royer, J.-F., and Mahfouf, J.-F.: A new snow parameterization for the Météo-France climate model. Part I: validation in stand-alone experiments, Climate Dynamics, 12, 21–35, https://doi.org/10.1007/s003820050092, 1995.'));
 			elseif self.albedo_scheme == 3
 				disp(sprintf('\n\tSEMIC snow albedo parameters for Denby et al. (2002 Tellus)'));
 				fielddisplay(self,'mcrit','critical melt rate (default: 6e-8) [unit: m/sec]');

@@ -11,6 +11,8 @@
 *.so
 *.so.[0-9]*
 __pycache__
+.dirstamp
+.deps
 bin/
 lib/
 
