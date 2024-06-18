@@ -107,7 +107,7 @@ class SMBsemic(object):
             s += '{}\n'.format(fielddisplay(self,'rcrit','critical refreezing height for albedo [no unit]'))
 
             s += '\nSEMIC albedo parameters.\n'
-            s += '{}\n'.format(fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: isba, 3: denby, 4: alex (default is 0)'))
+            s += '{}\n'.format(fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: denby, 3: isba, 4: alex (default is 0)'))
             s += '{}\n'.format(fielddisplay(self,'alb_smax','maximum snow albedo (default: 0.79)'))
             s += '{}\n'.format(fielddisplay(self,'alb_smin','minimum snow albedo (default: 0.6)'))
             s += '{}\n'.format(fielddisplay(self,'albi','background albedo for bare ice (default: 0.41)'))

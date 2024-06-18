@@ -251,7 +251,7 @@ classdef SMBsemic
 				fielddisplay(self,'rcrit','critical refreezing height for albedo [no unit]');
 
 				disp(sprintf('\nSEMIC albedo parameters.'));
-				fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: isba, 3: denby, 4: alex (default is 0)');
+				fielddisplay(self,'albedo_scheme','albedo scheme for SEMIC. 0: none, 1: slater, 2: denby, 3: isba, 4: alex (default is 0)');
 				fielddisplay(self,'alb_smax','maximum snow albedo (default: 0.79)');
 				fielddisplay(self,'alb_smin','minimum snow albedo (default: 0.6)');
 				fielddisplay(self,'albi','background albedo for bare ice (default: 0.41)');
