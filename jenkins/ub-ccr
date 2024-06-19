@@ -17,7 +17,6 @@ ISSM_CONFIG='\
 	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
