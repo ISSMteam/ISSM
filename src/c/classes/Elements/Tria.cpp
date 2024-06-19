@@ -5096,6 +5096,7 @@ void       Tria::ResetFSBasalBoundaryCondition(void){/*{{{*/
 			}
 
 			XZvectorsToCoordinateSystem(&this->nodes[i]->coord_system[0][0],&xz_plane[0]);
+			this->nodes[i]->isrotated = true;
 		}
 	}
 

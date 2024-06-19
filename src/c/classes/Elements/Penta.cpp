@@ -3448,6 +3448,7 @@ void       Penta::ResetFSBasalBoundaryCondition(void){/*{{{*/
 			}
 		}
 		XZvectorsToCoordinateSystem(&this->nodes[indices[i]]->coord_system[0][0],&xz_plane[0]);
+		this->nodes[indices[i]]->isrotated = true;
 	}
 
 	/*cleanup*/
