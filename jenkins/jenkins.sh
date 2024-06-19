@@ -110,9 +110,6 @@ if [ -f ${ISSM_DIR}/.PREV_COMMIT ]; then
 		ISSM_COMPILATION="no"
 	fi
 else
-	# Write out hidden file containing this commit's SHA
-	git rev-parse HEAD > ${ISSM_DIR}/.PREV_COMMIT
-
 	echo "Fresh copy of repository; building everything"
 	echo "-- checking for changed externalpackages... yes"
 	echo "-- checking for reconfiguration... yes"
@@ -121,6 +118,9 @@ else
 	ISSM_RECONFIGURE="yes"
 	ISSM_COMPILATION="yes"
 fi
+
+# Write out hidden file containing this commit's SHA
+git rev-parse HEAD > ${ISSM_DIR}/.PREV_COMMIT
 
 # }}}
 
