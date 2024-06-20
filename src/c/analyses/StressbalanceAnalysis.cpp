@@ -1527,19 +1527,20 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 		thickness_input->GetInputValue(&thickness, gauss);
 		element->material->ViscositySSA(&viscosity,dim,xyz_list,gauss,vx_input,vy_input);
 
+		IssmDouble factor = gauss->weight*Jdet*viscosity*thickness;
 		if(dim==2){
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[2*i*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[2*i*2*numnodes+2*j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 								);
-					Ke->values[2*i*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[2*i*2*numnodes+2*j+1] += factor*(
 								2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[(2*i+1)*2*numnodes+2*j] += factor*(
 								2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*(
 								dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + 4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 								);
 				}
@@ -1548,7 +1549,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 		else{
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[i*numnodes+j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 								);
 				}
