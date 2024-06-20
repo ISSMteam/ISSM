@@ -346,6 +346,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			export LDFLAGS="${LDFLAGS} -no-undefined"
 			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 			IS_MSYS2=yes
+			AC_DEFINE([_MAC_], [1], [is macOS])
 		else
 			AC_MSG_ERROR([unknown compiler vendor!])
 		fi
@@ -364,7 +365,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_MSG_CHECKING([if this is a MSYS2 (Windows) build])
 	AM_CONDITIONAL([MSYS2], [test "x${IS_MSYS2}" == "xyes"])
 	AC_MSG_RESULT([${IS_MSYS2}])
-	AC_DEFINE([_IS_MSYS2_], [1], [is a MSYS2 (Windows) build])
+	if test "${IS_MSYS2}" == "yes"; then
+		AC_DEFINE([_IS_MSYS2_], [1], [is a MSYS2 (Windows) build])
+	else
+		AC_DEFINE([_IS_MSYS2_], [0], [is a MSYS2 (Windows) build])
+	fi
 	dnl }}}
 	dnl MATLAB{{{
 

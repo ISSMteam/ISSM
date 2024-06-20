@@ -771,21 +771,23 @@ endif
 # - On macOS, static linking of binaries is not supported.
 #
 if STANDALONE_EXECUTABLES
-	if MAC
-		AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
-	else
-		if MSYS2
-			AM_LDFLAGS += -Wl,-static
-		else
-			AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
-		endif
-	endif
+if MAC
+AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
 else
-	if MAC
-		if HAVE_FORTRANDIR
-			AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
-		endif
-	endif
+if MSYS2
+AM_LDFLAGS += -Wl,-static
+else
+AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
+endif
+endif
+endif
+
+if !STANDALONE_EXECUTABLES
+if MAC
+if HAVE_FORTRANDIR
+AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+endif
+endif
 endif
 
 if VERSION
@@ -808,10 +810,8 @@ libISSMModules_la_LDFLAGS += -static
 endif
 endif
 endif
-#}}}
 
 if !MSYS2
-# Overload library, to overload any non-standard symbols {{{
 libISSMOverload_la_SOURCES = ./shared/String/ApiPrintf.cpp
 libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(COPTFLAGS) $(CFLAGS)
 
@@ -828,7 +828,7 @@ endif
 endif
 endif
 #}}}
-# Executable {{{
+# Executables {{{
 if ANDROID
 if ANDROIDEXE
 bin_PROGRAMS = issm issm_slc
@@ -856,9 +856,11 @@ endif
 
 # External packages
 LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADJOINTMPILIB) $(ADOLCLIB) $(MPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(ESMFLIB)
+
 if FORTRAN
 LDADD += $(FLIBS) $(FORTRANLIB)
 endif
+
 LDADD += $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
