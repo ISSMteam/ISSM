@@ -828,6 +828,7 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 				}
 				break;
 			case LinearFloatingMeltRateEnum:
+				iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.perturbation_melting_rate",BasalforcingsPerturbationMeltingRateEnum,0.);
 				break;
 			case MismipFloatingMeltRateEnum:
 				iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.meltrate_factor",BasalforcingsMeltrateFactorEnum);
