@@ -772,7 +772,13 @@ AC_DEFUN([ISSM_OPTIONS],[
 			dnl Query Python for its version number. Getting [:3] seems to be
 			dnl the best way to do this: it's what "site.py" does in the
 			dnl standard library.
-			PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; print(sys.version[[:3]])")
+			if test -f "${PYTHON_ROOT}/bin/python"; then
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; print(sys.version[[:3]])")
+			elif test -f "${PYTHON_ROOT}/bin/python3"; then
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python3 -c "import sys; print(sys.version[[:3]])")
+			else
+				AC_MSG_ERROR([Python version could not be determined automatically, please provide option --with-python-version]);
+			fi
 			AC_MSG_RESULT([${PYTHON_VERSION}])
 		else
 			AC_MSG_RESULT([enforced Python version is ${PYTHON_VERSION}])
@@ -793,6 +799,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 		elif test -f "${PYTHON_ROOT}/include/python${PYTHON_VERSION}/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}
 		elif test -f "${PYTHON_ROOT}/include/python${PYTHON_VERSION}m/Python.h"; then
+			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
+		elif test -f "${PYTHON_ROOT}/Headers/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
 		else
 			AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
