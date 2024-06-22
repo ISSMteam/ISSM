@@ -772,7 +772,13 @@ AC_DEFUN([ISSM_OPTIONS],[
 			dnl Query Python for its version number. Getting [:3] seems to be
 			dnl the best way to do this: it's what "site.py" does in the
 			dnl standard library.
-			PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; print(sys.version[[:3]])")
+			if test -f "${PYTHON_ROOT}/bin/python"; then
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; print(sys.version[[:3]])")
+			elif test -f "${PYTHON_ROOT}/bin/python3"; then
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python3 -c "import sys; print(sys.version[[:3]])")
+			else
+				AC_MSG_ERROR([Python version could not be determined automatically, please provide option --with-python-version]);
+			fi
 			AC_MSG_RESULT([${PYTHON_VERSION}])
 		else
 			AC_MSG_RESULT([enforced Python version is ${PYTHON_VERSION}])
@@ -793,6 +799,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 		elif test -f "${PYTHON_ROOT}/include/python${PYTHON_VERSION}/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}
 		elif test -f "${PYTHON_ROOT}/include/python${PYTHON_VERSION}m/Python.h"; then
+			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
+		elif test -f "${PYTHON_ROOT}/Headers/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
 		else
 			AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
@@ -1029,34 +1037,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	)
 	AC_DEFINE_UNQUOTED([_ADOLC_VERSION_], ${ADOLC_VERSION}, [ADOL-C version])
 	AC_MSG_RESULT(${ADOLC_VERSION})
-	dnl }}}
-	dnl ADIC2 {{{
-	AC_MSG_CHECKING([for ADIC2])
-	AC_ARG_WITH(
-		[adic2-dir],
-		AS_HELP_STRING([--with-adic2-dir=DIR], [ADIC2 root directory]),
-		[ADIC2_ROOT=${withval}],
-		[ADIC2_ROOT="no"]
-	)
-	if test "x${ADIC2_ROOT}" == "xno"; then
-		HAVE_ADIC2=no
-	else
-		HAVE_ADIC2=yes
-		if ! test -d "${ADIC2_ROOT}"; then
-			AC_MSG_ERROR([ADIC2 directory provided (${ADIC2_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_ADIC2}])
-
-	dnl ADIC2 libraries and header files
-	if test "x${HAVE_ADIC2}" == "xyes"; then
-		ADIC2INCL="-DADIC2_DENSE -I${ADIC2_ROOT}/include -I${ADIC2_ROOT}/share/runtime_dense"
-		ADIC2LIB=""
-		AC_DEFINE([_HAVE_ADIC2_], [1], [with ADIC2 in ISSM src])
-		AC_SUBST([ADIC2INCL])
-		AC_SUBST([ADIC2LIB])
-	fi
-	AM_CONDITIONAL([ADIC2], [test "x${HAVE_ADIC2}" == "xyes"])
 	dnl }}}
 	dnl ATLAS {{{
 	AC_MSG_CHECKING(for ATLAS and CBLAS libraries)
@@ -1669,33 +1649,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([PROJ], [test "x${HAVE_PROJ}" == "xyes"])
 	dnl }}}
-	dnl SLEPc{{{
-	AC_MSG_CHECKING([for SLEPc])
-	AC_ARG_WITH(
-		[slepc-dir],
-		AS_HELP_STRING([--with-slepc-dir=DIR], [SLEPc root directory]),
-		[SLEPC_ROOT=${withval}],
-		[SLEPC_ROOT="no"]
-	)
-	if test "x${SLEPC_ROOT}" == "xno"; then
-		HAVE_SLEPC=no
-	else
-		HAVE_SLEPC=yes
-		if ! test -d "${SLEPC_ROOT}"; then
-			AC_MSG_ERROR([SLEPc directory provided (${SLEPC_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_SLEPC}])
-
-	dnl SLEPc libraries and header files
-	if test "x${HAVE_SLEPC}" == "xyes"; then
-		SLEPCINCL="-I${SLEPC_ROOT}/include"
-		SLEPCLIB="-L${SLEPC_ROOT}/lib -lslepc"
-		AC_DEFINE([_HAVE_SLEPC_], [1], [with SLEPc in ISSM src])
-		AC_SUBST([SLEPCINCL])
-		AC_SUBST([SLEPCLIB])
-	fi
-	dnl }}}
 	dnl shapelib{{{
 	AC_MSG_CHECKING([for shapelib])
 	AC_ARG_WITH(
@@ -2224,7 +2177,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([PASTIXLIB])
 	fi
 	dnl }}}
-	dnl }}}
 	dnl ml{{{
 	AC_MSG_CHECKING([for ml])
 	AC_ARG_WITH(
@@ -2371,31 +2323,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_RESULT([done])
 	fi
 	AM_CONDITIONAL([HAVE_FORTRANDIR], [test "x${IS_FORTRANDIR_A_DIR}" == "xyes"])
-	dnl }}}
-	dnl Xlib (graphics library){{{
-	AC_MSG_CHECKING([for Xlib (graphics library)])
-	AC_ARG_WITH(
-		[graphics-lib],
-		AS_HELP_STRING([--with-graphics-lib=options], [Xlib (graphics library) to use]),
-		[GRAPHICS_LIB=${withval}],
-		[GRAPHICS_LIB=""]
-	)
-	if test -n "${GRAPHICS_LIB}"; then
-		GRAPHICS_DIR=$(echo ${GRAPHICS_LIB} | sed -e "s/-L//g" | awk '{print $[1]}')
-		if test -d "${GRAPHICS_DIR}" || test -f "${GRAPHICS_DIR}"; then
-			HAVE_GRAPHICS=yes
-			GRAPHICSLIB="${GRAPHICS_LIB}"
-			AC_DEFINE([_HAVE_GRAPHICS_], [1], [with Xlib (graphics library) in ISSM src])
-			AC_SUBST([GRAPHICSLIB])
-		else
-			if test -f "${PETSC_ROOT}/conf/petscvariables"; then
-				PETSC_REC_GRAPHICS_LIB=$(cat ${PETSC_ROOT}/conf/petscvariables | grep X_LIB)
-				AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist! PETSc suggests the following library: ${PETSC_REC_GRAPHICS_LIB}]);
-			fi
-			AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([done])
 	dnl }}}
 	dnl MeteoIO{{{
 	AC_MSG_CHECKING([for MeteoIO])
@@ -2603,22 +2530,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AX_ANALYSES_SELECTION
 
 	dnl Platform specifics
-	dnl with-ios{{{
-	AC_MSG_CHECKING(for iOS compilation)
-	AC_ARG_WITH(
-		[ios],
-		AS_HELP_STRING([--with-ios=YES], [compile with iOS capabilities (default: no)]),
-		[IOS=${withval}],
-		[IOS=no]
-	)
-	HAVE_IOS=no
-	if test "x${IOS}" == "xyes"; then
-		HAVE_IOS=yes
-		AC_DEFINE([_HAVE_IOS_], [1], [with iOS capability])
-	fi
-	AM_CONDITIONAL([IOS], [test "x${HAVE_IOS}" != "xno"])
-	AC_MSG_RESULT([${HAVE_IOS}])
-	dnl }}}
 	dnl with-android{{{
 	AC_MSG_CHECKING([for Android capability compilation])
 	AC_ARG_WITH(
