@@ -996,6 +996,10 @@ classdef model
 			Pnode = sparse([1:nbv,repmat([nbv+1:nbv+nbedges],1,2)],[1:nbv edges(:)'],[ones(nbv,1);1/2*ones(2*nbedges,1)],md2.mesh.numberofvertices,nbv);
 
 			%Deal with mesh
+			if numel(md.mesh.lat)==md.mesh.numberofvertices
+				md.mesh.lat  = Pnode*md.mesh.lat;
+				md.mesh.long = Pnode*md.mesh.long;
+			end
 			if numel(md.mesh.scale_factor)==md.mesh.numberofvertices
 				md2.mesh.scale_factor=Pnode*md.mesh.scale_factor;
 			end
@@ -1196,13 +1200,9 @@ classdef model
 			md.mesh.vertexonboundary=project3d(md,'vector',md.mesh.vertexonboundary,'type','node');
 
 			%lat long
-			if numel(md.mesh.lat)>1
-				md.mesh.lat=project3d(md,'vector',md.mesh.lat,'type','node');
-				md.mesh.long=project3d(md,'vector',md.mesh.long,'type','node');
-			end
-			if numel(md.mesh.scale_factor)>1
-				md.mesh.scale_factor=project3d(md,'vector',md.mesh.scale_factor,'type','node');
-			end
+			md.mesh.lat=project3d(md,'vector',md.mesh.lat,'type','node');
+			md.mesh.long=project3d(md,'vector',md.mesh.long,'type','node');
+			md.mesh.scale_factor=project3d(md,'vector',md.mesh.scale_factor,'type','node');
 
 			md.geometry=extrude(md.geometry,md);
 			md.friction  = extrude(md.friction,md);
