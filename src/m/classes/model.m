@@ -1196,9 +1196,13 @@ classdef model
 			md.mesh.vertexonboundary=project3d(md,'vector',md.mesh.vertexonboundary,'type','node');
 
 			%lat long
-			md.mesh.lat=project3d(md,'vector',md.mesh.lat,'type','node');
-			md.mesh.long=project3d(md,'vector',md.mesh.long,'type','node');
-			md.mesh.scale_factor=project3d(md,'vector',md.mesh.scale_factor,'type','node');
+			if numel(md.mesh.lat)>1
+				md.mesh.lat=project3d(md,'vector',md.mesh.lat,'type','node');
+				md.mesh.long=project3d(md,'vector',md.mesh.long,'type','node');
+			end
+			if numel(md.mesh.scale_factor)>1
+				md.mesh.scale_factor=project3d(md,'vector',md.mesh.scale_factor,'type','node');
+			end
 
 			md.geometry=extrude(md.geometry,md);
 			md.friction  = extrude(md.friction,md);
