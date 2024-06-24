@@ -2,13 +2,13 @@ def QueueRequirements(queudict, queue, np, time):
     #QUEUEREQUIREMENTS - queue requirements in time, number of cpus, by name of queue.
     #
     #   Usage:
-    #      QueueRequirements(available_queues, queue_requirements_time, queue_requirements_np, np, time)
+    #      QueueRequirements(queudict, queue, np, time)
 
     #Ok, go through requirements for current queue:
     try:
         rtime = queudict[queue][0]
     except KeyError:
-        raise Exception('QueueRequirements error message: availables queues are ' + queudict.keys)
+        raise Exception('QueueRequirements error message: available queues are ' + queudict.keys)
 
     if time <= 0:
         raise Exception('QueueRequirements: time should be a positive number')
