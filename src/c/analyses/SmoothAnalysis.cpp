@@ -85,9 +85,10 @@ ElementMatrix* SmoothAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		element->NodalFunctions(basis,gauss);
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+				Ke->values[i*numnodes+j] += factor*(
 							basis[i]*basis[j]
 							+(l*thickness)*(l*thickness)*(dbasis[0*numnodes+i]*dbasis[0*numnodes+j] + dbasis[1*numnodes+i]*dbasis[1*numnodes+j])
 							);
@@ -194,7 +195,8 @@ ElementVector* SmoothAnalysis::CreatePVector(Element* element){/*{{{*/
 				input->GetInputValue(&value,gauss);
 		}
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*value*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*value;
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/

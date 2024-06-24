@@ -314,9 +314,10 @@ ElementMatrix* StressbalanceVerticalAnalysis::CreateKMatrixVolume(Element* eleme
 		element->NodalFunctions(basis,gauss);
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+				Ke->values[i*numnodes+j] += factor*(
 							basis[j]*dbasis[2*numnodes+i]
 							);
 			}
@@ -405,7 +406,8 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorBase(Element* element
 		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
 		element->NodalFunctions(basis,gauss);
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=-Jdet*gauss->weight*(vx*dbdx+vy*dbdy-vz-basalmeltingvalue)*basis[i];
+		IssmDouble factor = -Jdet*gauss->weight*(vx*dbdx+vy*dbdy-vz-basalmeltingvalue);;
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/
@@ -464,7 +466,8 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorSurface(Element* elem
 		element->JacobianDeterminantTop(&Jdet,xyz_list_surface,gauss);
 		element->NodalFunctions(basis,gauss);
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=-Jdet*gauss->weight*(vx*dsdx+vy*dsdy-vz+smb)*basis[i];
+		IssmDouble factor = -Jdet*gauss->weight*(vx*dsdx+vy*dsdy-vz+smb);
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/
@@ -516,7 +519,8 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorVolume(Element* eleme
 		dudx=du[0];
 		dvdy=dv[1];
 
-		for(int i=0;i<numnodes;i++) pe->values[i] += (dudx+dvdy+dwdz)*Jdet*gauss->weight*basis[i];
+		IssmDouble factor = (dudx+dvdy+dwdz)*Jdet*gauss->weight;
+		for(int i=0;i<numnodes;i++) pe->values[i] += factor*basis[i];
 	}
 
 	/*Clean up and return*/
