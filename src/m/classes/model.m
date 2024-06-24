@@ -810,6 +810,7 @@ classdef model
 			nodestoflag2=Pnode(nodestoflag1);
 			if numel(md1.stressbalance.spcvx)>1 & numel(md1.stressbalance.spcvy)>1 & numel(md1.stressbalance.spcvz)>1,
 				if isprop(md1.inversion,'vx_obs') & numel(md1.inversion.vx_obs)>1 & numel(md1.inversion.vy_obs)>1
+					disp('NOTE: using observed velocities to create constraints along new boundary');
 					md2.stressbalance.spcvx(nodestoflag2)=md2.inversion.vx_obs(nodestoflag2); 
 					md2.stressbalance.spcvy(nodestoflag2)=md2.inversion.vy_obs(nodestoflag2);
 					%MOLHO
@@ -817,12 +818,19 @@ classdef model
 					md2.stressbalance.spcvy_base(nodestoflag2)=md2.inversion.vy_obs(nodestoflag2);
 					md2.stressbalance.spcvx_shear(nodestoflag2)=0.;
 					md2.stressbalance.spcvy_shear(nodestoflag2)=0.;
+				elseif isprop(md1.initialization,'vx') & numel(md1.initialization.vx)>1 & numel(md1.initialization.vy)>1
+					disp('NOTE: using initial velocities to create constraints along new boundary');
+					md2.stressbalance.spcvx(nodestoflag2)=md2.initialization.vx(nodestoflag2); 
+					md2.stressbalance.spcvy(nodestoflag2)=md2.initialization.vy(nodestoflag2);
+					%MOLHO
+					md2.stressbalance.spcvx_base(nodestoflag2)=md2.initialization.vx(nodestoflag2); 
+					md2.stressbalance.spcvy_base(nodestoflag2)=md2.initialization.vy(nodestoflag2);
+					md2.stressbalance.spcvx_shear(nodestoflag2)=0.;
+					md2.stressbalance.spcvy_shear(nodestoflag2)=0.;
 				else
 					md2.stressbalance.spcvx(nodestoflag2)=NaN;
 					md2.stressbalance.spcvy(nodestoflag2)=NaN;
-					disp(' ')
-					disp('!! extract warning: spc values should be checked !!')
-					disp(' ')
+					warning('Could not set boundary conditions automatically, please set them manually before solve');
 				end
 				%put 0 for vz
 				md2.stressbalance.spcvz(nodestoflag2)=0;
