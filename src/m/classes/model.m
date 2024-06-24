@@ -997,8 +997,8 @@ classdef model
 
 			%Deal with mesh
 			if numel(md.mesh.lat)==md.mesh.numberofvertices
-				md.mesh.lat  = Pnode*md.mesh.lat;
-				md.mesh.long = Pnode*md.mesh.long;
+				md2.mesh.lat  = Pnode*md.mesh.lat;
+				md2.mesh.long = Pnode*md.mesh.long;
 			end
 			if numel(md.mesh.scale_factor)==md.mesh.numberofvertices
 				md2.mesh.scale_factor=Pnode*md.mesh.scale_factor;
