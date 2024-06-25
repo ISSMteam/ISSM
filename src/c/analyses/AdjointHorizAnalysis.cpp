@@ -69,7 +69,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	/*Intermediaries */
 	bool        incomplete_adjoint;
 	int         dim,epssize;
-	IssmDouble  Jdet,mu_prime;
+	IssmDouble  Jdet,mu_prime,factor;
 	IssmDouble  eps1dotdphii,eps1dotdphij,eps2dotdphii,eps2dotdphij,eps3dotdphii,eps3dotdphij;
 	IssmDouble  eps1[3],eps2[3],eps3[3],epsilon[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
 	IssmDouble *xyz_list = NULL;
@@ -119,6 +119,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 		eps1[1]=epsilon[2];   eps2[1]=epsilon[1];   eps3[1]=epsilon[4];
 		eps1[2]=epsilon[3];   eps2[2]=epsilon[4];   eps3[2]= -epsilon[0] -epsilon[1];
 
+		factor = gauss->weight*Jdet*2*mu_prime;
 		for(int i=0;i<vnumnodes;i++){
 			for(int j=0;j<vnumnodes;j++){
 				eps1dotdphii=eps1[0]*dbasis[0*vnumnodes+i]+eps1[1]*dbasis[1*vnumnodes+i]+eps1[2]*dbasis[2*vnumnodes+i];
@@ -128,17 +129,17 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 				eps3dotdphii=eps3[0]*dbasis[0*vnumnodes+i]+eps3[1]*dbasis[1*vnumnodes+i]+eps3[2]*dbasis[2*vnumnodes+i];
 				eps3dotdphij=eps3[0]*dbasis[0*vnumnodes+j]+eps3[1]*dbasis[1*vnumnodes+j]+eps3[2]*dbasis[2*vnumnodes+j];
 
-				Ke->values[numdof*(4*i+0)+4*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps1dotdphii;
-				Ke->values[numdof*(4*i+0)+4*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps1dotdphii;
-				Ke->values[numdof*(4*i+0)+4*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps1dotdphii;
+				Ke->values[numdof*(4*i+0)+4*j+0]+=factor*eps1dotdphij*eps1dotdphii;
+				Ke->values[numdof*(4*i+0)+4*j+1]+=factor*eps2dotdphij*eps1dotdphii;
+				Ke->values[numdof*(4*i+0)+4*j+2]+=factor*eps3dotdphij*eps1dotdphii;
 
-				Ke->values[numdof*(4*i+1)+4*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps2dotdphii;
-				Ke->values[numdof*(4*i+1)+4*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps2dotdphii;
-				Ke->values[numdof*(4*i+1)+4*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps2dotdphii;
+				Ke->values[numdof*(4*i+1)+4*j+0]+=factor*eps1dotdphij*eps2dotdphii;
+				Ke->values[numdof*(4*i+1)+4*j+1]+=factor*eps2dotdphij*eps2dotdphii;
+				Ke->values[numdof*(4*i+1)+4*j+2]+=factor*eps3dotdphij*eps2dotdphii;
 
-				Ke->values[numdof*(4*i+2)+4*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps3dotdphii;
-				Ke->values[numdof*(4*i+2)+4*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps3dotdphii;
-				Ke->values[numdof*(4*i+2)+4*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps3dotdphii;
+				Ke->values[numdof*(4*i+2)+4*j+0]+=factor*eps1dotdphij*eps3dotdphii;
+				Ke->values[numdof*(4*i+2)+4*j+1]+=factor*eps2dotdphij*eps3dotdphii;
+				Ke->values[numdof*(4*i+2)+4*j+2]+=factor*eps3dotdphij*eps3dotdphii;
 			}
 		}
 	}
@@ -159,7 +160,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixHO(Element* element){/*{{{*/
 
 	/*Intermediaries */
 	bool        incomplete_adjoint;
-	IssmDouble  Jdet,mu_prime;
+	IssmDouble  Jdet,mu_prime,factor;
 	IssmDouble  eps1dotdphii,eps1dotdphij,eps2dotdphii,eps2dotdphij;
 	IssmDouble  eps1[3],eps2[3],epsilon[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
 	IssmDouble *xyz_list = NULL;
@@ -195,6 +196,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixHO(Element* element){/*{{{*/
 		eps1[1]=epsilon[2];                 eps2[1]=epsilon[0]+2.*epsilon[1];
 		eps1[2]=epsilon[3];                 eps2[2]=epsilon[4];
 
+		factor = gauss->weight*Jdet*2*mu_prime;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
 				eps1dotdphii=eps1[0]*dbasis[0*numnodes+i]+eps1[1]*dbasis[1*numnodes+i]+eps1[2]*dbasis[2*numnodes+i];
@@ -202,10 +204,10 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixHO(Element* element){/*{{{*/
 				eps2dotdphii=eps2[0]*dbasis[0*numnodes+i]+eps2[1]*dbasis[1*numnodes+i]+eps2[2]*dbasis[2*numnodes+i];
 				eps2dotdphij=eps2[0]*dbasis[0*numnodes+j]+eps2[1]*dbasis[1*numnodes+j]+eps2[2]*dbasis[2*numnodes+j];
 
-				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps2dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=factor*eps1dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=factor*eps2dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=factor*eps1dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=factor*eps2dotdphij*eps2dotdphii;
 			}
 		}
 	}
@@ -225,7 +227,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHO(Element* element){/*{{{*
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries */
-	IssmDouble  Jdet,mu_prime,n,thickness,mu,effmu;
+	IssmDouble  Jdet,mu_prime,n,thickness,mu,effmu,factor;
 	IssmDouble *xyz_list = NULL;
 	IssmDouble  viscosity[9]; //9 mu for different integrand
    int			domaintype;
@@ -304,6 +306,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHO(Element* element){/*{{{*
 		e1sh[0] = 2*epsilonshear[0]+epsilonshear[1];		e1sh[1] = epsilonshear[2];
 		e2sh[1] = epsilonshear[0]+2*epsilonshear[1];		e2sh[0] = epsilonshear[2];
 
+		factor = gauss->weight*Jdet*effmu;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
 				eb1i = e1b[0]*dbasis[0*numnodes+i]+e1b[1]*dbasis[1*numnodes+i];
@@ -315,25 +318,25 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHO(Element* element){/*{{{*
             esh2i = e2sh[0]*dbasis[0*numnodes+i]+e2sh[1]*dbasis[1*numnodes+i];
             esh2j = e2sh[0]*dbasis[0*numnodes+j]+e2sh[1]*dbasis[1*numnodes+j];
 
-				Ke->values[4*numnodes*(4*i+0)+4*j+0]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb1j*eb1i+viscosity[1]*(esh1j*eb1i+eb1j*esh1i)+viscosity[2]*esh1j*esh1i);
-				Ke->values[4*numnodes*(4*i+1)+4*j+0]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb1j*eb1i+viscosity[2]*(esh1j*eb1i+eb1j*esh1i)+viscosity[4]*esh1j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb1j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh1j*basis[i]);
-				Ke->values[4*numnodes*(4*i+2)+4*j+0]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb1j*eb2i+viscosity[1]*(esh1j*eb2i+eb1j*esh2i)+viscosity[2]*esh1j*esh2i);
-				Ke->values[4*numnodes*(4*i+3)+4*j+0]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb1j*eb2i+viscosity[2]*(esh1j*eb2i+eb1j*esh2i)+viscosity[4]*esh1j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb1j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh1j*basis[i]);
+				Ke->values[4*numnodes*(4*i+0)+4*j+0]+=factor*(viscosity[0]*eb1j*eb1i+viscosity[1]*(esh1j*eb1i+eb1j*esh1i)+viscosity[2]*esh1j*esh1i);
+				Ke->values[4*numnodes*(4*i+1)+4*j+0]+=factor*(viscosity[1]*eb1j*eb1i+viscosity[2]*(esh1j*eb1i+eb1j*esh1i)+viscosity[4]*esh1j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb1j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh1j*basis[i]);
+				Ke->values[4*numnodes*(4*i+2)+4*j+0]+=factor*(viscosity[0]*eb1j*eb2i+viscosity[1]*(esh1j*eb2i+eb1j*esh2i)+viscosity[2]*esh1j*esh2i);
+				Ke->values[4*numnodes*(4*i+3)+4*j+0]+=factor*(viscosity[1]*eb1j*eb2i+viscosity[2]*(esh1j*eb2i+eb1j*esh2i)+viscosity[4]*esh1j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb1j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh1j*basis[i]);
 
-				Ke->values[4*numnodes*(4*i+0)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb1j*eb1i+viscosity[2]*(esh1j*eb1i+eb1j*esh1i)+viscosity[4]*esh1j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb1i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh1i*basis[j]);
-				Ke->values[4*numnodes*(4*i+1)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb1j*eb1i+viscosity[4]*(esh1j*eb1i+eb1j*esh1i)+viscosity[5]*esh1j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(eb1i*basis[j]+eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(esh1i*basis[j]+esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
-				Ke->values[4*numnodes*(4*i+2)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb1j*eb2i+viscosity[2]*(esh1j*eb2i+eb1j*esh2i)+viscosity[4]*esh1j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2i*basis[j]);
-				Ke->values[4*numnodes*(4*i+3)+4*j+1]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb1j*eb2i+viscosity[4]*(esh1j*eb2i+eb1j*esh2i)+viscosity[5]*esh1j*esh2i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*eb2i*basis[j]+vyshear*eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2i*basis[j]+vyshear*esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vyshear*basis[j]*basis[i]);
+				Ke->values[4*numnodes*(4*i+0)+4*j+1]+=factor*(viscosity[1]*eb1j*eb1i+viscosity[2]*(esh1j*eb1i+eb1j*esh1i)+viscosity[4]*esh1j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb1i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh1i*basis[j]);
+				Ke->values[4*numnodes*(4*i+1)+4*j+1]+=factor*(viscosity[2]*eb1j*eb1i+viscosity[4]*(esh1j*eb1i+eb1j*esh1i)+viscosity[5]*esh1j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(eb1i*basis[j]+eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*(esh1i*basis[j]+esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
+				Ke->values[4*numnodes*(4*i+2)+4*j+1]+=factor*(viscosity[1]*eb1j*eb2i+viscosity[2]*(esh1j*eb2i+eb1j*esh2i)+viscosity[4]*esh1j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2i*basis[j]);
+				Ke->values[4*numnodes*(4*i+3)+4*j+1]+=factor*(viscosity[2]*eb1j*eb2i+viscosity[4]*(esh1j*eb2i+eb1j*esh2i)+viscosity[5]*esh1j*esh2i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*eb2i*basis[j]+vyshear*eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2i*basis[j]+vyshear*esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vyshear*basis[j]*basis[i]);
 
-				Ke->values[4*numnodes*(4*i+0)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb2j*eb1i+viscosity[1]*(esh2j*eb1i+eb2j*esh1i)+viscosity[2]*esh2j*esh1i);
-				Ke->values[4*numnodes*(4*i+1)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2j*basis[i]);
-				Ke->values[4*numnodes*(4*i+2)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[0]*eb2j*eb2i+viscosity[1]*(esh2j*eb2i+eb2j*esh2i)+viscosity[2]*esh2j*esh2i);
-				Ke->values[4*numnodes*(4*i+3)+4*j+2]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb2i+viscosity[2]*(esh2j*eb2i+eb2j*esh2i)+viscosity[4]*esh2j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh2j*basis[i]);
+				Ke->values[4*numnodes*(4*i+0)+4*j+2]+=factor*(viscosity[0]*eb2j*eb1i+viscosity[1]*(esh2j*eb1i+eb2j*esh1i)+viscosity[2]*esh2j*esh1i);
+				Ke->values[4*numnodes*(4*i+1)+4*j+2]+=factor*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vxshear*esh2j*basis[i]);
+				Ke->values[4*numnodes*(4*i+2)+4*j+2]+=factor*(viscosity[0]*eb2j*eb2i+viscosity[1]*(esh2j*eb2i+eb2j*esh2i)+viscosity[2]*esh2j*esh2i);
+				Ke->values[4*numnodes*(4*i+3)+4*j+2]+=factor*(viscosity[1]*eb2j*eb2i+viscosity[2]*(esh2j*eb2i+eb2j*esh2i)+viscosity[4]*esh2j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb2j*basis[i]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh2j*basis[i]);
 
-				Ke->values[4*numnodes*(4*i+0)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb1i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh1i*basis[j]);
-				Ke->values[4*numnodes*(4*i+1)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb2j*eb1i+viscosity[4]*(esh2j*eb1i+eb2j*esh1i)+viscosity[5]*esh2j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vyshear*eb1i*basis[j]+vxshear*eb2j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2j*basis[i]+vyshear*esh1i*basis[j])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
-				Ke->values[4*numnodes*(4*i+2)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[1]*eb2j*eb2i+viscosity[2]*(esh2j*eb2i+eb2j*esh2i)+viscosity[4]*esh2j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb2i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh2i*basis[j]);
-				Ke->values[4*numnodes*(4*i+3)+4*j+3]+=gauss->weight*Jdet*effmu*(viscosity[2]*eb2j*eb2i+viscosity[4]*(esh2j*eb2i+eb2j*esh2i)+viscosity[5]*esh2j*esh2i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*(eb2i*basis[j]+eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*(esh2i*basis[j]+esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vyshear*vyshear*basis[j]*basis[i]);
+				Ke->values[4*numnodes*(4*i+0)+4*j+3]+=factor*(viscosity[1]*eb2j*eb1i+viscosity[2]*(esh2j*eb1i+eb2j*esh1i)+viscosity[4]*esh2j*esh1i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb1i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh1i*basis[j]);
+				Ke->values[4*numnodes*(4*i+1)+4*j+3]+=factor*(viscosity[2]*eb2j*eb1i+viscosity[4]*(esh2j*eb1i+eb2j*esh1i)+viscosity[5]*esh2j*esh1i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*(vyshear*eb1i*basis[j]+vxshear*eb2j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*(vxshear*esh2j*basis[i]+vyshear*esh1i*basis[j])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vxshear*vxshear*basis[j]*basis[i]);
+				Ke->values[4*numnodes*(4*i+2)+4*j+3]+=factor*(viscosity[1]*eb2j*eb2i+viscosity[2]*(esh2j*eb2i+eb2j*esh2i)+viscosity[4]*esh2j*esh2i+viscosity[3]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*eb2i*basis[j]+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*esh2i*basis[j]);
+				Ke->values[4*numnodes*(4*i+3)+4*j+3]+=factor*(viscosity[2]*eb2j*eb2i+viscosity[4]*(esh2j*eb2i+eb2j*esh2i)+viscosity[5]*esh2j*esh2i+viscosity[6]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*(eb2i*basis[j]+eb1j*basis[i])+viscosity[7]*(n+1)*(n+1)/2.0/thickness/thickness*vyshear*(esh2i*basis[j]+esh1j*basis[i])+viscosity[8]*(n+1)*(n+1)*(n+1)*(n+1)/4.0/thickness/thickness/thickness/thickness*vyshear*vyshear*basis[j]*basis[i]);
 			}
 		}
 	}

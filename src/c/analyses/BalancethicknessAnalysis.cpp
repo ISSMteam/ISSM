@@ -370,7 +370,8 @@ ElementVector* BalancethicknessAnalysis::CreatePVectorCG(Element* element){/*{{{
 		mb_input->GetInputValue(&mb,gauss);
 		dhdt_input->GetInputValue(&dhdt,gauss);
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(ms-mb-dhdt)*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*(ms-mb-dhdt);
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/
@@ -410,6 +411,7 @@ ElementVector* BalancethicknessAnalysis::CreatePVectorDG(Element* element){/*{{{
 		mb_input->GetInputValue(&mb,gauss);
 		dhdt_input->GetInputValue(&dhdt,gauss);
 
+		IssmDouble factor = Jdet*gauss->weight*(ms-mb-dhdt);
 		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(ms-mb-dhdt)*basis[i];
 	}
 
@@ -429,7 +431,7 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 	if(!element->IsIceInElement()) return;
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet,weight,factor;
 	IssmDouble thickness,thicknessobs,dH[3],dp[3];
 	IssmDouble  vx,vy,vel,dvx[2],dvy[2],dhdt,basal_melting,surface_mass_balance;
 	IssmDouble *xyz_list= NULL;
@@ -483,11 +485,13 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 
 			switch(responses[resp]){
 				case ThicknessAbsMisfitEnum:
-					for(int i=0;i<numvertices;i++) ge[i]+= (thicknessobs-thickness)*weight*Jdet*gauss->weight*basis[i];
+					factor = (thicknessobs-thickness)*weight*Jdet*gauss->weight;
+					for(int i=0;i<numvertices;i++) ge[i]+= factor*basis[i];
 					break;
 				case ThicknessAbsGradientEnum:
-					for(int i=0;i<numvertices;i++) ge[i]+= - weight*dH[0]*dbasis[0*numvertices+i]*Jdet*gauss->weight;
-					for(int i=0;i<numvertices;i++) ge[i]+= - weight*dH[1]*dbasis[1*numvertices+i]*Jdet*gauss->weight;
+					factor = - weight*Jdet*gauss->weight;
+					for(int i=0;i<numvertices;i++) ge[i]+= factor*dH[0]*dbasis[0*numvertices+i];
+					for(int i=0;i<numvertices;i++) ge[i]+= factor*dH[1]*dbasis[1*numvertices+i];
 					break;
 				case ThicknessAlongGradientEnum:
 					vx_input->GetInputValue(&vx,gauss);
@@ -495,7 +499,8 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 					vel = sqrt(vx*vx+vy*vy);
 					vx  = vx/(vel+1.e-9);
 					vy  = vy/(vel+1.e-9);
-					for(int i=0;i<numvertices;i++) ge[i]+= - weight*(dH[0]*vx+dH[1]*vy)*(dbasis[0*numvertices+i]*vx+dbasis[1*numvertices+i]*vy)*Jdet*gauss->weight;
+					factor =  - weight*(dH[0]*vx+dH[1]*vy)*Jdet*gauss->weight;
+					for(int i=0;i<numvertices;i++) ge[i]+= factor*(dbasis[0*numvertices+i]*vx+dbasis[1*numvertices+i]*vy);
 					break;
 				case ThicknessAcrossGradientEnum:
 					vx_input->GetInputValue(&vx,gauss);
@@ -503,7 +508,8 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 					vel = sqrt(vx*vx+vy*vy);
 					vx  = vx/(vel+1.e-9);
 					vy  = vy/(vel+1.e-9);
-					for(int i=0;i<numvertices;i++) ge[i]+= - weight*(dH[0]*(-vy)+dH[1]*vx)*(dbasis[0*numvertices+i]*(-vy)+dbasis[1*numvertices+i]*vx)*Jdet*gauss->weight;
+					factor = - weight*(dH[0]*(-vy)+dH[1]*vx)*Jdet*gauss->weight;
+					for(int i=0;i<numvertices;i++) ge[i]+= factor*(dbasis[0*numvertices+i]*(-vy)+dbasis[1*numvertices+i]*vx);
 					break;
 				case BalancethicknessMisfitEnum:
 					surface_mass_balance_input->GetInputValue(&surface_mass_balance,gauss);
@@ -513,8 +519,9 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 					vx_input->GetInputDerivativeValue(&dvx[0],xyz_list,gauss);
 					vy_input->GetInputValue(&vy,gauss);
 					vy_input->GetInputDerivativeValue(&dvy[0],xyz_list,gauss);
+					factor = - weight*Jdet*gauss->weight;
 					for(int i=0;i<numvertices;i++){
-						ge[i]+= - weight*Jdet*gauss->weight*(
+						ge[i]+= factor*(
 							(vx*dH[0]+vy*dH[1] + thickness*(dvx[0]+dvy[1]))*(vx*dbasis[0*numvertices+i]+ vy*dbasis[1*numvertices+i] + basis[i]*(dvx[0]+dvy[1]))
 							-(surface_mass_balance-basal_melting-dhdt)*(vx*dbasis[0*numvertices+i]+ vy*dbasis[1*numvertices+i] + basis[i]*(dvx[0]+dvy[1]))
 							);
