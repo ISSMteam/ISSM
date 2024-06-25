@@ -455,8 +455,8 @@ ElementVector* HydrologyGlaDSAnalysis::CreatePVector(Element* element){/*{{{*/
 
 		/*Transient term if dt>0*/
 		if(dt>0.){
-			factor = gauss->weight*Jdet*e_v/(rho_water*g*dt)*phi_old;
 			phiold_input->GetInputValue(&phi_old,gauss);
+			factor = gauss->weight*Jdet*e_v/(rho_water*g*dt)*phi_old;
 			for(int i=0;i<numnodes;i++) pe->values[i] += factor*basis[i];
 		}
 	}
