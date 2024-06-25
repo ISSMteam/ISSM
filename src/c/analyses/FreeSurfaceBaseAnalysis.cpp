@@ -324,18 +324,18 @@ ElementMatrix* FreeSurfaceBaseAnalysis::CreateKMatrix(Element* element){/*{{{*/
 			}
 		}
 		else if(stabilization==5){
-			D_scalar=gauss->weight*Jdet*dt;
+			D_scalar=gauss->weight*Jdet*dt*tau;
 			if(dim==2){
 				for(int i=0;i<numnodes;i++){
 					for(int j=0;j<numnodes;j++){
-						Ke->values[i*numnodes+j]+=tau*D_scalar*
+						Ke->values[i*numnodes+j]+=D_scalar*
 							(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i])*
 							(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j]);
 					}
 				}
 			}
 			else{
-				for(int i=0;i<numnodes;i++) for(int j=0;j<numnodes;j++) Ke->values[i*numnodes+j]+=tau*D_scalar*(vx*dbasis[0*numnodes+i])*(vx*dbasis[0*numnodes+j]);
+				for(int i=0;i<numnodes;i++) for(int j=0;j<numnodes;j++) Ke->values[i*numnodes+j]+=D_scalar*(vx*dbasis[0*numnodes+i])*(vx*dbasis[0*numnodes+j]);
 			}
 		}
 	}
@@ -353,7 +353,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Intermediaries*/
 	int         domaintype,dim,stabilization;
-	IssmDouble  Jdet,dt,intrusiondist;
+	IssmDouble  Jdet,dt,intrusiondist,factor;
 	IssmDouble  gmb,fmb,mb,bed,vx,vy,vz,tau,gldistance;
 	Element*    basalelement = NULL;
 	IssmDouble *xyz_list  = NULL;
@@ -485,7 +485,8 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 			_error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 		}
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(bed+dt*(mb) + dt*vz)*basis[i];
+		factor = Jdet*gauss->weight*(bed+dt*(mb) + dt*vz);
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 
 		if(stabilization==5){
 			/*SUPG*/
@@ -493,13 +494,15 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 			if(dim==1){
 				vx_input->GetInputAverage(&vx);
 				tau=h/(2.*fabs(vx)+1e-10);
-				for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(dt*mb+dt*vz)*tau*(vx*dbasis[0*numnodes+i]);
+				factor = Jdet*gauss->weight*(dt*mb+dt*vz)*tau;
+				for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]);
 			}
 			else{ 
 				vx_input->GetInputAverage(&vx);
 				vy_input->GetInputAverage(&vy);
 				tau=1*h/(2.*pow(vx*vx+vy*vy,0.5)+1e-10);
-				for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(bed*0.+dt*mb+dt*vz)*tau*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+				factor = Jdet*gauss->weight*(bed*0.+dt*mb+dt*vz)*tau;
+				for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
 			}
 		}
 	}

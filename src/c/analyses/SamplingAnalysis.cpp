@@ -185,9 +185,10 @@ ElementMatrix* SamplingAnalysis::CreateKMatrixModifiedHelmholtz(Element* element
  		}
 
 		/* Identity identity */
+		IssmDouble factor = D*kappa*kappa;
 		for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += D*kappa*kappa*(basis[j]*basis[i]);
+					Ke->values[i*numnodes+j] += factor*(basis[j]*basis[i]);
 			}
  		}
 
@@ -236,11 +237,11 @@ ElementMatrix* SamplingAnalysis::CreateKMatrixRobinBC(Element* element){/*{{{*/
 
 		beta_input->GetInputValue(&beta,gauss); _assert_(beta>=0);
 
-		D=gauss->weight*Jdet;
+		D=gauss->weight*Jdet*beta;
 
 		for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-						Ke->values[i*numnodes+j] += D*beta*(basis[j]*basis[i]);
+						Ke->values[i*numnodes+j] += D*(basis[j]*basis[i]);
 			}
  		}
 

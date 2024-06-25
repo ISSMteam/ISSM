@@ -79,7 +79,7 @@ ElementMatrix* ExtrudeFromBaseAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(dbasis[(dim-1)*numnodes+i]*dbasis[(dim-1)*numnodes+j]);
+				Ke->values[i*numnodes+j] += D*(dbasis[(dim-1)*numnodes+i]*dbasis[(dim-1)*numnodes+j]);
 			}
 		}
 	} 

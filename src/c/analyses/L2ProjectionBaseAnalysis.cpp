@@ -196,7 +196,8 @@ ElementVector* L2ProjectionBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 				input->GetInputValue(&value,gauss);
 		}
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*value*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*value;
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/
