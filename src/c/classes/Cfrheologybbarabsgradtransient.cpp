@@ -96,7 +96,7 @@ int Cfrheologybbarabsgradtransient::Id(void){/*{{{*/
 }
 /*}}}*/
 void Cfrheologybbarabsgradtransient::Marshall(MarshallHandle* marshallhandle){/*{{{*/
-	
+
 	/*ok, marshall operations: */
 	int object_enum=CfrheologybbarabsgradtransientEnum;
 	marshallhandle->call(object_enum);
@@ -130,7 +130,7 @@ IssmDouble Cfrheologybbarabsgradtransient::Response(FemModel* femmodel){/*{{{*/
 	/*recover time parameters: */
 	IssmDouble time;
 	femmodel->parameters->FindParam(&time,TimeEnum);
-	
+
 	/*Find closest datatime that is less than time*/
 	int pos=-1;
 	for(int i=0;i<this->num_datatimes;i++){
@@ -147,12 +147,12 @@ IssmDouble Cfrheologybbarabsgradtransient::Response(FemModel* femmodel){/*{{{*/
 		_assert_(this->J==0.);
 		return 0.;
 	}
-	
+
 	/*Check that we have not yet calculated this cost function*/
 	if(this->passedflags[pos]){
 		return this->J;
 	}
-	
+
 	/*Calculate cost function for this time slice*/
 	IssmDouble J_part=0.;
 	IssmDouble J_sum=0.;

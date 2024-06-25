@@ -11,8 +11,6 @@
 #	`source $ISSM_DIR/etc/environment.sh`.
 #
 # TODO:
-# - Rename TEMP to something more descriptive (ensure first that other parts of
-#	the build system do not rely on this name)
 # - Investigate refactoring parsing of list of changed files
 ################################################################################
 
@@ -24,14 +22,11 @@ rm -rf ${ISSM_DIR}/execution/*
 rm -rf ${ISSM_DIR}/nightlylog
 mkdir ${ISSM_DIR}/nightlylog
 
-#Server URI
-SERVER='https://ross.ics.uci.edu/jenkins'
-
 # Get configuration
 # Source config file {{{
 if [ $# -ne 1 ]; then
 	#no config file specified: exit
-	echo "no config file specified. Exiting..." >&2 # Error message to stderr.
+	echo "No config file specified. Exiting..." >&2 # Error message to stderr.
 	exit 1
 fi
 if [ ! -f "$1" ]; then
@@ -59,89 +54,74 @@ if [[ $EXAMPLES_TEST -eq 1 && $MATLAB_TEST+$PYTHON_TEST+$JAVASCRIPT_TEST -ne 0 ]
 fi
 
 # Install ISSM
-# Determining installation type depending on svn changes {{{
+# Determining installation type depending on last changes to repository {{{
 echo "======================================================";
-echo "             Determining Installation type            "
+echo "             Determining installation type            "
 echo "======================================================";
-if [ -a ${ISSM_DIR}/svn_revision_old ]; then
-	SVN_PREVIOUS=$(cat ${ISSM_DIR}/svn_revision_old)
-	SVN_CURRENT=$SVN_REVISION_1
-	echo "Previous revision number: $SVN_PREVIOUS"
-	echo "Current revision number: $SVN_CURRENT"
+if [ -f ${ISSM_DIR}/.PREV_COMMIT ]; then
+	# Fetch main branch from remote origin (this does not affect local files 
+	# like `git pull` would)
+	git fetch --quiet origin main
+
+	# Retrieve previous commit SHA
+	PREV_COMMIT=$(cat ${ISSM_DIR}/.PREV_COMMIT)
 
 	# Get list of changed files
-	#
+	CHANGES=$(git diff --name-only ${PREV_COMMIT} FETCH_HEAD)
 
-	#svn --non-interactive --no-auth-cache --trust-server-cert diff -r $SVN_PREVIOUS:$SVN_CURRENT --summarize ${ISSM_DIR} | awk '{print $NF}' > ${ISSM_DIR}/TEMP
-
-	# Get list of changes from Jenkins itself as svn requires credentials
-	rm -rf changes
-	wget $SERVER/job/$JOB_NAME/$BUILD_NUMBER/changes > /dev/null 2>&1
-
-	# Process html page and get the list of files that has changed (tricky...)
-	#cat changes | grep '="The file was modified"' | sed -e 's/.*<\/td><td><a>\(.*\)<\/a><\/td><td>.*/\1/' > ${ISSM_DIR}/TEMP
-	#cat changes | grep 'document_edit' |sed -e 's/document_edit.png/document_edit.png\
-		#/g' | sed -e 's/.*<\/a><\/td><td>\(.*\)<\/td><\/tr>.*/\1/' | grep -v 'document_edit.png' > ${ISSM_DIR}/TEMP
-	cat changes | tr " " "\n" | grep trunk | sed -e 's/.*<a>\(.*\)<\/a>.*/\1/' > ${ISSM_DIR}/TEMP
-
-	# Print list of changed files
-	echo "   "
-	echo "List of updated files"
-	cat ${ISSM_DIR}/TEMP
-	echo "   "
-
-	## Determine installation type
-	#
-	echo "Determining installation type"
+	if [ ! "${CHANGES}" == "" ]; then
+		# Print list of changed files
+		echo "   "
+		echo "List of changed files"
+		echo "---------------------"
+		echo "${CHANGES}"
+		echo "   "
+	fi
 
 	# If the contents of the externalpackages directory were modified in any
 	# way, check for changed external packages
-	if [ ! -z "$(cat ${ISSM_DIR}/TEMP | grep externalpackages)" ]; then
-		echo "  -- checking for changed externalpackages... yes"
+	if [ ! -z "$(echo ${CHANGES} | grep externalpackages)" ]; then
+		echo "-- checking for changed externalpackages... yes"
 		ISSM_EXTERNALPACKAGES="yes"
 	else
-		echo "  -- checking for changed externalpackages... no"
+		echo "-- checking for changed externalpackages... no"
 		ISSM_EXTERNALPACKAGES="no"
 	fi
 
 	# If the Makefile or m4 directory were changed in any way or if certain
 	# binary files from a previous compilation do not exist, reconfigure
-	if [ ! -z "$(cat ${ISSM_DIR}/TEMP | grep -e "Makefile.am" -e "m4" )" ] ||
+	if [ ! -z "$(echo ${CHANGES}| grep -e "Makefile.am" -e "m4" )" ] ||
 		[ ! -f "${ISSM_DIR}/bin/issm.exe" ] && [ ! -f "${ISSM_DIR}/bin/issm-bin.js" ] ||
 		[ "$ISSM_EXTERNALPACKAGES" == "yes" ]; then
-		echo "  -- checking for reconfiguration... yes"
+		echo "-- checking for reconfiguration... yes"
 		ISSM_RECONFIGURE="yes"
 	else
-		echo "  -- checking for reconfiguration... no"
+		echo "-- checking for reconfiguration... no"
 		ISSM_RECONFIGURE="no"
 	fi
 
 	# If source files were changed in any way, recompile
-	if [ ! -z "$(cat ${ISSM_DIR}/TEMP | grep -e "\.cpp" -e "\.h" )" ] ||
+	if [ ! -z "$(echo ${CHANGES} | grep -e "\.cpp" -e "\.h" )" ] ||
 		[ "$ISSM_RECONFIGURE" == "yes" ]; then
-		echo "  -- checking for recompilation... yes"
+		echo "-- checking for recompilation... yes"
 		ISSM_COMPILATION="yes"
 	else
-		echo "  -- checking for recompilation... no"
+		echo "-- checking for recompilation... no"
 		ISSM_COMPILATION="no"
 	fi
-
-	# Cleanup
-	rm changes
-	rm ${ISSM_DIR}/TEMP
 else
-	echo "Previous revision not found, this must be a fresh install"
-	echo "  -- checking for changed externalpackages... yes"
-	echo "  -- checking for reconfiguration... yes"
-	echo "  -- checking for recompilation... yes"
+	echo "Fresh copy of repository; building everything"
+	echo "-- checking for changed externalpackages... yes"
+	echo "-- checking for reconfiguration... yes"
+	echo "-- checking for recompilation... yes"
 	ISSM_EXTERNALPACKAGES="yes"
 	ISSM_RECONFIGURE="yes"
 	ISSM_COMPILATION="yes"
 fi
 
-echo " "
-echo "Recording current svn version: $SVN_REVISION_1"
-echo $SVN_REVISION_1 > ${ISSM_DIR}/svn_revision_old
+# Write out hidden file containing this commit's SHA
+git rev-parse HEAD > ${ISSM_DIR}/.PREV_COMMIT
+
 # }}}
 
 ## External Packages

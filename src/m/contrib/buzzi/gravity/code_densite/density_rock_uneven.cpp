@@ -155,8 +155,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	makep(Pobs,nx,ny,dx,dy);
 	// Pobs->Echo();
 
-
-
 	Matrix *Pp=new Matrix(mx*my,2); /* prisms positions */
 	makep(Pp,mx,my,dx,dy);
 	// Pp->Echo();
@@ -179,7 +177,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	rho2->SetValue(0,0,rhoi-rhoc_min);
 	rho2->SetValue(0,1,rhow-rhoc_min);
 
-
 	Matrix *xobs= new Matrix(ny,nx);
 	Matrix *yobs= new Matrix(ny,nx);
 
@@ -187,10 +184,8 @@ int main(int argc,char *argv[]){/*{{{*/
 	//	xobs->Echo();
 	//	yobs->Echo();
 
-
 	/*}}}*/     
 	/* load the data {{{*/
-
 
 	double inputnumber;
 
@@ -215,9 +210,7 @@ int main(int argc,char *argv[]){/*{{{*/
 	file1.close();
 	//	gobs->Echo();
 
-
 	/* id of grid to evaluate misfit */
-
 
 	ifstream file4("evalid1.txt");
 	Matrix * evalid= new Matrix(nx*ny,1);
@@ -243,7 +236,6 @@ int main(int argc,char *argv[]){/*{{{*/
 	/*}}}*/
 	/* Test {{{ */
 
-
 	double rhoc=rhoc_min;
 	double rhoc_opti=rhoc_min;
 	double E=misfit(mesh_ini,evalid,gobs,dlevel,Pobs,xobs,yobs,Pp,rho1,rho2,dx,dy,dn,nx,ny,mx,my,my_rank,num_procs);
@@ -265,9 +257,6 @@ int main(int argc,char *argv[]){/*{{{*/
 			cout<<rhoc<<"  "<<rhoc_opti<<"  "<<E<<"  "<<E_opti<<endl;
 		}
 	}
-
-
-
 
 	delete Pobs;
 	delete Pp;

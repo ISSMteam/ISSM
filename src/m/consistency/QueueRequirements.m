@@ -7,7 +7,7 @@ function QueueRequirements(available_queues,queue_requirements_time,queue_requir
 %Ok, go through requirements for current queue:
 index=ismemberi(queue,available_queues);
 if  ~index,
-	%ok, either we a generic cluster, with 'none' queue, or we could not find the queue reqruirements
+	%ok, either we a generic cluster, with 'none' queue, or we could not find the queue requirements
 	if strcmpi(available_queues{1},'none'),
 		%reset index to 1, so we can fish the requirements
 		index=1;
@@ -16,7 +16,7 @@ if  ~index,
 		for i=2:length(available_queues),
 			string=[string ' ' available_queues{i}];
 		end
-		error(['QueueRequirements error message: availables queues are ' string]);
+		error(['QueueRequirements error message: available queues are ' string]);
 	end
 end
 

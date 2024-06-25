@@ -167,4 +167,3 @@ void HydrologyArmapwAnalysis::UpdateSubglacialWaterPressure(FemModel* femmodel){
    xDelete<IssmDouble>(datebreaks);
    xDelete<IssmDouble>(monthlyfactors);
 }/*}}}*/
-

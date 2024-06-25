@@ -14,7 +14,7 @@ __pycache__
 bin/
 lib/
 
-# OS generated files #
+# OS-generated files #
 #=====================
 .DS_Store
 
@@ -28,6 +28,7 @@ Makefile
 aclocal.m4
 autom4te.cache
 aux-config
+confdefs.h
 config.h
 config.h.in
 config.h.in~
@@ -45,6 +46,8 @@ m4/lt~obsolete.m4
 src/Makefile
 src/c/Makefile
 src/c/issm
+src/c/issm_dakota
+src/c/issm_post
 src/c/issm_slc
 src/c/kriging
 src/m/Makefile
@@ -55,26 +58,19 @@ src/wrappers/python/Makefile
 
 # External Packages #
 #====================
-externalpackages/autotools/*.tar.gz
-externalpackages/autotools/install
-externalpackages/autotools/src
-externalpackages/m1qn3/*.tgz
-externalpackages/m1qn3/src
-externalpackages/petsc/*.gz
-externalpackages/petsc/src
-externalpackages/triangle/*.zip
-externalpackages/triangle/install
-externalpackages/valgrind/install
-externalpackages/valgrind/src
+externalpackages/*/build
+externalpackages/*/compil.log
+externalpackages/*/install
+externalpackages/*/src
+externalpackages/*/*.zip
 externalpackages/*/*.gz
-externalpackages/adolc/src/
-externalpackages/gsl/install/
-externalpackages/gsl/src/
-externalpackages/m1qn3/install/
-externalpackages/petsc/install/
-externalpackages/proj/install/
-externalpackages/proj/src/
-externalpackages/triangle/src/
+externalpackages/*/*.tgz
+externalpackages/chaco/chaco_guide.pdf
+
+# Jenkins #
+#==========
+.PREV_COMMIT
+nightlylog
 
 # Nightly runs #
 #===============

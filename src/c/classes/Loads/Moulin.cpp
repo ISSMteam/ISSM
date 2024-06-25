@@ -502,7 +502,6 @@ ElementVector* Moulin::CreatePVectorHydrologyDCEfficient(void){/*{{{*/
 	}
 	else pe->values[0]=0.0;
 
-
 	//Test only input is sed
 	/* pe->values[0]=0.0; */
 
