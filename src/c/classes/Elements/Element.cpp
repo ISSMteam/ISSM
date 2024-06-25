@@ -183,7 +183,7 @@ void       Element::ArmaProcess(bool isstepforarma,int arorder,int maorder,int n
    else noiseterm = 0.0;
    this->inputs->GetArray(arenum_type,this->lid,&valuesautoregression,&M);
    this->inputs->GetArray(maenum_type,this->lid,&valuesmovingaverage,&M);
-	
+
 	/*If not ARMA model timestep: take the old values of variable*/
    if(isstepforarma==false){
       for(int i=0;i<numvertices;i++) varlist[i]=valuesautoregression[i];
@@ -201,7 +201,7 @@ void       Element::ArmaProcess(bool isstepforarma,int arorder,int maorder,int n
 
 			/*Stochastic variable value*/
          varlist[v] = sumpoly[0]+autoregressionterm+movingaverageterm+noiseterm;
-      
+
 			/*Impose zero-bound*/
 			if(outenum_type == ThermalForcingEnum || outenum_type == FrontalForcingsSubglacialDischargeEnum) varlist[v] = max(varlist[v],0.0);
 
@@ -323,7 +323,6 @@ void       Element::CalvingRateToVector(){/*{{{*/
          calvingratey[iv] = c*dphidy/dphi;
 		}
 	}
-
 
 	/*Add to inputs*/
 	this->AddInput(CalvingratexEnum,&calvingratex[0],P1DGEnum);
@@ -596,17 +595,12 @@ void       Element::ComputeStrainRate(){/*{{{*/
 /*}}}*/
 void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nodes_list,int numnodes,int* cs_array){/*{{{*/
 
-	int         i,counter;
-	int         numdofs   = 0;
-	IssmDouble  norm;
-	IssmDouble *transform = NULL;
-	IssmDouble  coord_system[3][3];
-
 	/*Some checks in debugging mode*/
 	_assert_(numnodes && nodes_list);
 
 	/*Get total number of dofs*/
-	for(i=0;i<numnodes;i++){
+	int numdofs = 0;
+	for(int i=0;i<numnodes;i++){
 		switch(cs_array[i]){
 			case PressureEnum: numdofs+=1; break;
 			case XYEnum:       numdofs+=2; break;
@@ -616,8 +610,8 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 	}
 
 	/*Allocate and initialize transform matrix*/
-	transform=xNew<IssmDouble>(numdofs*numdofs);
-	for(i=0;i<numdofs*numdofs;i++) transform[i]=0.0;
+	IssmDouble* transform=xNew<IssmDouble>(numdofs*numdofs);
+	for(int i=0;i<numdofs*numdofs;i++) transform[i]=0.0;
 
 	/*Create transform matrix for all nodes (x,y for 2d and x,y,z for 3d). It is a block matrix
 	 *for 3 nodes:
@@ -628,8 +622,9 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 	 *
 	 * Where T1 is the transform matrix for node 1. It is a simple copy of the coordinate system
 	 * associated to this node*/
-	counter=0;
-	for(i=0;i<numnodes;i++){
+	IssmDouble  coord_system[3][3];
+	int         counter=0;
+	for(int i=0;i<numnodes;i++){
 		nodes_list[i]->GetCoordinateSystem(&coord_system[0][0]);
 		switch(cs_array[i]){
 			case PressureEnum:
@@ -638,13 +633,15 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 				counter+=1;
 				break;
 			case XYEnum:
+				  {
 				/*We remove the z component, we need to renormalize x and y: x=[x1 x2 0] y=[-x2 x1 0]*/
-				norm = sqrt( coord_system[0][0]*coord_system[0][0] + coord_system[1][0]*coord_system[1][0]); _assert_(norm>1.e-4);
+				IssmDouble norm = sqrt( coord_system[0][0]*coord_system[0][0] + coord_system[1][0]*coord_system[1][0]); _assert_(norm>1.e-4);
 				transform[(numdofs)*(counter+0) + counter+0] =   coord_system[0][0]/norm;
 				transform[(numdofs)*(counter+0) + counter+1] = - coord_system[1][0]/norm;
 				transform[(numdofs)*(counter+1) + counter+0] =   coord_system[1][0]/norm;
 				transform[(numdofs)*(counter+1) + counter+1] =   coord_system[0][0]/norm;
 				counter+=2;
+				  }
 				break;
 			case XYZEnum:
 				/*The 3 coordinates are changed (x,y,z)*/
@@ -2519,7 +2516,7 @@ void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, I
 		lapserates_b[ii] = lapserates[basinid*numelevbins*12+mindex*numelevbins+ii];
 		if(lapserates_b[ii]!=0) isadjustsmb=true;
 	}
-	
+
 	/*Adjust SMB if any lapse rate value is non-zero*/
 	if(isadjustsmb){
 
@@ -2812,7 +2809,7 @@ void       Element::MismipFloatingiceMeltingRate(){/*{{{*/
 
 }/*}}}*/
 void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{{{*/
-	
+
 	/*Variable declaration*/
 	bool ratevariable;
    const int numvertices = this->GetNumberOfVertices();
@@ -2839,7 +2836,7 @@ void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{
          ratevariable   = false;
 			break;
 	}
-	
+
 	/*Evaluate the month index now and at (now-timestepjump)*/
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&time,TimeEnum);
@@ -2894,7 +2891,7 @@ void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{
 	xDelete<IssmDouble>(varlistinput);
 }/*}}}*/
 void       Element::MonthlyPiecewiseLinearEffectBasin(int nummonthbreaks,IssmDouble* monthlyintercepts,IssmDouble* monthlytrends,IssmDouble* monthlydatebreaks,int enum_type){/*{{{*/
-	
+
 	/*Variable declaration*/
    const int numvertices = this->GetNumberOfVertices();
 	int basinid,mindex,basinenum_type,varenum_type,indperiod;
@@ -2913,7 +2910,7 @@ void       Element::MonthlyPiecewiseLinearEffectBasin(int nummonthbreaks,IssmDou
          varenum_type   = ThermalForcingEnum;
          break;
 	}
-	
+
 	/*Evaluate the month index*/
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&time,TimeEnum);
@@ -3849,7 +3846,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
         IssmDouble* albedo=xNew<IssmDouble>(NUM_VERTICES);
         IssmDouble* summeralbedo=xNew<IssmDouble>(NUM_VERTICES); 
         IssmDouble* accu=xNew<IssmDouble>(NUM_VERTICES);
-        
+
         // climate inputs
         IssmDouble* temperature=xNew<IssmDouble>(NUM_VERTICES_DAYS_PER_YEAR);
         IssmDouble* precip=xNew<IssmDouble>(NUM_VERTICES_DAYS_PER_YEAR);
@@ -4017,11 +4014,11 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                         IssmDouble Eps=0.95;   //              thermal emissivity
                         IssmDouble Sigma=5.67E-08;// Wm^-2K^-4    Stefan Boltzmann constant
                         IssmDouble Gamma=180.;    // m^-1         wind speed attenuation        234
-                
+
                         // Calculate effective albedo
                         IssmDouble Alphaeff,Alphaeff_cleanice;
                         IssmDouble mean_ela,delta=2000;
-                        
+
                         // compute cleanice albedo based on previous SMB distribution
                         //if(step==1){
                                 mean_ela=3000; //FIXME
@@ -4031,7 +4028,6 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                         Alphaeff_cleanice=icealbedo+(snowalbedo-icealbedo)*(1+tanh(PI*(surface[iv]-mean_ela)/delta))/2;
                         Alphaeff=Alphaeff_cleanice; // will be updated below
 
-                        
                         accu[iv]=0.;
                         for (int iday=0;iday<365;iday++) {
 
@@ -4075,7 +4071,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
                                         IssmDouble sn_prev;
                                         sn_prev=snowheight[iv];
                                         snowheight[iv]=sn_prev+(-CleanIceDailyMelt*yts/365);//P
-                                        
+
                                         if(snowheight[iv]<=0) snowheight[iv]=0.;
                                         if(snowheight[iv]<=0.0001){
                                                 p=debris_here*PhiD/(2*0.2*0.01); //Eq. 51 from Evatt et al 2015 without source term g*t
@@ -6002,10 +5998,20 @@ void       Element::TransformInvStiffnessMatrixCoord(ElementMatrix* Ke,int trans
 
 	/*All nodes have the same Coordinate System*/
 	int numnodes  = this->GetNumberOfNodes();
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
+
+	/*Rotate stiffness*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
-
-	/*Call core*/
 	TransformInvStiffnessMatrixCoord(Ke,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/
@@ -6100,10 +6106,20 @@ void       Element::TransformSolutionCoord(IssmDouble* values,int transformenum)
 
 	/*All nodes have the same Coordinate System*/
 	int  numnodes = this->GetNumberOfNodes();
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
+
+	/*Rotate solution*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
-
-	/*Call core*/
 	this->TransformSolutionCoord(values,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/
@@ -6113,6 +6129,16 @@ void       Element::TransformSolutionCoord(IssmDouble* values,int* transformenum
 	this->TransformSolutionCoord(values,this->nodes,this->GetNumberOfNodes(),transformenum_list);
 }/*}}}*/
 void       Element::TransformSolutionCoord(IssmDouble* values,int numnodes,int transformenum){/*{{{*/
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
 
 	/*All nodes have the same Coordinate System*/
 	int* cs_array = xNew<int>(numnodes);
@@ -6129,6 +6155,7 @@ void       Element::TransformSolutionCoord(IssmDouble* solution,int numnodes,int
 }/*}}}*/
 void       Element::TransformSolutionCoord(IssmDouble* values,Node** nodes_list,int numnodes,int transformenum){/*{{{*/
 	/*NOT NEEDED*/
+	_error_("NOT NEEDED??");
 	/*All nodes have the same Coordinate System*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
@@ -6158,7 +6185,7 @@ void       Element::TransformSolutionCoord(IssmDouble* solution,Node** nodes_lis
 
 	/*Copy current solution vector*/
 	values=xNew<IssmDouble>(numdofs);
-	for(i=0;i<numdofs;i++) values[i]=solution[i];
+	for(int i=0;i<numdofs;i++) values[i]=solution[i];
 
 	/*Get Coordinate Systems transform matrix*/
 	CoordinateSystemTransform(&transform,nodes_list,numnodes,cs_array);
@@ -6178,6 +6205,16 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,int transfor
 	int  numnodes = this->GetNumberOfNodes();
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
 
 	/*Call core*/
 	this->TransformStiffnessMatrixCoord(Ke,this->nodes,numnodes,cs_array);

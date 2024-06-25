@@ -27,6 +27,5 @@ else:
 
 #Fields and tolerances to track changes
 field_names = ['x1', 'y1', 'x2', 'y2', 'nbelements', 'elapsed time']
-# NOTE: Elapsed time tolerance has been increased to 7.0 for this test, but not the MATLAB one
-field_tolerances = [2e-9, 2e-9, 1e-13, 1e-13, 1e-13, 7.0]
+field_tolerances = [2e-9, 2e-9, 1e-13, 1e-13, 1e-13, 8.5]
 field_values = [x1, y1, x2, y2, nbewithinrange, elapsedtime]

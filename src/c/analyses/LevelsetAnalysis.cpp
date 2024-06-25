@@ -12,7 +12,7 @@
 #include <math.h>
 
 void LevelsetAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
-	
+
 	/*intermediary: */
 	int finiteelement;
 	int         code,vector_layout;
@@ -206,7 +206,7 @@ void LevelsetAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,
          _assert_(M>=1 && N>=1);
          parameters->AddObject(new DoubleVecParam(CalvingADStressThresholdFloatingiceEnum,transparam,M));
          xDelete<IssmDouble>(transparam);
-         
+
 			break;
 		case CalvingMinthicknessEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.calving.min_thickness",CalvingMinthicknessEnum));
@@ -544,7 +544,6 @@ ElementMatrix* LevelsetAnalysis::CreateKMatrix(Element* element){/*{{{*/
 				IssmDouble  tau=xi*h/(2*vel);
 				Input* levelset_input = NULL;
 
-
 				IssmDouble kappa;
 				IssmDouble p=4, q=4;
 				IssmDouble phi[3];
@@ -560,7 +559,7 @@ ElementMatrix* LevelsetAnalysis::CreateKMatrix(Element* element){/*{{{*/
 					dphidy += phi[i]*dbasis[1*numnodes+i];
 				}
 				nphi = sqrt(dphidx*dphidx+dphidy*dphidy);
-			
+
 				if (nphi >= 1) {
 					kappa = 1 - 1.0/nphi;
 				}
@@ -872,7 +871,6 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
       Vector<IssmDouble>* vec_constraint_nodes = vec_constraint_nodes=new Vector<IssmDouble>(localmasters,numnodes);
 
 		IssmDouble crevasse_threshold = femmodel->parameters->FindParam(CalvingCrevasseThresholdEnum);
-
 
 		for(Object* & object : femmodel->elements->objects){
 			Element* element   = xDynamicCast<Element*>(object);

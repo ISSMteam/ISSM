@@ -47,6 +47,7 @@ Node::Node(int node_id,int node_sid,int io_index,bool node_clone,IoModel* iomode
 	this->freeze        = false;
 
 	/*Initialize coord_system: Identity matrix by default*/
+	this->isrotated = false;
 	for(int k=0;k<3;k++) for(int l=0;l<3;l++) this->coord_system[k][l]=0.0;
 	for(int k=0;k<3;k++) this->coord_system[k][k]=1.0;
 
@@ -104,7 +105,7 @@ Node::Node(int node_id,int node_sid,int io_index,bool node_clone,IoModel* iomode
 
 		/*Coordinate system provided, convert to coord_system matrix*/
 		_assert_(iomodel->Data("md.stressbalance.referential")); 
-		XZvectorsToCoordinateSystem(&this->coord_system[0][0],&iomodel->Data("md.stressbalance.referential")[io_index*6]);
+		this->isrotated = XZvectorsToCoordinateSystem(&this->coord_system[0][0],&iomodel->Data("md.stressbalance.referential")[io_index*6]);
 		_assert_(sqrt( coord_system[0][0]*coord_system[0][0] + coord_system[1][0]*coord_system[1][0]) >1.e-4);
 
 		if(iomodel->domaintype!=Domain2DhorizontalEnum && iomodel->domaintype!=Domain3DsurfaceEnum){

@@ -17,7 +17,6 @@ void SetActiveNodesLSMx(FemModel* femmodel,bool ishydrology,bool isdebris){/*{{{
 	if(ishydrology) nodeactivationmask = HydrologyMaskNodeActivationEnum;
 	if(isdebris) nodeactivationmask = DebrisMaskNodeActivationEnum;
 
-
 	for(Object* & object : femmodel->elements->objects){
 		Element    *element  = xDynamicCast<Element*>(object);
 		int         numnodes = element->GetNumberOfNodes();

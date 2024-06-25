@@ -27,21 +27,15 @@ patch src/blas/ddot.f patch/ddot.f.patch
 
 # Compile and install
 if which mpifort 2>/dev/null; then
-export FC="mpifort"
+	export FC="mpifort"
 else
 	if which ifort 2>/dev/null; then
 		export FC="ifort"
-		export FFLAGS="-traceback -check all -fPIC" # -O2 is default
 	else
 		export FC="gfortran"
-		if [ `uname` == "Darwin" ]; then
-			FFLAGS="-arch $(uname -m)"
-		else
-			FFLAGS=""
-		fi
-		export FFLAGS
 	fi
 fi
+export FFLAGS="-fPIC" # -O2 is default
 
 cd src/src
 cp ../../configs/makefile .

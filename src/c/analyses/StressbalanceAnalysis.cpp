@@ -828,6 +828,7 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 				}
 				break;
 			case LinearFloatingMeltRateEnum:
+				iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.perturbation_melting_rate",BasalforcingsPerturbationMeltingRateEnum,0.);
 				break;
 			case MismipFloatingMeltRateEnum:
 				iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.meltrate_factor",BasalforcingsMeltrateFactorEnum);
@@ -1254,6 +1255,7 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixSSA(Element* element){
 		eps1[0]=2*epsilon[0]+epsilon[1];   eps2[0]=epsilon[2];
 		eps1[1]=epsilon[2];                eps2[1]=epsilon[0]+2*epsilon[1];
 
+		IssmDouble factor = gauss->weight*Jdet*2.*mu_prime*thickness;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
 				eps1dotdphii=eps1[0]*dbasis[0*numnodes+i]+eps1[1]*dbasis[1*numnodes+i];
@@ -1261,10 +1263,10 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixSSA(Element* element){
 				eps2dotdphii=eps2[0]*dbasis[0*numnodes+i]+eps2[1]*dbasis[1*numnodes+i];
 				eps2dotdphij=eps2[0]*dbasis[0*numnodes+j]+eps2[1]*dbasis[1*numnodes+j];
 
-				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=gauss->weight*Jdet*2.*mu_prime*thickness*eps1dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=gauss->weight*Jdet*2.*mu_prime*thickness*eps2dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=gauss->weight*Jdet*2.*mu_prime*thickness*eps1dotdphij*eps2dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=gauss->weight*Jdet*2.*mu_prime*thickness*eps2dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=factor*eps1dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=factor*eps2dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=factor*eps1dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=factor*eps2dotdphij*eps2dotdphii;
 			}
 		}
 	}
@@ -1389,18 +1391,19 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAFriction(Element* element)
 		element->NodalFunctions(basis,gauss);
 		element->JacobianDeterminant(&Jdet, xyz_list,gauss);
 
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
 		if(dim==2){
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[2*i*2*numnodes+2*j]       += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
-					Ke->values[(2*i+1)*2*numnodes+2*j+1] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
+					Ke->values[2*i*2*numnodes+2*j]       += factor*basis[i]*basis[j];
+					Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*basis[i]*basis[j];
 				}
 			}
 		}
 		else{
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
+					Ke->values[i*numnodes+j] += factor*basis[i]*basis[j];
 				}
 			}
 		}
@@ -1462,7 +1465,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSALateralFriction(Element* e
 		 alpha2=0.;
 		else
 		 alpha2=2.e+12;
-		for(int i=0;i<dim;i++) D[i*dim+i]=alpha2*gauss->weight*Jdet;
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
+		for(int i=0;i<dim;i++) D[i*dim+i]=factor;
 
 		TripleMultiply(B,dim,numdof,1,
 					D,dim,dim,0,
@@ -1527,19 +1531,20 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 		thickness_input->GetInputValue(&thickness, gauss);
 		element->material->ViscositySSA(&viscosity,dim,xyz_list,gauss,vx_input,vy_input);
 
+		IssmDouble factor = gauss->weight*Jdet*viscosity*thickness;
 		if(dim==2){
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[2*i*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[2*i*2*numnodes+2*j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 								);
-					Ke->values[2*i*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[2*i*2*numnodes+2*j+1] += factor*(
 								2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[(2*i+1)*2*numnodes+2*j] += factor*(
 								2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*(
 								dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + 4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 								);
 				}
@@ -1548,7 +1553,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 		else{
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += gauss->weight*Jdet*viscosity*thickness*(
+					Ke->values[i*numnodes+j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 								);
 				}
@@ -1671,9 +1676,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 		}
 		#endif
 
+		IssmDouble factor = rhog*thickness*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
-			pe->values[i*dim+0]+=-rhog*thickness*slope[0]*Jdet*gauss->weight*basis[i];
-			if(dim==2) pe->values[i*dim+1]+=-rhog*thickness*slope[1]*Jdet*gauss->weight*basis[i];
+			pe->values[i*dim+0]+=-factor*slope[0]*basis[i];
+			if(dim==2) pe->values[i*dim+1]+=-factor*slope[1]*basis[i];
 		}
 	}
 
@@ -1747,9 +1753,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 		ice_pressure   = 1.0/2.0*gravity*rho_ice*thickness*thickness;
 		pressure = ice_pressure + water_pressure;
 
+		IssmDouble factor = Jdet*gauss->weight*pressure;
 		for(int i=0;i<numnodes;i++){
-			pe->values[dim*i+0]+= pressure*Jdet*gauss->weight*normal[0]*basis[i];
-			if(dim==2) pe->values[dim*i+1]+= pressure*Jdet*gauss->weight*normal[1]*basis[i];
+			pe->values[dim*i+0]+= factor*normal[0]*basis[i];
+			if(dim==2) pe->values[dim*i+1]+= factor*normal[1]*basis[i];
 		}
 	}
 
@@ -2337,18 +2344,19 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixL1L2Viscous(Element* element)
 
 		element->material->ViscosityL1L2(&viscosity,xyz_list,gauss,vx_input,vy_input,surface_input);
 
+		IssmDouble factor=gauss->weight*Jdet*viscosity;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[2*i*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*(
+				Ke->values[2*i*2*numnodes+2*j] += factor*(
 							4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							);
-				Ke->values[2*i*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*(
+				Ke->values[2*i*2*numnodes+2*j+1] += factor*(
 							2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 							);
-				Ke->values[(2*i+1)*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*(
+				Ke->values[(2*i+1)*2*numnodes+2*j] += factor*(
 							2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 							);
-				Ke->values[(2*i+1)*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*(
+				Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*(
 							dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + 4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							);
 			}
@@ -2427,9 +2435,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorL1L2DrivingStress(Element* el
 		thickness_input->GetInputValue(&thickness,gauss);
 		surface_input->GetInputDerivativeValue(&slope[0],xyz_list,gauss);
 
+		IssmDouble factor = rhog*thickness*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
-			pe->values[i*2+0]+=-rhog*thickness*slope[0]*Jdet*gauss->weight*basis[i];
-			pe->values[i*2+1]+=-rhog*thickness*slope[1]*Jdet*gauss->weight*basis[i];
+			pe->values[i*2+0]+=-factor*slope[0]*basis[i];
+			pe->values[i*2+1]+=-factor*slope[1]*basis[i];
 		}
 	}
 
@@ -2487,9 +2496,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorL1L2Front(Element* element){/
 		ice_pressure   = 1.0/2.0*gravity*rho_ice*thickness*thickness;
 		pressure = ice_pressure + water_pressure;
 
+		IssmDouble factor = pressure*Jdet*gauss->weight;
 		for (int i=0;i<numnodes;i++){
-			pe->values[2*i+0]+= pressure*Jdet*gauss->weight*normal[0]*basis[i];
-			pe->values[2*i+1]+= pressure*Jdet*gauss->weight*normal[1]*basis[i];
+			pe->values[2*i+0]+= factor*normal[0]*basis[i];
+			pe->values[2*i+1]+= factor*normal[1]*basis[i];
 		}
 	}
 
@@ -2705,10 +2715,11 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixMOLHOFriction(Element* elemen
 		element->NodalFunctions(basis,gauss);
 		element->JacobianDeterminant(&Jdet, xyz_list,gauss);
 
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[(4*i+0)*2*2*numnodes+4*j+0] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
-				Ke->values[(4*i+2)*2*2*numnodes+4*j+2] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
+				Ke->values[(4*i+0)*2*2*numnodes+4*j+0] += factor*basis[i]*basis[j];
+				Ke->values[(4*i+2)*2*2*numnodes+4*j+2] += factor*basis[i]*basis[j];
 			}
 		}
 	}
@@ -2761,60 +2772,61 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixMOLHOViscous(Element* element
 		n_input->GetInputValue(&n,gauss);
 		element->material->ViscosityMOLHO(&viscosity[0],dim,xyz_list,gauss,vxbase_input,vybase_input,vxshear_input,vyshear_input,thickness_input,n_input);
 
+		IssmDouble factor = gauss->weight*Jdet*thickness;
 		for(int i=0;i<numnodes;i++){//shape functions on tria element
 			for(int j=0;j<numnodes;j++){
-				Ke->values[(4*i+0)*2*2*numnodes+4*j+0] += gauss->weight*Jdet*viscosity[0]*thickness*(
+				Ke->values[(4*i+0)*2*2*numnodes+4*j+0] += factor*viscosity[0]*(
 							4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							);//K11
-				Ke->values[(4*i+0)*2*2*numnodes+4*j+1] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+0)*2*2*numnodes+4*j+1] += factor*viscosity[1]*(
 							4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							)*(n+1)/(n+2);//K12
-				Ke->values[(4*i+0)*2*2*numnodes+4*j+2] += gauss->weight*Jdet*viscosity[0]*thickness*(
+				Ke->values[(4*i+0)*2*2*numnodes+4*j+2] += factor*viscosity[0]*(
 							2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 							);//K13
-				Ke->values[ (4*i+0)*2*2*numnodes+4*j+3] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[ (4*i+0)*2*2*numnodes+4*j+3] += factor*viscosity[1]*(
                      2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
                      )*(n+1)/(n+2);//K14
 
-				Ke->values[(4*i+1)*2*2*numnodes+4*j+0] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+1)*2*2*numnodes+4*j+0] += factor*viscosity[1]*(
 							4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							)*(n+1)/(n+2);//K21
-				Ke->values[(4*i+1)*2*2*numnodes+4*j+1] += gauss->weight*Jdet*viscosity[2]*thickness*(
+				Ke->values[(4*i+1)*2*2*numnodes+4*j+1] += factor*viscosity[2]*(
 							4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 							)*2*pow(n+1,2)/((2*n+3)*(n+2)) 
 							+ 
 							gauss->weight*Jdet*viscosity[3]*basis[j]*basis[i]*pow(n+1,2)/(thickness*(2*n+1))
 							;//K22
-				Ke->values[(4*i+1)*2*2*numnodes+4*j+2] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+1)*2*2*numnodes+4*j+2] += factor*viscosity[1]*(
 							2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 							)*(n+1)/(n+2);//K23
-				Ke->values[(4*i+1)*2*2*numnodes+4*j+3] += gauss->weight*Jdet*viscosity[2]*thickness*(
+				Ke->values[(4*i+1)*2*2*numnodes+4*j+3] += factor*viscosity[2]*(
 							2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 							)*2*pow(n+1,2)/((2*n+3)*(n+2));//K24
 
-				Ke->values[(4*i+2)*2*2*numnodes+4*j+0] += gauss->weight*Jdet*viscosity[0]*thickness*(
+				Ke->values[(4*i+2)*2*2*numnodes+4*j+0] += factor*viscosity[0]*(
 							2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 							);//K31
-				Ke->values[(4*i+2)*2*2*numnodes+4*j+1] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+2)*2*2*numnodes+4*j+1] += factor*viscosity[1]*(
 							2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 							)*(n+1)/(n+2);//K32
-				Ke->values[(4*i+2)*2*2*numnodes+4*j+2] += gauss->weight*Jdet*viscosity[0]*thickness*(
+				Ke->values[(4*i+2)*2*2*numnodes+4*j+2] += factor*viscosity[0]*(
 							4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 							);//K33
-				Ke->values[(4*i+2)*2*2*numnodes+4*j+3] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+2)*2*2*numnodes+4*j+3] += factor*viscosity[1]*(
 							4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 							)*(n+1)/(n+2);//K34
 
-				Ke->values[(4*i+3)*2*2*numnodes+4*j+0] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+3)*2*2*numnodes+4*j+0] += factor*viscosity[1]*(
                      2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
                      )*(n+1)/(n+2);//K41
-				Ke->values[(4*i+3)*2*2*numnodes+4*j+1] += gauss->weight*Jdet*viscosity[2]*thickness*(
+				Ke->values[(4*i+3)*2*2*numnodes+4*j+1] += factor*viscosity[2]*(
                      2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
                      )*2*pow(n+1,2)/((2*n+3)*(n+2));//K42
-				Ke->values[(4*i+3)*2*2*numnodes+4*j+2] += gauss->weight*Jdet*viscosity[1]*thickness*(
+				Ke->values[(4*i+3)*2*2*numnodes+4*j+2] += factor*viscosity[1]*(
 							4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 							)*(n+1)/(n+2);//K43
-				Ke->values[(4*i+3)*2*2*numnodes+4*j+3] += gauss->weight*Jdet*viscosity[2]*thickness*(
+				Ke->values[(4*i+3)*2*2*numnodes+4*j+3] += factor*viscosity[2]*(
 							4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[0*numnodes+j]*dbasis[0*numnodes+i]
 							)*2*pow(n+1,2)/((2*n+3)*(n+2))
 							+ 
@@ -2897,11 +2909,12 @@ ElementVector* StressbalanceAnalysis::CreatePVectorMOLHODrivingStress(Element* e
 		surface_input->GetInputDerivativeValue(&slope[0],xyz_list,gauss);
 		n_input->GetInputValue(&n,gauss);
 
+		IssmDouble factor = rhog*thickness*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){// per node: vx (basal vx), vshx, vy (basal vy), vshy
-			pe->values[i*4+0]+=-rhog*thickness*slope[0]*Jdet*gauss->weight*basis[i]; //F1
-			pe->values[i*4+1]+=-rhog*thickness*slope[0]*Jdet*gauss->weight*basis[i]*(n+1)/(n+2); //F2
-			pe->values[i*4+2]+=-rhog*thickness*slope[1]*Jdet*gauss->weight*basis[i]; //F3
-			pe->values[i*4+3]+=-rhog*thickness*slope[1]*Jdet*gauss->weight*basis[i]*(n+1)/(n+2); //F4
+			pe->values[i*4+0]+=-factor*slope[0]*basis[i]; //F1
+			pe->values[i*4+1]+=-factor*slope[0]*basis[i]*(n+1)/(n+2); //F2
+			pe->values[i*4+2]+=-factor*slope[1]*basis[i]; //F3
+			pe->values[i*4+3]+=-factor*slope[1]*basis[i]*(n+1)/(n+2); //F4
 		}
 	}
 
@@ -2970,11 +2983,13 @@ ElementVector* StressbalanceAnalysis::CreatePVectorMOLHOFront(Element* element){
 			pressure_sh = ice_pressure_sh;
 		}
 
+		IssmDouble factor = Jdet*gauss->weight*pressure;
+		IssmDouble factor_sh = Jdet*gauss->weight*pressure_sh;
 		for (int i=0;i<numnodes;i++){
-			pe->values[i*4+0]+= pressure*Jdet*gauss->weight*normal[0]*basis[i]; // F1
-			pe->values[i*4+1]+= pressure_sh*Jdet*gauss->weight*normal[0]*basis[i]; // F2
-			pe->values[i*4+2]+= pressure*Jdet*gauss->weight*normal[1]*basis[i]; // F3
-			pe->values[i*4+3]+= pressure_sh*Jdet*gauss->weight*normal[1]*basis[i]; // F4
+			pe->values[i*4+0]+= factor*normal[0]*basis[i]; // F1
+			pe->values[i*4+1]+= factor_sh*normal[0]*basis[i]; // F2
+			pe->values[i*4+2]+= factor*normal[1]*basis[i]; // F3
+			pe->values[i*4+3]+= factor_sh*normal[1]*basis[i]; // F4
 		}
 	}
 
@@ -3230,6 +3245,7 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixHO(Element* element){/
 		eps1[1]=epsilon[2];                eps2[1]=epsilon[0]+2*epsilon[1];
 		eps1[2]=epsilon[3];                eps2[2]=epsilon[4];
 
+		IssmDouble factor = gauss->weight*Jdet*2.*mu_prime;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
 				eps1dotdphii=eps1[0]*dbasis[0*numnodes+i]+eps1[1]*dbasis[1*numnodes+i]+eps1[2]*dbasis[2*numnodes+i];
@@ -3237,10 +3253,10 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixHO(Element* element){/
 				eps2dotdphii=eps2[0]*dbasis[0*numnodes+i]+eps2[1]*dbasis[1*numnodes+i]+eps2[2]*dbasis[2*numnodes+i];
 				eps2dotdphij=eps2[0]*dbasis[0*numnodes+j]+eps2[1]*dbasis[1*numnodes+j]+eps2[2]*dbasis[2*numnodes+j];
 
-				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=gauss->weight*Jdet*2.*mu_prime*eps1dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=gauss->weight*Jdet*2.*mu_prime*eps2dotdphij*eps1dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=gauss->weight*Jdet*2.*mu_prime*eps1dotdphij*eps2dotdphii;
-				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=gauss->weight*Jdet*2.*mu_prime*eps2dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+0]+=factor*eps1dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+0)+2*j+1]+=factor*eps2dotdphij*eps1dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+0]+=factor*eps1dotdphij*eps2dotdphii;
+				Ke->values[2*numnodes*(2*i+1)+2*j+1]+=factor*eps2dotdphij*eps2dotdphii;
 			}
 		}
 	}
@@ -3337,18 +3353,19 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOFriction(Element* element){
 		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
 		element->NodalFunctions(basis,gauss);
 
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
 		if(dim==3){
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[2*i*2*numnodes+2*j]       += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
-					Ke->values[(2*i+1)*2*numnodes+2*j+1] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
+					Ke->values[2*i*2*numnodes+2*j]       += factor*basis[i]*basis[j];
+					Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*basis[i]*basis[j];
 				}
 			}
 		}
 		else{
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += alpha2*gauss->weight*Jdet*basis[i]*basis[j];
+					Ke->values[i*numnodes+j] += factor*basis[i]*basis[j];
 				}
 			}
 		}
@@ -3401,19 +3418,20 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOViscous(Element* element){/
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 		element->material->ViscosityHO(&viscosity,dim,xyz_list,gauss,vx_input,vy_input);
 
+		IssmDouble factor =  gauss->weight*Jdet*viscosity;
 		if(dim==3){
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[2*i*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*(
+					Ke->values[2*i*2*numnodes+2*j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[2*numnodes+j]*dbasis[2*numnodes+i]
 								);
-					Ke->values[2*i*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*(
+					Ke->values[2*i*2*numnodes+2*j+1] += factor*(
 								2.*dbasis[1*numnodes+j]*dbasis[0*numnodes+i] + dbasis[0*numnodes+j]*dbasis[1*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j] += gauss->weight*Jdet*viscosity*(
+					Ke->values[(2*i+1)*2*numnodes+2*j] += factor*(
 								2.*dbasis[0*numnodes+j]*dbasis[1*numnodes+i] + dbasis[1*numnodes+j]*dbasis[0*numnodes+i]
 								);
-					Ke->values[(2*i+1)*2*numnodes+2*j+1] += gauss->weight*Jdet*viscosity*(
+					Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor*(
 								dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + 4.*dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[2*numnodes+j]*dbasis[2*numnodes+i]
 								);
 				}
@@ -3422,7 +3440,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOViscous(Element* element){/
 		else{
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += gauss->weight*Jdet*viscosity*(
+					Ke->values[i*numnodes+j] += factor*(
 								4.*dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]
 								);
 				}
@@ -3479,9 +3497,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHO(Element* element){/*{{{*/
 		forcex=fx(x_coord,y_coord,z_coord,FSANALYTICAL);
 		forcey=fy(x_coord,y_coord,z_coord,FSANALYTICAL);
 
+		IssmDouble Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
-			pe->values[i*(dim-1)+0]+=forcex*Jdet*gauss->weight*basis[i];
-			pe->values[i*(dim-1)+1]+=forcey*Jdet*gauss->weight*basis[i];
+			pe->values[i*(dim-1)+0]+=forcex*factor*basis[i];
+			pe->values[i*(dim-1)+1]+=forcey*factor*basis[i];
 		}
 	}
 
@@ -3544,9 +3563,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHODrivingStress(Element* elem
 		element->NodalFunctions(basis, gauss);
 		surface_input->GetInputDerivativeValue(&slope[0],xyz_list,gauss);
 
+		IssmDouble factor = -rhog*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
-			pe->values[i*(dim-1)+0]+=-rhog*slope[0]*Jdet*gauss->weight*basis[i];
-			if(dim==3) pe->values[i*(dim-1)+1]+=-rhog*slope[1]*Jdet*gauss->weight*basis[i];
+			pe->values[i*(dim-1)+0]+=factor*slope[0]*basis[i];
+			if(dim==3) pe->values[i*(dim-1)+1]+=factor*slope[1]*basis[i];
 		}
 	}
 
@@ -3616,9 +3636,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHOFront(Element* element){/*{
 		ice_pressure   = rho_ice*gravity*(surface-z);
 		pressure       = ice_pressure + water_pressure;
 
+		IssmDouble factor = pressure*Jdet*gauss->weight;
 		for (int i=0;i<numnodes;i++){
-			pe->values[(dim-1)*i+0]+= pressure*Jdet*gauss->weight*normal[0]*basis[i];
-			if(dim==3) pe->values[(dim-1)*i+1]+= pressure*Jdet*gauss->weight*normal[1]*basis[i];
+			pe->values[(dim-1)*i+0]+= factor*normal[0]*basis[i];
+			if(dim==3) pe->values[(dim-1)*i+1]+= factor*normal[1]*basis[i];
 		}
 	}
 
@@ -3925,6 +3946,7 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixFS(Element* element){/
 		eps1[2]=epsilon[3];   eps2[2]=epsilon[4];   eps3[2]= -epsilon[0] -epsilon[1];
 		element->material->ViscosityFSDerivativeEpsSquare(&mu_prime,&epsilon[0],gauss);
 
+		IssmDouble factor = gauss->weight*Jdet*2*mu_prime;
 		for(i=0;i<vnumnodes;i++){
 			for(j=0;j<vnumnodes;j++){
 				eps1dotdphii=eps1[0]*dbasis[0*vnumnodes+i]+eps1[1]*dbasis[1*vnumnodes+i]+eps1[2]*dbasis[2*vnumnodes+i];
@@ -3934,17 +3956,17 @@ ElementMatrix* StressbalanceAnalysis::CreateJacobianMatrixFS(Element* element){/
 				eps3dotdphii=eps3[0]*dbasis[0*vnumnodes+i]+eps3[1]*dbasis[1*vnumnodes+i]+eps3[2]*dbasis[2*vnumnodes+i];
 				eps3dotdphij=eps3[0]*dbasis[0*vnumnodes+j]+eps3[1]*dbasis[1*vnumnodes+j]+eps3[2]*dbasis[2*vnumnodes+j];
 
-				Ke->values[numdof*(3*i+0)+3*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps1dotdphii;
-				Ke->values[numdof*(3*i+0)+3*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps1dotdphii;
-				Ke->values[numdof*(3*i+0)+3*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps1dotdphii;
+				Ke->values[numdof*(3*i+0)+3*j+0]+=factor*eps1dotdphij*eps1dotdphii;
+				Ke->values[numdof*(3*i+0)+3*j+1]+=factor*eps2dotdphij*eps1dotdphii;
+				Ke->values[numdof*(3*i+0)+3*j+2]+=factor*eps3dotdphij*eps1dotdphii;
 
-				Ke->values[numdof*(3*i+1)+3*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps2dotdphii;
-				Ke->values[numdof*(3*i+1)+3*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps2dotdphii;
-				Ke->values[numdof*(3*i+1)+3*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps2dotdphii;
+				Ke->values[numdof*(3*i+1)+3*j+0]+=factor*eps1dotdphij*eps2dotdphii;
+				Ke->values[numdof*(3*i+1)+3*j+1]+=factor*eps2dotdphij*eps2dotdphii;
+				Ke->values[numdof*(3*i+1)+3*j+2]+=factor*eps3dotdphij*eps2dotdphii;
 
-				Ke->values[numdof*(3*i+2)+3*j+0]+=gauss->weight*Jdet*2*mu_prime*eps1dotdphij*eps3dotdphii;
-				Ke->values[numdof*(3*i+2)+3*j+1]+=gauss->weight*Jdet*2*mu_prime*eps2dotdphij*eps3dotdphii;
-				Ke->values[numdof*(3*i+2)+3*j+2]+=gauss->weight*Jdet*2*mu_prime*eps3dotdphij*eps3dotdphii;
+				Ke->values[numdof*(3*i+2)+3*j+0]+=factor*eps1dotdphij*eps3dotdphii;
+				Ke->values[numdof*(3*i+2)+3*j+1]+=factor*eps2dotdphij*eps3dotdphii;
+				Ke->values[numdof*(3*i+2)+3*j+2]+=factor*eps3dotdphij*eps3dotdphii;
 			}
 		}
 	}
@@ -4108,6 +4130,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscous(Element* element){/
 		element->NodalFunctionsPressure(pbasis,gauss);
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 
+		IssmDouble factor = gauss->weight*Jdet*viscosity;
+		IssmDouble factorrecond = gauss->weight*Jdet*FSreconditioning;
 		if(dim==2 || dim==3){
 			/*Stress balance*/
 			for(int i=0;i<vnumnodes;i++){
@@ -4115,15 +4139,15 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscous(Element* element){/
 					for (int p=0;p<dim;p++){
 						for (int q=0;q<dim;q++){
 							/* diagonal only */
-							Ke->values[(dim*i+p)*numdof+dim*j+p] += gauss->weight*Jdet*viscosity*(vdbasis[q*vnumnodes+j]*vdbasis[q*vnumnodes+i]);
+							Ke->values[(dim*i+p)*numdof+dim*j+p] += factor*(vdbasis[q*vnumnodes+j]*vdbasis[q*vnumnodes+i]);
 							/* All the entries */
-							Ke->values[(dim*i+p)*numdof+dim*j+q] += gauss->weight*Jdet*viscosity*(vdbasis[p*vnumnodes+j]*vdbasis[q*vnumnodes+i]);
+							Ke->values[(dim*i+p)*numdof+dim*j+q] += factor*(vdbasis[p*vnumnodes+j]*vdbasis[q*vnumnodes+i]);
 						}
 					}
 				}
 				for(int k=0;k<pnumnodes;k++){
 					for (int p=0;p<dim;p++){
-						Ke->values[(dim*i+p)*numdof+dim*vnumnodes+k] += gauss->weight*Jdet*FSreconditioning*(-pbasis[k]*vdbasis[p*vnumnodes+i]);
+						Ke->values[(dim*i+p)*numdof+dim*vnumnodes+k] += -factorrecond*pbasis[k]*vdbasis[p*vnumnodes+i];
 					}
 				}
 			}
@@ -4131,7 +4155,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscous(Element* element){/
 			for(int k=0;k<pnumnodes;k++){
 				for(int j=0;j<vnumnodes;j++){
 					for (int p=0;p<dim;p++){
-						Ke->values[(dim*vnumnodes+k)*numdof+dim*j+p] += gauss->weight*Jdet*(-FSreconditioning*vdbasis[p*vnumnodes+j]*pbasis[k]);
+						Ke->values[(dim*vnumnodes+k)*numdof+dim*j+p] += -factorrecond*vdbasis[p*vnumnodes+j]*pbasis[k];
 					}
 				}
 			}
@@ -4179,11 +4203,12 @@ ElementMatrix* StressbalanceAnalysis::CreatePressureMassMatrix(Element* element)
 		element->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		element->NodalFunctionsPressure(pbasis,gauss);
 
+		IssmDouble factor = gauss->weight*Jdet;
 		if(dim==3 || dim==2){
 			/*Pressure mass matrix*/
 			for(int k=0;k<pnumnodes;k++){
 				for(int j=0;j<pnumnodes;j++){
-					Ke->values[(dim*vnumnodes+k)*numdof+dim*vnumnodes+j] += gauss->weight*Jdet*(pbasis[j]*pbasis[k]);
+					Ke->values[(dim*vnumnodes+k)*numdof+dim*vnumnodes+j] += factor*(pbasis[j]*pbasis[k]);
 				}
 			}
 		}else{
@@ -4232,11 +4257,12 @@ ElementMatrix* StressbalanceAnalysis::CreateSchurPrecondMatrix(Element* element)
 		element->NodalFunctionsPressure(pbasis,gauss);
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 
+		IssmDouble factor = gauss->weight*1./viscosity*Jdet;
 		if(dim==3 || dim==2){
 			/*Pressure mass matrix*/
 			for(int k=0;k<pnumnodes;k++){
 				for(int j=0;j<pnumnodes;j++){
-					Ke->values[(dim*vnumnodes+k)*numdof+dim*vnumnodes+j] += gauss->weight*1./viscosity*Jdet*(pbasis[j]*pbasis[k]);
+					Ke->values[(dim*vnumnodes+k)*numdof+dim*vnumnodes+j] += factor*(pbasis[j]*pbasis[k]);
 				}
 			}
 		}else{
@@ -4494,16 +4520,17 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousGLS(Element* element
 					SU[q*numdof+dim*vnumnodes+i] = FSreconditioning*vdbasis[q*vnumnodes+i];
 			}
 		}
+		IssmDouble factor = rho_ice*Jdet*gauss->weight;
 		for(i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += +rho_ice*forcex *Jdet*gauss->weight*vbasis[i];
-			pe->values[i*dim+1] += +rho_ice*forcey *Jdet*gauss->weight*vbasis[i];
-			if(dim==3) pe->values[i*dim+2] += +rho_ice*forcez*Jdet*gauss->weight*vbasis[i];
+			pe->values[i*dim+0] += factor*forcex *vbasis[i];
+			pe->values[i*dim+1] += factor*forcey *vbasis[i];
+			if(dim==3) pe->values[i*dim+2] += factor*forcez*vbasis[i];
 
-			pe->values[i*dim+dim-1] += -rho_ice*gravity*Jdet*gauss->weight*vbasis[i];
+			pe->values[i*dim+dim-1] += -factor*gravity*vbasis[i];
 		}
 
 		for(int i=0;i<numdof;i++){
-			pe->values[i] += Tau*Jdet*gauss->weight*rho_ice*(-gravity)*SU[(dim-1)*numdof+i];
+			pe->values[i] += Tau*factor*(-gravity)*SU[(dim-1)*numdof+i];
 		}
 	}
 
@@ -4612,7 +4639,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscousLA(Element* element)
 			element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
 			this->GetCFS(C,element,dim,xyz_list,gauss);
 			this->GetCFSprime(Cprime,element,dim,xyz_list,gauss);
-			for(i=0;i<dim;i++) Dlambda[i*dim+i] = gauss->weight*Jdet*sqrt(normal[i]*normal[i])*sqrt(rl);
+			IssmDouble factor = gauss->weight*Jdet;
+			for(i=0;i<dim;i++) Dlambda[i*dim+i] = factor*sqrt(normal[i]*normal[i])*sqrt(rl);
 			TripleMultiply(C,dim,lnumdof,1,
 						Dlambda,dim,dim,0,
 						Cprime,dim,numdof,0,
@@ -4694,8 +4722,10 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscousXTH(Element* element
 		this->GetBFS(B,element,dim,xyz_list,gauss);
 		this->GetBFSprime(Bprime,element,dim,xyz_list,gauss);
 
-		for(i=0;i<epssize;i++)     D[i*bsize+i] = + r*gauss->weight*Jdet;
-		for(i=epssize;i<bsize;i++) D[i*bsize+i] = - FSreconditioning*gauss->weight*Jdet;
+		IssmDouble factor = r*gauss->weight*Jdet;
+		IssmDouble factor2 = - FSreconditioning*gauss->weight*Jdet;
+		for(i=0;i<epssize;i++)     D[i*bsize+i] = factor;
+		for(i=epssize;i<bsize;i++) D[i*bsize+i] = factor2;
 
 		TripleMultiply(B,bsize,numdof,1,
 					D,bsize,bsize,0,
@@ -4767,7 +4797,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFriction(Element* element){
 
 		this->GetBFSFriction(B,element,dim,xyz_list_base,gauss);
 		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
-		for(int i=0;i<dim;i++) D[i*dim+i] = alpha2*gauss->weight*Jdet; //taub_x = -alpha2 v_x (same for y)
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
+		for(int i=0;i<dim;i++) D[i*dim+i] = factor; //taub_x = -alpha2 v_x (same for y)
 
 		TripleMultiply(B,dim,numdof,1,
 					D,dim,dim,0,
@@ -4837,11 +4868,12 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSFriction(Element* element){
 		element->NodalFunctionsVelocity(vbasis,gauss);
 		element->NormalBase(&bed_normal[0],xyz_list_base);
 
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
 		for(int i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += - alpha2*gauss->weight*Jdet*vbasis[i]*bed_normal[1];
-			pe->values[i*dim+1] += alpha2*gauss->weight*Jdet*vbasis[i]*bed_normal[0];
+			pe->values[i*dim+0] += - factor*vbasis[i]*bed_normal[1];
+			pe->values[i*dim+1] += factor*vbasis[i]*bed_normal[0];
 			if(dim==3){
-				pe->values[i*dim+2]+= alpha2*gauss->weight*Jdet*vbasis[i];
+				pe->values[i*dim+2]+= factor*vbasis[i];
 			}
 		}
 
@@ -4894,9 +4926,10 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSStress(Element* element){/*
 		element->NodalFunctionsVelocity(vbasis,gauss);
 
 		beta=sqrt(1+bedslope*bedslope);
+		IssmDouble factor = - (1./beta)*gauss->weight*Jdet;
 		for(int i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += - (1./beta)*(-bedslope*sigmann + sigmant)*gauss->weight*Jdet*vbasis[i];
-			pe->values[i*dim+1] += - (1./beta)*(sigmann + bedslope*sigmant)*gauss->weight*Jdet*vbasis[i];
+			pe->values[i*dim+0] += factor*(-bedslope*sigmann + sigmant)*vbasis[i];
+			pe->values[i*dim+1] += factor*(sigmann + bedslope*sigmant)*vbasis[i];
 			if(dim==3){
 				//pe->values[i*dim+2]+= alpha2*gauss->weight*Jdet*vbasis[i];
 				_error_("3d not supported yet");
@@ -4956,10 +4989,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscous(Element* element){/
 		forcey=fy(x_coord,y_coord,z_coord,FSANALYTICAL);
 		forcez=fz(x_coord,y_coord,z_coord,FSANALYTICAL);
 
+		IssmDouble factor = Jdet*gauss->weight;
 		for(i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += forcex *Jdet*gauss->weight*vbasis[i];
-			pe->values[i*dim+1] += forcey *Jdet*gauss->weight*vbasis[i];
-			if(dim==3) pe->values[i*dim+2] += forcez *Jdet*gauss->weight*vbasis[i];
+			pe->values[i*dim+0] += forcex *factor*vbasis[i];
+			pe->values[i*dim+1] += forcey *factor*vbasis[i];
+			if(dim==3) pe->values[i*dim+2] += forcez *factor*vbasis[i];
 		}
 	}
 
@@ -5057,13 +5091,14 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFriction(Element* element){
 		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
 		element->NodalFunctionsVelocity(vbasis,gauss);
 
+		IssmDouble factor = alpha2*gauss->weight*Jdet;
 		if(dim==3){
 			/*Stress balance*/
 			for(int i=0;i<vnumnodes;i++){
 				for(int j=0;j<vnumnodes;j++){
-					Ke->values[(3*i+0)*numdof+3*j+0] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
-					Ke->values[(3*i+1)*numdof+3*j+1] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
-					Ke->values[(3*i+2)*numdof+3*j+2] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
+					Ke->values[(3*i+0)*numdof+3*j+0] += factor*vbasis[i]*vbasis[j];
+					Ke->values[(3*i+1)*numdof+3*j+1] += factor*vbasis[i]*vbasis[j];
+					Ke->values[(3*i+2)*numdof+3*j+2] += factor*vbasis[i]*vbasis[j];
 				}
 			}
 		}
@@ -5071,8 +5106,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFriction(Element* element){
 			/*Stress balance*/
 			for(int i=0;i<vnumnodes;i++){
 				for(int j=0;j<vnumnodes;j++){
-					Ke->values[(2*i+0)*numdof+2*j+0] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
-					Ke->values[(2*i+1)*numdof+2*j+1] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
+					Ke->values[(2*i+0)*numdof+2*j+0] += factor*vbasis[i]*vbasis[j];
+					Ke->values[(2*i+1)*numdof+2*j+1] += factor*vbasis[i]*vbasis[j];
 				}
 			}
 		}
@@ -5189,12 +5224,13 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscous(Element* element){/
 		loadingforcey_input->GetInputValue(&forcey,gauss);
 		if(dim==3) loadingforcez_input->GetInputValue(&forcez,gauss);
 
+		IssmDouble factor = rho_ice*Jdet*gauss->weight;
 		for(i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += +rho_ice*forcex *Jdet*gauss->weight*vbasis[i];
-			pe->values[i*dim+1] += +rho_ice*forcey *Jdet*gauss->weight*vbasis[i];
-			if(dim==3) pe->values[i*dim+2] += +rho_ice*forcez*Jdet*gauss->weight*vbasis[i];
+			pe->values[i*dim+0] += factor*forcex *vbasis[i];
+			pe->values[i*dim+1] += factor*forcey *vbasis[i];
+			if(dim==3) pe->values[i*dim+2] += factor*forcez*vbasis[i];
 
-			pe->values[i*dim+dim-1] += -rho_ice*gravity*Jdet*gauss->weight*vbasis[i];
+			pe->values[i*dim+dim-1] += -factor*gravity*vbasis[i];
 		}
 	}
 
@@ -5302,10 +5338,11 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFrictionNitsche(Element* el
 		element->NodalFunctionsPressure(pbasis,gauss);
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 
+		IssmDouble factor =  alpha2*gauss->weight*Jdet;
 		for(int i=0;i<vnumnodes;i++){
 			for(int j=0;j<vnumnodes;j++){
 				for (int d=0; d<dim; d++) {
-						Ke->values[(dim*i+d)*numdof+dim*j+d] += alpha2*gauss->weight*Jdet*vbasis[i]*vbasis[j];
+						Ke->values[(dim*i+d)*numdof+dim*j+d] += factor*vbasis[i]*vbasis[j];
 				}
 			}
 		}
@@ -5315,26 +5352,28 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFrictionNitsche(Element* el
 			rows--dimensions, columns--number of nodes.
 			If we consider nsigma as a 1d vector, it has exactly the same order as the unknown vector.
 		*/
+		factor = gauss->weight*Jdet*viscosity;
+		IssmDouble factor2 = gauss->weight*Jdet*FSreconditioning;
 		for(int i=0;i<vnumnodes;i++){
 			for(int j=0;j<vnumnodes;j++){
 				/* gamma*(n*u)*(n*v) */
-				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += gauss->weight*Jdet * (gamma*viscosity) * vbasis[j] * vbasis[i];
+				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += factor * gamma * vbasis[j] * vbasis[i];
 				/* -sigma(v)*(n*u) */
-				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += (- gauss->weight*Jdet) * 2.0 * viscosity * (-vbasis[j]) * vdbasis[(dim-1)*vnumnodes+i];
+				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += - factor * 2.0 * (-vbasis[j]) * vdbasis[(dim-1)*vnumnodes+i];
 				/* -sigma(u)*(n*v) */
-				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += (- gauss->weight*Jdet) * 2.0 * viscosity * vdbasis[(dim-1)*vnumnodes+j] * (-vbasis[i]);
+				Ke->values[(dim*i+(dim-1))*numdof+dim*j+(dim-1)] += - factor * 2.0 * vdbasis[(dim-1)*vnumnodes+j] * (-vbasis[i]);
 			}
 		}
 		/* pressure x velocity  component A12, +p*(n*v) */
 		for(int k=0;k<pnumnodes;k++){
 			for(int i=0;i<vnumnodes;i++){
-				Ke->values[(dim*i+dim-1)*numdof+dim*vnumnodes+k] += gauss->weight*Jdet * FSreconditioning*pbasis[k] * (-vbasis[i]);
+				Ke->values[(dim*i+dim-1)*numdof+dim*vnumnodes+k] += factor*pbasis[k] * (-vbasis[i]);
 			}
 		}
 		/* velocity x pressure component A21, +(n*u)*q */
 		for(int k=0;k<pnumnodes;k++){
 			for(int j=0;j<vnumnodes;j++){
-				Ke->values[(dim*vnumnodes+k)*numdof+dim*j+dim-1] += gauss->weight*Jdet * (-vbasis[j]) * FSreconditioning*pbasis[k];
+				Ke->values[(dim*vnumnodes+k)*numdof+dim*j+dim-1] += factor * (-vbasis[j]) * pbasis[k];
 			}
 		}
 	}
@@ -5407,10 +5446,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSFront(Element* element){/*{
 		else       z=element->GetYcoord(xyz_list,gauss);
 		pressure = rho_water*gravity*min(0.,z-sealevel);//0 if the gaussian point is above water level
 
+		IssmDouble factor = pressure*Jdet*gauss->weight;
 		for (int i=0;i<vnumnodes;i++){
-			pe->values[dim*i+0]+= pressure*Jdet*gauss->weight*normal[0]*vbasis[i];
-			pe->values[dim*i+1]+= pressure*Jdet*gauss->weight*normal[1]*vbasis[i];
-			if(dim==3) pe->values[dim*i+2]+= pressure*Jdet*gauss->weight*normal[2]*vbasis[i];
+			pe->values[dim*i+0]+= factor*normal[0]*vbasis[i];
+			pe->values[dim*i+1]+= factor*normal[1]*vbasis[i];
+			if(dim==3) pe->values[dim*i+2]+= factor*normal[2]*vbasis[i];
 		}
 	}
 
@@ -5467,8 +5507,9 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSShelf(Element* element){/*{
 		base_input->GetInputValue(&base, gauss);
 		water_pressure=gravity*rho_water*base;
 
+		IssmDouble factor = -water_pressure*gauss->weight*Jdet;
 		for(i=0;i<vnumnodes;i++){
-				pe->values[i*dim+(dim-1)]+=-water_pressure*gauss->weight*Jdet*vbasis[i];
+				pe->values[i*dim+(dim-1)]+=factor*vbasis[i];
 		}
 	}
 
@@ -5484,8 +5525,9 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSShelf(Element* element){/*{
 			element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
 			element->NodalFunctionsVelocity(vbasis,gauss);
 			mb_input->GetInputValue(&mb, gauss);
+			IssmDouble factor = -dt*rho_water*gravity*mb*gauss->weight*Jdet;
 			for(i=0;i<vnumnodes;i++){
-				pe->values[i*dim+(dim-1)] += -dt*rho_water*gravity*mb*gauss->weight*Jdet*vbasis[i];
+				pe->values[i*dim+(dim-1)] += factor*vbasis[i];
 			}
 		}
 	}
@@ -5537,10 +5579,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousLA(Element* element)
 		pressure_input->GetInputValue(&pressure, gauss);
 		element->NodalFunctionsDerivativesVelocity(dbasis,xyz_list,gauss);
 
+		IssmDouble factor = pressure*gauss->weight*Jdet;
 		for(i=0;i<numnodes;i++){
-			pe->values[i*dim+0] += pressure*gauss->weight*Jdet*dbasis[0*numnodes+i];
-			pe->values[i*dim+1] += pressure*gauss->weight*Jdet*dbasis[1*numnodes+i];
-			if(dim==3) pe->values[i*dim+2]+= pressure*gauss->weight*Jdet*dbasis[2*numnodes+i];
+			pe->values[i*dim+0] += factor*dbasis[0*numnodes+i];
+			pe->values[i*dim+1] += factor*dbasis[1*numnodes+i];
+			if(dim==3) pe->values[i*dim+2]+= factor*dbasis[2*numnodes+i];
 		}
 	}
 
@@ -5559,10 +5602,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousLA(Element* element)
 			element->NodalFunctionsVelocity(vbasis,gauss);
 			sigmann_input->GetInputValue(&sigmann, gauss);
 
+			IssmDouble factor = sigmann*gauss->weight*Jdet;
 			for(i=0;i<numnodes;i++){
-				pe->values[i*dim+0] += + sigmann*bed_normal[0]*gauss->weight*Jdet*vbasis[i];
-				pe->values[i*dim+1] += + sigmann*bed_normal[1]*gauss->weight*Jdet*vbasis[i];
-				if(dim==3) pe->values[i*dim+2] += + sigmann*bed_normal[2]*gauss->weight*Jdet*vbasis[i];
+				pe->values[i*dim+0] += factor*bed_normal[0]*vbasis[i];
+				pe->values[i*dim+1] += factor*bed_normal[1]*vbasis[i];
+				if(dim==3) pe->values[i*dim+2] += factor*bed_normal[2]*vbasis[i];
 			}
 		}
 		xDelete<IssmDouble>(xyz_list_base);
@@ -5691,31 +5735,32 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousXTH(Element* element
 		 *   - phi_i  is the nodal function for the i^th node of the velocity (P2)*/
 		element->NodalFunctionsDerivativesVelocity(vdbasis,xyz_list,gauss);
 		element->NodalFunctionsTensor(tbasis,gauss);
+		IssmDouble factor = gauss->weight*Jdet;
 		if(dim==2){
 			for(int i=0;i<vnumnodes;i++){
 				for(int j=0;j<tnumnodes;j++){
-					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+0] += gauss->weight*Jdet*tbasis[j]*vdbasis[0*vnumnodes+i];
-					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+2] += gauss->weight*Jdet*tbasis[j]*vdbasis[1*vnumnodes+i];
+					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+0] += factor*tbasis[j]*vdbasis[0*vnumnodes+i];
+					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+2] += factor*tbasis[j]*vdbasis[1*vnumnodes+i];
 
-					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+1] += gauss->weight*Jdet*tbasis[j]*vdbasis[1*vnumnodes+i];
-					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+2] += gauss->weight*Jdet*tbasis[j]*vdbasis[0*vnumnodes+i];
+					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+1] += factor*tbasis[j]*vdbasis[1*vnumnodes+i];
+					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+2] += factor*tbasis[j]*vdbasis[0*vnumnodes+i];
 				}
 			}
 		}
 		else{
 			for(int i=0;i<vnumnodes;i++){
 				for(int j=0;j<tnumnodes;j++){
-					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+0] += gauss->weight*Jdet*tbasis[j]*vdbasis[0*vnumnodes+i];
-					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+3] += gauss->weight*Jdet*tbasis[j]*vdbasis[1*vnumnodes+i];
-					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+4] += gauss->weight*Jdet*tbasis[j]*vdbasis[2*vnumnodes+i];
+					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+0] += factor*tbasis[j]*vdbasis[0*vnumnodes+i];
+					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+3] += factor*tbasis[j]*vdbasis[1*vnumnodes+i];
+					Dstar[(i*dim+0)*tausize*tnumnodes + j*tausize+4] += factor*tbasis[j]*vdbasis[2*vnumnodes+i];
 
-					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+1] += gauss->weight*Jdet*tbasis[j]*vdbasis[1*vnumnodes+i];
-					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+3] += gauss->weight*Jdet*tbasis[j]*vdbasis[0*vnumnodes+i];
-					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+5] += gauss->weight*Jdet*tbasis[j]*vdbasis[2*vnumnodes+i];
+					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+1] += factor*tbasis[j]*vdbasis[1*vnumnodes+i];
+					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+3] += factor*tbasis[j]*vdbasis[0*vnumnodes+i];
+					Dstar[(i*dim+1)*tausize*tnumnodes + j*tausize+5] += factor*tbasis[j]*vdbasis[2*vnumnodes+i];
 
-					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+2] += gauss->weight*Jdet*tbasis[j]*vdbasis[2*vnumnodes+i];
-					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+4] += gauss->weight*Jdet*tbasis[j]*vdbasis[0*vnumnodes+i];
-					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+5] += gauss->weight*Jdet*tbasis[j]*vdbasis[1*vnumnodes+i];
+					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+2] += factor*tbasis[j]*vdbasis[2*vnumnodes+i];
+					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+4] += factor*tbasis[j]*vdbasis[0*vnumnodes+i];
+					Dstar[(i*dim+2)*tausize*tnumnodes + j*tausize+5] += factor*tbasis[j]*vdbasis[1*vnumnodes+i];
 				}
 			}
 		}
@@ -6677,14 +6722,15 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionFSXTH_d(Elements* e
 						tbasis,1,tnumnodes,0,
 						Ke,1);
 
+			IssmDouble factor = gauss->weight*Jdet;
 			/*Create Right hand sides*/
-			for(int ii=0;ii<tnumnodes;ii++) pe_xx[ii] += (r*epsxx+sigmapxx)*tbasis[ii]*gauss->weight*Jdet;
-			for(int ii=0;ii<tnumnodes;ii++) pe_yy[ii] += (r*epsyy+sigmapyy)*tbasis[ii]*gauss->weight*Jdet;
-			for(int ii=0;ii<tnumnodes;ii++) pe_xy[ii] += (r*epsxy+sigmapxy)*tbasis[ii]*gauss->weight*Jdet;
+			for(int ii=0;ii<tnumnodes;ii++) pe_xx[ii] += (r*epsxx+sigmapxx)*tbasis[ii]*factor;
+			for(int ii=0;ii<tnumnodes;ii++) pe_yy[ii] += (r*epsyy+sigmapyy)*tbasis[ii]*factor;
+			for(int ii=0;ii<tnumnodes;ii++) pe_xy[ii] += (r*epsxy+sigmapxy)*tbasis[ii]*factor;
 			if(dim==3){
-				for(int ii=0;ii<tnumnodes;ii++) pe_zz[ii] += (r*epszz+sigmapzz)*tbasis[ii]*gauss->weight*Jdet;
-				for(int ii=0;ii<tnumnodes;ii++) pe_xz[ii] += (r*epsxz+sigmapxz)*tbasis[ii]*gauss->weight*Jdet;
-				for(int ii=0;ii<tnumnodes;ii++) pe_yz[ii] += (r*epsyz+sigmapyz)*tbasis[ii]*gauss->weight*Jdet;
+				for(int ii=0;ii<tnumnodes;ii++) pe_zz[ii] += (r*epszz+sigmapzz)*tbasis[ii]*factor;
+				for(int ii=0;ii<tnumnodes;ii++) pe_xz[ii] += (r*epsxz+sigmapxz)*tbasis[ii]*factor;
+				for(int ii=0;ii<tnumnodes;ii++) pe_yz[ii] += (r*epsyz+sigmapyz)*tbasis[ii]*factor;
 			}
 		}
 
@@ -7039,19 +7085,22 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixCouplingSSAFSFriction(Element
 		element->NormalBase(&bed_normal[0],xyz_list_tria);
 		friction->GetAlpha2(&alpha2_gauss,gauss);
 
-		DLSSAFS[0][0]=alpha2_gauss*gauss->weight*Jdet2d;
-		DLSSAFS[1][1]=alpha2_gauss*gauss->weight*Jdet2d;
-		DLSSAFS[2][2]=-alpha2_gauss*gauss->weight*Jdet2d*bed_normal[0]*bed_normal[2];
-		DLSSAFS[3][3]=-alpha2_gauss*gauss->weight*Jdet2d*bed_normal[1]*bed_normal[2];
-		DLSSAFS[4][4]=-2*viscosity*gauss->weight*Jdet2d*bed_normal[0];
-		DLSSAFS[5][5]=-2*viscosity*gauss->weight*Jdet2d*bed_normal[1];
-		DLSSAFS[6][6]=FSreconditioning*gauss->weight*Jdet2d*bed_normal[0];
-		DLSSAFS[7][7]=FSreconditioning*gauss->weight*Jdet2d*bed_normal[1];
+		IssmDouble factor = alpha2_gauss*gauss->weight*Jdet2d;
+		IssmDouble factor2 = 2*viscosity*gauss->weight*Jdet2d;
+		IssmDouble factor3 = FSreconditioning*gauss->weight*Jdet2d;
+		DLSSAFS[0][0]=factor;
+		DLSSAFS[1][1]=factor;
+		DLSSAFS[2][2]=-factor*bed_normal[0]*bed_normal[2];
+		DLSSAFS[3][3]=-factor*bed_normal[1]*bed_normal[2];
+		DLSSAFS[4][4]=-factor2*bed_normal[0];
+		DLSSAFS[5][5]=-factor2*bed_normal[1];
+		DLSSAFS[6][6]=factor3*bed_normal[0];
+		DLSSAFS[7][7]=factor3*bed_normal[1];
 
-		DLFSSSA[0][0]=alpha2_gauss*gauss->weight*Jdet2d;
-		DLFSSSA[1][1]=alpha2_gauss*gauss->weight*Jdet2d;
-		DLFSSSA[2][2]=-alpha2_gauss*gauss->weight*Jdet2d*bed_normal[0]*bed_normal[2];
-		DLFSSSA[3][3]=-alpha2_gauss*gauss->weight*Jdet2d*bed_normal[1]*bed_normal[2];
+		DLFSSSA[0][0]=factor;
+		DLFSSSA[1][1]=factor;
+		DLFSSSA[2][2]=-factor*bed_normal[0]*bed_normal[2];
+		DLFSSSA[3][3]=-factor*bed_normal[1]*bed_normal[2];
 
 		TripleMultiply( &LSSAFS[0][0],8,numdof2dm,1,
 					&DLSSAFS[0][0],8,8,0,
@@ -7596,10 +7645,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingHOFSFriction(Element*
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 		friction->GetAlpha2(&alpha2_gauss,gauss);
 
+		IssmDouble factor = Jdet2d*gauss->weight;
 		for(i=0;i<3;i++){
-			pe->values[i*3+0]+=Jdet2d*gauss->weight*(alpha2_gauss*w*bed_normal[0]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[0])*basis[i];
-			pe->values[i*3+1]+=Jdet2d*gauss->weight*(alpha2_gauss*w*bed_normal[1]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[1])*basis[i];
-			pe->values[i*3+2]+=Jdet2d*gauss->weight*2*viscosity*(dw[0]*bed_normal[0]+dw[1]*bed_normal[1]+dw[2]*bed_normal[2])*basis[i];
+			pe->values[i*3+0]+=factor*(alpha2_gauss*w*bed_normal[0]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[0])*basis[i];
+			pe->values[i*3+1]+=factor*(alpha2_gauss*w*bed_normal[1]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[1])*basis[i];
+			pe->values[i*3+2]+=factor*2*viscosity*(dw[0]*bed_normal[0]+dw[1]*bed_normal[1]+dw[2]*bed_normal[2])*basis[i];
 		}
 	}
 
@@ -7667,11 +7717,13 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingHOFSViscous(Element* 
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 		vzHO_input->GetInputDerivativeValue(&dw[0],xyz_list,gauss);
 
+		IssmDouble factor = -Jdet*gauss->weight*viscosity;
+		IssmDouble factor2 = Jdet*gauss->weight*FSreconditioning;
 		for(i=0;i<6;i++){
-			pe->values[i*3+0]+=-Jdet*gauss->weight*viscosity*dw[0]*dbasis[2][i];
-			pe->values[i*3+1]+=-Jdet*gauss->weight*viscosity*dw[1]*dbasis[2][i];
-			pe->values[i*3+2]+=-Jdet*gauss->weight*viscosity*(dw[0]*dbasis[0][i]+dw[1]*dbasis[1][i]+2*dw[2]*dbasis[2][i]);
-			pe->values[3*vnumnodes+i]+=Jdet*gauss->weight*FSreconditioning*dw[2]*basis[i];
+			pe->values[i*3+0]+=factor*dw[0]*dbasis[2][i];
+			pe->values[i*3+1]+=factor*dw[1]*dbasis[2][i];
+			pe->values[i*3+2]+=factor*(dw[0]*dbasis[0][i]+dw[1]*dbasis[1][i]+2*dw[2]*dbasis[2][i]);
+			pe->values[3*vnumnodes+i]+=factor2*dw[2]*basis[i];
 		}
 	}
 
@@ -7759,10 +7811,11 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingSSAFSFriction(Element
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 		friction->GetAlpha2(&alpha2_gauss,gauss);
 
+		IssmDouble factor = Jdet2d*gauss->weight;
 		for(i=0;i<3;i++){
-			pe->values[i*3+0]+=Jdet2d*gauss->weight*(alpha2_gauss*w*bed_normal[0]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[0])*basis[i];
-			pe->values[i*3+1]+=Jdet2d*gauss->weight*(alpha2_gauss*w*bed_normal[1]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[1])*basis[i];
-			pe->values[i*3+2]+=Jdet2d*gauss->weight*2*viscosity*(dw[0]*bed_normal[0]+dw[1]*bed_normal[1]+dw[2]*bed_normal[2])*basis[i];
+			pe->values[i*3+0]+=factor*(alpha2_gauss*w*bed_normal[0]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[0])*basis[i];
+			pe->values[i*3+1]+=factor*(alpha2_gauss*w*bed_normal[1]*bed_normal[2]+2*viscosity*dw[2]*bed_normal[1])*basis[i];
+			pe->values[i*3+2]+=factor*2*viscosity*(dw[0]*bed_normal[0]+dw[1]*bed_normal[1]+dw[2]*bed_normal[2])*basis[i];
 		}
 	}
 
@@ -7828,11 +7881,13 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingSSAFSViscous(Element*
 		vzSSA_input->GetInputDerivativeValue(&dw[0],xyz_list,gauss);
 		element->material->ViscosityFS(&viscosity,3,xyz_list,gauss,vx_input,vy_input,vz_input);
 
+		IssmDouble factor = -Jdet*gauss->weight*viscosity;
+		IssmDouble factor2 = Jdet*gauss->weight*FSreconditioning;
 		for(i=0;i<6;i++){
-			pe->values[i*3+0]+=-Jdet*gauss->weight*viscosity*dw[0]*dbasis[2][i];
-			pe->values[i*3+1]+=-Jdet*gauss->weight*viscosity*dw[1]*dbasis[2][i];
-			pe->values[i*3+2]+=-Jdet*gauss->weight*viscosity*(dw[0]*dbasis[0][i]+dw[1]*dbasis[1][i]+2*dw[2]*dbasis[2][i]);
-			pe->values[3*vnumnodes+i]+=Jdet*gauss->weight*FSreconditioning*dw[2]*basis[i];
+			pe->values[i*3+0]+=factor*dw[0]*dbasis[2][i];
+			pe->values[i*3+1]+=factor*dw[1]*dbasis[2][i];
+			pe->values[i*3+2]+=factor*(dw[0]*dbasis[0][i]+dw[1]*dbasis[1][i]+2*dw[2]*dbasis[2][i]);
+			pe->values[3*vnumnodes+i]+=factor2*dw[2]*basis[i];
 		}
 	}
 

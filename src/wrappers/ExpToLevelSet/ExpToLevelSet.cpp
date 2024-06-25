@@ -72,7 +72,7 @@ WRAPPER(ExpToLevelSet_python){
 	delete contours;
 	xDelete<double>(distance);
 	xDelete<double>(flags);
-	
+
 	/*end module: */
 	MODULEEND();
 }

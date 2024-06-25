@@ -30,7 +30,7 @@ void univariateNormal(IssmPDouble* prand, IssmPDouble mean, IssmPDouble sdev, in
 	randomengine.free_resources();
 } /*}}}*/
 void multivariateNormal(IssmDouble** prand, int dim, IssmDouble mean, IssmDouble* covariancematrix, int seed=-1) { /*{{{*/
-   
+
 	IssmPDouble* sampleStandardNormal    = xNew<IssmPDouble>(dim);
    IssmDouble* sampleMultivariateNormal = xNew<IssmDouble>(dim);
    IssmDouble* Lchol                    = xNewZeroInit<IssmDouble>(dim*dim);
@@ -48,7 +48,7 @@ void multivariateNormal(IssmDouble** prand, int dim, IssmDouble mean, IssmDouble
 
 	/*Cholsesky decomposition of the covariance matrix*/
 	CholeskyRealPositiveDefinite(Lchol,covariancematrix,dim);
-   
+
 	/*Matrix by vector multiplication*/
 	for(int i=0;i<dim;i++){ 
       /*Entry-by-entry multiplication along matrix row*/
@@ -64,11 +64,11 @@ void multivariateNormal(IssmDouble** prand, int dim, IssmDouble mean, IssmDouble
 	randomengine.free_resources();
 } /*}}}*/
 void multivariateNormal(IssmDouble** prand, int dim, IssmDouble* mean, IssmDouble* covariancematrix, int seed=-1) { /*{{{*/
-	
+
 	IssmPDouble* sampleStandardNormal    = xNew<IssmPDouble>(dim);
 	IssmDouble* sampleMultivariateNormal = xNew<IssmDouble>(dim);
 	IssmDouble* Lchol                    = xNewZeroInit<IssmDouble>(dim*dim);
-	
+
 	/*True randomness if seed<0, otherwise random seed is fixed at seed*/
 	/*Seed the pseudo-random number generator, repeatedly calling univariateNormal does not ensure randomness*/
 	rnd::linear_congruential_engine randomengine;
@@ -89,13 +89,10 @@ void multivariateNormal(IssmDouble** prand, int dim, IssmDouble* mean, IssmDoubl
       for(int j=0;j<dim;j++) sum += sampleStandardNormal[j]*Lchol[i*dim+j]; 
       sampleMultivariateNormal[i] = mean[i]+sum;
 	}
-   
+
 	/*Assign output pointer and cleanup*/
 	*prand = sampleMultivariateNormal;
 	xDelete<IssmPDouble>(sampleStandardNormal);
 	xDelete<IssmDouble>(Lchol);
 	randomengine.free_resources();
 } /*}}}*/
-
-
-

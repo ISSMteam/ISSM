@@ -31,14 +31,14 @@ class Node: public Object{
 		int  pid;   // parallel id (specific to this partition)
 
 		/*Only this function can access these private fields*/
-		//friend void Nodes::Finalize();
 		friend class Nodes;
 		friend class FemModel;
 
 	public: 
-		int  analysis_enum;
-		IssmDouble   coord_system[3][3];
-		bool         indexingupdate;
+		int        analysis_enum;
+		bool       indexingupdate;
+		bool       isrotated;
+		IssmDouble coord_system[3][3];
 
 		/*sizes: */
 		int gsize;   //number of dofs for a node
