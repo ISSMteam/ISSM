@@ -112,9 +112,10 @@ ElementMatrix* Balancethickness2Analysis::CreateKMatrix(Element* element){/*{{{*
 			vel = 30./yts*500000.;
 		}
 
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+				Ke->values[i*numnodes+j] += factor*( 
 							(vx*dbasis[0*numnodes+i] + vy*dbasis[1*numnodes+i])*(vx*dbasis[0*numnodes+j] + vy*dbasis[1*numnodes+j])
 				+ vel/500000.*(dbasis[0*numnodes+i]*dbasis[0*numnodes+j] + dbasis[1*numnodes+i]*dbasis[1*numnodes+j]));
 			}
@@ -160,7 +161,8 @@ ElementVector* Balancethickness2Analysis::CreatePVector(Element* element){/*{{{*
 		mb_input->GetInputDerivativeValue(&mb[0],xyz_list,gauss);
 		dhdt_input->GetInputDerivativeValue(&dhdt[0],xyz_list,gauss);
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=0*Jdet*gauss->weight*(
+		IssmDouble factor = 0*Jdet*gauss->weight;
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(
 					(ms[0]+ms[1]-mb[0]-mb[1]-dhdt[0]-dhdt[1])*basis[i]
 					);
 	}
