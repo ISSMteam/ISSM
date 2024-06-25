@@ -80,3 +80,9 @@ externalpackages/triangle/src/
 #===============
 test/NightlyRun/*.bin
 test/NightlyRun/*.tar.gz
+
+# Examples #
+#===========
+examples/Data/*.nc
+examples/Data/*.mat
+examples/Data/*.zip
