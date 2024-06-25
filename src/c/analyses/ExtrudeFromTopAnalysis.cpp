@@ -77,9 +77,10 @@ ElementMatrix* ExtrudeFromTopAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		D=gauss->weight*Jdet;
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(dbasis[(dim-1)*numnodes+i]*dbasis[(dim-1)*numnodes+j]);
+				Ke->values[i*numnodes+j] += factor*(dbasis[(dim-1)*numnodes+i]*dbasis[(dim-1)*numnodes+j]);
 			}
 		}
 	} 

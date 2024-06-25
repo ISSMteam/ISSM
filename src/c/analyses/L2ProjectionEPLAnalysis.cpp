@@ -176,7 +176,7 @@ ElementVector* L2ProjectionEPLAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Intermediaries */
 	int         input_enum,index;
-	IssmDouble  Jdet,slopes[2];
+	IssmDouble  Jdet,slopes[2],factor;
 	Input     *input     = NULL;
 	IssmDouble *xyz_list  = NULL;
 
@@ -204,7 +204,8 @@ ElementVector* L2ProjectionEPLAnalysis::CreatePVector(Element* element){/*{{{*/
 		basalelement->NodalFunctions(basis,gauss);
 
 		input->GetInputDerivativeValue(&slopes[0],xyz_list,gauss);
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*slopes[index]*basis[i];
+		factor = Jdet*gauss->weight*slopes[index];
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/

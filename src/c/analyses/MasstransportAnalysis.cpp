@@ -333,7 +333,7 @@ ElementMatrix* MasstransportAnalysis::CreateKMatrixCG(Element* element){/*{{{*/
 	/*Intermediaries */
 	int        stabilization;
 	int        domaintype,dim;
-	IssmDouble Jdet,D_scalar,dt,h;
+	IssmDouble Jdet,D_scalar,dt,h,factor;
 	IssmDouble vel,vx,vy,dvxdx,dvydy;
 	IssmDouble xi,tau;
 	IssmDouble dvx[2],dvy[2];
@@ -479,49 +479,56 @@ ElementMatrix* MasstransportAnalysis::CreateKMatrixCG(Element* element){/*{{{*/
 		if(stabilization==2){
 			/*Streamline upwind*/
 			_assert_(dim==2);
+			factor = dt*gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=dt*gauss->weight*Jdet*tau*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i])*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j]);
+					Ke->values[i*numnodes+j]+=factor*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i])*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j]);
 				}
 			}
 		}
 		if(stabilization==5){/*{{{*/
 			 /*Mass matrix - part 2*/
+			factor = gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=gauss->weight*Jdet*tau*basis[j]*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+					Ke->values[i*numnodes+j]+=factor*basis[j]*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
 				}
 			}
 			/*Mass matrix - part 3*/
+			factor = gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=gauss->weight*Jdet*tau*basis[j]*(basis[i]*dvxdx+basis[i]*dvydy);
+					Ke->values[i*numnodes+j]+=factor*basis[j]*(basis[i]*dvxdx+basis[i]*dvydy);
 				}
 			}
 
 			/*Advection matrix - part 2, A*/
+			factor = dt*gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
             for(int j=0;j<numnodes;j++){
-               Ke->values[i*numnodes+j]+=dt*gauss->weight*Jdet*tau*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j])*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+               Ke->values[i*numnodes+j]+=factor*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j])*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
             }
          }
 			/*Advection matrix - part 3, A*/
+			factor = dt*gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
             for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=dt*gauss->weight*Jdet*tau*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j])*(basis[i]*dvxdx+basis[i]*dvydy);
+					Ke->values[i*numnodes+j]+=factor*(vx*dbasis[0*numnodes+j]+vy*dbasis[1*numnodes+j])*(basis[i]*dvxdx+basis[i]*dvydy);
 				}
          }
 
 			/*Advection matrix - part 2, B*/
+			factor = dt*gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
             for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=dt*gauss->weight*Jdet*tau*(basis[j]*dvxdx+basis[j]*dvydy)*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+					Ke->values[i*numnodes+j]+=factor*(basis[j]*dvxdx+basis[j]*dvydy)*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
 				}
          }
 			/*Advection matrix - part 3, B*/
+			factor = dt*gauss->weight*Jdet*tau;
 			for(int i=0;i<numnodes;i++){
             for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=dt*gauss->weight*Jdet*tau*(basis[j]*dvxdx+basis[j]*dvydy)*(basis[i]*dvxdx+basis[i]*dvydy);
+					Ke->values[i*numnodes+j]+=factor*(basis[j]*dvxdx+basis[j]*dvydy)*(basis[i]*dvxdx+basis[i]*dvydy);
 				}
 			}
 		}/*}}}*/
@@ -736,7 +743,8 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 			_error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 		}
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(thickness+dt*(ms-mb))*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*(thickness+dt*(ms-mb));
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 
 		if(stabilization==5){ //SUPG
 			element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
@@ -753,12 +761,13 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 			//tau=dt/6; // as implemented in Ua
 
 			/*Force vector - part 2*/
+			factor = Jdet*gauss->weight*(thickness+dt*(ms-mb));
 			for(int i=0;i<numnodes;i++){
-				pe->values[i]+=Jdet*gauss->weight*(thickness+dt*(ms-mb))*(tau*vx*dbasis[0*numnodes+i]+tau*vy*dbasis[1*numnodes+i]);
+				pe->values[i]+=factor*(tau*vx*dbasis[0*numnodes+i]+tau*vy*dbasis[1*numnodes+i]);
 			}
 			/*Force vector - part 3*/
 			for(int i=0;i<numnodes;i++){
-				pe->values[i]+=Jdet*gauss->weight*(thickness+dt*(ms-mb))*(tau*basis[i]*dvxdx+tau*basis[i]*dvydy);
+				pe->values[i]+=factor*(tau*basis[i]*dvxdx+tau*basis[i]*dvydy);
 			}
 		}
 
@@ -861,7 +870,8 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
     	}
       	else  _error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(thickness+dt*(ms-mb))*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*(thickness+dt*(ms-mb));
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
 	/*Clean up and return*/
@@ -1184,7 +1194,8 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 		}
 		else  _error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(ms-mb)*basis[i];
+		IssmDouble factor = Jdet*gauss->weight*(ms-mb);
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 
 	}
 

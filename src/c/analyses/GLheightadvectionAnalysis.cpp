@@ -70,7 +70,7 @@ ElementMatrix* GLheightadvectionAnalysis::CreateKMatrix(Element* element){/*{{{*
 	/*Intermediaries */
 	const IssmPDouble yts = 365*24*3600.;
 	int        domaintype,dim;
-	IssmDouble Jdet,D_scalar,onboundary;
+	IssmDouble Jdet,D_scalar,onboundary,factor;
 	IssmDouble vel,vx,vy;
 	IssmDouble* xyz_list      = NULL;
 	Input* vx_input           = NULL;
@@ -122,9 +122,10 @@ ElementMatrix* GLheightadvectionAnalysis::CreateKMatrix(Element* element){/*{{{*
 				vel = 30./yts*500000.;
 			}
 
+			factor = gauss->weight*Jdet;
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+					Ke->values[i*numnodes+j] += factor*(
 								(vx*dbasis[0*numnodes+i] + vy*dbasis[1*numnodes+i])*(vx*dbasis[0*numnodes+j] + vy*dbasis[1*numnodes+j])
 								+ vel/500000.*(dbasis[0*numnodes+i]*dbasis[0*numnodes+j] + dbasis[1*numnodes+i]*dbasis[1*numnodes+j]));
 				}
@@ -142,9 +143,10 @@ ElementMatrix* GLheightadvectionAnalysis::CreateKMatrix(Element* element){/*{{{*
 			/*Diffusion */
 			if(sqrt(vx*vx+vy*vy)<1000./31536000.){
 				IssmPDouble kappa = -10.;
+				factor = D_scalar*kappa;
 				for(int i=0;i<numnodes;i++){
 					for(int j=0;j<numnodes;j++){
-						Ke->values[i*numnodes+j] += D_scalar*kappa*(dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]);
+						Ke->values[i*numnodes+j] += factor*(dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i]);
 					}
 				}
 			}
@@ -158,8 +160,9 @@ ElementMatrix* GLheightadvectionAnalysis::CreateKMatrix(Element* element){/*{{{*
 
 			/*Artificial diffusivity*/
 			vel=sqrt(vx*vx + vy*vy)+1.e-14;
-			D[0][0]=D_scalar*h/(2.*vel)*fabs(vx*vx);  D[0][1]=D_scalar*h/(2.*vel)*fabs(vx*vy);
-			D[1][0]=D_scalar*h/(2.*vel)*fabs(vy*vx);  D[1][1]=D_scalar*h/(2.*vel)*fabs(vy*vy);
+			factor = D_scalar*h/(2.*vel);
+			D[0][0]=factor*fabs(vx*vx);  D[0][1]=factor*fabs(vx*vy);
+			D[1][0]=factor*fabs(vy*vx);  D[1][1]=factor*fabs(vy*vy);
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
 					Ke->values[i*numnodes+j] += (

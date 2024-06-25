@@ -240,11 +240,12 @@ ElementMatrix* HydrologyShaktiAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		IssmDouble pressure_water = rho_water*g*(head-bed);
 		if(pressure_water>pressure_ice) pressure_water = pressure_ice;
 
+		IssmDouble factor = conductivity*gauss->weight*Jdet;
+		IssmDouble factor2 = gauss->weight*Jdet*storage/dt + gauss->weight*Jdet*A*(n)*(pow(fabs(pressure_ice-pressure_water),(n-1))*rho_water*g)*gap;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += conductivity*gauss->weight*Jdet*(dbasis[0*numnodes+i]*dbasis[0*numnodes+j] + dbasis[1*numnodes+i]*dbasis[1*numnodes+j])
-				  + gauss->weight*Jdet*storage/dt*basis[i]*basis[j]
-				  +gauss->weight*Jdet*A*(n)*(pow(fabs(pressure_ice-pressure_water),(n-1))*rho_water*g)*gap*basis[i]*basis[j];
+				Ke->values[i*numnodes+j] += factor*(dbasis[0*numnodes+i]*dbasis[0*numnodes+j] + dbasis[1*numnodes+i]*dbasis[1*numnodes+j])
+				  + factor2*basis[i]*basis[j];
 			}
 		}
 	}
@@ -357,15 +358,14 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 
 		meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*
-		 (
-		  meltrate*(1/rho_water-1/rho_ice)
+		IssmDouble factor = Jdet*gauss->weight*
+		 (meltrate*(1/rho_water-1/rho_ice)
 		  +A*pow(fabs(pressure_ice - pressure_water),n-1)*(pressure_ice + rho_water*g*bed)*gap
 		  +(n-1)*A*pow(fabs(pressure_ice - pressure_water),n-1)*(rho_water*g*head)*gap
 		  -beta*sqrt(vx*vx+vy*vy)
 		  +ieb
-		  +storage*head_old/dt
-		 )*basis[i];
+		  +storage*head_old/dt);
+		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 
 	}
 
