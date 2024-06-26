@@ -1533,7 +1533,7 @@ void FemModel::SyncLocalVectorWithClonesVerticesAdd(IssmDouble* local_vector){/*
 
 	/*Wait until MPI is done*/
 	for(int rank=0;rank<num_procs;rank++){
-		if(this->vertices->common_send[rank]) ISSM_MPI_Wait(&send_requests[rank],&status);
+		if(this->vertices->common_recv[rank]) ISSM_MPI_Wait(&send_requests[rank],&status);
 	}
 
 	/*Now sync masters across partitions*/
