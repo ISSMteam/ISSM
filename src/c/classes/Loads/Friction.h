@@ -38,7 +38,7 @@ class Friction{
 		void  GetAlphaComplement(IssmDouble* alpha_complement,Gauss* gauss);
 		void  GetAlphaHydroComplement(IssmDouble* alpha_complement,Gauss* gauss);
 		void  GetAlphaTempComplement(IssmDouble* alpha_complement,Gauss* gauss);
-		void  GetAlphaViscousComplement(IssmDouble* alpha_complement,Gauss* gauss);
+		void  GetAlphaBuddComplement(IssmDouble* alpha_complement,Gauss* gauss);
 		void  GetAlphaSchoofComplement(IssmDouble* alpha_complement,Gauss* gauss);
 		void  GetAlphaCoulomb2Complement(IssmDouble* alpha_complement,Gauss* gauss);
 		void  GetAlphaRegCoulombComplement(IssmDouble* alpha_complement,Gauss* gauss);
@@ -50,7 +50,7 @@ class Friction{
 		void  GetAlpha2Josh(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2Shakti(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2Temp(IssmDouble* palpha2,Gauss* gauss);
-		void  GetAlpha2Viscous(IssmDouble* palpha2,Gauss* gauss);
+		void  GetAlpha2Budd(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2WaterLayer(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2Weertman(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2WeertmanTemp(IssmDouble* palpha2,Gauss* gauss);
