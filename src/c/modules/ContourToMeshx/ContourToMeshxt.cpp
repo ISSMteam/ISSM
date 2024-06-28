@@ -15,7 +15,7 @@ void* ContourToMeshxt(void* vpthread_handle){
 	/*gate variables :*/
 	ContourToMeshxThreadStruct *gate        = NULL;
 	pthread_handle             *handle      = NULL;
-	int  i,i1,i0;
+	int i1,i0;
 
 	/*recover handle and gate: */
 	handle          = (pthread_handle*)vpthread_handle;

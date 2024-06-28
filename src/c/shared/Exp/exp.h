@@ -16,16 +16,12 @@ int pnpoly(int npol, double *xp, double *yp, double x, double y, int edgevalue);
 
 template <class doubletype> int IsInPoly(doubletype* in,double* xc,double* yc,int numvertices,double* x,double* y,int i0,int i1, int edgevalue){ /*{{{*/
 
-	int i;
-	double x0,y0;
-	doubletype value;
-	double xmin=xc[0];
-	double xmax=xc[0];
-	double ymin=yc[0];
-	double ymax=yc[0];
+	/*NOTE: we are assuming here that "in" has been allocated and initialized as 0!*/
 
-	/*Get extrema*/
-	for (i=1;i<numvertices;i++){
+	/*Get extrema to speed up test*/
+	double xmin=xc[0], xmax=xc[0];
+	double ymin=yc[0], ymax=yc[0];
+	for(int i=1;i<numvertices;i++){
 		if(xc[i]<xmin) xmin=xc[i];
 		if(xc[i]>xmax) xmax=xc[i];
 		if(yc[i]<ymin) ymin=yc[i];
@@ -33,26 +29,23 @@ template <class doubletype> int IsInPoly(doubletype* in,double* xc,double* yc,in
 	}
 
 	/*Go through all vertices of the mesh:*/
-	for (i=i0;i<i1;i++){
+	for(int i=i0;i<i1;i++){
 
-		//Get current value of value[i] -> do not change it if != 0
-		value=in[i];
-		if (reCast<bool,doubletype>(value)){
-			/*this vertex already is inside one of the contours, continue*/
-			continue;
-		}
+		/*Get current value*/
+		doubletype value=in[i];
 
-		/*pick up vertex (x[i],y[i]) and figure out if located inside contour (xc,yc)*/
-		x0=x[i]; y0=y[i];
-		if(x0<xmin || x0>xmax || y0<ymin || y0>ymax){
-			value=0;
+		/* if this vertex already is inside one of the contours, continue*/
+		if(reCast<bool,doubletype>(value)) continue;
+
+		/*pick up vertex (x[i],y[i]) and figure out if it is located inside contour (xc,yc)*/
+		double x0 = x[i], y0 = y[i];
+		if(x0<xmin || x0>xmax || y0<ymin || y0>ymax) continue;
+
+		if(pnpoly(numvertices,xc,yc,x0,y0,edgevalue)){
+			in[i] = 1;
 		}
-		else{
-			value=pnpoly(numvertices,xc,yc,x0,y0,edgevalue);
-		}
-		in[i]=value;
 	}
-	 return 1;
+	return 1;
 }/*}}}*/
 template <class doubletype> int ExpRead(int* pnprof,int** pprofnvertices,doubletype*** ppprofx,doubletype*** ppprofy,bool** pclosed,char* domainname){ /*{{{*/
 
