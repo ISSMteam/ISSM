@@ -22,18 +22,16 @@ Observation::Observation(double x_in,double y_in,int xi_in,int yi_in,int index_i
 	this->value  = value_in;
 	this->weight = 1.;
 
-}
-/*}}}*/
-Observation::Observation(double x_in, double y_in,double value_in){
+} /*}}}*/
+Observation::Observation(double x_in, double y_in,double value_in){/*{{{*/
 	this->x = x_in;
 	this->y = y_in;
 	this->value = value_in;
-
 	this->xi     = 0;
 	this->yi     = 0;
 	this->index  = 0;
 	this->weight = 0.;
-}
+}/*}}}*/
 Observation::~Observation(){/*{{{*/
 	return;
 }
