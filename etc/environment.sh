@@ -560,6 +560,7 @@ fi
 PROJ_ROOT="${ISSM_EXT_DIR}/proj/install"
 if [ -d "${PROJ_ROOT}" ]; then
 	export PROJ_ROOT # Used in installation of GDAL
+	export PROJ_LIB="${PROJ_ROOT}/share/proj" #in order to find proj.db
 	path_append "${PROJ_ROOT}/bin"
 	ld_library_path_prepend "${PROJ_ROOT}/lib"
 	dyld_library_path_prepend "${PROJ_ROOT}/lib"
