@@ -14,7 +14,16 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	%
 	options    = pairoptions(varargin{:});
 
-	foldername = '/totten_1/ModelData/Greenland/ITS_LIVE/';
+	% get the version of ITS_LIVE, v02 is the latest version (by 2024-07)
+	% however, this version is in h5 format, can only be read by `h5read`, NOT `ncread`
+	data_version = getfieldvalue(options,'version', 2);
+	if data_version == 1
+		foldername = '/totten_1/ModelData/Greenland/ITS_LIVE/v01/';
+	elseif data_version == 2
+		foldername = '/totten_1/ModelData/Greenland/ITS_LIVE/';
+	else
+		error(['ITS_LIVE version ', data_version, ' is not supported!'])
+	end
 
 	% get the time info from file names
 	templist = dir([foldername,'*.nc']);
@@ -25,7 +34,11 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 		[~, fname, ~] = fileparts(templist(i).name);
 		tempConv = split(fname, '_');
 		% follow the naming convention
-		dataTime(i) = date2decyear(datenum(tempConv{end}, 'yyyy'));
+		if data_version == 1
+			dataTime(i) = date2decyear(datenum(tempConv{end}, 'yyyy'));
+		elseif data_version == 2
+			dataTime(i) = date2decyear(datenum(tempConv{end-1}, 'yyyy'));
+		end
 	end
 	% find all the data files with Tstart<=t<=Tend
 	dataInd = (dataTime>=Tstart) & (dataTime<=Tend);
@@ -34,10 +47,15 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	dataToLoad = {templist(dataInd).name};
 	time_out = dataTime(dataInd);
 
-	% Load x,y for GRE_G0240_0000.nc
+	% Load x,y 
 	refNF = [foldername, templist(1).name];
-	xh = ncread(refNF, 'x');
-	yh = ncread(refNF, 'y');
+	if data_version == 1
+		xh = ncread(refNF, 'x');
+		yh = ncread(refNF, 'y');
+	elseif data_version == 2
+		xh = h5read(refNF, '/x');
+		yh = h5read(refNF, '/y');
+	end
 
 	xmin = min(X(:)); xmax = max(X(:));
 	ymin = min(Y(:)); ymax = max(Y(:));
@@ -60,9 +78,14 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	for i = 1:length(dataToLoad)
 
 		filename = [foldername, dataToLoad{i}];
-		vx = (ncread(filename,'vx',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
-		vy = (ncread(filename,'vy',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
 
+		if data_version == 1
+			vx = (ncread(filename,'vx',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
+			vy = (ncread(filename,'vy',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
+		elseif data_version == 2
+			vx = (h5read(filename,'/vx',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
+			vy = (h5read(filename,'/vy',[id1xh id1yh],[id2xh-id1xh+1 id2yh-id1yh+1],[1 1]));
+		end
 		vx(vx<-32760) = nan;
 		vy(vy<-32760) = nan;
 		vx_out(:,:,i) = InterpFromGrid(xh, yh, double(vx'), X, Y);
