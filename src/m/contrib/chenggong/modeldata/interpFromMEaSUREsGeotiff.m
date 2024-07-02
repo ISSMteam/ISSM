@@ -16,9 +16,13 @@ function dataout = interpFromMEaSUREsGeotiff(X,Y,Tstart,Tend,varargin)
 %   Options:
 %      - 'glacier':  which glacier to look for
 options    = pairoptions(varargin{:});
-glacier    = getfieldvalue(options,'glacier','Jakobshavn');
+glacier    = getfieldvalue(options,'glacier','Greenland');
+data_version = 'v04.0';
 
-if strcmp(glacier, 'Jakobshavn')
+if strcmp(glacier, 'Greenland')
+	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Greenland_2014_2022_monthly_mosaic_v5/';
+	data_version = 'v05.0';
+elseif strcmp(glacier, 'Jakobshavn')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2021/';
 elseif strcmp(glacier, 'Kangerlussuaq')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Kangerlussuaq_2006_2021/';
@@ -35,7 +39,7 @@ else
 end
 
 % get the time info from file names
-templist = dir([foldername,'*.meta']);
+templist = dir([foldername,'*vx*.tif']);
 Ndata = length(templist);
 dataTstart = zeros(Ndata,1);
 dataTend = zeros(Ndata,1);
@@ -43,9 +47,9 @@ dataTend = zeros(Ndata,1);
 for i = 1:Ndata
 	tempConv = split(templist(i).name, '_');
 	% follow the naming convention
-	dataPrefix(i) = join(tempConv(1:5), '_');
-	dataTstart(i) = date2decyear(datenum(tempConv{3}));
-	dataTend(i) = date2decyear(datenum(tempConv{4}));
+	dataPrefix(i) = join(tempConv(1:end-2), '_');
+	dataTstart(i) = date2decyear(datenum(tempConv{end-3}));
+	dataTend(i) = date2decyear(datenum(tempConv{end-2}));
 end
 disp(['  Found ', num2str(Ndata), ' records in ', foldername]);
 disp(['    from ', datestr(decyear2date(min(dataTstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date(max(dataTend)),'yyyy-mm-dd') ]);
@@ -60,9 +64,9 @@ TstartToload = dataTstart(dataInd);
 TendToload = dataTend(dataInd);
 
 for i = 1:length(dataToLoad)
-	dataout(i).vx = interpFromGeotiff([foldername, dataToLoad{i}, '_vx_v04.0.tif'], X, Y, 2e9);
-	dataout(i).vy = interpFromGeotiff([foldername, dataToLoad{i}, '_vy_v04.0.tif'], X, Y, 2e9);
-	dataout(i).vel = interpFromGeotiff([foldername, dataToLoad{i}, '_vv_v04.0.tif'], X, Y, -1);
+	dataout(i).vx = interpFromGeotiff([foldername, dataToLoad{i}, '_vx_', data_version, '.tif'], X, Y, 2e9);
+	dataout(i).vy = interpFromGeotiff([foldername, dataToLoad{i}, '_vy_', data_version, '.tif'], X, Y, 2e9);
+	dataout(i).vel = interpFromGeotiff([foldername, dataToLoad{i}, '_vv_', data_version, '.tif'], X, Y, -1);
 	dataout(i).Tstart = TstartToload(i);
 	dataout(i).Tend = TendToload(i);
 end
