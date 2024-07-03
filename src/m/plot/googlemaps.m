@@ -87,23 +87,6 @@ scale   = 1;
 maxsize = 640;
 bottom  = 50;
 
-%convert all these coordinates to pixels
-[ulx, uly]= latlontopixels(ullat, ullon, zoom);
-[lrx, lry]= latlontopixels(lrlat, lrlon, zoom);
-
-%calculate total pixel dimensions of final image
-dx = lrx - ulx;
-dy = uly - lry;
-
-%calculate rows and columns
-cols = ceil(dx/maxsize);
-rows = ceil(dy/(maxsize-bottom));
-
-%calculate pixel dimensions of each small image
-width   = ceil(dx/cols);
-height  = ceil(dy/rows);
-heightplus = height + bottom;
-
 %Read Google Maps key
 if exist('~/.googlemapskey');
 	key=deblank(fileread('~/.googlemapskey'));
@@ -113,54 +96,110 @@ else
 	%Once approved, go to Google Cloud Platform and enable "Maps Static APIs"
 	%You will also need to "enable billing fot this project"
 	%Then get the key and enter it in ~/.googlemapskey
-	warning('It appears that you do not have a Google Maps API key, retrieving google maps photos may fail (this is a new requirement of Google...)');
+	disp('It appears that you do not have a Google Maps API key, using MATLAB''s mapping toolbox instead');
 	iskey = false;
 end
 
-%Initialize final image
-final = zeros(floor(dy),floor(dx),3);%RGB image
-for x=0:cols-1,
-	for y=0:rows-1,
-		dxn = width  * (0.5 + x);
-		dyn = height * (0.5 + y);
-		[latn, lonn] = pixelstolatlon(ulx + dxn, uly - dyn - bottom/2, zoom);
-		position = [num2str(latn) ',' num2str(lonn)];
-		disp(['Google Earth tile: ' num2str(x) '/' num2str(cols-1) ' ' num2str(y) '/' num2str(rows-1) ' (center: ' position ')']);
-		%Google maps API: http://developers.google.com/maps/documentation/staticmaps/
-		params = [...
-			'center=' position ...
-			'&zoom=' num2str(zoom)...
-			'&size=' num2str(width) 'x' num2str(heightplus)...
-			'&maptype=satellite'...
-			'&sensor=false'...
-			'&scale=' num2str(scale)];
-		if iskey,
-			params = [params,'&key=' key];
-		end
-		url = ['http://maps.google.com/maps/api/staticmap?' params];
-		count = 0;
-		countmax = 10;
-		while(true)
-			try,
-				[X, map]=imread(url,'png');
-				break;
-			catch me,
-				disp(['Failed, trying again... (' num2str(countmax-count) ' more attempts)']);
-				count = count+1;
-				pause(.3);
-				if count>countmax,
-					disp('Giving up...');
-					rethrow(me);
+if iskey
+	%convert all these coordinates to pixels
+	[ulx, uly]= latlontopixels(ullat, ullon, zoom);
+	[lrx, lry]= latlontopixels(lrlat, lrlon, zoom);
+
+	%calculate total pixel dimensions of final image
+	dx = lrx - ulx;
+	dy = uly - lry;
+
+	%calculate rows and columns
+	cols = ceil(dx/maxsize);
+	rows = ceil(dy/(maxsize-bottom));
+
+	%calculate pixel dimensions of each small image
+	width   = ceil(dx/cols);
+	height  = ceil(dy/rows);
+	heightplus = height + bottom;
+
+	%Initialize final image
+	final = zeros(floor(dy),floor(dx),3);%RGB image
+	for x=0:cols-1,
+		for y=0:rows-1,
+			dxn = width  * (0.5 + x);
+			dyn = height * (0.5 + y);
+			[latn, lonn] = pixelstolatlon(ulx + dxn, uly - dyn - bottom/2, zoom);
+
+			position = [num2str(latn) ',' num2str(lonn)];
+			disp(['Google Earth tile: ' num2str(x) '/' num2str(cols-1) ' ' num2str(y) '/' num2str(rows-1) ' (center: ' position ')']);
+
+			%Google maps API: http://developers.google.com/maps/documentation/staticmaps/
+			params = [...
+				'center=' position ...
+				'&zoom=' num2str(zoom)...
+				'&size=' num2str(width) 'x' num2str(heightplus)...
+				'&maptype=satellite'...
+				'&sensor=false'...
+				'&scale=' num2str(scale)];
+			if iskey,
+				params = [params,'&key=' key];
+			end
+			url = ['http://maps.google.com/maps/api/staticmap?' params];
+			count = 0;
+			countmax = 10;
+			while(true)
+				try,
+					[X, map]=imread(url,'png');
+					break;
+				catch me,
+					disp(['Failed, trying again... (' num2str(countmax-count) ' more attempts)']);
+					count = count+1;
+					pause(.3);
+					if count>countmax,
+						disp('Giving up...');
+						rethrow(me);
+					end
 				end
 			end
+			X=ind2rgb(X,map);
+
+			indx1 = floor(x*width)+1;
+			indx2 = min(floor(dx),floor(x*width)+size(X,2));
+			indy1 = floor(y*height)+1;
+			indy2 = min(floor(dy),floor(y*height)+size(X,1));
+			final(indy1:indy2,indx1:indx2,:)=X(1:indy2-indy1+1,1:indx2-indx1+1,:);
 		end
-		X=ind2rgb(X,map);
-		indx1 = floor(x*width)+1;
-		indx2 = min(floor(dx),floor(x*width)+size(X,2));
-		indy1 = floor(y*height)+1;
-		indy2 = min(floor(dy),floor(y*height)+size(X,1));
-		final(indy1:indy2,indx1:indx2,:)=X(1:indy2-indy1+1,1:indx2-indx1+1,:);
 	end
+
+	%prepare coordinate matrix of images
+	[gX gY]=meshgrid(ulx:ulx+size(final,2)-1,uly:-1:uly-size(final,1)+1);
+	[LAT LON]=pixelstolatlon(gX,gY, zoom);
+else
+	% Read the basemap image from the web:
+	fprintf(['Downloading image from readBasemapImage (zoom=' num2str(zoom) ')... ']);
+	[final,R,attrib] = readBasemapImage('satellite', [lrlat ullat], [ullon lrlon], zoom);
+	fprintf('done!\n');
+
+	%prepare coordinate matrix of images
+	[X,Y] = meshgrid(...
+		linspace(R.XWorldLimits(1),R.XWorldLimits(2),R.RasterSize(2)),...
+		linspace(R.YWorldLimits(2),R.YWorldLimits(1),R.RasterSize(1)));
+
+	%remove logo
+	logopix = 9;
+	final(end-logopix:end,:,:) = [];
+	X(end-logopix:end,:) = [];
+	Y(end-logopix:end,:) = [];
+
+	[LAT LON] = mercator2ll(X, Y);
+end
+
+%Convert image Lat/Lon to X/Y
+if md.mesh.epsg==3413
+	[X Y]=ll2xy(LAT,LON,+1,45,70);
+elseif md.mesh.epsg==3031
+	[X Y]=ll2xy(LAT,LON,-1,0,71);
+elseif md.mesh.epsg==4326
+	X=LON;
+	Y=LAT;
+else
+	error('EPSG code not supported yet');
 end
 
 %Write image
@@ -178,18 +217,6 @@ delete('temp.png');
 if status~=0,
 	disp(result);
 	disp('googlemaps info: GDAL not found or not working properly, the Google image will not be transformed');
-	[gX gY]=meshgrid(ulx:ulx+size(final,2)-1,uly:-1:uly-size(final,1)+1);
-	[LAT LON]=pixelstolatlon(gX,gY, zoom);
-	if md.mesh.epsg==3413,
-		[X Y]=ll2xy(LAT,LON,+1,45,70);
-	elseif md.mesh.epsg==3031,
-		[X Y]=ll2xy(LAT,LON,-1,0,71);
-	elseif md.mesh.epsg==4326,
-		X=LON;
-		Y=LAT;
-	else
-		error('EPSG code not supported yet');
-	end
 	md.radaroverlay.pwr=final;
 	md.radaroverlay.x=X;
 	md.radaroverlay.y=Y;
@@ -205,18 +232,6 @@ if ~isempty(strfind(result,'ERROR')),
 	disp(result);
 	disp(' ');disp('googlemaps info: GDAL not working properly (missing PROJ.4 library?), Google image will not be transformed');
 	disp(result);
-	[gX gY]=meshgrid(ulx:ulx+size(final,2)-1,uly:-1:uly-size(final,1)+1);
-	[LAT LON]=pixelstolatlon(gX,gY, zoom);
-	if md.mesh.epsg==3413,
-		[X Y]=ll2xy(LAT,LON,+1,45,70);
-	elseif md.mesh.epsg==3031,
-		[X Y]=ll2xy(LAT,LON,-1,0,71);
-	elseif md.mesh.epsg==4326,
-		X=LON;
-		Y=LAT;
-	else
-		error('EPSG code not supported yet');
-	end
 	md.radaroverlay.pwr=final;
 	md.radaroverlay.x=X;
 	md.radaroverlay.y=Y;
@@ -238,7 +253,6 @@ delete('temp2.tiff');
 md.radaroverlay.pwr=final;
 md.radaroverlay.x=x_m;
 md.radaroverlay.y=y_m;
-
 end
 function [px py]=latlontopixels(lat, lon, zoom),
 	EARTH_RADIUS = 6378137;
