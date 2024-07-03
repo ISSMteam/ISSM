@@ -3,7 +3,7 @@ function md = googlemaps(md,ullat,ullon,lrlat,lrlon,varargin)
 %
 %   Usage:
 %       md = googlemaps(md)
-%       md = googlemaps(md,zoom)
+%       md = googlemaps(md,zoomlevel)
 %       md = googlemaps(md,ullat,ullon,lrlat,lrlon)
 %       md = googlemaps(md,ullat,ullon,lrlat,lrlon,options)
 %
@@ -11,7 +11,7 @@ function md = googlemaps(md,ullat,ullon,lrlat,lrlon,varargin)
 %   - lrlat,lrlon: Lower Right corner latitude and longitude
 %
 %   Available options:
-%      - zoom: zoom level, between 1 and 21 (default dynamically calculated)
+%      - zoomlevel: between 1 and 21 (default dynamically calculated)
 
 %Parse inputs
 if nargin<=5,
@@ -32,7 +32,7 @@ if exist('temp.png','file'),
 end
 
 if nargin==2,
-	options=addfielddefault(options,'zoom',ullat);
+	options=addfielddefault(options,'zoomlevel',ullat);
 end
 
 if md.mesh.epsg==0,
@@ -76,12 +76,12 @@ end
 EPSGgoogle = 'EPSG:3785';   % Mercator       http://www.spatialreference.org/ref/epsg/3785/
 EPSGlocal  = ['EPSG:' num2str(md.mesh.epsg)];
 
-%Find optimal zoom
-if exist(options,'zoom'),
-	zoom = getfieldvalue(options,'zoom');
+%Find optimal zoomlevel
+if exist(options,'zoomlevel'),
+	zoomlevel = getfieldvalue(options,'zoomlevel');
 else
-	zoom = optimalzoom(ullat,ullon,lrlat,lrlon);
-	display(['googlemaps info: default zoom level ' num2str(zoom)]);
+	zoomlevel = optimalzoomlevel(ullat,ullon,lrlat,lrlon);
+	display(['googlemaps info: default zoomlevel level ' num2str(zoomlevel)]);
 end
 scale   = 1;
 maxsize = 640;
@@ -102,8 +102,8 @@ end
 
 if iskey
 	%convert all these coordinates to pixels
-	[ulx, uly]= latlontopixels(ullat, ullon, zoom);
-	[lrx, lry]= latlontopixels(lrlat, lrlon, zoom);
+	[ulx, uly]= latlontopixels(ullat, ullon, zoomlevel);
+	[lrx, lry]= latlontopixels(lrlat, lrlon, zoomlevel);
 
 	%calculate total pixel dimensions of final image
 	dx = lrx - ulx;
@@ -124,7 +124,7 @@ if iskey
 		for y=0:rows-1,
 			dxn = width  * (0.5 + x);
 			dyn = height * (0.5 + y);
-			[latn, lonn] = pixelstolatlon(ulx + dxn, uly - dyn - bottom/2, zoom);
+			[latn, lonn] = pixelstolatlon(ulx + dxn, uly - dyn - bottom/2, zoomlevel);
 
 			position = [num2str(latn) ',' num2str(lonn)];
 			disp(['Google Earth tile: ' num2str(x) '/' num2str(cols-1) ' ' num2str(y) '/' num2str(rows-1) ' (center: ' position ')']);
@@ -132,7 +132,7 @@ if iskey
 			%Google maps API: http://developers.google.com/maps/documentation/staticmaps/
 			params = [...
 				'center=' position ...
-				'&zoom=' num2str(zoom)...
+				'&zoomlevel=' num2str(zoomlevel)...
 				'&size=' num2str(width) 'x' num2str(heightplus)...
 				'&maptype=satellite'...
 				'&sensor=false'...
@@ -169,11 +169,11 @@ if iskey
 
 	%prepare coordinate matrix of images
 	[gX gY]=meshgrid(ulx:ulx+size(final,2)-1,uly:-1:uly-size(final,1)+1);
-	[LAT LON]=pixelstolatlon(gX,gY, zoom);
+	[LAT LON]=pixelstolatlon(gX,gY, zoomlevel);
 else
 	% Read the basemap image from the web:
-	fprintf(['Downloading image from readBasemapImage (zoom=' num2str(zoom) ')... ']);
-	[final,R,attrib] = readBasemapImage('satellite', [lrlat ullat], [ullon lrlon], zoom);
+	fprintf(['Downloading image from readBasemapImage (zoomlevel=' num2str(zoomlevel) ')... ']);
+	[final,R,attrib] = readBasemapImage('satellite', [lrlat ullat], [ullon lrlon], zoomlevel);
 	fprintf('done!\n');
 
 	%prepare coordinate matrix of images
@@ -254,30 +254,30 @@ md.radaroverlay.pwr=final;
 md.radaroverlay.x=x_m;
 md.radaroverlay.y=y_m;
 end
-function [px py]=latlontopixels(lat, lon, zoom),
+function [px py]=latlontopixels(lat, lon, zoomlevel),
 	EARTH_RADIUS = 6378137;
 	EQUATOR_CIRCUMFERENCE = 2 * pi * EARTH_RADIUS;
 	INITIAL_RESOLUTION = EQUATOR_CIRCUMFERENCE / 256.0;
 	ORIGIN_SHIFT = EQUATOR_CIRCUMFERENCE / 2.0;
 
 	[mx,my]=ll2mercator(lat,lon);
-	res = INITIAL_RESOLUTION / (2^zoom);
+	res = INITIAL_RESOLUTION / (2^zoomlevel);
 	px = (mx + ORIGIN_SHIFT) / res;
 	py = (my + ORIGIN_SHIFT) / res;
 end
 
-function [lat lon]=pixelstolatlon(px, py, zoom),
+function [lat lon]=pixelstolatlon(px, py, zoomlevel),
 	EARTH_RADIUS = 6378137;
 	EQUATOR_CIRCUMFERENCE = 2 * pi * EARTH_RADIUS;
 	INITIAL_RESOLUTION = EQUATOR_CIRCUMFERENCE / 256.0;
 	ORIGIN_SHIFT = EQUATOR_CIRCUMFERENCE / 2.0;
 
-	res = INITIAL_RESOLUTION / (2^zoom);
+	res = INITIAL_RESOLUTION / (2^zoomlevel);
 	mx = px * res - ORIGIN_SHIFT;
 	my = py * res - ORIGIN_SHIFT;
 	[lat lon] = mercator2ll(mx,my);
 end
-function  zoom = optimalzoom(ullat,ullon,lrlat,lrlon)
+function  zoomlevel = optimalzoomlevel(ullat,ullon,lrlat,lrlon)
 
 	EARTH_RADIUS = 6378137;
 	EQUATOR_CIRCUMFERENCE = 2 * pi * EARTH_RADIUS;
@@ -289,10 +289,10 @@ function  zoom = optimalzoom(ullat,ullon,lrlat,lrlon)
 	[lrmx lrmy]=ll2mercator(lrlat,lrlon);
 	distance = sqrt((lrmx-ulmx)^2 + (lrmy-ulmy)^2);
 
-	zoom1 = floor(log(INITIAL_RESOLUTION*optimalsize/(lrmx-ulmx))/log(2));
-	zoom2 = floor(log(INITIAL_RESOLUTION*optimalsize/(ulmy-lrmy))/log(2));
+	zoomlevel1 = floor(log(INITIAL_RESOLUTION*optimalsize/(lrmx-ulmx))/log(2));
+	zoomlevel2 = floor(log(INITIAL_RESOLUTION*optimalsize/(ulmy-lrmy))/log(2));
 
-	zoom=max(zoom1,zoom2);
+	zoomlevel=max(zoomlevel1,zoomlevel2);
 
-	zoom = min(max(1,zoom),21);
+	zoomlevel = min(max(1,zoomlevel),21);
 end
