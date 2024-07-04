@@ -32,6 +32,7 @@ struct CoDi_global {
 
 		bool has_time_output;
 		bool has_memory_output;
+		bool has_preaccumulation;
 
 		std::ofstream time_output;
 		std::ofstream memory_output;

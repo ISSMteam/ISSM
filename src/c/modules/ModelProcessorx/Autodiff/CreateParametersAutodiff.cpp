@@ -113,6 +113,7 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.tapeAlloc",AutodiffTapeAllocEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.outputTapeMemory",AutodiffOutputTapeMemoryEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.outputTime",AutodiffOutputTimeEnum));
+		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.enablePreaccumulation",AutodiffEnablePreaccumulationEnum));
 
 		#else
 		_error_("not supported yet");
