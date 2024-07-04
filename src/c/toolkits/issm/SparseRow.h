@@ -68,9 +68,11 @@ class SparseRow{
 #if _HAVE_CODIPACK_
 			codi::PreaccumulationHelper<IssmDouble> ph{};
 
-			ph.start();
-			for(i=0; i < numvalues; i += 1) {
-				ph.addInput(vals[i]);
+			if (codi_global.has_preaccumulation) {
+				ph.start();
+				for(i=0; i < numvalues; i += 1) {
+					ph.addInput(vals[i]);
+				}
 			}
 #endif
 
@@ -106,10 +108,12 @@ class SparseRow{
 			}
 
 #if _HAVE_CODIPACK_
-			for(i = 0; i < ncols; i += 1) {
-				ph.addOutput(values[i]);
+			if (codi_global.has_preaccumulation) {
+				for(i = 0; i < ncols; i += 1) {
+					ph.addOutput(values[i]);
+				}
+				ph.finish(false);
 			}
-			ph.finish(false);
 #endif
 
 			if(count!=ncols)_error_("counter problem during set values operations");

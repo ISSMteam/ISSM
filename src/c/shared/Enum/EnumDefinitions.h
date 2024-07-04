@@ -45,6 +45,7 @@ enum definitions{
 	AutodiffCbufsizeEnum,
 	AutodiffDependentObjectsEnum,
 	AutodiffDriverEnum,
+	AutodiffEnablePreaccumulationEnum,
 	AutodiffFosForwardIndexEnum,
 	AutodiffFosReverseIndexEnum,
 	AutodiffFovForwardIndicesEnum,

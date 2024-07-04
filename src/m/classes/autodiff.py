@@ -27,6 +27,7 @@ class autodiff(object):
         self.tapeAlloc = np.nan
         self.outputTapeMemory = False
         self.outputTime = False
+        self.enablePreaccumulation = False
         if not len(args):
             self.setdefaultparameters()
         else:
@@ -48,6 +49,7 @@ class autodiff(object):
         s += '{}\n'.format(fielddisplay(self, 'tapeAlloc', 'Iteration count of a priori memory allocation of the AD tape'))
         s += '{}\n'.format(fielddisplay(self, 'outputTapeMemory', 'Write AD tape memory statistics to file ad_mem.dat'))
         s += '{}\n'.format(fielddisplay(self, 'outputTime', 'Write AD recording and evaluation times to file ad_time.dat'))
+        s += '{}\n'.format(fielddisplay(self, 'enablePreaccumulation', 'Enable CoDiPack preaccumulation in augmented places'))
 
         return s
     # }}}
@@ -79,6 +81,9 @@ class autodiff(object):
         # Memory and time output
         md = checkfield(md, 'fieldname', 'autodiff.outputTapeMemory', '>=', 0)
         md = checkfield(md, 'fieldname', 'autodiff.outputTime', '>=', 0)
+
+        # Memory reduction options
+        md = checkfield(md, 'fieldname', 'autodiff.enablePreaccumulation', '>=', 0)
 
         # Driver value
         md = checkfield(md, 'fieldname', 'autodiff.driver', 'values', ['fos_forward', 'fov_forward', 'fov_forward_all', 'fos_reverse', 'fov_reverse', 'fov_reverse_all'])
@@ -114,6 +119,9 @@ class autodiff(object):
         # Output of memory and time
         WriteData(fid, prefix, 'object', self, 'fieldname', 'outputTapeMemory', 'format', 'Boolean')
         WriteData(fid, prefix, 'object', self, 'fieldname', 'outputTime', 'format', 'Boolean')
+
+        # Memory reduction options
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'enablePreaccumulation', 'format', 'Boolean')
 
         # Process dependent variables
         num_dependent_objects = len(self.dependents)

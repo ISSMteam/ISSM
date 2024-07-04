@@ -14,6 +14,7 @@ void CoDi_global::init(Parameters* parameters) {
 
 	parameters->FindParam(&has_time_output, AutodiffOutputTimeEnum);
 	parameters->FindParam(&has_memory_output, AutodiffOutputTapeMemoryEnum);
+	parameters->FindParam(&has_preaccumulation, AutodiffEnablePreaccumulationEnum);
 
 	if (0 == IssmComm::GetRank()) {
 		if (has_time_output) {
