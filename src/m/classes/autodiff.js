@@ -14,6 +14,8 @@ function autodiff (){
 		this.gcTriggerRatio=2.0;
 		this.gcTriggerMaxSize=65536;
 		this.tapeAlloc    = 15000000;
+		this.outputTapeMemory = false;
+		this.outputTime = false;
 
 	}// }}}
 	this.disp= function(){// {{{
@@ -30,6 +32,8 @@ function autodiff (){
 		fielddisplay(this,'gcTriggerRatio','free location block sorting/consolidation triggered if the ratio between allocated and used locations exceeds gcTriggerRatio');
 		fielddisplay(this,'gcTriggerMaxSize','free location block sorting/consolidation triggered if the allocated locations exceed gcTriggerMaxSize');
 		fielddisplay(this,'tapeAlloc','Iteration count of a priori memory allocation of the AD tape');
+		fielddisplay(this,'outputTapeMemory','Write AD tape memory statistics to file ad_mem.dat');
+		fielddisplay(this,'outputTime','Write AD recording and evaluation times to file ad_time.dat');
 
 	}// }}}
 	this.classname= function(){// {{{
@@ -51,6 +55,11 @@ function autodiff (){
 			checkfield(md,'fieldname','autodiff.gcTriggerRatio','>=',0);
 			checkfield(md,'fieldname','autodiff.gcTriggerMaxSize','>=',65536);
 			checkfield(md,'fieldname','autodiff.tapeAlloc','>=',0);
+
+			//Memory and time output
+			checkfield(md,'fieldname','autodiff.outputTapeMemory','>=',0);
+			checkfield(md,'fieldname','autodiff.outputTime','>=',0);
+
 
 			//go through our dependents and independents and check consistency: 
 			for (var i=0;i<this.dependents.length;i++){
@@ -82,6 +91,10 @@ function autodiff (){
 			WriteData(fid,prefix,'object',this,'fieldname','gcTriggerRatio','format','Double');
 			WriteData(fid,prefix,'object',this,'fieldname','gcTriggerMaxSize','format','Double');
 			WriteData(fid,prefix,'object',this,'fieldname','tapeAlloc','format','Integer');
+			//}}}
+			//output of memory and time {{{
+			WriteData(fid,prefix,'object',this,'fieldname','outputTapeMemory','format','Boolean');
+			WriteData(fid,prefix,'object',this,'fieldname','outputTime','format','Boolean');
 			//}}}
 			//process dependent variables {{{
 			num_dependent_objects=this.dependents.length;

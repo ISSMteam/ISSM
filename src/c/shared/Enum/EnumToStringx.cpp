@@ -63,6 +63,8 @@ const char* EnumToStringx(int en){
 		case AutodiffNumDependentsEnum : return "AutodiffNumDependents";
 		case AutodiffNumIndependentsEnum : return "AutodiffNumIndependents";
 		case AutodiffObufsizeEnum : return "AutodiffObufsize";
+		case AutodiffOutputTapeMemoryEnum : return "AutodiffOutputTapeMemory";
+		case AutodiffOutputTimeEnum : return "AutodiffOutputTime";
 		case AutodiffTapeAllocEnum : return "AutodiffTapeAlloc";
 		case AutodiffTbufsizeEnum : return "AutodiffTbufsize";
 		case AutodiffXpEnum : return "AutodiffXp";

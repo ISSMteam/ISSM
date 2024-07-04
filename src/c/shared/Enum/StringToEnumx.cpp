@@ -63,6 +63,8 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"AutodiffNumDependents")==0) return AutodiffNumDependentsEnum;
 	      else if (strcmp(name,"AutodiffNumIndependents")==0) return AutodiffNumIndependentsEnum;
 	      else if (strcmp(name,"AutodiffObufsize")==0) return AutodiffObufsizeEnum;
+	      else if (strcmp(name,"AutodiffOutputTapeMemory")==0) return AutodiffOutputTapeMemoryEnum;
+	      else if (strcmp(name,"AutodiffOutputTime")==0) return AutodiffOutputTimeEnum;
 	      else if (strcmp(name,"AutodiffTapeAlloc")==0) return AutodiffTapeAllocEnum;
 	      else if (strcmp(name,"AutodiffTbufsize")==0) return AutodiffTbufsizeEnum;
 	      else if (strcmp(name,"AutodiffXp")==0) return AutodiffXpEnum;

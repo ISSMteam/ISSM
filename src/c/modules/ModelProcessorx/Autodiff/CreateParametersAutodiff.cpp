@@ -111,6 +111,8 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 
 		#elif defined(_HAVE_CODIPACK_)
 		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.tapeAlloc",AutodiffTapeAllocEnum));
+		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.outputTapeMemory",AutodiffOutputTapeMemoryEnum));
+		parameters->AddObject(iomodel->CopyConstantObject("md.autodiff.outputTime",AutodiffOutputTimeEnum));
 
 		#else
 		_error_("not supported yet");
@@ -181,5 +183,10 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 			xDelete<IssmDouble>(xp);
 		}
 	}
+
+	#if _HAVE_CODIPACK_
+	// Setup CoDiPack driver
+	codi_global.init(parameters);
+	#endif
 	#endif
 }
