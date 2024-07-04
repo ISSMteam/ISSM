@@ -12,103 +12,67 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <fstream>
+#include <iostream>
+#include <chrono>
 
 #include "CoDiPackTypes.h"
-#include "../../shared/Exceptions/exceptions.h"
+
+class Parameters;
 
 struct CoDi_global {
 
 		using Tape = typename CoDiReal::Tape;
 		using Identifier = typename CoDiReal::Identifier;
 
-    std::vector<int> input_indices;
-    std::vector<int> output_indices;
+		using time_point = typename std::chrono::system_clock::time_point;
 
-    void print(std::ostream& out) const {
-			CoDiReal::getTape().printStatistics(std::cout);
-			out << "-------------------------------------\nCoDi_global:\n  in = [ ";
-			for(auto& in_index : input_indices) {
-					out << in_index << " ";
-			}
-			out << "]\n  out = [ ";
-			for(auto& out_index : output_indices) {
-					out << out_index << " ";
-			}
-			out << "]\n-------------------------------------\n";
-    }
+		std::vector<int> input_indices;
+		std::vector<int> output_indices;
 
-		void registerInput(CoDiReal& value) {
-			CoDiReal::getTape().registerInput(value);
-			input_indices.push_back(value.getIdentifier());
-		}
+		bool has_time_output;
+		bool has_memory_output;
 
-		void registerOutput(CoDiReal& value) {
-			CoDiReal::getTape().registerOutput(value);
-			output_indices.push_back(value.getIdentifier());
-		}
+		std::ofstream time_output;
+		std::ofstream memory_output;
 
-		void start() {
-			clear();
-			// TODO: Maybe add preallocation of tape.
-			CoDiReal::getTape().setActive();
-		}
+		time_point record_start;
+		time_point record_end;
 
-		void stop() {
-			CoDiReal::getTape().setPassive();
-		}
+		time_point evaluate_start;
+		time_point evaluate_end;
 
-		void clear() {
-			input_indices.clear();
-			output_indices.clear();
-			CoDiReal::getTape().reset();
-		}
+		int run_count;
 
-		void getFullGradient(double* vec, size_t size) {
-			if (size < input_indices.size()){
-				_error_("number of requested input values is larger than the number of registered ones. requested_size: " << size << " input_size:" << input_indices.size());
-			}
+		// Misc functions.
 
-			Tape& tape = CoDiReal::getTape();
-			for(size_t i = 0; i < input_indices.size(); i += 1) {
-				vec[i] = tape.getGradient(input_indices[i]);
-			}
-		}
+		void init(Parameters* parameters);
+		void print(std::ostream& out) const;
 
-		void updateFullGradient(double* vec, size_t size) {
-			if (size < input_indices.size()){
-				_error_("number of requested input values is larger than the number of registered ones. requested_size: " << size << " input_size:" << input_indices.size());
-			}
+		// Tape management and input/output registration.
+		void registerInput(CoDiReal& value);
+		void registerOutput(CoDiReal& value);
+		void start();
+		void stop();
+		void clear();
 
-			Tape& tape = CoDiReal::getTape();
-			for(size_t i = 0; i < input_indices.size(); i += 1) {
-				vec[i] += tape.getGradient(input_indices[i]);
-			}
-		}
+		// Gradient setters, getters and tape evaluation.
 
-		void setGradient(int index, double const& seed) {
-			if (output_indices.size() <= index){
-				_error_("index value for output is outside bounds of stored output indices. index: " << index << " output_size:" << output_indices.size());
-			}
-			CoDiReal::getTape().gradient(output_indices[index]) += seed;
-		}
+		void getFullGradient(double* vec, size_t size);
+		void updateFullGradient(double* vec, size_t size);
+		void setGradient(int index, double const& seed);
+		void setFullGradient(double const * vec, size_t size);
+		void evaluate();
 
+	private:
+		// Time and memory measurement.
+		void recordStart();
+		void recordEnd();
 
-		void setFullGradient(double const * vec, size_t size) {
-			if (size < output_indices.size()){
-				_error_("number of given output values is larger than the number of registered ones. provided_size: " << size << " output_size:" << input_indices.size());
-			}
+		void evaluateStart();
+		void evaluateEnd();
 
-			Tape& tape = CoDiReal::getTape();
-			for(size_t i = 0; i < input_indices.size(); i += 1) {
-				CoDiReal::getTape().gradient(output_indices[i]) += vec[i];
-			}
-		}
-
-		void evaluate() {
-			CoDiReal::getTape().evaluate();
-		}
-
-
+		void outputTimeAndMem();
 };
 
 extern CoDi_global codi_global;

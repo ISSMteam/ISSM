@@ -5,6 +5,7 @@
 /*forward declarations */
 class Param;
 class DataSet;
+class MarshallHandle;
 template <class doublematrix> class Matrix;
 template <class doubletype> class Vector;
 #include "../../shared/shared.h"

@@ -55,6 +55,8 @@ enum definitions{
 	AutodiffNumDependentsEnum,
 	AutodiffNumIndependentsEnum,
 	AutodiffObufsizeEnum,
+	AutodiffOutputTapeMemoryEnum,
+	AutodiffOutputTimeEnum,
 	AutodiffTapeAllocEnum,
 	AutodiffTbufsizeEnum,
 	AutodiffXpEnum,

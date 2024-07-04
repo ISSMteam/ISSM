@@ -103,6 +103,7 @@
 	#define ISSM_MPI_ANY_TAG       AMPI_ANY_TAG
 	#define ISSM_MPI_ANY_SOURCE    AMPI_ANY_SOURCE
 	#define ISSM_MPI_REQUEST_NULL  AMPI_Request()
+	#define ISSM_MPI_IN_PLACE AMPI_IN_PLACE
 
 	#else
 		#if defined(_HAVE_AMPI_) && !defined(_WRAPPERS_)
@@ -131,6 +132,7 @@
 		#else
 			#define ISSM_MPI_REQUEST_NULL  0
 		#endif
+		#define ISSM_MPI_IN_PLACE MPI_IN_PLACE
 	#endif
 
     /*other include files: */
@@ -165,6 +167,7 @@
 	#define ISSM_MPI_ANY_TAG       2
 	#define ISSM_MPI_ANY_SOURCE    3
 	#define ISSM_MPI_REQUEST_NULL  0
+	#define ISSM_MPI_IN_PLACE      0
 	/*}}}*/
 #endif
 
