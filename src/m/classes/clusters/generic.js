@@ -24,7 +24,6 @@ function generic() {
 	
 	
 	// Methods
-	//{{{
 	this.disp = function() { //{{{
 		console.log(sprintf('   generic class echo:'));
 		console.log(sprintf('    url: %s', this.url));
