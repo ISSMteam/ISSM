@@ -59,8 +59,8 @@ function autodiff (){
 			checkfield(md,'fieldname','autodiff.tapeAlloc','>=',0);
 
 			//Memory and time output
-			checkfield(md,'fieldname','autodiff.outputTapeMemory','>=',0);
-			checkfield(md,'fieldname','autodiff.outputTime','>=',0);
+			checkfield(md,'fieldname','autodiff.outputTapeMemory','numel', [1], 'values', [0, 1]);
+			checkfield(md,'fieldname','autodiff.outputTime','numel', [1], 'values', [0, 1]);
 
 			//Memory reduction options
 			checkfield(md,'fieldname','autodiff.enablePreaccumulation','>=',0);
