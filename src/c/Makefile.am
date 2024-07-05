@@ -353,6 +353,9 @@ endif
 if MEDIPACK
 issm_sources += ./toolkits/codipack/ampi_interface.cpp
 endif
+if CODIPACK
+issm_sources += ./toolkits/codipack/CoDiPackGlobal.cpp
+endif
 #}}}
 # DAKOTA sources {{{
 if DAKOTA
