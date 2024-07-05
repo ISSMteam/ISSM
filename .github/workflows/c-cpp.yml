@@ -30,4 +30,4 @@ jobs:
       run: echo $MATLAB_PATH
       
     - name: run jenkins
-      run: cd jenkins && ./jenkins.sh ross-debian_linux-basic
+      run: cd jenkins && ./jenkins.sh github_linux_basic
