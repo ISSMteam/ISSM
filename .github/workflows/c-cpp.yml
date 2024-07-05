@@ -1,0 +1,19 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set path
+      run: echo "$GITHUB_PATH" >> $ISSM_DIR
+    - name: run jenkins
+      run: cd jenkins && ./jenkins.sh ross-debian_linux-basic
