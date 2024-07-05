@@ -5,7 +5,9 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+env:
+  ISSM_DIR: $GITHUB_PATH
+  
 jobs:
   build:
 
@@ -13,7 +15,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: set path
-      run: echo "$GITHUB_PATH" >> $ISSM_DIR
     - name: run jenkins
       run: cd jenkins && ./jenkins.sh ross-debian_linux-basic
