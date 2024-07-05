@@ -24,7 +24,7 @@ jobs:
     - name: Print MATLAB root folder directly
       run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
       
-    - name: run jenkins
+    - name: compile ISSM on linux basic
       env:
         MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
-      run: cd jenkins && ./jenkins.sh github_linux_basic
+      run: cd .github/ci_scripts && ./ci_ISSM.sh github_linux_basic
