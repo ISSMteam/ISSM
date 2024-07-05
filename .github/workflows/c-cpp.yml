@@ -24,10 +24,7 @@ jobs:
     - name: Print MATLAB root folder directly
       run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
       
-    - name: Print MATLAB root folder from env var
+    - name: run jenkins
       env:
         MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
-      run: echo $MATLAB_PATH
-      
-    - name: run jenkins
       run: cd jenkins && ./jenkins.sh github_linux_basic
