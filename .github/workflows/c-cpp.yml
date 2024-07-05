@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 env:
-  ISSM_DIR: $GITHUB_PATH
+  ISSM_DIR: ${{ github.action_path }}
   
 jobs:
   build:
