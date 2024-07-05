@@ -16,14 +16,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up MATLAB
+      id: setup-matlab
       uses: matlab-actions/setup-matlab@v2
       with:
         release: R2023b
+        
     - name: Print MATLAB root folder directly
       run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
+      
     - name: Print MATLAB root folder from env var
       env:
         MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
       run: echo $MATLAB_PATH
+      
     - name: run jenkins
       run: cd jenkins && ./jenkins.sh ross-debian_linux-basic
