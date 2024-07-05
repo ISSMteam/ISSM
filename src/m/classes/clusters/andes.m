@@ -16,7 +16,7 @@ classdef andes
 		executionpath = '';
 		interactive   = 0;
 		time          = 10; %in hours
-		memory        = 2;  %in Gb
+		memory        = 32;  %in Gb
 		email         = 'END,FAIL';
 		email_domain  = 'dartmouth.edu';
 		deleteckptdata= 0;
