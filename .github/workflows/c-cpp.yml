@@ -1,0 +1,30 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  ISSM_DIR: ${{ github.workspace }}
+  
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up MATLAB
+      id: setup-matlab
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        release: R2023b
+        
+    - name: Print MATLAB root folder directly
+      run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
+      
+    - name: compile ISSM on linux basic
+      env:
+        MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
+      run: cd .github/ci_scripts && ./ci_ISSM.sh github_linux_basic
