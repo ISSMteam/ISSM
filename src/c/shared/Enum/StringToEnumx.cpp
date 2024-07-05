@@ -53,6 +53,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"AutodiffCbufsize")==0) return AutodiffCbufsizeEnum;
 	      else if (strcmp(name,"AutodiffDependentObjects")==0) return AutodiffDependentObjectsEnum;
 	      else if (strcmp(name,"AutodiffDriver")==0) return AutodiffDriverEnum;
+	      else if (strcmp(name,"AutodiffEnablePreaccumulation")==0) return AutodiffEnablePreaccumulationEnum;
 	      else if (strcmp(name,"AutodiffFosForwardIndex")==0) return AutodiffFosForwardIndexEnum;
 	      else if (strcmp(name,"AutodiffFosReverseIndex")==0) return AutodiffFosReverseIndexEnum;
 	      else if (strcmp(name,"AutodiffFovForwardIndices")==0) return AutodiffFovForwardIndicesEnum;
@@ -63,6 +64,8 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"AutodiffNumDependents")==0) return AutodiffNumDependentsEnum;
 	      else if (strcmp(name,"AutodiffNumIndependents")==0) return AutodiffNumIndependentsEnum;
 	      else if (strcmp(name,"AutodiffObufsize")==0) return AutodiffObufsizeEnum;
+	      else if (strcmp(name,"AutodiffOutputTapeMemory")==0) return AutodiffOutputTapeMemoryEnum;
+	      else if (strcmp(name,"AutodiffOutputTime")==0) return AutodiffOutputTimeEnum;
 	      else if (strcmp(name,"AutodiffTapeAlloc")==0) return AutodiffTapeAllocEnum;
 	      else if (strcmp(name,"AutodiffTbufsize")==0) return AutodiffTbufsizeEnum;
 	      else if (strcmp(name,"AutodiffXp")==0) return AutodiffXpEnum;

@@ -53,6 +53,7 @@ const char* EnumToStringx(int en){
 		case AutodiffCbufsizeEnum : return "AutodiffCbufsize";
 		case AutodiffDependentObjectsEnum : return "AutodiffDependentObjects";
 		case AutodiffDriverEnum : return "AutodiffDriver";
+		case AutodiffEnablePreaccumulationEnum : return "AutodiffEnablePreaccumulation";
 		case AutodiffFosForwardIndexEnum : return "AutodiffFosForwardIndex";
 		case AutodiffFosReverseIndexEnum : return "AutodiffFosReverseIndex";
 		case AutodiffFovForwardIndicesEnum : return "AutodiffFovForwardIndices";
@@ -63,6 +64,8 @@ const char* EnumToStringx(int en){
 		case AutodiffNumDependentsEnum : return "AutodiffNumDependents";
 		case AutodiffNumIndependentsEnum : return "AutodiffNumIndependents";
 		case AutodiffObufsizeEnum : return "AutodiffObufsize";
+		case AutodiffOutputTapeMemoryEnum : return "AutodiffOutputTapeMemory";
+		case AutodiffOutputTimeEnum : return "AutodiffOutputTime";
 		case AutodiffTapeAllocEnum : return "AutodiffTapeAlloc";
 		case AutodiffTbufsizeEnum : return "AutodiffTbufsize";
 		case AutodiffXpEnum : return "AutodiffXp";

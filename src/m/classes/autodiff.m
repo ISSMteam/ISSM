@@ -17,6 +17,9 @@ classdef autodiff
 		gcTriggerRatio = NaN;
 		gcTriggerMaxSize = NaN;
 		tapeAlloc = NaN;
+		outputTapeMemory = false;
+		outputTime = false;
+		enablePreaccumulation = false;
 		end
 		%}}}
 	methods
@@ -54,6 +57,13 @@ classdef autodiff
 			md = checkfield(md,'fieldname','autodiff.gcTriggerMaxSize','>=',65536);
 			md = checkfield(md,'fieldname','autodiff.tapeAlloc','>=',0);
 
+			% Memory and time output
+			md = checkfield(md,'fieldname','autodiff.outputTapeMemory','>=',0);
+			md = checkfield(md,'fieldname','autodiff.outputTime','>=',0);
+
+			% Memory reduction options
+			md = checkfield(md,'fieldname','autodiff.enablePreaccumulation','>=',0);
+
 			%go through our dependents and independents and check consistency: 
 			for i=1:numel(self.dependents),
 				dep=self.dependents{i};
@@ -86,6 +96,9 @@ classdef autodiff
 			fielddisplay(self,'gcTriggerRatio','free location block sorting/consolidation triggered if the ratio between allocated and used locations exceeds gcTriggerRatio');
 			fielddisplay(self,'gcTriggerMaxSize','free location block sorting/consolidation triggered if the allocated locations exceed gcTriggerMaxSize');
 			fielddisplay(self,'tapeAlloc','Iteration count of a priori memory allocation of the AD tape');
+			fielddisplay(self,'outputTapeMemory','Write AD tape memory statistics to file ad_mem.dat');
+			fielddisplay(self,'outputTime','Write AD recording and evaluation times to file ad_time.dat');
+			fielddisplay(self,'enablePreaccumulation','Enable CoDiPack preaccumulation in augmented places');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
@@ -107,6 +120,13 @@ classdef autodiff
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerRatio','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerMaxSize','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','tapeAlloc','format','Integer');
+			%}}}
+			%output of memory and time {{{
+			WriteData(fid,prefix,'object',self,'fieldname','outputTapeMemory','format','Boolean');
+			WriteData(fid,prefix,'object',self,'fieldname','outputTime','format','Boolean');
+			%}}}
+			%memory reduction options {{{
+			WriteData(fid,prefix,'object',self,'fieldname','enablePreaccumulation','format','Boolean');
 			%}}}
 			%process dependent variables {{{
 			num_dependent_objects=numel(self.dependents);
