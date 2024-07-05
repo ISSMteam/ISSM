@@ -25,9 +25,9 @@ class autodiff(object):
         self.gcTriggerMaxSize = np.nan
         self.gcTriggerRatio = np.nan
         self.tapeAlloc = np.nan
-        self.outputTapeMemory = False
-        self.outputTime = False
-        self.enablePreaccumulation = False
+        self.outputTapeMemory = 0
+        self.outputTime = 0
+        self.enablePreaccumulation = 0
         if not len(args):
             self.setdefaultparameters()
         else:

@@ -17,9 +17,9 @@ classdef autodiff
 		gcTriggerRatio        = NaN;
 		gcTriggerMaxSize      = NaN;
 		tapeAlloc             = NaN;
-		outputTapeMemory      = false;
-		outputTime            = false;
-		enablePreaccumulation = false;
+		outputTapeMemory      = 0;
+		outputTime            = 0;
+		enablePreaccumulation = 0;
 		end
 		%}}}
 	methods
