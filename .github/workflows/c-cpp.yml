@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 env:
-  ISSM_DIR: ${{ GITHUB_WORKSPACE }}
+  ISSM_DIR: ${{ github.workspace }}
   
 jobs:
   build:
