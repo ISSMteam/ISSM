@@ -11,10 +11,3 @@
 #else
 #error "Cannot compile without MeDiPack and AdjointMpi"
 #endif
-
-// TODO: Maybe move somewhere else
-#ifdef _HAVE_CODIPACK_
-#include "CoDiPackGlobal.h"
-
-CoDi_global codi_global = {};
-#endif
