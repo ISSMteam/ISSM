@@ -6,19 +6,19 @@
 classdef autodiff
 	properties (SetAccess=public)  
 		% {{{ 
-		isautodiff   = false;
-		dependents   = {};
-		independents = {};
-		driver       = 'fos_forward';
-		obufsize     = NaN;
-		lbufsize     = NaN;
-		cbufsize     = NaN;
-		tbufsize     = NaN;
-		gcTriggerRatio = NaN;
-		gcTriggerMaxSize = NaN;
-		tapeAlloc = NaN;
-		outputTapeMemory = false;
-		outputTime = false;
+		isautodiff            = false;
+		dependents            = {};
+		independents          = {};
+		driver                = 'fos_forward';
+		obufsize              = NaN;
+		lbufsize              = NaN;
+		cbufsize              = NaN;
+		tbufsize              = NaN;
+		gcTriggerRatio        = NaN;
+		gcTriggerMaxSize      = NaN;
+		tapeAlloc             = NaN;
+		outputTapeMemory      = false;
+		outputTime            = false;
 		enablePreaccumulation = false;
 		end
 		%}}}
@@ -32,13 +32,13 @@ classdef autodiff
 			end
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
-		self.obufsize     = 524288;
-		self.lbufsize     = 524288;
-		self.cbufsize     = 524288;
-		self.tbufsize     = 524288;
-		self.gcTriggerRatio=2.0;
-		self.gcTriggerMaxSize=65536;
-		self.tapeAlloc    = 15000000;
+		self.obufsize         = 524288;
+		self.lbufsize         = 524288;
+		self.cbufsize         = 524288;
+		self.tbufsize         = 524288;
+		self.gcTriggerRatio   = 2.0;
+		self.gcTriggerMaxSize = 65536;
+		self.tapeAlloc        = 15000000;
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -58,8 +58,8 @@ classdef autodiff
 			md = checkfield(md,'fieldname','autodiff.tapeAlloc','>=',0);
 
 			% Memory and time output
-			md = checkfield(md,'fieldname','autodiff.outputTapeMemory','>=',0);
-			md = checkfield(md,'fieldname','autodiff.outputTime','>=',0);
+			md = checkfield(md,'fieldname','autodiff.outputTapeMemory','numel',[1],'values',[0 1]);
+			md = checkfield(md,'fieldname','autodiff.outputTime','numel',[1],'values',[0 1]);
 
 			% Memory reduction options
 			md = checkfield(md,'fieldname','autodiff.enablePreaccumulation','>=',0);
@@ -106,11 +106,12 @@ classdef autodiff
 			WriteData(fid,prefix,'object',self,'fieldname','driver','format','String');
 
 			%early return
-			if ~self.isautodiff,
+			if ~self.isautodiff
 				WriteData(fid,prefix,'data',false,'name','md.autodiff.mass_flux_segments_present','format','Boolean');
 				WriteData(fid,prefix,'data',false,'name','md.autodiff.keep','format','Boolean');
 				return;
 			end
+
 
 			%buffer sizes {{{
 			WriteData(fid,prefix,'object',self,'fieldname','obufsize','format','Double');
