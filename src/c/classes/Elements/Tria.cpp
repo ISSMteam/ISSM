@@ -4047,37 +4047,75 @@ IssmDouble Tria::IceVolume(bool scaled){/*{{{*/
 IssmDouble Tria::IceVolumeAboveFloatation(bool scaled){/*{{{*/
 
 	/*The volume above floatation: H + rho_water/rho_ice * bathymetry */
-	IssmDouble rho_ice,rho_water;
-	IssmDouble base,surface,bed,bathymetry,scalefactor;
+	IssmDouble rho_ice,rho_water,vaf,HAFaverage;
+	IssmDouble area_base,surface,bed,bathymetry,scalefactor;
 	IssmDouble xyz_list[NUMVERTICES][3];
+   IssmDouble lsf[NUMVERTICES];
 
 	if(!IsIceInElement() || IsAllFloating())return 0;
+
+	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 
 	rho_ice=FindParam(MaterialsRhoIceEnum);
 	rho_water=FindParam(MaterialsRhoSeawaterEnum);
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	if(lsf[0]*lsf[1]<=0 || lsf[0]*lsf[2]<=0 || lsf[1]*lsf[2]<=0){
+		bool istrapneg;
+      int point;
+      IssmDouble weights[NUMVERTICES];
+      IssmDouble surfaces[NUMVERTICES];
+      IssmDouble bases[NUMVERTICES];
+      IssmDouble bathys[NUMVERTICES];
+      IssmDouble HAF[NUMVERTICES];
+      IssmDouble area_basetot,f1,f2,phi;
+      /*Average thickness over subelement*/
+		Element::GetInputListOnVertices(&surfaces[0],SurfaceEnum);
+      Element::GetInputListOnVertices(&bases[0],BaseEnum);
+      Element::GetInputListOnVertices(&bathys[0],BedEnum);
+      GetFractionGeometry(weights,&phi,&point,&f1,&f2,&istrapneg,lsf);
+      for(int i=0;i<NUMVERTICES;i++) HAF[i] = surfaces[i]-bases[i]+min(rho_water/rho_ice*bathys[i],0.);
+      HAFaverage = 0.0;
+		/*Use weights[i]/phi to get average thickness over subelement*/
+      for(int i=0;i<NUMVERTICES;i++) HAFaverage += weights[i]/phi*HAF[i];
+		/*Get back area of ice-covered base*/
+		area_basetot = this->GetArea();
+		area_base    = phi*area_basetot;
 
-	/*First calculate the area of the base (cross section triangle)
-	 * http://en.wikipedia.org/wiki/Triangle
-	 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
-	base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
-	if(scaled==true){
-		Input* scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
-		scalefactor_input->GetInputAverage(&scalefactor);
-		base=base*scalefactor;
+		/*Account for scaling factor averaged over subelement*/
+		if(scaled==true){
+			IssmDouble* scalefactor_vertices = xNew<IssmDouble>(NUMVERTICES);
+			Element::GetInputListOnVertices(&scalefactor_vertices[0],MeshScaleFactorEnum);
+			scalefactor = 0.0;
+			for(int i=0;i<NUMVERTICES;i++) scalefactor += weights[i]/phi*scalefactor_vertices[i];
+			area_base = area_base*scalefactor;
+			xDelete<IssmDouble>(scalefactor_vertices);
+		}
+		vaf = area_base*HAFaverage;
+   }
+	else{
+		/*First calculate the area of the base (cross section triangle)
+		 * http://en.wikipedia.org/wiki/Triangle
+		 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
+		area_base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
+		if(scaled==true){
+			Input* scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
+			scalefactor_input->GetInputAverage(&scalefactor);
+			area_base=area_base*scalefactor;
+		}
+
+		/*Now get the average height and bathymetry*/
+		Input* surface_input = this->GetInput(SurfaceEnum); _assert_(surface_input);
+		Input* base_input    = this->GetInput(BaseEnum);    _assert_(base_input);
+		Input* bed_input     = this->GetInput(BedEnum);     _assert_(bed_input);
+		if(!bed_input) _error_("Could not find bed");
+		surface_input->GetInputAverage(&surface);
+		base_input->GetInputAverage(&bed);
+		bed_input->GetInputAverage(&bathymetry);
+		vaf = area_base*(surface-bed+min(rho_water/rho_ice*bathymetry,0.));
 	}
 
-	/*Now get the average height and bathymetry*/
-	Input* surface_input = this->GetInput(SurfaceEnum); _assert_(surface_input);
-	Input* base_input    = this->GetInput(BaseEnum);    _assert_(base_input);
-	Input* bed_input     = this->GetInput(BedEnum);     _assert_(bed_input);
-	if(!bed_input) _error_("Could not find bed");
-	surface_input->GetInputAverage(&surface);
-	base_input->GetInputAverage(&bed);
-	bed_input->GetInputAverage(&bathymetry);
-
 	/*Return: */
-	return base*(surface-bed+min(rho_water/rho_ice*bathymetry,0.));
+	return vaf;
 }
 /*}}}*/
 void       Tria::InputDepthAverageAtBase(int enum_type,int average_enum_type){/*{{{*/
