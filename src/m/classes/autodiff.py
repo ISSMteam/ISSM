@@ -80,7 +80,7 @@ class autodiff(object):
 
         # Memory and time output
         md = checkfield(md, 'fieldname', 'autodiff.outputTapeMemory', 'numel', [1], 'values', [0, 1])
-        md = checkfield(md, 'fieldname', 'autodiff.outputTime', 'numel', [1], 'values', [0, 1]
+        md = checkfield(md, 'fieldname', 'autodiff.outputTime', 'numel', [1], 'values', [0, 1])
 
         # Memory reduction options
         md = checkfield(md, 'fieldname', 'autodiff.enablePreaccumulation', '>=', 0)
