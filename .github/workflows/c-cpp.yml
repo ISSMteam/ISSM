@@ -21,17 +21,8 @@ jobs:
       with:
         release: R2023b
         
-    - name: Print MATLAB root folder directly
-      run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
-
-    - name: Check CMAKE
-      run: which cmake
-      
     - name: Install PETSc
       run: sudo apt-get install -y petsc-dev
-
-    - name: Find PETSc lib
-      run: ls /usr/lib/x86_64-linux-gnu/
 
     - name: compile ISSM on linux basic
       env:
