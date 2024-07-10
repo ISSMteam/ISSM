@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up MATLAB
+    - name: Setup MATLAB
       id: setup-matlab
       uses: matlab-actions/setup-matlab@v2
       with:
@@ -23,13 +23,10 @@ jobs:
         
     - name: Print MATLAB root folder directly
       run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
+
+    - name: Check CMAKE
+      run: which cmake
       
-    - name: Check existing libraries
-      run: which -a automake
-
-    - name: Check existing libraries2
-      run: which -a libtool
-
     - name: Install PETSc
       run: sudo apt-get install -y petsc-dev
 

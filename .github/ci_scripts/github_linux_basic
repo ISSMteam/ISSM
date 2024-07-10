@@ -26,9 +26,10 @@ ISSM_CONFIG='\
 #-------------------#
 # External Packages #
 #-------------------#
+#
+#autotools install-linux.sh
 
 EXTERNALPACKAGES="
-	autotools install-linux.sh
 	cmake     install.sh
 	petsc     install-3.21-linux.sh
 	triangle  install-linux.sh
