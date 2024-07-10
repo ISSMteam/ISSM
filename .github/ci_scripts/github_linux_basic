@@ -1,4 +1,3 @@
-
 #--------------------#
 # ISSM Configuration #
 #--------------------#
@@ -29,13 +28,12 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	autotools	install-linux.sh
-	cmake		install.sh
-	petsc		install-3.21-linux.sh
-	triangle	install-linux.sh
-	m1qn3		install-linux.sh
-	semic		install.sh
-	shell2junit	install.sh
+	autotools install-linux.sh
+	cmake     install.sh
+	petsc     install-3.21-linux.sh
+	triangle  install-linux.sh
+	m1qn3     install-linux.sh
+	semic     install.sh
 "
 
 #---------#
@@ -49,18 +47,11 @@ JAVASCRIPT_TEST=0
 EXAMPLES_TEST=0
 
 # Number of CPUs used in ISSM compilation
-#
-# NOTE: One is usually safer as some packages are very sensitive to parallel
-# 		compilation.
-#
 NUMCPUS_INSTALL=8
 
 # Number of CPUs used in the nightly runs
-NUMCPUS_RUN=2
+NUMCPUS_RUN=4
 
 # Nightly run options
-#
-# See documentation in test/NightlyRun/runme.* for more information.
-#
 MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota')]"
 PYTHON_NROPTIONS=""
