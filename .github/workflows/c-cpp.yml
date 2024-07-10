@@ -24,6 +24,18 @@ jobs:
     - name: Print MATLAB root folder directly
       run: echo ${{ steps.setup-matlab.outputs.matlabroot }}
       
+    - name: Check existing libraries
+      run: which -a automake
+
+    - name: Check existing libraries2
+      run: which -a libtool
+
+    - name: Install PETSc
+      run: sudo apt-get install -y petsc-dev
+
+    - name: Find PETSc lib
+      run: ls /usr/lib/x86_64-linux-gnu/
+
     - name: compile ISSM on linux basic
       env:
         MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
