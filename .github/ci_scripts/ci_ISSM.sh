@@ -1,26 +1,4 @@
 #!/bin/bash
-################################################################################
-# This script manages installation of ISSM on a given Jenkins node using a
-# configuration file passed as the only argument. This file also contains
-# details about which nightly run tests should be executed after the build has
-# been completed. Finally, results of the build and tests are emailed to the
-# members of the ISSM development team.
-#
-# NOTE:
-# - Variable OS is set in environment by running 
-#	`source $ISSM_DIR/etc/environment.sh`.
-#
-# TODO:
-# - Investigate refactoring parsing of list of changed files
-################################################################################
-
-# Override certain aliases
-alias grep=$(which grep)
-
-echo "Cleaning up execution directory"
-rm -rf ${ISSM_DIR}/execution/*
-rm -rf ${ISSM_DIR}/nightlylog
-mkdir ${ISSM_DIR}/nightlylog
 
 # Get configuration
 # Source config file {{{
@@ -54,86 +32,18 @@ if [[ $EXAMPLES_TEST -eq 1 && $MATLAB_TEST+$PYTHON_TEST+$JAVASCRIPT_TEST -ne 0 ]
 fi
 
 # Install ISSM
-# Determining installation type depending on last changes to repository {{{
-echo "======================================================";
-echo "             Determining installation type            "
-echo "======================================================";
-if [ -f ${ISSM_DIR}/.PREV_COMMIT ]; then
-	# Fetch main branch from remote origin (this does not affect local files 
-	# like `git pull` would)
-	git fetch --quiet origin main
-
-	# Retrieve previous commit SHA
-	PREV_COMMIT=$(cat ${ISSM_DIR}/.PREV_COMMIT)
-
-	# Get list of changed files
-	CHANGES=$(git diff --name-only ${PREV_COMMIT} FETCH_HEAD)
-
-	if [ ! "${CHANGES}" == "" ]; then
-		# Print list of changed files
-		echo "   "
-		echo "List of changed files"
-		echo "---------------------"
-		echo "${CHANGES}"
-		echo "   "
-	fi
-
-	# If the contents of the externalpackages directory were modified in any
-	# way, check for changed external packages
-	if [ ! -z "$(echo ${CHANGES} | grep externalpackages)" ]; then
-		echo "-- checking for changed externalpackages... yes"
-		ISSM_EXTERNALPACKAGES="yes"
-	else
-		echo "-- checking for changed externalpackages... no"
-		ISSM_EXTERNALPACKAGES="no"
-	fi
-
-	# If the Makefile or m4 directory were changed in any way or if certain
-	# binary files from a previous compilation do not exist, reconfigure
-	if [ ! -z "$(echo ${CHANGES}| grep -e "Makefile.am" -e "m4" )" ] ||
-		[ ! -f "${ISSM_DIR}/bin/issm.exe" ] && [ ! -f "${ISSM_DIR}/bin/issm-bin.js" ] ||
-		[ "$ISSM_EXTERNALPACKAGES" == "yes" ]; then
-		echo "-- checking for reconfiguration... yes"
-		ISSM_RECONFIGURE="yes"
-	else
-		echo "-- checking for reconfiguration... no"
-		ISSM_RECONFIGURE="no"
-	fi
-
-	# If source files were changed in any way, recompile
-	if [ ! -z "$(echo ${CHANGES} | grep -e "\.cpp" -e "\.h" )" ] ||
-		[ "$ISSM_RECONFIGURE" == "yes" ]; then
-		echo "-- checking for recompilation... yes"
-		ISSM_COMPILATION="yes"
-	else
-		echo "-- checking for recompilation... no"
-		ISSM_COMPILATION="no"
-	fi
-else
-	echo "Fresh copy of repository; building everything"
-	echo "-- checking for changed externalpackages... yes"
-	echo "-- checking for reconfiguration... yes"
-	echo "-- checking for recompilation... yes"
-	ISSM_EXTERNALPACKAGES="yes"
-	ISSM_RECONFIGURE="yes"
-	ISSM_COMPILATION="yes"
-fi
-
-# Write out hidden file containing this commit's SHA
-git rev-parse HEAD > ${ISSM_DIR}/.PREV_COMMIT
-
-# }}}
+echo "Fresh copy of repository; building everything"
+echo "-- checking for changed externalpackages... yes"
+echo "-- checking for reconfiguration... yes"
+echo "-- checking for recompilation... yes"
+ISSM_EXTERNALPACKAGES="yes"
+ISSM_RECONFIGURE="yes"
+ISSM_COMPILATION="yes"
 
 ## External Packages
-#
 
 # Number of packages
 NUMPACKAGES=$(($(echo ${EXTERNALPACKAGES} | wc -w ) / 2))
-
-# Jenkins XML files for individual packages
-EXTERNAL_TEST_FILE="${ISSM_DIR}/nightlylog/results/external.xml"
-mkdir -p ${ISSM_DIR}/nightlylog/results
-echo "<testsuite tests=\"$NUMPACKAGES\">" > $EXTERNAL_TEST_FILE
 
 # Need a source here for when builds start midway through installation of externalpackages
 source ${ISSM_DIR}/etc/environment.sh
@@ -166,36 +76,16 @@ for ((i=1;i<=$NUMPACKAGES;i++)); do
 				echo "======================================================";
 				echo "    ERROR: installation of $PACKAGENAME failed        ";
 				echo "======================================================";
-				echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\">" >> $EXTERNAL_TEST_FILE
-				echo '<failure message="failure">External packages did not install right. Check it.' >> $EXTERNAL_TEST_FILE
-				cat compil.log >> $EXTERNAL_TEST_FILE
-				echo '</failure>' >> $EXTERNAL_TEST_FILE
-				echo '</testcase>' >> $EXTERNAL_TEST_FILE
-				echo '</testsuite>' >> $EXTERNAL_TEST_FILE
 				exit 1;
-			else
-				echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
 			fi
 			source ${ISSM_DIR}/etc/environment.sh
 
 			#If external package is rebuilt, we also need to recompile
 			ISSM_RECONFIGURE="yes"
 			ISSM_COMPILATION="yes"
-		else
-			echo "======================================================";
-			echo "       Skipping $PACKAGENAME                          ";
-			echo "======================================================";
-			echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
 		fi
-	else
-		echo "======================================================";
-		echo "       Skipping $PACKAGENAME                          ";
-		echo "======================================================";
-		echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
 	fi
 done
-
-echo '</testsuite>' >> $EXTERNAL_TEST_FILE
 
 # Source here to include any newly-installed external packages on the path
 source ${ISSM_DIR}/etc/environment.sh
