@@ -18,3 +18,30 @@ or
 ```
 git clone git@github.com:ISSMteam/ISSM.git
 ```
+
+## Committing Changes to Repository
+A good basic workflow for committing changes to the repository is,
+
+1. Stash your local changes
+```
+git stash
+```
+
+2. Update your local branch
+```
+git pull
+```
+
+3. Merge your local changes
+```
+git stash apply
+```
+
+4. Add, commit, and push your changes
+```
+git add
+git commit [-m <MSG>]
+git push
+```
+
+You should then submit a pull request via GitHub so that project admins can review your changes and merge them into the main branch.
