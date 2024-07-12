@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get configuration
-# Source config file {{{
+# Source config file
 if [ $# -ne 1 ]; then
 	#no config file specified: exit
 	echo "No config file specified. Exiting..." >&2 # Error message to stderr.
@@ -24,28 +24,12 @@ NUMCPUS_RUN=1
 
 # Source configuration script
 source $1;
-# }}}
 
-if [[ $EXAMPLES_TEST -eq 1 && $MATLAB_TEST+$PYTHON_TEST+$JAVASCRIPT_TEST -ne 0 ]]; then
-	echo "When running examples tests, set *only* EXAMPLES_TEST=1"
-	exit 1
-fi
-
-# Install ISSM
-echo "Fresh copy of repository; building everything"
-echo "-- checking for changed externalpackages... yes"
-echo "-- checking for reconfiguration... yes"
-echo "-- checking for recompilation... yes"
-ISSM_EXTERNALPACKAGES="yes"
-ISSM_RECONFIGURE="yes"
-ISSM_COMPILATION="yes"
 
 ## External Packages
 
 # Number of packages
 NUMPACKAGES=$(($(echo ${EXTERNALPACKAGES} | wc -w ) / 2))
-
-# Need a source here for when builds start midway through installation of externalpackages
 source ${ISSM_DIR}/etc/environment.sh
 
 for ((i=1;i<=$NUMPACKAGES;i++)); do
@@ -74,24 +58,17 @@ for ((i=1;i<=$NUMPACKAGES;i++)); do
 	source ${ISSM_DIR}/etc/environment.sh
 done
 
-# Source here to include any newly-installed external packages on the path
-source ${ISSM_DIR}/etc/environment.sh
-
-if [ "${OS}" == CYGWIN* ]; then
-	echo " == WINDOWS ENVIRONMENT DETECTED =="
-	source ${ISSM_DIR}/externalpackages/windows/windows_environment.sh
-fi
-
-# ISSM compilation yes/no (ISSM_COMPILATION)
+# ISSM compilation
 cd $ISSM_DIR
 echo "======================================================";
-echo "             Cleaning up and reconfiguring            "
+echo "                    Reconfiguring                     ";
 echo "======================================================";
 autoreconf -ivf
 if [ $? -ne 0 ]; then
 	echo "autoreconf failed!"
 	exit 1
 fi
+
 eval "./configure ${ISSM_CONFIG}"
 if [ $? -ne 0 ]; then
 	echo "ISSM configuration failed (see options below)"
@@ -138,6 +115,7 @@ if [ $MATLAB_TEST -eq 1 ]; then
 		fprintf(fid,'\nMatlab error occured in: %s\n\n',directory{end});
 		fprintf(fid,'%s',message);
 		fclose(fid);
+		quit(1);
 	end
 	disp('MATLABEXITEDCORRECTLY');
 	quit(0);
