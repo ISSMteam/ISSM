@@ -30,6 +30,7 @@ function varargout=runme(varargin)
 %                      'valgrind': check for memory leaks (default value of md.debug.valgrind needs to be changed manually)
 %                      'ncExport': export netCDF file
 %      'stoponerror'   1 or 0
+%      'quitonerror'   1 or 0
 %
 %   Usage:
 %      runme(varargin);
@@ -239,6 +240,7 @@ for id=test_ids,
 						disp(sprintf(['ERROR   difference: %-7.2g > %7.2g test id: %i test name: %s field: %s'],...
 							error_diff,tolerance,id,id_string,fieldname));
 						if(getfieldvalue(options,'stoponerror',0)), disp('STOP'); return; end
+						if(getfieldvalue(options,'quitonerror',0)), disp('STOP'); quit(1); end
 					else
 						disp(sprintf(['SUCCESS difference: %-7.2g < %7.2g test id: %i test name: %s field: %s'],...
 							error_diff,tolerance,id,id_string,fieldname));
@@ -259,6 +261,7 @@ for id=test_ids,
 						disp(sprintf(['FAILURE difference: N/A test id: %i test name: %s field: %s'],id,id_string,fieldname));
 						fprintf('%s',message);
 						if(getfieldvalue(options,'stoponerror',0)), disp('STOP'); return; end
+						if(getfieldvalue(options,'quitonerror',0)), disp('STOP'); quit(1); end
 					end
 					continue;
 				end
@@ -279,6 +282,7 @@ for id=test_ids,
 			disp(sprintf(['FAILURE difference: N/A test id: %i test name: %s field: %s'],id,id_string,'N/A'));
 			rethrow(me);
 			if(getfieldvalue(options,'stoponerror',0)), disp('STOP'); return; end
+			if(getfieldvalue(options,'quitonerror',0)), disp('STOP'); quit(1); end
 		end
 	end
 	disp(sprintf('%s%i%s','----------------finished:',id,'-----------------------'));
