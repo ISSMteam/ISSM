@@ -1,7 +1,6 @@
 #--------------------#
 # ISSM Configuration #
 #--------------------#
-
 ISSM_CONFIG='\
 	--prefix=${ISSM_DIR} \
 	--disable-static \
@@ -26,10 +25,6 @@ ISSM_CONFIG='\
 #-------------------#
 # External Packages #
 #-------------------#
-#
-#autotools install-linux.sh
-#cmake     install.sh
-
 EXTERNALPACKAGES="
 	petsc     install-3.21-linux.sh
 	triangle  install-linux.sh
@@ -37,21 +32,12 @@ EXTERNALPACKAGES="
 	semic     install.sh
 "
 
-#---------#
-# Testing #
-#---------#
-
-# Test suites
-MATLAB_TEST=1
-PYTHON_TEST=0
-JAVASCRIPT_TEST=0
-EXAMPLES_TEST=0
-
 # Number of CPUs used in ISSM compilation
 NUMCPUS_INSTALL=8
 
-# Number of CPUs used in the nightly runs
-NUMCPUS_RUN=1
+#---------#
+# Testing #
+#---------#
 
 # Nightly run options
 MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota')],'id',101:110"

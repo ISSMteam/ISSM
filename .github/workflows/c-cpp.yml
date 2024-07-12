@@ -33,4 +33,9 @@ jobs:
           MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
         run: cd .github/ci_scripts && ./ci_ISSM.sh github_linux_basic
 
+      - name: Run ISSM MATLAB test
+        uses: matlab-actions/run-command@v2
+        with:
+          command: matlab_ci
+
       - run: echo "This job's status is ${{ job.status }}."
