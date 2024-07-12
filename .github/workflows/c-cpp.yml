@@ -31,13 +31,20 @@ jobs:
       - name: Install and Compile ISSM
         env:
           MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
-        run: cd .github/ci_scripts && ./ci_ISSM.sh github_linux_basic
-
+        run: |
+          cd .github/ci_scripts
+          ./ci_ISSM.sh github_linux_basic 
+          echo $PATH
+          echo $LD_LIBRARY_PATH
       - name: Get run-matlab-command
         run: |
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
       - name: Run MATLAB Command
-        run: source $ISSM_DIR/etc/environment.sh && run-matlab-command "matlab_ci"
+        run: |
+          source $ISSM_DIR/etc/environment.sh
+          echo $PATH
+          echo $LD_LIBRARY_PATH
+          run-matlab-command "matlab_ci"
 
       - run: echo "This job's status is ${{ job.status }}."
