@@ -91,7 +91,7 @@ addpath('${ISSM_DIR}/src/m/dev');
 devpath;
 
 % Run tests
-echo "runme(${MATLAB_NROPTIONS},'quionerror',1);"
+runme(${MATLAB_NROPTIONS},'quionerror',1);
 disp('MATLABEXITEDCORRECTLY');
 quit(0);
 EOF
