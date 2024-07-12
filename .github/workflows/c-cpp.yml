@@ -33,7 +33,9 @@ jobs:
           MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
         run: cd .github/ci_scripts && ./ci_ISSM.sh github_linux_basic
 
-      - run: echo "BEFORE: ${LD_LIBRARY_PATH}" && source ${ISSM_DIR}/etc/environment.sh && echo "AFTER: ${LD_LIBRARY_PATH}"
+      - run: echo "BEFORE: ${LD_LIBRARY_PATH}"
+      - run: source ${ISSM_DIR}/etc/environment.sh
+      - run: echo "AFTER: ${LD_LIBRARY_PATH}"
 
       - name: Run ISSM MATLAB test
         uses: matlab-actions/run-command@v2
