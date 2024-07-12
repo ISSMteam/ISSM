@@ -121,6 +121,8 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	quit(0);
 EOF
 	cd $ISSM_DIR/test/NightlyRun
+	ls $MATLAB_PATH/bin/
+	which matlab
 	$MATLAB_PATH/bin/matlab -nodisplay -nosplash -r "addpath ${ISSM_DIR}/src/m/dev; devpath; addpath ${ISSM_DIR}/nightlylog; matlab_run$i"
 	if [ $? -ne 0 ]; then
 		echo "MATLAB returned an error message!"
