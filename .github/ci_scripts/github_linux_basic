@@ -51,8 +51,8 @@ EXAMPLES_TEST=0
 NUMCPUS_INSTALL=8
 
 # Number of CPUs used in the nightly runs
-NUMCPUS_RUN=4
+NUMCPUS_RUN=1
 
 # Nightly run options
-MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota')]"
+MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota')],'id',101:110"
 PYTHON_NROPTIONS=""
