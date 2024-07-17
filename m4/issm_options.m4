@@ -1396,6 +1396,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 		if test "x${IS_WINDOWS}" == "xyes"; then
 			MPIINCL=/I"${MPI_INCLUDE}"
 		else
+			if ! test -f ${MPI_INCLUDE}/mpi.h; then
+				 AC_MSG_ERROR([Count not find mpi.h in ${MPI_INCLUDE}!]);
+			fi
 			MPIINCL="-I${MPI_INCLUDE}"
 		fi
 
