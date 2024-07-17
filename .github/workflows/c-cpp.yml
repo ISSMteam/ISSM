@@ -25,8 +25,13 @@ jobs:
         with:
           release: R2023b
 
-      - name: Install OPENMPI
-        run: sudo apt-get install -y libopenmpi-dev
+      - name: Install Open MPI
+        run: |
+          sudo apt-get install -y libopenmpi-dev
+          echo "Here is what's in include"
+          ls /usr/lib/x86_64-linux-gnu/openmpi/include/
+          echo "Here is mpicc -show"
+          mpicc -show
 
       - name: Install METIS 
         run: sudo apt-get install -y libmetis-dev
