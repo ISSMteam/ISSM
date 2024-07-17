@@ -1720,7 +1720,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 		if test "${VENDOR}" == "win-msys2"; then
 			SCALAPACKLIB="-Wl,-L${SCALAPACK_ROOT}/lib -Wl,-lscalapack"
 		else
-			SCALAPACKLIB="-L${SCALAPACK_ROOT}/lib -lscalapack"
+			if test -f ${SCALAPACK_ROOT}/libscalapack-openmpi.so; then
+				SCALAPACKLIB="-L${SCALAPACK_ROOT} -lscalapack-openmpi"
+			else
+			 SCALAPACKLIB="-L${SCALAPACK_ROOT}/lib -lscalapack"
+			fi
 		fi
 	elif test "x${SCALAPACKLIB}" != "xno"; then
 		dnl Value of SCALAPACKLIB should be valid here, so no need to set it (as above)
