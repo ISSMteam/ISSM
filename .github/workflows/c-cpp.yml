@@ -25,6 +25,9 @@ jobs:
         with:
           release: R2023b
 
+      - name: Install OPENMPI
+        run: sudo apt-get install -y libopenmpi-dev
+
       - name: Install METIS 
         run: sudo apt-get install -y libmetis-dev
 
@@ -40,12 +43,15 @@ jobs:
         run: |
           cd .github/ci_scripts
           ./ci_ISSM.sh github_linux_basic 
+
       - name: Get run-matlab-command
         run: |
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
+
       - name: Run MATLAB Command
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
+
       - run: echo "This job's status is ${{ job.status }}."
