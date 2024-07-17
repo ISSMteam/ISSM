@@ -1315,9 +1315,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 					PETSCLIB="-L${PETSC_ROOT}/lib -lpetscksp -lpetscdm -lpetscmat -lpetscvec -lpetscsnes -lpetscts -lpetsc"
 				else
 					PETSCLIB="-L${PETSC_ROOT}/lib -lpetsc"
-					if test ${PETSC_MAJOR} -gt 3 || test ${PETSC_MINOR} -ge 3; then
-						PETSCLIB+=" -lmetis"
-					fi
+					#if test ${PETSC_MAJOR} -gt 3 || test ${PETSC_MINOR} -ge 3; then
+					#	PETSCLIB+=" -lmetis"
+					#fi
 				fi
 			;;
 			*linux*)
@@ -1325,15 +1325,12 @@ AC_DEFUN([ISSM_OPTIONS],[
 					PETSCLIB="-L${PETSC_ROOT}/lib -lpetscksp -lpetscdm -lpetscmat -lpetscvec -lpetscsnes -lpetscts -lmpiuni -lpetsc"
 				else
 					PETSCLIB="-L${PETSC_ROOT}/lib -lpetsc -ldl"
-					if test ${PETSC_MAJOR} -gt 3 || test ${PETSC_MINOR} -ge 3; then
-						PETSCLIB+=" -lparmetis -lmetis"
-					fi
 				fi
 				if test "x$host_os_version" = "x3.0.101-0.31.1_1.0502.8394-cray_gem_s"; then
-					PETSCLIB="-L${PETSC_ROOT}/lib -lcraypetsc_gnu_real -lmetis"
+					PETSCLIB="-L${PETSC_ROOT}/lib -lcraypetsc_gnu_real"
 				fi
 				if test x$HOST = "xmaui01"; then
-					PETSCLIB="-L${PETSC_ROOT}/lib -lcraypetsc_intel_real -lmetis"
+					PETSCLIB="-L${PETSC_ROOT}/lib -lcraypetsc_intel_real"
 				fi
 			;;
 			*mingw*)
@@ -1926,10 +1923,10 @@ AC_DEFUN([ISSM_OPTIONS],[
 			if test "${VENDOR}" == "win-msys2"; then
 				MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lcmumps -Wl,-ldmumps -Wl,-lsmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
 			else
-				MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lcmumps -lmumps_common -lpord -lparmetis -lzmumps -lmetis"
+				MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lcmumps -lmumps_common -lpord -lzmumps"
 			fi
 		else
-			MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lmumps_common -lpord -lparmetis"
+			MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lmumps_common -lpord"
 		fi
 		AC_DEFINE([_HAVE_MUMPS_], [1], [with MUMPS in ISSM src])
 		AC_SUBST([MUMPSINCL])
@@ -2047,7 +2044,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl Prometheus libraries and header files
 	if test "x${HAVE_PROMETHEUS}" == "xyes"; then
 		PROMETHEUSINCL="-I${PROMETHEUS_ROOT}/include"
-		PROMETHEUSLIB="-L${PROMETHEUS_ROOT}/lib -lpromfei -lprometheus -lparmetis"
+		PROMETHEUSLIB="-L${PROMETHEUS_ROOT}/lib -lpromfei -lprometheus"
 		AC_DEFINE([_HAVE_PROMETHEUS_], [1], [with Prometheus in ISSM src])
 		AC_SUBST([PROMETHEUSINCL])
 		AC_SUBST([PROMETHEUSLIB])
