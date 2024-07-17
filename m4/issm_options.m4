@@ -1468,7 +1468,16 @@ AC_DEFUN([ISSM_OPTIONS],[
 		HAVE_METIS=yes
 	fi
 	if test "${HAVE_METIS}" = "yes"; then
-		METIS_VERSION=$(grep "#define METIS_VER_MAJOR" ${METIS_ROOT}/include/metis.h | sed 's|.*METIS_VER_MAJOR[[:space:]]*||')
+		if test -f ${METIS_ROOT}/include/metis.h; then
+			 METIS_H=${METIS_ROOT}/include/metis.h
+		elif test -f ${METIS_ROOT}/metis.h; then
+			 METIS_H=${METIS_ROOT}/metis.h
+		elif test -f ${METIS_ROOT}/../include/metis.h; then
+			 METIS_H=${METIS_ROOT}/../include/metis.h
+		else
+			 AC_MSG_ERROR([Count not find METIS header file!]);
+		fi
+		METIS_VERSION=$(grep "#define METIS_VER_MAJOR" ${METIS_H} | sed 's|.*METIS_VER_MAJOR[[:space:]]*||')
 		dnl METIS libraries and header files
 		if test "x${METIS_VERSION}" == "x4"; then
 			METISINCL="-I${METIS_ROOT}/Lib"
