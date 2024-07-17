@@ -25,6 +25,12 @@ jobs:
         with:
           release: R2023b
 
+      - name: Install METIS 
+        run: sudo apt-get install -y libmetis-dev
+
+      - name: Install PETSc
+        run: sudo apt-get install -y petsc-dev
+
       - name: Check out repository code
         uses: actions/checkout@v4
 
