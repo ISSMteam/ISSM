@@ -1,4 +1,4 @@
-name: Compilation CI
+name: Ubuntu Basic CI
 
 on:
   push:
@@ -92,6 +92,6 @@ jobs:
       - name: Run MATLAB Command
         run: |
           source $ISSM_DIR/etc/environment.sh
-          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6 run-matlab-command "matlab_ci"
 
       - run: echo "This job's status is ${{ job.status }}."
