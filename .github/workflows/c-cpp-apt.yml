@@ -1,4 +1,4 @@
-name: Compilation CI
+name: Compilation CI with apt-get
 
 on:
   push:
