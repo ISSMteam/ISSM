@@ -3,6 +3,9 @@ function levelsetnew = reinitializelevelset(md,levelset)
 %
 %   Usage:
 %      levelsetnew = reinitializelevelset(md,levelset)
+%
+%   Example:
+%      md.mask.ice_levelset = reinitializelevelset(md, md.mask.ice_levelset);
 
 % if md is 3d, levelset should be projected on a 2d mesh 
 
