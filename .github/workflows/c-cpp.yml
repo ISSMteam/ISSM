@@ -55,7 +55,7 @@ jobs:
           --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
           --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
           --with-mpi-include="/usr/lib/x86_64-linux-gnu/openmpi/include/" \
-          --with-mpi-libflags="-L/usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi -lmpi_cxx" \
+          --with-mpi-libflags="-L/usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -lmpi_cxx" \
           --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
