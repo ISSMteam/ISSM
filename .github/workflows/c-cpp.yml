@@ -20,34 +20,60 @@ jobs:
       - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
       - name: Installing MATLAB
-        id: setup-matlab
+        id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
 
-      - name: Install Open MPI
-        run: |
-          sudo apt-get install -y libopenmpi-dev
-          echo "Here is what's in include"
-          ls /usr/lib/x86_64-linux-gnu/openmpi/include/
-          echo "Here is mpicc -show"
-          mpicc -show
-
-      - name: Install METIS 
-        run: sudo apt-get install -y libmetis-dev
-
-      - name: Install PETSc
-        run: sudo apt-get install -y petsc-dev
-
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Install and Compile ISSM
-        env:
-          MATLAB_PATH: ${{ steps.setup-matlab.outputs.matlabroot }}
+      - name: Install External packages
         run: |
-          cd .github/ci_scripts
-          ./ci_ISSM.sh github_linux_basic 
+          cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
+          cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
+          cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
+          source $ISSM_DIR/etc/environment.sh
+
+      - name: Reconfigure ISSM
+        run: |
+          autoreconf -ivf
+          ./configure --prefix=${ISSM_DIR} \
+          --disable-static \
+          --enable-development \
+          --enable-debugging \
+          --with-numthreads=4 \
+          --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
+          --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+          --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+          --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+          --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+          --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
+
+      - name: Compile ISSM
+        run: make -j8 install
+
+      - name: Prepare MATLAB script
+        run: |
+          cat > ${ISSM_DIR}/matlab_ci.m << EOF
+          % Go to the test directory
+          cd $ISSM_DIR/test/NightlyRun/
+
+          % Add ISSM tools to path
+          addpath('${ISSM_DIR}/src/m/dev');
+          devpath;
+
+          % Run tests
+          runme('exclude',[IdFromString('Dakota')],'id',101:110,'quitonerror',1);
+          quit(0);
+          EOF
+          cat ${ISSM_DIR}/matlab_ci.m
 
       - name: Get run-matlab-command
         run: |
@@ -57,7 +83,6 @@ jobs:
       - name: Run MATLAB Command
         run: |
           source $ISSM_DIR/etc/environment.sh
-          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6 run-matlab-command "matlab_ci"
-          #LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
 
       - run: echo "This job's status is ${{ job.status }}."
