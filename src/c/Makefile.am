@@ -332,6 +332,7 @@ issm_sources += \
 	./modules/ModelProcessorx/CreateOutputDefinitions.cpp \
 	./modules/OutputDefinitionsResponsex/OutputDefinitionsResponsex.cpp \
 	./modules/InterpFromMeshToMesh2dx/InterpFromMeshToMesh2dx.cpp \
+	./modules/MeshPartitionx/MeshPartitionx.cpp \
 	./classes/Inputs/Inputs.cpp \
 	./classes/Inputs/BoolInput.cpp \
 	./classes/Inputs/DoubleInput.cpp \
