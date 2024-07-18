@@ -186,8 +186,10 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 	}
 
 	#if _HAVE_CODIPACK_
-	// Setup CoDiPack driver
-	codi_global.init(parameters);
+	if(isautodiff){
+		/* Setup CoDiPack driver*/
+		codi_global.init(parameters);
+	}
 	#endif
 	#endif
 }
