@@ -70,6 +70,9 @@ jobs:
 
       - name: Prepare MATLAB script
         run: |
+          echo "Modifying generic.m to avoid \"There are not enough slots available\""
+          sed -i.back "s/mpiexec -np %i/mpiexec -np %i --oversubscribe/g" $ISSM_DIR/src/m/classes/clusters/generic.m
+          echo "Creating matlab_ci.m"
           cat > ${ISSM_DIR}/matlab_ci.m << EOF
           % Go to the test directory
           cd $ISSM_DIR/test/NightlyRun/
