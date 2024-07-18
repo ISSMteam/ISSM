@@ -19,6 +19,10 @@ jobs:
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
+      - name: Installling Open MPI
+        run: |
+          sudo apt-get install -y libopenmpi-dev
+
       - name: Installing MATLAB
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
@@ -27,6 +31,11 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v4
+
+      - name: Modify PETSc's installation script
+        run: |
+          echo "Removing mpich from PETSc installation script"
+          sed -i.bak '/mpich/d' $ISSM_DIR/externalpackages/petsc/install-3.21-linux.sh
 
       - name: Install External packages
         run: |
@@ -45,8 +54,8 @@ jobs:
           --with-numthreads=4 \
           --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
           --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
-          --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
-          --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+          --with-mpi-include="/usr/lib/x86_64-linux-gnu/openmpi/include/" \
+          --with-mpi-libflags="-L/usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi -lmpi_cxx" \
           --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
