@@ -87,7 +87,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ISSM-${{ runner.os }}
-          path: ~/
+          path: ${{ env.ISSM_DIR }}
 
       - name: Prepare MATLAB script
         run: |
