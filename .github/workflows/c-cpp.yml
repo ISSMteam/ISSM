@@ -35,7 +35,7 @@ jobs:
         env:
           cache-name: cache-triangle-m1qn3-petsc
         with:
-          path: ${{ ISSM_DIR }}/externalpackages/
+          path: ${{ env.ISSM_DIR }}/externalpackages/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       
       - name: Install External packages
@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ISSM-${{ runner.os }}
-          path: ${{ ISSM_DIR }}
+          path: ${{ env.ISSM_DIR }}
           compression-level: 1
 
   test:
