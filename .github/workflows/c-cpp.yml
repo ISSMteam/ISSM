@@ -16,19 +16,16 @@ jobs:
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
-      - name: Installling Open MPI
-        run: |
-          sudo apt-get install -y libopenmpi-dev
-
-      - name: Installing MATLAB
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        
+      - name: Get MATLAB
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
-
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
+          cache: true
+      
       - name: Cache externalpackages
         uses: actions/cache@v3
         id: cache-externalpackages
@@ -37,19 +34,17 @@ jobs:
         with:
           path: ${{ env.ISSM_DIR }}/externalpackages/
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      
+          
       - name: Install External packages
         if: steps.cache-externalpackages.outputs.cache-hit != 'true'
         run: |
-          echo "Removing mpich from PETSc installation script"
-          sed -i.bak '/mpich/d' $ISSM_DIR/externalpackages/petsc/install-3.21-linux.sh
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
-          source $ISSM_DIR/etc/environment.sh
           
       - name: Reconfigure ISSM
         run: |
+          source $ISSM_DIR/etc/environment.sh
           autoreconf -ivf
           ./configure --prefix=${ISSM_DIR} \
           --disable-static \
@@ -88,7 +83,14 @@ jobs:
         with:
           name: ISSM-${{ runner.os }}
           path: ${{ env.ISSM_DIR }}
-
+          
+      - name: Get MATLAB
+        id:   setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+          cache: true
+          
       - name: Prepare MATLAB script
         run: |
           echo "Modifying generic.m to avoid \"There are not enough slots available\""
