@@ -29,18 +29,25 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Modify PETSc's installation script
+      - name: Cache externalpackages
+        uses: actions/cache@v3
+        id: cache-externalpackages
+        env:
+          cache-name: cache-triangle-m1qn3-petsc
+        with:
+          path: $ISSM_DIR/externalpackages/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      
+      - name: Install External packages
+        if: steps.cache-externalpackages.outputs.cache-hit != 'true'
         run: |
           echo "Removing mpich from PETSc installation script"
           sed -i.bak '/mpich/d' $ISSM_DIR/externalpackages/petsc/install-3.21-linux.sh
-
-      - name: Install External packages
-        run: |
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
           source $ISSM_DIR/etc/environment.sh
-
+          
       - name: Reconfigure ISSM
         run: |
           autoreconf -ivf
