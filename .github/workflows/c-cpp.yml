@@ -92,7 +92,7 @@ jobs:
           tar -xvf ISSM_artifact.tar
           rm ISSM_artifact.tar
           source $ISSM_DIR/etc/environment.sh
-        working-directory: /
+        working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
           
       - name: Get MATLAB
