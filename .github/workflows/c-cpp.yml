@@ -83,7 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-cases: [101:110, 201:210, 301:310]
+        test-cases: ["101:110", "201:210", "301:310"]
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
