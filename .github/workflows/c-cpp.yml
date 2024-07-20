@@ -24,6 +24,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
+          cache: true
           
       - name: Cache externalpackages
         uses: actions/cache@v3
@@ -90,6 +91,7 @@ jobs:
         run: |
           tar -xvf ISSM_artifact.tar
           rm ISSM_artifact.tar
+          source $ISSM_DIR/etc/environment.sh
         working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
           
