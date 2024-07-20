@@ -64,20 +64,19 @@ jobs:
           --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
 
-      - name: Compile ISSM
-        run: make -j16 install
+      # - name: Compile ISSM
+      #   run: make -j16 install
 
       - name: Compress ISSM artifact
         run: |
-          cd ${{ env.ISSM_DIR }}
-          cd ..
           tar -cvf ISSM_artifact.tar ISSM/
+          mv ISSM_artifact.tar -C ${{ env.ISSM_DIR }}/ .
         
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
         with:
           name: ISSM-${{ runner.os }}
-          path: ${{ env.ISSM_DIR }}/../ISSM_artifact.tar
+          path: ISSM_artifact.tar
           compression-level: 1
 
   test:
@@ -88,11 +87,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ISSM-${{ runner.os }}
-          path: ${{ env.ISSM_DIR }}/../
+          path: ${{ env.ISSM_DIR }}
       
       - name: uncompress ISSM artifact
         run: |
-          cd ${{ env.ISSM_DIR }}/../
           tar -xvf ISSM_artifact.tar
           rm ISSM_artifact.tar
           source $ISSM_DIR/etc/environment.sh
