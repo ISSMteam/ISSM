@@ -24,8 +24,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
-          cache: true
-      
+          
       - name: Cache externalpackages
         uses: actions/cache@v3
         id: cache-externalpackages
@@ -67,11 +66,14 @@ jobs:
       - name: Compile ISSM
         run: make -j16 install
 
+      - name: Compress ISSM artifact
+        run: tar -cvf ISSM_artifact.tar ${{ env.ISSM_DIR }}
+        
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
         with:
           name: ISSM-${{ runner.os }}
-          path: ${{ env.ISSM_DIR }}
+          path: ISSM_artifact.tar
           compression-level: 1
 
   test:
@@ -83,13 +85,19 @@ jobs:
         with:
           name: ISSM-${{ runner.os }}
           path: ${{ env.ISSM_DIR }}
+      
+      - name: uncompress ISSM artifact
+        run: |
+          tar -xvf ISSM_artifact.tar
+          rm ISSM_artifact.tar
+        working-directory: ${{ env.ISSM_DIR }}
+        shell: 'bash'
           
       - name: Get MATLAB
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
-          cache: true
           
       - name: Prepare MATLAB script
         run: |
