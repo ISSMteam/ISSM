@@ -64,8 +64,8 @@ jobs:
           --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
 
-      # - name: Compile ISSM
-      #   run: make -j16 install
+      - name: Compile ISSM
+        run: make -j16 install
 
       - name: Compress ISSM artifact
         run: tar -cvf ISSM_artifact.tar -C ${{ env.ISSM_DIR }}/ .
