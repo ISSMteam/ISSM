@@ -19,13 +19,6 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
         
-      - name: Get MATLAB
-        id:   setup-matlab
-        uses: matlab-actions/setup-matlab@v2
-        with:
-          release: R2023b
-          cache: true
-          
       - name: Cache externalpackages
         uses: actions/cache@v3
         id: cache-externalpackages
@@ -41,6 +34,13 @@ jobs:
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
+          
+      - name: Get MATLAB
+        id:   setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+          cache: true
           
       - name: Reconfigure ISSM
         run: |
@@ -65,13 +65,45 @@ jobs:
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
 
       - name: Compile ISSM
-        run: make -j8 install
-          
-      - name: Prepare MATLAB script
+        run: make -j16 install
+
+      - name: Compress ISSM artifact
+        run: tar -cvf ISSM_artifact.tar -C ${{ env.ISSM_DIR }}/ .
+        
+      - name: Upload ISSM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ISSM-${{ runner.os }}
+          path: ISSM_artifact.tar
+          compression-level: 1
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download ISSM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ISSM-${{ runner.os }}
+          path: ${{ env.ISSM_DIR }}
+      
+      - name: uncompress ISSM artifact
         run: |
-          echo "Modifying generic.m to avoid \"There are not enough slots available\""
-          sed -i.back "s/mpiexec -np %i/mpiexec -np %i --oversubscribe/g" $ISSM_DIR/src/m/classes/clusters/generic.m
-          echo "Creating matlab_ci.m"
+          tar -xvf ISSM_artifact.tar
+          rm ISSM_artifact.tar
+          source $ISSM_DIR/etc/environment.sh
+        working-directory: ${{ env.ISSM_DIR }}
+        shell: 'bash'
+          
+      - name: Get MATLAB
+        id:   setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+          cache: true
+          
+      - name: Creating matlab_ci.m
+        run: |
           cat > ${ISSM_DIR}/matlab_ci.m << EOF
           % Go to the test directory
           cd $ISSM_DIR/test/NightlyRun/
@@ -91,9 +123,9 @@ jobs:
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
           
-      - name: Run MATLAB Command
+      - name: Run MATLAB tests
         run: |
           source $ISSM_DIR/etc/environment.sh
-          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6 run-matlab-command "matlab_ci"
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
 
       - run: echo "This job's status is ${{ job.status }}."
