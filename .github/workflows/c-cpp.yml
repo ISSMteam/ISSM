@@ -80,6 +80,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        test-cases: [101:110, 201:210, 301:310]
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
@@ -113,7 +117,7 @@ jobs:
           devpath;
 
           % Run tests
-          runme('exclude',[IdFromString('Dakota')],'id',101:110,'quitonerror',1);
+          runme('exclude',[IdFromString('Dakota')],'id',${{matrix.test-cases}},'quitonerror',1);
           quit(0);
           EOF
           cat ${ISSM_DIR}/matlab_ci.m
