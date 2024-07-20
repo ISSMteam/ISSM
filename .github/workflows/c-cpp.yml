@@ -68,9 +68,7 @@ jobs:
       #   run: make -j16 install
 
       - name: Compress ISSM artifact
-        run: |
-          tar -cvf ISSM_artifact.tar ISSM/
-          mv ISSM_artifact.tar -C ${{ env.ISSM_DIR }}/ .
+        run: tar -cvf ISSM_artifact.tar -C ${{ env.ISSM_DIR }}/ .
         
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
