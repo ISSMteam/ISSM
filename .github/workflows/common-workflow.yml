@@ -3,6 +3,8 @@ name: Common CI
 on:
   workflow_call:
     inputs:
+      os:
+        required: true
       build_type: 
         required: true
         type: string
@@ -11,12 +13,9 @@ env:
   
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: build-ISSM-${{ inputs.os }}-${{ inputs.build_type}}
+    runs-on: ${{ inputs.os }}
     steps:
-      - run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-
       - name: Check out repository code
         uses: actions/checkout@v4
         
@@ -118,19 +117,32 @@ jobs:
           compression-level: 1
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.os }}
     needs: build
     strategy:
       fail-fast: false
       matrix:
         test-cases: 
-          - '101:110'
-          - '201:210'
-          - '301:310'
+          - '101:199'
+          - '201:299'
+          - '301:399'
+          - '401:499'
+          - '501:599'
+          - '601:699'
+          - '701:799'
+          - '801:899'
+        build-type:
+          -  ${{ inputs.build_type }}
+        additional: 
+          - ' '
         include:
-          - test-cases: $${{ inputs.build_type == 'codipack' && '3015, 3119, 3480' }}
-          - test-cases: $${{ inputs.build_type == 'codipack' && '3201:3206' }}
-          
+          - build-type: 'codipack'
+            additional: "'benchmark','all',"
+          - build-type: 'codipack'
+            test-cases: '3015, 3119, 3480'
+          - build-type: 'codipack'
+            test-cases: '3201:3206'
+            
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
@@ -163,7 +175,7 @@ jobs:
           devpath;
 
           % Run tests
-          runme('exclude',[IdFromString('Dakota')],'id',[${{matrix.test-cases}}],'quitonerror',1);
+          runme('exclude',[IdFromString('Dakota')],${{matrix.additional}} 'id',[${{matrix.test-cases}}],'quitonerror',1);
           quit(0);
           EOF
           cat ${ISSM_DIR}/matlab_ci.m
@@ -179,3 +191,4 @@ jobs:
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
 
       - run: echo "This job's status is ${{ job.status }}."
+
