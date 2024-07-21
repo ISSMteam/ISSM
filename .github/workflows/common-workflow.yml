@@ -11,6 +11,7 @@ on:
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
+  build_type: ${{ inputs.build_type }}
   
 jobs:
   build:
@@ -22,12 +23,12 @@ jobs:
         
       - name: Cache externalpackages
         uses: actions/cache@v3
-        id: cache-externalpackages-${{ inputs.build_type }}
+        id: cache-externalpackages-${{ env.build_type }}
         env:
-          cache-name: cache-triangle-m1qn3-petsc
+          cache-name: cache-externalpackages-${{ env.build_type }}
         with:
           path: ${{ env.ISSM_DIR }}/externalpackages/
-          key: ${{ runner.os }}-build-${{ env.cache-name }} 
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Install External packages
         if: steps.cache-externalpackages-basic.outputs.cache-hit != 'true'
