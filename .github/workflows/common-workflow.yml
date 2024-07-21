@@ -123,11 +123,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        - test-cases: ['101:110', '201:210', '301:310']
-          if: $${{ inputs.build_type == 'basic'}}
-        - test-cases: ['3015', '3119', '3480', '3201:3206']
-          if: $${{ inputs.build_type == 'codipack'}}
-
+        test-cases: ['101:110', '201:210', '301:310']
+        include:
+          - test-cases: $${{ inputs.build_type == 'codipack' && ['3015', '3119', '3480', '3201:3206'] }}
+          
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
