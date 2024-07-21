@@ -9,12 +9,15 @@ env:
   ISSM_DIR: ${{ github.workspace }}
 
 jobs:
-  build-type-matrix:
+  build-test:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         build_type: ['basic', 'codipack']
     uses: ./.github/workflows/common-workflow.yml 
     with:
+      os: ${{ matrix.os }}
       build_type: ${{ matrix.build_type }}
     secrets: inherit
+    name: build-test-${{ matrix.os }}-${{ matrix.build_type }}
