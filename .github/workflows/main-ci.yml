@@ -1,0 +1,20 @@
+name: Main Workflow 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  ISSM_DIR: ${{ github.workspace }}
+
+jobs:
+  build-type-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: ['basic', 'codipack']
+    uses: ./.github/workflows/common-workflow.yml 
+    with:
+      version: ${{ matrix.build_type }}
+    secrets: inherit
