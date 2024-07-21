@@ -27,7 +27,16 @@ jobs:
           cache-name: cache-triangle-m1qn3-petsc
         with:
           path: ${{ env.ISSM_DIR }}/externalpackages/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }} 
+          
+      - name: Cache src/c
+        uses: actions/cache@v3
+        id: cache-src-c
+        env:
+          cache-name: cache-src-c
+        with:
+          path: ${{ env.ISSM_DIR }}/src/c/
+          key: ${{ runner.os }}-build-${{ env.cache-name }} 
           
       - name: Install External packages
         if: steps.cache-externalpackages.outputs.cache-hit != 'true'
@@ -132,18 +141,17 @@ jobs:
           - '601:699'
           - '701:799'
           - '801:899'
-        build-type:
+          - '3015, 3119, 3480, 3201:3206'
+        build_type:
           -  ${{ inputs.build_type }}
         additional: 
-          - ' '
-        include:
-          - build-type: 'codipack'
+          - " "
+          - "'benchmark','all',"
+        exclude:
+          - build-type: 'basic'
             additional: "'benchmark','all',"
-          - build-type: 'codipack'
-            test-cases: '3015, 3119, 3480'
-          - build-type: 'codipack'
-            test-cases: '3201:3206'
-            
+          - build-type: 'basic'
+            test-cases: '3015, 3119, 3480, 3201:3206'
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
@@ -190,6 +198,3 @@ jobs:
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
-
-      - run: echo "This job's status is ${{ job.status }}."
-
