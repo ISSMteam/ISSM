@@ -142,7 +142,7 @@ jobs:
           - '701:799'
           - '801:899'
           - '3015, 3119, 3480, 3201:3206'
-        build_type:
+        build-type:
           -  ${{ inputs.build_type }}
         additional: 
           - " "
