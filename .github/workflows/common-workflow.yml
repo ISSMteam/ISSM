@@ -5,6 +5,7 @@ on:
     inputs:
       os:
         required: true
+        type: string
       build_type: 
         required: true
         type: string
