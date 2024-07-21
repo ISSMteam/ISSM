@@ -43,6 +43,7 @@ jobs:
         if: ${{ matrix.ad_type == 'codipack'}}
         run: |
           source $ISSM_DIR/etc/environment.sh
+          cd $ISSM_DIR/externalpackages/gsl      && ./install.sh
           cd $ISSM_DIR/externalpackages/codipack && ./install.sh
           cd $ISSM_DIR/externalpackages/medipack && ./install.sh
           
@@ -102,6 +103,7 @@ jobs:
           --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+          --with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
           --with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
           --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install" 
           
