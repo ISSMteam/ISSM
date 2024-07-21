@@ -16,5 +16,5 @@ jobs:
         build_type: ['basic', 'codipack']
     uses: ./.github/workflows/common-workflow.yml 
     with:
-      version: ${{ matrix.build_type }}
+      build_type: ${{ matrix.build_type }}
     secrets: inherit
