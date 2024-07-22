@@ -11,7 +11,6 @@ on:
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
-  build_type: ${{ inputs.build_type }}
   
 jobs:
   build:
@@ -20,12 +19,15 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-        
+      - name: Set build type
+        run: |
+          echo "build_type=${{inputs.build_type }}" >> "$GITHUB_ENV"
+          
       - name: Cache externalpackages
         uses: actions/cache@v3
-        id: cache-externalpackages-${{ env.build_type }}
+        id: cache-externalpackages-${{ github.env.build_type }}
         env:
-          cache-name: cache-externalpackages-${{ env.build_type }}
+          cache-name: cache-externalpackages-${{ github.env.build_type }}
         with:
           path: ${{ env.ISSM_DIR }}/externalpackages/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
