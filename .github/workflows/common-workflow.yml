@@ -30,16 +30,15 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Install External packages
-        if: ${{ inputs.build_type }} == 'basic' && steps.cache-externalpackages.outputs.cache-hit != 'true'
+        if: ${{ ( inputs.build_type == 'basic') && (steps.cache-externalpackages.outputs.cache-hit != 'true') }}
         run: |
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
           
       - name: Install External packages for AD
-        if: ${{ inputs.build_type }} == 'codipack' && steps.cache-externalpackages.outputs.cache-hit != 'true'
+        if: ${{ ( inputs.build_type == 'codipack') && (steps.cache-externalpackages.outputs.cache-hit != 'true') }}
         run: |
-          source $ISSM_DIR/etc/environment.sh
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.20-linux.sh
