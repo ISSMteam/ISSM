@@ -26,7 +26,9 @@ jobs:
         env:
           cache-name: cache-externalpackages-${{ inputs.build_type }}
         with:
-          path: ${{ env.ISSM_DIR }}/externalpackages/
+          path: |
+            ${{ env.ISSM_DIR }}/externalpackages/
+            ! ${{ env.ISSM_DIR }}/externalpackages/petsc/src/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Install External packages
@@ -43,7 +45,6 @@ jobs:
           cd $ISSM_DIR/externalpackages/triangle   && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3      && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc      && ./install-3.20-linux.sh
-          cd $ISSM_DIR/externalpackages/gsl        && ./install.sh
           cd $ISSM_DIR/externalpackages/codipack   && ./install.sh
           cd $ISSM_DIR/externalpackages/medipack   && ./install.sh
           
@@ -75,6 +76,7 @@ jobs:
           --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+          --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
           
       - name: Reconfigure ISSM with Codipack
@@ -102,28 +104,21 @@ jobs:
           --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
           --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
           --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
-          --with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
           --with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
           --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install" 
           
       - name: Compile ISSM
-        run: make -j8 install
+        run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
+        run: tar --exclude='${{ env.ISSM_DIR }}/externalpackages/petsc/src/' -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
         
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
         with:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
           path: ISSM_artifact-${{ inputs.build_type}}.tar
-          compression-level: 1
-      
-      - name: check free space
-        run: |
-          echo "Free space:"
-          du -sh ${{ env.ISSM_DIR }}/*
-          
+          compression-level: 1          
   test:
     runs-on: ${{ inputs.os }}
     needs: build
@@ -146,7 +141,6 @@ jobs:
             additional: " "
           - build-type: 'basic'
             test-cases: '3015, 3119, 3480, 3201:3206'
-          - build-type: 'codipack'
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
