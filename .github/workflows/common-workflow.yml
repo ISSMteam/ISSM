@@ -28,7 +28,7 @@ jobs:
         with:
           path: |
             ${{ env.ISSM_DIR }}/externalpackages/
-            ! ${{ env.ISSM_DIR }}/externalpackages/petsc/src/
+            !${{ env.ISSM_DIR }}/externalpackages/petsc/src/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Install External packages
@@ -111,7 +111,7 @@ jobs:
         run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar --exclude='${{ env.ISSM_DIR }}/externalpackages/petsc/src/' -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
+        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
         
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
@@ -126,8 +126,8 @@ jobs:
       fail-fast: false
       matrix:
         test-cases: 
-          - '101:499'
-          - '501:899'
+          - '101:399'
+          - '401:899'
           - '3015, 3119, 3480, 3201:3206'
         build-type:
           -  ${{ inputs.build_type }}
