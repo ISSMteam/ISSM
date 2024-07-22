@@ -44,7 +44,6 @@ class EnthalpyAnalysis: public Analysis{
 		static void       GetBasalConstraints(Vector<IssmDouble>* vec_spc,Element* element);
 		static void       GetBasalConstraintsSteadystate(Vector<IssmDouble>* vec_spc,Element* element);
 		static void       GetBasalConstraintsTransient(Vector<IssmDouble>* vec_spc,Element* element);
-		void              GetBConduct(IssmDouble* B,Element* element,IssmDouble* xyz_list,Gauss* gauss);
 		void              GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element);
 		static int        GetThermalBasalCondition(Element* element, IssmDouble enthalpy, IssmDouble enthalpy_up, IssmDouble pressure, IssmDouble pressure_up, IssmDouble watercolumn, IssmDouble meltingrate);
 		static IssmDouble GetWetIceConductivity(Element* element, IssmDouble enthalpy, IssmDouble pressure);

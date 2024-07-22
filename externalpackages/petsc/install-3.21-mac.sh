@@ -22,12 +22,17 @@ mkdir -p ${PETSC_DIR}
 mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
+# Edit configuration script
+sed -i.bak '/warning: -commons use_dylibs is no longer supported, using error treatment instead/d' src/config/BuildSystem/config/setCompilers.py
+
+
 # Configure
 cd ${PETSC_DIR}
 ./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--CFLAGS="-g -O2" --CXXFLAGS="-g -O2" --FFLAGS="-g -O2" \
+	--LDFLAGS="-Wl,-ld_classic -Wl,-commons,use_dylibs" \
 	--with-debugging=1 \
 	--with-valgrind=0 \
 	--with-x=0 \
