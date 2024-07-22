@@ -1350,35 +1350,6 @@ void           EnthalpyAnalysis::GetBasalConstraintsTransient(Vector<IssmDouble>
 	delete gauss;
 	delete gaussup;
 }/*}}}*/
-void           EnthalpyAnalysis::GetBConduct(IssmDouble* B,Element* element,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
-	/*Compute B  matrix. B=[B1 B2 B3 B4 B5 B6] where Bi is of size 5*1.
-	 * For node i, Bi' can be expressed in the actual coordinate system
-	 * by:
-	 *       Bi_conduct=[ dh/dx ]
-	 *                  [ dh/dy ]
-	 *                  [ dh/dz ]
-	 * where h is the interpolation function for node i.
-	 *
-	 * We assume B has been allocated already, of size: 3x(1*numnodes)
-	 */
-
-	/*Fetch number of nodes for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-
-	/*Get nodal functions derivatives*/
-	IssmDouble* dbasis=xNew<IssmDouble>(3*numnodes);
-	element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
-
-	/*Build B: */
-	for(int i=0;i<numnodes;i++){
-		B[numnodes*0+i] = dbasis[0*numnodes+i];
-		B[numnodes*1+i] = dbasis[1*numnodes+i];
-		B[numnodes*2+i] = dbasis[2*numnodes+i];
-	}
-
-	/*Clean-up*/
-	xDelete<IssmDouble>(dbasis);
-}/*}}}*/
 void           EnthalpyAnalysis::GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element){/*{{{*/
 	element->GetSolutionFromInputsOneDof(solution,EnthalpyEnum);
 }/*}}}*/
