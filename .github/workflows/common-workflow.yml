@@ -35,6 +35,7 @@ jobs:
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
+          cd $ISSM_DIR/externalpackages/semic    && ./install.sh
           
       - name: Install External packages for AD
         if: ${{ ( inputs.build_type == 'codipack') && (steps.cache-externalpackages.outputs.cache-hit != 'true') }}
@@ -117,7 +118,11 @@ jobs:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
           path: ISSM_artifact-${{ inputs.build_type}}.tar
           compression-level: 1
-
+          
+      - name: check free space
+        run: |
+          echo "Free space:"
+          df -h
   test:
     runs-on: ${{ inputs.os }}
     needs: build
@@ -146,6 +151,11 @@ jobs:
         with:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
           path: ${{ env.ISSM_DIR }}
+      
+      - name: check free space
+        run: |
+          echo "Free space:"
+          df -h
       
       - name: uncompress ISSM artifact
         run: |
