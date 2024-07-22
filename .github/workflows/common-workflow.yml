@@ -106,7 +106,7 @@ jobs:
           --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install" 
           
       - name: Compile ISSM
-        run: make -j16 install
+        run: make -j8 install
 
       - name: Compress ISSM artifact
         run: tar -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
@@ -125,14 +125,8 @@ jobs:
       fail-fast: false
       matrix:
         test-cases: 
-          - '101:199'
-          - '201:299'
-          - '301:399'
-          - '401:499'
-          - '501:599'
-          - '601:699'
-          - '701:799'
-          - '801:899'
+          - '101:499'
+          - '501:899'
           - '3015, 3119, 3480, 3201:3206'
         build-type:
           -  ${{ inputs.build_type }}
@@ -142,6 +136,8 @@ jobs:
         exclude:
           - build-type: 'basic'
             additional: "'benchmark','all',"
+          - build-type: 'codipack'
+            additional: " "
           - build-type: 'basic'
             test-cases: '3015, 3119, 3480, 3201:3206'
     steps:
