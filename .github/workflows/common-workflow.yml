@@ -118,11 +118,12 @@ jobs:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
           path: ISSM_artifact-${{ inputs.build_type}}.tar
           compression-level: 1
-          
+      
       - name: check free space
         run: |
           echo "Free space:"
-          df -h
+          du -sh ${{ env.ISSM_DIR }}/*
+          
   test:
     runs-on: ${{ inputs.os }}
     needs: build
@@ -145,17 +146,13 @@ jobs:
             additional: " "
           - build-type: 'basic'
             test-cases: '3015, 3119, 3480, 3201:3206'
+          - build-type: 'codipack'
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
         with:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
           path: ${{ env.ISSM_DIR }}
-      
-      - name: check free space
-        run: |
-          echo "Free space:"
-          df -h
       
       - name: uncompress ISSM artifact
         run: |
