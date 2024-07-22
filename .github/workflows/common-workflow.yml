@@ -19,28 +19,25 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Set build type
-        run: |
-          echo "build_type=${{inputs.build_type }}" >> "$GITHUB_ENV"
           
       - name: Cache externalpackages
         uses: actions/cache@v3
-        id: cache-externalpackages-${{ github.env.build_type }}
+        id: cache-externalpackages
         env:
-          cache-name: cache-externalpackages-${{ github.env.build_type }}
+          cache-name: cache-externalpackages-${{ inputs.build_type }}
         with:
           path: ${{ env.ISSM_DIR }}/externalpackages/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Install External packages
-        if: steps.cache-externalpackages-basic.outputs.cache-hit != 'true'
+        if: ${{ inputs.build_type }} == 'basic' && steps.cache-externalpackages.outputs.cache-hit != 'true'
         run: |
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
           cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
           
       - name: Install External packages for AD
-        if: steps.cache-externalpackages-codipack.outputs.cache-hit != 'true'
+        if: ${{ inputs.build_type }} == 'codipack' && steps.cache-externalpackages.outputs.cache-hit != 'true'
         run: |
           source $ISSM_DIR/etc/environment.sh
           cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
