@@ -1122,8 +1122,6 @@ void       Tria::CalvingRateParameterization(){/*{{{*/
 void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 
 	IssmDouble  calvingrate[NUMVERTICES];
-	IssmDouble  calvingratex[NUMVERTICES];
-	IssmDouble  calvingratey[NUMVERTICES];
 	int			experiment = 1;  /* exp:1 by default */
 	int         dim, domaintype;
 	IssmDouble	vx, vy, vel, c, wrate;
@@ -1177,7 +1175,7 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 			case 4:
 				/* Exp 4: set c=v-wrate(given), for the first 500 years, then c=0 for the second 500 years*/
 				if((groundedice<0) && (time<=500.0*yts)) {
-				//	wrate_input->GetInputValue(&wrate,&gauss);
+					//	wrate_input->GetInputValue(&wrate,&gauss);
 					wrate = -750*sin(2.0*M_PI*time/yts/1000)/yts;  // m/a -> m/s
 				}
 				else {
@@ -1190,13 +1188,10 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 		}
 
 		calvingrate[iv] = vel - wrate;
-		calvingratex[iv] = vx - wrate*vx/vel;
-		calvingratey[iv] = vy - wrate*vy/vel;
 	}
 	/*Add input*/
 	this->AddInput(CalvingCalvingrateEnum,&calvingrate[0],P1DGEnum);
-	this->AddInput(CalvingratexEnum,&calvingratex[0],P1DGEnum);
-	this->AddInput(CalvingrateyEnum,&calvingratey[0],P1DGEnum);
+	this->CalvingRateToVector();
 }
 /*}}}*/
 IssmDouble Tria::CharacteristicLength(void){/*{{{*/
