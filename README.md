@@ -1,5 +1,5 @@
 # Ice-sheet and Sea-level System Model - ISSM
-[![C/C++ CI](https://github.com/ISSMteam/ISSM/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/ISSMteam/ISSM/actions/)
+[![Main Workflow](https://github.com/ISSMteam/ISSM/actions/workflows/main-ci.yml/badge.svg)](https://github.com/ISSMteam/ISSM/actions/workflows/main-ci.yml)
 
 ## Description
 ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-element software dedicated to ice sheet and sea-level modeling.
