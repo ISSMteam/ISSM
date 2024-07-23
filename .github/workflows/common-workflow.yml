@@ -39,7 +39,7 @@ jobs:
           cache: true
 
       - name: build ISSM
-        uses: ./.github/actions/${{ inputs.os }}-${{ inputs.build_type}}/build.yml
+        uses: ./.github/actions/ubuntu-latest-basic/build.yml
         with:
           build_type: ${{ inputs.build_type }}
           externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
