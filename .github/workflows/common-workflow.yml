@@ -31,84 +31,19 @@ jobs:
             !${{ env.ISSM_DIR }}/externalpackages/petsc/src/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
-      - name: Install External packages
-        if: ${{ ( inputs.build_type == 'basic') && (steps.cache-externalpackages.outputs.cache-hit != 'true') }}
-        run: |
-          cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
-          cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
-          cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
-          cd $ISSM_DIR/externalpackages/semic    && ./install.sh
-          
-      - name: Install External packages for AD
-        if: ${{ ( inputs.build_type == 'codipack') && (steps.cache-externalpackages.outputs.cache-hit != 'true') }}
-        run: |
-          cd $ISSM_DIR/externalpackages/triangle   && ./install-linux.sh
-          cd $ISSM_DIR/externalpackages/m1qn3      && ./install-linux.sh
-          cd $ISSM_DIR/externalpackages/petsc      && ./install-3.20-linux.sh
-          cd $ISSM_DIR/externalpackages/gsl        && ./install.sh
-          cd $ISSM_DIR/externalpackages/codipack   && ./install.sh
-          cd $ISSM_DIR/externalpackages/medipack   && ./install.sh
-          
       - name: Get MATLAB
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
           cache: true
-          
-      - name: Reconfigure ISSM without AD
-        if: ${{ inputs.build_type == 'basic'}}
-        run: |
-          source $ISSM_DIR/etc/environment.sh
-          autoreconf -ivf
-          ./configure --prefix=${ISSM_DIR} \
-          --disable-static \
-          --enable-development \
-          --enable-debugging \
-          --with-numthreads=4 \
-          --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
-          --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
-          --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
-          --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
-          --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-          --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
-          --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
-          
-      - name: Reconfigure ISSM with Codipack
-        if: ${{ inputs.build_type == 'codipack'}}
-        run: |
-          source $ISSM_DIR/etc/environment.sh
-          autoreconf -ivf
-          ./configure --prefix=${ISSM_DIR} \
-          --enable-tape-alloc \
-          --enable-development \
-          --enable-debugging \
-          --with-numthreads=4 \
-          --without-kriging \
-          --without-kml \
-          --without-Sealevelchange \
-          --without-Love \
-          --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
-          --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
-          --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
-          --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
-          --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-          --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-          --with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
-          --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
-          --with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
-          --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install" 
-          
+
+      - name: build ISSM
+        uses: ./.github/actions/${{ inputs.os }}-${{ inputs.build_type}}/build.yml
+        with:
+          build_type: ${{ inputs.build_type }}
+          externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
+
       - name: Compile ISSM
         run: make -j4 install
 

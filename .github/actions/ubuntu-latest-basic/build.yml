@@ -1,0 +1,47 @@
+name: "Ubuntu Build"
+inputs:
+  build_type:
+    required: false
+    default: "basic"
+    type: string
+  externalpackages-cache-hit:
+    required: true
+    default: false
+    type: bool
+
+env:
+  ISSM_DIR: ${{ github.workspace }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install External packages 
+      if: ${{ inputs.externalpackages-cache-hit != 'true' }}
+      run: |
+        cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
+        cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
+        cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
+        cd $ISSM_DIR/externalpackages/semic    && ./install.sh
+
+    - name: Reconfigure ISSM 
+        run: |
+          source $ISSM_DIR/etc/environment.sh
+          autoreconf -ivf
+          ./configure --prefix=${ISSM_DIR} \
+          --disable-static \
+          --enable-development \
+          --enable-debugging \
+          --with-numthreads=4 \
+          --with-matlab-dir=${{ steps.setup-matlab.outputs.matlabroot }} \
+          --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+          --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+          --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+          --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+          --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+          --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
+          --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
