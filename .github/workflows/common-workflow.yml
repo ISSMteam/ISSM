@@ -35,8 +35,8 @@ jobs:
         uses: ./.github/actions/prepare-externalpackages/
         with:
           build_type: ${{ inputs.build_type }}
+          os: ${{ inputs.os }}
           externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
-          ISSM_DIR: ${{ env.ISSM_DIR }}
 
       - name: Get MATLAB
         id:   setup-matlab
@@ -49,8 +49,8 @@ jobs:
         uses: ./.github/actions/build/
         with:
           build_type: ${{ inputs.build_type }}
+          os: ${{ inputs.os }}
           matlabroot: ${{ steps.setup-matlab.outputs.matlabroot }}
-          ISSM_DIR: ${{ env.ISSM_DIR }}
 
       - name: Compile ISSM
         run: make -j4 install

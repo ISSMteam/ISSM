@@ -7,18 +7,16 @@ inputs:
   matlabroot:
     required: true
     type: string
-  ISSM_DIR:
-    required: true
+  os:
+    required: false
+    default: ubuntu-latest
     type: string
-
-env:
-  ISSM_DIR: ${{ inputs.ISSM_DIR }}
 
 runs:
   using: "composite"
   steps:
-    - name: Reconfigure ISSM Basic
-      if: ${{ inputs.build_type == 'basic'}}
+    - name: Reconfigure ISSM Ubuntu Basic
+      if: ${{ ( inputs.build_type == 'basic' ) && ( input.os == 'ubuntu-latest' )}}
       shell: bash
       run: |
         source $ISSM_DIR/etc/environment.sh
@@ -43,8 +41,8 @@ runs:
         --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
 
 
-    - name: Reconfigure ISSM with Codipack
-      if: ${{ inputs.build_type == 'codipack'}}
+    - name: Reconfigure ISSM Ubuntu with Codipack
+      if: ${{ ( inputs.build_type == 'codipack' ) && ( inputs.os == 'ubuntu-latest' )}}
       shell: bash
       run: |
         source $ISSM_DIR/etc/environment.sh

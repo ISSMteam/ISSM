@@ -2,26 +2,22 @@ name: "Prepare External Packages"
 inputs:
   build_type:
     required: false
-    default: "basic"
+    default: basic
     type: string
-  externalpackages-cache-hit:
+  cache-hit:
     required: true
     default: false
     type: bool
-  ISSM_DIR:
-    required: true
+  os:
+    required: false
+    default: ubuntu-latest
     type: string
 
 runs:
   using: "composite"
   steps:
-    - name: Set ISSM_DIR
-      shell: bash
-      run: |
-        echo $ISSM_DIR
-        
     - name: Install External packages 
-      if: ${{ ( inputs.build_type == 'basic') && ( inputs.externalpackages-cache-hit != 'true') }}
+      if: ${{ ( inputs.build_type == 'basic' ) && ( inputs.cache-hit != 'true' ) && ( inputs.os == 'ubuntu-latest' ) }}
       shell: bash
       run: |
         cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
@@ -30,7 +26,7 @@ runs:
         cd $ISSM_DIR/externalpackages/semic    && ./install.sh
 
     - name: Install External packages for AD
-      if: ${{ ( inputs.build_type == 'codipack') && ( inputs.externalpackages-cache-hit != 'true') }}
+      if: ${{ ( inputs.build_type == 'codipack' ) && ( inputs.cache-hit != 'true' ) && ( inputs.os == 'ubuntu-latest' ) }}
       shell: bash
       run: |
         cd $ISSM_DIR/externalpackages/triangle   && ./install-linux.sh
