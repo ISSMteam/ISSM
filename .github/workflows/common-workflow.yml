@@ -56,7 +56,7 @@ jobs:
         run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
+        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
         
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
