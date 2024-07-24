@@ -18,6 +18,11 @@ env:
 runs:
   using: "composite"
   steps:
+    - name: Set ISSM_DIR
+      shell: bash
+      run: |
+        echo $ISSM_DIR
+        
     - name: Install External packages 
       if: ${{ ( inputs.build_type == 'basic') && ( inputs.externalpackages-cache-hit != 'true') }}
       shell: bash
