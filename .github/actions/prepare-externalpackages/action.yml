@@ -12,9 +12,6 @@ inputs:
     required: true
     type: string
 
-env:
-  ISSM_DIR: ${{ inputs.ISSM_DIR }}
-
 runs:
   using: "composite"
   steps:
