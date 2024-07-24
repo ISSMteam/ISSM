@@ -631,8 +631,6 @@ void       Penta::CalvingRateCalvingMIP(){/*{{{*/
 	if(!this->IsOnBase()) return;
 
 	IssmDouble  calvingrate[NUMVERTICES];
-	IssmDouble  calvingratex[NUMVERTICES];
-	IssmDouble  calvingratey[NUMVERTICES];
 	int			experiment = 1;  /* exp:1 by default */
 	int         dim, domaintype;
 	IssmDouble	vx, vy, vel, c, wrate;
