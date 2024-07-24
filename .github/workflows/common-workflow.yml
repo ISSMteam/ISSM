@@ -31,6 +31,13 @@ jobs:
             !${{ env.ISSM_DIR }}/externalpackages/petsc/src/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
+      - name: Prepare External Packages
+        uses: ./.github/actions/prepare-externalpackages/
+        with:
+          build_type: ${{ inputs.build_type }}
+          externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
+          ISSM_DIR: ${{ env.ISSM_DIR }}
+
       - name: Get MATLAB
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
@@ -42,7 +49,8 @@ jobs:
         uses: ./.github/actions/build/
         with:
           build_type: ${{ inputs.build_type }}
-          externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
+          matlabroot: ${{ steps.setup-matlab.outputs.matlabroot }}
+          ISSM_DIR: ${{ env.ISSM_DIR }}
 
       - name: Compile ISSM
         run: make -j4 install
