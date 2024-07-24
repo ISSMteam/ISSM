@@ -36,7 +36,7 @@ jobs:
         with:
           build_type: ${{ inputs.build_type }}
           os: ${{ inputs.os }}
-          externalpackages-cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
+          cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
 
       - name: Get MATLAB
         id:   setup-matlab
