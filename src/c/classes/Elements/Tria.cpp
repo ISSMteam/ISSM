@@ -1170,7 +1170,7 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 				break;
 			case 2:
 				/* Exp 2: set c=v-wrate(given)*/
-				wrate_input->GetInputValue(&wrate,&gauss);
+				wrate = -300*sin(2.0*M_PI*time/yts/1000)/yts;  // m/a -> m/s
 				break;
 			case 4:
 				/* Exp 4: set c=v-wrate(given), for the first 500 years, then c=0 for the second 500 years*/
