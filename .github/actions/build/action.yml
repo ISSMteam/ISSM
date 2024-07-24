@@ -1,0 +1,72 @@
+name: "Build ISSM"
+inputs:
+  build_type:
+    required: false
+    default: "basic"
+    type: string
+  matlabroot:
+    required: true
+    type: string
+  os:
+    required: false
+    default: ubuntu-latest
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Reconfigure ISSM Ubuntu Basic
+      if: ${{ ( inputs.build_type == 'basic' ) && ( inputs.os == 'ubuntu-latest' )}}
+      shell: bash
+      run: |
+        source $ISSM_DIR/etc/environment.sh
+        autoreconf -ivf
+        ./configure --prefix=${ISSM_DIR} \
+        --disable-static \
+        --enable-development \
+        --enable-debugging \
+        --with-numthreads=4 \
+        --with-matlab-dir=${{ inputs.matlabroot }} \
+        --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+        --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+        --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+        --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+        --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
+        --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
+
+
+    - name: Reconfigure ISSM Ubuntu with Codipack
+      if: ${{ ( inputs.build_type == 'codipack' ) && ( inputs.os == 'ubuntu-latest' )}}
+      shell: bash
+      run: |
+        source $ISSM_DIR/etc/environment.sh
+        autoreconf -ivf
+        ./configure --prefix=${ISSM_DIR} \
+        --enable-tape-alloc \
+        --enable-development \
+        --enable-debugging \
+        --with-numthreads=4 \
+        --without-kriging \
+        --without-kml \
+        --without-Sealevelchange \
+        --without-Love \
+        --with-matlab-dir=${{ inputs.matlabroot }} \
+        --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+        --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+        --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+        --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+        --with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
+        --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+        --with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
+        --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install"
