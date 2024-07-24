@@ -16,7 +16,7 @@ runs:
   using: "composite"
   steps:
     - name: Reconfigure ISSM Ubuntu Basic
-      if: ${{ ( inputs.build_type == 'basic' ) && ( input.os == 'ubuntu-latest' )}}
+      if: ${{ ( inputs.build_type == 'basic' ) && ( inputs.os == 'ubuntu-latest' )}}
       shell: bash
       run: |
         source $ISSM_DIR/etc/environment.sh
