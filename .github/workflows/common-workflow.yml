@@ -61,8 +61,8 @@ jobs:
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
-          path: ISSM_artifact-${{ inputs.build_type}}.tar
+          name: ISSM-${{ runner.os }}-${{ inputs.build_type }}
+          path: ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
           compression-level: 1          
   test:
     runs-on: ${{ inputs.os }}
@@ -100,7 +100,7 @@ jobs:
       
       - name: uncompress ISSM artifact
         run: |
-          tar -xvf ISSM_artifact-${{ inputs.build_type}}.tar
+          tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar
           source $ISSM_DIR/etc/environment.sh
         working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
