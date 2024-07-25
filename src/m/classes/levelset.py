@@ -16,7 +16,7 @@ class levelset(object):
     def __init__(self):  # {{{
         self.stabilization = 0
         self.spclevelset = np.nan
-        self.reinit_frequency = 5
+        self.reinit_frequency = 10
         self.kill_icebergs = 0
         self.migration_max = 0
         self.fe = 'P1'
@@ -26,7 +26,10 @@ class levelset(object):
     # }}}
     def __repr__(self):  # {{{
         s = '   Level-set parameters:\n'
-        s += '{}\n'.format(fielddisplay(self, 'stabilization', '0: no, 1: artificial_diffusivity, 2: streamline upwinding'))
+        s += '{}\n'.format(fielddisplay(self, 'stabilization', '0: No Stabilization - No stabilization techniques applied.'))
+        s += '{}\n'.format('                             1: Artificial Diffusivity - Most stable, but least accurate.')
+        s += '{}\n'.format('                             2: Streamline Upwinding')
+        s += '{}\n'.format('                             5: SUPG - Most accurate, but may be unstable in some applications.')
         s += '{}\n'.format(fielddisplay(self, 'spclevelset', 'Levelset constraints (NaN means no constraint)'))
         s += '{}\n'.format(fielddisplay(self, 'reinit_frequency', 'Amount of time steps after which the levelset function in re-initialized'))
         s += '{}\n'.format(fielddisplay(self, 'kill_icebergs', 'remove floating icebergs to prevent rigid body motions (1: true, 0: false)'))
@@ -39,7 +42,7 @@ class levelset(object):
     def setdefaultparameters(self):  # {{{
         # Stabilization = 1 by default
         self.stabilization = 1
-        self.reinit_frequency = 5
+        self.reinit_frequency = 10
         self.kill_icebergs = 1
         self.migration_max = 1e12 # No need for general cases, unless specified
 
