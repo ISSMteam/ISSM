@@ -9,7 +9,7 @@ function levelset (){
 
 		//stabilization = 1 by default
 		this.stabilization		= 1;
-		this.reinit_frequency	= 5;
+		this.reinit_frequency	= 10;
 		this.kill_icebergs      = 1;
 		this.migration_max      = 1e12; //No need for general cases, unless specified
 
@@ -20,7 +20,10 @@ function levelset (){
 	this.disp= function(){// {{{
 
 		console.log(sprintf('   Level-set parameters:'));
-		fielddisplay(this,'stabilization','0: no, 1: artificial_diffusivity, 2: streamline upwinding');
+		fielddisplay(this,'stabilization','0: No Stabilization - No stabilization techniques applied.');
+		console.log('                             1: Artificial Diffusivity - Most stable, but least accurate.');
+		console.log('                             2: Streamline Upwinding');
+		console.log('                             5: SUPG - Most accurate, but may be unstable in some applications.');
 		fielddisplay(this,'spclevelset','Levelset constraints (NaN means no constraint)');
 		fielddisplay(this,'reinit_frequency','Amount of time steps after which the levelset function in re-initialized (NaN: no re-initialization).');
 		fielddisplay(this,'kill_icebergs','remove floating icebergs to prevent rigid body motions (1: true, 0: false)');
@@ -64,7 +67,7 @@ function levelset (){
 
 	this.stabilization		= 0;
 	this.spclevelset		= NaN;
-	this.reinit_frequency	= NaN;
+	this.reinit_frequency	= 10;
 	this.kill_icebergs     	= 0;
 	this.migration_max      = 0.;
 	this.fe              	= 'P1';
