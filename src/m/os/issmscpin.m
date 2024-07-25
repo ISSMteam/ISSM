@@ -10,15 +10,15 @@ hostname=oshostname();
 
 %first be sure packages are not in the current directory, this could conflict with pscp on windows. 
 for i=1:numel(packages),
-	if exist(packages{i},'file'),
+	if exist(packages{i},'file')
 		delete(packages{i});
 	end
 end
 
 %if hostname and host are the same, do a simple copy
-if strcmpi(hostname,host),
-	for i=1:numel(packages),
-		success=copyfile([path '/' packages{i}]); %keep going, even if success=0
+if strcmpi(hostname,host)
+	for i=1:numel(packages)
+		system(['cp ' path '/' packages{i} ' .']);
 	end
 else
 	if ispc & ~ismingw,
