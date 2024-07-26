@@ -229,11 +229,13 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_MSG_RESULT([Linux])
 			AC_DEFINE([_IS_MAC_], [0], [is macOS])
 			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
+		;;
 		*mingw*)
 			AC_MSG_RESULT([Windows (MSYS2 MinGW)])
 			IS_MSYS2=yes
 			AC_DEFINE([_IS_MAC_], [0], [is macOS])
 			AC_DEFINE([_IS_MSYS2_], [1], [is Windows (MSYS2 MinGW)])
+		;;
 		*)
 			AC_MSG_ERROR([unsupported operating system type)])
 		;;
