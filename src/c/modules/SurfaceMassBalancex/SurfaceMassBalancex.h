@@ -27,7 +27,7 @@ void SmbDebrisEvattx(FemModel* femmodel);
 void SmbSemicx(FemModel* femmodel, int ismethod);
 /*GEMB: */
 void       Gembx(FemModel* femmodel);
-void       GembgridInitialize(IssmDouble** pdz, int* psize, IssmDouble zTop, IssmDouble dzTop, IssmDouble zMax, IssmDouble zY);
+void       GembgridInitialize(IssmDouble** pdz, int* psize, IssmDouble z_top, IssmDouble dz_top, IssmDouble z_max, IssmDouble beta);
 IssmDouble Marbouty(IssmDouble T, IssmDouble d, IssmDouble dT);
 IssmDouble gardnerAlb(IssmDouble* re, IssmDouble* dz, IssmDouble* d, IssmDouble clabSnow, IssmDouble clabIce, IssmDouble SZA, IssmDouble COT, IssmDouble dPHC, int m);
 void grainGrowth(IssmDouble** pre, IssmDouble** pgdn, IssmDouble** pgsp, IssmDouble* T,IssmDouble* dz,IssmDouble* d, IssmDouble* W,IssmDouble smb_dt,int m,int aIdx, int sid);
