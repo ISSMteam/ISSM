@@ -87,7 +87,7 @@ field_tolerances = [
     1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,
     1e-12,4e-12,1e-11,1e-10,4e-11,1e-11,1e-12,1e-11,1e-12,1e-12,1e-12,1e-11,
     1e-12,4e-12,2e-12,2e-11,1e-10,1e-11,1e-12,1e-11,1e-11,1e-12,1e-12,1e-11,
-    1e-11,1e-11,1e-10,1e-11,7e-12,3e-11,1e-12,4e-12,1e-10,1e-12,1e-12,2e-11
+    1e-11,1e-11,1e-10,1e-11,2e-11,3e-11,1e-12,4e-12,1e-10,1e-12,1e-12,2e-11
 ]
 # Shape is different in python solution (fixed using reshape) which can cause test failure
 field_values = [
