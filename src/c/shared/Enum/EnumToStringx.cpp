@@ -1413,7 +1413,6 @@ const char* EnumToStringx(int en){
 		case AggressiveMigrationEnum : return "AggressiveMigration";
 		case AmrBamgEnum : return "AmrBamg";
 		case AmrNeopzEnum : return "AmrNeopz";
-		case AndroidFrictionCoefficientEnum : return "AndroidFrictionCoefficient";
 		case ArrheniusEnum : return "Arrhenius";
 		case AutodiffJacobianEnum : return "AutodiffJacobian";
 		case Balancethickness2AnalysisEnum : return "Balancethickness2Analysis";

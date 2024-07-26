@@ -1446,7 +1446,6 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"AggressiveMigration")==0) return AggressiveMigrationEnum;
 	      else if (strcmp(name,"AmrBamg")==0) return AmrBamgEnum;
 	      else if (strcmp(name,"AmrNeopz")==0) return AmrNeopzEnum;
-	      else if (strcmp(name,"AndroidFrictionCoefficient")==0) return AndroidFrictionCoefficientEnum;
 	      else if (strcmp(name,"Arrhenius")==0) return ArrheniusEnum;
 	      else if (strcmp(name,"AutodiffJacobian")==0) return AutodiffJacobianEnum;
 	      else if (strcmp(name,"Balancethickness2Analysis")==0) return Balancethickness2AnalysisEnum;
