@@ -6777,12 +6777,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	IssmDouble* viscousU = NULL;
 	IssmDouble* viscousN = NULL;
 	IssmDouble* viscousE = NULL;
-
-	#ifdef _HAVE_RESTRICT_
-	IssmDouble* __restrict__ G_gravi_precomputed=NULL;
-	#else
 	IssmDouble* G_gravi_precomputed=NULL;
-	#endif
 
 	/*viscoelastic green function:*/
 	int index;
@@ -6803,20 +6798,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	int grd, grdmodel;
 
 	/*Rotational:*/
-	#ifdef _HAVE_RESTRICT_
-	IssmDouble* __restrict__ Grot=NULL;
-	IssmDouble* __restrict__ GUrot=NULL;
-	IssmDouble* __restrict__ GNrot=NULL;
-	IssmDouble* __restrict__ GErot=NULL;
-	IssmDouble* __restrict__ tide_love_h  = NULL;
-	IssmDouble* __restrict__ tide_love_k  = NULL;
-	IssmDouble* __restrict__ tide_love_l  = NULL;
-	IssmDouble* __restrict__ LoveRotRSL   = NULL;
-	IssmDouble* __restrict__ LoveRotU     = NULL;
-	IssmDouble* __restrict__ LoveRothoriz = NULL;
-	int* __restrict__ AplhaIndex   = NULL;
-	int* __restrict__ AzimuthIndex = NULL;
-	#else
 	IssmDouble* Grot=NULL;
 	IssmDouble* GUrot=NULL;
 	IssmDouble* GNrot=NULL;
@@ -6829,7 +6810,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	IssmDouble* LoveRothoriz = NULL;
 	int* AlphaIndex   = NULL;
 	int* AzimuthIndex = NULL;
-	#endif
 
 	IssmDouble  moi_e, moi_p, omega;
 	IssmDouble  Y21cos     , Y21sin     , Y20;
@@ -7070,21 +7050,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	/*}}}*/
 
 	/*Free allocations:{{{*/
-	#ifdef _HAVE_RESTRICT_
-	delete activevertices;
-	delete AlphaIndex;
-	if(horiz) AzimuthIndex;
-
-	if(computerotation){
-		delete Grot;
-		delete GUrot;
-		if (horiz){
-			delete GNrot;
-			delete GErot;
-		}
-	}
-
-	#else
 	xDelete<int>(activevertices);
 	xDelete<int>(AlphaIndex);
 	if(horiz){
@@ -7098,7 +7063,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 			xDelete<IssmDouble>(GErot);
 		}
 	}
-	#endif
 	/*}}}*/
 	return;
 
@@ -7119,15 +7083,8 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	IssmDouble xyz_list[NUMVERTICES][3];
 	int* activevertices = NULL;
 	int n_activevertices, av;
-
-	#ifdef _HAVE_RESTRICT_
-	int** __restrict__ AlphaIndex=NULL;
-	int** __restrict__ AzimIndex=NULL;
-
-	#else
 	int** AlphaIndex=NULL;
 	int** AzimIndex=NULL;
-	#endif
 
 	/*viscoelastic green function:*/
 	int index;

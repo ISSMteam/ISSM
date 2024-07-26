@@ -1,3 +1,12 @@
+#-------------#
+# Environment #
+#-------------#
+
+export CC=icc
+export CXX=icpc
+export CXXFLAGS="-O3 -D_INTEL_LINUX_ -std=c++11"
+export CFLAGS="-O3 -D_INTEL_LINUX_"
+
 #--------------------#
 # ISSM Configuration #
 #--------------------#

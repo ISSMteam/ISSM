@@ -15,9 +15,6 @@
 #include <iostream>
 #include <iomanip>
 
-#ifdef _HAVE_ANDROID_NDK_
-#include <android/log.h>
-#endif
 #include "./Print.h"
 #include "../Comm/IssmComm.h"
 #include "../../String/sharedstring.h"
@@ -29,9 +26,7 @@ int PrintfFunctionOnCpu0(const string & message){
 	int my_rank=IssmComm::GetRank();
 
 	if(my_rank==0){
-		#ifdef _HAVE_ANDROID_JNI_
-		__android_log_print(ANDROID_LOG_INFO, "Native",message.c_str());
-		#elif _IS_MSYS2_
+		#if _IS_MSYS2_
 		printf("%s",message.c_str());
 		#else
 		ApiPrintf(message.c_str());
@@ -41,9 +36,7 @@ int PrintfFunctionOnCpu0(const string & message){
 }
 int PrintfFunctionOnAllCpus(const string & message){
 
-	#ifdef _HAVE_ANDROID_JNI_
-	__android_log_print(ANDROID_LOG_INFO, "Native",message.c_str());
-	#elif _IS_MSYS2_
+	#if _IS_MSYS2_
 	printf("%s",message.c_str());
 	#else
 	ApiPrintf(message.c_str());
