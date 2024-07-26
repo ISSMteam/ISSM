@@ -248,53 +248,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	IS_WINDOWS=no
 	AC_MSG_CHECKING([for vendor compilers])
 	if test -n "${VENDOR}"; then
-		if test "${VENDOR}" == "intel-win32"; then
-			export CC=icl
-			export CXX=icl
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_"
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_"
-			IS_WINDOWS=yes
-		elif test "${VENDOR}" == "intel-win7-32"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "intel-win7-64"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "MSVC-Win64"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -D_HAVE_PETSC_MPI_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -D_HAVE_PETSC_MPI_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "MSVC-Win64-par"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "intel-linux"; then
+		if test "${VENDOR}" == "intel-linux"; then
 			export CC=icc
 			export CXX=icpc
 			export CFLAGS="-D_INTEL_LINUX_"
@@ -2317,6 +2271,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			if test -d "${FORTRAN_DIR}" || test -f "${FORTRAN_DIR}"; then
 				FORTRANDIR="${FORTRAN_DIR}"
 				if test -n "${FORTRAN_DIR}"; then
+					export LIBRARY_PATH="${FORTRAN_DIR}:${LIBRARY_PATH}"
 					IS_FORTRANDIR_A_DIR=yes
 				fi
 				FORTRANLIB="${FORTRAN_LIB}"
