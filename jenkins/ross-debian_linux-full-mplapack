@@ -9,7 +9,6 @@ ISSM_CONFIG='\
 	--disable-static \
 	--enable-development \
 	--enable-debugging \
-	--with-cxxoptflags="-g -O2 -fPIC -std=gnu++11" \
 	--with-numthreads=4 \
 	--with-matlab-dir=${MATLAB_PATH} \
 	--with-python-version=3.11 \
