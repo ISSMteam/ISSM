@@ -17,7 +17,6 @@ ISSM_CONFIG='\
 	--enable-development \
 	--enable-debugging \
 	--with-numthreads=4 \
-	--with-vendor="win-msys2" \
 	--with-matlab-dir="${MATLAB_PATH}" \
 	--with-mpi-include="${MSMPI_ROOT}/include" \
 	--with-mpi-libdir="-Wl,-L${MSMPI_ROOT}/lib" \
