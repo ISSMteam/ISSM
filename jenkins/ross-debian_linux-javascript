@@ -1,3 +1,8 @@
+#-------------#
+# Environment #
+#-------------#
+export CXXOPTFLAGS="-g -O2 -fPIC -std=c++11"
+
 #--------------------#
 # ISSM Configuration #
 #--------------------#
