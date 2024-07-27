@@ -235,14 +235,17 @@ AC_DEFUN([ISSM_OPTIONS],[
 			IS_MSYS2=yes
 			AC_DEFINE([_IS_MAC_], [0], [is macOS])
 			AC_DEFINE([_IS_MSYS2_], [1], [is Windows (MSYS2 MinGW)])
+			export CXXFLAGS="-D_MSYS2_"
+			export LDFLAGS="-Wl,-no-undefined"
+			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 		;;
 		*)
 			AC_MSG_ERROR([unsupported operating system type)])
 		;;
 	esac
 
-	AM_CONDITIONAL([MAC], [test "${IS_MAC}" == "1"])
-	AM_CONDITIONAL([MSYS2], [test "${IS_MSYS2}" == "1"])
+	AM_CONDITIONAL([MAC], [test "x${IS_MAC}" == "xyes"])
+	AM_CONDITIONAL([MSYS2], [test "x${IS_MSYS2}" == "xyes"])
 
 	AC_DEFINE_UNQUOTED([_SYSTEM_HAS_FMEMOPEN_], ${SYSTEM_FMEMOPEN}, [does system copy of libc have fmemopen])
 	AM_CONDITIONAL([SYSTEM_HAS_FMEMOPEN], [test "${SYSTEM_FMEMOPEN}" == "1"])
@@ -783,7 +786,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl Chaco libraries and header files
 	if test "x${HAVE_CHACO}" == "xyes"; then
 		CHACOINCL="-I${CHACO_ROOT}/include"
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			CHACOLIB="-Wl,-L${CHACO_ROOT}/lib -Wl,-lchacominusblas"
 		else
 			CHACOLIB="-L${CHACO_ROOT}/lib -lchacominusblas"
@@ -1498,7 +1501,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl M1QN3 libraries and header files
 	if test "x${HAVE_M1QN3}" == "xyes"; then
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			M1QN3LIB="-Wl,-L${M1QN3_ROOT} -Wl,-lm1qn3 -Wl,-lddot"
 		else
 			M1QN3LIB="-L${M1QN3_ROOT} -lm1qn3 -lddot"
@@ -1591,7 +1594,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_MSG_ERROR([ScaLAPACK directory provided (${SCALAPACK_ROOT}) does not exist!]);
 		fi
 		HAVE_SCALAPACK=yes
-		if test "${VENDOR}" == "win-msys2"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			SCALAPACKLIB="-Wl,-L${SCALAPACK_ROOT}/lib -Wl,-lscalapack"
 		else
 			if test -f ${SCALAPACK_ROOT}/libscalapack-openmpi.so; then
@@ -1797,7 +1800,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	if test "x${HAVE_MUMPS}" == "xyes"; then
 		MUMPSINCL="-I${MUMPS_ROOT}/include"
 		if test "x${MUMPS_ROOT}" == "x${PETSC_ROOT}"; then
-			if test "${VENDOR}" == "win-msys2"; then
+			if test "x${IS_MSYS2}" == "xyes"; then
 				MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lcmumps -Wl,-ldmumps -Wl,-lsmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
 			else
 				MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lcmumps -lmumps_common -lpord -lzmumps"
@@ -1948,7 +1951,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl SEMIC libraries and header files
 	if test "x${HAVE_SEMIC}" == "xyes"; then
 		SEMICINCL="-I${SEMIC_ROOT}"
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			SEMICLIB="-Wl,-L${SEMIC_ROOT}/lib -Wl,-lsurface_physics -Wl,-lutils"
 		else
 			SEMICLIB="-L${SEMIC_ROOT}/lib -lsurface_physics -lutils"
