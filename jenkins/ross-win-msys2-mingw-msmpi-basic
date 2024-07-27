@@ -3,7 +3,7 @@
 #-------------#
 
 export CXXFLAGS="-D_MSYS2_"
-export LDFLAGS="${LDFLAGS} -no-undefined"
+export LDFLAGS="-no-undefined"
 export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 
 #--------------------#
