@@ -194,7 +194,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
 			dnl When standard Dakota installation has been updated to new 
 			dnl version, remove the following
-			if test -z "${CFLAGS}"; then
+			if test -z "${CFLAGS+x}"; then
 				export CFLAGS="-Wno-deprecated-register -Wno-return-type"
 			else
 				export CFLAGS="${CFLAGS} -Wno-deprecated-register -Wno-return-type"
@@ -2525,4 +2525,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	AC_MSG_RESULT([done])
 	dnl }}}
+
+	dnl Final variable substitution
+	AC_SUBST([CFLAGS])
+	AC_SUBST([COPTFLAGS])
+	AC_SUBST([CXXFLAGS])
+	AC_SUBST([CXXOPTFLAGS])
+	AC_SUBST([OSLIBS])
 ])

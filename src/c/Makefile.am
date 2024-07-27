@@ -817,7 +817,7 @@ endif
 
 if !MSYS2
 libISSMOverload_la_SOURCES = ./shared/String/ApiPrintf.cpp
-libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(COPTFLAGS) $(CFLAGS)
+libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(CFLAGS) $(COPTFLAGS)
 
 if VERSION
 libISSMOverload_la_LDFLAGS =
@@ -874,13 +874,13 @@ endif
 if KRIGING
 bin_PROGRAMS += kriging
 kriging_SOURCES = main/kriging.cpp
-kriging_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS) $(COPTFLAGS)
+kriging_CXXFLAGS= $(COPTFLAGS) $(CXXFLAGS) $(CXXOPTFLAGS)
 endif
 
 if ISSM_DAKOTA
 bin_PROGRAMS += issm_dakota
 issm_dakota_SOURCES = main/issm_dakota.cpp
-issm_dakota_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS) $(COPTFLAGS)
+issm_dakota_CXXFLAGS= $(COPTFLAGS) $(CXXFLAGS) $(CXXOPTFLAGS)
 bin_PROGRAMS += issm_post
 issm_post_SOURCES = main/issm_post.cpp
 issm_post_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
