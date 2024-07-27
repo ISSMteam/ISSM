@@ -51,6 +51,7 @@ syn keyword cConstant AugmentedLagrangianThetaEnum
 syn keyword cConstant AutodiffCbufsizeEnum
 syn keyword cConstant AutodiffDependentObjectsEnum
 syn keyword cConstant AutodiffDriverEnum
+syn keyword cConstant AutodiffEnablePreaccumulationEnum
 syn keyword cConstant AutodiffFosForwardIndexEnum
 syn keyword cConstant AutodiffFosReverseIndexEnum
 syn keyword cConstant AutodiffFovForwardIndicesEnum
@@ -61,6 +62,8 @@ syn keyword cConstant AutodiffLbufsizeEnum
 syn keyword cConstant AutodiffNumDependentsEnum
 syn keyword cConstant AutodiffNumIndependentsEnum
 syn keyword cConstant AutodiffObufsizeEnum
+syn keyword cConstant AutodiffOutputTapeMemoryEnum
+syn keyword cConstant AutodiffOutputTimeEnum
 syn keyword cConstant AutodiffTapeAllocEnum
 syn keyword cConstant AutodiffTbufsizeEnum
 syn keyword cConstant AutodiffXpEnum
@@ -267,6 +270,8 @@ syn keyword cConstant HydrologyCavitySpacingEnum
 syn keyword cConstant HydrologyChannelSheetWidthEnum
 syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyIschannelsEnum
+syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
+syn keyword cConstant HydrologyCreepOpenFlagEnum
 syn keyword cConstant HydrologyIsTransitionEnum
 syn keyword cConstant HydrologyIsWaterPressureArmaEnum
 syn keyword cConstant HydrologyMeltFlagEnum
@@ -1408,7 +1413,6 @@ syn keyword cConstant AgeAnalysisEnum
 syn keyword cConstant AggressiveMigrationEnum
 syn keyword cConstant AmrBamgEnum
 syn keyword cConstant AmrNeopzEnum
-syn keyword cConstant AndroidFrictionCoefficientEnum
 syn keyword cConstant ArrheniusEnum
 syn keyword cConstant AutodiffJacobianEnum
 syn keyword cConstant Balancethickness2AnalysisEnum
