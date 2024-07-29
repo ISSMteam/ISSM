@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Prepare External Packages
-        if: ${{ steps.cache-externalpackages.outputs.cache-hit}}
+        if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true'}}
         run: |
           ${{ inputs.ext_install_command }}
 
