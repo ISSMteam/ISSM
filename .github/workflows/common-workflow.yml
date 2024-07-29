@@ -40,7 +40,6 @@ jobs:
       - name: Prepare External Packages
         if: ${{ steps.cache-externalpackages.outputs.cache-hit}}
         run: |
-          MATLAB_ROOT = ${{ steps.setup-matlab.outputs.matlabroot }}
           ${{ inputs.ext_install_command }}
 
       - name: Get MATLAB
@@ -52,7 +51,8 @@ jobs:
 
       - name: build ISSM
         run: |
-          echo ${{ inputs.build_command}}
+          export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
+          ${{ inputs.build_command}}
 
       - name: Compile ISSM
         run: make -j4 install
