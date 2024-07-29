@@ -2201,13 +2201,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 				AC_DEFINE([_HAVE_FORTRAN_], [1], [with Fortran library in ISSM src])
 				AC_SUBST([FORTRANDIR])
 				AC_SUBST([FORTRANLIB])
+			elif test -f "${FORTRAN_DIR}"; then
+				FORTRANLIB="${FORTRAN_LIB}"
+				AC_DEFINE([_HAVE_FORTRAN_], [1], [with Fortran library in ISSM src])
+				AC_SUBST([FORTRANDIR])
 			else
-				if test "x${HAVE_MPI}" == "xyes"; then
-					MPI_REC_FORTRAN_LIB=$(mpif77 -print-file-name="libgfortran.a")
-					if test -f "${FORTRANLIB}"; then
-						AC_MSG_ERROR([Fortran library provided (${FORTRAN_LIB}) does not exist! MPI suggests the following library: ${MPI_REC_FORTRAN_LIB}]);
-					fi
-			 	fi
 				AC_MSG_ERROR([Fortran library provided (${FORTRAN_LIB}) does not exist!]);
 			fi
 		fi
