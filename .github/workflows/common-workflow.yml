@@ -9,6 +9,11 @@ on:
       build_type: 
         required: true
         type: string
+      build_command:
+        required: true
+        type: string
+      ext_install_command:
+        required: true
 env:
   ISSM_DIR: ${{ github.workspace }}
   
@@ -32,11 +37,9 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
           
       - name: Prepare External Packages
-        uses: ./.github/actions/prepare-externalpackages/
-        with:
-          build_type: ${{ inputs.build_type }}
-          os: ${{ inputs.os }}
-          cache-hit: ${{ steps.cache-externalpackages.outputs.cache-hit }} 
+        if: ${{ steps.cache-externalpackages.outputs.cache-hit}}
+        run: |
+          ${{ inputs.ext_install_command }}
 
       - name: Get MATLAB
         id:   setup-matlab
@@ -46,11 +49,8 @@ jobs:
           cache: true
 
       - name: build ISSM
-        uses: ./.github/actions/build/
-        with:
-          build_type: ${{ inputs.build_type }}
-          os: ${{ inputs.os }}
-          matlabroot: ${{ steps.setup-matlab.outputs.matlabroot }}
+        run: |
+          ${{ inputs.build_command}}
 
       - name: Compile ISSM
         run: make -j4 install
