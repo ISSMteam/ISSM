@@ -56,12 +56,6 @@ void movingfront_core(FemModel* femmodel){
 		femmodel->parameters->SetParam(maxVel, CalvingVelMaxEnum);
 	}
 
-	/* start the work from here */
-	if(VerboseSolution()) _printf0_("   computing calving and undercutting\n");
-	Calvingx(femmodel);
-	FrontalForcingsx(femmodel);
-	if(VerboseSolution()) _printf0_("   computing new ice front position\n");
-
 	/* determine variables for extrapolation */
 	std::vector<int>  extrapol_vars;
 	if(isstressbalance){
@@ -82,6 +76,12 @@ void movingfront_core(FemModel* femmodel){
 		analysis->Core(femmodel);
 	}
 	delete analysis;	
+
+	/* start the work from here */
+	if(VerboseSolution()) _printf0_("   computing calving and undercutting\n");
+	Calvingx(femmodel);
+	FrontalForcingsx(femmodel);
+	if(VerboseSolution()) _printf0_("   computing new ice front position\n");
 
 	/* Need to do it again after extrapolation! */
 	if(domaintype!=Domain2DhorizontalEnum){
