@@ -19,7 +19,7 @@ ALL_CXXFLAGS += -D_DO_NOT_LOAD_GLOBALS_ # Cannot have undefined symbols under MS
 ALL_CXXFLAGS += -D_USE_MATH_DEFINES # Need to open fence to math.h definitions when --std=c++ is used (which is the default)
 endif
 
-ALL_CXXFLAGS += $(CXXFLAGS) $(CXXOPTFLAGS)
+ALL_CXXFLAGS += $(CXXFLAGS)
 
 libISSMPython_la_SOURCES = $(io_sources)
 libISSMPython_la_CXXFLAGS= ${ALL_CXXFLAGS}
@@ -127,7 +127,7 @@ deps += $(FLIBS) $(FORTRANLIB)
 endif
 
 #Optimization flags:
-AM_CXXFLAGS += $(CXXOPTFLAGS)
+AM_CXXFLAGS += $(CXXFLAGS)
 #}}}
 # Module sources and dependencies {{{
 libISSMPython_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(MATHLIB)
