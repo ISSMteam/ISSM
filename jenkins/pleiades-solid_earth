@@ -3,10 +3,9 @@
 #-------------#
 
 export CC=icc
+export CFLAGS="-O3 -D_INTEL_LINUX_"
 export CXX=icpc
 export CXXFLAGS="-O3 -D_INTEL_LINUX_ -std=c++11"
-export CXXOPTFLAGS="-O3"
-export CFLAGS="-O3 -D_INTEL_LINUX_"
 
 #--------------------#
 # ISSM Configuration #
