@@ -15,6 +15,12 @@ on:
       ext_install_command:
         required: true
         type: string
+      test_cases:
+        required: true
+        type: string
+      additional_options:
+        required: true
+        type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
   
@@ -22,6 +28,8 @@ jobs:
   build:
     name: build-ISSM-${{ inputs.os }}-${{ inputs.build_type}}
     runs-on: ${{ inputs.os }}
+    outputs:
+      test_matrix: ${{ steps.creatTestMatrix.outputs.test_output }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -66,33 +74,16 @@ jobs:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type }}
           path: ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
           compression-level: 1          
+      - id: creatTestMatrix
+        run: |
+          TESTS=${{ inputs.test_cases }}
+          echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
   test:
     runs-on: ${{ inputs.os }}
     needs: build
     strategy:
       fail-fast: false
-      matrix:
-        test-cases: 
-          - '101:399'
-          - '401:899'
-          - '3015, 3119, 3480, 3201:3206'
-        build-type:
-          -  ${{ inputs.build_type }}
-        additional: 
-          - " "
-          - "'benchmark','all',"
-        exclude:
-          - build-type: 'basic'
-            additional: "'benchmark','all',"
-          - build-type: 'basic'
-            test-cases: '3015, 3119, 3480, 3201:3206'
-          - build-type: 'codipack'
-            additional: " "
-          - build-type: 'codipack'
-            test-cases: '101:399'
-          - build-type: 'codipack'
-            test-cases: '401:899'
-
+      matrix: ${{ fromJson(needs.build.outputs.test_matrix) }}
     steps:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
@@ -125,7 +116,7 @@ jobs:
           devpath;
 
           % Run tests
-          runme('exclude',[IdFromString('Dakota')],${{matrix.additional}} 'id',[${{matrix.test-cases}}],'quitonerror',1);
+          runme('exclude',[IdFromString('Dakota')],${{inputs.additional_options}} 'id',[${{matrix.test_cases}}],'quitonerror',1);
           quit(0);
           EOF
           cat ${ISSM_DIR}/matlab_ci.m
