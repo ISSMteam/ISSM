@@ -192,9 +192,15 @@ AC_DEFUN([ISSM_OPTIONS],[
 			IS_MAC=yes
 			AC_DEFINE([_IS_MAC_], [1], [is macOS])
 			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
+			dnl For some reason, CXXFLAGS is not empty by default under clang
+			export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
+
 			dnl When standard Dakota installation has been updated to new 
 			dnl version, remove the following
 			DAKOTA_COMPILER_FLAGS="-Wno-deprecated-register -Wno-return-type"
+			export CFLAGS="${DAKOTA_COMPILER_FLAGS}"
+			export CXXFLAGS="${CXXFLAGS} ${DAKOTA_COMPILER_FLAGS}"
+
 			dnl NOTE: Commenting out the following, for now, as ISSM seems to 
 			dnl 	  compile and run fine, but certain errors (e.g. file not 
 			dnl 	  found) were not bubbling up, and instead causing MATLAB 
@@ -242,14 +248,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AM_CONDITIONAL([SYSTEM_HAS_FMEMOPEN], [test "${SYSTEM_FMEMOPEN}" == "1"])
 
 	dnl Set default environment variables
-	if test -z "${CFLAGS+x}"; then
-		export CFLAGS="${DAKOTA_COMPILER_FLAGS}"
-	fi
 	if test ! -z "${COPTFLAGS+x}"; then
 		AC_MSG_WARN([If you want to use the optimization flags provided by COPTFLAGS (${COPTFLAGS}), please pass them via CFLAGS])
 	fi
 	if test -z "${CXXFLAGS+x}"; then
-		export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_ ${DAKOTA_COMPILER_FLAGS}"
+		export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
 	fi
 	if test ! -z "${CXXOPTFLAGS+x}"; then
 		AC_MSG_WARN([If you want to use the optimization flags provided by CXXOPTFLAGS (${CXXOPTFLAGS}), please pass them via CXXFLAGS])
