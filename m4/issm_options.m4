@@ -2504,24 +2504,24 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl Check that if we run ADOL-C, we don't use PETSc for now
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_PETSC}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C!]);
+		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C]);
 	fi
 	  if test "x${HAVE_PETSC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both PETSc and CoDiPack]);
+		AC_MSG_ERROR([cannot compile ISSM with both PETSc and CoDiPack, you probably forgot to remove --with-petsc-dir]);
 	fi
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack!]);
+		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack]);
 	fi
 	if test "x${HAVE_ADJOINTMPI}" == "xyes" && test "x${HAVE_MEDIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both MeDiPack and AdjointMPI!]);
+		AC_MSG_ERROR([cannot compile ISSM with both MeDiPack and AdjointMPI]);
 	fi
 	dnl Check that if we run MeteoIO, we have SNOWPACK also
 	if test "x${HAVE_METEOIO}" == "xyes" && test "x${HAVE_SNOWPACK}" == "xno"; then
-		AC_MSG_ERROR([cannot compile MeteoIO package without SNOWPACK!]);
+		AC_MSG_ERROR([cannot compile MeteoIO package without SNOWPACK]);
 	fi
 	dnl Check that if we run SNOWPACK, we have MeteoIO also
 	if test "${HAVE_METEOIO}" == "xno" && test "${HAVE_SNOWPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile SNOWPACK package without MeteoIO!]);
+		AC_MSG_ERROR([cannot compile SNOWPACK package without MeteoIO]);
 	fi
 
 	AC_MSG_RESULT([done])

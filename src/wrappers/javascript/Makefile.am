@@ -29,7 +29,7 @@ io_sources = \
 	./io/WriteJavascriptData.cpp \
 	./io/FetchJavascriptData.cpp
 
-ALLCXXFLAGS= -fPIC -D_WRAPPERS_ $(CXXFLAGS) $(CXXOPTFLAGS)
+ALLCXXFLAGS= -fPIC -D_WRAPPERS_ $(CXXFLAGS)
 
 libISSMJavascript_la_SOURCES = $(io_sources)
 libISSMJavascript_la_CXXFLAGS= $(ALLCXXFLAGS)
@@ -55,7 +55,7 @@ AM_CXXFLAGS += -D_HAVE_JAVASCRIPT_MODULES_ -fPIC
 deps = ./libISSMJavascript.la ../../c/libISSMModules.la ../../c/libISSMCore.la ./libISSMApi.la
 
 # Optimization flags
-AM_CXXFLAGS += $(CXXOPTFLAGS)
+AM_CXXFLAGS += $(CXXFLAGS)
 #}}}
 # Module sources and dependencies {{{
 libISSMJavascript_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(MPILIB) $(PETSCLIB) $(MKLLIB) $(GSLLIB) $(MATHLIB)
@@ -89,6 +89,6 @@ IssmModule_SOURCES = \
 	../IssmConfig/IssmConfig.cpp \
 	../Issm/issm.cpp
 
-IssmModule_CXXFLAGS= -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) $(CXXOPTFLAGS) $(COPTFLAGS) -s EXPORTED_FUNCTIONS="['_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
+IssmModule_CXXFLAGS= -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) -s EXPORTED_FUNCTIONS="['_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
 IssmModule_LDADD = ${deps} $(TRIANGLELIB) $(GSLLIB)
 #}}}

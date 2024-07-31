@@ -334,7 +334,7 @@ EOF
 	# Wait for MATLAB to exit
 	#
 	# TODO:
-	# - Replace by adding -wait option to above calls to matlab?
+	# - Replace by adding -wait option to above calls to MATLAB?
 	#
 	if [[ ${MINGW} -eq 1 ]]; then
 		sleep 5;
