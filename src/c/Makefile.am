@@ -708,7 +708,7 @@ modules_sources += \
 endif
 #}}}
 # Library flags and sources {{{
-ALL_CXXFLAGS = $(CXXFLAGS) $(CXXOPTFLAGS)
+ALL_CXXFLAGS = $(CXXFLAGS)
 
 if MSYS2
 ALL_CXXFLAGS += -D_DO_NOT_LOAD_GLOBALS_ # Cannot have undefined symbols under MSYS2
@@ -817,7 +817,7 @@ endif
 
 if !MSYS2
 libISSMOverload_la_SOURCES = ./shared/String/ApiPrintf.cpp
-libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(CFLAGS) $(COPTFLAGS)
+libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(CFLAGS) $(CXXFLAGS)
 
 if VERSION
 libISSMOverload_la_LDFLAGS =
@@ -860,29 +860,29 @@ endif
 LDADD += $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
-issm_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_CXXFLAGS= $(CXXFLAGS)
 
 issm_slc_SOURCES = main/issm_slc.cpp
-issm_slc_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_slc_CXXFLAGS= $(CXXFLAGS)
 
 if OCEAN
 bin_PROGRAMS += issm_ocean
 issm_ocean_SOURCES = main/issm_ocean.cpp
-issm_ocean_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_ocean_CXXFLAGS= $(CXXFLAGS)
 endif
 
 if KRIGING
 bin_PROGRAMS += kriging
 kriging_SOURCES = main/kriging.cpp
-kriging_CXXFLAGS= $(COPTFLAGS) $(CXXFLAGS) $(CXXOPTFLAGS)
+kriging_CXXFLAGS= $(CXXFLAGS)
 endif
 
 if ISSM_DAKOTA
 bin_PROGRAMS += issm_dakota
 issm_dakota_SOURCES = main/issm_dakota.cpp
-issm_dakota_CXXFLAGS= $(COPTFLAGS) $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_dakota_CXXFLAGS= $(CXXFLAGS)
 bin_PROGRAMS += issm_post
 issm_post_SOURCES = main/issm_post.cpp
-issm_post_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_post_CXXFLAGS= $(CXXFLAGS)
 endif
 #}}}
