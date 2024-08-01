@@ -759,7 +759,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl NumPy libraries and header files
 	if test "x${HAVE_PYTHON_NUMPY}" == "xyes"; then
-		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy"
+		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy -I${PYTHON_NUMPY_ROOT}/_core/include -I${PYTHON_NUMPY_ROOT}/_core/include/numpy"
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
