@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @PYTHONINCL@ @PYTHON_NUMPYINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @CODIPACKINCL@ @PROJINCL@
+AM_CPPFLAGS = @DAKOTAINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @PYTHONINCL@ @PYTHON_NUMPYINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @CODIPACKINCL@ @PROJINCL@
 AUTOMAKE_OPTIONS = subdir-objects
 
 #define prefix (from http://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Defining-Directories.html)
@@ -130,74 +130,93 @@ endif
 AM_CXXFLAGS += $(CXXFLAGS)
 #}}}
 # Module sources and dependencies {{{
-libISSMPython_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB)
+libISSMPython_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(MATHLIB)
 
 if STANDALONE_LIBRARIES
 if !MSYS2
 libISSMPython_la_LDFLAGS = -static
 libISSMApi_la_LDFLAGS = -static
 endif
-deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(OSLIBS) $(OSLIBS)
+deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(NEOPZLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(CHACOLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS)
 endif
 
 libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB)
 
 BamgConvertMesh_python_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
-BamgConvertMesh_python_la_LIBADD = ${deps}
+BamgConvertMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgConvertMesh_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 BamgMesher_python_la_SOURCES = ../BamgMesher/BamgMesher.cpp
-BamgMesher_python_la_LIBADD = ${deps}
+BamgMesher_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgMesher_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 BamgTriangulate_python_la_SOURCES = ../BamgTriangulate/BamgTriangulate.cpp
-BamgTriangulate_python_la_LIBADD = ${deps}
+BamgTriangulate_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgTriangulate_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 if CHACO
 Chaco_python_la_SOURCES = ../Chaco/Chaco.cpp
-Chaco_python_la_LIBADD = ${deps} $(CHACOLIB)
+Chaco_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+Chaco_python_la_LIBADD = ${deps} $(CHACOLIB) $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 endif
 
 ContourToMesh_python_la_SOURCES = ../ContourToMesh/ContourToMesh.cpp
-ContourToMesh_python_la_LIBADD = ${deps}
+ContourToMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ContourToMesh_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(NEOPZLIB) $(GSLLIB)
 
 ContourToNodes_python_la_SOURCES = ../ContourToNodes/ContourToNodes.cpp
-ContourToNodes_python_la_LIBADD = ${deps}
+ContourToNodes_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ContourToNodes_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 ElementConnectivity_python_la_SOURCES = ../ElementConnectivity/ElementConnectivity.cpp
-ElementConnectivity_python_la_LIBADD = ${deps}
+ElementConnectivity_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ElementConnectivity_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 ExpToLevelSet_python_la_SOURCES = ../ExpToLevelSet/ExpToLevelSet.cpp
-ExpToLevelSet_python_la_LIBADD = ${deps}
+ExpToLevelSet_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ExpToLevelSet_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(NEOPZLIB)
 
 InterpFromMesh2d_python_la_SOURCES = ../InterpFromMesh2d/InterpFromMesh2d.cpp
-InterpFromMesh2d_python_la_LIBADD = ${deps}
+InterpFromMesh2d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMesh2d_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(NEOPZLIB) $(GSLLIB)
 
 InterpFromGridToMesh_python_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
-InterpFromGridToMesh_python_la_LIBADD = ${deps}
+InterpFromGridToMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromGridToMesh_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(NEOPZLIB) $(GSLLIB)
 
 InterpFromMeshToGrid_python_la_SOURCES = ../InterpFromMeshToGrid/InterpFromMeshToGrid.cpp
-InterpFromMeshToGrid_python_la_LIBADD = ${deps}
+InterpFromMeshToGrid_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToGrid_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(NEOPZLIB) $(GSLLIB)
 
 InterpFromMeshToMesh2d_python_la_SOURCES = ../InterpFromMeshToMesh2d/InterpFromMeshToMesh2d.cpp
-InterpFromMeshToMesh2d_python_la_LIBADD = ${deps}
+InterpFromMeshToMesh2d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToMesh2d_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(GSLLIB)
 
 InterpFromMeshToMesh3d_python_la_SOURCES = ../InterpFromMeshToMesh3d/InterpFromMeshToMesh3d.cpp
-InterpFromMeshToMesh3d_python_la_LIBADD = ${deps}
+InterpFromMeshToMesh3d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToMesh3d_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(MULTITHREADINGLIB) $(GSLLIB)
 
 IssmConfig_python_la_SOURCES = ../IssmConfig/IssmConfig.cpp
-IssmConfig_python_la_LIBADD = ${deps}
+IssmConfig_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+IssmConfig_python_la_LIBADD = ${deps} $(DAKOTALIB) $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB)
 
 MeshPartition_python_la_SOURCES = ../MeshPartition/MeshPartition.cpp
-MeshPartition_python_la_LIBADD = ${deps}
+MeshPartition_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+MeshPartition_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(METISLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 MeshProfileIntersection_python_la_SOURCES = ../MeshProfileIntersection/MeshProfileIntersection.cpp
-MeshProfileIntersection_python_la_LIBADD = ${deps}
+MeshProfileIntersection_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+MeshProfileIntersection_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 NodeConnectivity_python_la_SOURCES = ../NodeConnectivity/NodeConnectivity.cpp
-NodeConnectivity_python_la_LIBADD = ${deps}
+NodeConnectivity_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+NodeConnectivity_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 Triangle_python_la_SOURCES = ../Triangle/Triangle.cpp
-Triangle_python_la_LIBADD = ${deps} $(TRIANGLELIB)
+Triangle_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+Triangle_python_la_LIBADD = ${deps} $(TRIANGLELIB) $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 
 ProcessRifts_python_la_SOURCES = ../ProcessRifts/ProcessRifts.cpp
-ProcessRifts_python_la_LIBADD = ${deps}
+ProcessRifts_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ProcessRifts_python_la_LIBADD = ${deps} $(PETSCLIB) $(HDF5LIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB)
 #}}}
