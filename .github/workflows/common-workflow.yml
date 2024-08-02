@@ -62,8 +62,8 @@ jobs:
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           ${{ inputs.build_command}}
 
-      - name: Compile ISSM
-        # run: make -j4 install
+      # - name: Compile ISSM
+      #   run: make -j4 install
 
       - name: Compress ISSM artifact
         run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
