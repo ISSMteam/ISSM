@@ -6203,8 +6203,6 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,int transfor
 
 	/*All nodes have the same Coordinate System*/
 	int  numnodes = this->GetNumberOfNodes();
-	int* cs_array = xNew<int>(numnodes);
-	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
 
 	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
 	bool isrotation = false;
@@ -6217,6 +6215,8 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,int transfor
 	if(!isrotation) return;
 
 	/*Call core*/
+	int* cs_array = xNew<int>(numnodes);
+	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
 	this->TransformStiffnessMatrixCoord(Ke,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/
