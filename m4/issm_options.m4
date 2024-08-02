@@ -192,18 +192,15 @@ AC_DEFUN([ISSM_OPTIONS],[
 			IS_MAC=yes
 			AC_DEFINE([_IS_MAC_], [1], [is macOS])
 			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
+			dnl For some reason, CXXFLAGS is not empty by default under clang
+			export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
+
 			dnl When standard Dakota installation has been updated to new 
 			dnl version, remove the following
-			if test -z "${CFLAGS+x}"; then
-				export CFLAGS="-Wno-deprecated-register -Wno-return-type"
-			else
-				export CFLAGS="${CFLAGS} -Wno-deprecated-register -Wno-return-type"
-			fi
-			if test -z "${CXXFLAGS+x}"; then
-				export CXXFLAGS="-Wno-deprecated-register -Wno-return-type"
-			else
-				export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-register -Wno-return-type"
-			fi
+			DAKOTA_COMPILER_FLAGS="-Wno-deprecated-register -Wno-return-type"
+			export CFLAGS="${DAKOTA_COMPILER_FLAGS}"
+			export CXXFLAGS="${CXXFLAGS} ${DAKOTA_COMPILER_FLAGS}"
+
 			dnl NOTE: Commenting out the following, for now, as ISSM seems to 
 			dnl 	  compile and run fine, but certain errors (e.g. file not 
 			dnl 	  found) were not bubbling up, and instead causing MATLAB 
@@ -250,12 +247,15 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_DEFINE_UNQUOTED([_SYSTEM_HAS_FMEMOPEN_], ${SYSTEM_FMEMOPEN}, [does system copy of libc have fmemopen])
 	AM_CONDITIONAL([SYSTEM_HAS_FMEMOPEN], [test "${SYSTEM_FMEMOPEN}" == "1"])
 
-	dnl Set default C++ environment variables
-	if test -z "${CXXFLAGS+x}"; then
-		export CXXFLAGS="-std=C++11"
+	dnl Set default environment variables
+	if test ! -z "${COPTFLAGS+x}"; then
+		AC_MSG_WARN([If you want to use the optimization flags provided by COPTFLAGS (${COPTFLAGS}), please pass them via CFLAGS])
 	fi
-	if test -z "${CXXOPTFLAGS+x}"; then
-		export CXXOPTFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
+	if test -z "${CXXFLAGS+x}"; then
+		export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
+	fi
+	if test ! -z "${CXXOPTFLAGS+x}"; then
+		AC_MSG_WARN([If you want to use the optimization flags provided by CXXOPTFLAGS (${CXXOPTFLAGS}), please pass them via CXXFLAGS])
 	fi
 	dnl }}}
 	dnl MATLAB{{{
@@ -759,7 +759,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl NumPy libraries and header files
 	if test "x${HAVE_PYTHON_NUMPY}" == "xyes"; then
-		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy"
+		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy -I${PYTHON_NUMPY_ROOT}/_core/include -I${PYTHON_NUMPY_ROOT}/_core/include/numpy"
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
@@ -2532,8 +2532,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl Final variable substitution
 	AC_SUBST([CFLAGS])
-	AC_SUBST([COPTFLAGS])
 	AC_SUBST([CXXFLAGS])
-	AC_SUBST([CXXOPTFLAGS])
 	AC_SUBST([OSLIBS])
 ])
