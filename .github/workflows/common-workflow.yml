@@ -63,7 +63,7 @@ jobs:
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
-        run: make -j4 install
+        # run: make -j4 install
 
       - name: Compress ISSM artifact
         run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
@@ -76,7 +76,8 @@ jobs:
           compression-level: 1          
       - id: creatTestMatrix
         run: |
-          echo "test_output=$(jq -cn --argjson values "${{ inputs.test_cases }}" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
+          TESTS='${{ inputs.test_cases }}'
+          echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
   test:
     runs-on: ${{ inputs.os }}
     needs: build
