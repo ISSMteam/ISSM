@@ -76,7 +76,7 @@ jobs:
           compression-level: 1          
       - id: creatTestMatrix
         run: |
-          TESTS=${{ inputs.test_cases }}
+          TESTS=\'${{ inputs.test_cases }}\'
           echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
   test:
     runs-on: ${{ inputs.os }}
