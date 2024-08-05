@@ -149,11 +149,11 @@ def WriteData(fid, prefix, *args):
         # Get size
         s = data.shape
         # If matrix = NaN, then do not write anything
-        if np.ndim(data) == 2 and np.product(s) == 1 and np.all(np.isnan(data)):
+        if np.ndim(data) == 2 and np.prod(s) == 1 and np.all(np.isnan(data)):
             s = (0, 0)
 
         # First write length of record
-        recordlength = 4 + 4 + 8 * np.product(s) + 4 + 4 # 2 integers (32 bits) + the double matrix + code + matrix type
+        recordlength = 4 + 4 + 8 * np.prod(s) + 4 + 4 # 2 integers (32 bits) + the double matrix + code + matrix type
         fid.write(pack('q', recordlength))
 
         # Write data code and matrix type
@@ -188,11 +188,11 @@ def WriteData(fid, prefix, *args):
         # Get size
         s = data.shape
         # If matrix = NaN, then do not write anything
-        if np.ndim(data) == 1 and np.product(s) == 1 and np.all(np.isnan(data)):
+        if np.ndim(data) == 1 and np.prod(s) == 1 and np.all(np.isnan(data)):
             s = (0, 0)
 
         # First write length of record
-        recordlength = 4 + 4 + 8 * np.product(s) + 4 + 4 # 2 integers (32 bits) + the double matrix + code + matrix type
+        recordlength = 4 + 4 + 8 * np.prod(s) + 4 + 4 # 2 integers (32 bits) + the double matrix + code + matrix type
 
         try:
             fid.write(pack('q', recordlength))
@@ -235,7 +235,7 @@ def WriteData(fid, prefix, *args):
             n2 = s[1]
 
         # If matrix = NaN, then do not write anything
-        if np.ndim(data) == 1 and np.product(s) == 1 and np.all(np.isnan(data)):
+        if np.ndim(data) == 1 and np.prod(s) == 1 and np.all(np.isnan(data)):
             s = (0, 0)
             n2 = 0
 
@@ -268,12 +268,12 @@ def WriteData(fid, prefix, *args):
             fid.write(pack('i', 1))
         fid.write(pack('d', float(offsetA)))
         fid.write(pack('d', float(rangeA)))
+
         if np.ndim(data) == 1:
             for i in range(s[0] - 1):
                 fid.write(pack('B', int(A[i])))
             fid.write(pack('d', float(data[s[0] - 1]))) # get to the "c" convention, hence the transpose
-
-        elif np.product(s) > 0:
+        elif np.prod(s) > 0:
             for i in range(s[0] - 1):
                 for j in range(s[1]):
                     fid.write(pack('B', int(A[i][j]))) # get to the "c" convention, hence the transpose
@@ -298,7 +298,7 @@ def WriteData(fid, prefix, *args):
                     matrix = matrix.reshape(0, 0)
 
             s = matrix.shape
-            recordlength += 4 * 2 + np.product(s) * 8 # row and col of matrix + matrix of doubles
+            recordlength += 4 * 2 + np.prod(s) * 8 # row and col of matrix + matrix of doubles
 
         # Write length of record
         fid.write(pack('q', recordlength))
