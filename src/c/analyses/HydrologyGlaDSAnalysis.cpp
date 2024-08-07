@@ -301,9 +301,10 @@ ElementMatrix* HydrologyGlaDSAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		}
 
 		/*Diffusive term*/
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+				Ke->values[i*numnodes+j] += factor*(
 							coeff*dbasis[0*numnodes+i]*dbasis[0*numnodes+j]
 							+ coeff*dbasis[1*numnodes+i]*dbasis[1*numnodes+j]);
 			}
@@ -319,18 +320,20 @@ ElementMatrix* HydrologyGlaDSAnalysis::CreateKMatrix(Element* element){/*{{{*/
 				v1 = 0;
 			}
 		}
+		factor = gauss->weight*Jdet*(-v1);
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(-v1)*basis[i]*basis[j];
+				Ke->values[i*numnodes+j] += factor*basis[i]*basis[j];
 			}
 		}
 
 		/*Transient term if dt>0*/
 		if(dt>0.){
 			/*Diffusive term*/
+			factor = gauss->weight*Jdet*e_v/(rho_water*g*dt);
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j] += gauss->weight*Jdet*e_v/(rho_water*g*dt)*basis[i]*basis[j];
+					Ke->values[i*numnodes+j] += factor*basis[i]*basis[j];
 				}
 			}
 		}
@@ -447,12 +450,14 @@ ElementVector* HydrologyGlaDSAnalysis::CreatePVector(Element* element){/*{{{*/
 			}
 		}
 
-		for(int i=0;i<numnodes;i++) pe->values[i]+= - Jdet*gauss->weight*(w-v2-m)*basis[i];
+		IssmDouble factor = - Jdet*gauss->weight*(w-v2-m);
+		for(int i=0;i<numnodes;i++) pe->values[i]+= factor*basis[i];
 
 		/*Transient term if dt>0*/
 		if(dt>0.){
 			phiold_input->GetInputValue(&phi_old,gauss);
-			for(int i=0;i<numnodes;i++) pe->values[i] += gauss->weight*Jdet*e_v/(rho_water*g*dt)*phi_old*basis[i];
+			factor = gauss->weight*Jdet*e_v/(rho_water*g*dt)*phi_old;
+			for(int i=0;i<numnodes;i++) pe->values[i] += factor*basis[i];
 		}
 	}
 
@@ -646,7 +651,7 @@ void HydrologyGlaDSAnalysis::UpdateSheetThickness(FemModel* femmodel){/*{{{*/
 void HydrologyGlaDSAnalysis::UpdateSheetThickness(Element* element){/*{{{*/
 
 	/*Intermediaries */
-	IssmDouble  Jdet,vx,vy,ub,h_old,N,h_r,H,b;
+	IssmDouble  vx,vy,ub,h_old,N,h_r,H,b;
 	IssmDouble  A,B,n,phi,phi_0;
 	IssmDouble  alpha,beta;
 	IssmDouble  oceanLS,iceLS;

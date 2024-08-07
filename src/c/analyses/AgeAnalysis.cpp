@@ -98,7 +98,7 @@ ElementMatrix* AgeAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	/*Intermediaries */
 	int         stabilization;
 	IssmDouble  Jdet,dt,u,v,w,um,vm,wm,vel;
-	IssmDouble  h,hx,hy,hz,vx,vy,vz,D_scalar;
+	IssmDouble  h,hx,hy,hz,vx,vy,vz,D_scalar,factor;
 	IssmDouble  tau_parameter,diameter;
 	IssmDouble  tau_parameter_anisotropic[2],tau_parameter_hor,tau_parameter_ver;	
 	IssmDouble* xyz_list = NULL;
@@ -141,9 +141,10 @@ ElementMatrix* AgeAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		if(dt!=0.) D_scalar=D_scalar*dt;
 
 		/*Conduction: */
+		factor = D_scalar*kappa;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += D_scalar*kappa*(
+				Ke->values[i*numnodes+j] += factor*(
 							dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[2*numnodes+j]*dbasis[2*numnodes+i]
 							);
 			}
@@ -173,9 +174,10 @@ ElementMatrix* AgeAnalysis::CreateKMatrix(Element* element){/*{{{*/
 			element->ElementSizes(&hx,&hy,&hz);
 			vel=sqrt(vx*vx + vy*vy + vz*vz)+1.e-14;
 			h=sqrt( pow(hx*vx/vel,2) + pow(hy*vy/vel,2) + pow(hz*vz/vel,2));
-			K[0][0]=h/(2.*vel)*fabs(vx*vx);  K[0][1]=h/(2.*vel)*fabs(vx*vy); K[0][2]=h/(2.*vel)*fabs(vx*vz);
-			K[1][0]=h/(2.*vel)*fabs(vy*vx);  K[1][1]=h/(2.*vel)*fabs(vy*vy); K[1][2]=h/(2.*vel)*fabs(vy*vz);
-			K[2][0]=h/(2.*vel)*fabs(vz*vx);  K[2][1]=h/(2.*vel)*fabs(vz*vy); K[2][2]=h/(2.*vel)*fabs(vz*vz);
+			factor = h/(2.*vel);
+			K[0][0]=factor*fabs(vx*vx);  K[0][1]=factor*fabs(vx*vy); K[0][2]=factor*fabs(vx*vz);
+			K[1][0]=factor*fabs(vy*vx);  K[1][1]=factor*fabs(vy*vy); K[1][2]=factor*fabs(vy*vz);
+			K[2][0]=factor*fabs(vz*vx);  K[2][1]=factor*fabs(vz*vy); K[2][2]=factor*fabs(vz*vz);
 			for(int i=0;i<3;i++) for(int j=0;j<3;j++) K[i][j] = D_scalar*K[i][j];
 
 			for(int i=0;i<numnodes;i++){
@@ -191,18 +193,20 @@ ElementMatrix* AgeAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		else if(stabilization==2){
 			diameter=element->MinEdgeLength(xyz_list);
 			tau_parameter=element->StabilizationParameter(u-um,v-vm,w-wm,diameter,kappa);
+			factor = tau_parameter*D_scalar;
 			for(int i=0;i<numnodes;i++){
 				for(int j=0;j<numnodes;j++){
-					Ke->values[i*numnodes+j]+=tau_parameter*D_scalar*
+					Ke->values[i*numnodes+j]+=factor*
 					  ((u-um)*dbasis[0*numnodes+i]+(v-vm)*dbasis[1*numnodes+i]+(w-wm)*dbasis[2*numnodes+i])*
 					  ((u-um)*dbasis[0*numnodes+j]+(v-vm)*dbasis[1*numnodes+j]+(w-wm)*dbasis[2*numnodes+j]);
 				}
 			}
 			if(dt!=0.){
 				D_scalar=gauss->weight*Jdet;
+				factor = tau_parameter*D_scalar;
 				for(int i=0;i<numnodes;i++){
 					for(int j=0;j<numnodes;j++){
-						Ke->values[i*numnodes+j]+=tau_parameter*D_scalar*basis[j]*((u-um)*dbasis[0*numnodes+i]+(v-vm)*dbasis[1*numnodes+i]+(w-wm)*dbasis[2*numnodes+i]);
+						Ke->values[i*numnodes+j]+=factor*basis[j]*((u-um)*dbasis[0*numnodes+i]+(v-vm)*dbasis[1*numnodes+i]+(w-wm)*dbasis[2*numnodes+i]);
 					}
 				}
 			}
@@ -240,7 +244,7 @@ ElementVector* AgeAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Intermediaries*/
 	int         stabilization;
-	IssmDouble  Jdet,dt;
+	IssmDouble  Jdet,dt,factor;
 	IssmDouble  temperature;
 	IssmDouble  tau_parameter,diameter,hx,hy,hz;
 	IssmDouble  tau_parameter_anisotropic[2],tau_parameter_hor,tau_parameter_ver;
@@ -294,9 +298,11 @@ ElementVector* AgeAnalysis::CreatePVector(Element* element){/*{{{*/
 
 			tau_parameter=element->StabilizationParameter(u,v,w,diameter,1.e-15); //assume very small conductivity to get tau
 
-			for(int i=0;i<numnodes;i++) pe->values[i]+=tau_parameter*scalar_def*(u*dbasis[0*numnodes+i]+v*dbasis[1*numnodes+i]+w*dbasis[2*numnodes+i]);
+			factor = tau_parameter*scalar_def;
+			for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(u*dbasis[0*numnodes+i]+v*dbasis[1*numnodes+i]+w*dbasis[2*numnodes+i]);
 			if(reCast<bool,IssmDouble>(dt)){
-				for(int i=0;i<numnodes;i++) pe->values[i]+=tau_parameter*scalar_transient*(u*dbasis[0*numnodes+i]+v*dbasis[1*numnodes+i]+w*dbasis[2*numnodes+i]);
+				factor = tau_parameter*scalar_transient;
+				for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(u*dbasis[0*numnodes+i]+v*dbasis[1*numnodes+i]+w*dbasis[2*numnodes+i]);
 			}
 		}
 		/* anisotropic SUPG */

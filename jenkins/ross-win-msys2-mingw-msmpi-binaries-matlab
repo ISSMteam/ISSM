@@ -1,3 +1,7 @@
+#--------------------#
+# ISSM Configuration #
+#--------------------#
+
 MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2023b"))
 
 ISSM_CONFIG='\
@@ -6,7 +10,6 @@ ISSM_CONFIG='\
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
 	--disable-dependency-tracking \
-	--with-vendor="win-msys2" \
 	--with-matlab-dir="${MATLAB_PATH}" \
 	--with-fortran-lib="-Wl,-L/c/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.2.0 -Wl,-lgfortran" \
 	--with-mpi-include="${MSMPI_ROOT}/include" \

@@ -19,7 +19,7 @@ xmin = min(x)
 xmax = max(x)
 Lx = (xmax - xmin)
 alpha = 2. / 3.
-md.mask.ice_levelset = np.float_((x - alpha * Lx) > 0) - np.float_((x - alpha * Lx) < 0)
+md.mask.ice_levelset = np.double((x - alpha * Lx) > 0) - np.double((x - alpha * Lx) < 0)
 
 #Do not kill ice bergs as all is floating
 md.levelset.kill_icebergs = 0

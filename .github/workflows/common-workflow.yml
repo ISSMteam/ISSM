@@ -1,0 +1,132 @@
+name: Common CI
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      build_type: 
+        required: true
+        type: string
+      build_command:
+        required: true
+        type: string
+      ext_install_command:
+        required: true
+        type: string
+      test_cases:
+        required: true
+        type: string
+      additional_options:
+        required: true
+        type: string
+env:
+  ISSM_DIR: ${{ github.workspace }}
+  
+jobs:
+  build:
+    name: build-ISSM-${{ inputs.os }}-${{ inputs.build_type}}
+    runs-on: ${{ inputs.os }}
+    outputs:
+      test_matrix: ${{ steps.creatTestMatrix.outputs.test_output }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+          
+      - name: Cache externalpackages
+        uses: actions/cache@v3
+        id: cache-externalpackages
+        env:
+          cache-name: cache-externalpackages-${{ inputs.build_type }}
+        with:
+          path: |
+            ${{ env.ISSM_DIR }}/externalpackages/
+            !${{ env.ISSM_DIR }}/externalpackages/petsc/src/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          
+      - name: Prepare External Packages
+        if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true'}}
+        run: |
+          ${{ inputs.ext_install_command }}
+
+      - name: Get MATLAB
+        id:   setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+          cache: true
+
+      - name: build ISSM
+        run: |
+          export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
+          ${{ inputs.build_command}}
+
+      - name: Compile ISSM
+        run: make -j4 install
+
+      - name: Compress ISSM artifact
+        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
+        
+      - name: Upload ISSM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ISSM-${{ runner.os }}-${{ inputs.build_type }}
+          path: ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
+          compression-level: 1          
+      - id: creatTestMatrix
+        run: |
+          TESTS='${{ inputs.test_cases }}'
+          echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
+  test:
+    runs-on: ${{ inputs.os }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.build.outputs.test_matrix) }}
+    steps:
+      - name: Download ISSM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
+          path: ${{ env.ISSM_DIR }}
+      
+      - name: uncompress ISSM artifact
+        run: |
+          tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar
+          source $ISSM_DIR/etc/environment.sh
+        working-directory: ${{ env.ISSM_DIR }}
+        shell: 'bash'
+          
+      - name: Get MATLAB
+        id:   setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+          cache: true
+          
+      - name: Creating matlab_ci.m
+        run: |
+          cat > ${ISSM_DIR}/matlab_ci.m << EOF
+          % Go to the test directory
+          cd $ISSM_DIR/test/NightlyRun/
+
+          % Add ISSM tools to path
+          addpath('${ISSM_DIR}/src/m/dev');
+          devpath;
+
+          % Run tests
+          runme('exclude',[IdFromString('Dakota')],${{inputs.additional_options}} 'id',[${{matrix.test_cases}}],'quitonerror',1);
+          quit(0);
+          EOF
+          cat ${ISSM_DIR}/matlab_ci.m
+          
+      - name: Get run-matlab-command
+        run: |
+          wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+          chmod +x /usr/local/bin/run-matlab-command
+          
+      - name: Run MATLAB tests
+        run: |
+          source $ISSM_DIR/etc/environment.sh
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"

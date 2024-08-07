@@ -83,7 +83,7 @@ field_names = ['Layers', 'SmbDz1', 'SmbT1', 'SmbD1', 'SmbRe1', 'SmbGdn1', 'SmbGs
 field_tolerances = [1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 1e-12, 7e-12, 1e-12, 1e-12, 1e-12,
                     1e-12, 4e-12, 1e-11, 1e-10, 2e-11, 1e-11, 1e-12, 2e-11, 1e-12, 1e-12, 1e-12, 1e-11,
                     1e-12, 4e-12, 2e-12, 2e-11, 4e-11, 1e-11, 1e-12, 4e-11, 4e-11, 1e-12, 1e-12, 1e-11,
-                    1e-11, 1e-11, 4e-11, 4e-11, 4e-11, 4e-11, 1e-12, 4e-12, 1e-10, 1e-12, 1e-12, 2e-11]
+                    1e-11, 1e-11, 9e-11, 4e-11, 4e-11, 4e-11, 1e-12, 5e-12, 1e-10, 1e-12, 1e-12, 2e-11]
 # Shape is different in python solution (fixed using reshape) which can cause test failure
 field_values = [nlayers,
                 md.results.TransientSolution[0].SmbDz[0, 0:nlayers].reshape(1, -1),

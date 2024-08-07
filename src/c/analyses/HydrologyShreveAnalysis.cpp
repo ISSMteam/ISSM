@@ -237,7 +237,7 @@ ElementVector* HydrologyShreveAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Intermediaries */
 	IssmDouble  Jdet,dt;
-	IssmDouble  mb,oldw;
+	IssmDouble  mb,oldw,factor;
 	IssmDouble* xyz_list = NULL;
 
 	/*Fetch number of nodes and dof for this finite element*/
@@ -265,10 +265,12 @@ ElementVector* HydrologyShreveAnalysis::CreatePVector(Element* element){/*{{{*/
 		oldw_input->GetInputValue(&oldw,gauss);
 
 		if(dt!=0.){
-			for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(oldw+dt*mb)*basis[i];
+			factor = Jdet*gauss->weight*(oldw+dt*mb);
+			for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 		}
 		else{
-			for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*mb*basis[i];
+			factor = Jdet*gauss->weight*mb;
+			for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 		}
 	}
 

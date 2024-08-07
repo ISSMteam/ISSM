@@ -595,17 +595,12 @@ void       Element::ComputeStrainRate(){/*{{{*/
 /*}}}*/
 void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nodes_list,int numnodes,int* cs_array){/*{{{*/
 
-	int         i,counter;
-	int         numdofs   = 0;
-	IssmDouble  norm;
-	IssmDouble *transform = NULL;
-	IssmDouble  coord_system[3][3];
-
 	/*Some checks in debugging mode*/
 	_assert_(numnodes && nodes_list);
 
 	/*Get total number of dofs*/
-	for(i=0;i<numnodes;i++){
+	int numdofs = 0;
+	for(int i=0;i<numnodes;i++){
 		switch(cs_array[i]){
 			case PressureEnum: numdofs+=1; break;
 			case XYEnum:       numdofs+=2; break;
@@ -615,8 +610,8 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 	}
 
 	/*Allocate and initialize transform matrix*/
-	transform=xNew<IssmDouble>(numdofs*numdofs);
-	for(i=0;i<numdofs*numdofs;i++) transform[i]=0.0;
+	IssmDouble* transform=xNew<IssmDouble>(numdofs*numdofs);
+	for(int i=0;i<numdofs*numdofs;i++) transform[i]=0.0;
 
 	/*Create transform matrix for all nodes (x,y for 2d and x,y,z for 3d). It is a block matrix
 	 *for 3 nodes:
@@ -627,8 +622,9 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 	 *
 	 * Where T1 is the transform matrix for node 1. It is a simple copy of the coordinate system
 	 * associated to this node*/
-	counter=0;
-	for(i=0;i<numnodes;i++){
+	IssmDouble  coord_system[3][3];
+	int         counter=0;
+	for(int i=0;i<numnodes;i++){
 		nodes_list[i]->GetCoordinateSystem(&coord_system[0][0]);
 		switch(cs_array[i]){
 			case PressureEnum:
@@ -637,13 +633,15 @@ void       Element::CoordinateSystemTransform(IssmDouble** ptransform,Node** nod
 				counter+=1;
 				break;
 			case XYEnum:
+				  {
 				/*We remove the z component, we need to renormalize x and y: x=[x1 x2 0] y=[-x2 x1 0]*/
-				norm = sqrt( coord_system[0][0]*coord_system[0][0] + coord_system[1][0]*coord_system[1][0]); _assert_(norm>1.e-4);
+				IssmDouble norm = sqrt( coord_system[0][0]*coord_system[0][0] + coord_system[1][0]*coord_system[1][0]); _assert_(norm>1.e-4);
 				transform[(numdofs)*(counter+0) + counter+0] =   coord_system[0][0]/norm;
 				transform[(numdofs)*(counter+0) + counter+1] = - coord_system[1][0]/norm;
 				transform[(numdofs)*(counter+1) + counter+0] =   coord_system[1][0]/norm;
 				transform[(numdofs)*(counter+1) + counter+1] =   coord_system[0][0]/norm;
 				counter+=2;
+				  }
 				break;
 			case XYZEnum:
 				/*The 3 coordinates are changed (x,y,z)*/
@@ -6008,10 +6006,20 @@ void       Element::TransformInvStiffnessMatrixCoord(ElementMatrix* Ke,int trans
 
 	/*All nodes have the same Coordinate System*/
 	int numnodes  = this->GetNumberOfNodes();
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
+
+	/*Rotate stiffness*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
-
-	/*Call core*/
 	TransformInvStiffnessMatrixCoord(Ke,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/
@@ -6106,10 +6114,20 @@ void       Element::TransformSolutionCoord(IssmDouble* values,int transformenum)
 
 	/*All nodes have the same Coordinate System*/
 	int  numnodes = this->GetNumberOfNodes();
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
+
+	/*Rotate solution*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
-
-	/*Call core*/
 	this->TransformSolutionCoord(values,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/
@@ -6119,6 +6137,16 @@ void       Element::TransformSolutionCoord(IssmDouble* values,int* transformenum
 	this->TransformSolutionCoord(values,this->nodes,this->GetNumberOfNodes(),transformenum_list);
 }/*}}}*/
 void       Element::TransformSolutionCoord(IssmDouble* values,int numnodes,int transformenum){/*{{{*/
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
 
 	/*All nodes have the same Coordinate System*/
 	int* cs_array = xNew<int>(numnodes);
@@ -6135,6 +6163,7 @@ void       Element::TransformSolutionCoord(IssmDouble* solution,int numnodes,int
 }/*}}}*/
 void       Element::TransformSolutionCoord(IssmDouble* values,Node** nodes_list,int numnodes,int transformenum){/*{{{*/
 	/*NOT NEEDED*/
+	_error_("NOT NEEDED??");
 	/*All nodes have the same Coordinate System*/
 	int* cs_array = xNew<int>(numnodes);
 	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
@@ -6164,7 +6193,7 @@ void       Element::TransformSolutionCoord(IssmDouble* solution,Node** nodes_lis
 
 	/*Copy current solution vector*/
 	values=xNew<IssmDouble>(numdofs);
-	for(i=0;i<numdofs;i++) values[i]=solution[i];
+	for(int i=0;i<numdofs;i++) values[i]=solution[i];
 
 	/*Get Coordinate Systems transform matrix*/
 	CoordinateSystemTransform(&transform,nodes_list,numnodes,cs_array);
@@ -6182,10 +6211,20 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,int transfor
 
 	/*All nodes have the same Coordinate System*/
 	int  numnodes = this->GetNumberOfNodes();
-	int* cs_array = xNew<int>(numnodes);
-	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
+
+	/*Do we need to actually do anything? (only if we have a rotated coordinate system)*/
+	bool isrotation = false;
+	for(int i=0;i<numnodes;i++){
+		if(this->nodes[i]->isrotated){
+			isrotation=true;
+			break;
+		}
+	}
+	if(!isrotation) return;
 
 	/*Call core*/
+	int* cs_array = xNew<int>(numnodes);
+	for(int i=0;i<numnodes;i++) cs_array[i]=transformenum;
 	this->TransformStiffnessMatrixCoord(Ke,this->nodes,numnodes,cs_array);
 
 	/*Clean-up*/

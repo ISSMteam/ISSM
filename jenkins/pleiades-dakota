@@ -1,3 +1,12 @@
+#-------------#
+# Environment #
+#-------------#
+
+export CC=icc
+export CFLAGS="-O3 -D_INTEL_LINUX_"
+export CXX=icpc
+export CXXFLAGS="-O3 -D_INTEL_LINUX_ -std=c++11"
+
 #--------------------#
 # ISSM Configuration #
 #--------------------#
@@ -7,8 +16,6 @@ ISSM_CONFIG='\
 	--enable-development \
 	--enable-standalone-libraries \
 	--with-wrappers=no \
-	--with-vendor="intel-pleiades-mpi" \
-	--with-cxxoptflags="-O3 " \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
 	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \

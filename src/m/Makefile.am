@@ -79,7 +79,7 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/materials/*.py \
 	${ISSM_DIR}/src/m/mech/*.py \
 	${ISSM_DIR}/src/m/mesh/*.py \
-	${ISSM_DIR}/src/m/mesh/planet/gmsh/*.py \
+	${ISSM_DIR}/src/m/mesh/planet/*.py \
 	${ISSM_DIR}/src/m/mesh/rifts/*.py \
 	${ISSM_DIR}/src/m/miscellaneous/*.py \
 	${ISSM_DIR}/src/m/modules/*.py \

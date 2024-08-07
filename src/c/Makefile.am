@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @SHAPELIBINCL@ @TRIANGLEINCL@ @PETSCINCL@ @SLEPCINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @SCOTCHINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADIC2INCL@ @ADOLCINCL@ @CODIPACKINCL@ @GSLINCL@ @BOOSTINCL@ @ANDROID_NDKINCL@ @METEOIOINCL@ @SNOWPACKINCL@ @PROJINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @SHAPELIBINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @SCOTCHINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @GSLINCL@ @BOOSTINCL@ @METEOIOINCL@ @SNOWPACKINCL@ @PROJINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@
 AM_FCFLAGS = @SEMICINCL@
 
 AUTOMAKE_OPTIONS = subdir-objects
@@ -353,6 +353,9 @@ endif
 if MEDIPACK
 issm_sources += ./toolkits/codipack/ampi_interface.cpp
 endif
+if CODIPACK
+issm_sources += ./toolkits/codipack/CoDiPackGlobal.cpp
+endif
 #}}}
 # DAKOTA sources {{{
 if DAKOTA
@@ -585,6 +588,7 @@ endif
 #}}}
 # METIS sources {{{
 if METIS
+issm_sources += ./modules/MeshPartitionx/MeshPartitionx.cpp
 issm_sources += ./toolkits/metis/patches/METIS_PartMeshNodalPatch.cpp
 endif
 #}}}
@@ -704,7 +708,7 @@ modules_sources += \
 endif
 #}}}
 # Library flags and sources {{{
-ALL_CXXFLAGS = $(CXXFLAGS) $(CXXOPTFLAGS)
+ALL_CXXFLAGS = $(CXXFLAGS)
 
 if MSYS2
 ALL_CXXFLAGS += -D_DO_NOT_LOAD_GLOBALS_ # Cannot have undefined symbols under MSYS2
@@ -712,7 +716,7 @@ ALL_CXXFLAGS += -D_USE_MATH_DEFINES # Need to open fence to math.h definitions w
 endif
 
 libISSMCore_la_SOURCES  = $(issm_sources)
-libISSMCore_la_CXXFLAGS = $(ALL_CXXFLAGS) $(DAKOTAFLAGS)
+libISSMCore_la_CXXFLAGS = $(ALL_CXXFLAGS)
 libISSMCore_la_FFLAGS = $(AM_FFLAGS)
 
 libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(ADJOINTMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) 
@@ -771,21 +775,23 @@ endif
 # - On macOS, static linking of binaries is not supported.
 #
 if STANDALONE_EXECUTABLES
-	if MAC
-		AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
-	else
-		if MSYS2
-			AM_LDFLAGS += -Wl,-static
-		else
-			AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
-		endif
-	endif
+if MAC
+AM_LDFLAGS += -Wl,-rpath,'@loader_path/../lib'
 else
-	if MAC
-		if HAVE_FORTRANDIR
-			AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
-		endif
-	endif
+if MSYS2
+AM_LDFLAGS += -Wl,-static
+else
+AM_LDFLAGS += -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN/../lib'
+endif
+endif
+endif
+
+if !STANDALONE_EXECUTABLES
+if MAC
+if HAVE_FORTRANDIR
+AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+endif
+endif
 endif
 
 if VERSION
@@ -808,12 +814,10 @@ libISSMModules_la_LDFLAGS += -static
 endif
 endif
 endif
-#}}}
 
 if !MSYS2
-# Overload library, to overload any non-standard symbols {{{
 libISSMOverload_la_SOURCES = ./shared/String/ApiPrintf.cpp
-libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(COPTFLAGS) $(CFLAGS)
+libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(CFLAGS) $(CXXFLAGS)
 
 if VERSION
 libISSMOverload_la_LDFLAGS =
@@ -828,19 +832,11 @@ endif
 endif
 endif
 #}}}
-# Executable {{{
-if ANDROID
-if ANDROIDEXE
-bin_PROGRAMS = issm issm_slc
-else
-bin_PROGRAMS =
-endif
-else
+# Executables {{{
 if JAVASCRIPT
 bin_PROGRAMS =
 else
 bin_PROGRAMS = issm issm_slc
-endif
 endif
 
 # Standard libraries
@@ -856,35 +852,37 @@ endif
 
 # External packages
 LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADJOINTMPILIB) $(ADOLCLIB) $(MPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(ESMFLIB)
+
 if FORTRAN
 LDADD += $(FLIBS) $(FORTRANLIB)
 endif
+
 LDADD += $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
-issm_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_CXXFLAGS= $(CXXFLAGS)
 
 issm_slc_SOURCES = main/issm_slc.cpp
-issm_slc_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_slc_CXXFLAGS= $(CXXFLAGS)
 
 if OCEAN
 bin_PROGRAMS += issm_ocean
 issm_ocean_SOURCES = main/issm_ocean.cpp
-issm_ocean_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_ocean_CXXFLAGS= $(CXXFLAGS)
 endif
 
 if KRIGING
 bin_PROGRAMS += kriging
 kriging_SOURCES = main/kriging.cpp
-kriging_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS) $(COPTFLAGS)
+kriging_CXXFLAGS= $(CXXFLAGS)
 endif
 
 if ISSM_DAKOTA
 bin_PROGRAMS += issm_dakota
 issm_dakota_SOURCES = main/issm_dakota.cpp
-issm_dakota_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS) $(COPTFLAGS)
+issm_dakota_CXXFLAGS= $(CXXFLAGS)
 bin_PROGRAMS += issm_post
 issm_post_SOURCES = main/issm_post.cpp
-issm_post_CXXFLAGS= $(CXXFLAGS) $(CXXOPTFLAGS)
+issm_post_CXXFLAGS= $(CXXFLAGS)
 endif
 #}}}

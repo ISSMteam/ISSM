@@ -5,7 +5,7 @@
 #include "../Numerics/types.h"
 #include "./isnan.h"
 
-void XZvectorsToCoordinateSystem(IssmDouble* T,IssmDouble* xzvectors){
+bool XZvectorsToCoordinateSystem(IssmDouble* T,IssmDouble* xzvectors){
 
 	IssmDouble	x[3],y[3],z[3];
 	IssmDouble	x_norm, y_norm, z_norm;
@@ -17,7 +17,7 @@ void XZvectorsToCoordinateSystem(IssmDouble* T,IssmDouble* xzvectors){
 			T[1*3+0] = 0.0;	T[1*3+1] = 1.0;	T[1*3+2] = 0.0;
 			T[2*3+0] = 0.0;	T[2*3+1] = 0.0;	T[2*3+2] = 1.0;
 
-			return;
+			return false;
 		}
 	}
 
@@ -50,4 +50,6 @@ void XZvectorsToCoordinateSystem(IssmDouble* T,IssmDouble* xzvectors){
 	T[0*3+0] = x[0];	T[0*3+1] = y[0];	T[0*3+2] = z[0];
 	T[1*3+0] = x[1];	T[1*3+1] = y[1];	T[1*3+2] = z[1];
 	T[2*3+0] = x[2];	T[2*3+1] = y[2];	T[2*3+2] = z[2];
+
+	return true;
 }

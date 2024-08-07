@@ -5,8 +5,6 @@
 #include "../../../toolkits/toolkits.h"
 #include "../../../classes/classes.h"
 #include "../../../shared/shared.h"
-#include "../../MeshPartitionx/MeshPartitionx.h"
-#include "../ModelProcessorx.h"
 
 void	UpdateElementsTransient(Elements* elements, Parameters* parameters,Inputs* inputs,IoModel* iomodel){
 

@@ -443,13 +443,14 @@ ElementVector* StressbalanceSIAAnalysis::CreatePVector3D(Element* element){/*{{{
 			z = element->GetZcoord(xyz_list,gauss);
 			element->JacobianDeterminantLine(&Jdet,&xyz_list_line[0][0],gauss);
 
+			IssmDouble factor = constant_part*pow((surface-z)/B,n)*Jdet*gauss->weight/connectivity[1];
 			if(element->IsOnSurface()){
-				pe->values[2*nodeup+0]+=constant_part*pow((surface-z)/B,n)*slope[0]*Jdet*gauss->weight/connectivity[1];
-				pe->values[2*nodeup+1]+=constant_part*pow((surface-z)/B,n)*slope[1]*Jdet*gauss->weight/connectivity[1];
+				pe->values[2*nodeup+0]+=factor*slope[0];
+				pe->values[2*nodeup+1]+=factor*slope[1];
 			}
 			else{/*connectivity is too large, should take only half on it*/
-				pe->values[2*nodeup+0]+=constant_part*pow((surface-z)/B,n)*slope[0]*Jdet*gauss->weight*2./connectivity[1];
-				pe->values[2*nodeup+1]+=constant_part*pow((surface-z)/B,n)*slope[1]*Jdet*gauss->weight*2./connectivity[1];
+				pe->values[2*nodeup+0]+=factor*slope[0]*2.;
+				pe->values[2*nodeup+1]+=factor*slope[1]*2.;
 			}
 		}
 

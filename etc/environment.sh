@@ -204,7 +204,7 @@ if [[ ${OS_NAME} == "Darwin" ]]; then
 	if [[ ${BUILD_TOOL_VER} -ge 15 ]]; then
 		 # Add flag for classic linker only if it has not already been added
 		if [[ -z $(echo $LDFLAGS | /usr/bin/grep "\-Wl,\-ld_classic") ]]; then
-			export LDFLAGS="${LDFLAGS} -Wl,-ld_classic"
+			export LDFLAGS="${LDFLAGS} -Wl,-ld_classic -Wl,-commons,use_dylibs"
 		fi
 	else
 		export LDFLAGS="${LDFLAGS}" # At least set LDFLAGS to null string if it is not already set (used in installation of ISSM and some external packages). Can remove this when issues with new Xcode linker have settled.
@@ -560,6 +560,7 @@ fi
 PROJ_ROOT="${ISSM_EXT_DIR}/proj/install"
 if [ -d "${PROJ_ROOT}" ]; then
 	export PROJ_ROOT # Used in installation of GDAL
+	export PROJ_LIB="${PROJ_ROOT}/share/proj" #in order to find proj.db
 	path_append "${PROJ_ROOT}/bin"
 	ld_library_path_prepend "${PROJ_ROOT}/lib"
 	dyld_library_path_prepend "${PROJ_ROOT}/lib"

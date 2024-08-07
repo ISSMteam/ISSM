@@ -71,7 +71,7 @@ ElementVector* AdjointBalancethicknessAnalysis::CreatePVector(Element* element){
 	/*Intermediaries */
 	int         num_responses,i;
 	IssmDouble  dH[2];
-	IssmDouble  vx,vy,vel,Jdet;
+	IssmDouble  vx,vy,vel,Jdet,factor;
 	IssmDouble  thickness,thicknessobs,weight;
 	int        *responses = NULL;
 	IssmDouble *xyz_list  = NULL;
@@ -112,11 +112,13 @@ ElementVector* AdjointBalancethicknessAnalysis::CreatePVector(Element* element){
 
 			switch(responses[resp]){
 				case ThicknessAbsMisfitEnum:
-					for(i=0;i<numnodes;i++) pe->values[i]+=(thicknessobs-thickness)*weight*Jdet*gauss->weight*basis[i];
+					factor = (thicknessobs-thickness)*weight*Jdet*gauss->weight;
+					for(i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 					break;
 				case ThicknessAbsGradientEnum:
-					for(i=0;i<numnodes;i++) pe->values[i]+= - weight*dH[0]*dbasis[0*numnodes+i]*Jdet*gauss->weight;
-					for(i=0;i<numnodes;i++) pe->values[i]+= - weight*dH[1]*dbasis[1*numnodes+i]*Jdet*gauss->weight;
+					factor = - weight*Jdet*gauss->weight;
+					for(i=0;i<numnodes;i++) pe->values[i]+= factor*dH[0]*dbasis[0*numnodes+i];
+					for(i=0;i<numnodes;i++) pe->values[i]+= factor*dH[1]*dbasis[1*numnodes+i];
 					break;
 				case ThicknessAlongGradientEnum:
 					vx_input->GetInputValue(&vx,gauss);
@@ -124,7 +126,8 @@ ElementVector* AdjointBalancethicknessAnalysis::CreatePVector(Element* element){
 					vel = sqrt(vx*vx+vy*vy);
 					vx  = vx/(vel+1.e-9);
 					vy  = vy/(vel+1.e-9);
-					for(i=0;i<numnodes;i++) pe->values[i]+= - weight*(dH[0]*vx+dH[1]*vy)*(dbasis[0*numnodes+i]*vx+dbasis[1*numnodes+i]*vy)*Jdet*gauss->weight;
+					factor = - weight*Jdet*gauss->weight;
+					for(i=0;i<numnodes;i++) pe->values[i]+= factor*(dH[0]*vx+dH[1]*vy)*(dbasis[0*numnodes+i]*vx+dbasis[1*numnodes+i]*vy);
 					break;
 				case ThicknessAcrossGradientEnum:
 					vx_input->GetInputValue(&vx,gauss);
@@ -132,11 +135,13 @@ ElementVector* AdjointBalancethicknessAnalysis::CreatePVector(Element* element){
 					vel = sqrt(vx*vx+vy*vy);
 					vx  = vx/(vel+1.e-9);
 					vy  = vy/(vel+1.e-9);
-					for(i=0;i<numnodes;i++) pe->values[i]+= - weight*(dH[0]*(-vy)+dH[1]*vx)*(dbasis[0*numnodes+i]*(-vy)+dbasis[1*numnodes+i]*vx)*Jdet*gauss->weight;
+					factor = - weight*(dH[0]*(-vy)+dH[1]*vx)*Jdet*gauss->weight;
+					for(i=0;i<numnodes;i++) pe->values[i]+= factor*(dbasis[0*numnodes+i]*(-vy)+dbasis[1*numnodes+i]*vx);
 					break;
 				case ThicknessPositiveEnum:
 					if(thickness<0){
-						for(i=0;i<numnodes;i++) pe->values[i]+= - weight*2*thickness*Jdet*gauss->weight*basis[i];
+						factor = - weight*2*thickness*Jdet*gauss->weight;
+						for(i=0;i<numnodes;i++) pe->values[i]+= factor*basis[i];
 					}
 					break;
 				default:
@@ -299,8 +304,9 @@ void           AdjointBalancethicknessAnalysis::GradientJVx(Element* element,Vec
 		element->NodalFunctionsP1(basis,gauss);
 
 		/*Build gradient vector (actually -dJ/dD): */
+		IssmDouble factor = thickness*Dlambda[0]*Jdet*gauss->weight;
 		for(int i=0;i<numvertices;i++){
-			ge[i]+=thickness*Dlambda[0]*Jdet*gauss->weight*basis[i];
+			ge[i]+=factor*basis[i];
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}
@@ -345,8 +351,9 @@ void           AdjointBalancethicknessAnalysis::GradientJVy(Element* element,Vec
 		element->NodalFunctionsP1(basis,gauss);
 
 		/*Build gradient vector (actually -dJ/dvy): */
+		IssmDouble factor = thickness*Dlambda[1]*Jdet*gauss->weight;
 		for(int i=0;i<numvertices;i++){
-			ge[i]+=thickness*Dlambda[1]*Jdet*gauss->weight*basis[i];
+			ge[i]+=factor*basis[i];
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}

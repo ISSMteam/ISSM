@@ -21,7 +21,7 @@ ALL_CXXFLAGS += -D_DO_NOT_LOAD_GLOBALS_ # Cannot have undefined symbols under MS
 ALL_CXXFLAGS += -D_USE_MATH_DEFINES # Need to open fence to math.h definitions when --std=c++ is used (which is the default)
 endif
 
-ALL_CXXFLAGS += $(CXXOPTFLAGS) $(CXXFLAGS)
+ALL_CXXFLAGS += $(CXXFLAGS)
 
 libISSMMatlab_la_SOURCES = $(io_sources)
 libISSMMatlab_la_CXXFLAGS = ${ALL_CXXFLAGS}
@@ -144,7 +144,7 @@ endif
 deps += ${LIBADD_FOR_MEX}
 
 # Optimization flags
-AM_CXXFLAGS += $(CXXOPTFLAGS)
+AM_CXXFLAGS += $(CXXFLAGS)
 #}}}
 # Module sources and dependencies {{{
 libISSMMatlab_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB) $(MEXLIB)
@@ -168,90 +168,118 @@ endif
 libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB) $(MEXLIB)
 
 BamgConvertMesh_matlab_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
+BamgConvertMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 BamgConvertMesh_matlab_la_LIBADD = ${deps}
 
 BamgMesher_matlab_la_SOURCES = ../BamgMesher/BamgMesher.cpp
+BamgMesher_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 BamgMesher_matlab_la_LIBADD = ${deps}
 
 BamgTriangulate_matlab_la_SOURCES = ../BamgTriangulate/BamgTriangulate.cpp
+BamgTriangulate_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 BamgTriangulate_matlab_la_LIBADD = ${deps}
 
 if CHACO
 Chaco_matlab_la_SOURCES = ../Chaco/Chaco.cpp
+Chaco_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Chaco_matlab_la_LIBADD = ${deps} $(CHACOLIB)
 endif
 
 ContourToMesh_matlab_la_SOURCES = ../ContourToMesh/ContourToMesh.cpp
+ContourToMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ContourToMesh_matlab_la_LIBADD = ${deps}
 
 ContourToNodes_matlab_la_SOURCES = ../ContourToNodes/ContourToNodes.cpp
+ContourToNodes_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ContourToNodes_matlab_la_LIBADD = ${deps}
 
 if PROJ
 CoordTransform_matlab_la_SOURCES = ../CoordTransform/CoordTransform.cpp
+CoordTransform_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 CoordTransform_matlab_la_LIBADD = ${deps}
 endif
 
 DistanceToMaskBoundary_matlab_la_SOURCES = ../DistanceToMaskBoundary/DistanceToMaskBoundary.cpp
+DistanceToMaskBoundary_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 DistanceToMaskBoundary_matlab_la_LIBADD = ${deps}
 
 ElementConnectivity_matlab_la_SOURCES = ../ElementConnectivity/ElementConnectivity.cpp
+ElementConnectivity_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ElementConnectivity_matlab_la_LIBADD = ${deps}
 
 ExpToLevelSet_matlab_la_SOURCES = ../ExpToLevelSet/ExpToLevelSet.cpp
+ExpToLevelSet_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ExpToLevelSet_matlab_la_LIBADD = ${deps}
 
 ExpSimplify_matlab_la_SOURCES = ../ExpSimplify/ExpSimplify.cpp
+ExpSimplify_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ExpSimplify_matlab_la_LIBADD = ${deps}
 
 InterpFromGridToMesh_matlab_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
+InterpFromGridToMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromGridToMesh_matlab_la_LIBADD = ${deps}
 
 InterpFromMesh2d_matlab_la_SOURCES = ../InterpFromMesh2d/InterpFromMesh2d.cpp
+InterpFromMesh2d_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromMesh2d_matlab_la_LIBADD = ${deps}
 
 InterpFromMeshToGrid_matlab_la_SOURCES = ../InterpFromMeshToGrid/InterpFromMeshToGrid.cpp
+InterpFromMeshToGrid_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromMeshToGrid_matlab_la_LIBADD = ${deps}
 
 InterpFromMeshToMesh2d_matlab_la_SOURCES = ../InterpFromMeshToMesh2d/InterpFromMeshToMesh2d.cpp
+InterpFromMeshToMesh2d_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromMeshToMesh2d_matlab_la_LIBADD = ${deps}
 
 InterpFromMeshToMesh3d_matlab_la_SOURCES = ../InterpFromMeshToMesh3d/InterpFromMeshToMesh3d.cpp
+InterpFromMeshToMesh3d_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromMeshToMesh3d_matlab_la_LIBADD = ${deps}
 
 IssmConfig_matlab_la_SOURCES = ../IssmConfig/IssmConfig.cpp
+IssmConfig_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 IssmConfig_matlab_la_LIBADD = ${deps}
 
 Kriging_matlab_la_SOURCES = ../Kriging/Kriging.cpp
+Kriging_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Kriging_matlab_la_LIBADD = ${deps}
 
 M1qn3_matlab_la_SOURCES = ../M1qn3/M1qn3.cpp
+M1qn3_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 M1qn3_matlab_la_LIBADD = ${deps}
 
 MeshPartition_matlab_la_SOURCES = ../MeshPartition/MeshPartition.cpp
+MeshPartition_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 MeshPartition_matlab_la_LIBADD = ${deps}
 
 MeshProfileIntersection_matlab_la_SOURCES = ../MeshProfileIntersection/MeshProfileIntersection.cpp
+MeshProfileIntersection_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 MeshProfileIntersection_matlab_la_LIBADD = ${deps}
 
 NodeConnectivity_matlab_la_SOURCES = ../NodeConnectivity/NodeConnectivity.cpp
+NodeConnectivity_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 NodeConnectivity_matlab_la_LIBADD = ${deps}
 
 PointCloudFindNeighbors_matlab_la_SOURCES = ../PointCloudFindNeighbors/PointCloudFindNeighbors.cpp
+PointCloudFindNeighbors_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 PointCloudFindNeighbors_matlab_la_LIBADD = ${deps}
 
 PropagateFlagsFromConnectivity_matlab_la_SOURCES = ../PropagateFlagsFromConnectivity/PropagateFlagsFromConnectivity.cpp
+PropagateFlagsFromConnectivity_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 PropagateFlagsFromConnectivity_matlab_la_LIBADD = ${deps}
 
 Scotch_matlab_la_SOURCES = ../Scotch/Scotch.cpp
+Scotch_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Scotch_matlab_la_LIBADD = ${deps}
 
 ShpRead_matlab_la_SOURCES = ../ShpRead/ShpRead.cpp
+ShpRead_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ShpRead_matlab_la_LIBADD = ${deps} $(SHAPELIBLIB)
 
 Triangle_matlab_la_SOURCES = ../Triangle/Triangle.cpp
+Triangle_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Triangle_matlab_la_LIBADD = ${deps} $(TRIANGLELIB)
 
 ProcessRifts_matlab_la_SOURCES = ../ProcessRifts/ProcessRifts.cpp
+ProcessRifts_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ProcessRifts_matlab_la_LIBADD = ${deps}
 #}}}

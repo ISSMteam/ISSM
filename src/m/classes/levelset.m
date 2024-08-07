@@ -7,7 +7,7 @@ classdef levelset
 	properties (SetAccess=public) 
 		stabilization		= 0;
 		spclevelset			= NaN;
-		reinit_frequency	= 5;
+		reinit_frequency	= 10;
 		kill_icebergs		= 0;
 		migration_max		= 0.;
 		fe					= 'P1';
@@ -33,7 +33,10 @@ classdef levelset
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   Level-set parameters:'));
-			fielddisplay(self,'stabilization','0: no, 1: artificial_diffusivity, 2: streamline upwinding');
+			fielddisplay(self,'stabilization','0: No Stabilization - No stabilization techniques applied.');
+			disp('						     1: Artificial Diffusivity - Most stable, but least accurate.');
+			disp('						     2: Streamline Upwinding');
+			disp('						     5: SUPG - Most accurate, but may be unstable in some applications.');
 			fielddisplay(self,'spclevelset','Levelset constraints (NaN means no constraint)');
 			fielddisplay(self,'reinit_frequency','Amount of time steps after which the levelset function in re-initialized');
 			fielddisplay(self,'kill_icebergs','remove floating icebergs to prevent rigid body motions (1: true, 0: false)');
@@ -48,7 +51,7 @@ classdef levelset
 
 			%stabilization = 1 by default
 			self.stabilization    = 1;
-			self.reinit_frequency = 5;
+			self.reinit_frequency = 10;
 			self.kill_icebergs    = 1;
 			self.migration_max    = 1e12; % No need for general cases, unless specified
 

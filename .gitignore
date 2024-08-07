@@ -40,7 +40,11 @@ configure
 configure.sh
 libtool
 stamp-h1
-m4
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
 src/Makefile
 src/c/Makefile
 src/c/issm
@@ -48,6 +52,7 @@ src/c/issm_dakota
 src/c/issm_post
 src/c/issm_slc
 src/c/kriging
+src/c/issm_ocean
 src/m/Makefile
 src/wrappers/Makefile
 src/wrappers/javascript/Makefile
@@ -65,8 +70,9 @@ externalpackages/*/*.gz
 externalpackages/*/*.tgz
 externalpackages/chaco/chaco_guide.pdf
 
-# Nightly logs #
-#===============
+# Jenkins #
+#==========
+.PREV_COMMIT
 nightlylog
 
 # Nightly runs #
@@ -74,6 +80,8 @@ nightlylog
 test/NightlyRun/*.bin
 test/NightlyRun/*.tar.gz
 
-# Custom build files #
-#=====================
-.PREV_COMMIT
+# Examples #
+#===========
+examples/Data/*.nc
+examples/Data/*.mat
+examples/Data/*.zip

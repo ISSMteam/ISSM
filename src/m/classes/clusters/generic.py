@@ -62,6 +62,7 @@ class generic(object):
         s += '    login: {}\n'.format(self.login)
         s += '    np: {}\n'.format(self.np)
         s += '    port: {}\n'.format(self.port)
+        s += '    interactive: {}\n'.format(self.interactive)
         s += '    codepath: {}\n'.format(self.codepath)
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    valgrind: {}\n'.format(self.valgrind)

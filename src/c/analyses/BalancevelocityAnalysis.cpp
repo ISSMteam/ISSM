@@ -123,9 +123,10 @@ ElementMatrix* BalancevelocityAnalysis::CreateKMatrix(Element* element){/*{{{*/
 		element->NodalFunctions(basis,gauss);
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
+		IssmDouble factor = gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += gauss->weight*Jdet*(
+				Ke->values[i*numnodes+j] += factor*(
 							(basis[i]+gamma*(basis[i]*(dhnx[0]+dhny[1]) + dbasis[0*numnodes+i]*hnx + dbasis[1*numnodes+i]*hny))*
 							(basis[j]*(dhnx[0]+dhny[1])  + dbasis[0*numnodes+j]*hnx + dbasis[1*numnodes+j]*hny)
 							);
@@ -220,8 +221,9 @@ ElementVector* BalancevelocityAnalysis::CreatePVector(Element* element){/*{{{*/
 
 		gamma=h/(2.*thickness+1.e-10);
 
+		IssmDouble factor = Jdet*gauss->weight*(ms-mb-dhdt);
 		for(int i=0;i<numnodes;i++){
-			pe->values[i]+=Jdet*gauss->weight*(ms-mb-dhdt)*( basis[i] + gamma*(basis[i]*(dhnx[0]+dhny[1])+hnx*dbasis[0*numnodes+i] + hny*dbasis[1*numnodes+i]));
+			pe->values[i]+=factor*( basis[i] + gamma*(basis[i]*(dhnx[0]+dhny[1])+hnx*dbasis[0*numnodes+i] + hny*dbasis[1*numnodes+i]));
 		}
 	}
 

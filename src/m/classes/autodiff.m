@@ -6,17 +6,20 @@
 classdef autodiff
 	properties (SetAccess=public)  
 		% {{{ 
-		isautodiff   = false;
-		dependents   = {};
-		independents = {};
-		driver       = 'fos_forward';
-		obufsize     = NaN;
-		lbufsize     = NaN;
-		cbufsize     = NaN;
-		tbufsize     = NaN;
-		gcTriggerRatio = NaN;
-		gcTriggerMaxSize = NaN;
-		tapeAlloc = NaN;
+		isautodiff            = false;
+		dependents            = {};
+		independents          = {};
+		driver                = 'fos_forward';
+		obufsize              = NaN;
+		lbufsize              = NaN;
+		cbufsize              = NaN;
+		tbufsize              = NaN;
+		gcTriggerRatio        = NaN;
+		gcTriggerMaxSize      = NaN;
+		tapeAlloc             = NaN;
+		outputTapeMemory      = 0;
+		outputTime            = 0;
+		enablePreaccumulation = 0;
 		end
 		%}}}
 	methods
@@ -29,13 +32,13 @@ classdef autodiff
 			end
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
-		self.obufsize     = 524288;
-		self.lbufsize     = 524288;
-		self.cbufsize     = 524288;
-		self.tbufsize     = 524288;
-		self.gcTriggerRatio=2.0;
-		self.gcTriggerMaxSize=65536;
-		self.tapeAlloc    = 15000000;
+		self.obufsize         = 524288;
+		self.lbufsize         = 524288;
+		self.cbufsize         = 524288;
+		self.tbufsize         = 524288;
+		self.gcTriggerRatio   = 2.0;
+		self.gcTriggerMaxSize = 65536;
+		self.tapeAlloc        = 15000000;
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -53,6 +56,13 @@ classdef autodiff
 			md = checkfield(md,'fieldname','autodiff.gcTriggerRatio','>=',0);
 			md = checkfield(md,'fieldname','autodiff.gcTriggerMaxSize','>=',65536);
 			md = checkfield(md,'fieldname','autodiff.tapeAlloc','>=',0);
+
+			% Memory and time output
+			md = checkfield(md,'fieldname','autodiff.outputTapeMemory','numel',[1],'values',[0 1]);
+			md = checkfield(md,'fieldname','autodiff.outputTime','numel',[1],'values',[0 1]);
+
+			% Memory reduction options
+			md = checkfield(md,'fieldname','autodiff.enablePreaccumulation','>=',0);
 
 			%go through our dependents and independents and check consistency: 
 			for i=1:numel(self.dependents),
@@ -86,6 +96,9 @@ classdef autodiff
 			fielddisplay(self,'gcTriggerRatio','free location block sorting/consolidation triggered if the ratio between allocated and used locations exceeds gcTriggerRatio');
 			fielddisplay(self,'gcTriggerMaxSize','free location block sorting/consolidation triggered if the allocated locations exceed gcTriggerMaxSize');
 			fielddisplay(self,'tapeAlloc','Iteration count of a priori memory allocation of the AD tape');
+			fielddisplay(self,'outputTapeMemory','Write AD tape memory statistics to file ad_mem.dat');
+			fielddisplay(self,'outputTime','Write AD recording and evaluation times to file ad_time.dat');
+			fielddisplay(self,'enablePreaccumulation','Enable CoDiPack preaccumulation in augmented places');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
@@ -93,11 +106,12 @@ classdef autodiff
 			WriteData(fid,prefix,'object',self,'fieldname','driver','format','String');
 
 			%early return
-			if ~self.isautodiff,
+			if ~self.isautodiff
 				WriteData(fid,prefix,'data',false,'name','md.autodiff.mass_flux_segments_present','format','Boolean');
 				WriteData(fid,prefix,'data',false,'name','md.autodiff.keep','format','Boolean');
 				return;
 			end
+
 
 			%buffer sizes {{{
 			WriteData(fid,prefix,'object',self,'fieldname','obufsize','format','Double');
@@ -107,6 +121,13 @@ classdef autodiff
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerRatio','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerMaxSize','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','tapeAlloc','format','Integer');
+			%}}}
+			%output of memory and time {{{
+			WriteData(fid,prefix,'object',self,'fieldname','outputTapeMemory','format','Boolean');
+			WriteData(fid,prefix,'object',self,'fieldname','outputTime','format','Boolean');
+			%}}}
+			%memory reduction options {{{
+			WriteData(fid,prefix,'object',self,'fieldname','enablePreaccumulation','format','Boolean');
 			%}}}
 			%process dependent variables {{{
 			num_dependent_objects=numel(self.dependents);

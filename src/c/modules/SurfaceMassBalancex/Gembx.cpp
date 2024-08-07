@@ -74,11 +74,11 @@ void Gembx(FemModel* femmodel){  /*{{{*/
 	}
 
 } /*}}}*/
-void GembgridInitialize(IssmDouble** pdz, int* psize, IssmDouble zTop, IssmDouble dzTop, IssmDouble zMax, IssmDouble zY){ /*{{{*/
+void GembgridInitialize(IssmDouble** pdz, int* psize, IssmDouble z_top, IssmDouble dz_top, IssmDouble z_max, IssmDouble beta){ /*{{{*/
 
 	/* This file sets up the initial grid spacing and total grid depth.  The
-	grid structure is set as constant grid length 'dzTop' for the top
-	'zTop' meters of the model grid. Bellow 'zTop' the gid length increases
+	grid structure is set as constant grid length 'dz_top' for the top
+	'z_top' meters of the model grid. Bellow 'z_top' the gid length increases
 	linearly with depth */
 
 	/*intermediary:*/
@@ -96,41 +96,41 @@ void GembgridInitialize(IssmDouble** pdz, int* psize, IssmDouble zTop, IssmDoubl
 
 	//----------------------Calculate Grid Lengths------------------------------
 	//calculate number of top grid points
-	dgpTop = zTop/dzTop;
+	dgpTop = z_top/dz_top;
 
-	//check to see if the top grid cell structure length (dzTop) goes evenly 
-	//into specified top structure depth (zTop). Also make sure top grid cell
-	//structure length (dzTop) is greater than 5 cm
+	//check to see if the top grid cell structure length (dz_top) goes evenly 
+	//into specified top structure depth (z_top). Also make sure top grid cell
+	//structure length (dz_top) is greater than 5 cm
 	#ifndef _HAVE_AD_  //avoid the round operation check!
 	if (dgpTop != round(dgpTop)){ 
-		_error_("top grid cell structure length does not go evenly into specified top structure depth, adjust dzTop or zTop\n");
+		_error_("top grid cell structure length does not go evenly into specified top structure depth, adjust dz_top or z_top\n");
 	}
 	#endif
-	if(dzTop < 0.05-Dtol){
-		_printf_("initial top grid cell length (dzTop) is < 0.05 m\n");
+	if(dz_top < 0.05-Dtol){
+		_printf_("initial top grid cell length (dz_top) is < 0.05 m\n");
 	}
 	gpTop=reCast<int,IssmDouble>(dgpTop);
 
 	//initialize top grid depth vector
 	dzT = xNew<IssmDouble>(gpTop); 
-	for (i=0;i<gpTop-Dtol;i++)dzT[i]=dzTop;
+	for (i=0;i<gpTop-Dtol;i++)dzT[i]=dz_top;
 
-	//bottom grid cell depth = x*zY^(cells from to structure)
+	//bottom grid cell depth = x*beta^(cells from to structure)
 	//figure out the number of grid points in the bottom vector (not known a priori)
-	gp0 = dzTop;
-	z0 = zTop;
+	gp0 = dz_top;
+	z0 = z_top;
 	gpBottom = 0;
-	while (zMax > z0+Dtol){
-		gp0= gp0 * zY;
+	while (z_max > z0+Dtol){
+		gp0= gp0 * beta;
 		z0 = z0 + gp0;
 		gpBottom++;
 	}
 	//initialize bottom vectors
 	dzB = xNewZeroInit<IssmDouble>(gpBottom);
-	gp0 = dzTop;
-	z0 = zTop;
+	gp0 = dz_top;
+	z0 = z_top;
 	for(i=0;i<gpBottom;i++){
-		gp0=gp0*zY;
+		gp0=gp0*beta;
 		dzB[i]=gp0;
 	}
 
@@ -897,10 +897,11 @@ void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT
 	// must go evenly into one hour or the data frequency if it is smaller
 
 	// all integer factors of the number of second in a day (86400 [s])
-	int f[45] = {1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36, 40, 45, 48, 50, 60,
+	IssmDouble f[58] = {1./200, 1./180, 1./150, 1./144, 1./120, 1./100, 1./90, 1./80, 1./75, 1./72, 1./60, 1./50, 1./48, 
+	 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 30, 36, 40, 45, 48, 50, 60,
     72, 75, 80, 90, 100, 120, 144, 150, 180, 200, 225, 240, 300, 360, 400, 450, 600, 720, 900, 1200, 1800, 3600};
 
-	// return the min integer factor that is < dt
+	// return the min factor that is < dt
 	max_fdt=f[0];
 	bool maxfound=false;
 	for(int i=0;i<45;i++){
@@ -914,7 +915,7 @@ void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT
 	dt=max_fdt;
 	if (maxfound==false){
 		if(VerboseSmb() && sid==0 && IssmComm::GetRank()==0){
-			_printf0_(" WARNING: calculated timestep for thermal loop is < 1 second.\n");
+			_printf0_(" WARNING: calculated timestep for thermal loop is < " << f[0] << " seconds. (" << dt << " sec) \n");
 		}
 	}
 
@@ -2094,15 +2095,18 @@ void managelayers(IssmDouble* pmAdd, IssmDouble* pdz_add, IssmDouble* paddE, Iss
 	for (int i=0;i<n;i++){
 		if (i==0){
 			dzMin2[i]=dzMin;
+			dzMax2[i]=dzMin*2.0;
 		}
 		else{
 			Zcum[i]=Zcum[i-1]+dz[i];
 			if (Zcum[i]<=zTop+Dtol){
 				dzMin2[i]=dzMin;
+				dzMax2[i]=dzMin*2.0;
 				X=i;
 			}
 			else{
 				dzMin2[i]=zY2*dzMin2[i-1];
+				dzMax2[i]=max(zY2*dzMin2[i],dzMin*2.0);
 			}
 		}
 	}
@@ -2164,30 +2168,13 @@ void managelayers(IssmDouble* pmAdd, IssmDouble* pdz_add, IssmDouble* paddE, Iss
 	celldelete(&gsp,n,D,D_size);
 	celldelete(&EI,n,D,D_size);
 	celldelete(&EW,n,D,D_size);
+	celldelete(&dzMin2,n,D,D_size);
+	celldelete(&dzMax2,n,D,D_size);
 	n=D_size;
 	xDelete<int>(D);
 
-	// check if any of the cell depths are too large
-	X=0;
-	Zcum[0]=dz[0]; // Compute a cumulative depth vector
-	for (int i=0;i<n;i++){
-		if (i==0){
-			dzMax2[i]=dzMin*2.0;
-		}
-		else{
-			Zcum[i]=Zcum[i-1]+dz[i];
-			if (Zcum[i]<=zTop+Dtol){
-				dzMax2[i]=dzMin*2.0;
-				X=i;
-			}
-			else{
-				dzMax2[i]=max(zY2*dzMin2[i-1],dzMin*2.0);
-			}
-		}
-	}
-
 	for (int j=n-1;j>=0;j--){
-		if ((j<X && dz[j] > dzMax2[j]+Dtol) || (dz[j] > dzMax2[j]*zY2+Dtol)){
+		if (dz[j] > dzMax2[j]+Dtol){
 			// _printf_("dz > dzMin * 2");
 			// split in two
 			cellsplit(&dz, n, j,.5);

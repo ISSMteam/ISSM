@@ -489,7 +489,7 @@ ElementMatrix* EnthalpyAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 	int         stabilization;
 	IssmDouble  Jdet,dt,u,v,w,um,vm,wm,vel;
 	IssmDouble  h,hx,hy,hz,vx,vy,vz;
-	IssmDouble  tau_parameter,diameter;
+	IssmDouble  tau_parameter,diameter,factor;
 	IssmDouble  tau_parameter_anisotropic[2],tau_parameter_hor,tau_parameter_ver;
 	IssmDouble  D_scalar;
 	IssmDouble* xyz_list = NULL;
@@ -534,11 +534,11 @@ ElementMatrix* EnthalpyAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 		if(dt!=0.) D_scalar=D_scalar*dt;
 
 		/*Conduction: */
+		factor = D_scalar*kappa/rho_ice;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
-				Ke->values[i*numnodes+j] += D_scalar*kappa/rho_ice*(
-							dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[2*numnodes+j]*dbasis[2*numnodes+i]
-							);
+				Ke->values[i*numnodes+j] += factor*(
+							dbasis[0*numnodes+j]*dbasis[0*numnodes+i] + dbasis[1*numnodes+j]*dbasis[1*numnodes+i] + dbasis[2*numnodes+j]*dbasis[2*numnodes+i]);
 			}
 		}
 
@@ -599,9 +599,10 @@ ElementMatrix* EnthalpyAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 			}
 			if(dt!=0.){
 				D_scalar=gauss->weight*Jdet;
+				factor = tau_parameter*D_scalar;
 				for(int i=0;i<numnodes;i++){
 					for(int j=0;j<numnodes;j++){
-						Ke->values[i*numnodes+j]+=tau_parameter*D_scalar*basis[j]*((u-um)*dbasis[0*numnodes+i]+(v-vm)*dbasis[1*numnodes+i]+(w-wm)*dbasis[2*numnodes+i]);
+						Ke->values[i*numnodes+j]+=factor*basis[j]*((u-um)*dbasis[0*numnodes+i]+(v-vm)*dbasis[1*numnodes+i]+(w-wm)*dbasis[2*numnodes+i]);
 					}
 				}
 			}
@@ -1348,35 +1349,6 @@ void           EnthalpyAnalysis::GetBasalConstraintsTransient(Vector<IssmDouble>
 	xDelete<int>(indicesup);
 	delete gauss;
 	delete gaussup;
-}/*}}}*/
-void           EnthalpyAnalysis::GetBConduct(IssmDouble* B,Element* element,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
-	/*Compute B  matrix. B=[B1 B2 B3 B4 B5 B6] where Bi is of size 5*1.
-	 * For node i, Bi' can be expressed in the actual coordinate system
-	 * by:
-	 *       Bi_conduct=[ dh/dx ]
-	 *                  [ dh/dy ]
-	 *                  [ dh/dz ]
-	 * where h is the interpolation function for node i.
-	 *
-	 * We assume B has been allocated already, of size: 3x(1*numnodes)
-	 */
-
-	/*Fetch number of nodes for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-
-	/*Get nodal functions derivatives*/
-	IssmDouble* dbasis=xNew<IssmDouble>(3*numnodes);
-	element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
-
-	/*Build B: */
-	for(int i=0;i<numnodes;i++){
-		B[numnodes*0+i] = dbasis[0*numnodes+i];
-		B[numnodes*1+i] = dbasis[1*numnodes+i];
-		B[numnodes*2+i] = dbasis[2*numnodes+i];
-	}
-
-	/*Clean-up*/
-	xDelete<IssmDouble>(dbasis);
 }/*}}}*/
 void           EnthalpyAnalysis::GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element){/*{{{*/
 	element->GetSolutionFromInputsOneDof(solution,EnthalpyEnum);

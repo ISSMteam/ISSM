@@ -1122,8 +1122,6 @@ void       Tria::CalvingRateParameterization(){/*{{{*/
 void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 
 	IssmDouble  calvingrate[NUMVERTICES];
-	IssmDouble  calvingratex[NUMVERTICES];
-	IssmDouble  calvingratey[NUMVERTICES];
 	int			experiment = 1;  /* exp:1 by default */
 	int         dim, domaintype;
 	IssmDouble	vx, vy, vel, c, wrate;
@@ -1172,12 +1170,12 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 				break;
 			case 2:
 				/* Exp 2: set c=v-wrate(given)*/
-				wrate_input->GetInputValue(&wrate,&gauss);
+				wrate = -300*sin(2.0*M_PI*time/yts/1000)/yts;  // m/a -> m/s
 				break;
 			case 4:
 				/* Exp 4: set c=v-wrate(given), for the first 500 years, then c=0 for the second 500 years*/
 				if((groundedice<0) && (time<=500.0*yts)) {
-				//	wrate_input->GetInputValue(&wrate,&gauss);
+					//	wrate_input->GetInputValue(&wrate,&gauss);
 					wrate = -750*sin(2.0*M_PI*time/yts/1000)/yts;  // m/a -> m/s
 				}
 				else {
@@ -1190,13 +1188,10 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 		}
 
 		calvingrate[iv] = vel - wrate;
-		calvingratex[iv] = vx - wrate*vx/vel;
-		calvingratey[iv] = vy - wrate*vy/vel;
 	}
 	/*Add input*/
 	this->AddInput(CalvingCalvingrateEnum,&calvingrate[0],P1DGEnum);
-	this->AddInput(CalvingratexEnum,&calvingratex[0],P1DGEnum);
-	this->AddInput(CalvingrateyEnum,&calvingratey[0],P1DGEnum);
+	this->CalvingRateToVector();
 }
 /*}}}*/
 IssmDouble Tria::CharacteristicLength(void){/*{{{*/
@@ -4047,37 +4042,75 @@ IssmDouble Tria::IceVolume(bool scaled){/*{{{*/
 IssmDouble Tria::IceVolumeAboveFloatation(bool scaled){/*{{{*/
 
 	/*The volume above floatation: H + rho_water/rho_ice * bathymetry */
-	IssmDouble rho_ice,rho_water;
-	IssmDouble base,surface,bed,bathymetry,scalefactor;
+	IssmDouble rho_ice,rho_water,vaf,HAFaverage;
+	IssmDouble area_base,surface,bed,bathymetry,scalefactor;
 	IssmDouble xyz_list[NUMVERTICES][3];
+   IssmDouble lsf[NUMVERTICES];
 
 	if(!IsIceInElement() || IsAllFloating())return 0;
+
+	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 
 	rho_ice=FindParam(MaterialsRhoIceEnum);
 	rho_water=FindParam(MaterialsRhoSeawaterEnum);
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	if(lsf[0]*lsf[1]<=0 || lsf[0]*lsf[2]<=0 || lsf[1]*lsf[2]<=0){
+		bool istrapneg;
+      int point;
+      IssmDouble weights[NUMVERTICES];
+      IssmDouble surfaces[NUMVERTICES];
+      IssmDouble bases[NUMVERTICES];
+      IssmDouble bathys[NUMVERTICES];
+      IssmDouble HAF[NUMVERTICES];
+      IssmDouble area_basetot,f1,f2,phi;
+      /*Average thickness over subelement*/
+		Element::GetInputListOnVertices(&surfaces[0],SurfaceEnum);
+      Element::GetInputListOnVertices(&bases[0],BaseEnum);
+      Element::GetInputListOnVertices(&bathys[0],BedEnum);
+      GetFractionGeometry(weights,&phi,&point,&f1,&f2,&istrapneg,lsf);
+      for(int i=0;i<NUMVERTICES;i++) HAF[i] = surfaces[i]-bases[i]+min(rho_water/rho_ice*bathys[i],0.);
+      HAFaverage = 0.0;
+		/*Use weights[i]/phi to get average thickness over subelement*/
+      for(int i=0;i<NUMVERTICES;i++) HAFaverage += weights[i]/phi*HAF[i];
+		/*Get back area of ice-covered base*/
+		area_basetot = this->GetArea();
+		area_base    = phi*area_basetot;
 
-	/*First calculate the area of the base (cross section triangle)
-	 * http://en.wikipedia.org/wiki/Triangle
-	 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
-	base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
-	if(scaled==true){
-		Input* scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
-		scalefactor_input->GetInputAverage(&scalefactor);
-		base=base*scalefactor;
+		/*Account for scaling factor averaged over subelement*/
+		if(scaled==true){
+			IssmDouble* scalefactor_vertices = xNew<IssmDouble>(NUMVERTICES);
+			Element::GetInputListOnVertices(&scalefactor_vertices[0],MeshScaleFactorEnum);
+			scalefactor = 0.0;
+			for(int i=0;i<NUMVERTICES;i++) scalefactor += weights[i]/phi*scalefactor_vertices[i];
+			area_base = area_base*scalefactor;
+			xDelete<IssmDouble>(scalefactor_vertices);
+		}
+		vaf = area_base*HAFaverage;
+   }
+	else{
+		/*First calculate the area of the base (cross section triangle)
+		 * http://en.wikipedia.org/wiki/Triangle
+		 * base = 1/2 abs((xA-xC)(yB-yA)-(xA-xB)(yC-yA))*/
+		area_base = 1./2. * fabs((xyz_list[0][0]-xyz_list[2][0])*(xyz_list[1][1]-xyz_list[0][1]) - (xyz_list[0][0]-xyz_list[1][0])*(xyz_list[2][1]-xyz_list[0][1]));
+		if(scaled==true){
+			Input* scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
+			scalefactor_input->GetInputAverage(&scalefactor);
+			area_base=area_base*scalefactor;
+		}
+
+		/*Now get the average height and bathymetry*/
+		Input* surface_input = this->GetInput(SurfaceEnum); _assert_(surface_input);
+		Input* base_input    = this->GetInput(BaseEnum);    _assert_(base_input);
+		Input* bed_input     = this->GetInput(BedEnum);     _assert_(bed_input);
+		if(!bed_input) _error_("Could not find bed");
+		surface_input->GetInputAverage(&surface);
+		base_input->GetInputAverage(&bed);
+		bed_input->GetInputAverage(&bathymetry);
+		vaf = area_base*(surface-bed+min(rho_water/rho_ice*bathymetry,0.));
 	}
 
-	/*Now get the average height and bathymetry*/
-	Input* surface_input = this->GetInput(SurfaceEnum); _assert_(surface_input);
-	Input* base_input    = this->GetInput(BaseEnum);    _assert_(base_input);
-	Input* bed_input     = this->GetInput(BedEnum);     _assert_(bed_input);
-	if(!bed_input) _error_("Could not find bed");
-	surface_input->GetInputAverage(&surface);
-	base_input->GetInputAverage(&bed);
-	bed_input->GetInputAverage(&bathymetry);
-
 	/*Return: */
-	return base*(surface-bed+min(rho_water/rho_ice*bathymetry,0.));
+	return vaf;
 }
 /*}}}*/
 void       Tria::InputDepthAverageAtBase(int enum_type,int average_enum_type){/*{{{*/
@@ -5096,6 +5129,7 @@ void       Tria::ResetFSBasalBoundaryCondition(void){/*{{{*/
 			}
 
 			XZvectorsToCoordinateSystem(&this->nodes[i]->coord_system[0][0],&xz_plane[0]);
+			this->nodes[i]->isrotated = true;
 		}
 	}
 
@@ -6743,12 +6777,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	IssmDouble* viscousU = NULL;
 	IssmDouble* viscousN = NULL;
 	IssmDouble* viscousE = NULL;
-
-	#ifdef _HAVE_RESTRICT_
-	IssmDouble* __restrict__ G_gravi_precomputed=NULL;
-	#else
 	IssmDouble* G_gravi_precomputed=NULL;
-	#endif
 
 	/*viscoelastic green function:*/
 	int index;
@@ -6769,20 +6798,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	int grd, grdmodel;
 
 	/*Rotational:*/
-	#ifdef _HAVE_RESTRICT_
-	IssmDouble* __restrict__ Grot=NULL;
-	IssmDouble* __restrict__ GUrot=NULL;
-	IssmDouble* __restrict__ GNrot=NULL;
-	IssmDouble* __restrict__ GErot=NULL;
-	IssmDouble* __restrict__ tide_love_h  = NULL;
-	IssmDouble* __restrict__ tide_love_k  = NULL;
-	IssmDouble* __restrict__ tide_love_l  = NULL;
-	IssmDouble* __restrict__ LoveRotRSL   = NULL;
-	IssmDouble* __restrict__ LoveRotU     = NULL;
-	IssmDouble* __restrict__ LoveRothoriz = NULL;
-	int* __restrict__ AplhaIndex   = NULL;
-	int* __restrict__ AzimuthIndex = NULL;
-	#else
 	IssmDouble* Grot=NULL;
 	IssmDouble* GUrot=NULL;
 	IssmDouble* GNrot=NULL;
@@ -6795,7 +6810,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	IssmDouble* LoveRothoriz = NULL;
 	int* AlphaIndex   = NULL;
 	int* AzimuthIndex = NULL;
-	#endif
 
 	IssmDouble  moi_e, moi_p, omega;
 	IssmDouble  Y21cos     , Y21sin     , Y20;
@@ -7036,21 +7050,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	/*}}}*/
 
 	/*Free allocations:{{{*/
-	#ifdef _HAVE_RESTRICT_
-	delete activevertices;
-	delete AlphaIndex;
-	if(horiz) AzimuthIndex;
-
-	if(computerotation){
-		delete Grot;
-		delete GUrot;
-		if (horiz){
-			delete GNrot;
-			delete GErot;
-		}
-	}
-
-	#else
 	xDelete<int>(activevertices);
 	xDelete<int>(AlphaIndex);
 	if(horiz){
@@ -7064,7 +7063,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 			xDelete<IssmDouble>(GErot);
 		}
 	}
-	#endif
 	/*}}}*/
 	return;
 
@@ -7085,15 +7083,8 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	IssmDouble xyz_list[NUMVERTICES][3];
 	int* activevertices = NULL;
 	int n_activevertices, av;
-
-	#ifdef _HAVE_RESTRICT_
-	int** __restrict__ AlphaIndex=NULL;
-	int** __restrict__ AzimIndex=NULL;
-
-	#else
 	int** AlphaIndex=NULL;
 	int** AzimIndex=NULL;
-	#endif
 
 	/*viscoelastic green function:*/
 	int index;

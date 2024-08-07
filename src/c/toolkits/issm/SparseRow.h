@@ -65,6 +65,17 @@ class SparseRow{
 			/*check numvalues: */
 			if(!numvalues)return;
 
+#if _HAVE_CODIPACK_
+			codi::PreaccumulationHelper<IssmDouble> ph{};
+
+			if (codi_global.has_preaccumulation) {
+				ph.start();
+				for(i=0; i < numvalues; i += 1) {
+					ph.addInput(vals[i]);
+				}
+			}
+#endif
+
 			/*Go through cols and resolve duplicates: */
 			for(i=0;i<numvalues;i++){
 				for(j=i+1;j<numvalues;j++){
@@ -95,6 +106,15 @@ class SparseRow{
 					count++;
 				}
 			}
+
+#if _HAVE_CODIPACK_
+			if (codi_global.has_preaccumulation) {
+				for(i = 0; i < ncols; i += 1) {
+					ph.addOutput(values[i]);
+				}
+				ph.finish(false);
+			}
+#endif
 
 			if(count!=ncols)_error_("counter problem during set values operations");
 		} /*}}}*/

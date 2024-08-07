@@ -59,6 +59,7 @@ classdef generic
 			disp(sprintf('    np: %i',cluster.np));
 			disp(sprintf('    npocean: %i',cluster.npocean));
 			disp(sprintf('    port: %i',cluster.port));
+			disp(sprintf('    interactive: %i',cluster.interactive));
 			disp(sprintf('    codepath: %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    etcpath: %s',cluster.etcpath));

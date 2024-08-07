@@ -51,7 +51,7 @@ ElementVector* AdjointBalancethickness2Analysis::CreatePVector(Element* element)
 
 	/*Intermediaries */
 	int         num_responses,i;
-	IssmDouble  vx,vy,vel,Jdet;
+	IssmDouble  vx,vy,vel,Jdet,factor;
 	IssmDouble  surface,surfaceobs,weight;
 	int        *responses = NULL;
 	IssmDouble *xyz_list  = NULL;
@@ -91,7 +91,8 @@ ElementVector* AdjointBalancethickness2Analysis::CreatePVector(Element* element)
 
 			switch(responses[resp]){
 				case SurfaceAbsMisfitEnum:
-					for(i=0;i<numnodes;i++) pe->values[i]+=(surfaceobs-surface)*weight*Jdet*gauss->weight*basis[i];
+					factor = (surfaceobs-surface)*weight*Jdet*gauss->weight;
+					for(i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 					break;
 				case OmegaAbsGradientEnum:
 					/*Nothing in P vector*/
@@ -159,7 +160,7 @@ void           AdjointBalancethickness2Analysis::GradientJ(Vector<IssmDouble>* g
 void           AdjointBalancethickness2Analysis::GradientJdHdt(Element* element,Vector<IssmDouble>* gradient,int control_index){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble lambda,Jdet; 
+	IssmDouble lambda,Jdet,factor; 
 	IssmDouble *xyz_list= NULL;
 
 	/*Fetch number of vertices for this finite element*/
@@ -184,8 +185,9 @@ void           AdjointBalancethickness2Analysis::GradientJdHdt(Element* element,
 		adjoint_input->GetInputValue(&lambda,gauss);
 
 		/*Build gradient vector (actually -dJ/da): */
+		factor = -Jdet*gauss->weight*lambda;
 		for(int i=0;i<numvertices;i++){
-			ge[i]+= -Jdet*gauss->weight*basis[i]*lambda;
+			ge[i]+= factor*basis[i];
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}
@@ -202,7 +204,7 @@ void           AdjointBalancethickness2Analysis::GradientJOmega(Element* element
 
 	/*Intermediaries*/
 	int         n=3;
-	IssmDouble  dlambda[2],ds[2],slopex,slopey,slope,omega,Jdet,velobs;
+	IssmDouble  dlambda[2],ds[2],slopex,slopey,slope,omega,Jdet,velobs,factor;
 	IssmDouble *xyz_list= NULL;
 
 	/*Fetch number of vertices for this finite element*/
@@ -240,8 +242,9 @@ void           AdjointBalancethickness2Analysis::GradientJOmega(Element* element
 		//if(slope<1.e-5) slope = 1.e-5;
 
 		/*Build gradient vector (actually -dJ/da): */
+		factor = - Jdet*gauss->weight*velobs/slope*(ds[0]*dlambda[0] + ds[1]*dlambda[1]);
 		for(int i=0;i<numvertices;i++){
-			ge[i]+= - Jdet*gauss->weight*basis[i]*velobs/slope*(ds[0]*dlambda[0] + ds[1]*dlambda[1]);
+			ge[i]+= factor*basis[i];
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}
@@ -257,7 +260,7 @@ void           AdjointBalancethickness2Analysis::GradientJOmega(Element* element
 void           AdjointBalancethickness2Analysis::GradientJOmegaGradient(Element* element,Vector<IssmDouble>* gradient,int control_index){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet,weight,factor;
 	IssmDouble dk[3]; 
 	IssmDouble *xyz_list= NULL;
 
@@ -287,8 +290,9 @@ void           AdjointBalancethickness2Analysis::GradientJOmegaGradient(Element*
 		omega_input->GetInputDerivativeValue(&dk[0],xyz_list,gauss);
 
 		/*Build gradient vector (actually -dJ/ddrag): */
+		factor = -weight*Jdet*gauss->weight*2*(dk[0]*dk[0] + dk[1]*dk[1]);
 		for(int i=0;i<numvertices;i++){
-			ge[i]+=-weight*Jdet*gauss->weight*2*(dk[0]*dk[0] + dk[1]*dk[1])*(dbasis[0*numvertices+i]*dk[0]+dbasis[1*numvertices+i]*dk[1]);
+			ge[i]+=factor*(dbasis[0*numvertices+i]*dk[0]+dbasis[1*numvertices+i]*dk[1]);
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}
@@ -305,7 +309,7 @@ void           AdjointBalancethickness2Analysis::GradientJOmegaGradient(Element*
 void           AdjointBalancethickness2Analysis::GradientJEtaDiff(Element* element,Vector<IssmDouble>* gradient,int control_index){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet,weight,factor;
 	IssmDouble omega,omega0; 
 	IssmDouble *xyz_list= NULL;
 
@@ -337,8 +341,9 @@ void           AdjointBalancethickness2Analysis::GradientJEtaDiff(Element* eleme
 		omega0_input->GetInputValue(&omega0,gauss);
 
 		/*Build gradient vector (actually -dJ/ddrag): */
+		factor = -weight*Jdet*gauss->weight*(omega - omega0);
 		for(int i=0;i<numvertices;i++){
-			ge[i]+=-weight*Jdet*gauss->weight*(omega - omega0)*basis[i];
+			ge[i]+=factor*basis[i];
 			_assert_(!xIsNan<IssmDouble>(ge[i]));
 		}
 	}

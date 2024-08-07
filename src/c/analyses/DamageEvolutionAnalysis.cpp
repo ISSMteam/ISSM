@@ -663,8 +663,9 @@ ElementVector* DamageEvolutionAnalysis::CreatePVector(Element* element){/*{{{*/
 		damaged_input->GetInputValue(&damage,gauss);
 		damagef_input->GetInputValue(&f,gauss);
 
+		IssmDouble factor = Jdet*gauss->weight*(damage+dt*f);
 		for(int i=0;i<numnodes;i++){
-			pe->values[i]+=Jdet*gauss->weight*(damage+dt*f)*basis[i];
+			pe->values[i]+=factor*basis[i];
 		}
 	}
 	/*Clean up and return*/
@@ -757,10 +758,11 @@ ElementMatrix* DamageEvolutionAnalysis::CreateFctKMatrix(Element* element){/*{{{
 		vxaverage_input->GetInputValue(&vx,gauss);
 		vyaverage_input->GetInputValue(&vy,gauss);
 
+		IssmDouble factor = -gauss->weight*Jdet;
 		for(int i=0;i<numnodes;i++){
 			for(int j=0;j<numnodes;j++){
 				/*\phi_i v\cdot\nabla\phi_j*/
-				Ke->values[i*numnodes+j] += -gauss->weight*Jdet*basis[i]*(vx*dbasis[0*numnodes+j] + vy*dbasis[1*numnodes+j]);
+				Ke->values[i*numnodes+j] += factor*basis[i]*(vx*dbasis[0*numnodes+j] + vy*dbasis[1*numnodes+j]);
 			}
 		}
 	}
