@@ -1412,7 +1412,6 @@ enum definitions{
 	AggressiveMigrationEnum,
 	AmrBamgEnum,
 	AmrNeopzEnum,
-	AndroidFrictionCoefficientEnum,
 	ArrheniusEnum,
 	AutodiffJacobianEnum,
 	Balancethickness2AnalysisEnum,

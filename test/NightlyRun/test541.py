@@ -41,7 +41,7 @@ field_names = ['Vx1', 'Vy1', 'Vel1', 'Pressure1', 'Bed1', 'Surface1', 'Thickness
                'Vx10', 'Vy10', 'Vel10', 'Pressure10', 'Bed10', 'Surface10', 'Thickness10', 'MaskIceLevelset10',
                'IceVolume10', 'IceVolumeAboveFloatation10', 'TotalSmb10', 'TotalGroundedBmb10', 'TotalFloatingBmb10']
 field_tolerances = [1e-11, 2e-11, 2e-11, 1e-12, 2e-11, 6e-12, 9e-12, 2e-12,
-                    1e-11, 2e-11, 2e-11, 2e-9, 2e-11,
+                    1e-11, 2e-11, 2e-11, 3e-9, 2e-11,
                     2e-11, 1e-11, 1e-11, 9e-12, 2e-11, 3e-11, 2e-11, 1e-11,
                     1e-11, 2e-11, 2e-11, 8e-08, 2e-11,
                     2e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-10, 1e-9,

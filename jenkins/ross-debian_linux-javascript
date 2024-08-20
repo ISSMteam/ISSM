@@ -1,3 +1,8 @@
+#-------------#
+# Environment #
+#-------------#
+export CXXFLAGS="-g -O2 -fPIC -std=c++11"
+
 #--------------------#
 # ISSM Configuration #
 #--------------------#
@@ -7,7 +12,6 @@ ISSM_CONFIG='\
 	--disable-shared \
 	--enable-development \
 	--enable-debugging \
-	--with-cxxoptflags="-g -O2 -fPIC -std=c++11" \
 	--with-javascript \
 	--without-fortran \
 	--without-Sealevelchange \

@@ -9,28 +9,28 @@ function issmscpout(host,path,login,port,packages,varargin)
 hostname=oshostname();
 
 %are we disallowing symbolic links? 
-if nargin==6,
+if nargin==6
 	no_symlinks=1;
 else
 	no_symlinks=0;
 end
 
-%if hostname and host are the same, do a simple copy
+%if hostname and host are the same, do a simple copy or symlinks
+if strcmpi(host,hostname)
 
-if strcmpi(host,hostname),
-	for i=1:numel(packages),
-		here=pwd;
-		eval(['cd ' path])
-		system(['rm -rf ' packages{i} ]);
-		if no_symlinks,
-			system(['cp ' here '/' packages{i} ' .']);
+	%Process both paths and add \ if there are any white spaces
+	here = replace(pwd(), ' ', '\ ');
+
+	for i=1:numel(packages)
+		system(['rm -rf ' path '/' packages{i} ]);
+		if no_symlinks
+			system(['cp ' packages{i} ' ' path]);
 		else
-			system(['ln -s ' here '/' packages{i} ' .']);
+			system(['ln -s ' here '/' packages{i} ' ' path]);
 		end
-		eval(['cd ' here]);
 	end
 else 
-	if ispc & ~ismingw,
+	if ispc & ~ismingw
 		%use the putty project pscp.exe: it should be in the path.
 
 		%get ISSM_DIR variable
@@ -54,7 +54,7 @@ else
 		%just use standard unix scp
 		%create string of packages being sent
 		string='';
-		for i=1:numel(packages),
+		for i=1:numel(packages)
 			string=[string ' ' packages{i}];
 		end
 		string=[string ' '];

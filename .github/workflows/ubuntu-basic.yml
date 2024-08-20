@@ -14,5 +14,33 @@ jobs:
     with:
       os: ubuntu-latest
       build_type: basic
+      build_command: |
+        source $ISSM_DIR/etc/environment.sh
+        autoreconf -ivf
+        ./configure --prefix=${ISSM_DIR} \
+        --disable-static \
+        --enable-development \
+        --enable-debugging \
+        --with-numthreads=4 \
+        --with-matlab-dir=$MATLAB_ROOT \
+        --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+        --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+        --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+        --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+        --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+        --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
+        --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
+      ext_install_command: |
+        cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
+        cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
+        cd $ISSM_DIR/externalpackages/petsc    && ./install-3.21-linux.sh
+        cd $ISSM_DIR/externalpackages/semic    && ./install.sh
+      test_cases: '["101:399", "401:899"]'
+      additional_options: " "
     secrets: inherit
     name: build-test-ubuntu-basic

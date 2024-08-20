@@ -1376,10 +1376,6 @@ void FrictionUpdateInputs(Elements* elements,Inputs* inputs,IoModel* iomodel){/*
 			_error_("friction law "<< frictionlaw <<" not supported");
 	}
 
-#ifdef _HAVE_ANDROID_
-	inputs->DuplicateInput(FrictionCoefficientEnum,AndroidFrictionCoefficientEnum);
-#endif
-
 }/*}}}*/
 void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 
