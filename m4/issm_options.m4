@@ -181,32 +181,26 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_SUBST([ISSMEXT])
 	dnl }}}
 
-	dnl ISSM's externalpackages
-	dnl vendor{{{
-	AC_ARG_WITH(
-		[vendor],															dnl feature
-		AS_HELP_STRING([--with-vendor = VENDOR], [vendor name, ex: intel]),	dnl help string
-		[VENDOR=${withval}],												dnl action if given
-		[VENDOR=""]															dnl action if not given
-	)
-
-	AC_MSG_CHECKING([if this is a Mac build])
+	dnl OS{{{
+	IS_MAC=no
+	IS_MSYS2=no
+	SYSTEM_FMEMOPEN=1
+	AC_MSG_CHECKING([operating system type])
 	case "${host_os}" in
 		*darwin*)
+			AC_MSG_RESULT([macOS])
 			IS_MAC=yes
-			AC_DEFINE([_MAC_], [1], [is macOS])
+			AC_DEFINE([_IS_MAC_], [1], [is macOS])
+			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
+			dnl For some reason, CXXFLAGS is not empty by default under clang
+			export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
+
 			dnl When standard Dakota installation has been updated to new 
 			dnl version, remove the following
-			if test -z "${CFLAGS}"; then
-				export CFLAGS="-Wno-deprecated-register -Wno-return-type"
-			else
-				export CFLAGS="${CFLAGS} -Wno-deprecated-register -Wno-return-type"
-			fi
-			if test -z "${CXXFLAGS+x}"; then
-				export CXXFLAGS="-Wno-deprecated-register -Wno-return-type"
-			else
-				export CXXFLAGS="${CXXFLAGS} -Wno-deprecated-register -Wno-return-type"
-			fi
+			DAKOTA_COMPILER_FLAGS="-Wno-deprecated-register -Wno-return-type"
+			export CFLAGS="${DAKOTA_COMPILER_FLAGS}"
+			export CXXFLAGS="${CXXFLAGS} ${DAKOTA_COMPILER_FLAGS}"
+
 			dnl NOTE: Commenting out the following, for now, as ISSM seems to 
 			dnl 	  compile and run fine, but certain errors (e.g. file not 
 			dnl 	  found) were not bubbling up, and instead causing MATLAB 
@@ -217,162 +211,54 @@ AC_DEFUN([ISSM_OPTIONS],[
 # 			else
 # 				export LDFLAGS="${LDFLAGS} -Wl,-no_compact_unwind"
 # 			fi
+
+			dnl Check if system copy of libc has fmemopen
+			AC_MSG_CHECKING([if system copy of libc has fmemopen (macOS-only check)])
+			sys_ver=$(sw_vers -productVersion)
+			if test $(echo ${sys_ver} | cut -d "." -f 1) -eq 10 && test $(echo ${sys_ver} | cut -d "." -f 2) -lt 13; then
+				SYSTEM_FMEMOPEN=0
+				AC_MSG_RESULT([no])
+			else
+				AC_MSG_RESULT([yes])
+			fi
+		;;
+		*linux*)
+			AC_MSG_RESULT([Linux])
+			AC_DEFINE([_IS_MAC_], [0], [is macOS])
+			AC_DEFINE([_IS_MSYS2_], [0], [is Windows (MSYS2 MinGW)])
+		;;
+		*mingw*)
+			AC_MSG_RESULT([Windows (MSYS2 MinGW)])
+			IS_MSYS2=yes
+			AC_DEFINE([_IS_MAC_], [0], [is macOS])
+			AC_DEFINE([_IS_MSYS2_], [1], [is Windows (MSYS2 MinGW)])
+			export CXXFLAGS="-D_MSYS2_ -std=c++11"
+			export LDFLAGS="-no-undefined"
+			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 		;;
 		*)
-			IS_MAC=no
-			AC_DEFINE([_MAC_], [0], [is macOS])
+			AC_MSG_ERROR([unsupported operating system type)])
 		;;
 	esac
-	AM_CONDITIONAL([MAC], [test "${IS_MAC}" == "yes"])
-	AC_MSG_RESULT([${IS_MAC}])
 
-	dnl If macOS, check if system copy of libc has fmemopen (if it is not
-	dnl macOS, we do not check, but still must set SYSTEM_HAS_FMEMOPEN)
-	AC_MSG_CHECKING([if system copy of libc has fmemopen])
-	SYSTEM_FMEMOPEN=1
-	if test "${IS_MAC}" == "yes"; then
-		sys_ver=$(sw_vers -productVersion)
-		if test $(echo ${sys_ver} | cut -d "." -f 1) -eq 10 && test $(echo ${sys_ver} | cut -d "." -f 2) -lt 13; then
-			SYSTEM_FMEMOPEN=0
-		fi
-	fi
-	if test "${SYSTEM_FMEMOPEN}" == "1"; then
-		AC_MSG_RESULT([yes])
-	else
-		AC_MSG_RESULT([no])
-	fi
+	AM_CONDITIONAL([MAC], [test "x${IS_MAC}" == "xyes"])
+	AM_CONDITIONAL([MSYS2], [test "x${IS_MSYS2}" == "xyes"])
+
 	AC_DEFINE_UNQUOTED([_SYSTEM_HAS_FMEMOPEN_], ${SYSTEM_FMEMOPEN}, [does system copy of libc have fmemopen])
 	AM_CONDITIONAL([SYSTEM_HAS_FMEMOPEN], [test "${SYSTEM_FMEMOPEN}" == "1"])
 
-	IS_MSYS2=no
-	IS_WINDOWS=no
-	AC_MSG_CHECKING([for vendor compilers])
-	if test -n "${VENDOR}"; then
-		if test "${VENDOR}" == "intel-win32"; then
-			export CC=icl
-			export CXX=icl
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_"
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_"
-			IS_WINDOWS=yes
-		elif test "${VENDOR}" == "intel-win7-32"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "intel-win7-64"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "MSVC-Win64"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -D_HAVE_PETSC_MPI_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -D_HAVE_PETSC_MPI_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "MSVC-Win64-par"; then
-			export CC=cl
-			export CXX=cl
-			export CXXFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export CFLAGS="-DWIN32 -D_INTEL_WIN_ -EHsc"
-			export AR="ar-lib lib"
-			export OS_LDFLAG="-Wl,"
-			export RANLIB=true
-			IS_WINDOWS=yes
-			OSLIBS="-Wl,kernel32.lib -Wl,user32.lib -Wl,gdi32.lib -Wl,winspool.lib -Wl,comdlg32.lib -Wl,advapi32.lib -Wl,shell32.lib -Wl,ole32.lib -Wl,oleaut32.lib -Wl,uuid.lib -Wl,odbc32.lib -Wl,odbccp32.lib"
-		elif test "${VENDOR}" == "intel-linux"; then
-			export CC=icc
-			export CXX=icpc
-			export CFLAGS="-D_INTEL_LINUX_"
-			export CXXFLAGS="-D_INTEL_LINUX_"
-		elif test "${VENDOR}" == "intel-gp"; then
-			export CC=icc
-			export CXX=icpc
-			export CFLAGS="-D_INTEL_LINUX_"
-			export CXXFLAGS="-D_INTEL_LINUX_"
-		elif test "${VENDOR}" == intel-lonestar; then
-			export CC=icc
-			export CXX=icpc
-		elif test "${VENDOR}" == "intel-aurora"; then
-			export CC=icc
-			export CXX=icpc
-			export CXXFLAGS="-O3 -D_INTEL_LINUX_ -DMPICH_IGNORE_CXX_SEEK"
-			export CFLAGS="-O3 -D_INTEL_LINUX_ -DMPICH_IGNORE_CXX_SEEK"
-		elif test "${VENDOR}" == "intel-discover"; then
-			export CC=mpicc
-			export CXX=mpicxx
-			export CXXFLAGS="-O3 -D_INTEL_LINUX_ -DMPICH_IGNORE_CXX_SEEK -std=c++11"
-			export CFLAGS="-O3 -D_INTEL_LINUX_ -DMPICH_IGNORE_CXX_SEEK"
-		elif test "${VENDOR}" == "intel-pleiades"; then
-			export CC=icc
-			export CXX=icpc
-			export CXXFLAGS="-O3 -D_INTEL_LINUX_ -std=c++11"
-			export CFLAGS="-O3 -D_INTEL_LINUX_"
-		elif test "${VENDOR}" == "intel-acenet"; then
-			export CC=icc
-			export CXX=icpc
-			export CXXFLAGS="-D_INTEL_LINUX_"
-			export CFLAGS="-D_INTEL_LINUX_"
-		elif test "${VENDOR}" == "intel-pleiades-gcc"; then
-			export CC=gcc
-			export CXX=g++
-			export CXXFLAGS="-O3 -march=corei7-avx -std=c++11"
-			export CFLAGS="-O3 -march=corei7-avx"
-		elif test "${VENDOR}" == "intel-pleiades-mpi"; then
-			export CC=mpicc
-			export CXX=mpicxx
-			export CXXFLAGS="-O3 -march=corei7-avx -std=c++11 -lirc -lsvml -limf"
-			export CFLAGS="-O3 -march=corei7-avx"
-		elif test "${VENDOR}" == "intel-pleiades-icpc"; then
-			export CXXFLAGS="-g -O3 -ipo -axAVX -ipo -no-inline-min-size -inline-max-size=345 -no-inline-max-total-size -no-inline-max-per-routine -no-inline-max-per-compile -restrict -std=c++11"
-			export CFLAGS="-g -O3 -ipo -axAVX -ipo -no-inline-min-size -inline-max-size=345 -no-inline-max-total-size -no-inline-max-per-routine -no-inline-max-per-compile -restrict"
-			AC_DEFINE([_HAVE_RESTRICT_], [1], [with restrict buffers])
-		elif test "${VENDOR}" == "win-msys2"; then
-			export CXXFLAGS="-D_MSYS2_"
-			export LDFLAGS="${LDFLAGS} -no-undefined"
-			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
-			IS_MSYS2=yes
-			AC_DEFINE([_MAC_], [1], [is macOS])
-		else
-			AC_MSG_ERROR([unknown compiler vendor!])
-		fi
+	dnl Set default environment variables
+	if test ! -z "${COPTFLAGS+x}"; then
+		AC_MSG_WARN([If you want to use the optimization flags provided by COPTFLAGS (${COPTFLAGS}), please pass them via CFLAGS])
 	fi
-	dnl Set default standard for C++
-	if test "${CXXFLAGS}" == ""; then
-		export CXXFLAGS="-std=C++11"
+	if test -z "${CXXFLAGS+x}"; then
+		export CXXFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"
 	fi
-	AC_SUBST([OSLIBS])
-	AC_MSG_RESULT([done])
-
-	AC_MSG_CHECKING([if this is a MSVC (Windows) build])
-	AM_CONDITIONAL([WINDOWS], [test "x${IS_WINDOWS}" == "xyes"])
-	AC_MSG_RESULT([${IS_WINDOWS}])
-
-	AC_MSG_CHECKING([if this is a MSYS2 (Windows) build])
-	AM_CONDITIONAL([MSYS2], [test "x${IS_MSYS2}" == "xyes"])
-	AC_MSG_RESULT([${IS_MSYS2}])
-	if test "${IS_MSYS2}" == "yes"; then
-		AC_DEFINE([_IS_MSYS2_], [1], [is a MSYS2 (Windows) build])
-	else
-		AC_DEFINE([_IS_MSYS2_], [0], [is a MSYS2 (Windows) build])
+	if test ! -z "${CXXOPTFLAGS+x}"; then
+		AC_MSG_WARN([If you want to use the optimization flags provided by CXXOPTFLAGS (${CXXOPTFLAGS}), please pass them via CXXFLAGS])
 	fi
 	dnl }}}
 	dnl MATLAB{{{
-
 	dnl See if MATLAB has been provided
 	AC_MSG_CHECKING([for MATLAB])
 	AC_ARG_WITH(
@@ -407,17 +293,15 @@ AC_DEFUN([ISSM_OPTIONS],[
 		dnl
 		case "${host_os}" in
 			*mingw*)
-				if test "${IS_MSYS2}" == "yes"; then
-					dnl Value to set MEXEXT to can be found on Windows by running $MATLAB_ROOT/bin/mexext.bat
-					MEXEXT=".mexw64"
-					MATLABINCL="-I${MATLAB_ROOT}/extern/include"
-					MEXOPTFLAGS="-O2 -fwrapv -DNDEBUG -g"
-					MEXCFLAGS="-fexceptions -fno-omit-frame-pointer -m64 -DMATLAB_MEX_FILE"
-					MEXCXXFLAGS="-fexceptions -fno-omit-frame-pointer -std=c++11 -m64 -DMATLAB_MEX_FILE"
-					MEXLINKFLAGS="-m64 -Wl,--no-undefined -shared -static -Wl,${MATLAB_ROOT}/extern/lib/win64/mingw64/mexFunction.def"
-					MEXLIB_DIR="${MATLAB_ROOT}/extern/lib/win64/mingw64"
-					MEXLIB="-L${MEXLIB_DIR} -lmx -lmex -lmat -lm -lmwlapack -lmwblas"
-				fi
+				dnl Value to set MEXEXT to can be found on Windows by running $MATLAB_ROOT/bin/mexext.bat
+				MEXEXT=".mexw64"
+				MATLABINCL="-I${MATLAB_ROOT}/extern/include"
+				MEXOPTFLAGS="-O2 -fwrapv -DNDEBUG -g"
+				MEXCFLAGS="-fexceptions -fno-omit-frame-pointer -m64 -DMATLAB_MEX_FILE"
+				MEXCXXFLAGS="-fexceptions -fno-omit-frame-pointer -std=c++11 -m64 -DMATLAB_MEX_FILE"
+				MEXLINKFLAGS="-m64 -Wl,--no-undefined -shared -static -Wl,${MATLAB_ROOT}/extern/lib/win64/mingw64/mexFunction.def"
+				MEXLIB_DIR="${MATLAB_ROOT}/extern/lib/win64/mingw64"
+				MEXLIB="-L${MEXLIB_DIR} -lmx -lmex -lmat -lm -lmwlapack -lmwblas"
 			;;
 			*)
 				MEXEXT=$(${MATLAB_ROOT}/bin/mex -v 2>&1 < /dev/null | grep LDEXTENSION | sed -e "s/         LDEXTENSION        = //g")
@@ -875,7 +759,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl NumPy libraries and header files
 	if test "x${HAVE_PYTHON_NUMPY}" == "xyes"; then
-		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy"
+		PYTHON_NUMPYINCL="-I${PYTHON_NUMPY_ROOT} -I${PYTHON_NUMPY_ROOT}/core/include/numpy -I${PYTHON_NUMPY_ROOT}/_core/include -I${PYTHON_NUMPY_ROOT}/_core/include/numpy"
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
@@ -902,7 +786,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl Chaco libraries and header files
 	if test "x${HAVE_CHACO}" == "xyes"; then
 		CHACOINCL="-I${CHACO_ROOT}/include"
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			CHACOLIB="-Wl,-L${CHACO_ROOT}/lib -Wl,-lchacominusblas"
 		else
 			CHACOLIB="-L${CHACO_ROOT}/lib -lchacominusblas"
@@ -1390,14 +1274,10 @@ AC_DEFUN([ISSM_OPTIONS],[
 			MPILIB="${MPI_LIBDIR} ${MPI_LIBFLAGS}"
 		fi
 
-		if test "x${IS_WINDOWS}" == "xyes"; then
-			MPIINCL=/I"${MPI_INCLUDE}"
-		else
-			if ! test -f ${MPI_INCLUDE}/mpi.h; then
-				 AC_MSG_ERROR([Count not find mpi.h in ${MPI_INCLUDE}!]);
-			fi
-			MPIINCL="-I${MPI_INCLUDE}"
+		if ! test -f ${MPI_INCLUDE}/mpi.h; then
+			 AC_MSG_ERROR([Count not find mpi.h in ${MPI_INCLUDE}!]);
 		fi
+		MPIINCL="-I${MPI_INCLUDE}"
 
 		AC_DEFINE([_HAVE_MPI_], [1], [with MPI in ISSM src])
 		AC_DEFINE([HAVE_MPI], [1], [MPI flag for Dakota (DO NOT REMOVE)])
@@ -1621,7 +1501,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl M1QN3 libraries and header files
 	if test "x${HAVE_M1QN3}" == "xyes"; then
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			M1QN3LIB="-Wl,-L${M1QN3_ROOT} -Wl,-lm1qn3 -Wl,-lddot"
 		else
 			M1QN3LIB="-L${M1QN3_ROOT} -lm1qn3 -lddot"
@@ -1714,7 +1594,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_MSG_ERROR([ScaLAPACK directory provided (${SCALAPACK_ROOT}) does not exist!]);
 		fi
 		HAVE_SCALAPACK=yes
-		if test "${VENDOR}" == "win-msys2"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			SCALAPACKLIB="-Wl,-L${SCALAPACK_ROOT}/lib -Wl,-lscalapack"
 		else
 			if test -f ${SCALAPACK_ROOT}/libscalapack-openmpi.so; then
@@ -1920,7 +1800,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	if test "x${HAVE_MUMPS}" == "xyes"; then
 		MUMPSINCL="-I${MUMPS_ROOT}/include"
 		if test "x${MUMPS_ROOT}" == "x${PETSC_ROOT}"; then
-			if test "${VENDOR}" == "win-msys2"; then
+			if test "x${IS_MSYS2}" == "xyes"; then
 				MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lcmumps -Wl,-ldmumps -Wl,-lsmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
 			else
 				MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lcmumps -lmumps_common -lpord -lzmumps"
@@ -2071,7 +1951,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl SEMIC libraries and header files
 	if test "x${HAVE_SEMIC}" == "xyes"; then
 		SEMICINCL="-I${SEMIC_ROOT}"
-		if test "${IS_MSYS2}" == "yes"; then
+		if test "x${IS_MSYS2}" == "xyes"; then
 			SEMICLIB="-Wl,-L${SEMIC_ROOT}/lib -Wl,-lsurface_physics -Wl,-lutils"
 		else
 			SEMICLIB="-L${SEMIC_ROOT}/lib -lsurface_physics -lutils"
@@ -2314,22 +2194,18 @@ AC_DEFUN([ISSM_OPTIONS],[
 		)
 		if test -n "${FORTRAN_LIB}"; then
 			FORTRAN_DIR=$(echo ${FORTRAN_LIB} | sed -e "s/-Wl,//g" | sed -e "s/-L//g" | awk '{print $[1]}')
-			if test -d "${FORTRAN_DIR}" || test -f "${FORTRAN_DIR}"; then
+			if test -d "${FORTRAN_DIR}"; then
 				FORTRANDIR="${FORTRAN_DIR}"
-				if test -n "${FORTRAN_DIR}"; then
-					IS_FORTRANDIR_A_DIR=yes
-				fi
+				IS_FORTRANDIR_A_DIR=yes
 				FORTRANLIB="${FORTRAN_LIB}"
 				AC_DEFINE([_HAVE_FORTRAN_], [1], [with Fortran library in ISSM src])
 				AC_SUBST([FORTRANDIR])
 				AC_SUBST([FORTRANLIB])
+			elif test -f "${FORTRAN_DIR}"; then
+				FORTRANLIB="${FORTRAN_LIB}"
+				AC_DEFINE([_HAVE_FORTRAN_], [1], [with Fortran library in ISSM src])
+				AC_SUBST([FORTRANDIR])
 			else
-				if test "x${HAVE_MPI}" == "xyes"; then
-					MPI_REC_FORTRAN_LIB=$(mpif77 -print-file-name="libgfortran.a")
-					if test -f "${FORTRANLIB}"; then
-						AC_MSG_ERROR([Fortran library provided (${FORTRAN_LIB}) does not exist! MPI suggests the following library: ${MPI_REC_FORTRAN_LIB}]);
-					fi
-			 	fi
 				AC_MSG_ERROR([Fortran library provided (${FORTRAN_LIB}) does not exist!]);
 			fi
 		fi
@@ -2543,63 +2419,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AX_ANALYSES_SELECTION
 
 	dnl Platform specifics
-	dnl with-android{{{
-	AC_MSG_CHECKING([for Android capability compilation])
-	AC_ARG_WITH(
-		[android],
-		AS_HELP_STRING([--with-android=EXE], [compile with Android capabilities (default: "no"; alternatives: "exe", "jni")]),
-		[ANDROID=${withval}],
-		[ANDROID=no]
-	)
-	if test "x${ANDROID}" == "xjni"; then
-		HAVE_ANDROID=jni
-		AC_DEFINE([_HAVE_ANDROID_], [1], [with Android capability])
-		AC_DEFINE([_HAVE_ANDROID_JNI_], [1], [with Android Java Native Interface (JNI)])
-	elif test "x${ANDROID}" == "xexe"; then
-		HAVE_ANDROID=exe
-		AC_DEFINE([_HAVE_ANDROID_], [1], [with Android capability])
-	elif test "x${ANDROID}" == "xno"; then
-		HAVE_ANDROID=no
-	else
-		AC_MSG_ERROR([--with-android should be either "no", "exe" or "jni"])
-	fi
-	AM_CONDITIONAL([ANDROID], [test "x${HAVE_ANDROID}" != "xno"])
-	AM_CONDITIONAL([ANDROIDJNI], [test "x${HAVE_ANDROID}" == "xjni"])
-	AM_CONDITIONAL([ANDROIDEXE], [test "x${HAVE_ANDROID}" == "xexe"])
-	AC_MSG_RESULT([${HAVE_ANDROID}])
-	dnl }}}
-	dnl with-android-ndk{{{
-	AC_MSG_CHECKING([with Android Native Development Kit (NDK)])
-	AC_ARG_WITH(
-		[android-ndk],
-		AS_HELP_STRING([--with-android-ndk=DIR], [Android NDK root directory]),
-		[ANDROID_NDK_ROOT=${withval}],
-		[ANDROID_NDK_ROOT=""]
-	)
-	if test -d "${ANDROID_NDK_ROOT}"; then
-		HAVE_ANDROID_NDK=yes
-		ANDROID_NDKINCL="-I${ANDROID_NDK_ROOT}/arm-linux-android-install/sysroot/usr/include"
-		AC_DEFINE([_HAVE_ANDROID_NDK_], [1], [with Android NDK in ISSM src])
-		AC_SUBST([ANDROID_NDKINCL])
-	else
-		HAVE_ANDROID_NDK=no
-	fi
-	AC_MSG_RESULT([${HAVE_ANDROID_NDK}])
-	dnl }}}
-
-	dnl other options
-	dnl optimization{{{
-	dnl -- bypass standard optimization -g -O2 -fPIC?
-	AC_MSG_CHECKING(for C++ optimization flags)
-	AC_ARG_WITH(
-		[cxxoptflags],
-		AS_HELP_STRING([--with-cxxoptflags=CXXOPTFLAGS], [C++ optimization flags (i.e. --with-cxxoptflags="-march=opteron -O3 -std=c++11"]),
-		[CXXOPTFLAGS=${withval}],
-		[CXXOPTFLAGS="-g -O2 -fPIC -std=c++11 -D_DO_NOT_LOAD_GLOBALS_"]
-	)
-	AC_SUBST([CXXOPTFLAGS])
-	AC_MSG_RESULT([${CXXOPTFLAGS}])
-	dnl }}}
 	dnl multithreading{{{
 	AC_MSG_CHECKING(for number of threads)
 	AC_ARG_WITH(
@@ -2688,23 +2507,31 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl Check that if we run ADOL-C, we don't use PETSc for now
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_PETSC}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C!]);
+		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C]);
+	fi
+	  if test "x${HAVE_PETSC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
+		AC_MSG_ERROR([cannot compile ISSM with both PETSc and CoDiPack, you probably forgot to remove --with-petsc-dir]);
 	fi
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack!]);
+		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack]);
 	fi
 	if test "x${HAVE_ADJOINTMPI}" == "xyes" && test "x${HAVE_MEDIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both MeDiPack and AdjointMPI!]);
+		AC_MSG_ERROR([cannot compile ISSM with both MeDiPack and AdjointMPI]);
 	fi
 	dnl Check that if we run MeteoIO, we have SNOWPACK also
 	if test "x${HAVE_METEOIO}" == "xyes" && test "x${HAVE_SNOWPACK}" == "xno"; then
-		AC_MSG_ERROR([cannot compile MeteoIO package without SNOWPACK!]);
+		AC_MSG_ERROR([cannot compile MeteoIO package without SNOWPACK]);
 	fi
 	dnl Check that if we run SNOWPACK, we have MeteoIO also
 	if test "${HAVE_METEOIO}" == "xno" && test "${HAVE_SNOWPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile SNOWPACK package without MeteoIO!]);
+		AC_MSG_ERROR([cannot compile SNOWPACK package without MeteoIO]);
 	fi
 
 	AC_MSG_RESULT([done])
 	dnl }}}
+
+	dnl Final variable substitution
+	AC_SUBST([CFLAGS])
+	AC_SUBST([CXXFLAGS])
+	AC_SUBST([OSLIBS])
 ])

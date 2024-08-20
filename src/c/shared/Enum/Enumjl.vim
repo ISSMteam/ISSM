@@ -44,6 +44,7 @@ syn keyword juliaConstC AugmentedLagrangianThetaEnum
 syn keyword juliaConstC AutodiffCbufsizeEnum
 syn keyword juliaConstC AutodiffDependentObjectsEnum
 syn keyword juliaConstC AutodiffDriverEnum
+syn keyword juliaConstC AutodiffEnablePreaccumulationEnum
 syn keyword juliaConstC AutodiffFosForwardIndexEnum
 syn keyword juliaConstC AutodiffFosReverseIndexEnum
 syn keyword juliaConstC AutodiffFovForwardIndicesEnum
@@ -54,6 +55,8 @@ syn keyword juliaConstC AutodiffLbufsizeEnum
 syn keyword juliaConstC AutodiffNumDependentsEnum
 syn keyword juliaConstC AutodiffNumIndependentsEnum
 syn keyword juliaConstC AutodiffObufsizeEnum
+syn keyword juliaConstC AutodiffOutputTapeMemoryEnum
+syn keyword juliaConstC AutodiffOutputTimeEnum
 syn keyword juliaConstC AutodiffTapeAllocEnum
 syn keyword juliaConstC AutodiffTbufsizeEnum
 syn keyword juliaConstC AutodiffXpEnum
@@ -260,6 +263,8 @@ syn keyword juliaConstC HydrologyCavitySpacingEnum
 syn keyword juliaConstC HydrologyChannelSheetWidthEnum
 syn keyword juliaConstC HydrologyEnglacialVoidRatioEnum
 syn keyword juliaConstC HydrologyIschannelsEnum
+syn keyword juliaConstC HydrologyIsIncludeSheetThicknessEnum
+syn keyword juliaConstC HydrologyCreepOpenFlagEnum
 syn keyword juliaConstC HydrologyIsTransitionEnum
 syn keyword juliaConstC HydrologyIsWaterPressureArmaEnum
 syn keyword juliaConstC HydrologyMeltFlagEnum
@@ -1401,7 +1406,6 @@ syn keyword juliaConstC AgeAnalysisEnum
 syn keyword juliaConstC AggressiveMigrationEnum
 syn keyword juliaConstC AmrBamgEnum
 syn keyword juliaConstC AmrNeopzEnum
-syn keyword juliaConstC AndroidFrictionCoefficientEnum
 syn keyword juliaConstC ArrheniusEnum
 syn keyword juliaConstC AutodiffJacobianEnum
 syn keyword juliaConstC Balancethickness2AnalysisEnum

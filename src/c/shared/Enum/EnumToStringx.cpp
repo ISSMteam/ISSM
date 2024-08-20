@@ -272,6 +272,8 @@ const char* EnumToStringx(int en){
 		case HydrologyChannelSheetWidthEnum : return "HydrologyChannelSheetWidth";
 		case HydrologyEnglacialVoidRatioEnum : return "HydrologyEnglacialVoidRatio";
 		case HydrologyIschannelsEnum : return "HydrologyIschannels";
+		case HydrologyIsIncludeSheetThicknessEnum : return "HydrologyIsIncludeSheetThickness";
+		case HydrologyCreepOpenFlagEnum : return "HydrologyCreepOpenFlag";
 		case HydrologyIsTransitionEnum : return "HydrologyIsTransition";
 		case HydrologyIsWaterPressureArmaEnum : return "HydrologyIsWaterPressureArma";
 		case HydrologyMeltFlagEnum : return "HydrologyMeltFlag";
@@ -1413,7 +1415,6 @@ const char* EnumToStringx(int en){
 		case AggressiveMigrationEnum : return "AggressiveMigration";
 		case AmrBamgEnum : return "AmrBamg";
 		case AmrNeopzEnum : return "AmrNeopz";
-		case AndroidFrictionCoefficientEnum : return "AndroidFrictionCoefficient";
 		case ArrheniusEnum : return "Arrhenius";
 		case AutodiffJacobianEnum : return "AutodiffJacobian";
 		case Balancethickness2AnalysisEnum : return "Balancethickness2Analysis";

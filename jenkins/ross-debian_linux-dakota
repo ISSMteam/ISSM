@@ -9,7 +9,6 @@ ISSM_CONFIG='\
 	--disable-static \
 	--enable-development \
 	--enable-debugging \
-	--with-cxxoptflags="-std=c++11" \
 	--with-pic \
 	--with-numthreads=4 \
 	--with-matlab-dir=${MATLAB_PATH} \

@@ -60,12 +60,6 @@ const char* ErrorException::what() const throw(){/*{{{*/
 }/*}}}*/
 void ErrorException::Report() const{/*{{{*/
 
-	/*WINDOWS*/
-	if(!this->function_name || this->file_line==0){
-		cerr << "Error message: " << what() << endl;
-		return;
-	}
-
 	cerr <<"\n[" << this->rank<< "] ??? Error using ==> " << this->file_name << ":" << this->file_line << 
 	       "\n[" << this->rank<< "] " << this->function_name << " error message: " << what() << "\n" << endl;
 
@@ -77,14 +71,8 @@ const char* ErrorException::WrapperReport() const{/*{{{*/
 	std::ostringstream buffer;
 	char *message = NULL;
 
-	/*WINDOWS*/
-	if(!this->function_name || this->file_line==0){ 
-		buffer << " error message: " << this->what_str;
-	}
-	else{
-		buffer << "\nError in ==> " << this->file_name << ":" << file_line << "\n";
-		buffer << this->function_name << " error message: " << this->what_str;
-	}
+	buffer << "\nError in ==> " << this->file_name << ":" << file_line << "\n";
+	buffer << this->function_name << " error message: " << this->what_str;
 
 	/*Convert std::ostringstream to std::string and then create char* */
 	std::string buffer2 = buffer.str();

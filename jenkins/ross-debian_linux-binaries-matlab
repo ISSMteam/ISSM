@@ -24,6 +24,7 @@ ISSM_CONFIG='\
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
 	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-metis-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-hdf5-dir=${ISSM_DIR}/externalpackages/hdf5/install \

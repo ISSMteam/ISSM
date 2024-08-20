@@ -14,7 +14,7 @@ md = setmask(md, 'all', '')
 md = parameterize(md, '../Par/SquareShelf.py')
 md.extrude(3, 1.)
 md = setflowequation(md, 'FS', 'all')
-md.stressbalance.reltol = np.NaN
+md.stressbalance.reltol = np.nan
 md.cluster = generic('name', gethostname(), 'np', 3)
 md = solve(md, 'Transient')
 
