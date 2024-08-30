@@ -13,10 +13,6 @@ ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-
 ## Checking Out a Copy of the Repository
 Navigate to the parent directory where you want the ISSM repository to be located and run,
 ```
-git clone https://github.com/ISSMteam/ISSM.git
-```
-or
-```
 git clone git@github.com:ISSMteam/ISSM.git
 ```
 
@@ -48,6 +44,13 @@ git push
 5. If you have forked the ISSM repository, consider making sure that your commit passes CI workflows before submitting a pull request.
 
 6. Submit a pull request via GitHub so that project admins can review your changes and merge them into the main branch.
+
+## Troubleshooting
+### fatal: unable to access 'https://github.com/ISSMteam/ISSM.git/': The requested URL returned error: 403
+If you get this error on commit to the repository, it means you originally cloned via HTTPS. To fix this, switch to the SSH protocol with,
+````
+git remote set-url origin git@github.com:ISSMteam/ISSM.git
+````
 
 ## Resources
  - Git Guides: https://github.com/git-guides
