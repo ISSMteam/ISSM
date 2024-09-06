@@ -23,8 +23,6 @@ function smb = interpISMIP6GreenlandSMB(md,model_name,scenario,surface_ref,path)
 %      2) This function provides smb forcing for 2015 to 2100. If you want other years, you will need to implement this option.
 %      3) NOT YET IMPLEMENTED: If you would like to do a control run, give any string for the model_name and put 'control' as the scenario. 
 %                              Should the control climate have an elevation adjustment?
-%
-% Version 10/25/2023 Jessica Badgeley jessica.a.badgeley@dartmouth.edu
 
 if (nargin<4) | (length(surface_ref) ~= md.mesh.numberofvertices)
 	disp('Setting surface_ref to md.geometry.surface');
