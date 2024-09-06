@@ -15,17 +15,16 @@ function hout = interpICESat2ATL1415(X,Y,ncfile14,ncfile15)
 %      surface = interpICESat2ATL1415(md.mesh.x,md.mesh.y);
 %      surface = interpICESat2ATL1415(md.mesh.x,md.mesh.y,'~/ATL14_GL_0314_100m_002_01.nc','~/ATL15_GL_0314_01km_002_01.nc');
 %
-% Version 04/27/2023 Jessica Badgeley jessica.a.badgeley@dartmouth.edu
 
 if nargin==3
    filename_h = ncfile14;
 else
-   filename_h = '/totten_1/ModelData/Greenland/ICESat2_ATL1415/ATL14_GL_0314_100m_002_01.nc';
+   filename_h = '/totten_1/ModelData/Greenland/ICESat2_ATL1415/ATL14_GL_0321_100m_004_01.nc';
 end
 if nargin==4
 	filename_dh = ncfile15;
 else
-   filename_dh = '/totten_1/ModelData/Greenland/ICESat2_ATL1415/ATL15_GL_0314_01km_002_01.nc';
+   filename_dh = '/totten_1/ModelData/Greenland/ICESat2_ATL1415/ATL15_GL_0321_01km_004_01.nc';
 end
 
 xh = ncread(filename_h,'x');
