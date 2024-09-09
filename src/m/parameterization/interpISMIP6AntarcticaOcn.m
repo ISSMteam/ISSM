@@ -4,7 +4,8 @@ function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
 %   Input:
 %     - md (model object)
 %     - model_name (string): name of the climate model and scenario
-%       - suppported options from /totten_1/ModelData/ISMIP6/Projections/AIS/Ocean_Forcing/
+%     - suppported models:
+%
 %             2.6 scenario             8.5 scenario
 %             ---------------------------------------------
 %                                      ccsm4_rcp8.5
