@@ -184,8 +184,8 @@ while loop
    UIControl_FontSize_bak = get(0, 'DefaultUIControlFontSize');
    set(0, 'DefaultUIControlFontSize',10);
    button=menu('exptool menu',...
-      'add a profile (open)',...                %1
-      'add a contour (closed)',...              %2
+      'add a contour (closed)',...              %1
+      'add a profile (open)',...                %2
       'remove a profile',...                    %3
       'modify the position of a point',...      %4
       'add points inside a profile',...         %5
@@ -229,16 +229,6 @@ while loop
 	switch button
 
 		case 1
-
-			[A,numprofiles,numpoints,closed]=addprofile(A,numprofiles,numpoints,closed,prevplot2,root,options);
-			counter=counter+1;
-			backup{counter,1}=A;
-			backup{counter,2}=numprofiles;
-			backup{counter,3}=numpoints;
-			backup{counter,4}=closed;
-
-		case 2
-
 			[A,numprofiles,numpoints,closed]=addcontour(A,numprofiles,numpoints,closed,prevplot2,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -246,8 +236,16 @@ while loop
 			backup{counter,3}=numpoints;
 			backup{counter,4}=closed;
 
-		case 3
+		case 2
+			[A,numprofiles,numpoints,closed]=addprofile(A,numprofiles,numpoints,closed,prevplot2,root,options);
+			counter=counter+1;
+			backup{counter,1}=A;
+			backup{counter,2}=numprofiles;
+			backup{counter,3}=numpoints;
+			backup{counter,4}=closed;
 
+
+		case 3
 			[A,numprofiles,numpoints,closed]=removeprofile(A,numprofiles,numpoints,closed,prevplot2,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -256,7 +254,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 4
-
 			[A,numprofiles,numpoints,closed]=modifyposition(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -265,7 +262,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 5
-
 			[A,numprofiles,numpoints,closed]=addinsideprofile(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -274,7 +270,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 6
-
 			[A,numprofiles,numpoints,closed]=addendprofile(A,numprofiles,numpoints,closed,prevplot2,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -283,7 +278,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 7
-
 			[A,numprofiles,numpoints,closed]=removepoints(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -292,7 +286,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 8
-
 			[A,numprofiles,numpoints,closed]=removeseveralpoints(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -301,7 +294,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 9
-
 			[A,numprofiles,numpoints,closed]=cutprofile(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -310,7 +302,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 10
-
 			[A,numprofiles,numpoints,closed]=cutarea(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -319,7 +310,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 11
-
 			[A,numprofiles,numpoints,closed]=mergeprofiles(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -328,7 +318,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 12
-
 			[A,numprofiles,numpoints,closed]=closeprofile(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -337,7 +326,6 @@ while loop
 			backup{counter,4}=closed;
 
 		case 13
-
 			[A,numprofiles,numpoints,closed]=orientprofile(A,numprofiles,numpoints,closed,prevplot,root,options);
 			counter=counter+1;
 			backup{counter,1}=A;
@@ -347,7 +335,6 @@ while loop
 
 			%QUIT
 		case 16
-
 			loop=0;
 
 		otherwise
