@@ -633,6 +633,7 @@
 	StepsEnum
 	StressbalanceAbstolEnum
 	StressbalanceFSreconditioningEnum
+	StressbalanceIsHydrologyLayerEnum
 	StressbalanceIsnewtonEnum
 	StressbalanceMaxiterEnum
 	StressbalanceNumRequestedOutputsEnum
@@ -2441,6 +2442,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==StepsEnum) return "Steps" end
 	if(enum==StressbalanceAbstolEnum) return "StressbalanceAbstol" end
 	if(enum==StressbalanceFSreconditioningEnum) return "StressbalanceFSreconditioning" end
+	if(enum==StressbalanceIsHydrologyLayerEnum) return "StressbalanceIsHydrologyLayer" end
 	if(enum==StressbalanceIsnewtonEnum) return "StressbalanceIsnewton" end
 	if(enum==StressbalanceMaxiterEnum) return "StressbalanceMaxiter" end
 	if(enum==StressbalanceNumRequestedOutputsEnum) return "StressbalanceNumRequestedOutputs" end
@@ -4249,6 +4251,7 @@ function StringToEnum(name::String)
 	if(name=="Steps") return StepsEnum  end
 	if(name=="StressbalanceAbstol") return StressbalanceAbstolEnum  end
 	if(name=="StressbalanceFSreconditioning") return StressbalanceFSreconditioningEnum  end
+	if(name=="StressbalanceIsHydrologyLayer") return StressbalanceIsHydrologyLayerEnum  end
 	if(name=="StressbalanceIsnewton") return StressbalanceIsnewtonEnum  end
 	if(name=="StressbalanceMaxiter") return StressbalanceMaxiterEnum  end
 	if(name=="StressbalanceNumRequestedOutputs") return StressbalanceNumRequestedOutputsEnum  end
