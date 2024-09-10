@@ -637,6 +637,7 @@ syn keyword juliaConstC StepEnum
 syn keyword juliaConstC StepsEnum
 syn keyword juliaConstC StressbalanceAbstolEnum
 syn keyword juliaConstC StressbalanceFSreconditioningEnum
+syn keyword juliaConstC StressbalanceIsHydrologyLayerEnum
 syn keyword juliaConstC StressbalanceIsnewtonEnum
 syn keyword juliaConstC StressbalanceMaxiterEnum
 syn keyword juliaConstC StressbalanceNumRequestedOutputsEnum
