@@ -23,7 +23,7 @@ if strcmp(glacier, 'Greenland')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Greenland_2014_2022_monthly_mosaic_v5/';
 	data_version = 'v05.0';
 elseif strcmp(glacier, 'Jakobshavn')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2021/';
+	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2024/';
 elseif strcmp(glacier, 'Kangerlussuaq')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Kangerlussuaq_2006_2021/';
 elseif strcmp(glacier, 'Store')
