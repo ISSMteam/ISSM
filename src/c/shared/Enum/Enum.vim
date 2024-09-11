@@ -897,8 +897,10 @@ syn keyword cConstant HydrologydcMaskEplactiveNodeEnum
 syn keyword cConstant HydrologydcMaskThawedEltEnum
 syn keyword cConstant HydrologydcMaskThawedNodeEnum
 syn keyword cConstant HydrologydcSedimentTransmitivityEnum
+syn keyword cConstant HydrologyDissipationEnum
 syn keyword cConstant HydrologyDrainageRateEnum
 syn keyword cConstant HydrologyEnglacialInputEnum
+syn keyword cConstant HydrologyFrictionHeatEnum
 syn keyword cConstant HydrologyGapHeightEnum
 syn keyword cConstant HydrologyGapHeightXEnum
 syn keyword cConstant HydrologyGapHeightXXEnum
@@ -906,8 +908,10 @@ syn keyword cConstant HydrologyGapHeightYEnum
 syn keyword cConstant HydrologyGapHeightYYEnum
 syn keyword cConstant HydrologyHeadEnum
 syn keyword cConstant HydrologyHeadOldEnum
+syn keyword cConstant HydrologyMeltRateEnum
 syn keyword cConstant HydrologyMoulinInputEnum
 syn keyword cConstant HydrologyNeumannfluxEnum
+syn keyword cConstant HydrologyPmpHeatEnum
 syn keyword cConstant HydrologyReynoldsEnum
 syn keyword cConstant HydrologyRheologyBBaseEnum
 syn keyword cConstant HydrologySheetConductivityEnum

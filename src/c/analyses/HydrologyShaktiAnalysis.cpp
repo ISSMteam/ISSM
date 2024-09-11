@@ -621,10 +621,10 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 
 		meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
 
-		//element->AddBasalInput(DummyEnum,&meltrate,P0Enum);
-		//element->AddBasalInput(EsaEmotionEnum,&frictionheat,P0Enum);
-		//element->AddBasalInput(EsaNmotionEnum,&dissipation,P0Enum);
-		//element->AddBasalInput(EsaUmotionEnum,&PMPheat,P0Enum);
+		element->AddBasalInput(HydrologyMeltRateEnum,&meltrate,P0Enum);
+		element->AddBasalInput(HydrologyFrictionHeatEnum,&frictionheat,P0Enum);
+		element->AddBasalInput(HydrologyDissipationEnum,&dissipation,P0Enum);
+		element->AddBasalInput(HydrologyPmpHeatEnum,&PMPheat,P0Enum);
 
 		newgap += gauss->weight*Jdet*(gap+dt*(
 						meltrate/rho_ice
