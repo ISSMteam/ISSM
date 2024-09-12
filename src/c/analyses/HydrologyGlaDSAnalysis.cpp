@@ -664,7 +664,9 @@ void HydrologyGlaDSAnalysis::UpdateSheetThickness(Element* element){/*{{{*/
 
 	/*Set to 0 if inactive element*/
 	if(element->IsAllFloating() || !element->IsIceInElement()){
-		for(int iv=0;iv<numvertices;iv++) h_new[iv] = 0.;
+		for(int iv=0;iv<numvertices;iv++) {
+			h_new[iv] = 0.;
+		}
 		element->AddInput(HydrologySheetThicknessEnum,h_new,P1Enum);
 		xDelete<IssmDouble>(h_new);
 		return;
@@ -673,6 +675,7 @@ void HydrologyGlaDSAnalysis::UpdateSheetThickness(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	bool isincludesheetthickness;
 	bool creep_open_flag;
+	bool ishydrologyslope;
 	element->FindParam(&isincludesheetthickness,HydrologyIsIncludeSheetThicknessEnum);
 	element->FindParam(&creep_open_flag,HydrologyCreepOpenFlagEnum);
 	IssmDouble  dt       = element->FindParam(TimesteppingTimeStepEnum);
@@ -752,7 +755,9 @@ void HydrologyGlaDSAnalysis::UpdateSheetThickness(Element* element){/*{{{*/
 
 		/*Make sure it is positive*/
 		if(h_new[iv]<AEPS) h_new[iv] = AEPS;
-	}
+		
+		}
+
 	}
 
 	element->AddInput(HydrologySheetThicknessEnum,h_new,P1Enum);
