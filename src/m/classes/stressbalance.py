@@ -27,6 +27,7 @@ class stressbalance(object):
         self.restol = 0
         self.reltol = 0
         self.abstol = 0
+        self.ishydrologylayer = 0
         self.isnewton = 0
         self.FSreconditioning = 0
         #self.icefront = np.nan -- no longer in use
@@ -69,6 +70,8 @@ class stressbalance(object):
         s += '      Penalty options:\n'
         s += '{}\n'.format(fielddisplay(self, 'penalty_factor', 'offset used by penalties: penalty = Kmax * 10^offset'))
         s += '{}\n'.format(fielddisplay(self, 'vertex_pairing', 'pairs of vertices that are penalized'))
+        s += '      Hydrology layer:\n'
+        s += '{}\n'.format(fielddisplay(self, 'ishydrologylayer', '(SSA only) 0: no subglacial hydrology layer in driving stress, 1: hydrology layer in driving stress'));
         s += '      Other:\n'
         s += '{}\n'.format(fielddisplay(self, 'shelf_dampening', 'use dampening for floating ice ? Only for FS model'))
         s += '{}\n'.format(fielddisplay(self, 'FSreconditioning', 'multiplier for incompressibility equation. Only for FS model'))
@@ -144,6 +147,7 @@ class stressbalance(object):
         md = checkfield(md, 'fieldname', 'stressbalance.restol', 'size', [1], '>', 0)
         md = checkfield(md, 'fieldname', 'stressbalance.reltol', 'size', [1])
         md = checkfield(md, 'fieldname', 'stressbalance.abstol', 'size', [1])
+        md = checkfield(md, 'fieldname', 'stressbalance.ishydrologylayer', 'numel', [1], 'values', [0 1]);
         md = checkfield(md, 'fieldname', 'stressbalance.isnewton', 'numel', [1], 'values', [0, 1, 2])
         md = checkfield(md, 'fieldname', 'stressbalance.FSreconditioning', 'size', [1], 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'stressbalance.maxiter', 'size', [1], '>=', 1)
@@ -189,6 +193,7 @@ class stressbalance(object):
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'restol', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'reltol', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'abstol', 'format', 'Double', 'scale', 1. / yts)
+        WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'ishydrologylayer', 'format', 'Boolean');
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'isnewton', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'FSreconditioning', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'maxiter', 'format', 'Integer')
