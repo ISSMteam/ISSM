@@ -46,6 +46,7 @@ class StressbalanceAnalysis: public Analysis{
 		void           GetBSSAprime(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss);
 		void           InputUpdateFromSolutionSSA(IssmDouble* solution,Element* element);
 		void				ComputeSurfaceSlope(IssmDouble* slope,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element);
+		void				ComputeHydrologySlope(IssmDouble* hydrologyslope,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element);
 		void				NodalFunctionsDerivativesRGB(IssmDouble* dbasis_subelem,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element);
 
 		/*L1L2*/
