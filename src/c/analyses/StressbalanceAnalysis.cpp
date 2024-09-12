@@ -693,7 +693,7 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	int    materials_type,finiteelement,fe_FS;
 	int    approximation;
 	int*   finiteelement_list=NULL;
-	bool   isSSA,isL1L2,isMOLHO,isHO,isFS,iscoupling;
+	bool   isSSA,isL1L2,isMOLHO,isHO,isFS,iscoupling,ishydrologylayer;
 	bool   control_analysis;
 	bool   dakota_analysis;
 	bool   ismovingfront;
@@ -708,6 +708,7 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	iomodel->FindConstant(&dakota_analysis,"md.qmu.isdakota");
 	iomodel->FindConstant(&materials_type,"md.materials.type");
 	iomodel->FindConstant(&ismovingfront,"md.transient.ismovingfront");
+	iomodel->FindConstant(&ishydrologylayer,"md.stressbalance.ishydrologylayer");
 
 	/*return if no processing required*/
 	if(!isSSA && !isL1L2 && !isMOLHO && !isHO && !isFS) return;
@@ -778,6 +779,11 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ocean_levelset",MaskOceanLevelsetEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum,0.);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum,0.);
+	/*Hydrology layer*/
+	if(ishydrologylayer){
+		iomodel->FetchDataToInput(inputs,elements,"md.initialization.watercolumn",HydrologySheetThicknessEnum);
+		iomodel->FetchDataToInput(inputs,elements,"md.hydrology.bump_height",HydrologyBumpHeightEnum);
+	}
 	/*MOLHO*/
 	if(isMOLHO){
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxShearEnum,0.);
@@ -868,6 +874,7 @@ void StressbalanceAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 				_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 		}
 	}
+	
 	/*LATH parameters*/
 	iomodel->FindConstant(&fe_FS,"md.flowequation.fe_FS");
 	if(fe_FS==LATaylorHoodEnum || fe_FS==LACrouzeixRaviartEnum){
@@ -901,6 +908,7 @@ void StressbalanceAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.restol",StressbalanceRestolEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.reltol",StressbalanceReltolEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.abstol",StressbalanceAbstolEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.ishydrologylayer",StressbalanceIsHydrologyLayerEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.isnewton",StressbalanceIsnewtonEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.maxiter",StressbalanceMaxiterEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.penalty_factor",StressbalancePenaltyFactorEnum));
@@ -1610,7 +1618,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 
 	/*Intermediaries */
 	int         dim,domaintype;
-	IssmDouble  thickness,Jdet,slope[2];
+	IssmDouble  thickness,Jdet,h,h_r,slope[2],hydrologyslope[2];
 	IssmDouble* xyz_list = NULL;
 
 	/*Get problem dimension*/
@@ -1633,7 +1641,16 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 	element->GetVerticesCoordinates(&xyz_list);
 	Input*     thickness_input=element->GetInput(ThicknessEnum); _assert_(thickness_input);
 	Input*     surface_input  =element->GetInput(SurfaceEnum);   _assert_(surface_input);
+	Input*     hydrologysheetthickness_input;
+	Input*     hr_input;
+	Input*     h_input;
 	IssmDouble rhog = element->FindParam(MaterialsRhoIceEnum)*element->FindParam(ConstantsGEnum);
+	bool       ishydrologylayer;
+	element->FindParam(&ishydrologylayer,StressbalanceIsHydrologyLayerEnum);
+	if(ishydrologylayer){
+		hr_input  = element->GetInput(HydrologyBumpHeightEnum);       _assert_(hr_input);
+		h_input   = element->GetInput(HydrologySheetThicknessEnum);   _assert_(h_input);
+	}
 
 	/* Start  looping on the number of gaussian points: */
 	#ifndef DISCSLOPE
@@ -1666,6 +1683,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 
 		thickness_input->GetInputValue(&thickness,gauss); _assert_(thickness>0);
 		surface_input->GetInputDerivativeValue(&slope[0],xyz_list,gauss);
+
 		#ifdef DISCSLOPE
 		if(gauss_subelem && partly_floating){
 			ig++;
@@ -1673,8 +1691,20 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 			_assert_(std::abs(gauss_subelem->weight-gauss->weight)<0.0000001);
 			/*Compute the discontinuous surface slope for this gauss point/subelement*/
 			this->ComputeSurfaceSlope(&slope[0],gauss_subelem,gauss,point1,fraction1,fraction2,ig,dim,element);
+			this->ComputeHydrologySlope(&hydrologyslope[0],gauss_subelem,gauss,point1,fraction1,fraction2,ig,dim,element);
 		}
 		#endif
+
+		/*Change slope based on hydrology model if need be*/
+		if(ishydrologylayer){
+			hr_input->GetInputValue(&h_r,gauss);
+			h_input->GetInputValue(&h,gauss);
+			if(h>h_r){
+				h_input->GetInputDerivativeValue(&hydrologyslope[0],xyz_list,gauss);
+				slope[0] += hydrologyslope[0];
+				if(dim==2) slope[1] += hydrologyslope[1];
+			}
+		}
 
 		IssmDouble factor = rhog*thickness*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
@@ -2129,6 +2159,130 @@ void StressbalanceAnalysis::ComputeSurfaceSlope(IssmDouble* slope,Gauss* gauss_D
 	xDelete<IssmDouble>(H);
 	xDelete<IssmDouble>(S);
 	xDelete<IssmDouble>(S_subelem);
+
+}/*}}}*/
+void StressbalanceAnalysis::ComputeHydrologySlope(IssmDouble* hydrologyslope,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element){/*{{{*/
+
+	/*Compute the surface slope for each subelement, for a given integration point (gauss)*/
+	int numnodes=element->GetNumberOfNodes();
+	IssmDouble* h=xNew<IssmDouble>(numnodes);
+	IssmDouble* Hl=xNew<IssmDouble>(numnodes);
+	IssmDouble* h_r=xNew<IssmDouble>(numnodes);
+	IssmDouble* Hl_subelem=xNew<IssmDouble>(numnodes);
+	IssmDouble Hl_f1,Hl_f2;
+
+	/*Get nodal deriviatives of the subelements related to the Gauss point*/
+	IssmDouble* dbasis_subelem=xNew<IssmDouble>(dim*numnodes);//CG basis for each subelement
+	this->NodalFunctionsDerivativesRGB(dbasis_subelem,gauss_DG,gauss_CG,point1,fraction1,fraction2,ig,dim,element);
+
+	/*Define hydrology layer at the grounding line (on element edges)*/
+	element->GetInputListOnNodes(h,HydrologySheetThicknessEnum); // hydrology sheet thickness on vertices
+	element->GetInputListOnNodes(h_r,HydrologySheetThicknessEnum); // bedrock bump height on vertices
+	for (int i=0;i<numnodes;i++){
+		if(h[i]<h_r[i]){
+			Hl[i] = 0;
+		}
+		else{
+			Hl[i] = h[i] - h_r[i];
+		}
+	}
+	switch(point1){//{{{
+		case 0:
+			Hl_f1=H[0]+(Hl[1]-Hl[0])*fraction1;
+			Hl_f2=H[0]+(Hl[2]-Hl[0])*fraction2;
+			break;
+		case 1:
+			Hl_f1=Hl[1]+(Hl[2]-Hl[1])*fraction1;
+			Hl_f2=Hl[1]+(Hl[0]-Hl[1])*fraction2;
+			break;
+		case 2:
+			Hl_f1=Hl[2]+(Hl[0]-Hl[2])*fraction1;
+			Hl_f2=Hl[2]+(Hl[1]-Hl[2])*fraction2;
+			break;
+		default:
+			_error_("index "<<point1<<" not supported yet");
+	}//}}}
+
+
+	/*Define surface on the subelement vertices*/
+   if(ig<4){ // BLUE element itapopo only if order is = 3
+		switch(point1){ //{{{
+			case 0:
+				Hl_subelem[0]=Hl[0];
+				Hl_subelem[1]=Hl_f1;
+				Hl_subelem[2]=Hl_f2;
+				break;
+			case 1:
+				Hl_subelem[0]=Hl[1];
+				Hl_subelem[1]=Hl_f1;
+				Hl_subelem[2]=Hl_f2;
+				break;
+			case 2:
+				Hl_subelem[0]=Hl[2];
+				Hl_subelem[1]=Hl_f1;
+				Hl_subelem[2]=Hl_f2;
+				break;
+			default:
+				_error_("index "<<point1<<" not supported yet");
+		}//}}}
+	}
+	if(ig>3 && ig<8){ // GREEN element
+		switch(point1){ //{{{
+			case 0:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[2];
+				Hl_subelem[2]=Hl_f2;
+				break;
+			case 1:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[0];
+				Hl_subelem[2]=Hl_f2;
+				break;
+			case 2:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[1];
+				Hl_subelem[2]=Hl_f2;
+				break;
+			default:
+				_error_("index "<<point1<<" not supported yet");
+		}//}}}
+	}
+	if(ig>7){ // RED element
+		switch(point1){ //{{{
+			case 0:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[1];
+				Hl_subelem[2]=Hl[2];
+				break;
+			case 1:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[2];
+				Hl_subelem[2]=Hl[0];
+				break;
+			case 2:
+				Hl_subelem[0]=Hl_f1;
+				Hl_subelem[1]=Hl[0];
+				Hl_subelem[2]=Hl[1];
+				break;
+			default:
+				_error_("index "<<point1<<" not supported yet");
+		}//}}}
+	}
+
+	/*Compute slope*/
+	hydrologyslope[0]=0;
+	hydrologyslope[1]=0;
+	for(int i=0;i<numnodes;i++){
+		hydrologyslope[0]+=Hl_subelem[i]*dbasis_subelem[numnodes*0+i]; //dHldx
+		hydrologyslope[1]+=Hl_subelem[i]*dbasis_subelem[numnodes*1+i]; //dHdy
+	}
+
+	/*Clean up*/
+	xDelete<IssmDouble>(dbasis_subelem);
+	xDelete<IssmDouble>(h);
+	xDelete<IssmDouble>(Hl);
+	xDelete<IssmDouble>(h_r);
+	xDelete<IssmDouble>(Sl_subelem);
 
 }/*}}}*/
 void StressbalanceAnalysis::NodalFunctionsDerivativesRGB(IssmDouble* dbasis_subelem,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element){/*{{{*/
