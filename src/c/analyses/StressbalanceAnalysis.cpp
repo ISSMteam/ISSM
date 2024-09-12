@@ -1648,7 +1648,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 	bool       ishydrologylayer;
 	element->FindParam(&ishydrologylayer,StressbalanceIsHydrologyLayerEnum);
 	if(ishydrologylayer){
-		hydrologysheetthickness_input = element->GetInput(HydrologySheetThicknessEnum);   _assert_(hydrologysheetthickness_input);
 		hr_input  = element->GetInput(HydrologyBumpHeightEnum);       _assert_(hr_input);
 		h_input   = element->GetInput(HydrologySheetThicknessEnum);   _assert_(h_input);
 	}
@@ -1684,11 +1683,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 
 		thickness_input->GetInputValue(&thickness,gauss); _assert_(thickness>0);
 		surface_input->GetInputDerivativeValue(&slope[0],xyz_list,gauss);
-		if(ishydrologylayer){
-			hydrologysheetthickness_input->GetInputDerivativeValue(&hydrologyslope[0],xyz_list,gauss);
-			hr_input->GetInputValue(&h_r,gauss);
-			h_input->GetInputValue(&h,gauss);
-		}
+
 		#ifdef DISCSLOPE
 		if(gauss_subelem && partly_floating){
 			ig++;
@@ -1700,22 +1695,21 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 		}
 		#endif
 
+		/*Change slope based on hydrology model if need be*/
+		if(ishydrologylayer){
+			hr_input->GetInputValue(&h_r,gauss);
+			h_input->GetInputValue(&h,gauss);
+			if(h>h_r){
+				h_input->GetInputDerivativeValue(&hydrologyslope[0],xyz_list,gauss);
+				slope[0] += hydrologyslope[0];
+				if(dim==2) slope[1] += hydrologyslope[1];
+			}
+		}
+
 		IssmDouble factor = rhog*thickness*Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
-			if(ishydrologylayer){	
-				if(h<h_r){
-					pe->values[i*dim+0]+=-factor*slope[0]*basis[i];
-					if(dim==2) pe->values[i*dim+1]+=-factor*slope[1]*basis[i];
-				}
-				else{
-					pe->values[i*dim+0]+=-rhog*thickness*(slope[0]+hydrologyslope[0])*Jdet*gauss->weight*basis[i];
-					if(dim==2) pe->values[i*dim+1]+=-rhog*thickness*(slope[1]+hydrologyslope[1])*Jdet*gauss->weight*basis[i];
-				}
-			}
-			else{
-				pe->values[i*dim+0]+=-factor*slope[0]*basis[i];
-				if(dim==2) pe->values[i*dim+1]+=-factor*slope[1]*basis[i];
-			}
+			pe->values[i*dim+0]+=-factor*slope[0]*basis[i];
+			if(dim==2) pe->values[i*dim+1]+=-factor*slope[1]*basis[i];
 		}
 	}
 
