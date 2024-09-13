@@ -637,6 +637,7 @@ syn keyword juliaConstC StepEnum
 syn keyword juliaConstC StepsEnum
 syn keyword juliaConstC StressbalanceAbstolEnum
 syn keyword juliaConstC StressbalanceFSreconditioningEnum
+syn keyword juliaConstC StressbalanceIsHydrologyLayerEnum
 syn keyword juliaConstC StressbalanceIsnewtonEnum
 syn keyword juliaConstC StressbalanceMaxiterEnum
 syn keyword juliaConstC StressbalanceNumRequestedOutputsEnum
@@ -890,8 +891,10 @@ syn keyword juliaConstC HydrologydcMaskEplactiveNodeEnum
 syn keyword juliaConstC HydrologydcMaskThawedEltEnum
 syn keyword juliaConstC HydrologydcMaskThawedNodeEnum
 syn keyword juliaConstC HydrologydcSedimentTransmitivityEnum
+syn keyword juliaConstC HydrologyDissipationEnum
 syn keyword juliaConstC HydrologyDrainageRateEnum
 syn keyword juliaConstC HydrologyEnglacialInputEnum
+syn keyword juliaConstC HydrologyFrictionHeatEnum
 syn keyword juliaConstC HydrologyGapHeightEnum
 syn keyword juliaConstC HydrologyGapHeightXEnum
 syn keyword juliaConstC HydrologyGapHeightXXEnum
@@ -899,8 +902,10 @@ syn keyword juliaConstC HydrologyGapHeightYEnum
 syn keyword juliaConstC HydrologyGapHeightYYEnum
 syn keyword juliaConstC HydrologyHeadEnum
 syn keyword juliaConstC HydrologyHeadOldEnum
+syn keyword juliaConstC HydrologyMeltRateEnum
 syn keyword juliaConstC HydrologyMoulinInputEnum
 syn keyword juliaConstC HydrologyNeumannfluxEnum
+syn keyword juliaConstC HydrologyPmpHeatEnum
 syn keyword juliaConstC HydrologyReynoldsEnum
 syn keyword juliaConstC HydrologyRheologyBBaseEnum
 syn keyword juliaConstC HydrologySheetConductivityEnum

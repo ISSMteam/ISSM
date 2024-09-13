@@ -23,7 +23,7 @@ if strcmp(glacier, 'Greenland')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Greenland_2014_2022_monthly_mosaic_v5/';
 	data_version = 'v05.0';
 elseif strcmp(glacier, 'Jakobshavn')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2021/';
+	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2024/';
 elseif strcmp(glacier, 'Kangerlussuaq')
 	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Kangerlussuaq_2006_2021/';
 elseif strcmp(glacier, 'Store')
@@ -46,10 +46,17 @@ dataTend = zeros(Ndata,1);
 
 for i = 1:Ndata
 	tempConv = split(templist(i).name, '_');
-	% follow the naming convention
 	dataPrefix(i) = join(tempConv(1:end-2), '_');
-	dataTstart(i) = date2decyear(datenum(tempConv{end-3}));
-	dataTend(i) = date2decyear(datenum(tempConv{end-2}));
+	% follow the naming convention
+	if strcmp(glacier, 'Greenland')
+		% for the Greenland mosaic, file name is like: GL_vel_mosaic_Monthly_01Sep22_30Sep22_vx_v05.0.tif
+		dataTstart(i) = date2decyear(datenum(tempConv{end-3}));
+		dataTend(i) = date2decyear(datenum(tempConv{end-2}));
+	else
+		% for individual glaciers from NSIDC-0481, file name is like: TSX_W69.10N_30May09_10Jun09_10-05-16_vx_v04.0.tif
+		dataTstart(i) = date2decyear(datenum(tempConv{end-4}));
+		dataTend(i) = date2decyear(datenum(tempConv{end-3}));
+	end
 end
 disp(['  Found ', num2str(Ndata), ' records in ', foldername]);
 disp(['    from ', datestr(decyear2date(min(dataTstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date(max(dataTend)),'yyyy-mm-dd') ]);

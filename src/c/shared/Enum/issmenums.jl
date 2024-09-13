@@ -633,6 +633,7 @@
 	StepsEnum
 	StressbalanceAbstolEnum
 	StressbalanceFSreconditioningEnum
+	StressbalanceIsHydrologyLayerEnum
 	StressbalanceIsnewtonEnum
 	StressbalanceMaxiterEnum
 	StressbalanceNumRequestedOutputsEnum
@@ -886,8 +887,10 @@
 	HydrologydcMaskThawedEltEnum
 	HydrologydcMaskThawedNodeEnum
 	HydrologydcSedimentTransmitivityEnum
+	HydrologyDissipationEnum
 	HydrologyDrainageRateEnum
 	HydrologyEnglacialInputEnum
+	HydrologyFrictionHeatEnum
 	HydrologyGapHeightEnum
 	HydrologyGapHeightXEnum
 	HydrologyGapHeightXXEnum
@@ -895,8 +898,10 @@
 	HydrologyGapHeightYYEnum
 	HydrologyHeadEnum
 	HydrologyHeadOldEnum
+	HydrologyMeltRateEnum
 	HydrologyMoulinInputEnum
 	HydrologyNeumannfluxEnum
+	HydrologyPmpHeatEnum
 	HydrologyReynoldsEnum
 	HydrologyRheologyBBaseEnum
 	HydrologySheetConductivityEnum
@@ -2437,6 +2442,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==StepsEnum) return "Steps" end
 	if(enum==StressbalanceAbstolEnum) return "StressbalanceAbstol" end
 	if(enum==StressbalanceFSreconditioningEnum) return "StressbalanceFSreconditioning" end
+	if(enum==StressbalanceIsHydrologyLayerEnum) return "StressbalanceIsHydrologyLayer" end
 	if(enum==StressbalanceIsnewtonEnum) return "StressbalanceIsnewton" end
 	if(enum==StressbalanceMaxiterEnum) return "StressbalanceMaxiter" end
 	if(enum==StressbalanceNumRequestedOutputsEnum) return "StressbalanceNumRequestedOutputs" end
@@ -2690,8 +2696,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologydcMaskThawedEltEnum) return "HydrologydcMaskThawedElt" end
 	if(enum==HydrologydcMaskThawedNodeEnum) return "HydrologydcMaskThawedNode" end
 	if(enum==HydrologydcSedimentTransmitivityEnum) return "HydrologydcSedimentTransmitivity" end
+	if(enum==HydrologyDissipationEnum) return "HydrologyDissipation" end
 	if(enum==HydrologyDrainageRateEnum) return "HydrologyDrainageRate" end
 	if(enum==HydrologyEnglacialInputEnum) return "HydrologyEnglacialInput" end
+	if(enum==HydrologyFrictionHeatEnum) return "HydrologyFrictionHeat" end
 	if(enum==HydrologyGapHeightEnum) return "HydrologyGapHeight" end
 	if(enum==HydrologyGapHeightXEnum) return "HydrologyGapHeightX" end
 	if(enum==HydrologyGapHeightXXEnum) return "HydrologyGapHeightXX" end
@@ -2699,8 +2707,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyGapHeightYYEnum) return "HydrologyGapHeightYY" end
 	if(enum==HydrologyHeadEnum) return "HydrologyHead" end
 	if(enum==HydrologyHeadOldEnum) return "HydrologyHeadOld" end
+	if(enum==HydrologyMeltRateEnum) return "HydrologyMeltRate" end
 	if(enum==HydrologyMoulinInputEnum) return "HydrologyMoulinInput" end
 	if(enum==HydrologyNeumannfluxEnum) return "HydrologyNeumannflux" end
+	if(enum==HydrologyPmpHeatEnum) return "HydrologyPmpHeat" end
 	if(enum==HydrologyReynoldsEnum) return "HydrologyReynolds" end
 	if(enum==HydrologyRheologyBBaseEnum) return "HydrologyRheologyBBase" end
 	if(enum==HydrologySheetConductivityEnum) return "HydrologySheetConductivity" end
@@ -4241,6 +4251,7 @@ function StringToEnum(name::String)
 	if(name=="Steps") return StepsEnum  end
 	if(name=="StressbalanceAbstol") return StressbalanceAbstolEnum  end
 	if(name=="StressbalanceFSreconditioning") return StressbalanceFSreconditioningEnum  end
+	if(name=="StressbalanceIsHydrologyLayer") return StressbalanceIsHydrologyLayerEnum  end
 	if(name=="StressbalanceIsnewton") return StressbalanceIsnewtonEnum  end
 	if(name=="StressbalanceMaxiter") return StressbalanceMaxiterEnum  end
 	if(name=="StressbalanceNumRequestedOutputs") return StressbalanceNumRequestedOutputsEnum  end
@@ -4494,8 +4505,10 @@ function StringToEnum(name::String)
 	if(name=="HydrologydcMaskThawedElt") return HydrologydcMaskThawedEltEnum  end
 	if(name=="HydrologydcMaskThawedNode") return HydrologydcMaskThawedNodeEnum  end
 	if(name=="HydrologydcSedimentTransmitivity") return HydrologydcSedimentTransmitivityEnum  end
+	if(name=="HydrologyDissipation") return HydrologyDissipationEnum  end
 	if(name=="HydrologyDrainageRate") return HydrologyDrainageRateEnum  end
 	if(name=="HydrologyEnglacialInput") return HydrologyEnglacialInputEnum  end
+	if(name=="HydrologyFrictionHeat") return HydrologyFrictionHeatEnum  end
 	if(name=="HydrologyGapHeight") return HydrologyGapHeightEnum  end
 	if(name=="HydrologyGapHeightX") return HydrologyGapHeightXEnum  end
 	if(name=="HydrologyGapHeightXX") return HydrologyGapHeightXXEnum  end
@@ -4503,8 +4516,10 @@ function StringToEnum(name::String)
 	if(name=="HydrologyGapHeightYY") return HydrologyGapHeightYYEnum  end
 	if(name=="HydrologyHead") return HydrologyHeadEnum  end
 	if(name=="HydrologyHeadOld") return HydrologyHeadOldEnum  end
+	if(name=="HydrologyMeltRate") return HydrologyMeltRateEnum  end
 	if(name=="HydrologyMoulinInput") return HydrologyMoulinInputEnum  end
 	if(name=="HydrologyNeumannflux") return HydrologyNeumannfluxEnum  end
+	if(name=="HydrologyPmpHeat") return HydrologyPmpHeatEnum  end
 	if(name=="HydrologyReynolds") return HydrologyReynoldsEnum  end
 	if(name=="HydrologyRheologyBBase") return HydrologyRheologyBBaseEnum  end
 	if(name=="HydrologySheetConductivity") return HydrologySheetConductivityEnum  end

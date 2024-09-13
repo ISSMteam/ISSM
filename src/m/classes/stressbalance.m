@@ -15,6 +15,7 @@ classdef stressbalance
 		restol                 = 0;
 		reltol                 = 0;
 		abstol                 = 0;
+		ishydrologylayer       = 0;
 		isnewton               = 0;
 		FSreconditioning       = 0;
 		maxiter                = 0;
@@ -101,6 +102,7 @@ classdef stressbalance
 			md = checkfield(md,'fieldname','stressbalance.restol','size',[1 1],'>',0,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','stressbalance.reltol','size',[1 1]);
 			md = checkfield(md,'fieldname','stressbalance.abstol','size',[1 1]);
+			md = checkfield(md,'fieldname','stressbalance.ishydrologylayer','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','stressbalance.isnewton','numel',[1],'values',[0 1 2]);
 			md = checkfield(md,'fieldname','stressbalance.FSreconditioning','size',[1 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','stressbalance.maxiter','size',[1 1],'>=',1);
@@ -181,6 +183,9 @@ classdef stressbalance
 			disp(sprintf('\n      %s','Penalty options:'));
 			fielddisplay(self,'penalty_factor','offset used by penalties: penalty = Kmax*10^offset');
 			fielddisplay(self,'vertex_pairing','pairs of vertices that are penalized');
+			
+			disp(sprintf('\n      %s','Hydrology layer:'));
+			fielddisplay(self,'ishydrologylayer','(SSA only) 0: no subglacial hydrology layer in driving stress, 1: subglacial hydrology layer in driving stress');
 
 			disp(sprintf('\n      %s','Other:'));
 			fielddisplay(self,'shelf_dampening','use dampening for floating ice ? Only for FS model');
@@ -202,6 +207,7 @@ classdef stressbalance
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','restol','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','reltol','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','abstol','format','Double','scale',1./yts);
+			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','ishydrologylayer','format','Boolean');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','isnewton','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','FSreconditioning','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','maxiter','format','Integer');
