@@ -2529,6 +2529,21 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	AC_MSG_RESULT([done])
 	dnl }}}
+	dnl optimization{{{
+	dnl -- bypass standard optimization -g -O2 -fPIC?
+	AC_MSG_CHECKING(for C++ optimization flags)
+	AC_ARG_WITH(
+		[cxxoptflags],
+		AS_HELP_STRING([--with-cxxoptflags=CXXOPTFLAGS], [C++ optimization flags - DEPRECATED - DO NOT USE]),
+		[CXXOPTFLAGS=${withval}],
+		[CXXOPTFLAGS="DEPRECATED"]
+	)
+	if test "x${CXXOPTFLAGS}" != "xDEPRECATED"; then
+	 AC_MSG_RESULT([DEPRECATED!!])
+		AC_MSG_ERROR([--with-cxxoptflags does not exist anymore! you should now add this line to your configuration script: export CXXFLAGS="${CXXOPTFLAGS}"]);
+	fi
+	AC_MSG_RESULT([DEPRECATED])
+	dnl }}}
 
 	dnl Final variable substitution
 	AC_SUBST([CFLAGS])
