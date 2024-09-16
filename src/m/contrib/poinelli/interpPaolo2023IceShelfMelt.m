@@ -1,4 +1,4 @@
-function melt_paolo_interp = interpPaolo2023IceShelfMelt(X,Y,initialDate,finalDate)
+function [melt_paolo_interp,datesInRange] = interpPaolo2023IceShelfMelt(X,Y,initialDate,finalDate)
     %interpPaolo2023IceShelfMelt - interp melt rates from Paolo et al. 2023
     %
     %   Usage:
@@ -9,6 +9,9 @@ function melt_paolo_interp = interpPaolo2023IceShelfMelt(X,Y,initialDate,finalDa
     %       Y               : md.mesh.y
     %       initialDate     : Initial date in the form datetime(2020, 1, 1);
     %       finalDate       : Final date in the form datetime(2020, 1, 1);
+    %   Output:
+    %       melt_paolo_interp:  interpolated melt rate
+    %       datesInRange:       interpolated dates
     %
     % Citation: Paolo, F. S., Gardner, A. S., Greene, C. A., Nilsson, J., Schodlok, M. P., Schlegel, N.-J., and Fricker, H. A.: 
     % "Widespread slowdown in thinning rates of West Antarctic ice shelves", The Cryosphere, 17, 3409–3433, https://doi.org/10.5194/tc-17-3409-2023, 2023.
