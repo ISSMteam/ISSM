@@ -30,7 +30,7 @@ rm -rf petsc-${VER}
 #	for CONFIGURE_OPTIONS)
 #
 cd ${PETSC_DIR}
-./config/configure.py \
+./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--with-blas-lapack-dir="/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl" \
