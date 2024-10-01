@@ -840,13 +840,8 @@ IssmDouble  SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* ocean
 	IssmDouble sealevelloadsaverage;	
 	IssmDouble subsealevelloadsaverage;	
 
-	Vector<IssmDouble>* vsealevelloadsvolume=loads->vsealevelloads->Duplicate();
-	Vector<IssmDouble>* vsubsealevelloadsvolume=loads->vsubsealevelloads->Duplicate();
-
-	vsealevelloadsvolume->Sum(&sealevelloadsaverage);
-	vsubsealevelloadsvolume->Sum(&subsealevelloadsaverage);
-	delete vsealevelloadsvolume; 
-	delete vsubsealevelloadsvolume; 
+	loads->vsealevelloads->Sum(&sealevelloadsaverage);
+   loads->vsubsealevelloads->Sum(&subsealevelloadsaverage);
 
 	return (sealevelloadsaverage+subsealevelloadsaverage)/totaloceanarea;
 } /*}}}*/
