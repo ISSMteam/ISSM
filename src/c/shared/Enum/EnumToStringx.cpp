@@ -195,6 +195,7 @@ const char* EnumToStringx(int en){
 		case ElasticEnum : return "Elastic";
 		case EplZigZagCounterEnum : return "EplZigZagCounter";
 		case EsaHElasticEnum : return "EsaHElastic";
+		case EsaGElasticEnum : return "EsaGElastic";
 		case EsaHemisphereEnum : return "EsaHemisphere";
 		case EsaRequestedOutputsEnum : return "EsaRequestedOutputs";
 		case EsaUElasticEnum : return "EsaUElastic";
@@ -853,6 +854,7 @@ const char* EnumToStringx(int en){
 		case EsaUmotionEnum : return "EsaUmotion";
 		case EsaXmotionEnum : return "EsaXmotion";
 		case EsaYmotionEnum : return "EsaYmotion";
+		case EsaGravitationalAccelerationEnum : return "EsaGravitationalAcceleration";
 		case EtaDiffEnum : return "EtaDiff";
 		case FlowequationBorderFSEnum : return "FlowequationBorderFS";
 		case FrictionAlpha2Enum : return "FrictionAlpha2";

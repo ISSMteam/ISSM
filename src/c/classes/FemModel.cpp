@@ -4749,7 +4749,7 @@ void FemModel::DakotaResponsesx(double* d_responses,char** responses_descriptors
 /*}}}*/
 #endif
 #ifdef _HAVE_ESA_
-void FemModel::EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, Vector<IssmDouble>* pX, Vector<IssmDouble>* pY, IssmDouble* xx, IssmDouble* yy){/*{{{*/
+void FemModel::EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, Vector<IssmDouble>* pGravity, Vector<IssmDouble>* pX, Vector<IssmDouble>* pY, IssmDouble* xx, IssmDouble* yy){/*{{{*/
 
 	int         ns,nsmax;
 
@@ -4764,12 +4764,13 @@ void FemModel::EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	for(int i=0;i<nsmax;i++){
 		if(i<ns){
 			Element* element=xDynamicCast<Element*>(elements->GetObjectByOffset(i));
-			element->EsaGeodetic2D(pUp,pNorth,pEast,pX,pY,xx,yy);
+			element->EsaGeodetic2D(pUp,pNorth,pEast,pGravity,pX,pY,xx,yy);
 		}
 		if(i%100==0){
 			pUp->Assemble();
 			pNorth->Assemble();
 			pEast->Assemble();
+			pGravity->Assemble();
 			pX->Assemble();
 			pY->Assemble();
 		}
@@ -4779,6 +4780,7 @@ void FemModel::EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	pUp->Assemble();
 	pNorth->Assemble();
 	pEast->Assemble();
+	pGravity->Assemble();
 	pX->Assemble();
 	pY->Assemble();
 
@@ -4787,7 +4789,7 @@ void FemModel::EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	xDelete<IssmDouble>(yy);
 }
 /*}}}*/
-void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, IssmDouble* latitude, IssmDouble* longitude, IssmDouble* radius, IssmDouble* xx, IssmDouble* yy, IssmDouble* zz){/*{{{*/
+void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, Vector<IssmDouble>* pGravity, IssmDouble* latitude, IssmDouble* longitude, IssmDouble* radius, IssmDouble* xx, IssmDouble* yy, IssmDouble* zz){/*{{{*/
 
 	int         ns,nsmax;
 
@@ -4802,12 +4804,13 @@ void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	for(int i=0;i<nsmax;i++){
 		if(i<ns){
 			Element* element=xDynamicCast<Element*>(elements->GetObjectByOffset(i));
-			element->EsaGeodetic3D(pUp,pNorth,pEast,latitude,longitude,radius,xx,yy,zz);
+			element->EsaGeodetic3D(pUp,pNorth,pEast,pGravity,latitude,longitude,radius,xx,yy,zz);
 		}
 		if(i%100==0){
 			pUp->Assemble();
 			pNorth->Assemble();
 			pEast->Assemble();
+			pGravity->Assemble();
 		}
 	}
 
@@ -4815,6 +4818,7 @@ void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	pUp->Assemble();
 	pNorth->Assemble();
 	pEast->Assemble();
+	pGravity->Assemble();
 
 	/*Free resources:*/
 	xDelete<IssmDouble>(latitude);
@@ -4825,6 +4829,10 @@ void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	xDelete<IssmDouble>(zz);
 }
 /*}}}*/
+
+
+
+
 #endif
 void FemModel::HydrologyEPLupdateDomainx(IssmDouble* pEplcount){ /*{{{*/
 
