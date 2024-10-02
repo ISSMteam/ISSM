@@ -186,6 +186,7 @@ syn keyword juliaConstC EarthIdEnum
 syn keyword juliaConstC ElasticEnum
 syn keyword juliaConstC EplZigZagCounterEnum
 syn keyword juliaConstC EsaHElasticEnum
+syn keyword juliaConstC EsaGElasticEnum
 syn keyword juliaConstC EsaHemisphereEnum
 syn keyword juliaConstC EsaRequestedOutputsEnum
 syn keyword juliaConstC EsaUElasticEnum
@@ -844,6 +845,7 @@ syn keyword juliaConstC EsaStrainrateyyEnum
 syn keyword juliaConstC EsaUmotionEnum
 syn keyword juliaConstC EsaXmotionEnum
 syn keyword juliaConstC EsaYmotionEnum
+syn keyword juliaConstC EsaGravitationalAccelerationEnum
 syn keyword juliaConstC EtaDiffEnum
 syn keyword juliaConstC FlowequationBorderFSEnum
 syn keyword juliaConstC FrictionAlpha2Enum
