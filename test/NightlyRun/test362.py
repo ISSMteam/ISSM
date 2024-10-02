@@ -56,6 +56,8 @@ md = SetIceSheetBC(md)
 md.inversion.iscontrol = 0
 md.transient = transient.deactivateall(md.transient)
 md.transient.ishydrology = 1
+md.transient.isstressbalance = 1
+md.transient.ismasstransport = 1
 
 # Set numerical conditions
 md.timestepping.time_step = 0.1 / 365
