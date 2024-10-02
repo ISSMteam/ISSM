@@ -47,18 +47,19 @@ md.esa.hemisphere = 1; % AIS is placed in Northern Hemisphere
 % }}}
 
 %solve esa: {{{
-md.esa.requested_outputs = {'EsaUmotion','EsaNmotion','EsaEmotion'}; 
+md.esa.requested_outputs = {'EsaUmotion','EsaNmotion','EsaEmotion','EsaGravitationalAcceleration'}; 
 md.cluster=generic('name',oshostname(),'np',3); 
 md.verbose=verbose('111111111');
 md=solve(md,'Esa');
 % }}}
 %fields and tolerances to track changes {{{
-field_names     ={'EsaUmotion','EsaNmotion','EsaEmotion'}; 
-field_tolerances={1e-13,2e-13,2e-13};
+field_names     ={'EsaUmotion','EsaNmotion','EsaEmotion','EsaGravitationalAcceleration'}; 
+field_tolerances={1e-13,2e-13,2e-13,2e-13};
 field_values={...
 	(md.results.EsaSolution.EsaUmotion),...
 	(md.results.EsaSolution.EsaNmotion),...
 	(md.results.EsaSolution.EsaEmotion),...
+	(md.results.EsaSolution.EsaGravitationalAcceleration),...
 	};
 % }}} 
 
