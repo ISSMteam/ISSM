@@ -13,7 +13,6 @@ from generic import generic
 md = triangle(model(), '../Exp/Square.exp', 50000.)
 md.mesh.x = md.mesh.x / 100
 md.mesh.y = md.mesh.y / 100
-md.miscellaneous.name = 'testChannels'
 
 # Miscellaneous
 md = setmask(md, '', '') # Everywhere grounded
@@ -23,7 +22,7 @@ md.stressbalance.maxiter = 10 # Make sure it runs quickly...
 
 # Some constants
 md.constants.g = 9.8
-md.materials.rho_ice = 910
+md.materials.rho_ice = 910.
 
 # Geometry
 md.geometry.surface = -0.02 * md.mesh.x + 320
@@ -35,7 +34,7 @@ md.geometry.thickness = md.geometry.surface - md.geometry.bed
 md.initialization.vx = 1.0e-6 * md.constants.yts * np.ones((md.mesh.numberofvertices))
 md.initialization.vy = np.zeros((md.mesh.numberofvertices))
 md.initialization.temperature = (273. - 20.) * np.ones((md.mesh.numberofvertices))
-md.initialization.watercolumn = 0.03 * np.ones((md.mesh.numberofvertices))
+md.initialization.watercolumn = 0.2 * np.ones((md.mesh.numberofvertices))
 md.initialization.hydraulic_potential = md.materials.rho_ice * md.constants.g * md.geometry.thickness
 
 #cMaterials
