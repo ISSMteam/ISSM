@@ -67,15 +67,15 @@ class dsl(object):
     # }}}
 
     def initialize(self, md):  #{{{
-        if np.isnan(self.global_average_thermosteric_sea_level):
+        if np.all(np.isnan(self.global_average_thermosteric_sea_level)):
             self.global_average_thermosteric_sea_level = np.array([0, 0]).reshape(-1, 1)
             print('      no dsl.global_average_thermosteric_sea_level specified: transient values set to zero')
 
-        if np.isnan(self.sea_surface_height_above_geoid):
+        if np.all(np.isnan(self.sea_surface_height_above_geoid)):
             self.sea_surface_height_above_geoid = np.append(np.zeros((md.mesh.numberofvertices, 1)), 0).reshape(-1, 1)
             print('      no dsl.sea_surface_height_above_geoid specified: transient values set to zero')
 
-        if np.isnan(self.sea_water_pressure_at_sea_floor):
+        if np.all(np.isnan(self.sea_water_pressure_at_sea_floor)):
             self.sea_water_pressure_at_sea_floor = np.append(np.zeros((md.mesh.numberofvertices, 1)), 0).reshape(-1, 1)
             print('      no dsl.sea_water_pressure_at_sea_floor specified: transient values set to zero')
     # }}}
