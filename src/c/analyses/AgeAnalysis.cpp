@@ -245,7 +245,7 @@ ElementVector* AgeAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Intermediaries*/
 	int         stabilization;
 	IssmDouble  Jdet,dt,factor;
-	IssmDouble  temperature;
+	IssmDouble  age;
 	IssmDouble  tau_parameter,diameter,hx,hy,hz;
 	IssmDouble  tau_parameter_anisotropic[2],tau_parameter_hor,tau_parameter_ver;
 	IssmDouble  u,v,w;
@@ -267,8 +267,8 @@ ElementVector* AgeAnalysis::CreatePVector(Element* element){/*{{{*/
 	Input* vx_input=element->GetInput(VxEnum); _assert_(vx_input);
 	Input* vy_input=element->GetInput(VyEnum); _assert_(vy_input);
 	Input* vz_input=element->GetInput(VzEnum); _assert_(vz_input);
-	Input* temperature_input = NULL;
-	if(reCast<bool,IssmDouble>(dt)){temperature_input = element->GetInput(TemperatureEnum); _assert_(temperature_input);}
+	Input* age_input = NULL;
+	if(reCast<bool,IssmDouble>(dt)){age_input = element->GetInput(TemperatureEnum); _assert_(age_input);}
 
 	/* Start  looping on the number of gaussian points: */
 	Gauss* gauss=element->NewGauss(4);
@@ -277,15 +277,15 @@ ElementVector* AgeAnalysis::CreatePVector(Element* element){/*{{{*/
 		element->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		element->NodalFunctions(basis,gauss);
 
+		/*The RHS is 1*/
 		scalar_def=1.*Jdet*gauss->weight;
 		if(reCast<bool,IssmDouble>(dt)) scalar_def=scalar_def*dt;
-
 		for(int i=0;i<numnodes;i++) pe->values[i]+=scalar_def*basis[i];
 
 		/* Build transient now */
 		if(reCast<bool,IssmDouble>(dt)){
-			temperature_input->GetInputValue(&temperature, gauss);
-			scalar_transient=temperature*Jdet*gauss->weight;
+			age_input->GetInputValue(&age, gauss);
+			scalar_transient=age*Jdet*gauss->weight;
 			for(int i=0;i<numnodes;i++) pe->values[i]+=scalar_transient*basis[i];
 		}
 
