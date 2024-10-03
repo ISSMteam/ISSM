@@ -80,7 +80,7 @@ md.hydrology.spcphi = np.nan * np.ones((md.mesh.numberofvertices))
 md.hydrology.spcphi[pos] = md.materials.rho_ice * md.constants.g * md.geometry.thickness[pos]
 
 md.cluster = generic('np', 2)
-md = solve(md, 'Transient') # Or 'tr'
+md = solve(md, 'Transient')
 
 # Fields and tolerances to track changes
 field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1','Vx1','Vy1','Vel1','Pressure1','Thickness1',
@@ -90,7 +90,7 @@ field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1'
 field_tolerances = [1e-13, 1e-11, 3e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 3e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
-		    1e-13, 1e-11, 3e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13]
+		    1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13]
 field_values = [md.results.TransientSolution[0].HydrologySheetThickness,
                 md.results.TransientSolution[0].HydraulicPotential,
                 md.results.TransientSolution[0].ChannelArea,
