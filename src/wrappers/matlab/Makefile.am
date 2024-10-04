@@ -69,11 +69,11 @@ endif
 if KRIGING
 lib_LTLIBRARIES += Kriging_matlab.la
 endif
-if SHP
-lib_LTLIBRARIES += ShpRead_matlab.la
-endif
 if PROJ
 lib_LTLIBRARIES += CoordTransform_matlab.la
+endif
+if SHP
+lib_LTLIBRARIES += ShpRead_matlab.la
 endif
 #}}}
 
@@ -109,20 +109,25 @@ endif
 # - On macOS, static linking of binaries is not supported.
 #
 if STANDALONE_MODULES
-	if MAC
-		AM_LDFLAGS += -Wl,-rpath,'@rpath'
-	else
-		AM_LDFLAGS += -Wl,-lbacktrace
-		if !MSYS2
-			AM_LDFLAGS += -Wl,-static -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN'
-		endif
-	endif
+if MAC
+AM_LDFLAGS += -Wl,-rpath,'@rpath'
 else
-	if MAC
-		if HAVE_FORTRANDIR
-			AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
-		endif
-	endif
+AM_LDFLAGS += -Wl,-lbacktrace
+if !MSYS2
+AM_LDFLAGS += -Wl,-static -Wl,--disable-new-dtags -Wl,-rpath,'$$ORIGIN'
+endif
+endif
+endif
+
+if !STANDALONE_EXECUTABLES
+if MAC
+if HAVE_FORTRANDIR
+AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
+endif
+if MAC
+AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+endif
+endif
 endif
 
 AM_CXXFLAGS += -fPIC -D_WRAPPERS_
@@ -147,7 +152,7 @@ deps += ${LIBADD_FOR_MEX}
 AM_CXXFLAGS += $(CXXFLAGS)
 #}}}
 # Module sources and dependencies {{{
-libISSMMatlab_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB) $(MEXLIB)
+libISSMMatlab_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(MKLLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
 
 if VERSION
 libISSMMatlab_la_LDFLAGS =
@@ -162,10 +167,10 @@ if !MSYS2
 libISSMMatlab_la_LDFLAGS += -static
 libISSMApi_la_LDFLAGS += -static
 endif
-deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(OSLIBS) ${LIBADD_FOR_MEX}
+deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS) ${LIBADD_FOR_MEX}
 endif
 
-libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB) $(MEXLIB)
+libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
 
 BamgConvertMesh_matlab_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
 BamgConvertMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
@@ -196,7 +201,7 @@ ContourToNodes_matlab_la_LIBADD = ${deps}
 if PROJ
 CoordTransform_matlab_la_SOURCES = ../CoordTransform/CoordTransform.cpp
 CoordTransform_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-CoordTransform_matlab_la_LIBADD = ${deps}
+CoordTransform_matlab_la_LIBADD = ${deps} $(PROJLIB)
 endif
 
 DistanceToMaskBoundary_matlab_la_SOURCES = ../DistanceToMaskBoundary/DistanceToMaskBoundary.cpp
