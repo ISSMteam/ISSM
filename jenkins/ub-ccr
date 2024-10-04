@@ -35,7 +35,7 @@ EXTERNALPACKAGES="
 	hdf5			install-1.sh
 	netcdf			install-4.sh
 	proj			install-6.sh
-	gdal			install-3-python.sh
+	gdal			install-3-linux-python.sh
 	triangle		install-linux.sh
 	m1qn3			install-linux.sh
 	semic			install.sh
