@@ -1530,9 +1530,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl PROJ libraries and header files
 	if test "x${HAVE_PROJ}" == "xyes"; then
+		PROJROOT="${PROJ_ROOT}"
 		PROJINCL="-I${PROJ_ROOT}/include"
 		PROJLIB="-L${PROJ_ROOT}/lib -lproj"
 		AC_DEFINE([_HAVE_PROJ_], [1], [with PROJ in ISSM src])
+		AC_SUBST([PROJROOT])
 		AC_SUBST([PROJINCL])
 		AC_SUBST([PROJLIB])
 	fi
