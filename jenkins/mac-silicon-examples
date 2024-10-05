@@ -47,7 +47,7 @@ EXTERNALPACKAGES="
 	hdf5		install-1.sh
 	netcdf		install-4.sh
 	proj		install-6.sh
-	gdal		install-3.sh
+	gdal		install-3-mac.sh
 	gshhg		install.sh
 	gmt			install-6-mac.sh
 	gmsh		install-4-mac.sh
