@@ -30,9 +30,8 @@ cd ${PETSC_DIR}
 ./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
-	--CFLAGS="-g -O2" --CXXFLAGS="-g -O2" --FFLAGS="-g -O2" \
-	--LDFLAGS="-Wl,-ld_classic -Wl,-commons,use_dylibs" \
-	--with-debugging=1 \
+	--LDFLAGS="${LDFLAGS}" \
+	--with-debugging=0 \
 	--with-valgrind=0 \
 	--with-x=0 \
 	--with-ssl=0 \
@@ -48,3 +47,9 @@ cd ${PETSC_DIR}
 # Compile and install
 make
 make install
+
+# Need to make sure classic linker is used (should be able to remove this once MPICH fixes it)
+if [[ ${LDFLAGS} =~ "-Wl,-ld_classic" ]]; then
+	sed -i'' -e 's/-Wl,-commons,use_dylibs//g' ${PREFIX}/bin/mpicc
+	sed -i'' -e 's/-Wl,-commons,use_dylibs//g' ${PREFIX}/bin/mpicxx
+fi
