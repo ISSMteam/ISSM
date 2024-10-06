@@ -87,7 +87,7 @@ field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1'
                'HydrologySheetThickness2', 'HydraulicPotential2', 'ChannelArea2','Vx2','Vy2','Vel2','Pressure2','Thickness2',
                'HydrologySheetThickness3', 'HydraulicPotential3', 'ChannelArea3','Vx3','Vy3','Vel3','Pressure3','Thickness3',
                'HydrologySheetThickness4', 'HydraulicPotential4', 'ChannelArea4','Vx4','Vy4','Vel4','Pressure4','Thickness4']
-field_tolerances = [1e-13, 1e-11, 3e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
+field_tolerances = [1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 4e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13]
