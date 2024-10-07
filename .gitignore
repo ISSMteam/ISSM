@@ -83,6 +83,15 @@ test/NightlyRun/*_vertices-*.txt
 
 # Examples #
 #===========
+examples/Data/*.csv
+examples/Data/*.dbf
 examples/Data/*.nc
 examples/Data/*.mat
+examples/Data/*.png
+examples/Data/*.prg
+examples/Data/*.sbn
+examples/Data/*.sbx
+examples/Data/*.shp
+examples/Data/*.shx
+examples/Data/*.txt
 examples/Data/*.zip
