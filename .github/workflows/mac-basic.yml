@@ -1,4 +1,4 @@
-name: Ubuntu Basic 
+name: Mac Basic 
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
   build-test:
     uses: ./.github/workflows/common-workflow.yml 
     with:
-      os: ubuntu-latest
+      os: macOS-latest
       build_type: basic
       build_command: |
         source $ISSM_DIR/etc/environment.sh
@@ -23,7 +23,7 @@ jobs:
         --enable-debugging \
         --with-numthreads=4 \
         --with-matlab-dir=$MATLAB_ROOT \
-        --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
+        --with-fortran-lib="-L/usr/local/Cellar/gcc/13.2.0/lib/gcc/current -lgfortran" \
         --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
         --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
         --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
@@ -36,11 +36,11 @@ jobs:
         --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
         --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
       ext_install_command: |
-        cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
-        cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
-        cd $ISSM_DIR/externalpackages/petsc    && ./install-3.22-linux.sh
+        cd $ISSM_DIR/externalpackages/triangle && ./install-mac.sh
+        cd $ISSM_DIR/externalpackages/m1qn3    && ./install-mac.sh
+        cd $ISSM_DIR/externalpackages/petsc    && ./install-3.22-mac.sh
         cd $ISSM_DIR/externalpackages/semic    && ./install.sh
       test_cases: '["101:399", "401:899"]'
       additional_options: " "
     secrets: inherit
-    name: build-test-ubuntu-basic
+    name: build-test-mac-basic
