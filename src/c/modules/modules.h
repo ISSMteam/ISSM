@@ -103,6 +103,7 @@
 #include "./UpdateDynamicConstraintsx/UpdateDynamicConstraintsx.h"
 #include "./VertexCoordinatesx/VertexCoordinatesx.h"
 #include "./ElementCoordinatesx/ElementCoordinatesx.h"
+#include "./Zgesvx/Zgesvx.h"
 
 #ifdef _HAVE_OCEAN_
 #include "./OceanExchangeDatax/OceanExchangeDatax.h"

@@ -75,11 +75,11 @@ classdef love
 			self.allow_layer_deletion=1;
 			self.underflow_tol=1e-16; %threshold of deep to surface love number ratio to trigger the deletion of layer 
 			self.pw_threshold=1e-3; %if relative variation across frequencies is smaller than this ratio, the post-widder transform for time-dependent love numbers is bypassed 
-			self.min_integration_steps=50;
+			self.min_integration_steps=500;
 			self.max_integration_dr=1e4;
-			self.integration_scheme=1;
-			self.istemporal=0;
-			self.n_temporal_iterations=8;
+			self.integration_scheme=2;
+			self.istemporal=1;
+			self.n_temporal_iterations=7;
 			self.time=[0]; %s
 			self.love_kernels=0; 
 			self.forcing_type = 11; % surface loading
@@ -107,11 +107,11 @@ classdef love
 			fielddisplay(self,'allow_layer_deletion','allow for migration of the integration boundary with increasing spherical harmonics degree (default: 1)');			
 			fielddisplay(self,'underflow_tol','threshold of deep to surface love number ratio to trigger the deletion of layers (default: 1e-16)');
 			fielddisplay(self,'pw_threshold','if relative variation across frequencies is smaller than this ratio, the post-widder transform for time-dependent love numbers is bypassed (default (1e-3)');
-			fielddisplay(self,'min_integration_steps','minimum number of radial steps to propagate the yi system from the bottom to the top of each layer (default: 50)');
+			fielddisplay(self,'min_integration_steps','minimum number of radial steps to propagate the yi system from the bottom to the top of each layer (default: 500)');
 			fielddisplay(self,'max_integration_dr','maximum length of radial steps to propagate the yi system from the bottom to the top of each layer (default: 10e3) [m]');
 			fielddisplay(self,'integration_scheme','0: Euler, 1: Midpoint aka Runge-Kutta 2, 2: Runge-Kutta 4 (default: 1)');
-			fielddisplay(self,'istemporal',{'1 for time-dependent love numbers, 0 for frequency-dependent or elastic love numbers (default: 0)', 'If 1: use love class function build_frequencies_from_time to meet consistency'});
-			fielddisplay(self,'n_temporal_iterations','max number of iterations in the inverse Laplace transform. Also the number of spectral samples per time step requested (default: 8)');
+			fielddisplay(self,'istemporal',{'1 for time-dependent love numbers, 0 for frequency-dependent or elastic love numbers (default: 1)', 'If 1: use love class function build_frequencies_from_time to meet consistency'});
+			fielddisplay(self,'n_temporal_iterations','max number of iterations in the inverse Laplace transform. Also the number of spectral samples per time step requested (default: 7)');
 			fielddisplay(self,'time','time vector for deformation if istemporal (default: 0) [s]');
 			fielddisplay(self,'love_kernels','compute love numbers at depth? (default: 0)');
 			fielddisplay(self,'forcing_type',{'integer indicating the nature and depth of the forcing for the Love number calculation (default: 11):','1:  Inner core boundary -- Volumic Potential','2:  Inner core boundary -- Pressure','3:  Inner core boundary -- Loading','4:  Inner core boundary -- Tangential traction','5:  Core mantle boundary -- Volumic Potential','6:  Core mantle boundary -- Pressure','7:  Core mantle boundary -- Loading','8:  Core mantle boundary -- Tangential traction','9:  Surface -- Volumic Potential','10: Surface -- Pressure','11: Surface -- Loading','12: Surface -- Tangential traction '});
@@ -160,11 +160,15 @@ classdef love
 			md = checkfield(md,'fieldname','love.hypergeom_table1','NaN',1,'Inf',1,'numel',md.love.hypergeom_nz*md.love.hypergeom_nalpha);
 			md = checkfield(md,'fieldname','love.hypergeom_table2','NaN',1,'Inf',1,'numel',md.love.hypergeom_nz*md.love.hypergeom_nalpha);
 
+            if any(md.materials.rheologymodel==2) && md.love.hypergeom_nz <=1
+               error('EBM rheology requested but hypergeometric table has fewer than 2 frequency values')
+            end
+            
 			if md.love.istemporal==1
 				md = checkfield(md,'fieldname','love.n_temporal_iterations','NaN',1,'Inf',1,'numel',1,'>',0);
 				md = checkfield(md,'fieldname','love.time','NaN',1,'Inf',1,'numel',md.love.nfreq/2/md.love.n_temporal_iterations);
 			end
-			if md.love.sh_nmin<=1 & (md.love.forcing_type==1 || md.love.forcing_type==5 || md.love.forcing_type==9)
+			if md.love.sh_nmin<=1 && (md.love.forcing_type==1 || md.love.forcing_type==5 || md.love.forcing_type==9)
 				error(['Degree 1 not supported for forcing type ' num2str(md.love.forcing_type) '. Use sh_min>=2 for this kind of calculation.'])
 			end
 
