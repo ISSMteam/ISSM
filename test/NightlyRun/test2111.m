@@ -48,20 +48,21 @@ md.esa.hemisphere = -1;
 % }}}
 
 %solve esa: {{{
-md.esa.requested_outputs = {'EsaUmotion','EsaNmotion','EsaEmotion','EsaXmotion','EsaYmotion'}; 
+md.esa.requested_outputs = {'EsaUmotion','EsaNmotion','EsaEmotion','EsaXmotion','EsaYmotion','EsaGravitationalAcceleration'}; 
 md.cluster=generic('name',oshostname(),'np',3); 
 md.verbose=verbose('111111111');
 md=solve(md,'Esa');
 % }}}
 %fields and tolerances to track changes {{{
-field_names     ={'EsaUmotion','EsaNmotion','EsaEmotion','EsaXmotion','EsaYmotion'}; 
-field_tolerances={1e-13,3e-13,3e-13,2e-13,3e-13};
+field_names     ={'EsaUmotion','EsaNmotion','EsaEmotion','EsaXmotion','EsaYmotion','EsaGravitationalAcceleration'}; 
+field_tolerances={1e-13,3e-13,3e-13,2e-13,3e-13,2e-13};
 field_values={...
 	(md.results.EsaSolution.EsaUmotion),...
 	(md.results.EsaSolution.EsaNmotion),...
 	(md.results.EsaSolution.EsaEmotion),...
 	(md.results.EsaSolution.EsaXmotion),...
 	(md.results.EsaSolution.EsaYmotion),...
+	(md.results.EsaSolution.EsaGravitationalAcceleration),...
 	};
 % }}} 
 

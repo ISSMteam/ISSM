@@ -22,7 +22,7 @@ ISSM_CONFIG='\
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
-	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
 #-------------------#

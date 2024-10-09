@@ -124,6 +124,10 @@ classdef frontera
 			fprintf(fid,'#SBATCH -n %i \n',cluster.numnodes*max(cluster.nprocs()/cluster.numnodes,56));
 			fprintf(fid,'#SBATCH -N %i \n',cluster.numnodes);
 			fprintf(fid,'#SBATCH -t %02i:00:00 \n\n',ceil(cluster.time));
+			if length(find(cluster.email=='@'))>0
+				fprintf(fid,'#SBATCH --mail-user=%s \n',cluster.email);
+				fprintf(fid,'#SBATCH --mail-type=all \n\n');
+			end
 			for i=1:numel(cluster.modules),
 				fprintf(fid,['module load ' cluster.modules{i} '\n']);
 			end
@@ -132,12 +136,6 @@ classdef frontera
 				fprintf(fid,'export KMP_AFFINITY="granularity=fine,compact,verbose" \n\n');
 			end
 
-			if length(find(cluster.email=='@'))>0
-				fprintf(fid,'#SBATCH --mail-user=%s \n',cluster.email);
-				fprintf(fid,'#SBATCH --mail-type=end \n\n');
-
-				%fprintf(fid,'ssh login1 "mail -s ''SLURM Jobid=${SLURM_JOBID} Name=${SLURM_JOB_NAME} Began on Lonestar 5.'' %s <<< ''Job Started'' " \n\n',cluster.email);
-			end
 
 			fprintf(fid,'export PATH="$PATH:."\n\n');
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
