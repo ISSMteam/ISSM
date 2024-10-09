@@ -41,7 +41,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.20-mac.sh
+	petsc		install-3.22-mac.sh
 	gsl			install.sh
 	boost		install-1.7-mac.sh
 	dakota		install-6.2-mac.sh
@@ -50,7 +50,7 @@ EXTERNALPACKAGES="
 	hdf5		install-1.sh
 	netcdf		install-4.sh
 	proj		install-6.sh
-	gdal		install-3-python.sh
+	gdal		install-3-mac-python.sh
 	gshhg		install.sh
 	gmt			install-6-mac.sh
 	gmsh		install-4-mac.sh

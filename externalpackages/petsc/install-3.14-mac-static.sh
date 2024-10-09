@@ -24,7 +24,7 @@ mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
 # Modify source so that Python 3 can be used to compile PETSc
-sed -i'' 's|#!/usr/bin/env python|#!/usr/bin/env python3|g' ${PETSC_DIR}/config/configure.py
+sed -i'' 's|#!/usr/bin/env python|#!/usr/bin/env python3|g' ${PETSC_DIR}/configure
 
 # Modify source so that Python >= 3.9 can be used to compile PETSc
 sed -i'' 's|thread.isAlive|thread.is_alive|g' ${PETSC_DIR}/config/BuildSystem/script.py
@@ -44,7 +44,7 @@ sed -i'' 's|thread.isAlive|thread.is_alive|g' ${PETSC_DIR}/config/BuildSystem/sc
 #	work out of the box on Linux.
 #
 cd ${PETSC_DIR}
-./config/configure.py \
+./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--with-shared-libraries=0 \

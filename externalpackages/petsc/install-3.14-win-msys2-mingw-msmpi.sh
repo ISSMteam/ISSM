@@ -58,7 +58,7 @@ sed -i 's|(MAKEFLAGS)|(MAKEFLAGS:w=)|' ${PETSC_DIR}/makefile ${PETSC_DIR}/lib/pe
 #	incorrectly
 #
 cd ${PETSC_DIR}
-./config/configure.py \
+./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--PETSC_ARCH="${PETSC_ARCH}" \

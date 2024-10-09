@@ -182,6 +182,7 @@
 	ElasticEnum
 	EplZigZagCounterEnum
 	EsaHElasticEnum
+	EsaGElasticEnum
 	EsaHemisphereEnum
 	EsaRequestedOutputsEnum
 	EsaUElasticEnum
@@ -840,6 +841,7 @@
 	EsaUmotionEnum
 	EsaXmotionEnum
 	EsaYmotionEnum
+	EsaGravitationalAccelerationEnum
 	EtaDiffEnum
 	FlowequationBorderFSEnum
 	FrictionAlpha2Enum
@@ -1991,6 +1993,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==ElasticEnum) return "Elastic" end
 	if(enum==EplZigZagCounterEnum) return "EplZigZagCounter" end
 	if(enum==EsaHElasticEnum) return "EsaHElastic" end
+	if(enum==EsaGElasticEnum) return "EsaGElastic" end
 	if(enum==EsaHemisphereEnum) return "EsaHemisphere" end
 	if(enum==EsaRequestedOutputsEnum) return "EsaRequestedOutputs" end
 	if(enum==EsaUElasticEnum) return "EsaUElastic" end
@@ -2649,6 +2652,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==EsaUmotionEnum) return "EsaUmotion" end
 	if(enum==EsaXmotionEnum) return "EsaXmotion" end
 	if(enum==EsaYmotionEnum) return "EsaYmotion" end
+	if(enum==EsaGravitationalAccelerationEnum) return "EsaGravitationalAcceleration" end
 	if(enum==EtaDiffEnum) return "EtaDiff" end
 	if(enum==FlowequationBorderFSEnum) return "FlowequationBorderFS" end
 	if(enum==FrictionAlpha2Enum) return "FrictionAlpha2" end
@@ -3800,6 +3804,7 @@ function StringToEnum(name::String)
 	if(name=="Elastic") return ElasticEnum  end
 	if(name=="EplZigZagCounter") return EplZigZagCounterEnum  end
 	if(name=="EsaHElastic") return EsaHElasticEnum  end
+	if(name=="EsaGElastic") return EsaGElasticEnum  end
 	if(name=="EsaHemisphere") return EsaHemisphereEnum  end
 	if(name=="EsaRequestedOutputs") return EsaRequestedOutputsEnum  end
 	if(name=="EsaUElastic") return EsaUElasticEnum  end
@@ -4458,6 +4463,7 @@ function StringToEnum(name::String)
 	if(name=="EsaUmotion") return EsaUmotionEnum  end
 	if(name=="EsaXmotion") return EsaXmotionEnum  end
 	if(name=="EsaYmotion") return EsaYmotionEnum  end
+	if(name=="EsaGravitationalAcceleration") return EsaGravitationalAccelerationEnum  end
 	if(name=="EtaDiff") return EtaDiffEnum  end
 	if(name=="FlowequationBorderFS") return FlowequationBorderFSEnum  end
 	if(name=="FrictionAlpha2") return FrictionAlpha2Enum  end
