@@ -244,12 +244,16 @@ classdef materials < dynamicprops
 					md = checkfield(md,'fieldname','materials.density','NaN',1,'Inf',1,'size',[md.materials.numlayers 1],'>',0);
 					md = checkfield(md,'fieldname','materials.viscosity','NaN',1,'Inf',1,'size',[md.materials.numlayers 1],'>=',0);
 					md = checkfield(md,'fieldname','materials.rheologymodel','NaN',1,'Inf',1,'size',[md.materials.numlayers 1],'>=',0,'<=',2);
-					md = checkfield(md,'fieldname','materials.burgers_viscosity','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
-					md = checkfield(md,'fieldname','materials.burgers_mu','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
-					md = checkfield(md,'fieldname','materials.ebm_alpha','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
-					md = checkfield(md,'fieldname','materials.ebm_delta','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
-					md = checkfield(md,'fieldname','materials.ebm_taul','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
-					md = checkfield(md,'fieldname','materials.ebm_tauh','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+					if any(self.rheologymodel==1)
+						md = checkfield(md,'fieldname','materials.burgers_viscosity','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+						md = checkfield(md,'fieldname','materials.burgers_mu','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+					end
+					if any(self.rheologymodel==2)
+						md = checkfield(md,'fieldname','materials.ebm_alpha','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+						md = checkfield(md,'fieldname','materials.ebm_delta','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+						md = checkfield(md,'fieldname','materials.ebm_taul','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+						md = checkfield(md,'fieldname','materials.ebm_tauh','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
+					end
 
 					for i=1:md.materials.numlayers,
 						if md.materials.rheologymodel(i)==1 & (isnan(md.materials.burgers_viscosity(i) | isnan(md.materials.burgers_mu(i)))),
@@ -501,7 +505,6 @@ classdef materials < dynamicprops
 			vs = 0.;
 
 			for i = 1:13
-
 				r1 = 0.;
 				r2 = 0.;
 				if ((rad(j) > r(i)) & (rad(j) <= r(i+1))) 

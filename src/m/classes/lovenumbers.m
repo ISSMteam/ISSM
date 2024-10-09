@@ -10,9 +10,9 @@ classdef lovenumbers
 	properties (SetAccess=public) 
 
 		%loading love numbers:
-		h             = []; %provided by PREM model
-		k             = []; %idem
-		l             = []; %idem
+		h           	= []; %provided by PREM model
+		k           	= []; %idem
+		l           	= []; %idem
 		
 		%tidal love numbers for computing rotational feedback:
 		th            = [];
@@ -23,8 +23,8 @@ classdef lovenumbers
 		pmtf_ortho    = [];
 
 		%time/frequency for visco-elastic love numbers
-		timefreq      = [];
-		istime        = 1;
+		timefreq    = [];
+		istime      = 1;
 
 	end
 	methods
@@ -64,13 +64,13 @@ classdef lovenumbers
 			self.tl=getlovenumbers('type','tidalhorizontaldisplacement','referenceframe',referenceframe,'maxdeg',maxdeg);
 
 			%secular fluid love number: 
-			self.tk2secular=0.942;
+			self.tk2secular=0.942; 
 
 			self.pmtf_colinear=0.0;
 			self.pmtf_ortho=0.0;
 			if maxdeg>=2
-				self.pmtf_colinear=(1.0+self.k(3,:))/(1.0-self.tk(3,:)/self.tk2secular); %valid only for elastic regime, not viscous. Also neglects chandler wobble
-				self.pmtf_ortho=0.0;
+				self.pmtf_colinear= (1.0+self.k(3,:))/(1.0-self.tk(3,:)/self.tk2secular); %valid only for elastic regime, not viscous. Also neglects chandler wobble
+				self.pmtf_ortho= 0.0;
 			end
 			%time: 
 			self.istime=1; %temporal love numbers by default
@@ -146,5 +146,6 @@ classdef lovenumbers
 		end % }}}
 		function self = extrude(self,md) % {{{
 		end % }}}
+        
 	end
 end

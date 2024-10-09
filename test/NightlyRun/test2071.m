@@ -10,7 +10,6 @@ md.cluster=generic('name',oshostname(),'np',3);
 
 md.materials=materials('litho');
 md.miscellaneous.name='test2071';
-md.groundingline.migration='None';
 
 md.verbose=verbose('all');
 md.verbose=verbose('1111111111111111');
@@ -24,32 +23,20 @@ md.materials.viscosity=[0            0   2.0000e+00   1.0000e+00   1.0000e+00   
 md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.materials.issolid=[1 0 1 1 1 1]';
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
-md.materials.burgers_mu=md.materials.lame_mu/3;
-md.materials.burgers_viscosity=md.materials.viscosity/10;
-md.materials.ebm_alpha= ones(md.materials.numlayers,1)*.9;
-md.materials.ebm_delta= ones(md.materials.numlayers,1)*0.2;
-md.materials.ebm_taul= ones(md.materials.numlayers,1)*54*60; %54min
-md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*yts; %18.6yr
 
-md.love.allow_layer_deletion=1;
 md.love.frequencies=[0];
 md.love.nfreq=length(md.love.frequencies);
 md.love.sh_nmin=1;
 md.love.sh_nmax=1000;
 md.love.underflow_tol=1e-20;
-md.love.pw_threshold=1e-3;
 md.love.Gravitational_Constant=6.6732e-11;
 md.love.min_integration_steps=100;
-md.love.allow_layer_deletion=1;
 md.love.forcing_type=11;
-md.love.chandler_wobble=0;
-md.love.complex_computation=0;
 
 md.love.istemporal=1;
 md.love.n_temporal_iterations=8;
 md.love.time=[0; (logspace(0,4.3, 99))'*yts];
 md.love=md.love.build_frequencies_from_time;
-md.love.love_kernels=1;
 md.solidearth.lovenumbers.tk2secular= 0.9668;
 md.solidearth.rotational.equatorialmoi=8.0131e37;
 md.solidearth.rotational.polarmoi=8.0394e37;
@@ -63,7 +50,7 @@ k=md.results.LoveSolution.LoveKt;
 
 %Fields and tolerances to track changes
 field_names     ={'LoveH_loading_temporal','LoveK_loading_temporal','LoveL_loading_temporal'};
-field_tolerances={5e-6,5e-5,4e-5};
+field_tolerances={4.0e-7,3.0e-7,8.0e-8};
 field_values={h,k,l};
 
 spada=0;

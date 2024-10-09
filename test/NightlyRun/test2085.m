@@ -4,7 +4,7 @@
 % skip benchmarking for the inner-most interface. 
 
 % set validation=1 for comparing against the analytic solutions. 
-validation=0; 
+validation=1; 
 
 % for volumetric potential
 md=model();
@@ -34,7 +34,7 @@ md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*cst/1e3; %18.6yr
 md.materials.radius =  linspace(10e3,6371e3,md.materials.numlayers+1)';
 md.love.g0 = 9.8134357285509388; % directly grabbed from fourierlovesolver for this particular case. 
 
-md.love.allow_layer_deletion=1;
+md.love.allow_layer_deletion=0;
 md.love.frequencies=0;
 md.love.nfreq=1;
 md.love.istemporal=0;
@@ -210,10 +210,10 @@ y4_loading_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,4));
 y5_loading_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,5));
 y6_loading_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,6));
 % }}} 
-
+%%
 % validate loading solutions against the analytic solutions. {{{ 
 if validation
-
+close all
 	param.source = md.love.forcing_type; 
 
 	% extract analytic solutions. 
@@ -234,13 +234,30 @@ if validation
 
 	depth = (max(param.radius)-param.radius)/1000; % km.
 
-	kernels=reshape(md.results.LoveSolution.LoveKernels, [md.love.sh_nmax+1 md.love.nfreq md.materials.numlayers+1 6]);
-	y1 = squeeze(kernels(:,1,:,1));
-	y2 = squeeze(kernels(:,1,:,2));
-	y3 = squeeze(kernels(:,1,:,3));
-	y4 = squeeze(kernels(:,1,:,4));
-	y5 = squeeze(kernels(:,1,:,5));
-	y6 = squeeze(kernels(:,1,:,6));
+	kernels=reshape(md.results.LoveSolution.LoveKernels, [6*(md.materials.numlayers+1) md.love.sh_nmax+1 md.love.nfreq ]);
+    N=6*(md.materials.numlayers+1);
+    kernels=kernels([4:N 1:3],:,:);
+   	kernels=reshape(kernels, [6 (md.materials.numlayers+1) (md.love.sh_nmax+1) md.love.nfreq ]);
+
+    kernels(:,end,:,1)=kernels([1 5 2 4 3 6],end,:,1);
+    
+    a=md.materials.radius(end);
+    g0=md.love.g0;
+    mu0=md.love.mu0;
+        
+	y1 = squeeze(kernels(1,:,:,1))';
+	y2 = squeeze(kernels(2,:,:,1))';
+	y3 = squeeze(kernels(3,:,:,1))';
+	y4 = squeeze(kernels(4,:,:,1))';
+	y5 = squeeze(kernels(5,:,:,1))';
+	y6 = squeeze(kernels(6,:,:,1))';
+    
+    y1=y1*a;
+    y2=y2*mu0;
+    y3=y3*a;
+    y4=y4*mu0;
+    y5=y5*g0*a;
+    y6=y6*g0;
 	
 	set(0,'DefaultAxesFontSize',16,'DefaultTextFontSize',15,'DefaultAxesLineWidth',1,...
 		'DefaultTextInterpreter','Latex','DefaultAxesFontName','Arial','DefaultLineMarkerSize',8)
@@ -300,6 +317,7 @@ if validation
 
 	legend(axes6,'n=2','n=4','n=8','n=16','n=32'); 
 	%export_fig('/Users/adhikari/issm/trunk-jpl/src/m/contrib/adhikari/issm_vs_analytic_tidal_homogeneous.pdf'); 
+    %%
 else
 	% 
 end 
