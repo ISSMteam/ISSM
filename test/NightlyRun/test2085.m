@@ -4,7 +4,7 @@
 % skip benchmarking for the inner-most interface. 
 
 % set validation=1 for comparing against the analytic solutions. 
-validation=1; 
+validation=0; 
 
 % for volumetric potential
 md=model();
@@ -22,15 +22,6 @@ md.materials.lame_lambda=zeros(md.materials.numlayers,1)+5e17;
 md.materials.issolid=ones(md.materials.numlayers,1);
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
 
-%the following isn't used here but needs to have arrays of consistent size with the rest of the materials
-md.materials.viscosity=zeros(md.materials.numlayers,1)+1e21;
-md.materials.burgers_mu=md.materials.lame_mu/3;
-md.materials.burgers_viscosity=md.materials.viscosity/10;
-md.materials.ebm_alpha= ones(md.materials.numlayers,1)*0.9;
-md.materials.ebm_delta= ones(md.materials.numlayers,1)*0.2;
-md.materials.ebm_taul= ones(md.materials.numlayers,1)*54*60; %54min
-md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*cst/1e3; %18.6yr
-
 md.materials.radius =  linspace(10e3,6371e3,md.materials.numlayers+1)';
 md.love.g0 = 9.8134357285509388; % directly grabbed from fourierlovesolver for this particular case. 
 
@@ -44,7 +35,7 @@ md.love.sh_nmax = 200;
 md.love.love_kernels=1; 
 
 md.miscellaneous.name='kernels';
-md.cluster=generic('name',oshostname(),'np',3);
+md.cluster=generic('name',oshostname(),'np',1);
 md.verbose=verbose('111111101');
 
 md=solve(md,'lv');
