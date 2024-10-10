@@ -1642,9 +1642,6 @@ template <typename doubletype> void        compute_love_numbers(LoveNumbers<doub
 		}
 
 		//precompute yi coefficients that depend on degree but not frequency
-		clocktime=clock();
-		fill_yi_prefactor<doubletype>(yi_prefactor, &deg, NULL,femmodel, matlitho,vars); 
-		prefactortime+= ((float)(clock() -clocktime))/CLOCKS_PER_SEC;
 
 		for (int fr=0;fr<nfreq;fr++){
 			omega=angular_frequency<doubletype>(frequencies[fr]);
@@ -1688,8 +1685,6 @@ template <typename doubletype> void        compute_love_numbers(LoveNumbers<doub
 			}
 		}
 	}
-
-	if(verbosecpu) _printf0_("Prefactor time: " << prefactortime << "s, BC time: " << bctime << "s, propagation time: " << buildtime << " solve time: " << solvetime << "s\n");
 
 	if (VerboseSolution() && Elastic  && verbosecpu) _printf_("\n");
 	xDelete<doubletype>(yi);
