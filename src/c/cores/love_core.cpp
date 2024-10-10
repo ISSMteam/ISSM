@@ -407,7 +407,7 @@ template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, do
 	doubletype hf,h00,h10, h01, h11, za, zd, ha, hb,hc,hd, m0,m1,t;
 	doubletype dalpha=1.0/(nalpha-1); // alpha table resolution given 0 <= alpha <= 1
 	ialpha= static_cast<int>(DownCastVarToDouble(alpha/dalpha));
-	lincoef=alpha/dalpha-ialpha;//linear fraction in [0;1] for alpha interpolation
+	lincoef=alpha/dalpha-reCast<doubletype>(ialpha);//linear fraction in [0;1] for alpha interpolation
 	iz1=nz;
 	for (int i=0;i<nz;i++){
 		if (abs(z[i])>abs(z1)) {
@@ -455,9 +455,9 @@ template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, do
 		hc=(1.0-lincoef)*h1[ialpha*nz+iz1+1] +lincoef*h1[(ialpha+1)*nz+iz1+1];
 
 		//left derivative
-		m0= 0.5*(z[iz1+1]-z[iz1])*((hc-hb)/(z[iz1+1]-z[iz1]) + (hb-ha)/(z[iz1]-za));
+		m0= 0.5*(z[iz1+1]-z[iz1])*((hc-hb)/reCast<doubletype>(z[iz1+1]-z[iz1]) + (hb-ha)/reCast<doubletype>(z[iz1]-za));
 		//right derivative
-		m1= 0.5*(z[iz1+1]-z[iz1])*((hd-hc)/(zd-z[iz1+1]) + (hc-hb)/(z[iz1+1]-z[iz1]));
+		m1= 0.5*(z[iz1+1]-z[iz1])*((hd-hc)/reCast<doubletype>(zd-z[iz1+1]) + (hc-hb)/reCast<doubletype>(z[iz1+1]-z[iz1]));
 
 		//interpolation abscissa
 		t=(z1-z[iz1])/(z[iz1+1]-z[iz1]);
@@ -745,7 +745,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 				xmin=matlitho->radius[layer_index]/ra;
 				xmax=(matlitho->radius[layer_index+1])/ra;
-				dr = (xmax -xmin)/nstep;
+				dr = (xmax -xmin)/reCast<doubletype>(nstep);
 				x=xmin;
 
 				for (int n=0;n<nstep;n++){
@@ -784,7 +784,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 			xmin=matlitho->radius[layer_index]/ra;
 			xmax=(matlitho->radius[layer_index+1])/ra;
-			dr = (xmax -xmin)/nstep;
+			dr = (xmax -xmin)/reCast<doubletype>(nstep);
 			x=xmin;
 
 			for (int n=0;n<nstep;n++){
@@ -817,7 +817,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 			xmin=matlitho->radius[layer_index]/ra;
 			xmax=(matlitho->radius[layer_index+1])/ra;
-			dr = (xmax -xmin)/nstep;
+			dr = (xmax -xmin)/reCast<doubletype>(nstep);
 			x=xmin;
 			for (int n=0;n<nstep;n++){
 				g=GetGravity<doubletype>(x*ra,layer_index,femmodel,matlitho,vars);
@@ -940,7 +940,7 @@ template <typename doubletype> void        propagate_yi_euler(doubletype* y, dou
 	int nstep;
 	nstep=vars->nstep[layer_index];
 	doubletype* dydx=xNewZeroInit<doubletype>(6);
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 	for(int i = 0;i<nstep;i++){
 		yi_derivatives<doubletype>(dydx,y,layer_index, i,yi_prefactor,femmodel,matlitho,vars);
@@ -967,7 +967,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	doubletype y2[6]={0};
 	doubletype y3[6]={0};
 
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 
 	for(int i = 0;i<nstep/2;i++){
@@ -996,7 +996,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	doubletype y2[6]={0};
 	doubletype y3[6]={0};
 
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 	for(int i = 0;i<nstep/2-1;i++){
 		yi_derivatives<doubletype>(k1,y,layer_index, 2*i,yi_prefactor,femmodel,matlitho,vars);
@@ -1026,10 +1026,11 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	x = x + 2.0*dr;
 
 }/*}}}*/
-template <typename doubletype> void        Innersphere_boundaryconditions(doubletype* yi, int layer_index, int deg, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
+template <typename doubletype> void        Innersphere_boundaryconditions(doubletype* yi, int layer_index, int degree, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
 	//fills the boundary conditions at the bottom of layer[layer_index] in yi[0:2][0:5]
 
 	int nyi;
+	doubletype deg = reCast<doubletype>(degree);
 	doubletype r = matlitho->radius[layer_index];
 	doubletype ra=matlitho->radius[matlitho->numlayers];
 	doubletype  g0,r0,mu0, GG;
@@ -1313,7 +1314,7 @@ template <typename doubletype> void        yi_boundary_conditions(doubletype* yi
 
 		//-- forcings at the Inner Core Boundary
 		case 1:	//'ICB --Volumetric Potential'
-			yi_righthandside[6*icb+5]=(deg)/(rc*g0);
+			yi_righthandside[6*icb+5]=reCast<doubletype>(deg)/(rc*g0);
 			yi_righthandside[6*icb+4]=1.0/(ra*g0);
 			break;
 		case 2: //'ICB --Pressure'
