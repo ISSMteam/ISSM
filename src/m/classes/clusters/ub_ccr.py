@@ -253,5 +253,5 @@ class ub_ccr(object):
         # NOTE: Replacement for issmscpin(self.name, self.login, self.port, directory, filelist)
         fileliststr = '{' + ','.join([str(x) for x in filelist]) + '}'
         downloadcommand = 'cp {} {}'.format(os.path.join(directory, fileliststr), os.getcwd())
-        subprocess.call(downloadcommand, shell=True) 
+        subprocess.call(downloadcommand, shell=True)
     # }}}
