@@ -47,7 +47,7 @@
 #define MESHDATA     PyTuple_GetItem(args,3)
 #define XGRID        PyTuple_GetItem(args,4)
 #define YGRID        PyTuple_GetItem(args,5)
-#define DEFAULTVALUE PyTuple_GetItem(args,10)
+#define DEFAULTVALUE PyTuple_GetItem(args,6)
 /* serial output macros: */
 #define GRIDDATA output,0
 #endif
