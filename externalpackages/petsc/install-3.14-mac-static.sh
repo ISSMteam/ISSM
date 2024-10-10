@@ -44,7 +44,7 @@ sed -i'' 's|thread.isAlive|thread.is_alive|g' ${PETSC_DIR}/config/BuildSystem/sc
 #	work out of the box on Linux.
 #
 cd ${PETSC_DIR}
-./configure \
+./config/configure.py \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--with-shared-libraries=0 \
