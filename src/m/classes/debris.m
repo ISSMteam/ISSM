@@ -160,14 +160,13 @@ classdef debris
 			writejs1Darray(fid,[modelname '.debris.spcthickness'],self.spcthickness);
 			writejsdouble(fid,[modelname '.debris.min_thickness'],self.min_thickness);
 			writejsdouble(fid,[modelname '.debris.stabilization'],self.stabilization);
+			writejsdouble(fid,[modelname '.debris.packingfraction'],self.packingfraction);
 			writejsdouble(fid,[modelname '.debris.removalmodel'],self.removalmodel);
 			writejsdouble(fid,[modelname '.debris.displacementmodel'],self.displacementmodel);
-			writejsdouble(fid,[modelname '.debris.max_displacementvelocity'],self.displacementmodel);
+			writejsdouble(fid,[modelname '.debris.max_displacementvelocity'],self.max_displacementvelocity);
 			writejsdouble(fid,[modelname '.debris.removal_slope_threshold'],self.removal_slope_threshold);
 			writejsdouble(fid,[modelname '.debris.removal_stress_threshold'],self.removal_stress_threshold);
-			writejsdouble(fid,[modelname '.debris.packingfraction'],self.packingfraction);
 			writejs2Darray(fid,[modelname '.debris.vertex_pairing'],self.vertex_pairing);
-			writejsdouble(fid,[modelname '.debris.penalty_factor'],self.penalty_factor);
 			writejscellstring(fid,[modelname '.debris.requested_outputs'],self.requested_outputs);
 
 		end % }}}

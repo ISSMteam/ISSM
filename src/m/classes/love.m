@@ -221,9 +221,6 @@ classdef love
 		end % }}}
 		function self = extrude(self,md) % {{{
 		end % }}}
-		function savemodeljs(self,fid,modelname) % {{{
-			error('not implemented yet!');
-		end % }}}
 		function self=build_frequencies_from_time(self) % {{{
 			if ~self.istemporal
 				error('cannot build frequencies for temporal love numbers if love.istemporal==0')
