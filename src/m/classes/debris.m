@@ -156,18 +156,21 @@ classdef debris
 			WriteData(fid,prefix,'data',outputs,'name','md.debris.requested_outputs','format','StringArray');
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
+			% NOTE: Commented out for now as class is not currently included in 
+			% issm.js
+			%
 
-			writejs1Darray(fid,[modelname '.debris.spcthickness'],self.spcthickness);
-			writejsdouble(fid,[modelname '.debris.min_thickness'],self.min_thickness);
-			writejsdouble(fid,[modelname '.debris.stabilization'],self.stabilization);
-			writejsdouble(fid,[modelname '.debris.packingfraction'],self.packingfraction);
-			writejsdouble(fid,[modelname '.debris.removalmodel'],self.removalmodel);
-			writejsdouble(fid,[modelname '.debris.displacementmodel'],self.displacementmodel);
-			writejsdouble(fid,[modelname '.debris.max_displacementvelocity'],self.max_displacementvelocity);
-			writejsdouble(fid,[modelname '.debris.removal_slope_threshold'],self.removal_slope_threshold);
-			writejsdouble(fid,[modelname '.debris.removal_stress_threshold'],self.removal_stress_threshold);
-			writejs2Darray(fid,[modelname '.debris.vertex_pairing'],self.vertex_pairing);
-			writejscellstring(fid,[modelname '.debris.requested_outputs'],self.requested_outputs);
+			% writejs1Darray(fid,[modelname '.debris.spcthickness'],self.spcthickness);
+			% writejsdouble(fid,[modelname '.debris.min_thickness'],self.min_thickness);
+			% writejsdouble(fid,[modelname '.debris.stabilization'],self.stabilization);
+			% writejsdouble(fid,[modelname '.debris.packingfraction'],self.packingfraction);
+			% writejsdouble(fid,[modelname '.debris.removalmodel'],self.removalmodel);
+			% writejsdouble(fid,[modelname '.debris.displacementmodel'],self.displacementmodel);
+			% writejsdouble(fid,[modelname '.debris.max_displacementvelocity'],self.max_displacementvelocity);
+			% writejsdouble(fid,[modelname '.debris.removal_slope_threshold'],self.removal_slope_threshold);
+			% writejsdouble(fid,[modelname '.debris.removal_stress_threshold'],self.removal_stress_threshold);
+			% writejs2Darray(fid,[modelname '.debris.vertex_pairing'],self.vertex_pairing);
+			% writejscellstring(fid,[modelname '.debris.requested_outputs'],self.requested_outputs);
 
 		end % }}}
 	end
