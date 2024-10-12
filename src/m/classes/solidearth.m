@@ -160,20 +160,23 @@ classdef solidearth
 		function self = extrude(self,md) % {{{
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
-		
-			self.settings.savemodeljs(fid,modelname);
-			if ~isempty(self.external),
-				self.external.savemodeljs(fid,modelname);
-			end
-			self.lovenumbers.savemodeljs(fid,modelname);
-			self.rotational.savemodeljs(fid,modelname);
-			writejsdouble(fid,[modelname '.solidearth.planetradius'],self.planetradius);
-			writejscellstring(fid,[modelname '.solidearth.requested_outputs'],self.requested_outputs);
-			writejscellarray(fid,[modelname '.solidearth.transitions'],self.transitions);
-			writejs1Darray(fid,[modelname '.solidearth.transfercount'],self.transfercount);
-			writejs1Darray(fid,[modelname '.solidearth.partitionice'],self.partitionice);
-			writejs1Darray(fid,[modelname '.solidearth.partitionhydro'],self.partitionhydro);
-			writejs1Darray(fid,[modelname '.solidearth.partitionocean'],self.partitionocean);
+			% NOTE: Commented out for now as class is not currently included in 
+			% issm.js
+			%
+
+			% self.settings.savemodeljs(fid,modelname);
+			% if ~isempty(self.external),
+			% 	self.external.savemodeljs(fid,modelname);
+			% end
+			% self.lovenumbers.savemodeljs(fid,modelname);
+			% self.rotational.savemodeljs(fid,modelname);
+			% writejsdouble(fid,[modelname '.solidearth.planetradius'],self.planetradius);
+			% writejscellstring(fid,[modelname '.solidearth.requested_outputs'],self.requested_outputs);
+			% writejscellarray(fid,[modelname '.solidearth.transitions'],self.transitions);
+			% writejs1Darray(fid,[modelname '.solidearth.transfercount'],self.transfercount);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionice'],self.partitionice);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionhydro'],self.partitionhydro);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionocean'],self.partitionocean);
 		end % }}}
 	end
 end
