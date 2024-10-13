@@ -17,10 +17,10 @@ js_scripts = \
 	${ISSM_DIR}/src/wrappers/IssmConfig/IssmConfig.js \
 	${ISSM_DIR}/src/wrappers/Issm/issm.js
 
-bin_SCRIPTS =  issm-prebin.js
+bin_SCRIPTS = issm-prebin.js
 
 issm-prebin.js: ${js_scripts}
-	cat ${js_scripts}  > issm-prebin.js
+	cat ${js_scripts} > issm-prebin.js
 
 # JavaScript I/O{{{
 lib_LTLIBRARIES = libISSMJavascript.la
