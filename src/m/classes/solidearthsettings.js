@@ -20,9 +20,9 @@ class solidearthsettings {//{{{
 		this.isgrd					= 0; // Will GRD patterns be computed?
 		this.compute_bp_grd			= 0; // Will GRD patterns for bottom pressures be computed?
 		this.degacc					= 0; // Degree increment for resolution of Green tables
-		this.timeacc				= 0; // Time step accuracy required to compute Green tables
+		this.timeacc				= 1; // Time step accuracy required to compute Green tables
 		this.horiz					= 0; // Compute horizontal deformation
-		this.grdmodel				= 0; // GRD model (0 by defualt, 1 for (visco-)elastic, 2 for Ivins)
+		this.grdmodel				= 1; // GRD model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
 		this.cross_section_shape	= 0; // Cross section only used when GRD model is Ivins
 
 		if (arguments.length == 0) {
@@ -68,8 +68,8 @@ class solidearthsettings {//{{{
 		// Cross section for Ivins model
 		this.cross_section_shape = 1; // Square as default (see idege in GiaDeflectionCorex)
 
-		// No GRD model by default
-		this.grdmodel = 0;
+		// GRD model by default
+		this.grdmodel = 1;
 	} //}}}
 
 	checkconsistency(md, solution, analyses) {//{{{
