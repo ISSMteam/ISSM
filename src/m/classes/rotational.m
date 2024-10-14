@@ -58,9 +58,9 @@ classdef rotational
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 		
-			writejsdouble(fid,[modelname '.rotational.equatorialmoi'],self.equatorial_moi);
-			writejsdouble(fid,[modelname '.rotational.polarmoi'],self.polar_moi);
-			writejsdouble(fid,[modelname '.rotational.angularvelocity'],self.angular_velocity);
+			writejsdouble(fid,[modelname '.rotational.equatorialmoi'],self.equatorialmoi);
+			writejsdouble(fid,[modelname '.rotational.polarmoi'],self.polarmoi);
+			writejsdouble(fid,[modelname '.rotational.angularvelocity'],self.angularvelocity);
 		end % }}}
 		function self = extrude(self,md) % {{{
 		end % }}}

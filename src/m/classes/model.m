@@ -1851,7 +1851,7 @@ classdef model
 				field=fields{i};
 
 				%Some properties do not need to be saved
-				if ismember(field,{'results','cluster' }),
+				if ismember(field,{'results','cluster'}),
 					continue;
 				end
 
@@ -1868,9 +1868,13 @@ classdef model
 					error(['field ''' char(field) ''' is not an object']);
 				end
 
-				%savemodeljs for current object
-				%disp(['javascript saving ' field '...']);
-				savemodeljs(md.(field),fid,modelname);
+				if ~ismethod(md.(field),'savemodeljs')
+					disp(['Note: Method ''savemodeljs'' not yet implemented for class ' field])
+				else
+					%savemodeljs for current object
+					%disp(['javascript saving ' field '...']);
+					savemodeljs(md.(field),fid,modelname);
+				end
 			end
 
 			%done, close file:

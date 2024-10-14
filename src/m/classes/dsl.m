@@ -80,10 +80,13 @@ classdef dsl
 			end
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
+			% NOTE: Commented out for now as class is not currently included in 
+			% issm.js
+			%
 
-			writejs1Darray(fid,[modelname '.dsl.global_average_thermosteric_sea_level'],self.global_average_thermosteric_sea_level);
-			writejs1Darray(fid,[modelname '.dsl.sea_surface_height_above_geoid'],self.sea_surface_height_above_geoid);
-			writejs1Darray(fid,[modelname '.dsl.sea_water_pressure_at_sea_floor'],self.sea_water_pressure_at_sea_floor);
+			% writejs1Darray(fid,[modelname '.dsl.global_average_thermosteric_sea_level'],self.global_average_thermosteric_sea_level);
+			% writejs1Darray(fid,[modelname '.dsl.sea_surface_height_above_geoid'],self.sea_surface_height_above_geoid);
+			% writejs1Darray(fid,[modelname '.dsl.sea_water_pressure_at_sea_floor'],self.sea_water_pressure_at_sea_floor);
 
 		end % }}}
 	end

@@ -138,14 +138,14 @@ classdef solidearth
 			WriteData(fid,prefix,'data',npartocean,'format','Integer','name','md.solidearth.npartocean');
 
 			self.settings.marshall(prefix,md,fid);
-			self.lovenumbers.marshall(prefix,md,fid);
-			self.rotational.marshall(prefix,md,fid);
 			if ~isempty(self.external),
 				WriteData(fid,prefix,'data',1,'format','Integer','name','md.solidearth.isexternal');
 				self.external.marshall(prefix,md,fid);
 			else
 				WriteData(fid,prefix,'data',0,'format','Integer','name','md.solidearth.isexternal');
 			end
+			self.lovenumbers.marshall(prefix,md,fid);
+			self.rotational.marshall(prefix,md,fid);
 
 			%process requested outputs
 			outputs = self.requested_outputs;
@@ -160,16 +160,23 @@ classdef solidearth
 		function self = extrude(self,md) % {{{
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
-		
-			self.settings.savemodeljs(fid,modelname);
-			self.lovenumbers.savemodeljs(fid,modelname);
-			self.rotational.savemodeljs(fid,modelname);
-			if ~isempty(self.external),
-				self.external.savemodeljs(fid,modelname);
-			end
-			writejscellstring(fid,[modelname '.solidearth.requested_outputs'],self.requested_outputs);
-			writejscellarray(fid,[modelname '.solidearth.transitions'],self.transitions);
-			writejscellarray(fid,[modelname '.solidearth.partition'],self.partition);
+			% NOTE: Commented out for now as class is not currently included in 
+			% issm.js
+			%
+
+			% self.settings.savemodeljs(fid,modelname);
+			% if ~isempty(self.external),
+			% 	self.external.savemodeljs(fid,modelname);
+			% end
+			% self.lovenumbers.savemodeljs(fid,modelname);
+			% self.rotational.savemodeljs(fid,modelname);
+			% writejsdouble(fid,[modelname '.solidearth.planetradius'],self.planetradius);
+			% writejscellstring(fid,[modelname '.solidearth.requested_outputs'],self.requested_outputs);
+			% writejscellarray(fid,[modelname '.solidearth.transitions'],self.transitions);
+			% writejs1Darray(fid,[modelname '.solidearth.transfercount'],self.transfercount);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionice'],self.partitionice);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionhydro'],self.partitionhydro);
+			% writejs1Darray(fid,[modelname '.solidearth.partitionocean'],self.partitionocean);
 		end % }}}
 	end
 end

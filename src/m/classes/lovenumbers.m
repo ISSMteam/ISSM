@@ -141,8 +141,14 @@ classdef lovenumbers
 			writejs1Darray(fid,[modelname '.lovenumbers.h'],self.h);
 			writejs1Darray(fid,[modelname '.lovenumbers.k'],self.k);
 			writejs1Darray(fid,[modelname '.lovenumbers.l'],self.l);
-			writejs1Darray(fid,[modelname '.lovenumbers.istime'],self.istime);
-			writejs1Darray(fid,[modelname '.lovenumbers.time'],self.time);
+			writejs1Darray(fid,[modelname '.lovenumbers.th'],self.th);
+			writejs1Darray(fid,[modelname '.lovenumbers.tk'],self.tk);
+			writejs1Darray(fid,[modelname '.lovenumbers.tl'],self.tl);
+			writejsdouble(fid,[modelname '.lovenumbers.tk2secular'],self.tk2secular);
+			writejs1Darray(fid,[modelname '.lovenumbers.pmtf_colinear'],self.pmtf_colinear);
+			writejs1Darray(fid,[modelname '.lovenumbers.pmtf_ortho'],self.pmtf_ortho);
+			writejs1Darray(fid,[modelname '.lovenumbers.timefreq'],self.timefreq);
+			writejsdouble(fid,[modelname '.lovenumbers.istime'],self.istime);
 		end % }}}
 		function self = extrude(self,md) % {{{
 		end % }}}
