@@ -9,7 +9,7 @@ class solidearth {//{{{
 	constructor() {//{{{
 		this.settings = new solidearthsettings();
 		this.external = null;
-		this.lovenumbers = new lovenumbers();
+		// this.lovenumbers = new lovenumbers();
 		this.rotational = new rotational();
 		this.planetradius = planetradius('earth');
 		this.requested_outputs = [];
@@ -59,7 +59,7 @@ class solidearth {//{{{
 		md = checkfield(md, 'fieldname', 'solidearth.requested_outputs', 'stringrow', 1);
 
 		this.settings.checkconsistency(md, solution, analyses);
-		this.lovenumbers.checkconsistency(md, solution, analyses);
+		// this.lovenumbers.checkconsistency(md, solution, analyses);
 		this.rotational.checkconsistency(md, solution, analyses);
 
 		if (this.external != null) {
@@ -102,7 +102,7 @@ class solidearth {//{{{
 		WriteData(fid, prefix, 'data', npartocean, 'format', 'Integer', 'name', 'md.solidearth.npartocean');
 
 		this.settings.marshall(md, prefix, fid);
-		this.lovenumbers.marshall(md, prefix, fid);
+		// this.lovenumbers.marshall(md, prefix, fid);
 		this.rotational.marshall(md, prefix, fid);
 
 		if (this.external != null) {
