@@ -4,31 +4,6 @@
 //      matice = new matice();
 
 function matice(){
-	//properties
-	// {{{
-	this.rho_ice							= 0;
-	this.rho_water							= 0;
-	this.rho_freshwater						= 0;
-	this.mu_water							= 0;
-	this.heatcapacity						= 0;
-	this.latentheat							= 0;
-	this.thermalconductivity				= 0;
-	this.temperateiceconductivity			= 0;
-	this.effectiveconductivity_averaging	= 0;
-	this.meltingpoint						= 0;
-	this.beta								= 0;
-	this.mixed_layer_capacity				= 0;
-	this.thermal_exchange_velocity			= 0;
-	this.rheology_B							= NaN;
-	this.rheology_n							= NaN;
-	this.rheology_law						= '';
-
-	//SLC
-	this.earth_density						= 0;
-
-	this.setdefaultparameters();
-	//}}}
-
 	//methods
 	this.setdefaultparameters = function(){ // {{{
 
@@ -158,4 +133,28 @@ function matice(){
 	}//}}}
 	this.fix=function() { //{{{
 	}//}}}
+	//properties
+	// {{{
+	this.rho_ice							= 0;
+	this.rho_water							= 0;
+	this.rho_freshwater						= 0;
+	this.mu_water							= 0;
+	this.heatcapacity						= 0;
+	this.latentheat							= 0;
+	this.thermalconductivity				= 0;
+	this.temperateiceconductivity			= 0;
+	this.effectiveconductivity_averaging	= 0;
+	this.meltingpoint						= 0;
+	this.beta								= 0;
+	this.mixed_layer_capacity				= 0;
+	this.thermal_exchange_velocity			= 0;
+	this.rheology_B							= NaN;
+	this.rheology_n							= NaN;
+	this.rheology_law						= '';
+
+	//SLC
+	this.earth_density						= 0;
+
+	this.setdefaultparameters();
+	//}}}
 }
