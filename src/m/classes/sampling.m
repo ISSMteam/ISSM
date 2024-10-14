@@ -109,15 +109,18 @@ classdef sampling
 
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
+			% NOTE: Commented out for now as class is not currently included in 
+			% issm.js
+			%
 
-			writejsdouble(fid,[modelname '.sampling.kappa'],self.kappa);
-			writejsdouble(fid,[modelname '.sampling.tau'],self.tau);
-			writejsdouble(fid,[modelname '.sampling.beta'],self.beta);
-			writejsdouble(fid,[modelname '.sampling.phi'],self.phi);
-			writejsdouble(fid,[modelname '.sampling.alpha'],self.alpha);
-			writejsdouble(fid,[modelname '.sampling.robin'],self.robin);
-			writejsdouble(fid,[modelname '.sampling.seed'],self.seed);
-			writejscellstring(fid,[modelname '.sampling.requested_outputs'],self.requested_outputs);
+			% writejsdouble(fid,[modelname '.sampling.kappa'],self.kappa);
+			% writejsdouble(fid,[modelname '.sampling.tau'],self.tau);
+			% writejsdouble(fid,[modelname '.sampling.beta'],self.beta);
+			% writejsdouble(fid,[modelname '.sampling.phi'],self.phi);
+			% writejsdouble(fid,[modelname '.sampling.alpha'],self.alpha);
+			% writejsdouble(fid,[modelname '.sampling.robin'],self.robin);
+			% writejsdouble(fid,[modelname '.sampling.seed'],self.seed);
+			% writejscellstring(fid,[modelname '.sampling.requested_outputs'],self.requested_outputs);
 
 		end % }}}
 	end
