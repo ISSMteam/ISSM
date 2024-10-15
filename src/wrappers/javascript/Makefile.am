@@ -89,7 +89,7 @@ IssmModule_SOURCES = \
 	../IssmConfig/IssmConfig.cpp \
 	../Issm/issm.cpp
 
-IssmModule_CXXFLAGS= -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) -s EXPORTED_FUNCTIONS="['_malloc',_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
+IssmModule_CXXFLAGS= -O2 -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) -s EXPORTED_FUNCTIONS="['_free','_malloc','cwrap','getValue','_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
 # Uncomment to disable WebAssembly and only emit JavaScript
 IssmModule_CXXFLAGS+= -sWASM=0
 # Uncomment to build JavaScript that only runs on the Web (removes support for Node.js and other environments)
