@@ -69,7 +69,7 @@ classdef transient
 			self.isdamageevolution = 0;
 			self.ismovingfront     = 0;
 			self.ishydrology       = 0;
-			self.isdebris= 0;
+			self.isdebris          = 0;
 			self.issampling        = 0;
 			self.isslc             = 0;
 			self.isoceancoupling   = 0;
@@ -162,23 +162,23 @@ classdef transient
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 		
-			writejsdouble(fid,[modelname '.trans.isage'],self.isage);
-			writejsdouble(fid,[modelname '.trans.issmb'],self.issmb);
-			writejsdouble(fid,[modelname '.trans.ismasstransport'],self.ismasstransport);
-			writejsdouble(fid,[modelname '.trans.isoceantransport'],self.isoceantransport);
-			writejsdouble(fid,[modelname '.trans.isstressbalance'],self.isstressbalance);
-			writejsdouble(fid,[modelname '.trans.isthermal'],self.isthermal);
-			writejsdouble(fid,[modelname '.trans.isgroundingline'],self.isgroundingline);
-			writejsdouble(fid,[modelname '.trans.isesa'],self.isesa);
-			writejsdouble(fid,[modelname '.trans.isdamageevolution'],self.isdamageevolution);
-			writejsdouble(fid,[modelname '.trans.ismovingfront'],self.ismovingfront);
-			writejsdouble(fid,[modelname '.trans.ishydrology'],self.ishydrology);
-			writejsdouble(fid,[modelname '.trans.isdebris'],self.isdebris);
-			writejsdouble(fid,[modelname '.trans.issampling'],self.issampling); 
-			writejsdouble(fid,[modelname '.trans.isslc'],self.isslc);
-			writejsdouble(fid,[modelname '.trans.isoceancoupling'],self.isoceancoupling);
-			writejsdouble(fid,[modelname '.trans.amr_frequency'],self.amr_frequency);
-			writejscellstring(fid,[modelname '.trans.requested_outputs'],self.requested_outputs);
+			writejsdouble(fid,[modelname '.transient.isage'],self.isage);
+			writejsdouble(fid,[modelname '.transient.issmb'],self.issmb);
+			writejsdouble(fid,[modelname '.transient.ismasstransport'],self.ismasstransport);
+			writejsdouble(fid,[modelname '.transient.isoceantransport'],self.isoceantransport);
+			writejsdouble(fid,[modelname '.transient.isstressbalance'],self.isstressbalance);
+			writejsdouble(fid,[modelname '.transient.isthermal'],self.isthermal);
+			writejsdouble(fid,[modelname '.transient.isgroundingline'],self.isgroundingline);
+			writejsdouble(fid,[modelname '.transient.isesa'],self.isesa);
+			writejsdouble(fid,[modelname '.transient.isdamageevolution'],self.isdamageevolution);
+			writejsdouble(fid,[modelname '.transient.ismovingfront'],self.ismovingfront);
+			writejsdouble(fid,[modelname '.transient.ishydrology'],self.ishydrology);
+			writejsdouble(fid,[modelname '.transient.isdebris'],self.isdebris);
+			writejsdouble(fid,[modelname '.transient.issampling'],self.issampling); 
+			writejsdouble(fid,[modelname '.transient.isslc'],self.isslc);
+			writejsdouble(fid,[modelname '.transient.isoceancoupling'],self.isoceancoupling);
+			writejsdouble(fid,[modelname '.transient.amr_frequency'],self.amr_frequency);
+			writejscellstring(fid,[modelname '.transient.requested_outputs'],self.requested_outputs);
 
 		end % }}}
 	end
