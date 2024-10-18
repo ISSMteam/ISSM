@@ -376,7 +376,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		//broadcast sea level loads 
 		loads->BroadcastSealevelLoads();
 
-		if (!sal) xDelete<IssmDouble>(oldsealevelloads); break;
+		if (!sal) {xDelete<IssmDouble>(oldsealevelloads); break;}
 
 		//convergence?
 		if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
