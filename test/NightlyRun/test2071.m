@@ -35,7 +35,7 @@ md.love.forcing_type=11;
 
 md.love.istemporal=1;
 md.love.n_temporal_iterations=8;
-md.love.time=[0; (logspace(0,4.3, 99))'*yts];
+md.love.time=[0; (logspace(0,4.3, 24))'*yts];
 md.love=md.love.build_frequencies_from_time;
 md.solidearth.lovenumbers.tk2secular= 0.9668;
 md.solidearth.rotational.equatorialmoi=8.0131e37;

@@ -8,8 +8,6 @@ validation=0;
 
 % for volumetric potential
 md=model();
-md.groundingline.migration='None';
-
 md.materials=materials('litho');
 cst=365.25*24*3600*1000;
 
@@ -21,6 +19,9 @@ md.materials.lame_mu=zeros(md.materials.numlayers,1)+0.75e11;
 md.materials.lame_lambda=zeros(md.materials.numlayers,1)+5e17;
 md.materials.issolid=ones(md.materials.numlayers,1);
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
+
+%the following isn't used here but needs to have arrays of consistent size with the rest of the materials
+md.materials.viscosity=zeros(md.materials.numlayers,1)+1e21;
 
 md.materials.radius =  linspace(10e3,6371e3,md.materials.numlayers+1)';
 md.love.g0 = 9.8134357285509388; % directly grabbed from fourierlovesolver for this particular case. 
@@ -35,7 +36,7 @@ md.love.sh_nmax = 200;
 md.love.love_kernels=1; 
 
 md.miscellaneous.name='kernels';
-md.cluster=generic('name',oshostname(),'np',1);
+md.cluster=generic('name',oshostname(),'np',3);
 md.verbose=verbose('111111101');
 
 md=solve(md,'lv');

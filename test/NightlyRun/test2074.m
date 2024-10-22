@@ -1,16 +1,10 @@
 %Test Name: EBMLoveNumbers
-%Forward Love number solution for a viscoelastic earth, model M3-L70-V01 from
-%Spada, G., Barletta, V. R., Klemann, V., Riva, R. E. M., Martinec, Z.,
-%Gasperini, P., Lund, B., Wolf, D., Vermeersen, L. L. A. and King, M. A.
-%(2011), A benchmark study for glacial isostatic adjustment codes. Geophysical
-%Journal International, 185: 106--132. doi:10.1111/j.1365-246X.2011.04952.x
 
 md=model();
-md.cluster=generic('name',oshostname(),'np',10);
+md.cluster=generic('name',oshostname(),'np',3);
 
 md.materials=materials('litho');
 md.miscellaneous.name='test2074';
-md.groundingline.migration='None';
 
 md.verbose=verbose('all');
 md.verbose=verbose('1111111111111111');
@@ -35,22 +29,15 @@ md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.love.frequencies=[0];
 md.love.nfreq=length(md.love.frequencies);
 md.love.sh_nmin=1;
-md.love.sh_nmax=1e4;
+md.love.sh_nmax=256;
 md.love.underflow_tol=1e-20;
-md.love.pw_threshold=1e-3;
 md.love.Gravitational_Constant=6.6732e-11;
 md.love.min_integration_steps=100;
 md.love.max_integration_dr=5e3;
-md.love.allow_layer_deletion=1;
-md.love.forcing_type=11;
-md.love.chandler_wobble=0;
-md.love.complex_computation=0;
-md.love.quad_precision=0;
 
 md.love.istemporal=1;
 md.love.n_temporal_iterations=6;
-md.love.time=[0; (1:12*10)'/24*yts ; (6:20)'*yts;];
-
+md.love.time=[0; (logspace(0,4.3, 24))'*yts];
 
 load ../Data/hypergeom.mat;
 md.love.hypergeom_table1=h1real;
@@ -69,35 +56,12 @@ md.solidearth.rotational.polarmoi=8.0394e37;
 md.solidearth.rotational.angularvelocity=7.292115e-5;
 
 md=solve(md,'lv');
-kebm=1+md.results.LoveSolution.LoveKt;
-kfebm=1+md.results.LoveSolution.LoveKf;
+hebm=md.results.LoveSolution.LoveHt;
+kebm=md.results.LoveSolution.LoveKt;
+lebm=md.results.LoveSolution.LoveLt;
 
-md.materials.rheologymodel=zeros(md.materials.numlayers,1);
-md=solve(md,'lv');
-kmax=1+md.results.LoveSolution.LoveKt;
-kfmax=1+md.results.LoveSolution.LoveKf;
+%Fields and tolerances to track changes
 
-
-tt=1+2*[1 12 5*12 5*12+15/2];
-return
-subplot(1,2,1)
-plot(1:90, kebm(tt,2:end)./kmax(1,2:end));
-%ylim([1 2.5])
-xlabel('degree')
-set(gca, 'Fontsize', 18')
-ylabel('$$\frac{1+k(t)_{EBM}}{1+k_e}$$', 'interpreter', 'LaTeX')
-legend('t=1 month', 't=1 year', 't=5 years', 't=20 years')
-subplot(1,2,2)                           
-plot(1:90, kebm(tt,2:end)./kmax(tt,2:end))
-%ylim([1 2.5])
-xlabel('degree')
-set(gca, 'Fontsize', 18')
-ylabel('$$\frac{1+k(t)_{EBM}}{1+k(t)_{Maxwell}}$$', 'interpreter', 'LaTeX')
-legend('t=1 month', 't=1 year', 't=5 years', 't=20 years')
-
-figure
-
-plot(md.love.time(2:end-1)/yts, (kebm(3:end,3)-kebm(1:end-2,3))./(md.love.time(3:end)-md.love.time(1:end-2))*yts/(kmax(1,3)));
-ylabel('$$\frac{\dot{k_2}(t)_{EBM}}{1+k_2(t)_{Elastic}}$$', 'interpreter', 'LaTeX')
-set(gca, 'Fontsize', 18')
-xlabel('t (yr)');
+field_names     ={'LoveHebm','LoveKebm','LoveLebm'};
+field_tolerances={1.0e-6,1.0e-6,1.0e-6};
+field_values={hebm,kebm,lebm};
