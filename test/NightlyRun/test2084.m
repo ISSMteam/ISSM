@@ -6,7 +6,7 @@
 %Journal International, 185: 106--132. doi:10.1111/j.1365-246X.2011.04952.x
 
 md=model();
-md.cluster=generic('name',oshostname(),'np',8);
+md.cluster=generic('name',oshostname(),'np',3);
 
 % set validation=1 for comparing against the Spada benchmark.
 validation=0; 
@@ -28,19 +28,20 @@ md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.materials.issolid=[1 0 1 1 1 1]';
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
 %setlitho2prem(md.materials)
+
 md.love.frequencies=[0; (logspace(-6,3, 1000))'/cst];
 md.love.nfreq=length(md.love.frequencies);
 md.love.sh_nmin=1;
 md.love.sh_nmax=1000;
 md.love.underflow_tol=1e-20;
 md.love.Gravitational_Constant=6.6732e-11;
+
 md.love.istemporal=1;
 md.love.n_temporal_iterations=8;
 %md.love.time=(logspace(-6,5, 2))'*cst;
 md.love.time=[0; (logspace(-3,5, 24))'*cst];
 
 %md.love.time=(linspace(1/12,10, 10*12))'*cst/1e3;
-md.love.love_kernels=1;
 if md.love.istemporal
 	md.love=md.love.build_frequencies_from_time;
 end

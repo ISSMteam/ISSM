@@ -6,7 +6,7 @@
 %Journal International, 185: 106--132. doi:10.1111/j.1365-246X.2011.04952.x
 
 md=model();
-md.cluster=generic('name',oshostname(),'np',2);
+md.cluster=generic('name',oshostname(),'np',3);
 
 md.materials=materials('litho');
 md.miscellaneous.name='test2070';
