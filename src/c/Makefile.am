@@ -540,7 +540,28 @@ if LOVE
 if FORTRAN
 issm_sources += \
 	./cores/love_core.cpp \
-	./analyses/LoveAnalysis.cpp
+	./analyses/LoveAnalysis.cpp \
+	./modules/Zgesvx/Zgesvx.cpp \
+	./modules/Zgesvx/Zgesvx.h \
+	./modules/Zgesvx/dcabs1.f \
+	./modules/Zgesvx/dlamch.f \
+	./modules/Zgesvx/ieeeck.f \
+	./modules/Zgesvx/ilaenv.f \
+	./modules/Zgesvx/iparmq.f \
+	./modules/Zgesvx/izamax.f \
+	./modules/Zgesvx/lsame.f \
+	./modules/Zgesvx/xerbla.f \
+	./modules/Zgesvx/zgemm.f \
+	./modules/Zgesvx/zgeru.f \
+	./modules/Zgesvx/zgesv.f \
+	./modules/Zgesvx/zgetf2.f \
+	./modules/Zgesvx/zgetrf2.f \
+	./modules/Zgesvx/zgetrf.f \
+	./modules/Zgesvx/zgetrs.f \
+	./modules/Zgesvx/zlaswp.f \
+	./modules/Zgesvx/zscal.f \
+	./modules/Zgesvx/zswap.f \
+	./modules/Zgesvx/ztrsm.f
 endif
 endif
 #}}}
