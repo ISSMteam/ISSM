@@ -74,8 +74,8 @@ md.miscellaneous.name='test2011';
 
 %Solution parameters
 md.cluster.np=3;
-md.solidearth.settings.reltol=NaN;
-md.solidearth.settings.abstol=1e-3;
+md.solidearth.settings.reltol=1e-10;
+md.solidearth.settings.abstol=NaN; 
 md.solidearth.settings.sealevelloading=1;
 md.solidearth.settings.isgrd=1;
 md.solidearth.settings.ocean_area_scaling=0;
@@ -90,9 +90,6 @@ md.transient.isslc=1;
 md.solidearth.requested_outputs={'Sealevel','DeltaIceThickness','SealevelBarystaticIceMask','SealevelBarystaticHydroMask','SealevelBarystaticBpMask','Bed','SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights','SealevelBarystaticIceArea','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask','SealevelGRD','SealevelBarystaticOceanLongbar'};
 md.settings.results_on_nodes={'SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights'};
 
-% max number of iteration reverted back to 10 (i.e., the original default value)
-md.solidearth.settings.maxiter=10;
-
 %eustatic + rigid + elastic + rotation run:
 md.solidearth.settings.selfattraction=1;
 md.solidearth.settings.elastic=1;
@@ -101,21 +98,31 @@ md.solidearth.settings.viscous=0;
 md=solve(md,'tr');
 
 %recover barystatic: 
-bslc=md.results.TransientSolution(1).BslcIce; 
+results=md.results.TransientSolution(1); 
+bslc1=results.BslcIce; 
 
 %alternative way of computing barystatic: 
-area=md.results.TransientSolution(1).SealevelBarystaticIceArea;
-weights=md.results.TransientSolution(1).SealevelBarystaticIceWeights; 
-dH=md.results.TransientSolution(1).DeltaIceThickness(md.mesh.elements); 
-dHavg=sum(dH.*weights,2);
-oceanarea=sum(md.results.TransientSolution(1).SealevelBarystaticOceanArea);
-bslc2=-sum(dHavg.*area)*md.materials.rho_ice/md.materials.rho_water/oceanarea;
+icearea=results.SealevelBarystaticIceArea;
+iceweights=results.SealevelBarystaticIceWeights; 
+dH=results.DeltaIceThickness(md.mesh.elements); 
+dHavg=sum(dH.*iceweights,2);
+totaloceanarea=sum(results.SealevelBarystaticOceanArea);
+bslc2=-sum(dHavg.*icearea)*md.materials.rho_ice/md.materials.rho_water/totaloceanarea;
+
+%another way of computing barystatic:
+oceanarea=results.SealevelBarystaticOceanArea; 
+oceanweights=results.SealevelBarystaticOceanWeights; 
+rsl=results.Sealevel-(results.Bed-md.geometry.bed); 
+rsl=rsl(md.mesh.elements); 
+rslavg=sum(rsl.*oceanweights,2);
+bslc3=sum(rslavg.*oceanarea)/totaloceanarea; 
 
 %need to change precision before subtraction because of differences in results 
 %at high precision under macOS versus Linux (print values of bslc and bslc2 to %verify that the difference is negligible)
-bslc_diff=single(bslc2)-single(bslc);
+bslc_diff21=single(bslc2)-single(bslc1);
+bslc_diff31=single(bslc3)-single(bslc2);
 
 %Fields and tolerances to track changes
-field_names={'BarystaticIce','BarystaticIce2','BarystaticIceDiff'};
-field_tolerances={1e-13,1e-13,1e-13};
-field_values={bslc,bslc2,bslc_diff};
+field_names={'BarystaticIce1','BarystaticIce2','BarystaticIceDiff21','BarystaticIce3','BarystaticIceDiff31'};
+field_tolerances={1e-13,1e-13,1e-13,1e-13,1e-13};
+field_values={bslc1,bslc2,bslc_diff21,bslc3,bslc_diff31};

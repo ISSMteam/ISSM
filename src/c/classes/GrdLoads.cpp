@@ -226,7 +226,7 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 		if(subsealevelloads && l==SLGEOM_OCEAN){
 			for (e=0;e<nbar;e++){
 				if (subloads[l][e]+sealevelloads[e]!=0){
-					combined_subloads[l][ae]=subloads[l][e]+sealevelloads[e];
+					combined_subloads[l][ae]=subloads[l][e]+subsealevelloads[e];
 					combined_subloads_index[l][ae]=e;
 					ae++;
 				}
