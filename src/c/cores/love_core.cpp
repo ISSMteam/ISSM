@@ -738,7 +738,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 				xmin=matlitho->radius[layer_index]/ra;
 				xmax=(matlitho->radius[layer_index+1])/ra;
-				dr = (xmax -xmin)/nstep;
+				dr = (xmax -xmin)/reCast<doubletype>(nstep);
 				x=xmin;
 
 				for (int n=0;n<nstep;n++){
@@ -777,7 +777,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 			xmin=matlitho->radius[layer_index]/ra;
 			xmax=(matlitho->radius[layer_index+1])/ra;
-			dr = (xmax -xmin)/nstep;
+			dr = (xmax -xmin)/reCast<doubletype>(nstep);
 			x=xmin;
 
 			for (int n=0;n<nstep;n++){
@@ -810,7 +810,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 			xmin=matlitho->radius[layer_index]/ra;
 			xmax=(matlitho->radius[layer_index+1])/ra;
-			dr = (xmax -xmin)/nstep;
+			dr = (xmax -xmin)/reCast<doubletype>(nstep);
 			x=xmin;
 
 			for (int n=0;n<nstep;n++){
@@ -934,7 +934,7 @@ template <typename doubletype> void        propagate_yi_euler(doubletype* y, dou
 	nstep=vars->nstep[layer_index];
 
 	doubletype* dydx=xNewZeroInit<doubletype>(6);
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 	for(int i = 0;i<nstep;i++){
 		yi_derivatives<doubletype>(dydx,y,layer_index, i,yi_prefactor,femmodel,matlitho,vars);
@@ -959,7 +959,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	doubletype y2[6]={0};
 	doubletype y3[6]={0};
 
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 
 	for(int i = 0;i<nstep/2;i++){
@@ -987,7 +987,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	doubletype y2[6]={0};
 	doubletype y3[6]={0};
 
-	doubletype dr = (xmax -xmin)/nstep;
+	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
 
 	for(int i = 0;i<nstep/2-1;i++){
@@ -1018,7 +1018,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 	x = x + 2.0*dr;
 
 }/*}}}*/
-template <typename doubletype> void        Innersphere_boundaryconditions(doubletype* yi, int layer_index, int deg, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
+template <typename doubletype> void        Innersphere_boundaryconditions(doubletype* yi, int layer_index, int degree, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
 	//fills the boundary conditions at the bottom of layer[layer_index] in yi[0:2][0:5]
 
 	int nyi;
@@ -1026,7 +1026,7 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	doubletype ra=matlitho->radius[matlitho->numlayers];
 	doubletype  g0,r0,mu0, GG;
 	IssmDouble mu0p, GGp;
-
+	doubletype deg = reCast<doubletype>(degree);
 
 	femmodel->parameters->FindParam(&mu0p,LoveMu0Enum);
 	femmodel->parameters->FindParam(&GGp,LoveGravitationalConstantEnum);
@@ -1114,59 +1114,6 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	yi[5+nyi*2]=deg/(r*g0);*/
 
 
-
-}/*}}}*/
-template <typename doubletype> void        Coremantle_boundaryconditions(doubletype* yi, int layer_index, int deg, doubletype omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
-	//fills the boundary conditions at the bottom of layer[layer_index] in yi[0:2][0:5]
-
-	int nyi;
-	doubletype r = matlitho->radius[layer_index];
-	doubletype ra=matlitho->radius[matlitho->numlayers];
-	doubletype  g0,r0,mu0, GG;
-	IssmDouble mu0p, GGp;
-
-
-	femmodel->parameters->FindParam(&mu0p,LoveMu0Enum);
-	femmodel->parameters->FindParam(&GGp,LoveGravitationalConstantEnum);
-
-	g0=vars->g0;
-	r0=vars->r0;
-	mu0=mu0p;
-	GG=GGp;
-	nyi=vars->nyi;
-
-	doubletype ro=matlitho->density[layer_index-1];
-
-	
-	if (!matlitho->issolid[layer_index]) _error_("Love core error: CMB conditions requested but layer " << layer_index << " (mantle side) is not solid");
-	if (matlitho->issolid[layer_index-1]) _error_("Love core error: CMB conditions requested but layer " << layer_index-1 << " (outer core) is solid");
-
-	doubletype cst = 4.0/3.0*PI*GG*ro;
-	doubletype rl1=pow(r,deg-1);
-
-	yi[0+nyi*0]=-rl1/cst/ra;
-	yi[0+nyi*1]=1.0/ra;
-	yi[0+nyi*2]=0.0;
-
-	yi[1+nyi*0]=0.0;
-	yi[1+nyi*1]=ro*cst*r/mu0;
-	yi[1+nyi*2]=0.0;
-
-	yi[2+nyi*0]=0.0;
-	yi[2+nyi*1]=0.0;
-	yi[2+nyi*2]=1.0/ra;
-
-	yi[3+nyi*0]=0.0;
-	yi[3+nyi*1]=0.0;
-	yi[3+nyi*2]=0.0;
-
-	yi[4+nyi*0]=r*rl1/(g0*ra);
-	yi[4+nyi*1]=0.0;
-	yi[4+nyi*2]=0.0;
-
-	yi[5+nyi*0]=2.0*(deg-1)*rl1/g0;
-	yi[5+nyi*1]=3.0*cst/g0;
-	yi[5+nyi*2]=0.0;
 
 }/*}}}*/
 template <typename doubletype> void        build_yi_system(doubletype* yi, int deg, doubletype omega, doubletype* yi_prefactor, FemModel* femmodel, Matlitho* matlitho,LoveVariables<doubletype>* vars) { /*{{{*/
@@ -1275,8 +1222,6 @@ template <typename doubletype> void        build_yi_system(doubletype* yi, int d
 	}
 
 	//-- Internal sphere: integration starts here rather than r=0 for numerical reasons
-	/*if (starting_layer==cmb) Coremantle_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars);
-	else Innersphere_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars);*/
 
 	Innersphere_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars);
 
@@ -1296,12 +1241,13 @@ template <typename doubletype> void        build_yi_system(doubletype* yi, int d
 	}
 
 }/*}}}*/
-template <typename doubletype> void        yi_boundary_conditions(doubletype* yi_righthandside, int deg, FemModel* femmodel, Matlitho* matlitho,LoveVariables<doubletype>* vars, int forcing_type){ /*{{{*/
+template <typename doubletype> void        yi_boundary_conditions(doubletype* yi_righthandside, int degree, FemModel* femmodel, Matlitho* matlitho,LoveVariables<doubletype>* vars, int forcing_type){ /*{{{*/
 
 	doubletype  g0,r0,mu0,ra,rb,rc;
 	int nyi,icb,cmb,starting_layer;
 	doubletype* EarthMass;
 	IssmDouble mu0p;
+	doubletype deg = reCast<doubletype>(degree);
 
 	g0=vars->g0;
 	r0=vars->r0;
@@ -1365,14 +1311,14 @@ template <typename doubletype> void        yi_boundary_conditions(doubletype* yi
 
 			//--forcings at the surface
 		case 9://'SURF--Volumetric Potential'
-			if (deg>1) yi_righthandside[nyi-1]=(2.0*deg+1.0)/(ra*g0);
+			if (degree>1) yi_righthandside[nyi-1]=(2.0*deg+1.0)/(ra*g0);
 			break;
 		case 10://'SURF--Pressure'
 			yi_righthandside[nyi-5]=-ro_mean/mu0;
 			break;
 		case 11://'SURF--Loading'
 			yi_righthandside[nyi-5]=-ro_mean*(2.0*deg+1.0)/(3.0*mu0);
-			if (deg>1) yi_righthandside[nyi-1]= (2.0*deg+1.0)/(ra*g0);
+			if (degree>1) yi_righthandside[nyi-1]= (2.0*deg+1.0)/(ra*g0);
 			break;
 		case 12://'SURF--Tangential Traction'
 			yi_righthandside[nyi-3]= ro_mean/mu0;
@@ -1520,9 +1466,6 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 				}
 			}
 
-	/*if (starting_layer==cmb) Coremantle_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars);
-	else Innersphere_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars); //we move the first interface to the new starting layer. yi[0:2,0:5] will be different
-	*/
 	Innersphere_boundaryconditions<doubletype>(yi, starting_layer, deg, omega, femmodel, matlitho,vars);
 		} else { //we are ready to save the outputs and break the main loop
 
@@ -2198,7 +2141,6 @@ template void        propagate_yi_RK2<IssmDouble>(IssmDouble* y, IssmDouble xmin
 template void        propagate_yi_RK4<IssmDouble>(IssmDouble* y, IssmDouble xmin, IssmDouble xmax, int layer_index, IssmDouble* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars);
 template void        propagate_yi_euler<IssmDouble>(IssmDouble* y, IssmDouble xmin, IssmDouble xmax, int layer_index, IssmDouble* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars);
 template void        Innersphere_boundaryconditions<IssmDouble>(IssmDouble* yi, int layer_index, int deg, IssmDouble omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars);
-template void	     Coremantle_boundaryconditions<IssmDouble>(IssmDouble* yi, int layer_index, int deg, IssmDouble omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars);
 template void        build_yi_system<IssmDouble>(IssmDouble* yi, int deg, IssmDouble omega, IssmDouble* yi_prefactor, FemModel* femmodel, Matlitho* matlitho,LoveVariables<IssmDouble>* vars);
 template void        solve_yi_system<IssmDouble>(IssmDouble* loveh, IssmDouble* lovel, IssmDouble* lovek, int deg, IssmDouble omega, IssmDouble* frequencies, IssmDouble* yi, IssmDouble* rhs, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars,bool verbosecpu);
 template void	     compute_love_numbers<IssmDouble>(LoveNumbers<IssmDouble>* Lovef, LoveNumbers<IssmDouble>* Elastic, int forcing_type, int sh_cutoff,IssmDouble* frequencies, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmDouble>* vars, bool verbosecpu);
@@ -2221,7 +2163,6 @@ template void        propagate_yi_RK2<IssmComplex>(IssmComplex* y, IssmComplex x
 template void        propagate_yi_RK4<IssmComplex>(IssmComplex* y, IssmComplex xmin, IssmComplex xmax, int layer_index, IssmComplex* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars);
 template void        propagate_yi_euler<IssmComplex>(IssmComplex* y, IssmComplex xmin, IssmComplex xmax, int layer_index, IssmComplex* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars);
 template void        Innersphere_boundaryconditions<IssmComplex>(IssmComplex* yi, int layer_index, int deg, IssmComplex omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars);
-template void	     Coremantle_boundaryconditions<IssmComplex>(IssmComplex* yi, int layer_index, int deg, IssmComplex omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars);
 template void        build_yi_system<IssmComplex>(IssmComplex* yi, int deg, IssmComplex omega, IssmComplex* yi_prefactor, FemModel* femmodel, Matlitho* matlitho,LoveVariables<IssmComplex>* vars);
 template void        solve_yi_system<IssmComplex>(IssmComplex* loveh, IssmComplex* lovel, IssmComplex* lovek, int deg, IssmComplex omega, IssmDouble* frequencies, IssmComplex* yi, IssmComplex* rhs, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars,bool verbosecpu);
 template void	     compute_love_numbers<IssmComplex>(LoveNumbers<IssmComplex>* Lovef, LoveNumbers<IssmComplex>* Elastic, int forcing_type, int sh_cutoff, IssmDouble* frequencies, FemModel* femmodel, Matlitho* matlitho, LoveVariables<IssmComplex>* vars, bool verbosecpu);
@@ -2241,7 +2182,6 @@ template void        propagate_yi_RK2<__float128>(__float128* y, __float128 xmin
 template void        propagate_yi_RK4<__float128>(__float128* y, __float128 xmin, __float128 xmax, int layer_index, __float128* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars);
 template void        propagate_yi_euler<__float128>(__float128* y, __float128 xmin, __float128 xmax, int layer_index, __float128* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars);
 template void        Innersphere_boundaryconditions<__float128>(__float128* yi, int layer_index, int deg, __float128 omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars);
-template void 	     Coremantle_boundaryconditions<__float128>(__float128* yi, int layer_index, int deg, __float128 omega, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars);
 template void        build_yi_system<__float128>(__float128* yi, int deg, __float128 omega, __float128* yi_prefactor, FemModel* femmodel, Matlitho* matlitho,LoveVariables<__float128>* vars);
 template void        solve_yi_system<__float128>(__float128* loveh, __float128* lovel, __float128* lovek, int deg, __float128 omega, IssmDouble* frequencies, __float128* yi, __float128* rhs, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars,bool verbosecpu);
 template void	     compute_love_numbers<__float128>(LoveNumbers<__float128>* Lovef, LoveNumbers<__float128>* Elastic, int forcing_type, int sh_cutoff, IssmDouble* frequencies, FemModel* femmodel, Matlitho* matlitho, LoveVariables<__float128>* vars, bool verbosecpu);
