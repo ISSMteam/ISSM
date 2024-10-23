@@ -15,7 +15,6 @@ from solve import *
 
 # For volumetric potential
 md = model()
-md.groundingline.migration = 'None'
 
 md.materials = materials('litho')
 cst = 365.25 * 24 * 3600 * 1000
@@ -29,19 +28,13 @@ md.materials.lame_lambda = np.zeros((md.materials.numlayers, 1)) + 5e17
 md.materials.issolid = np.ones((md.materials.numlayers, 1))
 md.materials.rheologymodel = np.zeros((md.materials.numlayers, 1))
 
-# The following isn't used here but needs to hhave arrays of consistent size with the rest of the materials
+# The following isn't used here but needs to have arrays of consistent size with the rest of the materials
 md.materials.viscosity = np.zeros((md.materials.numlayers, 1)) + 1e21
-md.materials.burgers_mu = md.materials.lame_mu / 3
-md.materials.burgers_viscosity = md.materials.viscosity / 10
-md.materials.ebm_alpha = np.ones((md.materials.numlayers, 1)) * 0.9
-md.materials.ebm_delta = np.ones((md.materials.numlayers, 1)) * 0.2
-md.materials.ebm_taul = np.ones((md.materials.numlayers, 1)) * 54 * 60 # 54 min
-md.materials.ebm_tauh = np.ones((md.materials.numlayers, 1)) * 18.6 * cst / 1e3 # 18.6 yr
 
 md.materials.radius = np.linspace(10e3, 6371e3, md.materials.numlayers + 1).reshape(-1, 1)
 md.love.g0 = 9.8134357285509388 # directly grabbed from fourierlovesolver for this particular case
 
-md.love.allow_layer_deletion = 1
+md.love.allow_layer_deletion = 0
 md.love.frequencies = 0
 md.love.nfreq = 1
 md.love.istemporal = 0
