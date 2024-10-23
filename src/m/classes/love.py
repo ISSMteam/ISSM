@@ -157,7 +157,7 @@ class love(object):
         md = checkfield(md, 'fieldname', 'love.hypergeom_table1', 'NaN', 1, 'Inf', 1, 'numel', md.love.hypergeom_nz * md.love.hypergeom_nalpha)
         md = checkfield(md, 'fieldname', 'love.hypergeom_table2', 'NaN', 1, 'Inf', 1, 'numel', md.love.hypergeom_nz * md.love.hypergeom_nalpha)
 
-        if np.any(md.materials.rheologymodel == 2 and md.love.hypergeom_nz <= 1):
+        if np.any(md.materials.rheologymodel) == 2 and md.love.hypergeom_nz <= 1:
             raise RuntimeError('EBM rheology requested but hypergeometric table has fewer then 2 frequency values')
 
         if md.love.istemporal:
