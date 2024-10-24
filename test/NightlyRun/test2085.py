@@ -13,6 +13,9 @@ from materials import *
 from model import *
 from solve import *
 
+# Set validation = 1 for comparing against the analytic solutions
+validation = 1
+
 # For volumetric potential
 md = model()
 
@@ -78,6 +81,29 @@ y4_tidal_degree200 = kernels[degrees[2]+1,0,1:,3].squeeze()
 y5_tidal_degree200 = kernels[degrees[2]+1,0,1:,4].squeeze()
 y6_tidal_degree200 = kernels[degrees[2]+1,0,1:,5].squeeze()
 #}}}
+
+# Validate tidal potential solutions against the analytic solutions
+if validation:
+    param = {}
+    param.rho = md.materials.density[0]
+    param.mu = md.materials.lame_mu[1]
+    param.G = 6.67e-11
+    param.radius = md.materials.radius
+    param.g0 = md.love.g0
+    param.source = md.love.forcing_type
+
+    # Check against analytic solutions at the following degrees
+    degrees_analytic = [2, 4, 6, 16, 32]
+    for jj in range(0, len(degrees_analytic)):
+        param.degree = degrees_analytic[jj]
+        y_temp = yi_analytic_homogenous[param]
+        if 'y_ana' not in locals(): # NOTE: Probably not a very Pythonic thing to do, but translated from MATLAB
+            y_ana = np.zeros((len(degrees_analytic), np.shape(y_temp)))
+
+    print(np.shape(y_temp))
+    pretty_print(y_ana)
+    print(np.shape(y_ana))
+    exit()
 
 # For surface load
 md.love.forcing_type = 11
