@@ -76,6 +76,8 @@ nightlylog
 # Nightly runs #
 #===============
 test/NightlyRun/*.bin
+test/NightlyRun/*.errlog
+test/NightlyRun/*.outlog
 test/NightlyRun/*.queue
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits

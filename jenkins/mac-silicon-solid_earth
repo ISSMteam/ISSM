@@ -90,6 +90,6 @@ NUMCPUS_RUN=2
 # - Test 2091 excluded until it can be debugged (resource starvation)
 # - Tests 2092, 2110:2113 excluded because of failure "Arrays have incompatible sizes for this operation."
 #
-MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2085 2092 2110:2113 2424 2425]"
-PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2085 2092 2110:2113 2424 2425"
+MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2092 2110:2113 2424 2425]"
+PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2092 2110:2113 2424 2425"
 

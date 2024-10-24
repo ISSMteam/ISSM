@@ -4,7 +4,7 @@
 % skip benchmarking for the inner-most interface. 
 
 % set validation=1 for comparing against the analytic solutions. 
-validation=0; 
+validation=1; 
 
 % for volumetric potential
 md=model();
@@ -69,7 +69,7 @@ y3_tidal_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,3));
 y4_tidal_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,4));
 y5_tidal_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,5));
 y6_tidal_degree200 = squeeze(kernels(degrees(3)+1,1,2:end,6));
-% }}} 
+% }}}
 
 % validate tidal potential solutions against the analytic solutions. {{{ 
 if validation
@@ -92,6 +92,11 @@ if validation
 		end
 		y_ana(jj,:,:)=y_temp; 
 	end
+
+	size(y_temp)
+	y_ana
+	size(y_ana)
+	return
 	y1_ana=squeeze(y_ana(:,:,1)); 
 	y2_ana=squeeze(y_ana(:,:,2)); 
 	y3_ana=squeeze(y_ana(:,:,3)); 
