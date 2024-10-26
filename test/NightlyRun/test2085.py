@@ -12,9 +12,10 @@ from generic import generic
 from materials import *
 from model import *
 from solve import *
+from yi_analytic_homogenous import love_analytic as yi_analytic_homogenous
 
 # Set validation = 1 for comparing against the analytic solutions
-validation = 1
+validation = 0
 
 # For volumetric potential
 md = model()
@@ -85,30 +86,46 @@ y6_tidal_degree200 = kernels[degrees[2]+1,0,1:,5].squeeze()
 # Validate tidal potential solutions against the analytic solutions
 if validation:
     param = {}
-    param.rho = md.materials.density[0]
-    param.mu = md.materials.lame_mu[1]
-    param.G = 6.67e-11
-    param.radius = md.materials.radius
-    param.g0 = md.love.g0
-    param.source = md.love.forcing_type
+    param['rho'] = md.materials.density[0]
+    param['mu'] = md.materials.lame_mu[1]
+    param['G'] = 6.67e-11
+    param['radius'] = md.materials.radius
+    param['g0'] = md.love.g0
+    param['source'] = md.love.forcing_type
 
     # Check against analytic solutions at the following degrees
     degrees_analytic = [2, 4, 6, 16, 32]
     for jj in range(0, len(degrees_analytic)):
-        param.degree = degrees_analytic[jj]
-        y_temp = yi_analytic_homogenous[param]
+        param['degree'] = degrees_analytic[jj]
+        y_temp = yi_analytic_homogenous(param)
         if 'y_ana' not in locals(): # NOTE: Probably not a very Pythonic thing to do, but translated from MATLAB
-            y_ana = np.zeros((len(degrees_analytic), np.shape(y_temp)))
+            y_ana = np.zeros((len(degrees_analytic), np.shape(y_temp)[0], np.shape(y_temp)[1]))
+        y_ana[jj,:,:] = y_temp
 
-    print(np.shape(y_temp))
-    pretty_print(y_ana)
-    print(np.shape(y_ana))
-    exit()
+    y1_ana = np.squeeze(y_ana[:,:,0])
+    y2_ana = np.squeeze(y_ana[:,:,1])
+    y3_ana = np.squeeze(y_ana[:,:,2])
+    y4_ana = np.squeeze(y_ana[:,:,3])
+    y5_ana = np.squeeze(y_ana[:,:,4])
+    y6_ana = np.squeeze(y_ana[:,:,5])
+
+    depth = (np.max(param['radius']) - param['radius']) / 1000 # km
+
+    kernels = np.reshape(md.results.LoveSolution.LoveKernels, [md.love.sh_nmax + 1, md.love.nfreq, md.materials.numlayers + 1, 6], order='F')
+
+    y1 = np.squeeze(kernels[:,0,:,0])
+    y2 = np.squeeze(kernels[:,0,:,1])
+    y3 = np.squeeze(kernels[:,0,:,2])
+    y4 = np.squeeze(kernels[:,0,:,3])
+    y5 = np.squeeze(kernels[:,0,:,4])
+    y6 = np.squeeze(kernels[:,0,:,5])
+
+    # TODO: Generate plots similar to those created in MATLAB test
 
 # For surface load
 md.love.forcing_type = 11
 md = solve(md,'lv')
-kernels = np.reshape(md.results.LoveSolution.LoveKernels, (md.love.sh_nmax + 1, md.love.nfreq, md.materials.numlayers + 1, 6), order='F')
+kernels = np.reshape(md.results.LoveSolution.LoveKernels, [md.love.sh_nmax + 1, md.love.nfreq, md.materials.numlayers + 1, 6], order='F')
 
 # Extract love kernels #{{{
 # degree 2
@@ -135,6 +152,55 @@ y4_loading_degree200 = kernels[degrees[2]+1,0,1:,3].squeeze()
 y5_loading_degree200 = kernels[degrees[2]+1,0,1:,4].squeeze()
 y6_loading_degree200 = kernels[degrees[2]+1,0,1:,5].squeeze()
 #}}}
+
+# Validate loading solutions against the analytic solutions
+if validation:
+    param['source'] = md.love.forcing_type
+
+    # Extract analytic solutions
+    for jj in range(0, len(degrees_analytic)):
+        param['degree'] = degrees_analytic[jj]
+        y_temp = yi_analytic_homogenous(param)
+        if 'y_ana' not in locals(): # NOTE: Probably not a very Pythonic thing to do, but translated from MATLAB
+            y_ana = np.zeros((len(degrees_analytic), np.shape(y_temp)[0], np.shape(y_temp)[1]))
+        y_ana[jj,:,:] = y_temp
+
+    y1_ana = np.squeeze(y_ana[:,:,0])
+    y2_ana = np.squeeze(y_ana[:,:,1])
+    y3_ana = np.squeeze(y_ana[:,:,2])
+    y4_ana = np.squeeze(y_ana[:,:,3])
+    y5_ana = np.squeeze(y_ana[:,:,4])
+    y6_ana = np.squeeze(y_ana[:,:,5])
+
+    depth = (np.max(param['radius']) - param['radius']) / 1000 # km
+
+    N = 6 * (md.materials.numlayers + 1)
+    kernels = np.reshape(md.results.LoveSolution.LoveKernels, [N, md.love.sh_nmax + 1, md.love.nfreq])
+    kernels = kernels[[*range(3, N), *range(0, 2 + 1)], :, :]
+
+    kernels = np.reshape(kernels, [6, (md.materials.numlayers + 1), (md.love.sh_nmax + 1), md.love.nfreq], order='F')
+
+    kernels[:,-1,:,0] = kernels[[0, 4, 1, 3, 2, 5], -1, :, 0]
+
+    a = md.materials.radius[-1]
+    g0 = md.love.g0
+    mu0 = md.love.mu0
+
+    y1 = np.squeeze(kernels[0,:,:,0]).T
+    y2 = np.squeeze(kernels[1,:,:,0]).T
+    y3 = np.squeeze(kernels[2,:,:,0]).T
+    y4 = np.squeeze(kernels[3,:,:,0]).T
+    y5 = np.squeeze(kernels[4,:,:,0]).T
+    y6 = np.squeeze(kernels[5,:,:,0]).T
+
+    y1 = y1 * a
+    y2 = y2 * mu0
+    y3 = y3 * a
+    y4 = y4 * mu0
+    y5 = y5 * g0 * a
+    y6 = y6 * g0
+
+    # TODO: Generate plots similar to those created in MATLAB test
 
 field_names = [
     'y1_tidal_degree002', 'y2_tidal_degree002', 'y3_tidal_degree002', 'y4_tidal_degree002', 'y5_tidal_degree002', 'y6_tidal_degree002',
