@@ -165,6 +165,7 @@ issm_sources += \
 	./shared/Numerics/extrema.cpp \
 	./shared/Numerics/legendre.cpp \
 	./shared/Numerics/XZvectorsToCoordinateSystem.cpp \
+	./shared/Numerics/Normals.cpp \
 	./shared/Exceptions/Exceptions.cpp \
 	./shared/Sorting/binary_search.cpp \
 	./shared/Elements/Cuffey.cpp \
