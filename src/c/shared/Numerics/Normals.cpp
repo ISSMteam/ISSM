@@ -16,18 +16,18 @@ void LineSectionNormal(IssmDouble* normal, IssmDouble* xyz_list) {
 	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
 	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
 
-    normal[0] = vector[1];
-    normal[1] = -vector[0];
+	normal[0] = vector[1];
+	normal[1] = -vector[0];
 
-    //normalize
+	//normalize
 	IssmDouble norm=sqrt(normal[0]*normal[0] + normal[1]*normal[1]);
-    norm = max(norm, 1e-10); // avoid NaN
-    normal[0] /= norm;
-    normal[1] /= norm;
+	norm = max(norm, 1e-10); // avoid NaN
+	normal[0] /= norm;
+	normal[1] /= norm;
 }
 
 void TriangleFacetNormal(IssmDouble* normal, IssmDouble* xyz_list) {
-    IssmDouble AB[3];
+	IssmDouble AB[3];
 	IssmDouble AC[3];
 
 	AB[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
@@ -38,9 +38,9 @@ void TriangleFacetNormal(IssmDouble* normal, IssmDouble* xyz_list) {
 	AC[2]=xyz_list[2*3+2] - xyz_list[0*3+2];
 
 	cross(normal,AB,AC);
-	
-    //normalize
-    IssmDouble norm=sqrt(normal[0]*normal[0]+normal[1]*normal[1]+normal[2]*normal[2]);
-    norm = max(norm, 1e-10); // avoid NaN
+
+	//normalize
+	IssmDouble norm=sqrt(normal[0]*normal[0]+normal[1]*normal[1]+normal[2]*normal[2]);
+	norm = max(norm, 1e-10); // avoid NaN
 	for(int i=0;i<3;i++) normal[i] /= norm;
 }
