@@ -4966,10 +4966,6 @@ void       Tria::NormalSection(IssmDouble* normal,IssmDouble* xyz_list){/*{{{*/
 }
 /*}}}*/
 void       Tria::NormalTop(IssmDouble* top_normal,IssmDouble* xyz_list){/*{{{*/
-	//does this do anything?
-	int index1,index2;
-	this->EdgeOnSurfaceIndices(&index1,&index2);
-
 	LineSectionNormal(top_normal, xyz_list);
 	_assert_(top_normal[1]>0);
 }
