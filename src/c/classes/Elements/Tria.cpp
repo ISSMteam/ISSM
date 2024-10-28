@@ -4957,51 +4957,16 @@ int        Tria::NodalValue(IssmDouble* pvalue, int index, int natureofdataenum)
 }
 /*}}}*/
 void       Tria::NormalBase(IssmDouble* bed_normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	bed_normal[0]= + vector[1]/norm;
-	bed_normal[1]= - vector[0]/norm;
+	LineSectionNormal(bed_normal, xyz_list);
 	_assert_(bed_normal[1]<0);
 }
 /*}}}*/
 void       Tria::NormalSection(IssmDouble* normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	normal[0]= + vector[1]/(norm+1e-10);
-	normal[1]= - vector[0]/(norm+1e-10);
+	LineSectionNormal(normal, xyz_list);
 }
 /*}}}*/
 void       Tria::NormalTop(IssmDouble* top_normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	int index1,index2;
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	this->EdgeOnSurfaceIndices(&index1,&index2);
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	top_normal[0]= + vector[1]/norm;
-	top_normal[1]= - vector[0]/norm;
+	LineSectionNormal(top_normal, xyz_list);
 	_assert_(top_normal[1]>0);
 }
 /*}}}*/
