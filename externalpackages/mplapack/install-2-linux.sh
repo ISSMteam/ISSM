@@ -15,7 +15,7 @@ set -eu
 
 ## Constants
 #
-VER="2.0"
+VER="2.0.0"
 
 PREFIX="${ISSM_DIR}/externalpackages/mplapack/install" # Set to location where external package should be installed
 
@@ -31,7 +31,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/mplapack-${VER}.tar.gz" "mplapack-${VER}.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/nakatamaho/mplapack/archive/refs/tags/v${VER}.tar.gz" "mplapack-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf mplapack-${VER}.tar.gz

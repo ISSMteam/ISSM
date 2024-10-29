@@ -1,20 +1,18 @@
 #!/bin/bash
 set -eu
 
-#Some cleanup
-rm -rf src  install
 
-# Keeping this for potential future use
-#Mercurial cloning: 
-#hg clone -r 268 http://mercurial.mcs.anl.gov//ad/AdjoinableMPI src
+# Cleanup
+rm -rf install src
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
+# Download source
+hg clone http://mercurial.mcs.anl.gov/ad/AdjoinableMPI src
+#$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
 
-#Untar ADOL-C
-tar -zxf  adjoinablempi.tar.gz
+# Unpack source
+#tar -zxf adjoinablempi.tar.gz
 
-#Configure adjoinablempi
+# Configure
 cd src
 ./configure \
 	--prefix="$ISSM_DIR/externalpackages/adjoinablempi/install" \
@@ -22,7 +20,7 @@ cd src
 	--with-mpi-root="/nasa/sgi/mpt/2.06rp16/" \
 	--enable-requestOnTrace
 
-#Compile adjoinablempi 
+# Compile
 make clean
 if [ $# -eq 0 ]; then
 	make 

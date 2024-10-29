@@ -78,6 +78,7 @@ nightlylog
 test/NightlyRun/*.bin
 test/NightlyRun/*.errlog
 test/NightlyRun/*.outlog
+test/NightlyRun/*.qmu*
 test/NightlyRun/*.queue
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits
