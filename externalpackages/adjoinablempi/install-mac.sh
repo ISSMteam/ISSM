@@ -9,13 +9,13 @@ export CFLAGS=-Wno-error=implicit-function-declaration
 
 # Cleanup
 rm -rf install src
-mkdir install src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz" "adjoinablempi.tar.gz"
+hg clone http://mercurial.mcs.anl.gov/ad/AdjoinableMPI src
+#$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
 
 # Unpack source
-tar -zxvf adjoinablempi.tar.gz
+#tar -zxvf adjoinablempi.tar.gz
 
 # Configure
 cd src

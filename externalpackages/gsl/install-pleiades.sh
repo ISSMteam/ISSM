@@ -1,30 +1,39 @@
 #!/bin/bash
 set -eu
 
-#Some cleanup
-rm -rf src install gsl-1.15
-mkdir src install
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/gsl-1.15.tar.gz' 'gsl-1.15.tar.gz'
+## Constants
+#
+VER="1.15"
 
-#Untar 
-tar -zxvf  gsl-1.15.tar.gz
+PREFIX="${ISSM_DIR}/externalpackages/gsl/install" # Set to location where external package should be installed
 
-#Move gsl into src directory
-mv gsl-1.15/* src
-rm -rf gsl-1.15
+# Cleanup
+rm -rf ${PREFIX} src
+mkdir -p ${PREFIX} src
 
-#Configure gsl
+# Download source
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://ftp.gnu.org/gnu/gsl/gsl-${VER}.tar.gz" "gsl-${VER}.tar.gz"
+
+# Unpack source
+tar -zxvf gsl-${VER}.tar.gz
+
+# Move source to 'src' directory
+mv gsl-${VER}/* src
+rm -rf gsl-${VER}
+
+# Configure
 cd src
-
 ./configure \
-	--prefix="$ISSM_DIR/externalpackages/gsl/install" 
+	--prefix="${PREFIX}" \
+	--disable-shared \
+	--with-pic
 
-#Compile gsl
+# Compile and install
 if [ $# -eq 0 ]; then
 	make
+	make install
 else
 	make -j $1
+	make -j $1 install
 fi
-make install 

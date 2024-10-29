@@ -34,7 +34,7 @@ export CXX=mpicxx
 export CXXFLAGS="${CXXFLAGS} -w"
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/netcdf-c-${VER}.tar.gz" "netcdf-c-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://downloads.unidata.ucar.edu/netcdf-c/${VER}/netcdf-c-${VER}.tar.gz" "netcdf-c-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf netcdf-c-${VER}.tar.gz
