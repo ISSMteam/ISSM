@@ -9,7 +9,7 @@ VER="7.73.0"
 PREFIX="${ISSM_DIR}/externalpackages/curl/install" # Set to location where external package should be installed
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/curl-${VER}.tar.gz" "curl-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://curl.se/download/curl-${VER}.tar.gz" "curl-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf curl-${VER}.tar.gz

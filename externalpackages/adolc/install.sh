@@ -1,19 +1,24 @@
 #!/bin/bash
 set -eu
 
-#Some cleanup
+
+## Constants
+#
+VER="2.7.2"
+
+# Cleanup
 rm -rf install src
 
 # Keeping the following commented line for potential future use.
 #git clone https://gitlab.com/adol-c/adol-c.git src
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/ADOL-C.tar.gz' 'ADOL-C.tar.gz'
+# Download source
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/coin-or/ADOL-C/archive/refs/tags/releases/${VER}.tar.gz" "ADOL-C.tar.gz"
 
-#Untar ADOL-C
+# Unpack source
 tar -zxf  ADOL-C.tar.gz
 
-#Compile ADOL-C
+# Configure and compile
 cd src
 ./configure --prefix=$ISSM_DIR/externalpackages/adolc/install \
 	--libdir=$ISSM_DIR/externalpackages/adolc/install/lib 
