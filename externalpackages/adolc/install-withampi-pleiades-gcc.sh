@@ -20,7 +20,8 @@ tar -zxf  ADOL-C.tar.gz
 
 # Configure and compile
 cd src
-./configure --prefix=$ISSM_DIR/externalpackages/adolc/install  \
+./configure \
+	--prefix=$ISSM_DIR/externalpackages/adolc/install  \
 	--libdir=$ISSM_DIR/externalpackages/adolc/install/lib \
 	--with-mpi-root=$ISSM_DIR/externalpackages/mpich/install \
 	--enable-ampi \
