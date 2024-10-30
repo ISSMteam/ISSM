@@ -24,6 +24,10 @@ ${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/coin-or/ADOL-
 # Unpack source
 tar -zxvf ADOL-C.tar.gz
 
+# Move source to 'src' directory
+mv ADOL-C-releases-${VER}/* src/
+rm -rf ADOL-C-releases-${VER}
+
 # Configure
 cd src
 ./configure \

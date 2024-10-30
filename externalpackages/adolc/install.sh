@@ -16,7 +16,11 @@ rm -rf install src
 ${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/coin-or/ADOL-C/archive/refs/tags/releases/${VER}.tar.gz" "ADOL-C.tar.gz"
 
 # Unpack source
-tar -zxf  ADOL-C.tar.gz
+tar -zxvf ADOL-C.tar.gz
+
+# Move source to 'src' directory
+mv ADOL-C-releases-${VER}/* src/
+rm -rf ADOL-C-releases-${VER}
 
 # Configure and compile
 cd src
