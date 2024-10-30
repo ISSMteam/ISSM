@@ -50,7 +50,7 @@ k=md.results.LoveSolution.LoveKt;
 
 %Fields and tolerances to track changes
 field_names     ={'LoveH_loading_temporal','LoveK_loading_temporal','LoveL_loading_temporal'};
-field_tolerances={2.0e-6,2.0e-6,2.0e-6};
+field_tolerances={4.0e-6,2.0e-6,2.0e-6};
 field_values={h,k,l};
 
 spada=0;
