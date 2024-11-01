@@ -10,12 +10,10 @@
 
 #ifdef _HAVE_PYTHON_
 
-#if _PYTHON_MAJOR_ >= 2
+#define NPY_API_SYMBOL_ATTRIBUTE
+
 #undef NPY_NO_DEPRECATED_API
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#else
-#define NPY_NO_DEPRECATED_API 
-#endif
 
 #include <Python.h>
 #include <arrayobject.h>
