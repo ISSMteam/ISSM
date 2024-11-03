@@ -17,6 +17,7 @@ void esa_core(FemModel* femmodel){ /*{{{*/
 	Vector<IssmDouble> *U_radial  = NULL; 
 	Vector<IssmDouble> *U_north   = NULL; 
 	Vector<IssmDouble> *U_east    = NULL; 
+	Vector<IssmDouble> *Gravity  = NULL; 
 	Vector<IssmDouble> *U_x   = NULL; 
 	Vector<IssmDouble> *U_y    = NULL; 
 	bool save_results,isesa;
@@ -80,15 +81,16 @@ void esa_core(FemModel* femmodel){ /*{{{*/
 		U_radial = new Vector<IssmDouble>(gsize);
 		U_north = new Vector<IssmDouble>(gsize);
 		U_east = new Vector<IssmDouble>(gsize);
+		Gravity = new Vector<IssmDouble>(gsize);
 		U_x = new Vector<IssmDouble>(gsize);
 		U_y = new Vector<IssmDouble>(gsize);
 
 		/*call the geodetic main modlule:*/ 
 		if(domaintype==Domain3DsurfaceEnum){
-			femmodel->EsaGeodetic3D(U_radial,U_north,U_east,latitude,longitude,radius,xx,yy,zz); 
+			femmodel->EsaGeodetic3D(U_radial,U_north,U_east,Gravity,latitude,longitude,radius,xx,yy,zz); 
 		}
 		if(domaintype==Domain2DhorizontalEnum){
-			femmodel->EsaGeodetic2D(U_radial,U_north,U_east,U_x,U_y,xx,yy); 
+			femmodel->EsaGeodetic2D(U_radial,U_north,U_east,Gravity,U_x,U_y,xx,yy); 
 			InputUpdateFromVectorx(femmodel,U_x,EsaXmotionEnum,VertexSIdEnum);
 			InputUpdateFromVectorx(femmodel,U_y,EsaYmotionEnum,VertexSIdEnum);
 		}
@@ -97,6 +99,7 @@ void esa_core(FemModel* femmodel){ /*{{{*/
 		InputUpdateFromVectorx(femmodel,U_radial,EsaUmotionEnum,VertexSIdEnum);	// radial displacement 
 		InputUpdateFromVectorx(femmodel,U_north,EsaNmotionEnum,VertexSIdEnum);	// north motion 
 		InputUpdateFromVectorx(femmodel,U_east,EsaEmotionEnum,VertexSIdEnum);		// east motion 
+		InputUpdateFromVectorx(femmodel,Gravity,EsaGravitationalAccelerationEnum,VertexSIdEnum);		// gravitational acceleration 
 
 		if(save_results){
 			femmodel->parameters->FindParam(&requested_outputs,&numoutputs,EsaRequestedOutputsEnum);
@@ -109,6 +112,7 @@ void esa_core(FemModel* femmodel){ /*{{{*/
 		delete U_radial;
 		delete U_north;
 		delete U_east;
+		delete Gravity;
 		delete U_x; 
 		delete U_y; 
 		if(numoutputs){for(int i=0;i<numoutputs;i++){xDelete<char>(requested_outputs[i]);} xDelete<char*>(requested_outputs);}

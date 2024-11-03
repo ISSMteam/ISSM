@@ -41,7 +41,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools		install-linux.sh
 	cmake			install.sh
-	petsc			install-3.20-linux.sh
+	petsc			install-3.22-linux.sh
 	gsl				install.sh
 	boost			install-1.7-linux.sh
 	dakota			install-6.2-linux.sh
@@ -50,7 +50,7 @@ EXTERNALPACKAGES="
 	hdf5			install-1.sh
 	netcdf			install-4.sh
 	proj			install-6.sh
-	gdal			install-3-python.sh
+	gdal			install-3-linux-python.sh
 	gshhg			install.sh
 	gmt				install-6-linux.sh
 	gmsh			install-4-linux.sh
@@ -91,5 +91,5 @@ NUMCPUS_RUN=1
 # - Test 2006 excluded until it can be debugged (file I/O)
 # - Test 2012 excluded until it can be looked at by Eric ("FindParam error message: Parameter HydrologyModel not set")
 #
-MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2085 2424 2425]"
-PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2021 2051 2052 2053 2085 2424 2425"
+MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2424 2425]"
+PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2021 2051 2052 2053 2424 2425"

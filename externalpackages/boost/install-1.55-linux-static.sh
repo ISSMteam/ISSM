@@ -4,7 +4,7 @@
 
 ## Constants
 #
-VER="1_55_0"
+VER="1.55.0"
 
 ## Environment
 #
@@ -12,21 +12,21 @@ export BOOST_ROOT="${ISSM_DIR}/externalpackages/boost"
 export CXXFLAGS='-std=c++98' # Setting CXXFLAGS to deal with C++11 incompatibility with MATLAB's Boost
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/boost_${VER}.tar.gz" "boost_${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://archives.boost.io/release/${VER}/source/boost_${VER//./_}.tar.gz" "boost_${VER//./_}.tar.gz"
 
 # Unpack source
-tar -zxvf boost_${VER}.tar.gz
+tar -zxvf boost_${VER//./_}.tar.gz
 
 # Cleanup
-rm -rf install src
-mkdir install src
+rm -rf ${PREFIX} src
+mkdir -p ${PREFIX} src
 
 # Move source into 'src' directory
-mv boost_${VER}/* src/
-rm -rf boost_${VER}
+mv boost_${VER//./_}/* src
+rm -rf boost_${VER//./_}
 
 # Copy customized source and configuration files to 'src' directory
-cp configs/1.55/boost/multi_index/ordered_index.hpp src/boost/multi_index
+cp configs/${VER%.*}/boost/multi_index/ordered_index.hpp src/boost/multi_index
 
 # Configure
 cd src

@@ -1012,9 +1012,8 @@ classdef model
 				md2.mesh.scale_factor=Pnode*md.mesh.scale_factor;
 			end
 
-			%loop over model fields
+			%loop over model fields (except mesh)
 			model_fields=setxor(fields(md),{'mesh'});
-			%remove mesh from this field
 			for i=1:length(model_fields),
 				%get field
 				field=md.(model_fields{i});
@@ -1051,6 +1050,38 @@ classdef model
 					end
 				end
 			end
+
+			%special case: outputdefinitions
+			if ~isempty(md.outputdefinition.definitions)
+				for i=1:numel(md.outputdefinition.definitions)
+					if isa(md.outputdefinition.definitions{i}, 'cfsurfacesquaretransient')
+						field = md.outputdefinition.definitions{i}.observations;
+						assert(size(field,1)==md.mesh.numberofvertices+1);
+						md2.outputdefinition.definitions{i}.observations = [Pnode*field(1:end-1,:); field(end,:)];
+						field = md.outputdefinition.definitions{i}.weights;
+						assert(size(field,1)==md.mesh.numberofvertices+1);
+						md2.outputdefinition.definitions{i}.weights = [Pnode*field(1:end-1,:); field(end,:)];
+					elseif isa(md.outputdefinition.definitions{i}, 'cfdragcoeffabsgrad')
+						md2.outputdefinition.definitions{i}.weights = Pnode*md.outputdefinition.definitions{i}.weights;
+					else
+						disp(['skipping md.outputdefinition.definitions{' num2str(i) '}, its class is not yet supported by model/refine']);
+					end
+				end
+			end
+
+			%special case for independents
+			if ~isempty(md.autodiff.independents)
+				for i=1:numel(md.autodiff.independents)
+					if md.autodiff.independents{i}.nods == md.mesh.numberofvertices
+						md2.autodiff.independents{i}.nods = md2.mesh.numberofvertices;
+					end
+					if numel(md.autodiff.independents{i}.min_parameters)==md.mesh.numberofvertices;
+						md2.autodiff.independents{i}.min_parameters = Pnode*md.autodiff.independents{i}.min_parameters;
+						md2.autodiff.independents{i}.max_parameters = Pnode*md.autodiff.independents{i}.max_parameters;
+					end
+				end
+			end
+
 
 		end % }}}
 		function md = extrude(md,varargin) % {{{
@@ -1851,7 +1882,7 @@ classdef model
 				field=fields{i};
 
 				%Some properties do not need to be saved
-				if ismember(field,{'results','cluster' }),
+				if ismember(field,{'results','cluster'}),
 					continue;
 				end
 
@@ -1868,9 +1899,13 @@ classdef model
 					error(['field ''' char(field) ''' is not an object']);
 				end
 
-				%savemodeljs for current object
-				%disp(['javascript saving ' field '...']);
-				savemodeljs(md.(field),fid,modelname);
+				if ~ismethod(md.(field),'savemodeljs')
+					disp(['Note: Method ''savemodeljs'' not yet implemented for class ' field])
+				else
+					%savemodeljs for current object
+					%disp(['javascript saving ' field '...']);
+					savemodeljs(md.(field),fid,modelname);
+				end
 			end
 
 			%done, close file:

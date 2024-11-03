@@ -14,7 +14,7 @@ from model import *
 from solve import *
 
 md = model()
-md.cluster = generic('name', gethostname(), 'np', 8)
+md.cluster = generic('name', gethostname(), 'np', 3)
 
 # Set validation=1 for comparing against the Spada benchmark
 validation = 0
@@ -39,26 +39,13 @@ md.materials.viscosity = np.array([0, 0, 2.0000e+00, 1.0000e+00, 1.0000e+00,
 md.materials.lame_lambda = np.array(md.materials.lame_mu) * 0 + 5e17
 md.materials.issolid = np.array([1, 0, 1, 1, 1, 1]).reshape(-1, 1)
 md.materials.rheologymodel = np.zeros((md.materials.numlayers, 1))
-md.materials.burgers_mu = md.materials.lame_mu / 3
-md.materials.burgers_viscosity = md.materials.viscosity / 10
-md.materials.ebm_alpha = np.ones((md.materials.numlayers, 1)) * 0.9
-md.materials.ebm_delta = np.ones((md.materials.numlayers, 1)) * 0.2
-md.materials.ebm_taul = np.ones((md.materials.numlayers, 1)) * 54 * 60 # 54 min
-md.materials.ebm_tauh = np.ones((md.materials.numlayers, 1)) * 18.6 * cst / 1e3 # 18.6 yr
-#setlitho2prem(md.materials)
 
-md.love.allow_layer_deletion = 1
 md.love.frequencies = np.vstack(([0], np.logspace(-6, 3, 1000).reshape(-1, 1) / cst))
 md.love.nfreq = len(md.love.frequencies)
 md.love.sh_nmin = 1
 md.love.sh_nmax = 1000
 md.love.underflow_tol = 1e-20
-md.love.pw_threshold = 1e-3
 md.love.Gravitational_Constant = 6.6732e-11
-md.love.allow_layer_deletion = 1
-md.love.forcing_type = 11
-md.love.chandler_wobble = 0
-md.love.complex_computation = 0
 
 md.love.istemporal = 1
 md.love.n_temporal_iterations = 8
@@ -66,7 +53,6 @@ md.love.n_temporal_iterations = 8
 md.love.time = np.vstack(([0], np.logspace(-3, 5, 24).reshape(-1, 1) * cst))
 
 #md.love.time = np.linspace(1/12, 10, 10 * 12).reshape(-1, 1) * cst / 1e3
-md.love.love_kernels = 1
 if md.love.istemporal:
     md.love = md.love.build_frequencies_from_time()
 

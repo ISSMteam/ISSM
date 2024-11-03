@@ -4957,51 +4957,16 @@ int        Tria::NodalValue(IssmDouble* pvalue, int index, int natureofdataenum)
 }
 /*}}}*/
 void       Tria::NormalBase(IssmDouble* bed_normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	bed_normal[0]= + vector[1]/norm;
-	bed_normal[1]= - vector[0]/norm;
+	LineSectionNormal(bed_normal, xyz_list);
 	_assert_(bed_normal[1]<0);
 }
 /*}}}*/
 void       Tria::NormalSection(IssmDouble* normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	normal[0]= + vector[1]/(norm+1e-10);
-	normal[1]= - vector[0]/(norm+1e-10);
+	LineSectionNormal(normal, xyz_list);
 }
 /*}}}*/
 void       Tria::NormalTop(IssmDouble* top_normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	int index1,index2;
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	this->EdgeOnSurfaceIndices(&index1,&index2);
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	top_normal[0]= + vector[1]/norm;
-	top_normal[1]= - vector[0]/norm;
+	LineSectionNormal(top_normal, xyz_list);
 	_assert_(top_normal[1]>0);
 }
 /*}}}*/
@@ -6356,19 +6321,21 @@ void       Tria::WriteFieldIsovalueSegment(DataSet* segments,int fieldenum,IssmD
 /*}}}*/
 
 #ifdef _HAVE_ESA_
-void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,Vector<IssmDouble>* pEast,Vector<IssmDouble>* pX,Vector<IssmDouble>* pY,IssmDouble* xx,IssmDouble* yy){ /*{{{*/
+void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,Vector<IssmDouble>* pEast,Vector<IssmDouble>* pGravity,Vector<IssmDouble>* pX,Vector<IssmDouble>* pY,IssmDouble* xx,IssmDouble* yy){ /*{{{*/
 
 	/*diverse:*/
 	int gsize;
 	IssmDouble xyz_list[NUMVERTICES][3];
 	IssmDouble area;
 	IssmDouble earth_radius = 6371012.0;	// Earth's radius [m]
+	IssmDouble g_earth = 9.81;	// Gravitational acceleration on Earth's surface [m/s2]
 	IssmDouble I;		//ice/water loading
 	IssmDouble rho_ice, rho_earth;
 
 	/*precomputed elastic green functions:*/
 	IssmDouble* U_elastic_precomputed = NULL;
 	IssmDouble* H_elastic_precomputed = NULL;
+	IssmDouble* G_elastic_precomputed = NULL;
 	int         M, hemi;
 
 	/*computation of Green functions:*/
@@ -6377,6 +6344,7 @@ void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	IssmDouble* E_elastic= NULL;
 	IssmDouble* X_elastic= NULL;
 	IssmDouble* Y_elastic= NULL;
+	IssmDouble* G_elastic= NULL;
 
 	/*optimization:*/
 	bool store_green_functions=false;
@@ -6411,8 +6379,10 @@ void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	/*recover elastic Green's functions for displacement:*/
 	DoubleVecParam* U_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaUElasticEnum)); _assert_(U_parameter);
 	DoubleVecParam* H_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaHElasticEnum)); _assert_(H_parameter);
+	DoubleVecParam* G_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaGElasticEnum)); _assert_(G_parameter);
 	U_parameter->GetParameterValueByPointer(&U_elastic_precomputed,&M);
 	H_parameter->GetParameterValueByPointer(&H_elastic_precomputed,&M);
+	G_parameter->GetParameterValueByPointer(&G_elastic_precomputed,&M);
 
 	/*initialize: */
 	U_elastic=xNewZeroInit<IssmDouble>(gsize);
@@ -6420,11 +6390,13 @@ void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	E_elastic=xNewZeroInit<IssmDouble>(gsize);
 	X_elastic=xNewZeroInit<IssmDouble>(gsize);
 	Y_elastic=xNewZeroInit<IssmDouble>(gsize);
+	G_elastic=xNewZeroInit<IssmDouble>(gsize);
 
 	int* indices=xNew<int>(gsize);
 	IssmDouble* U_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* N_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* E_values=xNewZeroInit<IssmDouble>(gsize);
+	IssmDouble* G_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* X_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* Y_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble dx, dy, dist, alpha, ang, ang2;
@@ -6444,19 +6416,21 @@ void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 
 		/*Compute azimuths, both north and east components: */
 		ang = M_PI/2 - atan2(dy,dx);		// this is bearing angle!
-		Y_azim = cos(ang);
-		X_azim = sin(ang);
+		Y_azim = -cos(ang);
+		X_azim = -sin(ang);
 
 		/*Elastic component  (from Eq 17 in Adhikari et al, GMD 2015): */
 		int index=reCast<int,IssmDouble>(alpha/M_PI*(M-1));
 		U_elastic[i] += U_elastic_precomputed[index];
 		Y_elastic[i] += H_elastic_precomputed[index]*Y_azim;
 		X_elastic[i] += H_elastic_precomputed[index]*X_azim;
+		G_elastic[i] += G_elastic_precomputed[index];
 
 		/*Add all components to the pUp solution vectors:*/
 		U_values[i]+=3*rho_ice/rho_earth*area/(4*M_PI*pow(earth_radius,2))*I*U_elastic[i];
 		Y_values[i]+=3*rho_ice/rho_earth*area/(4*M_PI*pow(earth_radius,2))*I*Y_elastic[i];
 		X_values[i]+=3*rho_ice/rho_earth*area/(4*M_PI*pow(earth_radius,2))*I*X_elastic[i];
+		G_values[i]+=3*rho_ice/rho_earth*area/(4*M_PI*pow(earth_radius,2))*I*G_elastic[i]*g_earth/earth_radius;
 
 		/*North-south, East-west components */
 		if (hemi == -1) {
@@ -6478,20 +6452,21 @@ void    Tria::EsaGeodetic2D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	pUp->SetValues(gsize,indices,U_values,ADD_VAL);
 	pNorth->SetValues(gsize,indices,N_values,ADD_VAL);
 	pEast->SetValues(gsize,indices,E_values,ADD_VAL);
+	pGravity->SetValues(gsize,indices,G_values,ADD_VAL);
 	pX->SetValues(gsize,indices,X_values,ADD_VAL);
 	pY->SetValues(gsize,indices,Y_values,ADD_VAL);
 
 	/*Free resources:*/
 	xDelete<int>(indices);
-	xDelete<IssmDouble>(U_values); xDelete<IssmDouble>(N_values); xDelete<IssmDouble>(E_values);
-	xDelete<IssmDouble>(U_elastic); xDelete<IssmDouble>(N_elastic); xDelete<IssmDouble>(E_elastic);
+	xDelete<IssmDouble>(U_values); xDelete<IssmDouble>(N_values); xDelete<IssmDouble>(E_values); xDelete<IssmDouble>(G_values);
+	xDelete<IssmDouble>(U_elastic); xDelete<IssmDouble>(N_elastic); xDelete<IssmDouble>(E_elastic); xDelete<IssmDouble>(G_elastic);
 	xDelete<IssmDouble>(X_values); xDelete<IssmDouble>(Y_values);
 	xDelete<IssmDouble>(X_elastic); xDelete<IssmDouble>(Y_elastic);
 
 	return;
 }
 /*}}}*/
-void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,Vector<IssmDouble>* pEast,IssmDouble* latitude,IssmDouble* longitude,IssmDouble* radius,IssmDouble* xx,IssmDouble* yy,IssmDouble* zz){ /*{{{*/
+void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,Vector<IssmDouble>* pEast,Vector<IssmDouble>* pGravity,IssmDouble* latitude,IssmDouble* longitude,IssmDouble* radius,IssmDouble* xx,IssmDouble* yy,IssmDouble* zz){ /*{{{*/
 
 	/*diverse:*/
 	int gsize;
@@ -6499,6 +6474,8 @@ void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	IssmDouble llr_list[NUMVERTICES][3];
 	IssmDouble xyz_list[NUMVERTICES][3];
 	IssmDouble area,planetarea;
+	IssmDouble earth_radius = 6371012.0;	// Earth's radius [m]
+	IssmDouble g_earth = 9.81;	// Gravitational acceleration on Earth's surface [m/s2]
 	IssmDouble I;		//ice/water loading
 	IssmDouble late,longe,re;
 	IssmDouble lati,longi,ri;
@@ -6509,12 +6486,14 @@ void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	/*precomputed elastic green functions:*/
 	IssmDouble* U_elastic_precomputed = NULL;
 	IssmDouble* H_elastic_precomputed = NULL;
+	IssmDouble* G_elastic_precomputed = NULL;
 	int         M;
 
 	/*computation of Green functions:*/
 	IssmDouble* U_elastic= NULL;
 	IssmDouble* N_elastic= NULL;
 	IssmDouble* E_elastic= NULL;
+	IssmDouble* G_elastic= NULL;
 
 	/*optimization:*/
 	bool store_green_functions=false;
@@ -6531,7 +6510,7 @@ void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	rho_ice=FindParam(MaterialsRhoIceEnum);
 	rho_earth=FindParam(MaterialsEarthDensityEnum);
 
-	/*recover earth area: */
+	/*recover earth area and radius: */
 	this->parameters->FindParam(&planetarea,SolidearthPlanetAreaEnum);
 
 	/*how many dofs are we working with here? */
@@ -6589,18 +6568,22 @@ void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 	/*recover elastic Green's functions for displacement:*/
 	DoubleVecParam* U_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaUElasticEnum)); _assert_(U_parameter);
 	DoubleVecParam* H_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaHElasticEnum)); _assert_(H_parameter);
+	DoubleVecParam* G_parameter = static_cast<DoubleVecParam*>(this->parameters->FindParamObject(EsaGElasticEnum)); _assert_(G_parameter);
 	U_parameter->GetParameterValueByPointer(&U_elastic_precomputed,&M);
 	H_parameter->GetParameterValueByPointer(&H_elastic_precomputed,&M);
+	G_parameter->GetParameterValueByPointer(&G_elastic_precomputed,&M);
 
 	/*initialize: */
 	U_elastic=xNewZeroInit<IssmDouble>(gsize);
 	N_elastic=xNewZeroInit<IssmDouble>(gsize);
 	E_elastic=xNewZeroInit<IssmDouble>(gsize);
+	G_elastic=xNewZeroInit<IssmDouble>(gsize);
 
 	int* indices=xNew<int>(gsize);
 	IssmDouble* U_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* N_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble* E_values=xNewZeroInit<IssmDouble>(gsize);
+	IssmDouble* G_values=xNewZeroInit<IssmDouble>(gsize);
 	IssmDouble alpha;
 	IssmDouble delPhi,delLambda;
 	IssmDouble dx, dy, dz, x, y, z;
@@ -6625,28 +6608,31 @@ void    Tria::EsaGeodetic3D(Vector<IssmDouble>* pUp,Vector<IssmDouble>* pNorth,V
 			x=1e-12; y=1e-12;
 		}
 		dx = x_element-x; dy = y_element-y; dz = z_element-z;
-		N_azim = (-z*x*dx-z*y*dy+(pow(x,2)+pow(y,2))*dz) /pow((pow(x,2)+pow(y,2))*(pow(x,2)+pow(y,2)+pow(z,2))*(pow(dx,2)+pow(dy,2)+pow(dz,2)),0.5);
-		E_azim = (-y*dx+x*dy) /pow((pow(x,2)+pow(y,2))*(pow(dx,2)+pow(dy,2)+pow(dz,2)),0.5);
+		N_azim = -(-z*x*dx-z*y*dy+(pow(x,2)+pow(y,2))*dz) /pow((pow(x,2)+pow(y,2))*(pow(x,2)+pow(y,2)+pow(z,2))*(pow(dx,2)+pow(dy,2)+pow(dz,2)),0.5);
+		E_azim = -(-y*dx+x*dy) /pow((pow(x,2)+pow(y,2))*(pow(dx,2)+pow(dy,2)+pow(dz,2)),0.5);
 
 		/*Elastic component  (from Eq 17 in Adhikari et al, GMD 2015): */
 		int index=reCast<int,IssmDouble>(alpha/M_PI*(M-1));
 		U_elastic[i] += U_elastic_precomputed[index];
 		N_elastic[i] += H_elastic_precomputed[index]*N_azim;
 		E_elastic[i] += H_elastic_precomputed[index]*E_azim;
+		G_elastic[i] += G_elastic_precomputed[index];
 
 		/*Add all components to the pUp solution vectors:*/
 		U_values[i]+=3*rho_ice/rho_earth*area/planetarea*I*U_elastic[i];
 		N_values[i]+=3*rho_ice/rho_earth*area/planetarea*I*N_elastic[i];
 		E_values[i]+=3*rho_ice/rho_earth*area/planetarea*I*E_elastic[i];
+		G_values[i]+=3*rho_ice/rho_earth*area/planetarea*I*G_elastic[i]*g_earth/earth_radius;
 	}
 	pUp->SetValues(gsize,indices,U_values,ADD_VAL);
 	pNorth->SetValues(gsize,indices,N_values,ADD_VAL);
 	pEast->SetValues(gsize,indices,E_values,ADD_VAL);
+	pGravity->SetValues(gsize,indices,G_values,ADD_VAL);
 
 	/*Free resources:*/
 	xDelete<int>(indices);
-	xDelete<IssmDouble>(U_values); xDelete<IssmDouble>(N_values); xDelete<IssmDouble>(E_values);
-	xDelete<IssmDouble>(U_elastic); xDelete<IssmDouble>(N_elastic); xDelete<IssmDouble>(E_elastic);
+	xDelete<IssmDouble>(U_values); xDelete<IssmDouble>(N_values); xDelete<IssmDouble>(E_values); xDelete<IssmDouble>(G_values);
+	xDelete<IssmDouble>(U_elastic); xDelete<IssmDouble>(N_elastic); xDelete<IssmDouble>(E_elastic); xDelete<IssmDouble>(G_elastic);
 
 	return;
 }

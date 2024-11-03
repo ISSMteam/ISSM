@@ -4,8 +4,8 @@ function grid = InterpFromMeshToGrid(index,x,y,data,xgrid,ygrid,default_value);
 %   Usage:
 %      grid = InterpFromMeshToGrid(index,x,y,data,xgrid,ygrid,default_value)
 %
-%   This function is a multi-threaded mex file that interpolates a field defined on a triangular
-%   mesh onto a regular grid.
+%   This function is a wrapper to a multi-threaded mex file that interpolates a 
+%   field defined on a triangular mesh onto a regular grid.
 %
 %   index,x,y:	delaunay triangulation defining the mesh
 %   meshdata:	vertex values of data to be interpolated

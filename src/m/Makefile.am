@@ -121,7 +121,7 @@ js_scripts = \
 	${ISSM_DIR}/src/m/shp/*.js \
 	${ISSM_DIR}/src/m/solve/*.js \
 	${ISSM_DIR}/src/m/solvers/*.js
-bin_SCRIPTS +=  issm-bin.js
+bin_SCRIPTS += issm-bin.js
 
 issm-bin.js: ${js_scripts}
 	rm -f issm-bin.js

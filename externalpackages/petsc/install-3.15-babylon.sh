@@ -25,7 +25,7 @@ rm -rf petsc-${VER}
 
 # Configure
 cd ${PETSC_DIR}
-./config/configure.py \
+./configure \
 	--with-cc=icc --with-cxx=icpc --with-fc=ifort \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \

@@ -3164,82 +3164,22 @@ int        Penta::NodalValue(IssmDouble* pvalue, int index, int natureofdataenum
 }
 /*}}}*/
 void       Penta::NormalBase(IssmDouble* bed_normal,IssmDouble* xyz_list){/*{{{*/
-
-	IssmDouble v13[3],v23[3];
-	IssmDouble normal[3];
-	IssmDouble normal_norm;
-
-	for(int i=0;i<3;i++){
-		v13[i]=xyz_list[0*3+i]-xyz_list[2*3+i];
-		v23[i]=xyz_list[1*3+i]-xyz_list[2*3+i];
-	}
-
-	normal[0]=v13[1]*v23[2]-v13[2]*v23[1];
-	normal[1]=v13[2]*v23[0]-v13[0]*v23[2];
-	normal[2]=v13[0]*v23[1]-v13[1]*v23[0];
-	normal_norm=sqrt(normal[0]*normal[0]+ normal[1]*normal[1]+ normal[2]*normal[2]);
-
+	TriangleFacetNormal(bed_normal, xyz_list);
 	/*Bed normal is opposite to surface normal*/
-	bed_normal[0]=-normal[0]/normal_norm;
-	bed_normal[1]=-normal[1]/normal_norm;
-	bed_normal[2]=-normal[2]/normal_norm;
+	for (int i = 0; i < 3; ++i) bed_normal[i] *= (-1);
 }
 /*}}}*/
 void       Penta::NormalSection(IssmDouble* normal,IssmDouble* xyz_list){/*{{{*/
 
-	/*Build unit outward pointing vector*/
-	IssmDouble AB[3];
-	IssmDouble AC[3];
-	IssmDouble norm;
-
-	AB[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	AB[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-	AB[2]=xyz_list[1*3+2] - xyz_list[0*3+2];
-	AC[0]=xyz_list[2*3+0] - xyz_list[0*3+0];
-	AC[1]=xyz_list[2*3+1] - xyz_list[0*3+1];
-	AC[2]=xyz_list[2*3+2] - xyz_list[0*3+2];
-
-	cross(normal,AB,AC);
-	norm=sqrt(normal[0]*normal[0]+normal[1]*normal[1]+normal[2]*normal[2]);
-
-	for(int i=0;i<3;i++) normal[i]=normal[i]/(norm+1e-10);
+	TriangleFacetNormal(normal, xyz_list);
 }
 /*}}}*/
 void       Penta::NormalSectionBase(IssmDouble* normal,IssmDouble* xyz_list){/*{{{*/
-
-	/*Build unit outward pointing vector*/
-	IssmDouble vector[2];
-	IssmDouble norm;
-
-	vector[0]=xyz_list[1*3+0] - xyz_list[0*3+0];
-	vector[1]=xyz_list[1*3+1] - xyz_list[0*3+1];
-
-	norm=sqrt(vector[0]*vector[0] + vector[1]*vector[1]);
-
-	normal[0]= + vector[1]/norm;
-	normal[1]= - vector[0]/norm;
+	LineSectionNormal(normal, xyz_list);
 }
 /*}}}*/
 void       Penta::NormalTop(IssmDouble* top_normal,IssmDouble* xyz_list){/*{{{*/
-
-	int i;
-	IssmDouble v13[3],v23[3];
-	IssmDouble normal[3];
-	IssmDouble normal_norm;
-
-	for (i=0;i<3;i++){
-		v13[i]=xyz_list[0*3+i]-xyz_list[2*3+i];
-		v23[i]=xyz_list[1*3+i]-xyz_list[2*3+i];
-	}
-
-	normal[0]=v13[1]*v23[2]-v13[2]*v23[1];
-	normal[1]=v13[2]*v23[0]-v13[0]*v23[2];
-	normal[2]=v13[0]*v23[1]-v13[1]*v23[0];
-	normal_norm=sqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2]);
-
-	top_normal[0]=normal[0]/normal_norm;
-	top_normal[1]=normal[1]/normal_norm;
-	top_normal[2]=normal[2]/normal_norm;
+	TriangleFacetNormal(top_normal, xyz_list);
 }
 /*}}}*/
 int        Penta::NumberofNodesPressure(void){/*{{{*/

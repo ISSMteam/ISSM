@@ -29,7 +29,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/proj-${VER}.tar.gz" "proj-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://download.osgeo.org/proj/proj-${VER}.tar.gz" "proj-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf proj-${VER}.tar.gz

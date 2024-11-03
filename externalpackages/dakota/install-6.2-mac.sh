@@ -31,7 +31,7 @@ rm -rf ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 mkdir -p ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
+#${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 # Unpack source
 tar -zxvf dakota-${VER}-public-src.tar.gz
@@ -76,11 +76,12 @@ cmake \
 	-DBUILD_SHARED_LIBS=ON \
 	-DBUILD_STATIC_LIBS=OFF \
 	-DCMAKE_C_COMPILER=${MPI_HOME}/bin/mpicc \
-	-DCMAKE_C_FLAGS="-w -Wno-error=implicit-int" \
+	-DCMAKE_C_FLAGS="-w -Wno-error=implicit-int -Wno-implicit-function-declaration" \
 	-DCMAKE_CXX_COMPILER=${MPI_HOME}/bin/mpicxx \
 	-DCMAKE_CXX_FLAGS="-fdelayed-template-parsing -w" \
 	-DCMAKE_CXX_STANDARD="11" \
 	-DCMAKE_Fortran_COMPILER=${MPI_HOME}/bin/mpif77 \
+	-DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch -w" \
 	-DBoost_NO_BOOST_CMAKE=TRUE \
 	-DHAVE_ACRO=OFF \
 	-DHAVE_JEGA=OFF \

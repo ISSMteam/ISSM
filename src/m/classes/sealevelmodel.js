@@ -22,7 +22,7 @@ class sealevelmodel {
 		this.cluster = null;
 		this.miscellaneous = null;
 		this.settings = null;
-		this.private = null;
+		this._private = null; //NOTE: Different naming than MATLAB/Python as 'private' is a reserved keyword
 		this.mergedcaps = null;
 		this.transitions = [];
 		this.eltransitions = [];
@@ -51,7 +51,7 @@ class sealevelmodel {
 		this.cluster = generic();
 		this.miscellaneous = miscellaneous();
 		this.settings = issmsettings();
-		this.private = private();
+		this._private = priv();
 		this.transitions = [];
 		this.eltransitions = [];
 		this.planet = 'earth';
@@ -126,7 +126,7 @@ class sealevelmodel {
 			let md = this.mergedcaps[2 * i];
 			let trans = this.mergedcaps[2 * i + 1];
 			//let icecaps = this.icecaps[this.range[2 * i + 2]];
-			for (let j = 0; j < this.icecaps[0].results.TransientSolution) {
+			for (let j = 0; j < this.icecaps[0].results.TransientSolution; ++j) {
 				for (let k = 0; champs.length; ++k) {
 					if (strcmpi(typeof(icecaps[0].results.TransientSolution[j][champs[k]]) == 'double')) {
 						// Vertex or element?
@@ -139,5 +139,6 @@ class sealevelmodel {
 					}
 				}
 			}
+		}
 	} //}}}
 }

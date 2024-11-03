@@ -9,10 +9,9 @@ export CFLAGS=-Wno-error=implicit-function-declaration
 
 # Cleanup
 rm -rf install src
-mkdir install src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz" "adjoinablempi.tar.gz"
+#$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
 
 # Unpack source
 tar -zxvf adjoinablempi.tar.gz

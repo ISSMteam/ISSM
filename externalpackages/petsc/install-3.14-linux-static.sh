@@ -33,7 +33,7 @@ rm -rf petsc-${VER}
 #		compiler PIC flag via CFLAGS, CXXXFLAGS, and FCFLAGS
 #
 cd ${PETSC_DIR}
-./configure.py \
+./config/configure.py \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--with-shared-libraries=0 \

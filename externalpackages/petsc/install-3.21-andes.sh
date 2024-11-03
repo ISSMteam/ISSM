@@ -25,7 +25,7 @@ rm -rf petsc-${VER}
 
 # Configure
 cd ${PETSC_DIR}
-./config/configure.py \
+./configure \
 	CC=icx CXX=icpx FC=ifx \
 	COPTFLAGS="-g -O3" CXXOPTFLAGS="-g -O3" FOPTFLAGS="-g -O3" \
 	--prefix="${PREFIX}" \

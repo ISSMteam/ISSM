@@ -68,7 +68,7 @@ externalpackages/*/src
 externalpackages/*/*.zip
 externalpackages/*/*.gz
 externalpackages/*/*.tgz
-externalpackages/chaco/chaco_guide.pdf
+externalpackages/chaco/chaco*guide.pdf
 
 # Jenkins #
 #==========
@@ -78,10 +78,18 @@ nightlylog
 # Nightly runs #
 #===============
 test/NightlyRun/*.bin
+test/NightlyRun/*.errlog
+test/NightlyRun/*.outlog
+test/NightlyRun/*.qmu*
+test/NightlyRun/*.queue
 test/NightlyRun/*.tar.gz
+test/NightlyRun/*.toolkits
+test/NightlyRun/*_vertices-*.txt
 
 # Examples #
 #===========
 examples/Data/*.nc
 examples/Data/*.mat
+examples/Data/*.txt
 examples/Data/*.zip
+examples/Data/Jakobshavn_2008_2011_Composite

@@ -58,10 +58,10 @@ class love(object):
         s += '{}\n'.format(fielddisplay(self, 'allow_layer_deletion', 'allow for migration of the integration boundary with increasing spherical harmonics degree (default: 1)'))
         s += '{}\n'.format(fielddisplay(self, 'underflow_tol', 'threshold of deep to surface love number ratio to trigger the deletion of layers (default: 1e-16)'))
         s += '{}\n'.format(fielddisplay(self, 'pw_threshold', 'if relative variation across frequencies is smaller than this ratio, the post-widder transform for time-dependent love numbers is bypassed (default (1e-3)'))
-        s += '{}\n'.format(fielddisplay(self, 'min_integration_steps', 'minimum number of radial steps to propagate the yi system from the bottom to the top of each layer (default: 50)'))
+        s += '{}\n'.format(fielddisplay(self, 'min_integration_steps', 'minimum number of radial steps to propagate the yi system from the bottom to the top of each layer (default: 500)'))
         s += '{}\n'.format(fielddisplay(self, 'max_integration_dr', 'maximum length of radial steps to propagate the yi system from the bottom to the top of each layer (default: 10e3) [m]'))
-        s += '{}\n'.format(fielddisplay(self, 'istemporal', ['1 for time-dependent love numbers, 0 for frequency-dependent or elastic love numbers (default: 0)', 'If 1: use fourierlove function build_frequencies_from_time to meet consistency']))
-        s += '{}\n'.format(fielddisplay(self, 'n_temporal_iterations', 'max number of iterations in the inverse Laplace transform. Also the number of spectral samples per time step requested (default: 8)'))
+        s += '{}\n'.format(fielddisplay(self, 'istemporal', ['1 for time-dependent love numbers, 0 for frequency-dependent or elastic love numbers (default: 1)', 'If 1: use fourierlove function build_frequencies_from_time to meet consistency']))
+        s += '{}\n'.format(fielddisplay(self, 'n_temporal_iterations', 'max number of iterations in the inverse Laplace transform. Also the number of spectral samples per time step requested (default: 7)'))
         s += '{}\n'.format(fielddisplay(self, 'time', 'time vector for deformation if istemporal (default: 0) [s]'))
         s += '{}\n'.format(fielddisplay(self, 'love_kernels', 'compute love numbers at depth? (default: 0)'))
         s += '{}\n'.format(fielddisplay(self, 'forcing_type', 'integer indicating the nature and depth of the forcing for the Love number calculation (default: 11):'))
@@ -106,11 +106,11 @@ class love(object):
         self.allow_layer_deletion = 1
         self.underflow_tol = 1e-16 # Threshold of deep to surface love number ratio to trigger the deletion of layer
         self.pw_threshold = 1e-3 # If relative variation across frequencies is smaller than this ratio, the post-widder transform for time-dependent love numbers is bypassed 
-        self.min_integration_steps=50
-        self.max_integration_dr=1e4
-        self.integration_scheme=1
-        self.istemporal = 0
-        self.n_temporal_iterations = 8
+        self.min_integration_steps = 500
+        self.max_integration_dr = 1e4
+        self.integration_scheme = 2
+        self.istemporal = 1
+        self.n_temporal_iterations = 7
         self.time = [0] # s
         self.love_kernels = 0
         self.forcing_type = 11 # Surface loading
@@ -156,6 +156,9 @@ class love(object):
         md = checkfield(md, 'fieldname', 'love.hypergeom_z', 'NaN', 1, 'Inf', 1, 'numel', md.love.hypergeom_nz)
         md = checkfield(md, 'fieldname', 'love.hypergeom_table1', 'NaN', 1, 'Inf', 1, 'numel', md.love.hypergeom_nz * md.love.hypergeom_nalpha)
         md = checkfield(md, 'fieldname', 'love.hypergeom_table2', 'NaN', 1, 'Inf', 1, 'numel', md.love.hypergeom_nz * md.love.hypergeom_nalpha)
+
+        if np.any(md.materials.rheologymodel) == 2 and md.love.hypergeom_nz <= 1:
+            raise RuntimeError('EBM rheology requested but hypergeometric table has fewer then 2 frequency values')
 
         if md.love.istemporal:
             md = checkfield(md, 'fieldname', 'love.n_temporal_iterations', 'NaN', 1, 'Inf', 1, 'numel', 1, '>', 0)
