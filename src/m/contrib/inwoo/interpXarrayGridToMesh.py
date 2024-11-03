@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
 import numpy as np
 import xarray
 import os, sys, platform
 
 __all__ = ['interpXarrayGridToMesh']
-def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', verbose:bool=False, method='linear', return_xarray:bool=True): # {{{
+def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', verbose:bool=False, method='linear', return_xarray:bool=True, selyear:list=None): # {{{
     '''interpXarray - interpolate netcdf file with xarray in python.
 
     Usage
@@ -30,6 +29,7 @@ def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', 
     xname : str (default: 'lon') - x coordinate name.
     yname : str (default: 'lat') - y coordinate name.
     verbose: bool (default: False) - show process.
+    selyer: list (default: None) - select specific year range. i.g., use selyear = [1980, 2000] for selecting specific year between 1980, 2000.
 
     return_xarray: bool (default: True) - return results with xarray
 
@@ -46,7 +46,7 @@ def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', 
     # Check input format.
     if isinstance(fname,str):
         ds = xarray.load_dataset(fname)
-    elif isinstance(fname,(xarray.core.dataset.Dataset)):
+    elif isinstance(fname,(xarray.core.dataset.Dataset, xarray.core.dataarray.DataArray)):
         ds = fname.copy()
     else:
         raise Exception('ERROR: Given data type is not available.')
@@ -56,7 +56,20 @@ def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', 
         raise Exception('ERROR: Given interpolation method (=%s) is not available. See the https://docs.xarray.dev/en/latest/generated/xarray.DataArray.interp.html for checking interpolation method'%(method))
 
     # Okay, check xname and yname in dimension of xarray file
-    dims = list(ds.dims.keys())
+    '''
+    FutureWarning: The return type of `Dataset.dims` will be changed to return a set of dimension names in future, in order to be more consistent with `DataArray.dims`. To access a mapping from dimension names to lengths, please use `Dataset.sizes`.
+    '''
+    if isinstance(ds, (xarray.core.dataset.Dataset)):
+        if xarray.__version__ > '2024.1.1':
+            dims = list(ds.sizes.keys())
+        else:
+            dims = list(ds.dims.keys())
+    elif isinstance(ds, (xarray.core.dataarray.DataArray)):
+        if xarray.__version__ > '2024.1.1':
+            dims = list(ds.sizes)
+        else:
+            dims = list(ds.dims)
+
     if not xname in dims:
         raise Exception(f'ERROR: Given xname (={xname}) is not defined in {dims}')
     elif not yname in dims:
@@ -65,6 +78,11 @@ def interpXarrayGridToMesh(fname, X, Y, varname=None, xname='lon', yname='lat', 
     # Initialize scatter array.
     xr = xarray.DataArray(X, dims='npts')
     yr = xarray.DataArray(Y, dims='npts')
+
+    # First extract specific year
+    if not (selyear is None):
+        pos = [(yr in range(selyear[0], selyear[1]+1)) for yr in ds['time.year']]
+        ds = ds.isel(time=pos)
 
     # Do interpolation
     if varname is not None:
@@ -100,22 +118,31 @@ if __name__ == '__main__':
                         help='name for y coordinate.')
     parser.add_argument('-method',type=str, default='linear',
                         help='name for y coordinate.')
+    parser.add_argument('-inputformat',type=str, default='txt',
+                        )
     parser.add_argument('-v','--verbose',type=bool,default=False,
                         help='show process')
     args=parser.parse_args()
 
     # Okay, load x, y coordinates
-    xy = np.loadtxt(args.inputgrid)
+    if args.inputformat == 'txt':
+        xy = np.loadtxt(args.inputgrid)
 
-    if args.verbose:
-        print(xy)
+        if args.verbose:
+            print(xy)
+    elif args.inputformat == 'mat':
+        import mat73
+        xy = mat73.loadmat(args.inputgrid)
+        xy = np.vstack((xy['X'], xy['Y'])).T
 
     # Do interpolation
     ds = interpXarrayGridToMesh(args.input, xy[:,0], xy[:,1],
                                 varname=args.variable,
                                 xname=args.xname, yname=args.yname,
                                 method=args.method,
+                                verbose=args.verbose,
                                 )
 
-    # Export dataset.
+    if args.verbose:
+        print('   interpXarrayGridToMesh: Export dataset.')
     ds.to_netcdf(args.output)
