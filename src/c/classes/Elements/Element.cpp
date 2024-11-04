@@ -4952,6 +4952,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	xDelete<IssmDouble>(saccu_out);
 	xDelete<IssmDouble>(smelt_out);
 	xDelete<IssmDouble>(refr_out);
+	xDelete<IssmDouble>(runoff_out);
+	xDelete<IssmDouble>(subl_out);
 	xDelete<IssmDouble>(albedo_out);
 	xDelete<IssmDouble>(albedo_snow_out);
 	xDelete<IssmDouble>(hsnow_out);
