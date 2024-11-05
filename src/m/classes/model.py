@@ -1,7 +1,7 @@
-#module imports {{{
-import numpy as np
 import copy
 import sys
+import numpy as np
+import scipy
 from pairoptions import pairoptions
 from mesh2d import mesh2d
 from mesh3dprisms import mesh3dprisms
@@ -71,8 +71,7 @@ from contourenvelope import contourenvelope
 from DepthAverage import DepthAverage
 from sampling import sampling
 from stochasticforcing import stochasticforcing
-# }}}
-
+from BamgConvertMesh import BamgConvertMesh
 
 class model(object):
     """model class definition
@@ -288,22 +287,21 @@ class model(object):
     # }}}
 
     def checkmessage(self, string):  #{{{
-        print("model not consistent: {}".format(string))
+        print('model not consistent: {}'.format(string))
         self.private.isconsistent = False
         return self
     # }}}
-    #@staticmethod
 
     def extract(self, area):  #{{{
-        """EXTRACT - extract a model according to an Argus contour or flag list
+        """extract - extract a model according to an Argus contour or flag list
 
-        This routine extracts a submodel from a bigger model with respect to a given contour
-        md must be followed by the corresponding exp file or flags list
-        It can either be a domain file (argus type, .exp extension), or an array of element flags.
-        If user wants every element outside the domain to be
-        extract2d, add '~' to the name of the domain file (ex: '~HO.exp')
-        an empty string '' will be considered as an empty domain
-        a string 'all' will be considered as the entire domain
+        This routine extracts a submodel from a bigger model with respect to a 
+        given contour md must be followed by the corresponding exp file or 
+        flags list. It can either be a domain file (argus type, .exp 
+        extension), or an array of element flags. If user wants every element 
+        outside the domain to be extract2d, add '~' to the name of the domain 
+        file (ex: '~HO.exp'). An empty string '' will be considered as an empty 
+        domain. A string 'all' will be considered as the entire domain.
 
         Usage:
             md2 = extract(md, area)
@@ -311,18 +309,18 @@ class model(object):
         Examples:
             md2 = extract(md, 'Domain.exp')
 
-        See also: EXTRUDE, COLLAPSE
+        See also: extrude, collapse
         """
 
-        #copy model
+        # Copy model
         md1 = copy.deepcopy(self)
 
-        #get elements that are inside area
+        # Get elements that are inside area
         flag_elem = FlagElements(md1, area)
         if not np.any(flag_elem):
-            raise RuntimeError("extracted model is empty")
+            raise RuntimeError('extracted model is empty')
 
-        #kick out all elements with 3 dirichlets
+        # Kick out all elements with 3 dirichlets
         spc_elem = np.nonzero(np.logical_not(flag_elem))[0]
         spc_node = np.unique(md1.mesh.elements[spc_elem, :]) - 1
         flag = np.ones(md1.mesh.numberofvertices)
@@ -330,11 +328,11 @@ class model(object):
         pos = np.nonzero(np.logical_not(np.sum(flag[md1.mesh.elements - 1], axis=1)))[0]
         flag_elem[pos] = 0
 
-        #extracted elements and nodes lists
+        # Extracted elements and nodes lists
         pos_elem = np.nonzero(flag_elem)[0]
         pos_node = np.unique(md1.mesh.elements[pos_elem, :]) - 1
 
-        #keep track of some fields
+        # Keep track of some fields
         numberofvertices1 = md1.mesh.numberofvertices
         numberofelements1 = md1.mesh.numberofelements
         numberofvertices2 = np.size(pos_node)
@@ -342,13 +340,13 @@ class model(object):
         flag_node = np.zeros(numberofvertices1)
         flag_node[pos_node] = 1
 
-        #Create Pelem and Pnode (transform old nodes in new nodes and same thing for the elements)
+        # Create Pelem and Pnode (transform old nodes in new nodes and same thing for the elements)
         Pelem = np.zeros(numberofelements1, int)
         Pelem[pos_elem] = np.arange(1, numberofelements2 + 1)
         Pnode = np.zeros(numberofvertices1, int)
         Pnode[pos_node] = np.arange(1, numberofvertices2 + 1)
 
-        #renumber the elements (some node won't exist anymore)
+        # Renumber the elements (some nodes won't exist anymore)
         elements_1 = copy.deepcopy(md1.mesh.elements)
         elements_2 = elements_1[pos_elem, :]
         elements_2[:, 0] = Pnode[elements_2[:, 0] - 1]
@@ -359,52 +357,50 @@ class model(object):
             elements_2[:, 4] = Pnode[elements_2[:, 4] - 1]
             elements_2[:, 5] = Pnode[elements_2[:, 5] - 1]
 
-        #OK, now create the new model!
-
-        #take every field from model
+        # Ok, now create the new model
+        # Take every field from model
         md2 = copy.deepcopy(md1)
 
-        #automatically modify fields
-
-        #loop over model fields
-        model_fields = vars(md1)
-        for fieldi in model_fields:
-            #get field
-            field = getattr(md1, fieldi)
+        # Automatically modify fields
+        # Loop over model fields
+        md_fieldnames = vars(md1)
+        for md_fieldname in md_fieldnames:
+            # Get field
+            field = getattr(md1, md_fieldname)
             fieldsize = np.shape(field)
-            if hasattr(field, '__dict__') and fieldi not in ['results']:  #recursive call
-                object_fields = vars(field)
-                for fieldj in object_fields:
-                    #get field
-                    field = getattr(getattr(md1, fieldi), fieldj)
+            if hasattr(field, '__dict__') and md_fieldname not in ['results']: # recursive call
+                obj_fieldnames = vars(field)
+                for obj_fieldname in obj_fieldnames:
+                    # Get field
+                    field = getattr(getattr(md1, md_fieldname), obj_fieldname)
                     fieldsize = np.shape(field)
                     if len(fieldsize):
-                        #size = number of nodes * n
+                        # size = number of nodes * n
                         if fieldsize[0] == numberofvertices1:
-                            setattr(getattr(md2, fieldi), fieldj, field[pos_node])
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, field[pos_node])
                         elif fieldsize[0] == numberofvertices1 + 1:
-                            setattr(getattr(md2, fieldi), fieldj, np.vstack((field[pos_node], field[-1, :])))
-                        #size = number of elements * n
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, np.vstack((field[pos_node], field[-1, :])))
+                        # size = number of elements * n
                         elif fieldsize[0] == numberofelements1:
-                            setattr(getattr(md2, fieldi), fieldj, field[pos_elem])
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, field[pos_elem])
             else:
                 if len(fieldsize):
-                    #size = number of nodes * n
+                    # size = number of nodes * n
                     if fieldsize[0] == numberofvertices1:
-                        setattr(md2, fieldi, field[pos_node])
+                        setattr(md2, md_fieldname, field[pos_node])
                     elif fieldsize[0] == numberofvertices1 + 1:
-                        setattr(md2, fieldi, np.hstack((field[pos_node], field[-1, :])))
-                    #size = number of elements * n
+                        setattr(md2, md_fieldname, np.hstack((field[pos_node], field[-1, :])))
+                    # size = number of elements * n
                     elif fieldsize[0] == numberofelements1:
-                        setattr(md2, fieldi, field[pos_elem])
+                        setattr(md2, md_fieldname, field[pos_elem])
 
-        #modify some specific fields
-        #Mesh
+        # Modify some specific fields
+        # mesh
         md2.mesh.numberofelements = numberofelements2
         md2.mesh.numberofvertices = numberofvertices2
         md2.mesh.elements = elements_2
 
-        #mesh.uppervertex mesh.lowervertex
+        # mesh.uppervertex mesh.lowervertex
         if md1.mesh.__class__.__name__ == 'mesh3dprisms':
             md2.mesh.uppervertex = md1.mesh.uppervertex[pos_node]
             pos = np.where(~np.isnan(md2.mesh.uppervertex))[0]
@@ -422,7 +418,7 @@ class model(object):
             pos = np.where(~np.isnan(md2.mesh.lowerelements))[0]
             md2.mesh.lowerelements[pos] = Pelem[md2.mesh.lowerelements[pos].astype(int) - 1]
 
-        #Initial 2d mesh
+        # Initial 2d mesh
         if md1.mesh.__class__.__name__ == 'mesh3dprisms':
             flag_elem_2d = flag_elem[np.arange(0, md1.mesh.numberofelements2d)]
             pos_elem_2d = np.nonzero(flag_elem_2d)[0]
@@ -439,34 +435,34 @@ class model(object):
             md2.mesh.x2d = md1.mesh.x[pos_node_2d]
             md2.mesh.y2d = md1.mesh.y[pos_node_2d]
 
-        #Edges
+        # Edges
         if md1.mesh.domaintype() == '2Dhorizontal':
-            if np.ndim(md2.mesh.edges) > 1 and np.size(md2.mesh.edges, axis=1) > 1:  #do not use ~isnan because there are some np.nans...
-                #renumber first two columns
+            if np.ndim(md2.mesh.edges) > 1 and np.size(md2.mesh.edges, axis=1) > 1: # do not use ~isnan because there are some np.nans...
+                # Renumber first two columns
                 pos = np.nonzero(md2.mesh.edges[:, 3] != -1)[0]
                 md2.mesh.edges[:, 0] = Pnode[md2.mesh.edges[:, 0] - 1]
                 md2.mesh.edges[:, 1] = Pnode[md2.mesh.edges[:, 1] - 1]
                 md2.mesh.edges[:, 2] = Pelem[md2.mesh.edges[:, 2] - 1]
                 md2.mesh.edges[pos, 3] = Pelem[md2.mesh.edges[pos, 3] - 1]
-                #remove edges when the 2 vertices are not in the domain.
+                # Remove edges when the 2 vertices are not in the domain
                 md2.mesh.edges = md2.mesh.edges[np.nonzero(np.logical_and(md2.mesh.edges[:, 0], md2.mesh.edges[:, 1]))[0], :]
-                #Replace all zeros by - 1 in the last two columns
+                # Replace all zeros by - 1 in the last two columns
                 pos = np.nonzero(md2.mesh.edges[:, 2] == 0)[0]
                 md2.mesh.edges[pos, 2] = -1
                 pos = np.nonzero(md2.mesh.edges[:, 3] == 0)[0]
                 md2.mesh.edges[pos, 3] = -1
-                #Invert - 1 on the third column with last column (Also invert first two columns!!)
+                # Invert - 1 on the third column with last column (also invert first two columns!)
                 pos = np.nonzero(md2.mesh.edges[:, 2] == -1)[0]
                 md2.mesh.edges[pos, 2] = md2.mesh.edges[pos, 3]
                 md2.mesh.edges[pos, 3] = -1
                 values = md2.mesh.edges[pos, 1]
                 md2.mesh.edges[pos, 1] = md2.mesh.edges[pos, 0]
                 md2.mesh.edges[pos, 0] = values
-                #Finally remove edges that do not belong to any element
+                # Finally remove edges that do not belong to any element
                 pos = np.nonzero(np.logical_and(md2.mesh.edges[:, 1] == -1, md2.mesh.edges[:, 2] == -1))[0]
                 md2.mesh.edges = np.delete(md2.mesh.edges, pos, axis=0)
 
-        #Penalties
+        # Penalties
         if np.any(np.logical_not(np.isnan(md2.stressbalance.vertex_pairing))):
             for i in range(np.size(md1.stressbalance.vertex_pairing, axis=0)):
                 md2.stressbalance.vertex_pairing[i, :] = Pnode[md1.stressbalance.vertex_pairing[i, :]]
@@ -476,7 +472,7 @@ class model(object):
                 md2.masstransport.vertex_pairing[i, :] = Pnode[md1.masstransport.vertex_pairing[i, :]]
             md2.masstransport.vertex_pairing = md2.masstransport.vertex_pairing[np.nonzero(md2.masstransport.vertex_pairing[:, 0])[0], :]
 
-        #recreate segments
+        # Recreate segments
         if md1.mesh.__class__.__name__ == 'mesh2d':
             md2.mesh.vertexconnectivity = NodeConnectivity(md2.mesh.elements, md2.mesh.numberofvertices)
             md2.mesh.elementconnectivity = ElementConnectivity(md2.mesh.elements, md2.mesh.vertexconnectivity)
@@ -484,22 +480,22 @@ class model(object):
             md2.mesh.vertexonboundary = np.zeros(numberofvertices2, bool)
             md2.mesh.vertexonboundary[md2.mesh.segments[:, 0:2] - 1] = True
         else:
-            #First do the connectivity for the contourenvelope in 2d
+            # First do the connectivity for the contourenvelope in 2d
             md2.mesh.vertexconnectivity = NodeConnectivity(md2.mesh.elements2d, md2.mesh.numberofvertices2d)
             md2.mesh.elementconnectivity = ElementConnectivity(md2.mesh.elements2d, md2.mesh.vertexconnectivity)
             segments = contourenvelope(md2.mesh)
             md2.mesh.vertexonboundary = np.zeros(int(numberofvertices2 / md2.mesh.numberoflayers), bool)
             md2.mesh.vertexonboundary[segments[:, 0:2] - 1] = True
             md2.mesh.vertexonboundary = np.tile(md2.mesh.vertexonboundary, md2.mesh.numberoflayers)
-            #Then do it for 3d as usual
+            # Then do it for 3d as usual
             md2.mesh.vertexconnectivity = NodeConnectivity(md2.mesh.elements, md2.mesh.numberofvertices)
             md2.mesh.elementconnectivity = ElementConnectivity(md2.mesh.elements, md2.mesh.vertexconnectivity)
 
-        #Boundary conditions: Dirichlets on new boundary
-        #Catch the elements that have not been extracted
+        # Boundary conditions: Dirichlets on new boundary
+        # Catch the elements that have not been extracted
         orphans_elem = np.nonzero(np.logical_not(flag_elem))[0]
         orphans_node = np.unique(md1.mesh.elements[orphans_elem, :]) - 1
-        #Figure out which node are on the boundary between md2 and md1
+        # Figure out which node are on the boundary between md2 and md1
         nodestoflag1 = np.intersect1d(orphans_node, pos_node)
         nodestoflag2 = Pnode[nodestoflag1].astype(int) - 1
         if np.size(md1.stressbalance.spcvx) > 1 and np.size(md1.stressbalance.spcvy) > 2 and np.size(md1.stressbalance.spcvz) > 2:
@@ -509,24 +505,24 @@ class model(object):
             else:
                 md2.stressbalance.spcvx[nodestoflag2] = np.nan
                 md2.stressbalance.spcvy[nodestoflag2] = np.nan
-                print("\n!! extract warning: spc values should be checked !!\n\n")
-            #put 0 for vz
+                print('\n!! extract warning: spc values should be checked !!\n\n')
+            # Put 0 for vz
             md2.stressbalance.spcvz[nodestoflag2] = 0
         if np.any(np.logical_not(np.isnan(md1.thermal.spctemperature))):
             md2.thermal.spctemperature[nodestoflag2] = 1
 
-        #Results fields
+        # Results fields
         if md1.results:
             md2.results = results()
             for solutionfield, field in list(md1.results.__dict__.items()):
                 if isinstance(field, list):
                     setattr(md2.results, solutionfield, [])
-                    #get time step
+                    # Get time step
                     for i, fieldi in enumerate(field):
                         if isinstance(fieldi, results) and fieldi:
                             getattr(md2.results, solutionfield).append(results())
                             fieldr = getattr(md2.results, solutionfield)[i]
-                            #get subfields
+                            # Get subfields
                             for solutionsubfield, subfield in list(fieldi.__dict__.items()):
                                 if np.size(subfield) == numberofvertices1:
                                     setattr(fieldr, solutionsubfield, subfield[pos_node])
@@ -540,7 +536,7 @@ class model(object):
                     setattr(md2.results, solutionfield, results())
                     if isinstance(field, results) and field:
                         fieldr = getattr(md2.results, solutionfield)
-                        #get subfields
+                        # Get subfields
                         for solutionsubfield, subfield in list(field.__dict__.items()):
                             if np.size(subfield) == numberofvertices1:
                                 setattr(fieldr, solutionsubfield, subfield[pos_node])
@@ -549,15 +545,15 @@ class model(object):
                             else:
                                 setattr(fieldr, solutionsubfield, subfield)
 
-        #OutputDefinitions fields
+        # outputdefinitions fields
         if md1.outputdefinition.definitions:
             for solutionfield, field in list(md1.outputdefinition.__dict__.items()):
                 if isinstance(field, list):
-                    #get each definition
+                    # Get each definition
                     for i, fieldi in enumerate(field):
                         if fieldi:
                             fieldr = getattr(md2.outputdefinition, solutionfield)[i]
-                            #get subfields
+                            # Get subfields
                             for solutionsubfield, subfield in list(fieldi.__dict__.items()):
                                 if np.size(subfield) == numberofvertices1:
                                     setattr(fieldr, solutionsubfield, subfield[pos_node])
@@ -566,15 +562,221 @@ class model(object):
                                 else:
                                     setattr(fieldr, solutionsubfield, subfield)
 
-        #Keep track of pos_node and pos_elem
+        # Keep track of pos_node and pos_elem
         md2.mesh.extractedvertices = pos_node + 1
         md2.mesh.extractedelements = pos_elem + 1
 
         return md2
     # }}}
 
+    def refine(md):  #{{{
+        """refine - split all triangles into 3 to refine the mesh everywhere
+
+        This function only works for 2d triangle meshes
+
+        Usage:
+            md2 = refine(md)
+
+        NOTE: Basic functionality has been tested, but fields should be checked 
+        after refinement to make sure they are consistent and expected.
+
+        See also: extrude, collapse, extract
+        """
+
+        # Check incoming
+        if md.mesh.elementtype() != 'Tria':
+            raise TypeError('not supported for 3d meshes')
+
+        # Copy model
+        md2 = copy.deepcopy(md)
+
+        print('Getting edges:')
+
+        # Initialization of some variables
+        nbe = md.mesh.numberofelements
+        nbv = md.mesh.numberofvertices
+        index = md.mesh.elements
+        elementslist = range(0, nbe)
+
+        # 1: list of edges
+        edges = np.vstack((index[:, [0, 1]], index[:, [1, 2]], index[:, [2, 0]]))
+
+        # 2: find unique edges
+        edges, I, J = np.unique(np.sort(edges, axis=1), axis=0, return_index=True, return_inverse=True)
+        edges = np.subtract(edges, 1) # Adjust for 1-based indexing
+
+        # 3: unique edge numbers
+        vec = J
+
+        # 4: unique edge numbers in each triangle (2 triangles sharing the same edge will have the same edge number)
+        edges_tria = np.vstack((vec[np.add(elementslist, nbe)], vec[np.add(elementslist, 2 * nbe)], vec[elementslist])).T
+
+        # We divide each element as follows
+        #
+        #                   e2
+        #    n1 ------------+------------ n3
+        #       \          / \          /
+        #        \    1   /   \   3    /
+        #         \      /     \      /
+        #          \    /   2   \    /
+        #           \  /         \  /
+        #         e3 +____________\/ e1
+        #             \           /
+        #              \         /
+        #               \   4   /
+        #                \     /
+        #                 \   /
+        #                   n2
+
+        # Create new coordinates
+        print('Remeshing...')
+        x_edges = np.multiply(np.add(md.mesh.x[edges[:, 0]], md.mesh.x[edges[:, 1]]), 0.5)
+        y_edges = np.multiply(np.add(md.mesh.y[edges[:, 0]], md.mesh.y[edges[:, 1]]), 0.5)
+        xnew = np.concatenate((md2.mesh.x, x_edges))
+        ynew = np.concatenate((md2.mesh.y, y_edges))
+        indexnew = np.vstack((
+            np.vstack((
+                np.subtract(index[:, 0], 1),
+                np.add(nbv, edges_tria[:, 2]),
+                np.add(nbv, edges_tria[:, 1])
+            )).T,
+            np.vstack((
+                np.add(nbv, edges_tria[:, 1]),
+                np.add(nbv, edges_tria[:, 2]),
+                np.add(nbv, edges_tria[:, 0])
+            )).T,
+            np.vstack((
+                np.add(nbv, edges_tria[:, 1]),
+                np.add(nbv, edges_tria[:, 0]),
+                np.subtract(index[:, 2], 1)
+            )).T,
+            np.vstack((
+                np.add(nbv, edges_tria[:, 2]),
+                np.subtract(index[:, 1], 1),
+                np.add(nbv, edges_tria[:, 0])
+            )).T
+        ))
+
+        indexnew = np.add(indexnew, 1) # Adjust for 1-based indexing
+
+        # Call Bamg to update other mesh properties
+        bamgmesh_out, bamggeom_out = BamgConvertMesh(indexnew, xnew, ynew)
+
+        md2.mesh.x = bamgmesh_out['Vertices'][:, 0]
+        md2.mesh.y = bamgmesh_out['Vertices'][:, 1]
+        md2.mesh.elements = bamgmesh_out['Triangles'][:, 0:3].astype(int)
+        md2.mesh.edges = bamgmesh_out['IssmEdges'].astype(int)
+        md2.mesh.segments = bamgmesh_out['IssmSegments'][:, 0:3].astype(int)
+        md2.mesh.segmentmarkers = bamgmesh_out['IssmSegments'][:, 3].astype(int)
+        md2.mesh.numberofelements = np.shape(md2.mesh.elements)[0]
+        md2.mesh.numberofvertices = len(md2.mesh.x)
+        md2.mesh.numberofedges = np.shape(md2.mesh.edges)[0]
+        md2.mesh.vertexonboundary = np.zeros((md2.mesh.numberofvertices, )).astype(int)
+        md2.mesh.vertexonboundary[md2.mesh.segments[:, 0:1] - 1] = 1 # Adjust for 1-based indexing
+
+        # Deal with boundary
+        md2.mesh.vertexonboundary = np.concatenate((md.mesh.vertexonboundary, (np.sum(md.mesh.vertexonboundary[edges], axis=1) == 2).astype(int)))
+        md2.mesh.elementconnectivity = bamgmesh_out['ElementConnectivity']
+        md2.mesh.elementconnectivity[np.nonzero(np.isnan(md2.mesh.elementconnectivity))] = 0
+        md2.mesh.elementconnectivity = md2.mesh.elementconnectivity.astype(int)
+        print('   Old number of elements: {}'.format(nbe))
+        print('   New number of elements: {}'.format(4 * nbe))
+
+        print('Interpolate all fields')
+        numberofvertices1 = md.mesh.numberofvertices
+        numberofelements1 = md.mesh.numberofelements
+        nbv2 = md2.mesh.numberofvertices
+
+        # Create transformation vectors
+        nbedges = np.shape(edges)[0]
+        i = range(0, 4 * nbe)
+        j = np.tile(range(0, nbe), (1, 4)).flatten()
+        v = np.ones((4 * nbe, )).astype(int)
+        m = 4 * nbe
+        n = nbe
+        Pelem = scipy.sparse.csr_matrix((v, (i, j)), shape=(m, n))
+        i = np.concatenate((range(0, nbv), np.tile(range(nbv, nbv + nbedges), (1, 2)).flatten()))
+        j = np.concatenate((range(0, nbv), edges[:].flatten().T))
+        v = np.concatenate((np.ones((nbv, )).astype(int), 0.5 * np.ones((2 * nbedges, ))))
+        m = md2.mesh.numberofvertices
+        n = nbv
+        Pnode = scipy.sparse.csr_matrix((v, (i, j)), shape=(m, n))
+
+        if np.size(md.mesh.lat) == md.mesh.numberofvertices:
+            md2.mesh.lat = Pnode * md.mesh.lat
+            md2.mesh.long = Pnode * md.mesh.long
+
+        if np.size(md.mesh.scale_factor) == md.mesh.numberofvertices:
+            md2.mesh.scale_factor = Pnode * md.mesh.scale_factor
+
+        # Loop over model fields (except mesh)
+        md_fieldnames = np.setxor1d(md.properties(), ['mesh'])
+        for md_fieldname in md_fieldnames:
+            # Get field
+            field = getattr(md, md_fieldname)
+            fieldsize = np.shape(field)
+            if hasattr(field, '__dict__') and md_fieldname not in ['results']: # recursive call
+                obj_fieldnames = vars(field)
+                for obj_fieldname in obj_fieldnames:
+                    # Get field
+                    field = getattr(getattr(md, md_fieldname), obj_fieldname)
+                    fieldsize = np.shape(field)
+                    if len(fieldsize):
+                        # size = number of nodes * n
+                        if fieldsize[0] == numberofvertices1:
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, Pnode * field)
+                        elif fieldsize[0] == numberofvertices1 + 1:
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, np.vstack((Pnode * field[0:-2, :], field[-1, :])))
+                        # size = number of elements * n
+                        elif fieldsize[0] == numberofelements1:
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, Pelem * field)
+                        elif fieldsize[0] == numberofelements1 + 1:
+                            setattr(getattr(md2, md_fieldname), obj_fieldname, np.vstack((Pelem * field[0:-2, :], field[-1, :])))
+            else:
+                if len(fieldsize):
+                    # size = number of nodes * n
+                    if fieldsize[0] == numberofvertices1:
+                        setattr(md2, md_fieldname, Pnode * field)
+                    elif fieldsize[0] == numberofvertices1 + 1:
+                        setattr(md2, md_fieldname, np.hstack((Pnode * field[0:-2, :], field[-1, :])))
+                    # size = number of elements * n
+                    elif fieldsize[0] == numberofelements1:
+                        setattr(md2, md_fieldname, Pelem * field)
+                    elif fieldsize[0] == numberofelements1 + 1:
+                        setattr(md2, md_fieldname, np.hstack((Pelem * field[0:-2, :], field[-1, :])))
+
+        # Special case: outputdefinitions
+        if md.outputdefinition.definitions:
+            for i in range(len(md.outputdefinition.definitions)):
+                if md.outputdefinition.definitions[i].__class__.__name__ == 'cfsurfacesquaretransient':
+                    field = md.outputdefintion.definitions[i].observations
+                    if np.shape(field)[0] != md.mesh.numberofvertices + 1:
+                        raise TypeError('length of observations for output definition {} should be equal to {} (md.mesh.numberofvertices + 1)'.format(md.outputdefintion.definitions[i].__class__.__name__), md.mesh.numberofvertices + 1)
+                    md2.outputdefinition.definitions[i].observations = np.concatenate((Pnode * field[0:-2, :], field[-1, :]))
+                    field = md2.outputdefinition.definitions[i].weights
+                    if np.shape(field)[0] != md.mesh.numberofvertices + 1:
+                        raise TypeError('length of weights for output definition {} should be equal to {} (md.mesh.numberofvertices + 1)'.format(md.outputdefintion.definitions[i].__class__.__name__), md.mesh.numberofvertices + 1)
+                    md2.outputdefinition.definitions[i].weights = np.concatenate((Pnode * field[0:-2, :], field[-1, :]))
+                elif md.outputdefinition.definitions[i].__class__.__name__ == 'cfdragcoeffabsgrad':
+                    md2.outputdefinition.definitions[i].weights = Pnode * md.outputdefinition.definitions[i].weights
+                else:
+                    print('skipping md.outputdefinition.definitions[{}] as its class is not yet supported by model.refine'.format(i))
+                    print('make sure to amend model manually after refinement if this definition is important')
+
+        # Special case: independents
+        if md.autodiff.independents:
+            for i in range(len(md.autodiff.independents)):
+                if md.autodiff.independents[i].nods == md.mesh.numberofvertices:
+                    md2.autodiff.independents[i].nods = md2.mesh.numberofvertices
+                    if len(md.autodiff.independents[i].min_parameters) == md.mesh.numberofvertices:
+                        md2.autodiff.independents[i].min_parameters = Pnode * md.autodiff.independents[i].min_parameters
+                        md2.autodiff.independents[i].max_parameters = Pnode * md.autodiff.independents[i].max_parameters
+
+        return md2
+    # }}}
+
     def extrude(md, *args):  #{{{
-        """EXTRUDE - vertically extrude a 2d mesh
+        """extrude - vertically extrude a 2d mesh
 
         vertically extrude a 2d mesh and create corresponding 3d mesh.
         The vertical distribution can:
@@ -593,15 +795,15 @@ class model(object):
             md = extrude(md, 15, 1.3, 1.2)
             md = extrude(md, [0 0.2 0.5 0.7 0.9 0.95 1])
 
-        See also: MODELEXTRACT, COLLAPSE
+        See also: modelextract, collapse
         """
 
-        #some checks on list of arguments
+        # Some checks on list of arguments
         if len(args) > 3 or len(args) < 1:
             raise RuntimeError('extrude error message')
 
-        #Extrude the mesh
-        if len(args) == 1:  #list of coefficients
+        # Extrude the mesh
+        if len(args) == 1: # list of coefficients
             clist = args[0]
             if any(clist < 0) or any(clist > 1):
                 raise TypeError('extrusioncoefficients must be between 0 and 1')
@@ -610,13 +812,13 @@ class model(object):
             extrusionlist = list(set(clist))
             numlayers = len(extrusionlist)
 
-        elif len(args) == 2:  #one polynomial law
+        elif len(args) == 2: # one polynomial law
             if args[1] <= 0:
                 raise TypeError('extrusionexponent must be >= 0')
             numlayers = args[0]
             extrusionlist = (np.arange(0., float(numlayers - 1) + 1., 1.) / float(numlayers - 1))**args[1]
 
-        elif len(args) == 3:  #two polynomial laws
+        elif len(args) == 3: # two polynomial laws
             numlayers = args[0]
             lowerexp = args[1]
             upperexp = args[2]
@@ -633,7 +835,7 @@ class model(object):
         if md.mesh.__class__.__name__ == 'mesh3dprisms':
             raise TypeError('Cannot extrude a 3d mesh (extrude cannot be called more than once)')
 
-        #Initialize with 2d mesh
+        # Initialize with 2d mesh
         mesh2d = md.mesh
         md.mesh = mesh3dprisms()
         md.mesh.x = mesh2d.x
@@ -657,26 +859,26 @@ class model(object):
 
         x3d = np.empty((0))
         y3d = np.empty((0))
-        z3d = np.empty((0))  #the lower node is on the bed
-        thickness3d = md.geometry.thickness  #thickness and bed for these nodes
+        z3d = np.empty((0)) # the lower node is on the bed
+        thickness3d = md.geometry.thickness # thickness and bed for these nodes
         bed3d = md.geometry.base
 
-        #Create the new layers
+        # Create the new layers
         for i in range(numlayers):
             x3d = np.concatenate((x3d, md.mesh.x))
             y3d = np.concatenate((y3d, md.mesh.y))
-            #nodes are distributed between bed and surface accordingly to the given exponent
+            # Nodes are distributed between bed and surface accordingly to the given exponent
             z3d = np.concatenate((z3d, (bed3d + thickness3d * extrusionlist[i]).reshape(-1)))
-        number_nodes3d = np.size(x3d)  #number of 3d nodes for the non extruded part of the mesh
+        number_nodes3d = np.size(x3d) # Number of 3d nodes for the non-extruded part of the mesh
 
-        #Extrude elements
+        # Extrude elements
         elements3d = np.empty((0, 6), int)
         for i in range(numlayers - 1):
             elements3d = np.vstack((elements3d, np.hstack((md.mesh.elements + i * md.mesh.numberofvertices,
-                                                           md.mesh.elements + (i + 1) * md.mesh.numberofvertices))))  #Create the elements of the 3d mesh for the non extruded part
-        number_el3d = np.size(elements3d, axis=0)  #number of 3d nodes for the non extruded part of the mesh
+                                                           md.mesh.elements + (i + 1) * md.mesh.numberofvertices)))) # create the elements of the 3d mesh for the non-extruded part
+        number_el3d = np.size(elements3d, axis=0) # number of 3d nodes for the non-extruded part of the mesh
 
-        #Keep a trace of lower and upper nodes
+        # Keep a trace of lower and upper nodes
         lowervertex = np.nan * np.ones(number_nodes3d, int)
         uppervertex = np.nan * np.ones(number_nodes3d, int)
         lowervertex[md.mesh.numberofvertices:] = np.arange(1, (numlayers - 1) * md.mesh.numberofvertices + 1)
@@ -684,7 +886,7 @@ class model(object):
         md.mesh.lowervertex = lowervertex
         md.mesh.uppervertex = uppervertex
 
-        #same for lower and upper elements
+        # Same for lower and upper elements
         lowerelements = np.nan * np.ones(number_el3d, int)
         upperelements = np.nan * np.ones(number_el3d, int)
         lowerelements[md.mesh.numberofelements:] = np.arange(1, (numlayers - 2) * md.mesh.numberofelements + 1)
@@ -692,14 +894,14 @@ class model(object):
         md.mesh.lowerelements = lowerelements
         md.mesh.upperelements = upperelements
 
-        #Save old mesh
+        # Save old mesh
         md.mesh.x2d = md.mesh.x
         md.mesh.y2d = md.mesh.y
         md.mesh.elements2d = md.mesh.elements
         md.mesh.numberofelements2d = md.mesh.numberofelements
         md.mesh.numberofvertices2d = md.mesh.numberofvertices
 
-        #Build global 3d mesh
+        # Build global 3d mesh
         md.mesh.elements = elements3d
         md.mesh.x = x3d
         md.mesh.y = y3d
@@ -708,13 +910,13 @@ class model(object):
         md.mesh.numberofvertices = number_nodes3d
         md.mesh.numberoflayers = numlayers
 
-        #Ok, now deal with the other fields from the 2d mesh:
-        #bedinfo and surface info
+        # Ok, now deal with the other fields from the 2d mesh
+        # Bed info and surface info
         md.mesh.vertexonbase = project3d(md, 'vector', np.ones(md.mesh.numberofvertices2d, bool), 'type', 'node', 'layer', 1)
         md.mesh.vertexonsurface = project3d(md, 'vector', np.ones(md.mesh.numberofvertices2d, bool), 'type', 'node', 'layer', md.mesh.numberoflayers)
         md.mesh.vertexonboundary = project3d(md, 'vector', md.mesh.vertexonboundary, 'type', 'node')
 
-        #lat long
+        # lat/long
         md.mesh.lat = project3d(md, 'vector', md.mesh.lat, 'type', 'node')
         md.mesh.long = project3d(md, 'vector', md.mesh.long, 'type', 'node')
         md.mesh.scale_factor = project3d(md, 'vector', md.mesh.scale_factor, 'type', 'node')
@@ -738,7 +940,7 @@ class model(object):
         md.dsl.extrude(md)
         md.stochasticforcing.extrude(md)
 
-        #connectivity
+        # connectivity
         md.mesh.elementconnectivity = np.tile(md.mesh.elementconnectivity, (numlayers - 1, 1))
         md.mesh.elementconnectivity[np.nonzero(md.mesh.elementconnectivity == 0)] = -sys.maxsize - 1
         if not np.isnan(md.mesh.elementconnectivity).all():
@@ -755,7 +957,7 @@ class model(object):
         md.basalforcings.extrude(md)
         md.outputdefinition.extrude(md)
 
-        #increase connectivity if less than 25:
+        # increase connectivity if less than 25
         if md.mesh.average_vertex_connectivity <= 25:
             md.mesh.average_vertex_connectivity = 100
 
@@ -763,15 +965,15 @@ class model(object):
     # }}}
 
     def collapse(md):  #{{{
-        """COLLAPSE - collapses a 3d mesh into a 2d mesh
+        """collapse - collapses a 3d mesh into a 2d mesh
 
-        This routine collapses a 3d model into a 2d model and collapses all
-        the fields of the 3d model by taking their depth-averaged values
+        This routine collapses a 3d model into a 2d model and collapses all the 
+        fields of the 3d model by taking their depth-averaged values
 
         Usage:
             md = collapse(md)
 
-        See also: EXTRUDE, MODELEXTRACT
+        See also: extrude, modelextract
         """
 
         # Check that the model is really a 3d model
@@ -856,7 +1058,7 @@ class model(object):
         if not np.isnan(md.initialization.debris).all():
             md.initialization.debris = project2d(md, md.initialization.debris, 1)
 
-        # elementstype
+        # Element types
         if not np.isnan(md.flowequation.element_equation).all():
             md.flowequation.element_equation = project2d(md, md.flowequation.element_equation, 1)
             md.flowequation.vertex_equation = project2d(md, md.flowequation.vertex_equation, 1)
@@ -870,12 +1072,14 @@ class model(object):
         md.stressbalance.spcvz = project2d(md, md.stressbalance.spcvz, md.mesh.numberoflayers)
         md.stressbalance.referential = project2d(md, md.stressbalance.referential, md.mesh.numberoflayers)
         md.stressbalance.loadingforce = project2d(md, md.stressbalance.loadingforce, md.mesh.numberoflayers)
+
         # TODO:
         # - Check if md.mesh.numberoflayershould really be offset by 1.
         # - Find out why md.masstransport.spcthickness is not offset, but the
         #   other fields are.
-        # - If offset is required, figure out if it can be abstarcted away to
+        # - If offset is required, figure out if it can be abstracted away to
         #   another part of the API.
+        #
         if np.size(md.masstransport.spcthickness) > 1:
             md.masstransport.spcthickness = project2d(md, md.masstransport.spcthickness, md.mesh.numberoflayers)
         if np.size(md.damage.spcdamage) > 1:  # and not np.isnan(md.damage.spcdamage).all():
@@ -884,7 +1088,7 @@ class model(object):
             md.levelset.spclevelset = project2d(md, md.levelset.spclevelset, md.mesh.numberoflayers - 1)
         md.thermal.spctemperature = project2d(md, md.thermal.spctemperature, md.mesh.numberoflayers - 1)
 
-        # Hydrologydc variables
+        # hydrologydc variables
         if md.hydrology.__class__.__name__ == 'hydrologydc':
             # md.hydrology.spcsediment_head = project2d(md, md.hydrology.spcsediment_head, 1)
             # md.hydrology.mask_eplactive_node = project2d(md, md.hydrology.mask_eplactive_node, 1)
@@ -903,7 +1107,7 @@ class model(object):
                 if isvector:
                     md.hydrology.__dict__[field] = project2d(md, md.hydrology.__dict__[field], 1)
 
-        # Materials
+        # materials
         md.materials.rheology_B = DepthAverage(md, md.materials.rheology_B)
         md.materials.rheology_n = project2d(md, md.materials.rheology_n, 1)
 
@@ -913,7 +1117,7 @@ class model(object):
         if np.size(md.dsl.sea_water_pressure_at_sea_floor) > 1:
             md.dsl.sea_water_pressure_at_sea_floor = project2d(md, md.dsl.sea_water_pressure_at_sea_floor, 1)
 
-        # Damage
+        # damage
         if md.damage.isdamage:
             md.damage.D = DepthAverage(md, md.damage.D)
 
@@ -922,7 +1126,7 @@ class model(object):
             md.basalforcings.groundedice_melting_rate = project2d(md, md.basalforcings.groundedice_melting_rate, 1)
         if hasattr(md.basalforcings, 'floatingice_melting_rate') and not np.isnan(md.basalforcings.floatingice_melting_rate).all():
             md.basalforcings.floatingice_melting_rate = project2d(md, md.basalforcings.floatingice_melting_rate, 1)
-        md.basalforcings.geothermalflux = project2d(md, md.basalforcings.geothermalflux, 1)  #bedrock only gets geothermal flux
+        md.basalforcings.geothermalflux = project2d(md, md.basalforcings.geothermalflux, 1) # bedrock only gets geothermal flux
 
         if hasattr(md.calving, 'coeff') and not np.isnan(md.calving.coeff).all():
             md.calving.coeff = project2d(md, md.calving.coeff, 1)
@@ -947,13 +1151,13 @@ class model(object):
         if not np.isnan(md.mask.ice_levelset).all():
             md.mask.ice_levelset = project2d(md, md.mask.ice_levelset, 1)
 
-        # Lat/long
+        # lat/long
         if np.size(md.mesh.lat) == md.mesh.numberofvertices:
             md.mesh.lat = project2d(md, md.mesh.lat, 1)
         if np.size(md.mesh.long) == md.mesh.numberofvertices:
             md.mesh.long = project2d(md, md.mesh.long, 1)
 
-        # OutputDefinitions
+        # outputdefinitions
         if md.outputdefinition.definitions:
             for solutionfield, field in list(md.outputdefinition.__dict__.items()):
                 if isinstance(field, list):
