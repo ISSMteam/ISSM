@@ -38,9 +38,9 @@ def meshconvert(md, *args):
     md.mesh = mesh2d()
     md.mesh.x = bamgmesh_out['Vertices'][:, 0].copy()
     md.mesh.y = bamgmesh_out['Vertices'][:, 1].copy()
-    md.mesh.elements = bamgmesh_out['Triangles'][:, 0:2].astype(int)
+    md.mesh.elements = bamgmesh_out['Triangles'][:, 0:3].astype(int)
     md.mesh.edges = bamgmesh_out['IssmEdges'].astype(int)
-    md.mesh.segments = bamgmesh_out['IssmSegments'][:, 0:2].astype(int)
+    md.mesh.segments = bamgmesh_out['IssmSegments'][:, 0:3].astype(int)
     md.mesh.segmentmarkers = bamgmesh_out['IssmSegments'][:, 3].astype(int)
 
     # Fill in rest of fields
