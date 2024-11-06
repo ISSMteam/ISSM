@@ -1902,6 +1902,7 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 		LoveNumbers<IssmDouble>* LovefDouble_local=NULL;
 		LoveNumbers<IssmDouble>* LovetDouble_local=NULL;
 		LoveNumbers<IssmDouble>* TidaltDouble_local=NULL;
+		LoveNumbers<IssmDouble>* TidaltDouble=NULL;
 		IssmDouble*  pmtf_colineartDouble_local=NULL;
 		IssmDouble*  pmtf_orthotDouble_local=NULL;
 
@@ -1917,7 +1918,7 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 
 		love_freq_to_temporal<doubletype>(Lovet_local,Tidalt_local,pmtf_colineart_local,pmtf_orthot_local,Lovef_local,Tidalf_local,frequencies_local,femmodel,verbosecpu);
 
-		if(VerboseSolution() && verbosecpu) _printf_("   Assembling parralel vectors...");
+		if(VerboseSolution() && verbosecpu) _printf_("   Assembling parallel vectors...");
 		//delete Lovef_local;
 		delete Tidalf_local;
 		//Lovet
@@ -1933,10 +1934,13 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 		LovefDouble_local->Broadcast();	
 
 		if (forcing_type==11 && sh_nmin<=2 && sh_nmax>=2){			
-			TidaltDouble_local= new LoveNumbers<IssmDouble>(2,2,nt_local,lower_row,nfreq,matlitho);
+			TidaltDouble_local= new LoveNumbers<IssmDouble>(2,2,nt_local,lower_row/2/NTit,nt,matlitho);
+			TidaltDouble= new LoveNumbers<IssmDouble>(2,2,nt,lower_row/2/NTit,nt,matlitho);
 			Tidalt_local->DownCastToDouble(TidaltDouble_local);
 			delete Tidalt_local;
-			TidaltDouble_local->Broadcast();
+			TidaltDouble->LoveMPI_Gather(TidaltDouble_local, lower_row/2/NTit);
+			delete TidaltDouble_local;
+			//TidaltDouble_local->Broadcast();
 		}
 
 		//pmtf:
@@ -1984,9 +1988,9 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 			femmodel->parameters->AddObject(new DoubleMatParam(LoadLoveHEnum,LovetDouble_local->H,(sh_nmax+1)*nt,1));
 			femmodel->parameters->AddObject(new DoubleMatParam(LoadLoveKEnum,LovetDouble_local->K,(sh_nmax+1)*nt,1));
 			femmodel->parameters->AddObject(new DoubleMatParam(LoadLoveLEnum,LovetDouble_local->L,(sh_nmax+1)*nt,1));
-			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveHEnum,TidaltDouble_local->H,3*nt,1));
-			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveKEnum,TidaltDouble_local->K,3*nt,1));
-			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveLEnum,TidaltDouble_local->L,3*nt,1));
+			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveHEnum,TidaltDouble->H,3*nt,1));
+			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveKEnum,TidaltDouble->K,3*nt,1));
+			femmodel->parameters->AddObject(new DoubleMatParam(TidalLoveLEnum,TidaltDouble->L,3*nt,1));
 			femmodel->parameters->AddObject(new DoubleMatParam(LovePolarMotionTransferFunctionColinearEnum,pmtf_colineartDouble,nt,1));
 			femmodel->parameters->AddObject(new DoubleMatParam(LovePolarMotionTransferFunctionOrthogonalEnum,pmtf_orthotDouble,nt,1));
 		}
@@ -1999,12 +2003,13 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveKfEnum,LovefDouble_local->K,nfreq,sh_nmax+1,0,0));
 		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveHfEnum,LovefDouble_local->H,nfreq,sh_nmax+1,0,0));
 		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveLfEnum,LovefDouble_local->L,nfreq,sh_nmax+1,0,0));
-
-		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalKtEnum,TidaltDouble_local->K,nt,3,0,0));
-		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalHtEnum,TidaltDouble_local->H,nt,3,0,0));
-		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalLtEnum,TidaltDouble_local->L,nt,3,0,0));
-		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LovePMTF1tEnum,pmtf_colineartDouble,nt,1,0,0));
-		femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LovePMTF2tEnum,pmtf_orthotDouble,nt,1,0,0));
+		if(forcing_type==11){ 
+			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalKtEnum,TidaltDouble->K,nt,3,0,0));
+			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalHtEnum,TidaltDouble->H,nt,3,0,0));
+			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveTidalLtEnum,TidaltDouble->L,nt,3,0,0));
+			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LovePMTF1tEnum,pmtf_colineartDouble,nt,1,0,0));
+			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LovePMTF2tEnum,pmtf_orthotDouble,nt,1,0,0));
+		}
 		/*Only when love_kernels is on*/
 		if (love_kernels==1) {
 			femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,LoveKernelsEnum,LovefDouble_local->Kernels,nfreq,(sh_nmax+1)*(matlitho->numlayers+1)*6,0,0));
@@ -2014,7 +2019,7 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 		xDelete<IssmDouble>(pmtf_orthotDouble);
 		delete LovetDouble_local;
 		delete LovefDouble_local;
-		delete TidaltDouble_local;
+		delete TidaltDouble;
 
 	}
 	else{
