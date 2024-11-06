@@ -14,8 +14,7 @@ from plot_edgeoverlay import plot_edgeoverlay
 
 
 def applyoptions(md, data, options, fig, axgrid, gridindex):
-    '''
-    APPLYOPTIONS - apply options to current plot
+    """applyoptions - apply options to current plot
 
     'plotobj' is the object returned by the specific plot call used to
     render the data.  This object is used for adding a colorbar.
@@ -23,10 +22,10 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     Usage:
         applyoptions(md, data, options)
 
-    See also: PLOTMODEL, PARSE_OPTIONS
-    '''
+    See also: plotmodel, parse_options
+    """
 
-    # get handle to current figure and axes instance
+    # Get handle to current figure and axes instance
     #fig = p.gcf()
     ax = axgrid[gridindex]
 
@@ -51,7 +50,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
             titlefontweight = options.getfieldvalue('titlefontweight')
         else:
             titlefontweight = fontweight
-    #title font
+        # title font
         titlefont = font.copy()
         titlefont['fontsize'] = titlefontsize
         titlefont['fontweight'] = titlefontweight
@@ -67,7 +66,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     else:
         labelfontweight = fontweight
 
-    #font dict for labels
+    # font dict for labels
     labelfont = font.copy()
     labelfont['fontsize'] = labelfontsize
     labelfont['fontweight'] = labelfontweight
@@ -242,7 +241,10 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
         cb.ax.tick_params(labelsize=fontsize)
         cb.solids.set_rasterized(True)
         cb.update_ticks()
-        cb.draw_all()
+        try:
+            cb.draw_all()
+        except:
+            cb._draw_all()
         if options.exist('colorbarfontsize'):
             colorbarfontsize = options.getfieldvalue('colorbarfontsize')
             cb.ax.tick_params(labelsize=colorbarfontsize)
