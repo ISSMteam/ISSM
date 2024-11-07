@@ -7,21 +7,25 @@ set -eu
 #symlinks in externalpackages/python to what boost is expecting. Ther is NO WAY 
 #to get the boost library to include python support without doing that. 
 
-#Some cleanup
-rm -rf install boost_1_55_0 src
-mkdir install src
+## Constants
+#
+VER="1.55.0"
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/boost_1_55_0.tar.gz' 'boost_1_55_0.tar.gz'
+# Download source
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://archives.boost.io/release/${VER}/source/boost_${VER//./_}.tar.gz" "boost_${VER//./_}.tar.gz"
 
-#Untar 
-tar -zxvf  boost_1_55_0.tar.gz
+# Unpack source
+tar -zxvf boost_${VER//./_}.tar.gz
 
-#Move boost into install directory
-mv boost_1_55_0/* src
-rm -rf boost_1_55_0
+# Cleanup
+rm -rf ${PREFIX} src
+mkdir -p ${PREFIX} src
 
-patch src/boost/mpl/aux_/config/adl.hpp ./configs/1.55/adl.hpp.patch
+# Move source into 'src' directory
+mv boost_${VER//./_}/* src
+rm -rf boost_${VER//./_}
+
+patch src/boost/mpl/aux_/config/adl.hpp ./configs/${VER%.*}/adl.hpp.patch
 
 #Setting CXXFLAGS to deal with C++11 incompatibility with MATLAB's Boost
 #export PATH="/usr/bin":$PATH

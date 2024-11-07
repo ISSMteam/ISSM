@@ -42,4 +42,7 @@ IssmDouble*  p_polynomial_value ( int m, int n, IssmDouble* x);
 int         NewtonSolveDnorm(IssmDouble* pdnorm,IssmDouble c1,IssmDouble c2,IssmDouble c3,IssmDouble n,IssmDouble dnorm);
 IssmDouble  ODE1(IssmDouble alpha,IssmDouble beta,IssmDouble Si, IssmDouble dt,int method);
 
+void LineSectionNormal(IssmDouble* result, IssmDouble* xyz_section);
+void TriangleFacetNormal(IssmDouble* normal, IssmDouble* xyz_facet);
+
 #endif //ifndef _NUMERICS_H_

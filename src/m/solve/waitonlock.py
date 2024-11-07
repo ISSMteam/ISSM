@@ -8,7 +8,7 @@ from MatlabFuncs import *
 from pfe import *
 
 def waitonlock(md):
-    """WAITONLOCK - wait for a file
+    """waitonlock - wait for a file
 
     This routine will return when a file named 'lockfilename' is written to
     disk. Also check for outlog file because it might be written several
