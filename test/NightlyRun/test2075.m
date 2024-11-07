@@ -68,5 +68,5 @@ himax=md.results.LoveSolution.LoveHfi(:,3);
 %Fields and tolerances to track changes
 
 field_names     ={'LoveHrEbm','LoveHiEbm','LoveHrMaxwell', 'LoveHiMaxwell'};
-field_tolerances={1.0e-6,1.0e-6,1.0e-6};
+field_tolerances={1.0e-6,1.0e-6,1.0e-6,1.0e-6};
 field_values={hrebm,hiebm,hrmax,himax};

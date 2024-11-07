@@ -28,30 +28,14 @@ def issmscpin(host, login, port, path, packages):
             except OSError as e:
                 pass
     else:
-        if ispc():
-            #use the putty project pscp.exe: it should be in the path.
-            #get ISSM_DIR variable
-            if 'ISSM_DIR_WIN' in os.environ:
-                ISSM_DIR = os.environ['ISSM_DIR_WIN'][1:-2]
-            else:
-                raise OSError("issmscpin error message: could not find ISSM_DIR_WIN environment variable.")
-            username = eval(input('Username: (quoted string) '))
-            key = eval(input('Key: (quoted string) '))
-            for package in packages:
-                try:
-                    subprocess.check_call('%s/externalpackages/ssh/pscp.exe -l "%s" -pw "%s" %s:%s %s' % (ISSM_DIR, username, key, host, os.path.join(path, package), os.getcwd()), shell=True)
-                except CalledProcessError as e:
-                    raise CalledProcessError("issmscpin error message: could not call putty pscp due to ")
-
+        #just use standard unix scp string to copy multiple files using scp
+        filelist = [os.path.join(directory, x) for x in packages]
+        fileliststr = ' '.join([str(x) for x in filelist])
+        if port:
+            subprocess.call('scp -OT -P {} {}@localhost:"{}" {}'.format(port, login, fileliststr, os.getcwd()), shell=True)
         else:
-            #just use standard unix scp
-            #string to copy multiple files using scp:
-            string = "'{" + ','.join([str(x) for x in packages]) + "}'"
-            if port:
-                subprocess.call('scp -P {} {}@localhost:{} {}/. '.format(port, login, os.path.join(path, string), os.getcwd()), shell=True)
-            else:
-                subprocess.call('scp -T {}@{}:{} {}/.'.format(login, host, os.path.join(path, string), os.getcwd()), shell=True)
-    #check scp worked
-            for package in packages:
-                if not os.path.exists(os.path.join('.', package)):
-                    raise OSError("issmscpin error message: could not call scp on *nix system for file '{}'".format(package))
+            subprocess.call('scp -OT {}@{}:"{}" {}'.format(login, host, fileliststr, os.getcwd()), shell=True)
+        #check scp worked
+        for package in packages:
+            if not os.path.exists(os.path.join('.', package)):
+                raise OSError("issmscpin error message: could not call scp on *nix system for file '{}'".format(package))

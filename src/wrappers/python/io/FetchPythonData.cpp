@@ -33,23 +33,9 @@ void FetchData(double* pscalar,PyObject* py_float){
 	else if (PyList_Check(py_float) && (int)PyList_Size(py_float)==1)
 		FetchData(&dscalar,PyList_GetItem(py_float,(Py_ssize_t)0));
 	else
-		_error_("unrecognized float type py3 in input!");
-
+		_error_("unrecognized float type in input!");
 	#else
-	if (PyFloat_Check(py_float))
-		dscalar=PyFloat_AsDouble(py_float);
-	else if (PyLong_Check(py_float))
-		dscalar=PyLong_AsDouble(py_float);
-	else if (PyInt_Check(py_float))
-		dscalar=(double)PyInt_AsLong(py_float);
-	else if (PyBool_Check(py_float))
-		dscalar=(double)PyLong_AsLong(py_float);
-	else if (PyTuple_Check(py_float) && (int)PyTuple_Size(py_float)==1)
-		FetchData(&dscalar,PyTuple_GetItem(py_float,(Py_ssize_t)0));
-	else if (PyList_Check(py_float) && (int)PyList_Size(py_float)==1)
-		FetchData(&dscalar,PyList_GetItem(py_float,(Py_ssize_t)0));
-	else
-		_error_("unrecognized float type in py2 input!");
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 	#endif
 	/*output: */
 	*pscalar=dscalar;
@@ -75,20 +61,7 @@ void FetchData(float* pscalar,PyObject* py_float){
 	else
 		_error_("unrecognized float type in input!");
 	#else
-	if  (PyFloat_Check(py_float))
-		fscalar=PyFloat_AsDouble(py_float);
-	else if (PyLong_Check(py_float))
-		fscalar=(float)PyLong_AsDouble(py_float);
-	else if (PyInt_Check(py_float))
-		fscalar=(float)PyInt_AsLong(py_float);
-	else if (PyBool_Check(py_float))
-		fscalar=(float)PyLong_AsLong(py_float);
-	else if (PyTuple_Check(py_float) && (int)PyTuple_Size(py_float)==1)
-		FetchData(&fscalar,PyTuple_GetItem(py_float,(Py_ssize_t)0));
-	else if (PyList_Check(py_float) && (int)PyList_Size(py_float)==1)
-		FetchData(&fscalar,PyList_GetItem(py_float,(Py_ssize_t)0));
-	else
-		_error_("unrecognized float type in input!");
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 	#endif
 	/*output: */
 	*pscalar=fscalar;
@@ -113,22 +86,8 @@ void FetchData(int* pscalar, PyObject* py_long){
 		FetchData(&iscalar,PyList_GetItem(py_long,(Py_ssize_t)0));
 	else
 		_error_("unrecognized long type in input!");
-
 	#else
-	if (PyLong_Check(py_long))
-		iscalar=(int)PyLong_AsLong(py_long);
-	else if (PyInt_Check(py_long))
-		iscalar=(int)PyInt_AsLong(py_long);
-	else if (PyFloat_Check(py_long))
-		iscalar=(int)PyFloat_AsDouble(py_long);
-	else if (PyBool_Check(py_long))
-		iscalar=(int)PyLong_AsLong(py_long);
-	else if (PyTuple_Check(py_long) && (int)PyTuple_Size(py_long)==1)
-		FetchData(&iscalar,PyTuple_GetItem(py_long,(Py_ssize_t)0));
-	else if (PyList_Check(py_long) && (int)PyList_Size(py_long)==1)
-		FetchData(&iscalar,PyList_GetItem(py_long,(Py_ssize_t)0));
-	else
-		_error_("unrecognized long type in input!");
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 	#endif
 	/*output: */
 	*pscalar=iscalar;
@@ -153,22 +112,8 @@ void FetchData(bool* pscalar,PyObject* py_boolean){
 		FetchData(&bscalar,PyList_GetItem(py_boolean,(Py_ssize_t)0));
 	else
 		_error_("unrecognized boolean type in input!");
-
 	#else
-	if      (PyBool_Check(py_boolean))
-		bscalar=(bool)PyLong_AsLong(py_boolean);
-	else if (PyLong_Check(py_boolean))
-		bscalar=(bool)PyLong_AsLong(py_boolean);
-	else if (PyLong_Check(py_boolean))
-		bscalar=(bool)PyLong_AsLong(py_boolean);
-	else if (PyInt_Check(py_boolean))
-		bscalar=(bool)PyInt_AsLong(py_boolean);
-	else if (PyTuple_Check(py_boolean) && (int)PyTuple_Size(py_boolean)==1)
-		FetchData(&bscalar,PyTuple_GetItem(py_boolean,(Py_ssize_t)0));
-	else if (PyList_Check(py_boolean) && (int)PyList_Size(py_boolean)==1)
-		FetchData(&bscalar,PyList_GetItem(py_boolean,(Py_ssize_t)0));
-	else
-		_error_("unrecognized boolean type in input!");
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 	#endif
 	/*output: */
 	*pscalar=bscalar;
@@ -274,7 +219,7 @@ void FetchData(double** pmatrix,int* pM,int *pN,PyObject* py_matrix){
 				PyObject *item;
 				item = PyList_GetItem(py_matrix, index);
 				if ((int)PyList_Size(item)>1)
-					_error_("2D lists are not suported");
+					_error_("2D lists are not supported");
 				FetchData(&(matrix[index]),item);
 			}
 		}
@@ -292,7 +237,7 @@ void FetchData(double** pmatrix,int* pM,int *pN,PyObject* py_matrix){
 				PyObject *item;
 				item = PyTuple_GetItem(py_matrix, index);
 				if ((int)PyTuple_Size(item)>1)
-					_error_("2D tuple are not suported");
+					_error_("2D tuple are not supported");
 				FetchData(&(matrix[index]),item);
 			}
 		}
@@ -399,7 +344,7 @@ void FetchData(int** pmatrix,int* pM,int *pN,PyObject* py_matrix){
 				PyObject *item;
 				item = PyList_GetItem(py_matrix, index);
 				if ((int)PyList_Size(item)>1)
-					_error_("2D lists are not suported");
+					_error_("2D lists are not supported");
 				FetchData(&(matrix[index]),item);
 			}
 		}
@@ -416,7 +361,7 @@ void FetchData(int** pmatrix,int* pM,int *pN,PyObject* py_matrix){
 				PyObject *item;
 				item = PyTuple_GetItem(py_matrix, index);
 				if ((int)PyTuple_Size(item)>1)
-					_error_("2D tuple are not suported");
+					_error_("2D tuple are not supported");
 				FetchData(&(matrix[index]),item);
 			}
 		}
@@ -523,7 +468,7 @@ void FetchData(bool** pmatrix,int* pM,int *pN,PyObject* py_matrix){
 				PyObject *item;
 				item = PyList_GetItem(py_matrix, index);
 				if ((int)PyList_Size(item)>1)
-					_error_("2D lists are not suported");
+					_error_("2D lists are not supported");
 				FetchData(&(matrix[index]),item);
 			}
 		}
@@ -1144,7 +1089,7 @@ void FetchData(Options** poptions,int istart, int nrhs,PyObject* py_tuple){
 		#if _PYTHON_MAJOR_ >= 3
 		if (!PyUnicode_Check(PyTuple_GetItem(py_tuple,(Py_ssize_t)i))) _error_("Argument " << i+1 << " must be name of option");
 		#else
-		if (!PyString_Check(PyTuple_GetItem(py_tuple,(Py_ssize_t)i))) _error_("Argument " << i+1 << " must be name of option");
+			_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 		#endif
 
 		FetchData(&name,PyTuple_GetItem(py_tuple,(Py_ssize_t)i));
@@ -1173,9 +1118,6 @@ void FetchData(Contours** pcontours,PyObject* py_list){
 
 	#if _PYTHON_MAJOR_ >= 3
 	if (PyUnicode_Check(py_list)){
-	#else
-	if (PyString_Check(py_list)){
-	#endif
 		FetchData(&contourname,py_list);
 		contours=ExpRead<double>(contourname);
 	}
@@ -1209,6 +1151,9 @@ void FetchData(Contours** pcontours,PyObject* py_list){
 	else{
 		_error_("Contour is neither a string nor a structure and cannot be loaded");
 	}
+	#else
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
+	#endif
 
 	/*clean-up and assign output pointer*/
 	xDelete<char>(contourname);
@@ -1326,7 +1271,7 @@ void FetchData(char** pstring,PyObject* py_string){
 	#if _PYTHON_MAJOR_ == 3
 	const char* string=PyUnicode_AsUTF8(py_string);
 	#else
-	char* string=PyString_AsString(py_string);
+		_error_("Python 2 is deprecated! Upgrade to Python 3, reconfigure, and recompile.");
 	#endif
 	/*copy string (note strlen does not include trailing NULL): */
 	*pstring=xNew<char>(strlen(string)+1);

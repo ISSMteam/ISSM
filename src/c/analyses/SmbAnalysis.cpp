@@ -471,8 +471,8 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.albl",SmbAlbedoLandEnum));
 
 				//albedo parameter - slatter
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmin",SmbSemicTmaxEnum));
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmax",SmbSemicTminEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmax",SmbSemicTmaxEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmin",SmbSemicTminEnum));
 
 				//albedo parameter - isba & denby
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.mcrit",SmbSemicMcritEnum));

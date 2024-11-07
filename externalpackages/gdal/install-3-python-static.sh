@@ -22,7 +22,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/gdal-${VER}.tar.gz" "gdal-${VER}.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/OSGeo/gdal/releases/download/v${VER}/gdal-${VER}.tar.gz" "gdal-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gdal-${VER}.tar.gz
