@@ -4,26 +4,26 @@
 
 ## Constants
 #
-VER="1_73_0"
+VER="1.73.0"
 
 PREFIX="${ISSM_DIR}/externalpackages/boost/install" # Set to location where external package should be installed
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/boost_${VER}.tar.gz" "boost_${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://archives.boost.io/release/${VER}/source/boost_${VER//./_}.tar.gz" "boost_${VER//./_}.tar.gz"
 
 # Unpack source
-tar -zxvf boost_${VER}.tar.gz
+tar -zxvf boost_${VER//./_}.tar.gz
 
 # Cleanup
 rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Move source into 'src' directory
-mv boost_${VER}/* src
-rm -rf boost_${VER}
+mv boost_${VER//./_}/* src
+rm -rf boost_${VER//./_}
 
 # Copy customized source and configuration files to 'src' directory
-cp ./configs/1.73/boost/math/tools/user.hpp ./src/boost/math/tools
+cp ./configs/${VER%.*}/boost/math/tools/user.hpp ./src/boost/math/tools
 
 # Configure
 cd src

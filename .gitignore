@@ -66,7 +66,7 @@ externalpackages/*/src
 externalpackages/*/*.zip
 externalpackages/*/*.gz
 externalpackages/*/*.tgz
-externalpackages/chaco/chaco_guide.pdf
+externalpackages/chaco/chaco*guide.pdf
 
 # Jenkins #
 #==========
@@ -76,6 +76,9 @@ nightlylog
 # Nightly runs #
 #===============
 test/NightlyRun/*.bin
+test/NightlyRun/*.errlog
+test/NightlyRun/*.outlog
+test/NightlyRun/*.qmu*
 test/NightlyRun/*.queue
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits

@@ -324,7 +324,7 @@ classdef model
 			%   Usage:
 			%      md=collapse(md)
 			%
-			%   See also: EXTRUDE, MODELEXTRACT
+			%   See also: EXTRUDE, EXTRACT
 
 			%Check that the model is really a 3d model
 			if ~strcmp(md.mesh.elementtype(),'Penta'),
@@ -939,7 +939,7 @@ classdef model
 			[edges,I,J]=unique(sort(edges,2),'rows');
 			%3: unique edge numbers
 			vec=J;
-			%4: unique edges numbers in each triangle (2 triangles sharing the same edge will have the same edge number)
+			%4: unique edge numbers in each triangle (2 triangles sharing the same edge will have the same edge number)
 			edges_tria=[vec(elementslist+nbe) vec(elementslist+2*nbe) vec(elementslist)];
 
 			% We divide each element as follows
@@ -984,7 +984,8 @@ classdef model
 			md2.mesh.numberofelements = size(md2.mesh.elements,1);
 			md2.mesh.numberofvertices = length(md2.mesh.x);
 			md2.mesh.numberofedges    = size(md2.mesh.edges,1);
-			md2.mesh.vertexonboundary = zeros(md2.mesh.numberofvertices,1); md2.mesh.vertexonboundary(md2.mesh.segments(:,1:2)) = 1;
+			md2.mesh.vertexonboundary = zeros(md2.mesh.numberofvertices,1);
+			md2.mesh.vertexonboundary(md2.mesh.segments(:,1:2)) = 1;
 
 			%Deal with boundary
 			md2.mesh.vertexonboundary = [md.mesh.vertexonboundary;sum(md.mesh.vertexonboundary(edges),2)==2];
@@ -1000,8 +1001,18 @@ classdef model
 
 			%Create transformation vectors
 			nbedges = size(edges,1);
-			Pelem = sparse(1:4*nbe,repmat([1:nbe],1,4),ones(4*nbe,1),4*nbe,nbe);
-			Pnode = sparse([1:nbv,repmat([nbv+1:nbv+nbedges],1,2)],[1:nbv edges(:)'],[ones(nbv,1);1/2*ones(2*nbedges,1)],md2.mesh.numberofvertices,nbv);
+			i = 1:4*nbe;
+			j = repmat([1:nbe],1,4);
+			v = ones(4*nbe,1);
+			m = 4*nbe;
+			n = nbe;
+			Pelem = sparse(i,j,v,m,n);
+			i = [1:nbv,repmat([nbv+1:nbv+nbedges],1,2)];
+			j = [1:nbv edges(:)'];
+			v = [ones(nbv,1);1/2*ones(2*nbedges,1)];
+			m = md2.mesh.numberofvertices;
+			n = nbv;
+			Pnode = sparse(i,j,v,m,n);
 
 			%Deal with mesh
 			if numel(md.mesh.lat)==md.mesh.numberofvertices
@@ -1012,9 +1023,8 @@ classdef model
 				md2.mesh.scale_factor=Pnode*md.mesh.scale_factor;
 			end
 
-			%loop over model fields
+			%loop over model fields (except mesh)
 			model_fields=setxor(fields(md),{'mesh'});
-			%remove mesh from this field
 			for i=1:length(model_fields),
 				%get field
 				field=md.(model_fields{i});
@@ -1043,7 +1053,7 @@ classdef model
 						md2.(model_fields{i})=Pnode*field;
 					elseif (fieldsize(1)==numberofvertices1+1)
 						md2.(model_fields{i})=[Pnode*field(1:end-1,:); field(end,:)];
-						%size = number of elements * n
+					%size = number of elements * n
 					elseif fieldsize(1)==numberofelements1
 						md2.(model_fields{i})=Pelem*field;
 					elseif (fieldsize(1)==numberofelements1+1)
@@ -1051,6 +1061,39 @@ classdef model
 					end
 				end
 			end
+
+			%special case: outputdefinitions
+			if ~isempty(md.outputdefinition.definitions)
+				for i=1:numel(md.outputdefinition.definitions)
+					if isa(md.outputdefinition.definitions{i}, 'cfsurfacesquaretransient')
+						field = md.outputdefinition.definitions{i}.observations;
+						assert(size(field,1)==md.mesh.numberofvertices+1);
+						md2.outputdefinition.definitions{i}.observations = [Pnode*field(1:end-1,:); field(end,:)];
+						field = md.outputdefinition.definitions{i}.weights;
+						assert(size(field,1)==md.mesh.numberofvertices+1);
+						md2.outputdefinition.definitions{i}.weights = [Pnode*field(1:end-1,:); field(end,:)];
+					elseif isa(md.outputdefinition.definitions{i}, 'cfdragcoeffabsgrad')
+						md2.outputdefinition.definitions{i}.weights = Pnode*md.outputdefinition.definitions{i}.weights;
+					else
+						disp(['skipping md.outputdefinition.definitions{' num2str(i) '} as its class is not yet supported by model.refine']);
+						disp('make sure to amend model manually after refinement if this definition is important');
+					end
+				end
+			end
+
+			%special case: independents
+			if ~isempty(md.autodiff.independents)
+				for i=1:numel(md.autodiff.independents)
+					if md.autodiff.independents{i}.nods == md.mesh.numberofvertices
+						md2.autodiff.independents{i}.nods = md2.mesh.numberofvertices;
+					end
+					if numel(md.autodiff.independents{i}.min_parameters)==md.mesh.numberofvertices;
+						md2.autodiff.independents{i}.min_parameters = Pnode*md.autodiff.independents{i}.min_parameters;
+						md2.autodiff.independents{i}.max_parameters = Pnode*md.autodiff.independents{i}.max_parameters;
+					end
+				end
+			end
+
 
 		end % }}}
 		function md = extrude(md,varargin) % {{{
@@ -1073,7 +1116,7 @@ classdef model
 			%      md=extrude(md,15,1.3,1.2);
 			%      md=extrude(md,[0 0.2 0.5 0.7 0.9 0.95 1]);
 			%
-			%   See also: MODELEXTRACT, COLLAPSE
+			%   See also: EXTRACT, COLLAPSE
 
 			%some checks on list of arguments
 			if ((nargin>4) | (nargin<2) | (nargout~=1)),

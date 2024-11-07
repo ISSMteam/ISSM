@@ -435,7 +435,7 @@ if [ $EXAMPLES_TEST -eq 1 ]; then
 	export MATLAB_PATH
 
 	# Download examples datasets if they are not already present
-	if [[ -z $(ls -A1q $ISSM_DIR/examples/Data) ]]; then
+	if [[ -z $(ls -A1q $ISSM_DIR/examples/Data | grep -vw -E "download.sh") ]]; then
 		$ISSM_DIR/scripts/DownloadExamplesDatasets.sh
 	fi
 

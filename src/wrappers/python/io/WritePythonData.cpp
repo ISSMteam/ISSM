@@ -18,11 +18,7 @@
 /*FUNCTION WriteData(PyObject* py_tuple,int index,int integer){{{*/
 void WriteData(PyObject* py_tuple, int index, int integer){
 
-	#if _PYTHON_MAJOR_ >= 3
 	PyTuple_SetItem(py_tuple, index, PyLong_FromSsize_t((Py_ssize_t)integer));
-	#else
-	PyTuple_SetItem(py_tuple, index, PyInt_FromSsize_t((Py_ssize_t)integer));
-	#endif
 
 }/*}}}*/
 /*FUNCTION WriteData(PyObject* py_tuple,int index,char* string){{{*/
@@ -229,15 +225,9 @@ void WriteData(PyObject* py_tuple,int index,RiftStruct* riftstruct){
 	for (i=0; i<riftstruct->numrifts; i++) {
 		dict=PyDict_New();
 
-		#if _PYTHON_MAJOR_ >= 3
 		PyDict_SetItemString(dict,"numsegs"          ,PyLong_FromSsize_t((Py_ssize_t)riftstruct->riftsnumsegments[i]));
 		PyDict_SetItemString(dict,"fill"             ,PyUnicode_FromString("Ice"));
 		PyDict_SetItemString(dict,"friction"         ,PyLong_FromSsize_t((Py_ssize_t)0));
-		#else
-		PyDict_SetItemString(dict,"numsegs"          ,PyInt_FromSsize_t((Py_ssize_t)riftstruct->riftsnumsegments[i]));
-		PyDict_SetItemString(dict,"fill"             ,PyString_FromString("Ice"));
-		PyDict_SetItemString(dict,"friction"         ,PyInt_FromSsize_t((Py_ssize_t)0));
-		#endif
 
 		PyDict_SetItemString(dict,"segments"         ,PyArrayFromCopiedData(riftstruct->riftsnumsegments[i]    ,3,riftstruct->riftssegments[i]));
 		PyDict_SetItemString(dict,"pairs"            ,PyArrayFromCopiedData(riftstruct->riftsnumpairs[i]       ,2,riftstruct->riftspairs[i]));

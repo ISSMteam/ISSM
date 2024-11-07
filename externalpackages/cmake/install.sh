@@ -9,7 +9,7 @@ VER="3.28.3"
 PREFIX="${ISSM_DIR}/externalpackages/cmake/install" # Set to location where external package should be installed
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/cmake-${VER}.tar.gz" "cmake-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://cmake.org/files/v${VER%.*}/cmake-${VER}.tar.gz" "cmake-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf cmake-${VER}.tar.gz
