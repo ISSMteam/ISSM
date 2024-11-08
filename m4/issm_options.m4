@@ -657,9 +657,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 			dnl the best way to do this: it's what "site.py" does in the
 			dnl standard library.
 			if test -f "${PYTHON_ROOT}/bin/python"; then
-				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; print(sys.version[[:3]])")
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python -c "import sys; sys.stdout.write(str(sys.version_info.major)+'.'+str(sys.version_info.minor))")
 			elif test -f "${PYTHON_ROOT}/bin/python3"; then
-				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python3 -c "import sys; print(sys.version[[:3]])")
+				PYTHON_VERSION=$(${PYTHON_ROOT}/bin/python3 -c "import sys; sys.stdout.write(str(sys.version_info.major)+'.'+str(sys.version_info.minor))")
 			else
 				AC_MSG_ERROR([Python version could not be determined automatically, please provide option --with-python-version]);
 			fi
