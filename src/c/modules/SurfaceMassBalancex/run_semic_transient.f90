@@ -134,6 +134,10 @@ subroutine run_semic_transient(nx, ntime, nloop, sf_in, rf_in, swd_in, lwd_in, w
       surface%par%alb_scheme = "denby"
    else if (alb_scheme == 3) then
       surface%par%alb_scheme = "isba"
+   else if (alb_scheme == 4) then
+      print*, "ERROR: Given alex scheme is not available."
+      !surface%par%alb_scheme = "alex"
+      call exit(1)
    else
       print*, "ERROR: current albedo scheme is not available."
       call exit(1)
