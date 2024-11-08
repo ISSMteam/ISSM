@@ -91,7 +91,8 @@ classdef SMBsemic
 				list = {'default','SmbMassBalance','SmbMassBalanceSnow','SmbMassBalanceIce',...
 					'SmbMelt','SmbRefreeze','SmbAccumulation',...
 					'SmbHIce','SmbHSnow','SmbAlbedo','SmbAlbedoSnow','TemperatureSEMIC',...
-					'SmbSemicQmr','TotalSmb','TotalSmbMelt','TotalSmbRefreeze','SmbRunoff'};
+					'SmbSemicQmr','TotalSmb','TotalSmbMelt','TotalSmbRefreeze',...
+					'SmbRunoff','SmbEvaporation'};
 			else
 				list = {'default','SmbMassBalance'};
 			end
@@ -272,6 +273,9 @@ classdef SMBsemic
 				fielddisplay(self,'tmin','minimum temperature for which albedo decline become effective. (default: 263.15 K)[unit: K])');
 				fielddisplay(self,'tmax','maxmium temperature for which albedo decline become effective. This value should be fixed. (default: 273.15 K)[unit: K])');
 			elseif self.albedo_scheme == 2
+				disp(sprintf('\n\tSEMIC snow albedo parameters for Denby et al. (2002 Tellus)'));
+				fielddisplay(self,'mcrit','critical melt rate (default: 6e-8) [unit: m/sec]');
+			elseif self.albedo_scheme == 3
 				disp(sprintf('\n\tSEMIC snow albedo parameters for ISBA (Douville et al., 1995).'));
 				fielddisplay(self,'mcrit','critical melt rate (default: 6e-8) [unit: m/sec]');
 				fielddisplay(self,'wcrit','critical liquid water content (default: 15) [unit: kg/m2]');
@@ -279,9 +283,6 @@ classdef SMBsemic
 				fielddisplay(self,'tau_f','wet albedo decline [unit: 1/day]');
 				disp(sprintf('\n\tReference'));
 				disp(sprintf('\tDouville, H., Royer, J.-F., and Mahfouf, J.-F.: A new snow parameterization for the Météo-France climate model. Part I: validation in stand-alone experiments, Climate Dynamics, 12, 21–35, https://doi.org/10.1007/s003820050092, 1995.'));
-			elseif self.albedo_scheme == 3
-				disp(sprintf('\n\tSEMIC snow albedo parameters for Denby et al. (2002 Tellus)'));
-				fielddisplay(self,'mcrit','critical melt rate (default: 6e-8) [unit: m/sec]');
 			elseif self.albedo_scheme == 4
 				disp(sprintf('\n\tSEMIC snow albedo parameters for Alex.?'));
 				fielddisplay(self,'afac','[unit: ?]');
