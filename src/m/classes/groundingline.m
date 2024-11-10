@@ -28,7 +28,7 @@ classdef groundingline
 			self.melt_interpolation    = 'NoMeltOnPartiallyFloating';
 			self.intrusion_distance    = 0;
 			%default output
-         	self.requested_outputs     = {'default'};
+			self.requested_outputs     = {'default'};
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -88,7 +88,7 @@ classdef groundingline
 			writejsstring(fid,[modelname '.groundingline.migration'],self.migration);
 			writejsstring(fid,[modelname '.groundingline.friction_interpolation'],self.friction_interpolation);
 			writejsstring(fid,[modelname '.groundingline.melt_interpolation'],self.melt_interpolation);
-			writejsdouble(fif,[modelname '.groundingline.intrusion_distance'],self.intrusion_distance);
+			writejsdouble(fid,[modelname '.groundingline.intrusion_distance'],self.intrusion_distance);
 			writejscellstring(fid,[modelname '.groundingline.requested_outputs'],self.requested_outputs);
 
 		end % }}}

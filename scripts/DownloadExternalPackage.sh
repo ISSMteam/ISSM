@@ -42,7 +42,7 @@ fi
 ## Download file
 #
 if [ ! -z `which curl` ]; then
-	curl --silent $URL -o $OUT_FILE
+	curl --silent -L $URL -o $OUT_FILE
 
 	# Try wget if curl exists but fails
 	if [ $? -ne 0 ]; then

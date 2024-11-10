@@ -2,6 +2,10 @@
 set -eu
 
 
+## Constants
+#
+VER="2.7.2"
+
 ## Environment
 #
 export CFLAGS="-O2 -L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi"
@@ -12,10 +16,14 @@ rm -rf install src
 mkdir install src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/ADOL-C.tar.gz" "ADOL-C.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/coin-or/ADOL-C/archive/refs/tags/releases/${VER}.tar.gz" "ADOL-C.tar.gz"
 
 # Unpack source
 tar -zxvf ADOL-C.tar.gz
+
+# Move source to 'src' directory
+mv ADOL-C-releases-${VER}/* src/
+rm -rf ADOL-C-releases-${VER}
 
 # Configure
 cd src

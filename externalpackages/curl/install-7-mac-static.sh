@@ -13,7 +13,7 @@ PREFIX="${ISSM_DIR}/externalpackages/curl/install" # Set to location where exter
 export MACOSX_DEPLOYMENT_TARGET="10.5" # Allows fall back to older API (source: https://curl.se/docs/install.html)
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/curl-${VER}.tar.gz" "curl-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://curl.se/download/curl-${VER}.tar.gz" "curl-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf curl-${VER}.tar.gz

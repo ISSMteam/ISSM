@@ -13,7 +13,7 @@ rm -rf ${PREFIX}
 mkdir -p ${PREFIX}
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/oldversions/version${VER}/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gshhg-gmt-${VER}.tar.gz

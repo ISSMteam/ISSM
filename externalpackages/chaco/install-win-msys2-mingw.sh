@@ -13,8 +13,8 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/Chaco-${VER}.tar.gz" "Chaco-${VER}.tar.gz"
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/docs/chaco_guide.pdf" "chaco_guide.pdf"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/sandialabs/Chaco/raw/refs/heads/main/Chaco-${VER}.tar.gz" "Chaco-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/sandialabs/Chaco/blob/main/chaco_user_guide.pdf" "chaco_user_guide.pdf"
 
 # Unpack source
 tar -xvzf Chaco-${VER}.tar.gz
