@@ -25,7 +25,7 @@ rm -rf petsc-${VER}
 
 # Configure
 cd ${PETSC_DIR}
-./configure \
+./config/configure.py \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--CFLAGS="-g -O3" \

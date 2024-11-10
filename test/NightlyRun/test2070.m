@@ -6,7 +6,7 @@
 %Journal International, 185: 106--132. doi:10.1111/j.1365-246X.2011.04952.x
 
 md=model();
-md.cluster=generic('name',oshostname(),'np',2);
+md.cluster=generic('name',oshostname(),'np',3);
 
 md.materials=materials('litho');
 md.miscellaneous.name='test2070';
@@ -24,12 +24,6 @@ md.materials.viscosity=[0            0   2.0000e+00   1.0000e+00   1.0000e+00   
 md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.materials.issolid=[1 0 1 1 1 1]';
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
-md.materials.burgers_mu=md.materials.lame_mu/3;
-md.materials.burgers_viscosity=md.materials.viscosity/10;
-md.materials.ebm_alpha= ones(md.materials.numlayers,1)*.9;
-md.materials.ebm_delta= ones(md.materials.numlayers,1)*0.2;
-md.materials.ebm_taul= ones(md.materials.numlayers,1)*54*60; %54min
-md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*cst/1e3; %18.6yr
 
 md.love.allow_layer_deletion=1;
 md.love.frequencies=[0];
@@ -40,14 +34,8 @@ md.love.underflow_tol=1e-20;
 md.love.pw_threshold=1e-3;
 md.love.Gravitational_Constant=6.6732e-11;
 md.love.min_integration_steps=100;
-md.love.allow_layer_deletion=1;
-md.love.forcing_type=11;
-md.love.chandler_wobble=0;
-md.love.complex_computation=0;
 md.love.istemporal=0;
 %md.love.time=(linspace(1/12,10, 10*12))'*cst/1e3;
-
-md.love.love_kernels=1;
 
 md=solve(md,'lv');
 

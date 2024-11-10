@@ -44,7 +44,7 @@ class ub_ccr(object):
         self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0', 'openmpi/4.1.1']
         self.srcpath = '/projects/grid/ghub/ISSM/repos/ISSM'
         self.codepath = '/projects/grid/ghub/ISSM/repos/ISSM/bin'
-        self.executionpath = ''
+        self.executionpath = '$HOME/ISSM/execution'
         self.interactive = 0
         self.bbftp = 0
         self.email = ''
@@ -251,7 +251,8 @@ class ub_ccr(object):
         #     issmscpin(self.name, self.login, self.port, directory, filelist)
 
         # NOTE: Replacement for issmscpin(self.name, self.login, self.port, directory, filelist)
-        fileliststr = '{' + ','.join([str(x) for x in filelist]) + '}'
-        downloadcommand = 'cp {} {}/.'.format(os.path.join(directory, fileliststr), os.getcwd())
-        subprocess.call(downloadcommand, shell=True) 
+        filelist = [os.path.join(directory, x) for x in filelist]
+        fileliststr = ' '.join([str(x) for x in filelist])
+        downloadcommand = 'cp {} {}'.format(fileliststr, os.getcwd())
+        subprocess.call(downloadcommand, shell=True)
     # }}}

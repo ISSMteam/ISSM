@@ -36,7 +36,7 @@ sed -i'' 's|thread.isAlive|thread.is_alive|g' ${PETSC_DIR}/config/BuildSystem/sc
 #	(may need to remove it for earlier versions not using the C99 standard).
 #
 cd ${PETSC_DIR}
-./configure \
+./config/configure.py \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--CFLAGS="-Wno-error=implicit-function-declaration" \

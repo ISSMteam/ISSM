@@ -1645,12 +1645,15 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Loads")==0) return LoadsEnum;
 	      else if (strcmp(name,"LoveAnalysis")==0) return LoveAnalysisEnum;
 	      else if (strcmp(name,"LoveHf")==0) return LoveHfEnum;
+	      else if (strcmp(name,"LoveHfi")==0) return LoveHfiEnum;
 	      else if (strcmp(name,"LoveHt")==0) return LoveHtEnum;
 	      else if (strcmp(name,"LoveKernelsImag")==0) return LoveKernelsImagEnum;
 	      else if (strcmp(name,"LoveKernelsReal")==0) return LoveKernelsRealEnum;
 	      else if (strcmp(name,"LoveKf")==0) return LoveKfEnum;
+	      else if (strcmp(name,"LoveKfi")==0) return LoveKfiEnum;
 	      else if (strcmp(name,"LoveKt")==0) return LoveKtEnum;
 	      else if (strcmp(name,"LoveLf")==0) return LoveLfEnum;
+	      else if (strcmp(name,"LoveLfi")==0) return LoveLfiEnum;
 	      else if (strcmp(name,"LoveLt")==0) return LoveLtEnum;
 	      else if (strcmp(name,"LoveTidalHt")==0) return LoveTidalHtEnum;
 	      else if (strcmp(name,"LoveTidalKt")==0) return LoveTidalKtEnum;
@@ -1732,13 +1735,13 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"P2")==0) return P2Enum;
 	      else if (strcmp(name,"P2bubble")==0) return P2bubbleEnum;
 	      else if (strcmp(name,"P2bubblecondensed")==0) return P2bubblecondensedEnum;
-	      else if (strcmp(name,"P2xP1")==0) return P2xP1Enum;
-	      else if (strcmp(name,"P2xP4")==0) return P2xP4Enum;
-	      else if (strcmp(name,"Paterson")==0) return PatersonEnum;
          else stage=15;
    }
    if(stage==15){
-	      if (strcmp(name,"Pengrid")==0) return PengridEnum;
+	      if (strcmp(name,"P2xP1")==0) return P2xP1Enum;
+	      else if (strcmp(name,"P2xP4")==0) return P2xP4Enum;
+	      else if (strcmp(name,"Paterson")==0) return PatersonEnum;
+	      else if (strcmp(name,"Pengrid")==0) return PengridEnum;
 	      else if (strcmp(name,"Penpair")==0) return PenpairEnum;
 	      else if (strcmp(name,"Penta")==0) return PentaEnum;
 	      else if (strcmp(name,"PentaInput")==0) return PentaInputEnum;
@@ -1855,13 +1858,13 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"DeviatoricStress")==0) return DeviatoricStressEnum;
 	      else if (strcmp(name,"EtaAbsGradient")==0) return EtaAbsGradientEnum;
 	      else if (strcmp(name,"MeshZ")==0) return MeshZEnum;
-	      else if (strcmp(name,"NearestInterp")==0) return NearestInterpEnum;
-	      else if (strcmp(name,"OutputdefinitionList")==0) return OutputdefinitionListEnum;
-	      else if (strcmp(name,"SealevelObs")==0) return SealevelObsEnum;
          else stage=16;
    }
    if(stage==16){
-	      if (strcmp(name,"SealevelWeights")==0) return SealevelWeightsEnum;
+	      if (strcmp(name,"NearestInterp")==0) return NearestInterpEnum;
+	      else if (strcmp(name,"OutputdefinitionList")==0) return OutputdefinitionListEnum;
+	      else if (strcmp(name,"SealevelObs")==0) return SealevelObsEnum;
+	      else if (strcmp(name,"SealevelWeights")==0) return SealevelWeightsEnum;
 	      else if (strcmp(name,"StrainRate")==0) return StrainRateEnum;
 	      else if (strcmp(name,"StressTensor")==0) return StressTensorEnum;
 	      else if (strcmp(name,"StressbalanceViscosityOvershoot")==0) return StressbalanceViscosityOvershootEnum;

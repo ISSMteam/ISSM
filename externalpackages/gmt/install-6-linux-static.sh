@@ -28,7 +28,7 @@ export CC=mpicc
 export CFLAGS="${CFLAGS} -w"
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/gmt-${VER}.tar.gz" "gmt-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/GenericMappingTools/gmt/archive/refs/tags/${VER}.tar.gz" "gmt-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gmt-${VER}.tar.gz

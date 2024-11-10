@@ -186,18 +186,23 @@ classdef solidearthsettings
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 			% TODO: Update the following fields so that coverage is complete
-			writejsdouble(fid,[modelname '.solidearth.settings.maxiter'],self.maxiter);
 			writejsdouble(fid,[modelname '.solidearth.settings.reltol'],self.reltol);
 			writejsdouble(fid,[modelname '.solidearth.settings.abstol'],self.abstol);
+			writejsdouble(fid,[modelname '.solidearth.settings.maxiter'],self.maxiter);
 			writejsdouble(fid,[modelname '.solidearth.settings.selfattraction'],self.selfattraction);
 			writejsdouble(fid,[modelname '.solidearth.settings.elastic'],self.elastic);
 			writejsdouble(fid,[modelname '.solidearth.settings.viscous'],self.viscous);
 			writejsdouble(fid,[modelname '.solidearth.settings.rotation'],self.rotation);
 			writejsdouble(fid,[modelname '.solidearth.settings.grdocean'],self.grdocean);
 			writejsdouble(fid,[modelname '.solidearth.settings.ocean_area_scaling'],self.ocean_area_scaling);
-			writejsdouble(fid,[modelname '.solidearth.settings.run_frequency'],self.run_frequency);
+			writejsdouble(fid,[modelname '.solidearth.settings.runfrequency'],self.runfrequency);
+			writejsdouble(fid,[modelname '.solidearth.settings.sealevelloading'],self.sealevelloading);
+			writejsdouble(fid,[modelname '.solidearth.settings.isgrd'],self.isgrd);
+			writejsdouble(fid,[modelname '.solidearth.settings.compute_bp_grd'],self.compute_bp_grd);
 			writejsdouble(fid,[modelname '.solidearth.settings.degacc'],self.degacc);
 			writejsdouble(fid,[modelname '.solidearth.settings.timeacc'],self.timeacc);
+			writejsdouble(fid,[modelname '.solidearth.settings.horiz'],self.horiz);
+			writejsdouble(fid,[modelname '.solidearth.settings.grdmodel'],self.grdmodel);
 			writejsdouble(fid,[modelname '.solidearth.settings.cross_section_shape'],self.cross_section_shape);
 		end % }}}
 	end

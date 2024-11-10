@@ -41,7 +41,7 @@ extern "C" void run_semic_transient_(int *nx, int *ntime, int *nloop,
 			int *alb_scheme, IssmDouble *alb_smax, IssmDouble *alb_smin, IssmDouble *albi, IssmDouble *albl,
 			IssmDouble *Tamp, 
 			IssmDouble *tmin, IssmDouble *tmax, IssmDouble *tmid, IssmDouble *mcrit, IssmDouble *wcrit, IssmDouble *tau_a, IssmDouble* tau_f, IssmDouble *afac, bool *verbose,
-			IssmDouble *tsurf_out, IssmDouble *smb_out, IssmDouble *smbi_out, IssmDouble *smbs_out, IssmDouble *saccu_out, IssmDouble *smelt_out, IssmDouble *refr_out, IssmDouble *albedo_out, IssmDouble *albedo_snow_out, IssmDouble *hsnow_out, IssmDouble *hice_out, IssmDouble *qmr_out);
+			IssmDouble *tsurf_out, IssmDouble *smb_out, IssmDouble *smbi_out, IssmDouble *smbs_out, IssmDouble *saccu_out, IssmDouble *smelt_out, IssmDouble *refr_out, IssmDouble *albedo_out, IssmDouble *albedo_snow_out, IssmDouble *hsnow_out, IssmDouble *hice_out, IssmDouble *qmr_out, IssmDouble *runoff_out, IssmDouble *subl_out);
 #endif
 // _HAVE_SEMIC_
 /*}}}*/
@@ -4688,7 +4688,10 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	IssmDouble* hsnow_in        =xNew<IssmDouble>(NUM_VERTICES); 
 	IssmDouble* qmr_in          =xNew<IssmDouble>(NUM_VERTICES); 
 
-	// outputs
+	/* outputs 
+	runoff - runoff calculated melting + rainfall - refreezing 
+	subl   - sublimation
+	 * */
 	IssmDouble* tsurf_out  =xNew<IssmDouble>(NUM_VERTICES); memset(tsurf_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 	IssmDouble* smb_out    =xNew<IssmDouble>(NUM_VERTICES); memset(smb_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 	IssmDouble* smbi_out   =xNew<IssmDouble>(NUM_VERTICES); memset(smb_out, 0., NUM_VERTICES*sizeof(IssmDouble));
@@ -4701,6 +4704,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	IssmDouble* hsnow_out   =xNew<IssmDouble>(NUM_VERTICES); memset(hsnow_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 	IssmDouble* hice_out    =xNew<IssmDouble>(NUM_VERTICES); memset(hice_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 	IssmDouble* qmr_out     =xNew<IssmDouble>(NUM_VERTICES); memset(qmr_out, 0., NUM_VERTICES*sizeof(IssmDouble)); 
+	IssmDouble* runoff_out  =xNew<IssmDouble>(NUM_VERTICES); memset(runoff_out, 0., NUM_VERTICES*sizeof(IssmDouble)); 
+	IssmDouble* subl_out  =xNew<IssmDouble>(NUM_VERTICES); memset(subl_out, 0., NUM_VERTICES*sizeof(IssmDouble)); 
 
 	IssmDouble rho_water,rho_ice,desfac,desfacElev,rlaps,rdl;
 	IssmDouble alb_smax, alb_smin, albi, albl;
@@ -4870,7 +4875,7 @@ void       Element::SmbSemicTransient(){/*{{{*/
 			&alb_scheme, &alb_smax, &alb_smin, &albi, &albl,
 			Tamp_in,
 			&tmin, &tmax, &tmid, &mcrit, &wcrit, &tau_a, &tau_f, &afac, &semic_verbose,
-			tsurf_out, smb_out, smbi_out, smbs_out, saccu_out, smelt_out, refr_out, albedo_out, albedo_snow_out, hsnow_out, hice_out, qmr_out);
+			tsurf_out, smb_out, smbi_out, smbs_out, saccu_out, smelt_out, refr_out, albedo_out, albedo_snow_out, hsnow_out, hice_out, qmr_out, runoff_out, subl_out);
 
 	for (int iv = 0; iv<NUM_VERTICES; iv++){
 		/* 
@@ -4882,7 +4887,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 		smbs_out[iv] = smbs_out[iv]*rho_water/rho_ice*yts; // w.e. m/sec -> ice m/yr
 		saccu_out[iv] = saccu_out[iv]*rho_water/rho_ice*yts; // w.e. m/sec -> ice m/yr
 		smelt_out[iv] = smelt_out[iv]*rho_water/rho_ice; // w.e. m/sec -> ice m/yr
-		refr_out[iv]  = refr_out[iv]*rho_water/rho_ice; // w.e. m/sec -> ice m/yr
+		refr_out[iv]  = refr_out[iv]*rho_water/rho_ice;  // w.e. m/sec -> ice m/yr
+		runoff_out[iv]= runoff_out[iv]*rho_water/rho_ice; // w.e. m/sec -> ice m/yr
 	}
 
 	if(isverbose && this->Sid()==0){
@@ -4913,6 +4919,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 			this->AddInput(SmbHSnowEnum,       &hsnow_out[0],P1DGEnum);
 			this->AddInput(SmbHIceEnum,        &hice_out[0],P1DGEnum);
 			this->AddInput(SmbSemicQmrEnum,    &qmr_out[0],P1DGEnum);
+			this->AddInput(SmbRunoffEnum,      &runoff_out[0],P1DGEnum);
+			this->AddInput(SmbEvaporationEnum, &subl_out[0],P1DGEnum);
 			break;
 		case PentaEnum:
 			// TODO
@@ -4944,6 +4952,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	xDelete<IssmDouble>(saccu_out);
 	xDelete<IssmDouble>(smelt_out);
 	xDelete<IssmDouble>(refr_out);
+	xDelete<IssmDouble>(runoff_out);
+	xDelete<IssmDouble>(subl_out);
 	xDelete<IssmDouble>(albedo_out);
 	xDelete<IssmDouble>(albedo_snow_out);
 	xDelete<IssmDouble>(hsnow_out);

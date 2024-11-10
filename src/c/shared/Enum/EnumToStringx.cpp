@@ -1606,12 +1606,15 @@ const char* EnumToStringx(int en){
 		case LoadsEnum : return "Loads";
 		case LoveAnalysisEnum : return "LoveAnalysis";
 		case LoveHfEnum : return "LoveHf";
+		case LoveHfiEnum : return "LoveHfi";
 		case LoveHtEnum : return "LoveHt";
 		case LoveKernelsImagEnum : return "LoveKernelsImag";
 		case LoveKernelsRealEnum : return "LoveKernelsReal";
 		case LoveKfEnum : return "LoveKf";
+		case LoveKfiEnum : return "LoveKfi";
 		case LoveKtEnum : return "LoveKt";
 		case LoveLfEnum : return "LoveLf";
+		case LoveLfiEnum : return "LoveLfi";
 		case LoveLtEnum : return "LoveLt";
 		case LoveTidalHtEnum : return "LoveTidalHt";
 		case LoveTidalKtEnum : return "LoveTidalKt";

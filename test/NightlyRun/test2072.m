@@ -10,7 +10,6 @@ md.cluster=generic('name',oshostname(),'np',3);
 
 md.materials=materials('litho');
 md.miscellaneous.name='test2072';
-md.groundingline.migration='None';
 
 md.verbose=verbose('all');
 md.verbose=verbose('1111111111111111');
@@ -25,17 +24,8 @@ md.materials.viscosity=[0., 0., 7.999999999999999E+21, 8.5E+21, 8.99999999999999
 md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.materials.issolid=md.materials.lame_mu>0;
 md.materials.numlayers=length(md.materials.lame_mu);
-md.materials.burgers_mu=md.materials.lame_mu;
-md.materials.burgers_viscosity=md.materials.viscosity;
 md.materials.rheologymodel=md.materials.issolid*0;
-md.materials.burgers_mu=md.materials.lame_mu/3;
-md.materials.burgers_viscosity=md.materials.viscosity/10;
-md.materials.ebm_alpha= ones(md.materials.numlayers,1)*.9;
-md.materials.ebm_delta= ones(md.materials.numlayers,1)*0.2;
-md.materials.ebm_taul= ones(md.materials.numlayers,1)*54*60; %54min
-md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*cst/1e3; %18.6yr
 
-md.love.allow_layer_deletion=1;
 md.love.frequencies=[0];
 md.love.nfreq=length(md.love.frequencies);
 md.love.sh_nmin=1;
@@ -44,17 +34,11 @@ md.love.underflow_tol=1e-20;
 md.love.pw_threshold=1e-3;
 md.love.Gravitational_Constant=6.6732e-11;
 md.love.min_integration_steps=100;
-md.love.allow_layer_deletion=1;
 md.love.forcing_type=11;
-md.love.chandler_wobble=0;
-md.love.complex_computation=0;
-md.love.istemporal=1;
 md.love.n_temporal_iterations=8;
 %md.love.time=[0; (logspace(-3,6, 202))'*cst];
 md.love.time=[0; 10.^([-3.0000e+00  -2.1045e+00  -1.2090e+00  -3.1343e-01   5.8209e-01   1.4776e+00   2.3731e+00   3.2687e+00   4.1642e+00   5.0597e+00   5.9552e+00])'*cst];
 md.love=md.love.build_frequencies_from_time;
-
-md.love.love_kernels=1;
 
 md=solve(md,'lv');
 
@@ -65,6 +49,6 @@ k=md.results.LoveSolution.LoveKt;
 %Fields and tolerances to track changes
 
 field_names     ={'LoveH_loading_elastic','LoveK_loading_elastic','LoveL_loading_elastic'};
-field_tolerances={2e-5,2e-5,2e-5};
+field_tolerances={2.0e-5,1.0e-5,2.0e-6};
 field_values={h,k,l};
 

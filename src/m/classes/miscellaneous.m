@@ -48,7 +48,7 @@ classdef miscellaneous
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 
-			writejsstring(fid,[modelname '.miscellaneous.notes'],self.notes);
+			writejsstring(fid,[modelname '.miscellaneous.notes'],regexprep(self.notes,newline,';'));
 			writejsstring(fid,[modelname '.miscellaneous.name'],self.name);
 			if strcmpi(class(self.dummy),'double'),
 				if size(self.dummy,2)==1,
