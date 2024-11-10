@@ -14,6 +14,7 @@ jobs:
     with:
       os: ubuntu-latest
       build_type: basic
+      with_matlab: true
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf
