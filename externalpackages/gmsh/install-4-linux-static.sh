@@ -37,7 +37,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gmsh.info/src/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
 
 # Unpack source
 tar -xvzf gmsh-${VER}-source.tgz

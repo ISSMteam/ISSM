@@ -38,6 +38,7 @@ md.mesh.segmentmarkers = bamgmesh_out.IssmSegments(:,4);
 md.mesh.numberofelements = size(md.mesh.elements,1);
 md.mesh.numberofvertices = length(md.mesh.x);
 md.mesh.numberofedges    = size(md.mesh.edges,1);
-md.mesh.vertexonboundary = zeros(md.mesh.numberofvertices,1); md.mesh.vertexonboundary(md.mesh.segments(:,1:2)) = 1;
+md.mesh.vertexonboundary = zeros(md.mesh.numberofvertices,1);
+md.mesh.vertexonboundary(md.mesh.segments(:,1:2)) = 1;
 md.mesh.elementconnectivity=md.private.bamg.mesh.ElementConnectivity;
 md.mesh.elementconnectivity(find(isnan(md.mesh.elementconnectivity)))=0;

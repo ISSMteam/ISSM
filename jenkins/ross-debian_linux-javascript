@@ -10,8 +10,6 @@ export CXXFLAGS="-g -O2 -fPIC -std=c++11"
 ISSM_CONFIG='\
 	--prefix=${ISSM_DIR} \
 	--disable-shared \
-	--enable-development \
-	--enable-debugging \
 	--with-javascript \
 	--without-fortran \
 	--without-Sealevelchange \

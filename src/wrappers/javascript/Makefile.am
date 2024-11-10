@@ -17,10 +17,10 @@ js_scripts = \
 	${ISSM_DIR}/src/wrappers/IssmConfig/IssmConfig.js \
 	${ISSM_DIR}/src/wrappers/Issm/issm.js
 
-bin_SCRIPTS =  issm-prebin.js
+bin_SCRIPTS = issm-prebin.js
 
 issm-prebin.js: ${js_scripts}
-	cat ${js_scripts}  > issm-prebin.js
+	cat ${js_scripts} > issm-prebin.js
 
 # JavaScript I/O{{{
 lib_LTLIBRARIES = libISSMJavascript.la
@@ -89,6 +89,10 @@ IssmModule_SOURCES = \
 	../IssmConfig/IssmConfig.cpp \
 	../Issm/issm.cpp
 
-IssmModule_CXXFLAGS= -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) -s EXPORTED_FUNCTIONS="['_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
+IssmModule_CXXFLAGS= -O2 -fPIC -D_DO_NOT_LOAD_GLOBALS_ $(AM_CXXFLAGS) $(CXXFLAGS) -s EXPORTED_FUNCTIONS="['_free','_malloc','cwrap','getValue','_BamgMesherModule','_TriangleModule','_NodeConnectivityModule','_ContourToMeshModule','_ElementConnectivityModule','_InterpFromGridToMeshModule','_InterpFromMeshToMesh2dModule','_IssmConfigModule','_IssmModule']" -s DISABLE_EXCEPTION_CATCHING=0 -s ALLOW_MEMORY_GROWTH=1 -s INVOKE_RUN=0
+# Uncomment to disable WebAssembly and only emit JavaScript
+IssmModule_CXXFLAGS+= -sWASM=0
+# Uncomment to build JavaScript that only runs on the Web (removes support for Node.js and other environments)
+IssmModule_CXXFLAGS+= -sENVIRONMENT=web
 IssmModule_LDADD = ${deps} $(TRIANGLELIB) $(GSLLIB)
 #}}}

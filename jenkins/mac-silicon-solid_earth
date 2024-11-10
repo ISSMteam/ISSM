@@ -87,6 +87,7 @@ NUMCPUS_RUN=2
 # NOTE:
 # - Test 2006 excluded until it can be debugged (file I/O)
 # - Test 2012 excluded until it can be looked at by Eric ("FindParam error message: Parameter HydrologyModel not set")
+# - Test 2085 excluded because of large errors on Silicon only
 # - Test 2091 excluded until it can be debugged (resource starvation)
 # - Tests 2092, 2110:2113 excluded because of failure "Arrays have incompatible sizes for this operation."
 #

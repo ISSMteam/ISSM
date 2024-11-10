@@ -232,12 +232,16 @@ class materials(object):
                 md = checkfield(md, 'fieldname', 'materials.density', 'NaN', 1, 'Inf', 1, 'size', [md.materials.numlayers, 1], '>', 0)
                 md = checkfield(md, 'fieldname', 'materials.viscosity', 'NaN', 1, 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
                 md = checkfield(md, 'fieldname', 'materials.rheologymodel', 'NaN', 1, 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0, '<=', 2)
-                md = checkfield(md, 'fieldname', 'materials.burgers_viscosity', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
-                md = checkfield(md, 'fieldname', 'materials.burgers_mu', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
-                md = checkfield(md, 'fieldname', 'materials.ebm_alpha', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
-                md = checkfield(md, 'fieldname', 'materials.ebm_delta', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
-                md = checkfield(md, 'fieldname', 'materials.ebm_taul', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
-                md = checkfield(md, 'fieldname', 'materials.ebm_tauh', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+
+                if np.any(self.rheologymodel == 1):
+                    md = checkfield(md, 'fieldname', 'materials.burgers_viscosity', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+                    md = checkfield(md, 'fieldname', 'materials.burgers_mu', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+
+                if np.any(self.rheologymodel == 2):
+                    md = checkfield(md, 'fieldname', 'materials.ebm_alpha', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+                    md = checkfield(md, 'fieldname', 'materials.ebm_delta', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+                    md = checkfield(md, 'fieldname', 'materials.ebm_taul', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
+                    md = checkfield(md, 'fieldname', 'materials.ebm_tauh', 'Inf', 1, 'size', [md.materials.numlayers, 1], '>=', 0)
 
                 for i in range(md.materials.numlayers):
                     if md.materials.rheologymodel[i] == 1 and (np.isnan(md.materials.burgers_viscosity[i] or np.isnan(md.materials.burgers_mu[i]))):

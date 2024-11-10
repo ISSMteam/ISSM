@@ -24,12 +24,6 @@ md.materials.viscosity=[0            0   2.0000e+00   1.0000e+00   1.0000e+00   
 md.materials.lame_lambda=md.materials.lame_mu*0+5e17;
 md.materials.issolid=[1 0 1 1 1 1]';
 md.materials.rheologymodel=zeros(md.materials.numlayers,1);
-md.materials.burgers_mu=md.materials.lame_mu/3;
-md.materials.burgers_viscosity=md.materials.viscosity/10;
-md.materials.ebm_alpha= ones(md.materials.numlayers,1)*.9;
-md.materials.ebm_delta= ones(md.materials.numlayers,1)*0.2;
-md.materials.ebm_taul= ones(md.materials.numlayers,1)*54*60; %54min
-md.materials.ebm_tauh= ones(md.materials.numlayers,1)*18.6*cst/1e3; %18.6yr
 
 md.love.allow_layer_deletion=1;
 md.love.frequencies=[0];
@@ -39,10 +33,6 @@ md.love.sh_nmax=2;
 md.love.underflow_tol=1e-20;
 md.love.pw_threshold=1e-3;
 md.love.Gravitational_Constant=6.6732e-11;
-md.love.allow_layer_deletion=1;
-md.love.forcing_type=11;
-md.love.chandler_wobble=0;
-md.love.complex_computation=0;
 md.love.istemporal=0;
 
 md.love.debug=1;

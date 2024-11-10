@@ -26,9 +26,9 @@ function verbose (){
 	this.setdefaultparameters = function(){// {{{
 		//switch(nargin),
 			//case 0,
-		this.verbose.solution=true;
-		this.verbose.qmu=true;
-		this.verbose.control=true;
+		this.solution=true;
+		this.qmu=true;
+		this.control=true;
 	}// }}}
 	this.disp= function(){// {{{
 		//BEGINDISP

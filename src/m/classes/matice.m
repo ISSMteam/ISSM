@@ -95,7 +95,7 @@ classdef matice
 			self.rheology_law='Paterson';
 
 			%Rheology for ice: 
-			self.rheology_B=2.1*1e8;
+			self.rheology_B=2.1*10^8;
 			self.rheology_n=3;
 
 			%SLR
