@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v3
         id: cache-externalpackages
         env:
-          cache-name: cache-externalpackages-${{ inputs.build_type }}
+          cache-name: cache-externalpackages-basic-matlab
         with:
           path: |
             ${{ env.ISSM_DIR }}/externalpackages/
@@ -74,7 +74,6 @@ jobs:
       - name: Install dependencies
         if: contains( inputs.interface, 'python')
         run: |
-          sudo apt-get install python2-dev python3-dev
           python -m pip install --upgrade pip
           sudo apt-get update && sudo apt-get install -y python-tk python3-tk
           python -m pip install --user numpy scipy matplotlib nose
