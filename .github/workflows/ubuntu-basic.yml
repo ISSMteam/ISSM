@@ -13,8 +13,8 @@ jobs:
     uses: ./.github/workflows/common-workflow.yml 
     with:
       os: ubuntu-latest
-      build_type: basic
-      with_matlab: true
+      build_type: basic-matlab
+      interface: matlab
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf

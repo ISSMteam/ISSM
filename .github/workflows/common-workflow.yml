@@ -21,8 +21,8 @@ on:
       additional_options:
         required: true
         type: string
-      with_matlab:
-        required: false
+      interface:
+        required: true
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
@@ -54,7 +54,7 @@ jobs:
           ${{ inputs.ext_install_command }}
 
       - name: Get MATLAB
-        if: ${{inputs.with_matlab == 'true'}}
+        if: ${{inputs.interface == 'matlab'}}
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
@@ -103,7 +103,7 @@ jobs:
         shell: 'bash'
           
       - name: Get MATLAB
-        if: ${{inputs.with_matlab == 'true'}}
+        if: ${{inputs.interface == 'matlab'}}
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
@@ -111,7 +111,7 @@ jobs:
           cache: true
           
       - name: Creating matlab_ci.m
-        if: ${{inputs.with_matlab == 'true'}}
+        if: ${{inputs.interface == 'matlab'}}
         run: |
           cat > ${ISSM_DIR}/matlab_ci.m << EOF
           % Go to the test directory
@@ -128,13 +128,13 @@ jobs:
           cat ${ISSM_DIR}/matlab_ci.m
           
       - name: Get run-matlab-command
-        if: ${{inputs.with_matlab == 'true'}}
+        if: ${{inputs.interface == 'matlab'}}
         run: |
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
           
       - name: Run MATLAB tests
-        if: ${{inputs.with_matlab == 'true'}}
+        if: ${{inputs.interface == 'matlab'}}
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
