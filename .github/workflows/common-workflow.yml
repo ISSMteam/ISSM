@@ -86,7 +86,10 @@ jobs:
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy
           ls $NUMPY_ROOT
-          ls $NUMPY_ROOT/core/include/numpy/
+          ls $NUMPY_ROOT/core
+          ls $NUMPY_ROOT/_core
+          ls $NUMPY_ROOT/core/include
+          ls $NUMPY_ROOT/_core/include
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
