@@ -84,7 +84,7 @@ jobs:
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
-          export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/
+          export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy/
           ls $NUMPY_ROOT
           ${{ inputs.build_command}}
 
