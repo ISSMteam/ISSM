@@ -75,16 +75,16 @@ jobs:
         if: contains( inputs.interface, 'python')
         run: |
           sudo apt-get install libpython${{ inputs.python_version }}-dev
+          sudo apt-get install python3-dev
           python -m pip install --upgrade pip
           sudo apt-get update && sudo apt-get install -y python-tk python3-tk
           python -m pip install --user numpy scipy matplotlib nose
-          echo $PYTHON_INCLUDE_PATH
-          ls $PYTHON_INCLUDE_PATH | grep Python
 
       - name: build ISSM
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}/include/python${{ inputs.python_version }}
+          ls $PYTHON_ROOT 
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
