@@ -67,7 +67,7 @@ jobs:
       - name: Prepare python
         if: contains( inputs.interface, 'python')
         uses: actions/setup-python@v3
-        id: py311
+        id: setup-python
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -82,6 +82,7 @@ jobs:
       - name: build ISSM
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
+          export PYTHON_ROOT=${{ steps.setup-python.outputs.python-path }}
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
