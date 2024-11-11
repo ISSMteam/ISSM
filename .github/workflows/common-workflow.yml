@@ -67,6 +67,7 @@ jobs:
       - name: Prepare python
         if: contains( inputs.interface, 'python')
         uses: actions/setup-python@v3
+        id: py311
         with:
           python-version: ${{ inputs.python_version }}
 
