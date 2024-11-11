@@ -73,7 +73,7 @@ jobs:
       - name: Install dependencies
         if: contains( inputs.interface, 'python')
         run: |
-          sudo apt-get install python-dev python3-dev
+          sudo apt-get install python2-dev python3-dev
           python -m pip install --upgrade pip
           sudo apt-get update && sudo apt-get install -y python-tk python3-tk
           python -m pip install --user numpy scipy matplotlib nose
@@ -155,3 +155,13 @@ jobs:
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
+  
+      - name: Run Python tests
+        if: contains( inputs.interface, 'python')
+        run: |
+          export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
+          export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
+	       export PYTHONUNBUFFERED=1 # We don't want Python to buffer otherwise issm.exe output is not captured
+		    cd $ISSM_DIR/test/NightlyRun
+		    ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
+
