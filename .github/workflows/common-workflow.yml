@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v3
         id: cache-externalpackages
         env:
-          cache-name: cache-externalpackages-basic-matlab
+          cache-name: cache-externalpackages-${{ inputs.build_type}}
         with:
           path: |
             ${{ env.ISSM_DIR }}/externalpackages/
@@ -180,5 +180,6 @@ jobs:
           export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
           export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
           export PYTHONUNBUFFERED=1
+          source $ISSM_DIR/etc/environment.sh
           cd $ISSM_DIR/test/NightlyRun
-          ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
