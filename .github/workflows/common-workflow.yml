@@ -82,7 +82,7 @@ jobs:
       - name: build ISSM
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
-          export PYTHON_ROOT=${{ env.pythonLocation }}/include/python${{ runner.python_version }}
+          export PYTHON_ROOT=${{ env.pythonLocation }}/include/python${{ inputs.python_version }}
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
