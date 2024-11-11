@@ -161,7 +161,6 @@ jobs:
         run: |
           export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
           export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
-	       export PYTHONUNBUFFERED=1 # We don't want Python to buffer otherwise issm.exe output is not captured
-		    cd $ISSM_DIR/test/NightlyRun
-		    ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
-
+          export PYTHONUNBUFFERED=1
+          cd $ISSM_DIR/test/NightlyRun
+          ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
