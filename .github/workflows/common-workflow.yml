@@ -85,8 +85,6 @@ jobs:
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy
-          ls $NUMPY_ROOT/_core/include
-          ls $NUMPY_ROOT/_core/include/numpy/
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
@@ -162,6 +160,20 @@ jobs:
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
   
+      - name: Prepare python
+        if: contains( inputs.interface, 'python')
+        uses: actions/setup-python@v5
+        id: setup-python
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: Install dependencies
+        if: contains( inputs.interface, 'python')
+        run: |
+          python -m pip install --upgrade pip
+          sudo apt-get update && sudo apt-get install -y python-tk python3-tk
+          python -m pip install numpy scipy matplotlib nose
+
       - name: Run Python tests
         if: contains( inputs.interface, 'python')
         run: |
