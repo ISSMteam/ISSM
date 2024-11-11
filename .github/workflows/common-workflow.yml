@@ -85,11 +85,8 @@ jobs:
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy
-          ls $NUMPY_ROOT
-          ls $NUMPY_ROOT/core
-          ls $NUMPY_ROOT/_core
-          ls $NUMPY_ROOT/core/include
           ls $NUMPY_ROOT/_core/include
+          ls $NUMPY_ROOT/_core/include/numpy/
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
