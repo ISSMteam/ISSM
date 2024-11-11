@@ -127,6 +127,9 @@ class SMBsemic(object):
             s += '{}\n'.format(fielddisplay(self, 'tmin', 'minimum temperature for which albedo decline become effective. (default: 263.15 K)[unit: K])'))
             s += '{}\n'.format(fielddisplay(self, 'tmax', 'maxmium temperature for which albedo decline become effective. This value should be fixed. (default: 273.15 K)[unit: K])'))
         elif self.albedo_scheme == 2:
+            s += '\n\tSEMIC snow albedo parameters of Denby et al. (2002 Tellus)\n'
+            s += '{}\n'.format(fielddisplay(self,'mcrit','critical melt rate (defaut: 6e-8) [unit: m/sec]'))
+        elif self.albedo_scheme == 3:
             s += '\n\tSEMIC snow albedo parameters of ISB (Douville et al., 1995).\n'
             s += '{}\n'.format(fielddisplay(self, 'mcrit', 'critical melt rate (default: 6e-8) [unit: m/sec]'))
             s += '{}\n'.format(fielddisplay(self, 'wcrit', 'critical liquid water content (default: 15) [unit: kg/m2]'))
@@ -134,9 +137,6 @@ class SMBsemic(object):
             s += '{}\n'.format(fielddisplay(self, 'tau_f', 'wet albedo decline [unit: 1/day]'))
             s += '\n\tReference'
             s += '\tDouville, H., Royer, J.-F., and Mahfouf, J.-F.: A new snow parameterization for the Météo-France climate model. Part I: validation in stand-alone experiments, Climate Dynamics, 12, 21–35, https://doi.org/10.1007/s003820050092, 1995.'
-        elif self.albedo_scheme == 3:
-            s += '\n\tSEMIC snow albedo parameters of Denby et al. (2002 Tellus)\n'
-            s += '{}\n'.format(fielddisplay(self,'mcrit','critical melt rate (defaut: 6e-8) [unit: m/sec]'))
         elif self.albedo_scheme == 4:
             s += '\n\tSEMIC snow albedo parameters of Alex.?\n'
             s += '{}\n'.format(fielddisplay(self,'afac','[unit: ?]'))
@@ -176,7 +176,8 @@ class SMBsemic(object):
             list = ['default','SmbMassBalance', 'SmbMassBalanceSnow', 'SmbMassBalanceIce',
                   'SmbMelt', 'SmbRefreeze','SmbAccumulation',
                   'SmbHIce', 'SmbHSnow', 'SmbAlbedo', 'SmbAlbedoSnow', 'TemperatureSEMIC',
-                  'SmbSemicQmr', 'TotalSmb', 'TotalSmbMelt', 'TotalSmbRefreeze', 'SmbRunoff']
+                  'SmbSemicQmr', 'TotalSmb', 'TotalSmbMelt', 'TotalSmbRefreeze', 
+                  'SmbRunoff','SmbEvaporation']
         else:
             list = ['default','SmbMassBalance']
         return list
