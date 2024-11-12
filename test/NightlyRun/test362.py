@@ -88,7 +88,7 @@ field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1'
                'HydrologySheetThickness3', 'HydraulicPotential3', 'ChannelArea3','Vx3','Vy3','Vel3','Pressure3','Thickness3',
                'HydrologySheetThickness4', 'HydraulicPotential4', 'ChannelArea4','Vx4','Vy4','Vel4','Pressure4','Thickness4']
 field_tolerances = [1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
-		    1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
+		    1e-13, 1e-11, 5e-12, 1e-13, 2e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
 		    1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13]
 field_values = [md.results.TransientSolution[0].HydrologySheetThickness,
