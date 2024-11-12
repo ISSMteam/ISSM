@@ -14,7 +14,7 @@ rm -rf install
 mkdir src build install 
 
 #Download from ISSM server
-#$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/dakota-6.2-public.src.tar.gz' 'dakota-6.2-public-src.tar.gz'
+$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/dakota-6.2-public.src.tar.gz' 'dakota-6.2-public-src.tar.gz'
 
 #Untar 
 tar -zxvf dakota-6.2-public-src.tar.gz
