@@ -14,7 +14,6 @@ jobs:
     with:
       os: ubuntu-latest
       build_type: codipack
-      interface: matlab
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf
@@ -44,7 +43,7 @@ jobs:
       ext_install_command: |
         cd $ISSM_DIR/externalpackages/triangle   && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/m1qn3      && ./install-linux.sh
-        cd $ISSM_DIR/externalpackages/petsc      && ./install-3.22-linux.sh
+        cd $ISSM_DIR/externalpackages/petsc      && ./install-3.20-linux.sh
         cd $ISSM_DIR/externalpackages/gsl        && ./install.sh
         cd $ISSM_DIR/externalpackages/codipack   && ./install.sh
         cd $ISSM_DIR/externalpackages/medipack   && ./install.sh
