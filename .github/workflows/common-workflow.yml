@@ -21,12 +21,6 @@ on:
       additional_options:
         required: true
         type: string
-      interface:
-        required: true
-        type: string
-      python_version:
-        required: false
-        type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
   
@@ -44,7 +38,7 @@ jobs:
         uses: actions/cache@v3
         id: cache-externalpackages
         env:
-          cache-name: cache-externalpackages-${{ inputs.build_type}}
+          cache-name: cache-externalpackages-${{ inputs.build_type }}
         with:
           path: |
             ${{ env.ISSM_DIR }}/externalpackages/
@@ -57,34 +51,15 @@ jobs:
           ${{ inputs.ext_install_command }}
 
       - name: Get MATLAB
-        if: ${{inputs.interface == 'matlab'}}
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
           cache: true
 
-      - name: Prepare python
-        if: contains( inputs.interface, 'python')
-        uses: actions/setup-python@v5
-        id: setup-python
-        with:
-          python-version: ${{ inputs.python_version }}
-
-      - name: Install dependencies
-        if: contains( inputs.interface, 'python')
-        run: |
-          sudo apt-get install libpython${{ inputs.python_version }}-dev
-          sudo apt-get install python3-dev
-          python -m pip install --upgrade pip
-          sudo apt-get update && sudo apt-get install -y python-tk python3-tk
-          python -m pip install numpy scipy matplotlib nose
-
       - name: build ISSM
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
-          export PYTHON_ROOT=${{ env.pythonLocation }}
-          export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy
           ${{ inputs.build_command}}
 
       - name: Compile ISSM
@@ -124,7 +99,6 @@ jobs:
         shell: 'bash'
           
       - name: Get MATLAB
-        if: ${{inputs.interface == 'matlab'}}
         id:   setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
@@ -132,7 +106,6 @@ jobs:
           cache: true
           
       - name: Creating matlab_ci.m
-        if: ${{inputs.interface == 'matlab'}}
         run: |
           cat > ${ISSM_DIR}/matlab_ci.m << EOF
           % Go to the test directory
@@ -149,37 +122,11 @@ jobs:
           cat ${ISSM_DIR}/matlab_ci.m
           
       - name: Get run-matlab-command
-        if: ${{inputs.interface == 'matlab'}}
         run: |
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
           
       - name: Run MATLAB tests
-        if: ${{inputs.interface == 'matlab'}}
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
-  
-      - name: Prepare python
-        if: contains( inputs.interface, 'python')
-        uses: actions/setup-python@v5
-        id: setup-python
-        with:
-          python-version: ${{ inputs.python_version }}
-
-      - name: Install dependencies
-        if: contains( inputs.interface, 'python')
-        run: |
-          python -m pip install --upgrade pip
-          sudo apt-get update && sudo apt-get install -y python-tk python3-tk
-          python -m pip install numpy scipy matplotlib nose netCDF4
-
-      - name: Run Python tests
-        if: contains( inputs.interface, 'python')
-        run: |
-          export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
-          export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
-          export PYTHONUNBUFFERED=1
-          source $ISSM_DIR/etc/environment.sh
-          cd $ISSM_DIR/test/NightlyRun
-          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
