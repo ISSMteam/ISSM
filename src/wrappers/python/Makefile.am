@@ -25,13 +25,13 @@ libISSMPython_la_SOURCES = $(io_sources)
 libISSMPython_la_CXXFLAGS= ${ALL_CXXFLAGS}
 #}}}
 #api io{{{
-lib_LTLIBRARIES += libISSMApi.la
+lib_LTLIBRARIES += libISSMApi_Python.la
 
 if !MSYS2
 api_sources= ./io/ApiPrintf.cpp
 
-libISSMApi_la_SOURCES = $(api_sources)
-libISSMApi_la_CXXFLAGS = ${ALL_CXXFLAGS}
+libISSMApi_Python_la_SOURCES = $(api_sources)
+libISSMApi_Python_la_CXXFLAGS = ${ALL_CXXFLAGS}
 endif
 #}}}
 #Wrappers {{{
@@ -120,7 +120,7 @@ AM_CXXFLAGS += -fPIC -D_WRAPPERS_
 deps += ./libISSMPython.la ../../c/libISSMModules.la ../../c/libISSMCore.la
 
 if !MSYS2
-deps += ./libISSMApi.la
+deps += ./libISSMApi_Python.la
 endif
 
 if ADOLC
@@ -142,12 +142,12 @@ libISSMPython_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $
 if STANDALONE_LIBRARIES
 if !MSYS2
 libISSMPython_la_LDFLAGS = -static
-libISSMApi_la_LDFLAGS = -static
+libISSMApi_Python_la_LDFLAGS = -static
 endif
 deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS) $(PYTHONLIB)
 endif
 
-libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB)
+libISSMApi_Python_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB)
 
 BamgConvertMesh_python_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
 BamgConvertMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}

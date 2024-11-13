@@ -27,13 +27,13 @@ libISSMMatlab_la_SOURCES = $(io_sources)
 libISSMMatlab_la_CXXFLAGS = ${ALL_CXXFLAGS}
 #}}}
 #api io{{{
-lib_LTLIBRARIES += libISSMApi.la
+lib_LTLIBRARIES += libISSMApi_Matlab.la
 
 if !MSYS2
 api_sources= ./io/ApiPrintf.cpp
 
-libISSMApi_la_SOURCES = $(api_sources)
-libISSMApi_la_CXXFLAGS = ${ALL_CXXFLAGS}
+libISSMApi_Matlab_la_SOURCES = $(api_sources)
+libISSMApi_Matlab_la_CXXFLAGS = ${ALL_CXXFLAGS}
 endif
 #}}}
 #Wrappers {{{
@@ -135,7 +135,7 @@ AM_CXXFLAGS += -fPIC -D_WRAPPERS_
 deps += ./libISSMMatlab.la ../../c/libISSMCore.la ../../c/libISSMModules.la
 
 if !MSYS2
-deps += ./libISSMApi.la
+deps += ./libISSMApi_Matlab.la
 endif
 
 if ADOLC
@@ -156,21 +156,21 @@ libISSMMatlab_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $
 
 if VERSION
 libISSMMatlab_la_LDFLAGS =
-libISSMApi_la_LDFLAGS =
+libISSMApi_Matlab_la_LDFLAGS =
 else
 libISSMMatlab_la_LDFLAGS = -avoid-version
-libISSMApi_la_LDFLAGS = -avoid-version
+libISSMApi_Matlab_la_LDFLAGS = -avoid-version
 endif
 
 if STANDALONE_LIBRARIES
 if !MSYS2
 libISSMMatlab_la_LDFLAGS += -static
-libISSMApi_la_LDFLAGS += -static
+libISSMApi_Matlab_la_LDFLAGS += -static
 endif
 deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS) ${LIBADD_FOR_MEX}
 endif
 
-libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
+libISSMApi_Matlab_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
 
 BamgConvertMesh_matlab_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
 BamgConvertMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
