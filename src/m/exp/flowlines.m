@@ -16,6 +16,7 @@ function flowpath=flowlines(index,x,y,u,v,x0,y0,varargin)
 %      - 'precision': division of each segment (higer precision increases number of segments, default: 1)
 %      - 'downstream':flow line upstream of the seed points (default: 1)
 %      - 'upstream':  flow line upstream of the seed points (default: 1)
+%      - 'cutoff':    velocity threshold to stop propagating flowlines (default: 0)
 
 %check input
 if (length(x)~=length(y) | length(x)~=length(u) | length(x)~=length(v)),
@@ -34,6 +35,8 @@ maxiter    = getfieldvalue(options,'maxiter',200);
 precision  = getfieldvalue(options,'precision',1);
 downstream = getfieldvalue(options,'downstream',1);
 upstream   = getfieldvalue(options,'upstream',1);
+cutoff	  = getfieldvalue(options,'cutoff', 0.0);
+cutoff = max(cutoff, 0.0);
 
 %Create triangulation once for all and check seed points
 trep = triangulation(index,x,y);
@@ -98,7 +101,7 @@ if downstream,
 		counter=counter+1;
 
 		%remove stagnant point
-		done(queue(find(ut==0 & vt==0)))=1;
+		done(queue(find((ut==0 & vt==0) | (normv<=cutoff))))=1;
 
 		%build next point
 		for i=1:length(queue)
@@ -150,7 +153,7 @@ if upstream,
 		counter=counter+1;
 
 		%remove stagnant point
-		done(queue(find(ut==0 & vt==0)))=1;
+		done(queue(find((ut==0 & vt==0) | (normv<=cutoff))))=1;
 
 		%build next point
 		for i=1:length(queue)
