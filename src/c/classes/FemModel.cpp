@@ -654,6 +654,10 @@ void FemModel::RestartAD(int step){ /*{{{*/
 	/*Read files*/
 	this->Restart(1);
 
+	/*Delete checkpoint file to save disk space*/
+	_printf0_("    == deleting  file  "<<restartfilename<<"\n");
+	std::remove(restartfilename);
+
 	/*Clean up and return*/
 	xDelete<char>(restartfilename);
 }/*}}}*/
