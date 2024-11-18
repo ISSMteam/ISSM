@@ -48,9 +48,9 @@ classdef pfe
 			disp(sprintf('    cpuspernode: %i',cluster.cpuspernode));
 			disp(sprintf('    np: %i',cluster.nprocs()));
 			disp(sprintf('    port: %i',cluster.port));
-			disp(sprintf('    queue: %i',cluster.queue));
+			disp(sprintf('    queue: %s',cluster.queue));
 			disp(sprintf('    time: %i',cluster.time));
-			disp(sprintf('    processor: %i',cluster.processor));
+			disp(sprintf('    processor: %s',cluster.processor));
 			disp(sprintf('    srcpath: %s',cluster.srcpath));
 			disp(sprintf('    extpkgpath: %s',cluster.extpkgpath));
 			disp(sprintf('    codepath: %s',cluster.codepath));
