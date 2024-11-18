@@ -211,7 +211,8 @@ au BufRead,BufNewFile *.html   iabbr <silent> CO <code></code><Left><Left><Left>
 au BufRead,BufNewFile *.html   iabbr <silent> PP <p></p><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
 au BufRead,BufNewFile *.jl     iabbr <silent> p1  println("")<Left><Left><C-R>=Eatchar('\s')<CR>
 au BufRead,BufNewFile *.m      iabbr <silent> p1  disp('');<Left><Left><Left><C-R>=Eatchar('\s')<CR>
-au BufRead,BufNewFile *.m      iab <expr> p0  "disp('-------------- file: ".expand('%')." line: ".line(".")."');"
+"au BufRead,BufNewFile *.m      iab <expr> p0  "disp('-------------- file: ".expand('%')." line: ".line(".")."');"
+au BufRead,BufNewFile *.m      iab <expr> p0  "DBS = dbstack; disp(['-------------- file: ',DBS(1).name,' line: ',num2str(DBS(1).line)]);"
 au BufRead,BufNewFile *.c*,*.h iabbr <silent> p1  printf("\n");<Left><Left><Left><Left><Left><C-R>=Eatchar('\s')<CR>
 au BufRead,BufNewFile *.c*,*.h iabbr <silent> ER  _error_("");<Left><Left><Left><C-R>=Eatchar('\s')<CR>
 au BufRead,BufNewFile *.py     iabbr <silent> ER  raise NameError('')<Left><Left><C-R>=Eatchar('\s')<CR>
