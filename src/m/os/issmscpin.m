@@ -23,19 +23,19 @@ if strcmpi(hostname,host)
 else
 	%just use standard unix scp string to copy multiple files using scp: 
 	if numel(packages)==1,
-		fileliststr=packages{1};
+		string=packages{1};
 	else
-		fileliststr='';
+		string='\{';
 		for i=1:numel(packages)-1,
-			fileliststr=[fileliststr filelist{i} ' '];
+			string=[string packages{i} ','];
 		end
-		fileliststr=[fileliststr filelist{end}];
+		string=[string packages{end} '\}'];
 	end
 
 	if port,
-		eval(['!scp -OT -P ' num2str(port) ' ' login '@localhost:"' fileliststr '" .']);
+		eval(['!scp -P ' num2str(port) ' ' login '@localhost:' path '/' string ' ./']);
 	else
-		eval(['!scp -OT ' login '@' host ':"' fileliststr '" .']);
+		eval(['!scp ' login '@' host ':' path '/' string ' ./']);
 	end
 
 	%check scp worked
