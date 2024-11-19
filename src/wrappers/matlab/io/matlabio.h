@@ -1,5 +1,5 @@
 /*\file matlabio.h
- *\brief: I/O for ISSM in matlab mode
+ *\brief: I/O for ISSM when running from MATLAB interface
  */
 
 #ifndef _MATLAB_IO_H_
