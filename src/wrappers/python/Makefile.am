@@ -25,38 +25,38 @@ libISSMPython_la_SOURCES = $(io_sources)
 libISSMPython_la_CXXFLAGS= ${ALL_CXXFLAGS}
 #}}}
 #api io{{{
-lib_LTLIBRARIES += libISSMApi_Python.la
+lib_LTLIBRARIES += libISSMApi_python.la
 
 if !MSYS2
 api_sources= ./io/ApiPrintf.cpp
 
-libISSMApi_Python_la_SOURCES = $(api_sources)
-libISSMApi_Python_la_CXXFLAGS = ${ALL_CXXFLAGS}
+libISSMApi_python_la_SOURCES = $(api_sources)
+libISSMApi_python_la_CXXFLAGS = ${ALL_CXXFLAGS}
 endif
 #}}}
 #Wrappers {{{
 lib_LTLIBRARIES += \
-	BamgConvertMesh_Python.la \
-	BamgMesher_Python.la \
-	BamgTriangulate_Python.la \
-	ContourToMesh_Python.la \
-	ContourToNodes_Python.la \
-	ElementConnectivity_Python.la \
-	ExpToLevelSet_Python.la \
-	InterpFromGridToMesh_Python.la \
-	InterpFromMesh2d_Python.la \
-	InterpFromMeshToGrid_Python.la \
-	InterpFromMeshToMesh2d_Python.la \
-	InterpFromMeshToMesh3d_Python.la \
-	IssmConfig_Python.la \
-	MeshPartition_Python.la \
-	MeshProfileIntersection_Python.la \
-	NodeConnectivity_Python.la \
-	Triangle_Python.la \
-	ProcessRifts_Python.la
+	BamgConvertMesh_python.la \
+	BamgMesher_python.la \
+	BamgTriangulate_python.la \
+	ContourToMesh_python.la \
+	ContourToNodes_python.la \
+	ElementConnectivity_python.la \
+	ExpToLevelSet_python.la \
+	InterpFromGridToMesh_python.la \
+	InterpFromMesh2d_python.la \
+	InterpFromMeshToGrid_python.la \
+	InterpFromMeshToMesh2d_python.la \
+	InterpFromMeshToMesh3d_python.la \
+	IssmConfig_python.la \
+	MeshPartition_python.la \
+	MeshProfileIntersection_python.la \
+	NodeConnectivity_python.la \
+	Triangle_python.la \
+	ProcessRifts_python.la
 
 if CHACO
-lib_LTLIBRARIES += Chaco_Python.la
+lib_LTLIBRARIES += Chaco_python.la
 endif
 #}}}
 # Dependencies {{{
@@ -120,7 +120,7 @@ AM_CXXFLAGS += -fPIC -D_WRAPPERS_
 deps += ./libISSMPython.la ../../c/libISSMModules.la ../../c/libISSMCore.la
 
 if !MSYS2
-deps += ./libISSMApi_Python.la
+deps += ./libISSMApi_python.la
 endif
 
 if ADOLC
@@ -142,88 +142,88 @@ libISSMPython_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.la $
 if STANDALONE_LIBRARIES
 if !MSYS2
 libISSMPython_la_LDFLAGS = -static
-libISSMApi_Python_la_LDFLAGS = -static
+libISSMApi_python_la_LDFLAGS = -static
 endif
 deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS) $(PYTHONLIB)
 endif
 
-libISSMApi_Python_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB)
+libISSMApi_python_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB)
 
-BamgConvertMesh_Python_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
-BamgConvertMesh_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-BamgConvertMesh_Python_la_LIBADD = ${deps}
+BamgConvertMesh_python_la_SOURCES = ../BamgConvertMesh/BamgConvertMesh.cpp
+BamgConvertMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgConvertMesh_python_la_LIBADD = ${deps}
 
-BamgMesher_Python_la_SOURCES = ../BamgMesher/BamgMesher.cpp
-BamgMesher_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-BamgMesher_Python_la_LIBADD = ${deps}
+BamgMesher_python_la_SOURCES = ../BamgMesher/BamgMesher.cpp
+BamgMesher_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgMesher_python_la_LIBADD = ${deps}
 
-BamgTriangulate_Python_la_SOURCES = ../BamgTriangulate/BamgTriangulate.cpp
-BamgTriangulate_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-BamgTriangulate_Python_la_LIBADD = ${deps}
+BamgTriangulate_python_la_SOURCES = ../BamgTriangulate/BamgTriangulate.cpp
+BamgTriangulate_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+BamgTriangulate_python_la_LIBADD = ${deps}
 
 if CHACO
-Chaco_Python_la_SOURCES = ../Chaco/Chaco.cpp
-Chaco_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-Chaco_Python_la_LIBADD = ${deps} $(CHACOLIB)
+Chaco_python_la_SOURCES = ../Chaco/Chaco.cpp
+Chaco_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+Chaco_python_la_LIBADD = ${deps} $(CHACOLIB)
 endif
 
-ContourToMesh_Python_la_SOURCES = ../ContourToMesh/ContourToMesh.cpp
-ContourToMesh_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-ContourToMesh_Python_la_LIBADD = ${deps}
+ContourToMesh_python_la_SOURCES = ../ContourToMesh/ContourToMesh.cpp
+ContourToMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ContourToMesh_python_la_LIBADD = ${deps}
 
-ContourToNodes_Python_la_SOURCES = ../ContourToNodes/ContourToNodes.cpp
-ContourToNodes_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-ContourToNodes_Python_la_LIBADD = ${deps}
+ContourToNodes_python_la_SOURCES = ../ContourToNodes/ContourToNodes.cpp
+ContourToNodes_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ContourToNodes_python_la_LIBADD = ${deps}
 
-ElementConnectivity_Python_la_SOURCES = ../ElementConnectivity/ElementConnectivity.cpp
-ElementConnectivity_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-ElementConnectivity_Python_la_LIBADD = ${deps}
+ElementConnectivity_python_la_SOURCES = ../ElementConnectivity/ElementConnectivity.cpp
+ElementConnectivity_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ElementConnectivity_python_la_LIBADD = ${deps}
 
-ExpToLevelSet_Python_la_SOURCES = ../ExpToLevelSet/ExpToLevelSet.cpp
-ExpToLevelSet_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-ExpToLevelSet_Python_la_LIBADD = ${deps}
+ExpToLevelSet_python_la_SOURCES = ../ExpToLevelSet/ExpToLevelSet.cpp
+ExpToLevelSet_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ExpToLevelSet_python_la_LIBADD = ${deps}
 
-InterpFromMesh2d_Python_la_SOURCES = ../InterpFromMesh2d/InterpFromMesh2d.cpp
-InterpFromMesh2d_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-InterpFromMesh2d_Python_la_LIBADD = ${deps}
+InterpFromMesh2d_python_la_SOURCES = ../InterpFromMesh2d/InterpFromMesh2d.cpp
+InterpFromMesh2d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMesh2d_python_la_LIBADD = ${deps}
 
-InterpFromGridToMesh_Python_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
-InterpFromGridToMesh_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-InterpFromGridToMesh_Python_la_LIBADD = ${deps}
+InterpFromGridToMesh_python_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
+InterpFromGridToMesh_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromGridToMesh_python_la_LIBADD = ${deps}
 
-InterpFromMeshToGrid_Python_la_SOURCES = ../InterpFromMeshToGrid/InterpFromMeshToGrid.cpp
-InterpFromMeshToGrid_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-InterpFromMeshToGrid_Python_la_LIBADD = ${deps}
+InterpFromMeshToGrid_python_la_SOURCES = ../InterpFromMeshToGrid/InterpFromMeshToGrid.cpp
+InterpFromMeshToGrid_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToGrid_python_la_LIBADD = ${deps}
 
-InterpFromMeshToMesh2d_Python_la_SOURCES = ../InterpFromMeshToMesh2d/InterpFromMeshToMesh2d.cpp
-InterpFromMeshToMesh2d_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-InterpFromMeshToMesh2d_Python_la_LIBADD = ${deps}
+InterpFromMeshToMesh2d_python_la_SOURCES = ../InterpFromMeshToMesh2d/InterpFromMeshToMesh2d.cpp
+InterpFromMeshToMesh2d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToMesh2d_python_la_LIBADD = ${deps}
 
-InterpFromMeshToMesh3d_Python_la_SOURCES = ../InterpFromMeshToMesh3d/InterpFromMeshToMesh3d.cpp
-InterpFromMeshToMesh3d_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-InterpFromMeshToMesh3d_Python_la_LIBADD = ${deps}
+InterpFromMeshToMesh3d_python_la_SOURCES = ../InterpFromMeshToMesh3d/InterpFromMeshToMesh3d.cpp
+InterpFromMeshToMesh3d_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromMeshToMesh3d_python_la_LIBADD = ${deps}
 
-IssmConfig_Python_la_SOURCES = ../IssmConfig/IssmConfig.cpp
-IssmConfig_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-IssmConfig_Python_la_LIBADD = ${deps}
+IssmConfig_python_la_SOURCES = ../IssmConfig/IssmConfig.cpp
+IssmConfig_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+IssmConfig_python_la_LIBADD = ${deps}
 
-MeshPartition_Python_la_SOURCES = ../MeshPartition/MeshPartition.cpp
-MeshPartition_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-MeshPartition_Python_la_LIBADD = ${deps}
+MeshPartition_python_la_SOURCES = ../MeshPartition/MeshPartition.cpp
+MeshPartition_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+MeshPartition_python_la_LIBADD = ${deps}
 
-MeshProfileIntersection_Python_la_SOURCES = ../MeshProfileIntersection/MeshProfileIntersection.cpp
-MeshProfileIntersection_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-MeshProfileIntersection_Python_la_LIBADD = ${deps}
+MeshProfileIntersection_python_la_SOURCES = ../MeshProfileIntersection/MeshProfileIntersection.cpp
+MeshProfileIntersection_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+MeshProfileIntersection_python_la_LIBADD = ${deps}
 
-NodeConnectivity_Python_la_SOURCES = ../NodeConnectivity/NodeConnectivity.cpp
-NodeConnectivity_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-NodeConnectivity_Python_la_LIBADD = ${deps}
+NodeConnectivity_python_la_SOURCES = ../NodeConnectivity/NodeConnectivity.cpp
+NodeConnectivity_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+NodeConnectivity_python_la_LIBADD = ${deps}
 
-Triangle_Python_la_SOURCES = ../Triangle/Triangle.cpp
-Triangle_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-Triangle_Python_la_LIBADD = ${deps} $(TRIANGLELIB)
+Triangle_python_la_SOURCES = ../Triangle/Triangle.cpp
+Triangle_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+Triangle_python_la_LIBADD = ${deps} $(TRIANGLELIB)
 
-ProcessRifts_Python_la_SOURCES = ../ProcessRifts/ProcessRifts.cpp
-ProcessRifts_Python_la_CXXFLAGS = ${AM_CXXFLAGS}
-ProcessRifts_Python_la_LIBADD = ${deps}
+ProcessRifts_python_la_SOURCES = ../ProcessRifts/ProcessRifts.cpp
+ProcessRifts_python_la_CXXFLAGS = ${AM_CXXFLAGS}
+ProcessRifts_python_la_LIBADD = ${deps}
 #}}}
