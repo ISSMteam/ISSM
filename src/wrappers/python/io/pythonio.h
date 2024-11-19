@@ -1,5 +1,5 @@
 /*\file pythonio.h
- *\brief: I/O for ISSM in python mode
+ *\brief: I/O for ISSM when running from Python interface
  */
 
 #ifndef _PYTHON_IO_H_

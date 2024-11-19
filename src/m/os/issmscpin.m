@@ -3,17 +3,16 @@ function issmscpin(host, login,port,path, packages)
 %
 %   usage: issmscpin(host,packages,path)
 %
+% NOTE: If users again have issues with file list (i.e.
+%
+%   {<FILE1>,<FILE2>,...<FILEN>}
+%
+% ), note that this a bash'ism and default shell should be checked. View file 
+% history for potential fix (i.e. some combination of -O and -T options).
 %
 
 %first get hostname
 hostname=oshostname();
-
-%first be sure packages are not in the current directory, this could conflict with pscp on windows. 
-for i=1:numel(packages),
-	if exist(packages{i},'file')
-		delete(packages{i});
-	end
-end
 
 %if hostname and host are the same, do a simple copy
 if strcmpi(hostname,host)
@@ -21,21 +20,20 @@ if strcmpi(hostname,host)
 		system(['cp ' path '/' packages{i} ' .']);
 	end
 else
-	%just use standard unix scp string to copy multiple files using scp: 
 	if numel(packages)==1,
-		string=packages{1};
+		fileliststr=packages{1};
 	else
-		string='\{';
+		fileliststr='\{';
 		for i=1:numel(packages)-1,
-			string=[string packages{i} ','];
+			fileliststr=[fileliststr packages{i} ','];
 		end
-		string=[string packages{end} '\}'];
+		fileliststr=[fileliststr packages{end} '\}'];
 	end
 
 	if port,
-		eval(['!scp -P ' num2str(port) ' ' login '@localhost:' path '/' string ' ./']);
+		eval(['!scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
 	else
-		eval(['!scp ' login '@' host ':' path '/' string ' ./']);
+		eval(['!scp ' login '@' host ':' path '/' fileliststr ' ./']);
 	end
 
 	%check scp worked
