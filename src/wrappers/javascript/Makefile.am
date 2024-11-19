@@ -35,12 +35,12 @@ libISSMJavascript_la_SOURCES = $(io_sources)
 libISSMJavascript_la_CXXFLAGS= $(ALLCXXFLAGS)
 #}}}
 # API I/O{{{
-lib_LTLIBRARIES += libISSMApi.la
+lib_LTLIBRARIES += libISSMApi_JavaScript.la
 
 api_sources= ./io/ApiPrintf.cpp
 
-libISSMApi_la_SOURCES = $(api_sources)
-libISSMApi_la_CXXFLAGS= $(ALLCXXFLAGS)
+libISSMApi_JavaScript_la_SOURCES = $(api_sources)
+libISSMApi_JavaScript_la_CXXFLAGS= $(ALLCXXFLAGS)
 #}}}
 # Wrappers {{{
 bin_PROGRAMS = IssmModule
@@ -52,7 +52,11 @@ bin_PROGRAMS = IssmModule
 AM_CXXFLAGS = -DTRILIBRARY -DANSI_DECLARATORS -DNO_TIMER -D_WRAPPERS_
 AM_CXXFLAGS += -D_HAVE_JAVASCRIPT_MODULES_ -fPIC
 
-deps = ./libISSMJavascript.la ../../c/libISSMModules.la ../../c/libISSMCore.la ./libISSMApi.la
+deps = ./libISSMJavascript.la ../../c/libISSMModules.la ../../c/libISSMCore.la
+
+if !MSYS2
+deps += ./libISSMApi_JavaScript.la
+endif
 
 # Optimization flags
 AM_CXXFLAGS += $(CXXFLAGS)
@@ -62,21 +66,21 @@ libISSMJavascript_la_LIBADD = ./../../c/libISSMCore.la ./../../c/libISSMModules.
 
 if VERSION
 libISSMJavascript_la_LDFLAGS =
-libISSMApi_la_LDFLAGS =
+libISSMApi_JavaScript_la_LDFLAGS =
 else
 libISSMJavascript_la_LDFLAGS = -avoid-version
-libISSMApi_la_LDFLAGS = -avoid-version
+libISSMApi_JavaScript_la_LDFLAGS = -avoid-version
 endif
 
 if STANDALONE_LIBRARIES
 if !MSYS2
 libISSMJavascript_la_LDFLAGS += -static
-libISSMApi_la_LDFLAGS += -static
+libISSMApi_JavaScript_la_LDFLAGS += -static
 endif
 deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(OSLIBS)
 endif
 
-libISSMApi_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB)
+libISSMApi_JavaScript_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(PROJLIB) $(MATHLIB)
 
 IssmModule_SOURCES = \
 	../BamgMesher/BamgMesher.cpp \
