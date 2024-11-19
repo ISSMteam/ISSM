@@ -1,5 +1,5 @@
 /* \file ApiPrintf.c:
- * \brief: pyton api specific symbols which are unresolved from libISSMCore.a
+ * \brief: Python API-specific symbols which are unresolved from libISSMCore.a
  */
 
 #ifdef HAVE_CONFIG_H

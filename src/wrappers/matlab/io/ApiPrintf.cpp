@@ -1,5 +1,5 @@
 /* \file ApiPrintf.c:
- * \brief: API specific symbols from libISSMCore that we need to resolve here
+ * \brief: MATLAB API-specific symbols from libISSMCore that we need to resolve here
  */
 
 #ifdef HAVE_CONFIG_H
