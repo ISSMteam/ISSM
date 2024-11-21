@@ -19,7 +19,6 @@ classdef stanage
 		memory        = 32;  %in Gb
 		email         = 'END,FAIL';
 		email_domain  = 'sheffield.ac.uk';
-		deleteckptdata= 0;
 	end
 	%}}}
 	methods
@@ -42,7 +41,6 @@ classdef stanage
 			disp(sprintf('    time: %i hours',cluster.time));
 			disp(sprintf('    memory: %i Gb',cluster.memory));
 			disp(sprintf('    email: %s (notifications: BEGIN,END,FAIL)',cluster.email));
-			disp(sprintf('    deleteckptdata: %i',cluster.deleteckptdata));
 			disp(sprintf('    codepath:      %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    interactive: %i',cluster.interactive));
@@ -117,10 +115,6 @@ classdef stanage
 			fprintf(fid,'mpirun -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-			end
-
-			if (cluster.deleteckptdata)
-				fprintf(fid,'rm -rf *.rst *.ckpt\n');
 			end
 			fclose(fid);
 
