@@ -47,15 +47,15 @@ if ~md.qmu.isdakota,
 	%recover solution_type from results
 	md.private.solution=structure(1).SolutionType;
 
-	%read log files onto fields
+	%read log files onto fields (only keep the first 1000 lines!)
 	if exist([md.miscellaneous.name '.errlog'],'file'),
-		md.results.(structure(1).SolutionType)(1).errlog=char(textread([md.miscellaneous.name '.errlog'],'%s','delimiter','\n'));
+		md.results.(structure(1).SolutionType)(1).errlog=char(textread([md.miscellaneous.name '.errlog'],'%s',1000,'delimiter','\n'));
 	else
 		md.results.(structure(1).SolutionType)(1).errlog='';
 	end
 
 	if exist([md.miscellaneous.name '.outlog'],'file'),
-		md.results.(structure(1).SolutionType)(1).outlog=char(textread([md.miscellaneous.name '.outlog'],'%s','delimiter','\n'));
+		md.results.(structure(1).SolutionType)(1).outlog=char(textread([md.miscellaneous.name '.outlog'],'%s',1000,'delimiter','\n'));
 	else
 		md.results.(structure(1).SolutionType)(1).outlog='';
 	end
