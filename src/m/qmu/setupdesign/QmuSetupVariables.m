@@ -37,7 +37,17 @@ if strncmp(descriptor,'scaled_',7),
 		if (nstddev ~= nt || nmean ~=nt),
 			error('QmuSetupVariables error message: stddev and mean fields should have the same number of cols as the number of time steps');
 		end
-
+	elseif isa(variables,'continuous_design'),
+		nupper=size(variables.upper,1);
+		nlower=size(variables.lower,1);
+		if (nupper ~= npart || nlower ~=npart),
+			error('QmuSetupVariables error message: upper and lower fields should have the same number of rows as the number of partitions');
+		end
+		nupper=size(variables.upper,2);
+		nlower=size(variables.lower,2);
+		if (nupper ~= nt || nlower ~=nt),
+			error('QmuSetupVariables error message: upper and lower fields should have the same number of cols as the number of time steps');
+		end
 	end
 
 	%ok, dealing with semi-discrete distributed variable. Distribute according to how many 
@@ -52,6 +62,10 @@ if strncmp(descriptor,'scaled_',7),
 			elseif isa(variables,'normal_uncertain'),
 				dvar(end  ).stddev=variables.stddev(j);
 				dvar(end  ).mean=variables.mean(j);
+			elseif isa(variables,'continuous_design'),
+				dvar(end  ).upper=variables.upper(j);
+				dvar(end  ).lower=variables.lower(j);
+				dvar(end  ).initpt=variables.initpt(j);
 			end
 		end
 	else
@@ -65,6 +79,10 @@ if strncmp(descriptor,'scaled_',7),
 				elseif isa(variables,'normal_uncertain'),
 					dvar(end  ).stddev=variables.stddev(j,k);
 					dvar(end  ).mean=variables.mean(j,k);
+				elseif isa(variables,'continuous_design'),
+					dvar(end  ).upper=variables.upper(j,k);
+					dvar(end  ).lower=variables.lower(j,k);
+					dvar(end  ).initpt=variables.initpt(j,k);
 				end
 			end
 		end
@@ -89,6 +107,12 @@ elseif strncmp(descriptor,'distributed_',12),
 		nmean=size(variables.mean,1);
 		if (nstddev ~= npart || nmean ~=npart),
 			error('QmuSetupVariables error message: stddev and mean fields should have the same number of rows as the number of partitions');
+		end
+	elseif isa(variables,'continuous_design'),
+		nupper=size(variables.upper,1);
+		nlower=size(variables.lower,1);
+		if (nupper ~= npart || nlower ~=npart),
+			error('QmuSetupVariables error message: upper and lower fields should have the same number of rows as the number of partitions');
 		end
 	elseif isa(variables,'histogram_bin_uncertain'),
 		ncounts=length(variables.counts);
@@ -117,6 +141,11 @@ elseif strncmp(descriptor,'distributed_',12),
 		elseif isa(variables,'normal_uncertain'),
 			dvar(end  ).stddev=variables.stddev(j);
 			dvar(end  ).mean=variables.mean(j);
+			dvar(end  ).partition=[];
+		elseif isa(variables,'continuous_design'),
+			dvar(end  ).upper=variables.upper(j);
+			dvar(end  ).lower=variables.lower(j);
+			dvar(end  ).initpt=variables.initpt(j);
 			dvar(end  ).partition=[];
 		elseif isa(variables,'histogram_bin_uncertain'),
 			dvar(end).pairs_per_variable=variables.pairs_per_variable(j);
