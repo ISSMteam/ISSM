@@ -121,7 +121,7 @@ class transient(object):
         md = checkfield(md, 'fieldname', 'transient.isage', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'transient.issmb', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'transient.ismasstransport', 'numel', [1], 'values', [0, 1])
-        md = checkfield(md, 'fieldname', 'transient.ismmemasstransport', 'numel', [1], 'values', [0 1])
+        md = checkfield(md, 'fieldname', 'transient.ismmemasstransport', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'transient.isoceantransport', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'transient.isstressbalance', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'transient.isthermal', 'numel', [1], 'values', [0, 1])
