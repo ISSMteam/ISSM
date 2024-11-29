@@ -115,6 +115,7 @@ class FemModel {
 		void IceMassx(IssmDouble* pV, bool scaled);
 		void IceVolumex(IssmDouble* pV, bool scaled);
 		void IceVolumeAboveFloatationx(IssmDouble* pV, bool scaled);
+		void InputToP0(int inputenum,int outputenum);
 		void InputMakeDiscontinuous(int enum_in);
 		void MassFluxx(IssmDouble* presponse);
 		void MaxAbsVxx(IssmDouble* presponse);
