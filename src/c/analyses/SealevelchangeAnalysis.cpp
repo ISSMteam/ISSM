@@ -79,7 +79,7 @@ void SealevelchangeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
 	iomodel->ConstantToInput(inputs,elements,0.,BedNorthEnum,P1Enum);
     iomodel->FetchDataToInput(inputs,elements,"md.initialization.sealevel",SealevelEnum);
 
-	/*Initialize loads: no! this should be done by the corresponding mass transports!*/
+	/*Initialize loads:*/
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaTwsEnum,P1Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaIceThicknessEnum,P1Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaBottomPressureEnum,P1Enum);
@@ -250,9 +250,6 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 			if(modelid<=0 || modelid>nummodels)_error_("modelid field in md.solidearth.external field should be between 1 and the number of ensemble runs!");
 		} /*}}}*/
 	}
-
-	/*Indicate we have not yet run the Geometry Core module: */
-	parameters->AddObject(new BoolParam(SealevelchangeGeometryDoneEnum,false));
 
 	parameters->FindParam(&grdmodel,GrdModelEnum);
 	parameters->FindParam(&isgrd,SolidearthSettingsGRDEnum);
@@ -671,22 +668,6 @@ void           SealevelchangeAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
 void           SealevelchangeAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-
-	int isuq=0;
-	int modelid=0;
-
-	/*Resolve Mmes using the modelid, if necessary: meaning if we are running a transient model and that UQ computations have not been triggered:*/
-	femmodel->parameters->FindParam(&isuq,QmuIsdakotaEnum);
-	if (!isuq && femmodel->inputs->GetInputObjectEnum(SolidearthExternalDisplacementEastRateEnum)==DatasetInputEnum){
-		femmodel->parameters->FindParam(&modelid,SolidearthExternalModelidEnum);
-
-		/*replace dataset of forcings with only one, the modelid'th:*/
-		MmeToInputFromIdx(femmodel->inputs,femmodel->elements,femmodel->parameters,modelid-1,SolidearthExternalDisplacementNorthRateEnum, P1Enum);
-		MmeToInputFromIdx(femmodel->inputs,femmodel->elements,femmodel->parameters,modelid-1,SolidearthExternalDisplacementEastRateEnum, P1Enum);
-		MmeToInputFromIdx(femmodel->inputs,femmodel->elements,femmodel->parameters,modelid-1,SolidearthExternalDisplacementUpRateEnum, P1Enum);
-		MmeToInputFromIdx(femmodel->inputs,femmodel->elements,femmodel->parameters,modelid-1,SolidearthExternalGeoidRateEnum, P1Enum);
-
-	}		
 
 	/*run sea level change core geometry only once, after the Model Processor is done:*/
 	sealevelchange_initialgeometry(femmodel);

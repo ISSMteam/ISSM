@@ -11,8 +11,6 @@
 #include "../InputUpdateFromMatrixDakotax/InputUpdateFromMatrixDakotax.h"
 #include "../InputUpdateFromConstantx/InputUpdateFromConstantx.h"
 #include "../InputUpdateFromVectorDakotax/InputUpdateFromVectorDakotax.h"
-#include "../UpdateMmesx/UpdateMmesx.h"
-#include "../MmeToInputx/MmeToInputx.h"
 
 void  InputUpdateFromDakotax(FemModel* femmodel,double* variables,char* *variables_descriptors,int numdakotavariables){ /*{{{*/
 
@@ -143,9 +141,6 @@ void  InputUpdateFromDakotax(FemModel* femmodel,double* variables,char* *variabl
 		variablecount++;
 	}
 
-	/*Resole Mmes now that we have updated model ids: */
-	UpdateMmesx(femmodel);
-
 	/*Save results:*/
 	femmodel->results->AddResult(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,"uq_variables",variables,numdakotavariables,1,1,0));
 
@@ -162,32 +157,7 @@ void  InputUpdateFromDakotax(FemModel* femmodel,double* variables,char* *variabl
 void  InputUpdateSpecialtyCode(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* variable_partition,int npart,char* root){ //{{{
 
 	/*Here, we put all the code that cannot be handled any other place: */
-	if (strncmp(root,"MmemasstransportThickness",25)==0){ //surface load in solid earth class {{{
-
-		if(VerboseQmu()){
-			_printf0_("      Masstransport Thickness MME with ids: ");
-			for (int i=0;i<npart;i++)_printf0_((int)distributed_values[i] << " ");
-			_printf0_("\n");
-		}
-
-		if (femmodel->inputs->GetInputObjectEnum(MmemasstransportThicknessEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MmemasstransportThicknessEnum, P0Enum);
-
-		if (femmodel->inputs->GetInputObjectEnum(MmemasstransportMaskIceLevelsetEnum)==DatasetInputEnum){
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MmemasstransportMaskIceLevelsetEnum, P1Enum);
-			/*delete MaskIceLevelsetEnum which will be replaced by MmemasstransportMaskIceLevelsetEnum for each time step: */
-			femmodel->inputs->DeleteInput(MaskIceLevelsetEnum);
-		}
-
-		if (femmodel->inputs->GetInputObjectEnum(MmemasstransportMaskOceanLevelsetEnum)==DatasetInputEnum){
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MmemasstransportMaskOceanLevelsetEnum, P1Enum);
-			
-			/*delete MaskOceanLevelsetEnum which will be replaced by MmemasstransportMaskOceanLevelsetEnum for each time step: */
-			femmodel->inputs->DeleteInput(MaskOceanLevelsetEnum);
-		}
-
-	} /*}}}*/ 
-	else if (strncmp(root,"SurfaceloadModelid",18)==0){ //surface load in solid earth class {{{
+	if (strncmp(root,"SurfaceloadModelid",18)==0){ //surface load in solid earth class {{{
 
 		if(VerboseQmu()){
 			_printf0_("      SurfaceloadModelid MME, with ids: ");
@@ -196,16 +166,16 @@ void  InputUpdateSpecialtyCode(FemModel* femmodel,IssmDouble* distributed_values
 		}
 
 		if (femmodel->inputs->GetInputObjectEnum(MasstransportSpcthicknessEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MasstransportSpcthicknessEnum, P0Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,MasstransportSpcthicknessEnum, P0Enum);
 
 		if (femmodel->inputs->GetInputObjectEnum(MaskIceLevelsetEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MaskIceLevelsetEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,MaskIceLevelsetEnum, P1Enum);
 
 		if (femmodel->inputs->GetInputObjectEnum(MaskOceanLevelsetEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,MaskOceanLevelsetEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,MaskOceanLevelsetEnum, P1Enum);
 
 	} /*}}}*/
-	else if (strncmp(root,"SolidearthExternalModelid",18)==0){ //external solid earth solution in solid earth class {{{
+	if (strncmp(root,"SolidearthExternalModelid",18)==0){ //external solid earth solution in solid earth class {{{
 
 		if(VerboseQmu()){
 			_printf0_("      SolidearthExternalModelid MME, with ids: ");
@@ -214,22 +184,82 @@ void  InputUpdateSpecialtyCode(FemModel* femmodel,IssmDouble* distributed_values
 		}
 
 		if (femmodel->inputs->GetInputObjectEnum(SolidearthExternalDisplacementEastRateEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementEastRateEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementEastRateEnum, P1Enum);
 
 		if (femmodel->inputs->GetInputObjectEnum(SolidearthExternalDisplacementUpRateEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementUpRateEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementUpRateEnum, P1Enum);
 
 		if (femmodel->inputs->GetInputObjectEnum(SolidearthExternalDisplacementNorthRateEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementNorthRateEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,SolidearthExternalDisplacementNorthRateEnum, P1Enum);
 
 		if (femmodel->inputs->GetInputObjectEnum(SolidearthExternalGeoidRateEnum)==DatasetInputEnum)
-			MmeToInputx(femmodel,distributed_values,variable_partition,npart,SolidearthExternalGeoidRateEnum, P1Enum);
+			MmeToInput(femmodel,distributed_values,variable_partition,npart,SolidearthExternalGeoidRateEnum, P1Enum);
 
 		//if (femmodel->inputs->GetInputObjectEnum(SolidearthExternalBarystaticSeaLevelRateEnum)==DatasetInputEnum)
 		//	MmeToInput(femmodel,distributed_values,variable_partition,npart,SolidearthExternalBarystaticSeaLevelRateEnum, P1Enum);
 	} /*}}}*/
+
 	else _error_("InputUpdateSpecialtyCode error message: " << root << " not supported yet!");
 
+}	//}}}
+void  MmeToInput(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* variable_partition,int npart,int rootenum, int interpolationenum){ /*{{{*/
+
+	TransientInput* transientinput  = NULL;
+	TransientInput* transientinput2 = NULL;
+	Tria* element                    = NULL;
+	IssmDouble value;
+	IssmDouble* values               = NULL;
+	IssmDouble* times                = NULL;
+	int N;
+	int id;
+
+	/*find thickness dataset: */
+	DatasetInput* datasetinput = femmodel->inputs->GetDatasetInput(rootenum);
+
+	/*Initialize new transient input: */
+	transientinput = datasetinput->GetTransientInputByOffset(0); _assert_(transientinput);
+	transientinput->GetAllTimes(&times,&N);
+	femmodel->inputs->SetTransientInput(DummyEnum,times,N);
+	transientinput2 = femmodel->inputs->GetTransientInput(DummyEnum);
+
+	for(Object* & object : femmodel->elements->objects){
+		Tria*   element=xDynamicCast<Tria*>(object);
+
+		if((int)variable_partition[element->Sid()]==-1)id=0; //grab background field
+		else id=distributed_values[(int)variable_partition[element->Sid()]]-1; //grab partition field
+
+		/*recover the right field from the mme: */
+		transientinput = datasetinput->GetTransientInputByOffset(id); _assert_(transientinput);
+
+		/*copy values from the transientinput to the final transientinput2: */
+		for (int j=0;j<N;j++){
+			TriaInput* tria_input=transientinput->GetTriaInput(j);
+			element->InputServe(tria_input);
+			if(interpolationenum==P0Enum){
+				value=tria_input->element_values[0];
+				transientinput2->AddTriaTimeInput( j,1,&(element->lid),&value,P0Enum);
+			}
+			else if(interpolationenum==P1Enum){
+
+				/*Get values and lid list*/
+				const int   numvertices     = element->GetNumberOfVertices();
+				int        *vertexlids      = xNew<int>(numvertices);
+				int        *vertexsids      = xNew<int>(numvertices);
+
+				/*Recover vertices ids needed to initialize inputs*/
+				element->GetVerticesLidList(&vertexlids[0]);
+				element->GetVerticesSidList(&vertexsids[0]);
+				values=tria_input->element_values;
+				transientinput2->AddTriaTimeInput( j,numvertices,vertexlids,values,P1Enum);
+			}
+		}
+	}
+
+	/*wipe out existing SurfaceloadIceThicknessRateEnum dataset:*/
+	femmodel->inputs->ChangeEnum(DummyEnum,rootenum);
+
+	//reconfigure:
+	transientinput2->Configure(femmodel->parameters);
 }	//}}}
 void  InputScaleFromDakotax(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* partition, int npart, int nt, int name){ /*{{{*/
 

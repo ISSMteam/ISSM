@@ -6,6 +6,6 @@ class Elements;
 class Parameters;
 
 /* local prototypes: */
-void MmeToInputFromIdx(Inputs* inputs, Elements* elements, Parameters* parameters, int id, int rootenum, int interpolationenum);
+void  MmeToInputFromIdx(Inputs* inputs, Elements* elements, int id, int rootenum, int interpolationenum);
 
 #endif
