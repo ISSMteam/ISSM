@@ -13,10 +13,11 @@ void  UpdateMmesx(FemModel* femmodel){
 	if(VerboseModule()) _printf0_("   Updating Mmes\n");
 
 	/*Deal with solid earth external: {{{*/
-	int horiz=0;
-	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 
 	if (femmodel->inputs->Exist(SolidearthExternalDisplacementUpRateEnum) && femmodel->inputs->GetInputObjectEnum(SolidearthExternalDisplacementUpRateEnum)==DatasetInputEnum){
+
+		int horiz=0;
+		femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 		
 		IssmDouble modelid=0;
 		femmodel->parameters->FindParam(&modelid,SolidearthExternalModelidEnum);
