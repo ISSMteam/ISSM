@@ -7,8 +7,7 @@
 
 #include <cassert>
 #include <cstring> /*for memcpy*/
-#include <iostream>
-#include "boost/stacktrace.hpp"
+
 /* memory management of types T with non-trivial constructors require C++ style memory management*/
 #define USE_CXX_MEMORY_MANAGMENT_FOR_NON_POD_TYPES
 /* but for speed one may alternatively use C memory management but can do so safely only for T that are at most 
@@ -142,7 +141,6 @@ template <class T> T* xReNew(T* old, unsigned int old_size, unsigned int size) {
 #endif 
 }/*}}}*/
 template <class T>  T* xMemCpy(T* dest, const T* src, unsigned int size) {/*{{{*/
-if (!src)std::cout << boost::stacktrace::stacktrace();
   assert(dest); assert(src);
   #if defined(_HAVE_ADOLC_) || defined(_HAVE_CODIPACK_)
   for (int i=0; i<size;++i) dest[i]=src[i];

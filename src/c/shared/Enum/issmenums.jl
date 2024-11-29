@@ -182,6 +182,7 @@
 	ElasticEnum
 	EplZigZagCounterEnum
 	EsaHElasticEnum
+	EsaGElasticEnum
 	EsaHemisphereEnum
 	EsaRequestedOutputsEnum
 	EsaUElasticEnum
@@ -374,13 +375,9 @@
 	MasstransportIsfreesurfaceEnum
 	MasstransportMinThicknessEnum
 	MasstransportNumRequestedOutputsEnum
-	MmemasstransportNumRequestedOutputsEnum
 	MasstransportPenaltyFactorEnum
 	MasstransportRequestedOutputsEnum
-	MmemasstransportRequestedOutputsEnum
 	MasstransportStabilizationEnum
-	MmemasstransportModelidsEnum
-	MmemasstransportPartitionEnum
 	MaterialsBetaEnum
 	MaterialsEarthDensityEnum
 	MaterialsEffectiveconductivityAveragingEnum
@@ -686,7 +683,6 @@
 	TransientIsgroundinglineEnum
 	TransientIshydrologyEnum
 	TransientIsmasstransportEnum
-	TransientIsmmemasstransportEnum
 	TransientIsoceantransportEnum
 	TransientIsmovingfrontEnum
 	TransientIsoceancouplingEnum
@@ -845,6 +841,7 @@
 	EsaUmotionEnum
 	EsaXmotionEnum
 	EsaYmotionEnum
+	EsaGravitationalAccelerationEnum
 	EtaDiffEnum
 	FlowequationBorderFSEnum
 	FrictionAlpha2Enum
@@ -940,9 +937,6 @@
 	MaskIceLevelsetEnum
 	MaskIceRefLevelsetEnum
 	MasstransportSpcthicknessEnum
-	MmemasstransportThicknessEnum
-	MmemasstransportMaskIceLevelsetEnum
-	MmemasstransportMaskOceanLevelsetEnum
 	MaterialsRheologyBEnum
 	MaterialsRheologyBbarEnum
 	MaterialsRheologyEEnum
@@ -1622,8 +1616,6 @@
 	MassconaxpbyEnum
 	MassfluxatgateEnum
 	MasstransportAnalysisEnum
-	MmemasstransportAnalysisEnum
-	MmemasstransportSolutionEnum
 	MasstransportSolutionEnum
 	MatdamageiceEnum
 	MatenhancediceEnum
@@ -2001,6 +1993,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==ElasticEnum) return "Elastic" end
 	if(enum==EplZigZagCounterEnum) return "EplZigZagCounter" end
 	if(enum==EsaHElasticEnum) return "EsaHElastic" end
+	if(enum==EsaGElasticEnum) return "EsaGElastic" end
 	if(enum==EsaHemisphereEnum) return "EsaHemisphere" end
 	if(enum==EsaRequestedOutputsEnum) return "EsaRequestedOutputs" end
 	if(enum==EsaUElasticEnum) return "EsaUElastic" end
@@ -2193,13 +2186,9 @@ function EnumToString(enum::IssmEnum)
 	if(enum==MasstransportIsfreesurfaceEnum) return "MasstransportIsfreesurface" end
 	if(enum==MasstransportMinThicknessEnum) return "MasstransportMinThickness" end
 	if(enum==MasstransportNumRequestedOutputsEnum) return "MasstransportNumRequestedOutputs" end
-	if(enum==MmemasstransportNumRequestedOutputsEnum) return "MmemasstransportNumRequestedOutputs" end
 	if(enum==MasstransportPenaltyFactorEnum) return "MasstransportPenaltyFactor" end
 	if(enum==MasstransportRequestedOutputsEnum) return "MasstransportRequestedOutputs" end
-	if(enum==MmemasstransportRequestedOutputsEnum) return "MmemasstransportRequestedOutputs" end
 	if(enum==MasstransportStabilizationEnum) return "MasstransportStabilization" end
-	if(enum==MmemasstransportModelidsEnum) return "MmemasstransportModelids" end
-	if(enum==MmemasstransportPartitionEnum) return "MmemasstransportPartition" end
 	if(enum==MaterialsBetaEnum) return "MaterialsBeta" end
 	if(enum==MaterialsEarthDensityEnum) return "MaterialsEarthDensity" end
 	if(enum==MaterialsEffectiveconductivityAveragingEnum) return "MaterialsEffectiveconductivityAveraging" end
@@ -2505,7 +2494,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==TransientIsgroundinglineEnum) return "TransientIsgroundingline" end
 	if(enum==TransientIshydrologyEnum) return "TransientIshydrology" end
 	if(enum==TransientIsmasstransportEnum) return "TransientIsmasstransport" end
-	if(enum==TransientIsmmemasstransportEnum) return "TransientIsmmemasstransport" end
 	if(enum==TransientIsoceantransportEnum) return "TransientIsoceantransport" end
 	if(enum==TransientIsmovingfrontEnum) return "TransientIsmovingfront" end
 	if(enum==TransientIsoceancouplingEnum) return "TransientIsoceancoupling" end
@@ -2664,6 +2652,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==EsaUmotionEnum) return "EsaUmotion" end
 	if(enum==EsaXmotionEnum) return "EsaXmotion" end
 	if(enum==EsaYmotionEnum) return "EsaYmotion" end
+	if(enum==EsaGravitationalAccelerationEnum) return "EsaGravitationalAcceleration" end
 	if(enum==EtaDiffEnum) return "EtaDiff" end
 	if(enum==FlowequationBorderFSEnum) return "FlowequationBorderFS" end
 	if(enum==FrictionAlpha2Enum) return "FrictionAlpha2" end
@@ -2759,9 +2748,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==MaskIceLevelsetEnum) return "MaskIceLevelset" end
 	if(enum==MaskIceRefLevelsetEnum) return "MaskIceRefLevelset" end
 	if(enum==MasstransportSpcthicknessEnum) return "MasstransportSpcthickness" end
-	if(enum==MmemasstransportThicknessEnum) return "MmemasstransportThickness" end
-	if(enum==MmemasstransportMaskIceLevelsetEnum) return "MmemasstransportMaskIceLevelset" end
-	if(enum==MmemasstransportMaskOceanLevelsetEnum) return "MmemasstransportMaskOceanLevelset" end
 	if(enum==MaterialsRheologyBEnum) return "MaterialsRheologyB" end
 	if(enum==MaterialsRheologyBbarEnum) return "MaterialsRheologyBbar" end
 	if(enum==MaterialsRheologyEEnum) return "MaterialsRheologyE" end
@@ -3441,8 +3427,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==MassconaxpbyEnum) return "Massconaxpby" end
 	if(enum==MassfluxatgateEnum) return "Massfluxatgate" end
 	if(enum==MasstransportAnalysisEnum) return "MasstransportAnalysis" end
-	if(enum==MmemasstransportAnalysisEnum) return "MmemasstransportAnalysis" end
-	if(enum==MmemasstransportSolutionEnum) return "MmemasstransportSolution" end
 	if(enum==MasstransportSolutionEnum) return "MasstransportSolution" end
 	if(enum==MatdamageiceEnum) return "Matdamageice" end
 	if(enum==MatenhancediceEnum) return "Matenhancedice" end
@@ -3820,6 +3804,7 @@ function StringToEnum(name::String)
 	if(name=="Elastic") return ElasticEnum  end
 	if(name=="EplZigZagCounter") return EplZigZagCounterEnum  end
 	if(name=="EsaHElastic") return EsaHElasticEnum  end
+	if(name=="EsaGElastic") return EsaGElasticEnum  end
 	if(name=="EsaHemisphere") return EsaHemisphereEnum  end
 	if(name=="EsaRequestedOutputs") return EsaRequestedOutputsEnum  end
 	if(name=="EsaUElastic") return EsaUElasticEnum  end
@@ -4012,13 +3997,9 @@ function StringToEnum(name::String)
 	if(name=="MasstransportIsfreesurface") return MasstransportIsfreesurfaceEnum  end
 	if(name=="MasstransportMinThickness") return MasstransportMinThicknessEnum  end
 	if(name=="MasstransportNumRequestedOutputs") return MasstransportNumRequestedOutputsEnum  end
-	if(name=="MmemasstransportNumRequestedOutputs") return MmemasstransportNumRequestedOutputsEnum  end
 	if(name=="MasstransportPenaltyFactor") return MasstransportPenaltyFactorEnum  end
 	if(name=="MasstransportRequestedOutputs") return MasstransportRequestedOutputsEnum  end
-	if(name=="MmemasstransportRequestedOutputs") return MmemasstransportRequestedOutputsEnum  end
 	if(name=="MasstransportStabilization") return MasstransportStabilizationEnum  end
-	if(name=="MmemasstransportModelids") return MmemasstransportModelidsEnum  end
-	if(name=="MmemasstransportPartition") return MmemasstransportPartitionEnum  end
 	if(name=="MaterialsBeta") return MaterialsBetaEnum  end
 	if(name=="MaterialsEarthDensity") return MaterialsEarthDensityEnum  end
 	if(name=="MaterialsEffectiveconductivityAveraging") return MaterialsEffectiveconductivityAveragingEnum  end
@@ -4324,7 +4305,6 @@ function StringToEnum(name::String)
 	if(name=="TransientIsgroundingline") return TransientIsgroundinglineEnum  end
 	if(name=="TransientIshydrology") return TransientIshydrologyEnum  end
 	if(name=="TransientIsmasstransport") return TransientIsmasstransportEnum  end
-	if(name=="TransientIsmmemasstransport") return TransientIsmmemasstransportEnum  end
 	if(name=="TransientIsoceantransport") return TransientIsoceantransportEnum  end
 	if(name=="TransientIsmovingfront") return TransientIsmovingfrontEnum  end
 	if(name=="TransientIsoceancoupling") return TransientIsoceancouplingEnum  end
@@ -4483,6 +4463,7 @@ function StringToEnum(name::String)
 	if(name=="EsaUmotion") return EsaUmotionEnum  end
 	if(name=="EsaXmotion") return EsaXmotionEnum  end
 	if(name=="EsaYmotion") return EsaYmotionEnum  end
+	if(name=="EsaGravitationalAcceleration") return EsaGravitationalAccelerationEnum  end
 	if(name=="EtaDiff") return EtaDiffEnum  end
 	if(name=="FlowequationBorderFS") return FlowequationBorderFSEnum  end
 	if(name=="FrictionAlpha2") return FrictionAlpha2Enum  end
@@ -4578,9 +4559,6 @@ function StringToEnum(name::String)
 	if(name=="MaskIceLevelset") return MaskIceLevelsetEnum  end
 	if(name=="MaskIceRefLevelset") return MaskIceRefLevelsetEnum  end
 	if(name=="MasstransportSpcthickness") return MasstransportSpcthicknessEnum  end
-	if(name=="MmemasstransportThickness") return MmemasstransportThicknessEnum  end
-	if(name=="MmemasstransportMaskIceLevelset") return MmemasstransportMaskIceLevelsetEnum  end
-	if(name=="MmemasstransportMaskOceanLevelset") return MmemasstransportMaskOceanLevelsetEnum  end
 	if(name=="MaterialsRheologyB") return MaterialsRheologyBEnum  end
 	if(name=="MaterialsRheologyBbar") return MaterialsRheologyBbarEnum  end
 	if(name=="MaterialsRheologyE") return MaterialsRheologyEEnum  end
@@ -5260,8 +5238,6 @@ function StringToEnum(name::String)
 	if(name=="Massconaxpby") return MassconaxpbyEnum  end
 	if(name=="Massfluxatgate") return MassfluxatgateEnum  end
 	if(name=="MasstransportAnalysis") return MasstransportAnalysisEnum  end
-	if(name=="MmemasstransportAnalysis") return MmemasstransportAnalysisEnum  end
-	if(name=="MmemasstransportSolution") return MmemasstransportSolutionEnum  end
 	if(name=="MasstransportSolution") return MasstransportSolutionEnum  end
 	if(name=="Matdamageice") return MatdamageiceEnum  end
 	if(name=="Matenhancedice") return MatenhancediceEnum  end

@@ -71,7 +71,6 @@
 #include "./SurfaceAverageVelMisfitx/SurfaceAverageVelMisfitx.h"
 #include "./ModelProcessorx/ModelProcessorx.h"
 #include "./MmeToInputFromIdx/MmeToInputFromIdx.h"
-#include "./MmeToInputx/MmeToInputx.h"
 #include "./ParseToolkitsOptionsx/ParseToolkitsOptionsx.h"
 #include "./NodalValuex/NodalValuex.h"
 #include "./NodeConnectivityx/NodeConnectivityx.h"
@@ -102,9 +101,9 @@
 #include "./ThicknessAlongGradientx/ThicknessAlongGradientx.h"
 #include "./ThicknessAcrossGradientx/ThicknessAcrossGradientx.h"
 #include "./UpdateDynamicConstraintsx/UpdateDynamicConstraintsx.h"
-#include "./UpdateMmesx/UpdateMmesx.h"
 #include "./VertexCoordinatesx/VertexCoordinatesx.h"
 #include "./ElementCoordinatesx/ElementCoordinatesx.h"
+#include "./Zgesvx/Zgesvx.h"
 
 #ifdef _HAVE_OCEAN_
 #include "./OceanExchangeDatax/OceanExchangeDatax.h"
