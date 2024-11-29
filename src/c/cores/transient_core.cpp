@@ -122,16 +122,11 @@ void transient_core(FemModel* femmodel){/*{{{*/
 	}
 
 	if(!iscontrol || !isautodiff) femmodel->RequestedDependentsx();
-
-	/*finalize:*/
-	transient_postcore(femmodel);
-
-
 }/*}}}*/
 void transient_step(FemModel* femmodel){/*{{{*/
 
 	/*parameters: */
-	bool isstressbalance,ismasstransport,ismmemasstransport,isage,isoceantransport,issmb,isthermal,isgroundingline,isesa,issampling;
+	bool isstressbalance,ismasstransport,isage,isoceantransport,issmb,isthermal,isgroundingline,isesa,issampling;
 	bool isslc,ismovingfront,isdamageevolution,ishydrology,isstochasticforcing,save_results;
 	bool isdebris;
 	int  step,sb_coupling_frequency,isoceancoupling;
@@ -144,7 +139,6 @@ void transient_step(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&sb_coupling_frequency,SettingsSbCouplingFrequencyEnum);
 	femmodel->parameters->FindParam(&isstressbalance,TransientIsstressbalanceEnum);
 	femmodel->parameters->FindParam(&ismasstransport,TransientIsmasstransportEnum);
-	femmodel->parameters->FindParam(&ismmemasstransport,TransientIsmmemasstransportEnum);
 	femmodel->parameters->FindParam(&isage,TransientIsageEnum);
 	femmodel->parameters->FindParam(&isoceantransport,TransientIsoceantransportEnum);
 	femmodel->parameters->FindParam(&issmb,TransientIssmbEnum);
@@ -218,9 +212,6 @@ void transient_step(FemModel* femmodel){/*{{{*/
 		bmb_core(femmodel);
 		masstransport_core(femmodel);
 	}
-	if(ismmemasstransport){
-		mmemasstransport_core(femmodel);
-	}
 
 	if(isoceantransport) oceantransport_core(femmodel);
 
@@ -257,13 +248,12 @@ void transient_step(FemModel* femmodel){/*{{{*/
 }/*}}}*/
 void transient_precore(FemModel* femmodel){/*{{{*/
 
-	bool       isslc,isuq;
+	bool       isslc;
 	int        amr_frequency,amr_restart,isoceancoupling;
 
 	femmodel->parameters->FindParam(&isoceancoupling,TransientIsoceancouplingEnum);
 	femmodel->parameters->FindParam(&amr_frequency,TransientAmrFrequencyEnum);
 	femmodel->parameters->FindParam(&isslc,TransientIsslcEnum);
-	femmodel->parameters->FindParam(&isuq,QmuIsdakotaEnum);
 
 #if defined(_HAVE_BAMG_) && !defined(_HAVE_AD_)
 	if(amr_frequency){
@@ -279,20 +269,6 @@ void transient_precore(FemModel* femmodel){/*{{{*/
 #if defined(_HAVE_SEALEVELCHANGE_)
 	if(isslc) sealevelchange_initialgeometry(femmodel);
 #endif
-
-	//Resolve Mmes prior to running in transient: 
-	if(!isuq)UpdateMmesx(femmodel);
-
-}/*}}}*/
-void transient_postcore(FemModel* femmodel){/*{{{*/
-
-	bool       isslc;
-	femmodel->parameters->FindParam(&isslc,TransientIsslcEnum);
-
-	#if defined(_HAVE_SEALEVELCHANGE_)
-	if(isslc) sealevelchange_finalize(femmodel);
-	#endif
-	
 }/*}}}*/
 
 #ifdef _HAVE_CODIPACK_
