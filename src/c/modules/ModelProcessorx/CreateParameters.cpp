@@ -77,6 +77,7 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 		parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.isstressbalance",TransientIsstressbalanceEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.ismasstransport",TransientIsmasstransportEnum));
+		parameters->AddObject(iomodel->CopyConstantObject("md.transient.ismmemasstransport",TransientIsmmemasstransportEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.isoceantransport",TransientIsoceantransportEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.isage",TransientIsageEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.issmb",TransientIssmbEnum));

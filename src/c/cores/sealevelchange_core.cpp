@@ -610,10 +610,18 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	int* lids=NULL;
 	int* n_activevertices=NULL;
 	int  grdmodel=0;
+	bool geometrydone;
 
 	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
 	nel=femmodel->elements->NumberOfElements();
+
+	/*did we already do this? if so, skip :*/
+	femmodel->parameters->FindParam(&geometrydone,SealevelchangeGeometryDoneEnum);
+	if (geometrydone){
+		if(VerboseSolution()) _printf0_("	  initial sea level geometrical already computed, skipping.\n");
+		return;
+	}
 
 	/*early return?:*/
 	if(grdmodel!=ElasticEnum) return;
@@ -749,6 +757,31 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	xDelete<IssmDouble>(areae);
 
 	return slgeom;
+
+}/*}}}*/
+void              sealevelchange_finalize(FemModel* femmodel) {  /*{{{*/
+
+	bool isuq=false;
+	
+	BarystaticContributions* barycontrib=NULL;
+	GenericParam<BarystaticContributions*>* barycontribparam=NULL;
+	
+	femmodel->parameters->FindParam(&isuq,QmuIsdakotaEnum);
+
+	if(isuq){
+		//reset barycontrib object:
+		barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
+		barycontrib=barycontribparam->GetParameterValue(); 
+		barycontrib->Finalize();
+	}
+	else {
+		/*Erase barycontrib object: */
+		barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
+		barycontrib=barycontribparam->GetParameterValue();
+		delete barycontrib;
+	}
+
+	return;
 
 }/*}}}*/
 void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
