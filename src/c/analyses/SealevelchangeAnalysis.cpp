@@ -67,10 +67,10 @@ void SealevelchangeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
 			iomodel->FetchData(&modelid,"md.solidearth.external.modelid");
 
 			/*replace dataset of forcings with only one, the modelid'th:*/
-			MmeToInputFromIdx(inputs,elements,modelid,SolidearthExternalDisplacementNorthRateEnum, P1Enum);
-			MmeToInputFromIdx(inputs,elements,modelid,SolidearthExternalDisplacementEastRateEnum, P1Enum);
-			MmeToInputFromIdx(inputs,elements,modelid,SolidearthExternalDisplacementUpRateEnum, P1Enum);
-			MmeToInputFromIdx(inputs,elements,modelid,SolidearthExternalGeoidRateEnum, P1Enum);
+			MmeToInputFromIdx(inputs,elements,NULL,modelid,SolidearthExternalDisplacementNorthRateEnum, P1Enum);
+			MmeToInputFromIdx(inputs,elements,NULL,modelid,SolidearthExternalDisplacementEastRateEnum, P1Enum);
+			MmeToInputFromIdx(inputs,elements,NULL,modelid,SolidearthExternalDisplacementUpRateEnum, P1Enum);
+			MmeToInputFromIdx(inputs,elements,NULL,modelid,SolidearthExternalGeoidRateEnum, P1Enum);
 		}
 	}
 
