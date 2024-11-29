@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @SHAPELIBINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @SCOTCHINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @GSLINCL@ @BOOSTINCL@ @METEOIOINCL@ @SNOWPACKINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @SHAPELIBINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @SCOTCHINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @GSLINCL@ @BOOSTINCL@ @METEOIOINCL@ @SNOWPACKINCL@ @PROJINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@
 AM_FCFLAGS = @SEMICINCL@
 
 AUTOMAKE_OPTIONS = subdir-objects
@@ -165,7 +165,6 @@ issm_sources += \
 	./shared/Numerics/extrema.cpp \
 	./shared/Numerics/legendre.cpp \
 	./shared/Numerics/XZvectorsToCoordinateSystem.cpp \
-	./shared/Numerics/Normals.cpp \
 	./shared/Exceptions/Exceptions.cpp \
 	./shared/Sorting/binary_search.cpp \
 	./shared/Elements/Cuffey.cpp \
@@ -197,6 +196,7 @@ issm_sources += \
 	./toolkits/mpi/commops/GetOwnershipBoundariesFromRange.cpp \
 	./toolkits/ToolkitOptions.cpp \
 	./modules/MmeToInputFromIdx/MmeToInputFromIdx.cpp\
+	./modules/MmeToInputx/MmeToInputx.cpp\
 	./modules/ModelProcessorx/ModelProcessorx.cpp \
 	./modules/ModelProcessorx/ElementsAndVerticesPartitioning.cpp \
 	./modules/ModelProcessorx/NodesPartitioning.cpp \
@@ -248,6 +248,7 @@ issm_sources += \
 	./modules/Solverx/Solverx.cpp \
 	./modules/StochasticForcingx/StochasticForcingx.cpp \
 	./modules/Mergesolutionfromftogx/Mergesolutionfromftogx.cpp \
+	./modules/UpdateMmesx/UpdateMmesx.cpp \
 	./cores/ProcessArguments.cpp \
 	./cores/ResetBoundaryConditions.cpp \
 	./cores/WrapperCorePointerFromSolutionEnum.cpp \
@@ -274,6 +275,7 @@ issm_sources += \
 	./cores/transient_core.cpp \
 	./cores/steadystate_core.cpp \
 	./cores/masstransport_core.cpp \
+	./cores/mmemasstransport_core.cpp \
 	./cores/oceantransport_core.cpp \
 	./cores/depthaverage_core.cpp \
 	./cores/extrudefrombase_core.cpp \
@@ -344,7 +346,7 @@ issm_sources += \
 	./classes/Inputs/DatasetInput.cpp \
 	./classes/Inputs/ControlInput.cpp \
 	./classes/Inputs/TransientInput.cpp \
-	./classes/Inputs/ArrayInput.cpp \
+	./classes/Inputs/ArrayInput.cpp\
 	./classes/Inputs/IntArrayInput.cpp
 #}}}
 # ADJOINTMPI/MeDiPack sources {{{
@@ -497,7 +499,8 @@ if MELTING
 issm_sources += ./analyses/MeltingAnalysis.cpp
 endif
 if MASSTRANSPORT
-issm_sources += ./analyses/MasstransportAnalysis.cpp
+issm_sources += ./analyses/MasstransportAnalysis.cpp \
+				./analyses/MmemasstransportAnalysis.cpp
 endif
 if OCEANTRANSPORT
 issm_sources += ./analyses/OceantransportAnalysis.cpp
@@ -541,28 +544,7 @@ if LOVE
 if FORTRAN
 issm_sources += \
 	./cores/love_core.cpp \
-	./analyses/LoveAnalysis.cpp \
-	./modules/Zgesvx/Zgesvx.cpp \
-	./modules/Zgesvx/Zgesvx.h \
-	./modules/Zgesvx/dcabs1.f \
-	./modules/Zgesvx/dlamch.f \
-	./modules/Zgesvx/ieeeck.f \
-	./modules/Zgesvx/ilaenv.f \
-	./modules/Zgesvx/iparmq.f \
-	./modules/Zgesvx/izamax.f \
-	./modules/Zgesvx/lsame.f \
-	./modules/Zgesvx/xerbla.f \
-	./modules/Zgesvx/zgemm.f \
-	./modules/Zgesvx/zgeru.f \
-	./modules/Zgesvx/zgesv.f \
-	./modules/Zgesvx/zgetf2.f \
-	./modules/Zgesvx/zgetrf2.f \
-	./modules/Zgesvx/zgetrf.f \
-	./modules/Zgesvx/zgetrs.f \
-	./modules/Zgesvx/zlaswp.f \
-	./modules/Zgesvx/zscal.f \
-	./modules/Zgesvx/zswap.f \
-	./modules/Zgesvx/ztrsm.f
+	./analyses/LoveAnalysis.cpp
 endif
 endif
 #}}}
@@ -740,7 +722,8 @@ endif
 libISSMCore_la_SOURCES  = $(issm_sources)
 libISSMCore_la_CXXFLAGS = $(ALL_CXXFLAGS)
 libISSMCore_la_FFLAGS = $(AM_FFLAGS)
-libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(ADJOINTMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB)
+
+libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(ADJOINTMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) 
 if FORTRAN
 libISSMCore_LIB_ADD += $(FLIBS) $(FORTRANLIB)
 endif
@@ -836,14 +819,6 @@ endif
 endif
 endif
 
-if !STANDALONE_LIBRARIES
-if MAC
-if PROJ
-libISSMCore_la_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
-endif
-endif
-endif
-
 if !MSYS2
 libISSMOverload_la_SOURCES = ./shared/String/ApiPrintf.cpp
 libISSMOverload_la_CFLAGS  = -D_C_ -fPIC $(CFLAGS) $(CXXFLAGS)
@@ -880,7 +855,7 @@ LDADD += ./libISSMModules.la $(TRIANGLELIB)
 endif
 
 # External packages
-LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADJOINTMPILIB) $(ADOLCLIB) $(MPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(ESMFLIB)
+LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADJOINTMPILIB) $(ADOLCLIB) $(MPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(PROJLIB) $(ESMFLIB)
 
 if FORTRAN
 LDADD += $(FLIBS) $(FORTRANLIB)

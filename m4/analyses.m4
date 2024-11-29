@@ -289,6 +289,20 @@ fi
 AM_CONDITIONAL([GLHEIGHTADVECTION], [test x$HAVE_GLHEIGHTADVECTION = xyes])
 AC_MSG_RESULT($HAVE_GLHEIGHTADVECTION)
 dnl }}}
+dnl with-HydrologyArmapw{{{
+AC_ARG_WITH([HydrologyArmapw],
+	AS_HELP_STRING([--with-HydrologyArmapw = YES], [compile with HydrologyArmapw capabilities (default is yes)]),
+	[HYDROLOGYARMAPW=$withval],[HYDROLOGYARMAPW=yes])
+AC_MSG_CHECKING(for HydrologyArmapw capability compilation)
+
+HAVE_HYDROLOGYARMAPW=no 
+if test "x$HYDROLOGYARMAPW" = "xyes"; then
+	HAVE_HYDROLOGYARMAPW=yes
+	AC_DEFINE([_HAVE_HYDROLOGYARMAPW_],[1],[with HydrologyArmapw capability])
+fi
+AM_CONDITIONAL([HYDROLOGYARMAPW], [test x$HAVE_HYDROLOGYARMAPW = xyes])
+AC_MSG_RESULT($HAVE_HYDROLOGYARMAPW)
+dnl }}}
 dnl with-HydrologyDCEfficient{{{
 AC_ARG_WITH([HydrologyDCEfficient],
 	AS_HELP_STRING([--with-HydrologyDCEfficient = YES], [compile with HydrologyDCEfficient capabilities (default is yes)]),
@@ -373,20 +387,6 @@ fi
 AM_CONDITIONAL([HYDROLOGYSHREVE], [test x$HAVE_HYDROLOGYSHREVE = xyes])
 AC_MSG_RESULT($HAVE_HYDROLOGYSHREVE)
 dnl }}}
-dnl with-HydrologyArmapw{{{
-AC_ARG_WITH([HydrologyArmapw],
-	AS_HELP_STRING([--with-HydrologyArmapw = YES], [compile with HydrologyArmapw capabilities (default is yes)]),
-	[HYDROLOGYARMAPW=$withval],[HYDROLOGYARMAPW=yes])
-AC_MSG_CHECKING(for HydrologyArmapw capability compilation)
-
-HAVE_HYDROLOGYARMAPW=no 
-if test "x$HYDROLOGYARMAPW" = "xyes"; then
-	HAVE_HYDROLOGYARMAPW=yes
-	AC_DEFINE([_HAVE_HYDROLOGYARMAPW_],[1],[with HydrologyArmapw capability])
-fi
-AM_CONDITIONAL([HYDROLOGYARMAPW], [test x$HAVE_HYDROLOGYARMAPW = xyes])
-AC_MSG_RESULT($HAVE_HYDROLOGYARMAPW)
-dnl }}}
 dnl with-L2ProjectionBase{{{
 AC_ARG_WITH([L2ProjectionBase],
 	AS_HELP_STRING([--with-L2ProjectionBase = YES], [compile with L2ProjectionBase capabilities (default is yes)]),
@@ -456,6 +456,20 @@ if test "x$MASSTRANSPORT" = "xyes"; then
 fi
 AM_CONDITIONAL([MASSTRANSPORT], [test x$HAVE_MASSTRANSPORT = xyes])
 AC_MSG_RESULT($HAVE_MASSTRANSPORT)
+dnl }}}
+dnl with-Mmemasstransport{{{
+AC_ARG_WITH([Mmemasstransport],
+	AS_HELP_STRING([--with-Mmemasstransport = YES], [compile with Mmemasstransport capabilities (default is yes)]),
+	[MMEMASSTRANSPORT=$withval],[MMEMASSTRANSPORT=yes])
+AC_MSG_CHECKING(for Mmemasstransport capability compilation)
+
+HAVE_MMEMASSTRANSPORT=no 
+if test "x$MMEMASSTRANSPORT" = "xyes"; then
+	HAVE_MMEMASSTRANSPORT=yes
+	AC_DEFINE([_HAVE_MMEMASSTRANSPORT_],[1],[with Mmemasstransport capability])
+fi
+AM_CONDITIONAL([MMEMASSTRANSPORT], [test x$HAVE_MMEMASSTRANSPORT = xyes])
+AC_MSG_RESULT($HAVE_MMEMASSTRANSPORT)
 dnl }}}
 dnl with-Melting{{{
 AC_ARG_WITH([Melting],
