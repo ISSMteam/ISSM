@@ -197,6 +197,7 @@ issm_sources += \
 	./toolkits/mpi/commops/GetOwnershipBoundariesFromRange.cpp \
 	./toolkits/ToolkitOptions.cpp \
 	./modules/MmeToInputFromIdx/MmeToInputFromIdx.cpp\
+	./modules/MmeToInputx/MmeToInputx.cpp\
 	./modules/ModelProcessorx/ModelProcessorx.cpp \
 	./modules/ModelProcessorx/ElementsAndVerticesPartitioning.cpp \
 	./modules/ModelProcessorx/NodesPartitioning.cpp \
@@ -248,6 +249,7 @@ issm_sources += \
 	./modules/Solverx/Solverx.cpp \
 	./modules/StochasticForcingx/StochasticForcingx.cpp \
 	./modules/Mergesolutionfromftogx/Mergesolutionfromftogx.cpp \
+	./modules/UpdateMmesx/UpdateMmesx.cpp \
 	./cores/ProcessArguments.cpp \
 	./cores/ResetBoundaryConditions.cpp \
 	./cores/WrapperCorePointerFromSolutionEnum.cpp \
@@ -274,6 +276,7 @@ issm_sources += \
 	./cores/transient_core.cpp \
 	./cores/steadystate_core.cpp \
 	./cores/masstransport_core.cpp \
+	./cores/mmemasstransport_core.cpp \
 	./cores/oceantransport_core.cpp \
 	./cores/depthaverage_core.cpp \
 	./cores/extrudefrombase_core.cpp \
@@ -497,7 +500,8 @@ if MELTING
 issm_sources += ./analyses/MeltingAnalysis.cpp
 endif
 if MASSTRANSPORT
-issm_sources += ./analyses/MasstransportAnalysis.cpp
+issm_sources += ./analyses/MasstransportAnalysis.cpp \
+				./analyses/MmemasstransportAnalysis.cpp
 endif
 if OCEANTRANSPORT
 issm_sources += ./analyses/OceantransportAnalysis.cpp

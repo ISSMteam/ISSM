@@ -7,7 +7,8 @@
 
 #include <cassert>
 #include <cstring> /*for memcpy*/
-
+#include <iostream>
+#include "boost/stacktrace.hpp"
 /* memory management of types T with non-trivial constructors require C++ style memory management*/
 #define USE_CXX_MEMORY_MANAGMENT_FOR_NON_POD_TYPES
 /* but for speed one may alternatively use C memory management but can do so safely only for T that are at most 
