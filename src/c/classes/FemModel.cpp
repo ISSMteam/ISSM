@@ -2162,7 +2162,7 @@ void FemModel::MinVzx(IssmDouble* pminvz){/*{{{*/
 }/*}}}*/
 void FemModel::MmeToInputFromId(int id, int rootenum, int interpolationenum){ /*{{{*/
 
-	MmeToInputFromIdx(this->inputs,this->elements,id,rootenum,interpolationenum);
+	MmeToInputFromIdx(this->inputs,this->elements,this->parameters,id,rootenum,interpolationenum);
 
 }	//}}}
 void FemModel::OmegaAbsGradientx( IssmDouble* pJ){/*{{{*/
