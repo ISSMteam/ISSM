@@ -134,6 +134,16 @@ void BarystaticContributions::Reset(){ /*{{{*/
 	ocean->Set(0.);
 
 } /*}}}*/
+void BarystaticContributions::Finalize(){ /*{{{*/
+
+	ice->Set(0.);
+	cumice->Set(0.);
+	hydro->Set(0.);
+	cumhydro->Set(0.);
+	ocean->Set(0.);
+	cumocean->Set(0.);
+
+} /*}}}*/
 void BarystaticContributions::Save(Results* results, Parameters* parameters, IssmDouble oceanarea){ /*{{{*/
 
 	int        step;
@@ -163,16 +173,25 @@ void BarystaticContributions::Save(Results* results, Parameters* parameters, Iss
 	results->AddResult(new GenericExternalResult<IssmDouble>(results->Size()+1,CumBslcOceanEnum,sumocean/oceanarea/rho_water,step,time));
 
 	if(nice){
-		cumice_serial=this->cumice->ToMPISerial0(); for (int i=0;i<nice;i++)cumice_serial[i]=cumice_serial[i]/oceanarea/rho_water;
-		results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcIcePartitionEnum,cumice_serial,nice,1,step,time));
+		cumice_serial=this->cumice->ToMPISerial0(); 
+		if(IssmComm::GetRank()==0){
+			for (int i=0;i<nice;i++)cumice_serial[i]=cumice_serial[i]/oceanarea/rho_water;
+			results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcIcePartitionEnum,cumice_serial,nice,1,step,time));
+		}
 	}
 	if(nhydro){
-		cumhydro_serial=this->cumhydro->ToMPISerial0(); for (int i=0;i<nhydro;i++)cumhydro_serial[i]=cumhydro_serial[i]/oceanarea/rho_water;
-		results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcHydroPartitionEnum,cumhydro_serial,nhydro,1,step,time));
+		cumhydro_serial=this->cumhydro->ToMPISerial0(); 
+		if(IssmComm::GetRank()==0){
+			for (int i=0;i<nhydro;i++)cumhydro_serial[i]=cumhydro_serial[i]/oceanarea/rho_water;
+			results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcHydroPartitionEnum,cumhydro_serial,nhydro,1,step,time));
+		}
 	}
 	if(nocean){
-		cumocean_serial=this->cumocean->ToMPISerial0(); for (int i=0;i<nocean;i++)cumocean_serial[i]=cumocean_serial[i]/oceanarea/rho_water;
-		results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcOceanPartitionEnum,cumocean_serial,nocean,1,step,time));
+		cumocean_serial=this->cumocean->ToMPISerial0(); 
+		if(IssmComm::GetRank()==0){
+			for (int i=0;i<nocean;i++)cumocean_serial[i]=cumocean_serial[i]/oceanarea/rho_water;
+			results->AddResult(new GenericExternalResult<IssmDouble*>(results->Size()+1,CumBslcOceanPartitionEnum,cumocean_serial,nocean,1,step,time));
+		}
 	}
 
 	if(IssmComm::GetRank()==0){
