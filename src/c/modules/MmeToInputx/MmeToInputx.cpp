@@ -1,21 +1,15 @@
-/*!\file MmeToInputFromId
- * \brief: compute damage
+/*!\file MmeToInputx
+ * \brief: 
  */
-#ifdef HAVE_CONFIG_H
-	#include <config.h>
-#else
-#error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
-#endif
 
 #include "../../shared/shared.h"
 #include "../../toolkits/toolkits.h"
-#include "../../classes/classes.h"
-#include "../../classes/Inputs/DatasetInput.h"
 #include "../../classes/Inputs/TransientInput.h"
+#include "../../classes/Inputs/DatasetInput.h"
 #include "../../classes/Inputs/TriaInput.h"
-#include "./MmeToInputFromIdx.h"
+#include "./MmeToInputx.h"
 
-void MmeToInputFromIdx(Inputs* inputs, Elements* elements, Parameters* parameters, int id, int rootenum, int interpolationenum){
+void  MmeToInputx(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* variable_partition,int npart,int rootenum, int interpolationenum){ 
 
 	TransientInput* transientinput  = NULL;
 	TransientInput* transientinput2 = NULL;
@@ -24,19 +18,22 @@ void MmeToInputFromIdx(Inputs* inputs, Elements* elements, Parameters* parameter
 	IssmDouble* values               = NULL;
 	IssmDouble* times                = NULL;
 	int N;
+	int id;
 
 	/*find thickness dataset: */
-	DatasetInput* datasetinput = inputs->GetDatasetInput(rootenum);
+	DatasetInput* datasetinput = femmodel->inputs->GetDatasetInput(rootenum);
 
 	/*Initialize new transient input: */
 	transientinput = datasetinput->GetTransientInputByOffset(0); _assert_(transientinput);
 	transientinput->GetAllTimes(&times,&N);
-	inputs->SetTransientInput(DummyEnum,times,N);
-	transientinput2 = inputs->GetTransientInput(DummyEnum);
-	if(parameters)transientinput2->Configure(parameters);
+	femmodel->inputs->SetTransientInput(DummyEnum,times,N);
+	transientinput2 = femmodel->inputs->GetTransientInput(DummyEnum); transientinput2->Configure(femmodel->parameters);
 
-	for(Object* & object : elements->objects){
+	for(Object* & object : femmodel->elements->objects){
 		Tria*   element=xDynamicCast<Tria*>(object);
+
+		if((int)variable_partition[element->Sid()]==-1)id=0; //grab background field
+		else id=distributed_values[(int)variable_partition[element->Sid()]]-1; //grab partition field
 
 		/*recover the right field from the mme: */
 		transientinput = datasetinput->GetTransientInputByOffset(id); _assert_(transientinput);
@@ -61,11 +58,18 @@ void MmeToInputFromIdx(Inputs* inputs, Elements* elements, Parameters* parameter
 				element->GetVerticesSidList(&vertexsids[0]);
 				values=tria_input->element_values;
 				transientinput2->AddTriaTimeInput( j,numvertices,vertexlids,values,P1Enum);
+
+				/*free memory: */
+				xDelete<int>(vertexlids);
+				xDelete<int>(vertexsids);
 			}
 		}
 	}
 
-	/*wipe out existing SurfaceloadIceThicknessChangeEnum dataset:*/
-	inputs->ChangeEnum(DummyEnum,rootenum);
+	/*wipe out existing SurfaceloadIceThicknessRateEnum dataset:*/
+	femmodel->inputs->ChangeEnum(DummyEnum,rootenum);
 
-}
+	/*free memory:*/
+	xDelete<IssmDouble>(times);
+
+}	

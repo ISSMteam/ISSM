@@ -386,9 +386,13 @@ syn keyword cConstant MasstransportHydrostaticAdjustmentEnum
 syn keyword cConstant MasstransportIsfreesurfaceEnum
 syn keyword cConstant MasstransportMinThicknessEnum
 syn keyword cConstant MasstransportNumRequestedOutputsEnum
+syn keyword cConstant MmemasstransportNumRequestedOutputsEnum
 syn keyword cConstant MasstransportPenaltyFactorEnum
 syn keyword cConstant MasstransportRequestedOutputsEnum
+syn keyword cConstant MmemasstransportRequestedOutputsEnum
 syn keyword cConstant MasstransportStabilizationEnum
+syn keyword cConstant MmemasstransportModelidsEnum
+syn keyword cConstant MmemasstransportPartitionEnum
 syn keyword cConstant MaterialsBetaEnum
 syn keyword cConstant MaterialsEarthDensityEnum
 syn keyword cConstant MaterialsEffectiveconductivityAveragingEnum
@@ -694,6 +698,7 @@ syn keyword cConstant TransientIsgiaEnum
 syn keyword cConstant TransientIsgroundinglineEnum
 syn keyword cConstant TransientIshydrologyEnum
 syn keyword cConstant TransientIsmasstransportEnum
+syn keyword cConstant TransientIsmmemasstransportEnum
 syn keyword cConstant TransientIsoceantransportEnum
 syn keyword cConstant TransientIsmovingfrontEnum
 syn keyword cConstant TransientIsoceancouplingEnum
@@ -948,6 +953,9 @@ syn keyword cConstant MaskOceanLevelsetEnum
 syn keyword cConstant MaskIceLevelsetEnum
 syn keyword cConstant MaskIceRefLevelsetEnum
 syn keyword cConstant MasstransportSpcthicknessEnum
+syn keyword cConstant MmemasstransportThicknessEnum
+syn keyword cConstant MmemasstransportMaskIceLevelsetEnum
+syn keyword cConstant MmemasstransportMaskOceanLevelsetEnum
 syn keyword cConstant MaterialsRheologyBEnum
 syn keyword cConstant MaterialsRheologyBbarEnum
 syn keyword cConstant MaterialsRheologyEEnum
@@ -1627,6 +1635,8 @@ syn keyword cConstant MassconEnum
 syn keyword cConstant MassconaxpbyEnum
 syn keyword cConstant MassfluxatgateEnum
 syn keyword cConstant MasstransportAnalysisEnum
+syn keyword cConstant MmemasstransportAnalysisEnum
+syn keyword cConstant MmemasstransportSolutionEnum
 syn keyword cConstant MasstransportSolutionEnum
 syn keyword cConstant MatdamageiceEnum
 syn keyword cConstant MatenhancediceEnum
@@ -1991,6 +2001,7 @@ syn keyword cType LevelsetAnalysis
 syn keyword cType LoveAnalysis
 syn keyword cType MasstransportAnalysis
 syn keyword cType MeltingAnalysis
+syn keyword cType MmemasstransportAnalysis
 syn keyword cType OceantransportAnalysis
 syn keyword cType SamplingAnalysis
 syn keyword cType SealevelchangeAnalysis
