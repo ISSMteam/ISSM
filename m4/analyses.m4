@@ -457,6 +457,20 @@ fi
 AM_CONDITIONAL([MASSTRANSPORT], [test x$HAVE_MASSTRANSPORT = xyes])
 AC_MSG_RESULT($HAVE_MASSTRANSPORT)
 dnl }}}
+dnl with-Mmemasstransport{{{
+AC_ARG_WITH([Mmemasstransport],
+	AS_HELP_STRING([--with-Mmemasstransport = YES], [compile with Mmemasstransport capabilities (default is yes)]),
+	[MMEMASSTRANSPORT=$withval],[MMEMASSTRANSPORT=yes])
+AC_MSG_CHECKING(for Mmemasstransport capability compilation)
+
+HAVE_MMEMASSTRANSPORT=no 
+if test "x$MMEMASSTRANSPORT" = "xyes"; then
+	HAVE_MMEMASSTRANSPORT=yes
+	AC_DEFINE([_HAVE_MMEMASSTRANSPORT_],[1],[with Mmemasstransport capability])
+fi
+AM_CONDITIONAL([MMEMASSTRANSPORT], [test x$HAVE_MMEMASSTRANSPORT = xyes])
+AC_MSG_RESULT($HAVE_MMEMASSTRANSPORT)
+dnl }}}
 dnl with-Melting{{{
 AC_ARG_WITH([Melting],
 	AS_HELP_STRING([--with-Melting = YES], [compile with Melting capabilities (default is yes)]),
