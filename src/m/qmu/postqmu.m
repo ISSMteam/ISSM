@@ -46,6 +46,17 @@ if md.qmu.output & strcmpi(md.qmu.statistics.method(1).name,'None'),
 			dakotaresults.modelresults{end+1}=md2.results;
 		end
 	end
+	if strcmpi(md.qmu.method.method,'list_parameter_study'),
+		dakotaresults.modelresults={};
+		md2=md;
+		md2.qmu.isdakota=0;
+		for i=md.qmu.method.params.list_of_points,
+			disp(['Reading qmu file ' md2.miscellaneous.name '.outbin.' num2str(i)]);
+			md2=loadresultsfromdisk(md2,[md2.miscellaneous.name '.outbin.' num2str(i)]);
+			dakotaresults.modelresults{end+1}=md2.results;
+		end
+	end
+
 end
 if ~strcmpi(md.qmu.statistics.method(1).name,'None'),
 	md.qmu.isdakota=0;
