@@ -186,6 +186,7 @@ syn keyword juliaConstC EarthIdEnum
 syn keyword juliaConstC ElasticEnum
 syn keyword juliaConstC EplZigZagCounterEnum
 syn keyword juliaConstC EsaHElasticEnum
+syn keyword juliaConstC EsaGElasticEnum
 syn keyword juliaConstC EsaHemisphereEnum
 syn keyword juliaConstC EsaRequestedOutputsEnum
 syn keyword juliaConstC EsaUElasticEnum
@@ -378,13 +379,9 @@ syn keyword juliaConstC MasstransportHydrostaticAdjustmentEnum
 syn keyword juliaConstC MasstransportIsfreesurfaceEnum
 syn keyword juliaConstC MasstransportMinThicknessEnum
 syn keyword juliaConstC MasstransportNumRequestedOutputsEnum
-syn keyword juliaConstC MmemasstransportNumRequestedOutputsEnum
 syn keyword juliaConstC MasstransportPenaltyFactorEnum
 syn keyword juliaConstC MasstransportRequestedOutputsEnum
-syn keyword juliaConstC MmemasstransportRequestedOutputsEnum
 syn keyword juliaConstC MasstransportStabilizationEnum
-syn keyword juliaConstC MmemasstransportModelidsEnum
-syn keyword juliaConstC MmemasstransportPartitionEnum
 syn keyword juliaConstC MaterialsBetaEnum
 syn keyword juliaConstC MaterialsEarthDensityEnum
 syn keyword juliaConstC MaterialsEffectiveconductivityAveragingEnum
@@ -690,7 +687,6 @@ syn keyword juliaConstC TransientIsgiaEnum
 syn keyword juliaConstC TransientIsgroundinglineEnum
 syn keyword juliaConstC TransientIshydrologyEnum
 syn keyword juliaConstC TransientIsmasstransportEnum
-syn keyword juliaConstC TransientIsmmemasstransportEnum
 syn keyword juliaConstC TransientIsoceantransportEnum
 syn keyword juliaConstC TransientIsmovingfrontEnum
 syn keyword juliaConstC TransientIsoceancouplingEnum
@@ -849,6 +845,7 @@ syn keyword juliaConstC EsaStrainrateyyEnum
 syn keyword juliaConstC EsaUmotionEnum
 syn keyword juliaConstC EsaXmotionEnum
 syn keyword juliaConstC EsaYmotionEnum
+syn keyword juliaConstC EsaGravitationalAccelerationEnum
 syn keyword juliaConstC EtaDiffEnum
 syn keyword juliaConstC FlowequationBorderFSEnum
 syn keyword juliaConstC FrictionAlpha2Enum
@@ -944,9 +941,6 @@ syn keyword juliaConstC MaskOceanLevelsetEnum
 syn keyword juliaConstC MaskIceLevelsetEnum
 syn keyword juliaConstC MaskIceRefLevelsetEnum
 syn keyword juliaConstC MasstransportSpcthicknessEnum
-syn keyword juliaConstC MmemasstransportThicknessEnum
-syn keyword juliaConstC MmemasstransportMaskIceLevelsetEnum
-syn keyword juliaConstC MmemasstransportMaskOceanLevelsetEnum
 syn keyword juliaConstC MaterialsRheologyBEnum
 syn keyword juliaConstC MaterialsRheologyBbarEnum
 syn keyword juliaConstC MaterialsRheologyEEnum
@@ -1626,8 +1620,6 @@ syn keyword juliaConstC MassconEnum
 syn keyword juliaConstC MassconaxpbyEnum
 syn keyword juliaConstC MassfluxatgateEnum
 syn keyword juliaConstC MasstransportAnalysisEnum
-syn keyword juliaConstC MmemasstransportAnalysisEnum
-syn keyword juliaConstC MmemasstransportSolutionEnum
 syn keyword juliaConstC MasstransportSolutionEnum
 syn keyword juliaConstC MatdamageiceEnum
 syn keyword juliaConstC MatenhancediceEnum

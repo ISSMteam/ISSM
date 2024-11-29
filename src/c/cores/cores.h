@@ -34,7 +34,6 @@ void controlm1qn3_core(FemModel* femmodel);
 void controladm1qn3_core(FemModel* femmodel);
 void controlvalidation_core(FemModel* femmodel);
 void masstransport_core(FemModel* femmodel);
-void mmemasstransport_core(FemModel* femmodel);
 void oceantransport_core(FemModel* femmodel);
 void depthaverage_core(FemModel* femmodel);
 void extrudefrombase_core(FemModel* femmodel);
@@ -46,7 +45,6 @@ void slopecompute_core(FemModel* femmodel);
 void steadystate_core(FemModel* femmodel);
 void transient_core(FemModel* femmodel);
 void transient_precore(FemModel* femmodel);
-void transient_postcore(FemModel* femmodel);
 void dakota_core(FemModel* femmodel);
 void ad_core(FemModel* femmodel);
 void adgradient_core(FemModel* femmodel);
@@ -64,7 +62,6 @@ void debris_core(FemModel* femmodel);
 #ifdef _HAVE_SEALEVELCHANGE_
 void sealevelchange_core(FemModel* femmodel);
 void sealevelchange_initialgeometry(FemModel* femmodel);
-void sealevelchange_finalize(FemModel* femmodel);
 SealevelGeometry* sealevelchange_geometry(FemModel* femmodel);
 #endif
 void grd_core(FemModel* femmodel,SealevelGeometry* slgeom);
