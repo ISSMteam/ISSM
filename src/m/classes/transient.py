@@ -93,7 +93,7 @@ class transient(object):
         self.isage = 0
         self.issmb = 1
         self.ismasstransport = 1
-        self.ismmemasstransport = 1
+        self.ismmemasstransport = 0
         self.isoceantransport = 0
         self.isstressbalance = 1
         self.isthermal = 1
