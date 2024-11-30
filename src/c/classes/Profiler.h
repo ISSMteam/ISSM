@@ -21,22 +21,23 @@
 #define DAMAGECORE			8 /*Profiling DAMAGE */
 #define MOVINGFRONTCORE		9 /*Profiling MOVINGFRONT */
 #define MASSTRANSPORTCORE	10 /*Profiling MASSTRANSPORT */
-#define OCEANTRANSPORTCORE	11 /*Profiling OCEANTRANSPORT */
-#define SMBCORE				12 /*Profiling SMB */
-#define GROUNDINGLINECORE	13 /*Profiling GROUDINGLINE MIGRATION */
-#define ESACORE				14 /*Profiling ESA */
-#define SLRCORE				15 /*Profiling SLR */
-#define DEBRISCORE                              16 /*Profiling DEBRIS */
-#define SAMPLINGCORE	17 /*Profiling SAMPLING */
-#define MPISERIAL				18 /*Profiling MPISerial */
-#define SEDLOOP				19 /*Profiling MPISerial */
-#define SEDMatrix				20 /*Profiling MPISerial */
-#define SEDUpdate				21 /*Profiling MPISerial */
-#define EPLLOOP				22 /*Profiling MPISerial */
-#define EPLMasking			23 /*Profiling MPISerial */
-#define EPLMatrices			24 /*Profiling MPISerial */
-#define EPLUpdate				25 /*Profiling MPISerial */
-#define MAXPROFSIZE			26 /*Used to initialize static arrays*/
+#define MMEMASSTRANSPORTCORE 11 /*Profiling MMEMASSTRANSPORT */
+#define OCEANTRANSPORTCORE	12 /*Profiling OCEANTRANSPORT */
+#define SMBCORE				13 /*Profiling SMB */
+#define GROUNDINGLINECORE	14 /*Profiling GROUDINGLINE MIGRATION */
+#define ESACORE				15 /*Profiling ESA */
+#define SLRCORE				16 /*Profiling SLR */
+#define DEBRISCORE                              17 /*Profiling DEBRIS */
+#define SAMPLINGCORE	19 /*Profiling SAMPLING */
+#define MPISERIAL				19 /*Profiling MPISerial */
+#define SEDLOOP				20 /*Profiling MPISerial */
+#define SEDMatrix				21 /*Profiling MPISerial */
+#define SEDUpdate				22 /*Profiling MPISerial */
+#define EPLLOOP				23 /*Profiling MPISerial */
+#define EPLMasking			24 /*Profiling MPISerial */
+#define EPLMatrices			25 /*Profiling MPISerial */
+#define EPLUpdate				26 /*Profiling MPISerial */
+#define MAXPROFSIZE			27 /*Used to initialize static arrays*/
 
 class Profiler: public Object{
 

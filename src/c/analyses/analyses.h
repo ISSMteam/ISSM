@@ -37,6 +37,7 @@
 #include "./HydrologyPismAnalysis.h"
 #include "./LevelsetAnalysis.h"
 #include "./MasstransportAnalysis.h"
+#include "./MmemasstransportAnalysis.h"
 #include "./OceantransportAnalysis.h"
 #include "./SamplingAnalysis.h"
 #include "./SmbAnalysis.h"

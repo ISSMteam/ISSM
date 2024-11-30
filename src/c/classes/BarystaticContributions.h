@@ -42,6 +42,7 @@ class BarystaticContributions {
 		void Save(Results* results, Parameters* parameters, IssmDouble oceanarea);
 		void Set(int eid, IssmDouble icevalue, IssmDouble hydrovalue, IssmDouble oceanvalue);
 		void Reset();
+		void Finalize();
 
 };
 #endif  /* _BARYSTATICCONTRIBUTIONS_H_ */

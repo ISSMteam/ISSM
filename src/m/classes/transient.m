@@ -8,6 +8,7 @@ classdef transient
 		isage             = 0;
 		issmb             = 0;
 		ismasstransport   = 0;
+		ismmemasstransport   = 0;
 		isoceantransport  = 0;
 		isstressbalance   = 0;
 		isthermal         = 0;
@@ -38,6 +39,7 @@ classdef transient
 			self.isage             = 0;
 			self.issmb             = 0;
 			self.ismasstransport   = 0;
+			self.ismmemasstransport= 0;
 			self.isoceantransport  = 0;
 			self.isstressbalance   = 0;
 			self.isthermal         = 0;
@@ -61,6 +63,7 @@ classdef transient
 			self.isage             = 0;
 			self.issmb             = 1;
 			self.ismasstransport   = 1;
+			self.ismmemasstransport= 0;
 			self.isoceantransport  = 0;
 			self.isstressbalance   = 1;
 			self.isthermal         = 1;
@@ -89,6 +92,7 @@ classdef transient
 			md = checkfield(md,'fieldname','transient.isage','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','transient.issmb','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','transient.ismasstransport','numel',[1],'values',[0 1]);
+			md = checkfield(md,'fieldname','transient.ismmemasstransport','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','transient.isoceantransport','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','transient.isstressbalance','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','transient.isthermal','numel',[1],'values',[0 1]);
@@ -117,6 +121,7 @@ classdef transient
 			fielddisplay(self,'isage','indicates whether an age model is used in the transient');
 			fielddisplay(self,'issmb','indicates whether a surface mass balance solution is used in the transient');
 			fielddisplay(self,'ismasstransport','indicates whether a masstransport solution is used in the transient');
+			fielddisplay(self,'ismmemasstransport','indicates whether an MME masstransport solution is used in the transient');
 			fielddisplay(self,'isoceantransport','indicates whether an ocean masstransport solution is used in the transient');
 			fielddisplay(self,'isstressbalance','indicates whether a stressbalance solution is used in the transient');
 			fielddisplay(self,'isthermal','indicates whether a thermal solution is used in the transient');
@@ -137,6 +142,7 @@ classdef transient
 			WriteData(fid,prefix,'object',self,'fieldname','isage','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','issmb','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','ismasstransport','format','Boolean');
+			WriteData(fid,prefix,'object',self,'fieldname','ismmemasstransport','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','isoceantransport','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','isstressbalance','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','isthermal','format','Boolean');
