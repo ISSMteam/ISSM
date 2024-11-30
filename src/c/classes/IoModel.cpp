@@ -452,6 +452,12 @@ void  IoModel::ConstantToInput(Inputs* inputs,Elements* elements,IssmDouble valu
 			element->InputCreateP1FromConstant(inputs,this,value,vector_enum);
 		}
 	}
+	else if (type==P0Enum){
+		for(Object* & object : elements->objects){
+			Element* element=xDynamicCast<Element*>(object);
+			element->InputCreateP0FromConstant(inputs,this,value,vector_enum);
+		}
+	}
 	else _error_("not supported yet!");
 	return;
 }
@@ -2021,6 +2027,25 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 				M=pM[i];
 				N=pN[i];
 				matrix=array[i];
+
+				//initialize times:
+				if(M==this->numberofvertices || M==(this->numberofvertices+1)){
+					times=xNew<IssmDouble>(N);
+					if(M==this->numberofvertices) times[0] = matrix[M-1];
+					if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+				}
+				else if(M==this->numberofelements || M==(this->numberofelements+1)){
+					times=xNew<IssmDouble>(N);
+					if(M==this->numberofelements) times[0] = matrix[M-1];
+					if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+				}
+				else if(M==2 || M==1){
+					times=xNew<IssmDouble>(N);
+					if(M==1) times[0] = 0;
+					if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+				}
+				else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
+
 
 				//initialize transient input dataset:
 				TransientInput* transientinput=inputs->SetDatasetTransientInput(input_enum,i, times,N);
