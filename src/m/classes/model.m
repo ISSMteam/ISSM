@@ -36,6 +36,7 @@ classdef model
 		hydrology        = 0;
 		debris           = 0;
 		masstransport    = 0;
+		mmemasstransport = 0;
 		thermal          = 0;
 		steadystate      = 0;
 		transient        = 0;
@@ -196,6 +197,8 @@ classdef model
 			if ~isa(md.stochasticforcing,'stochasticforcing'); md.stochasticforcing=stochasticforcing(); end
 			%2022 Oct 28
 			if ~isa(md.debris,'debris'); md.debris=debris(); end
+			%Mmetransport: Jun 2022:
+			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end;
 		end% }}}
 	end
 	methods
@@ -239,6 +242,7 @@ classdef model
 			disp(sprintf('%19s: %-23s -- %s','hydrology'       ,['[1x1 ' class(self.hydrology) ']'],'parameters for hydrology solution'));
 			disp(sprintf('%19s: %-23s -- %s','debris' 	   ,['[1x1 ' class(self.debris) ']'],'parameters for debris solution'));
 			disp(sprintf('%19s: %-23s -- %s','masstransport'   ,['[1x1 ' class(self.masstransport) ']'],'parameters for masstransport solution'));
+			disp(sprintf('%19s: %-23s -- %s','mmemasstransport',['[1x1 ' class(self.mmemasstransport) ']'],'parameters for mmemasstransport solution'));
 			disp(sprintf('%19s: %-23s -- %s','thermal'         ,['[1x1 ' class(self.thermal) ']'],'parameters for thermal solution'));
 			disp(sprintf('%19s: %-23s -- %s','steadystate'     ,['[1x1 ' class(self.steadystate) ']'],'parameters for steadystate solution'));
 			disp(sprintf('%19s: %-23s -- %s','transient'       ,['[1x1 ' class(self.transient) ']'],'parameters for transient solution'));
@@ -452,6 +456,10 @@ classdef model
 			if numel(md.masstransport.spcthickness)>1,
 				md.masstransport.spcthickness=project2d(md,md.masstransport.spcthickness,md.mesh.numberoflayers);
 			end
+			if numel(md.mmemasstransport.spcthickness)>1,
+        			md.mmemasstransport.deltathickness=project2d(md,md.mmemasstransport.deltathickness,md.mesh.numberoflayers);
+			end
+
 			if numel(md.damage.spcdamage)>1,
 				md.damage.spcdamage=project2d(md,md.damage.spcdamage,md.mesh.numberoflayers);
 			end
@@ -1265,6 +1273,7 @@ classdef model
 			md.stressbalance=extrude(md.stressbalance,md);
 			md.thermal=md.thermal.extrude(md);
 			md.masstransport=md.masstransport.extrude(md);
+			md.mmemasstransport=md.mmemasstransport.extrude(md);
 			md.levelset=extrude(md.levelset,md);
 			md.calving=extrude(md.calving,md);
 			md.frontalforcings=extrude(md.frontalforcings,md);
@@ -1368,6 +1377,9 @@ classdef model
 			if isfield(structmd,'hydrostatic_adjustment'), md.masstransport.hydrostatic_adjustment=structmd.hydrostatic_adjustment; end
 			if isfield(structmd,'penalties'), md.masstransport.vertex_pairing=structmd.penalties; end
 			if isfield(structmd,'penalty_offset'), md.masstransport.penalty_factor=structmd.penalty_offset; end
+			if isfield(structmd,'deltathickness'), md.mmemasstransport.deltathickness=structmd.deltathickness; end
+			if isfield(structmd,'partition'), md.mmemasstransport.partition=structmd.partition; end
+			if isfield(structmd,'ids'), md.mmemasstransport.ids=structmd.ids; end
 			if isfield(structmd,'B'), md.materials.rheology_B=structmd.B; end
 			if isfield(structmd,'n'), md.materials.rheology_n=structmd.n; end
 			if isfield(structmd,'rheology_B'), md.materials.rheology_B=structmd.rheology_B; end
