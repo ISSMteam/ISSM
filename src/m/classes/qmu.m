@@ -225,7 +225,9 @@ classdef qmu
 				WriteData(fid,prefix,'data',false,'name','md.qmu.mass_flux_segments_present','format','Boolean');
 				return;
 			end
-			WriteData(fid,prefix,'data',self.method.params.samples,'name','md.qmu.method.params.samples','format','Integer');
+			if strcmpi(self.method.method,'nond_sampling'),
+				WriteData(fid,prefix,'data',self.method.params.samples,'name','md.qmu.method.params.samples','format','Integer');
+			end
 			WriteData(fid,prefix,'object',self,'fieldname','numberofresponses','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','variabledescriptors','format','StringArray');
 			WriteData(fid,prefix,'object',self,'fieldname','variablepartitions','format','MatArray');
