@@ -19,7 +19,7 @@ void  UpdateMmesx(FemModel* femmodel){
 		int horiz=0;
 		femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 		
-		IssmDouble modelid=0;
+		int modelid=0;
 		femmodel->parameters->FindParam(&modelid,SolidearthExternalModelidEnum);
 		//_printf_("modelid: " << modelid << "\n");
 		
