@@ -109,6 +109,9 @@ Analysis* EnumToAnalysis(int analysis_enum){
 		#ifdef _HAVE_MASSTRANSPORT_
 		case MasstransportAnalysisEnum : return new MasstransportAnalysis();
 		#endif
+		#ifdef _HAVE_MMEMASSTRANSPORT_
+		case MmemasstransportAnalysisEnum : return new MmemasstransportAnalysis();
+		#endif
 		#ifdef _HAVE_MELTING_
 		case MeltingAnalysisEnum : return new MeltingAnalysis();
 		#endif

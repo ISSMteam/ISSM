@@ -860,10 +860,11 @@ void FemModel::SolutionAnalysesList(int** panalyses,int* pnumanalyses,IoModel* i
 
 		case TransientSolutionEnum:{
 			/*We have multiple analyses here, process one by one*/
-			bool isSIA,isFS,isthermal,isenthalpy,ismasstransport,isoceantransport,isgroundingline,isstressbalance,ismovingfront,ishydrology,isdamage,issmb,isslc,isesa,isdebris,issampling,isfreesurface;
+			bool isSIA,isFS,isthermal,isenthalpy,ismasstransport,ismmemasstransport,isoceantransport,isgroundingline,isstressbalance,ismovingfront,ishydrology,isdamage,issmb,isslc,isesa,isdebris,issampling,isfreesurface;
 			iomodel->FindConstant(&isthermal,"md.transient.isthermal");
 			iomodel->FindConstant(&ismovingfront,"md.transient.ismovingfront");
 			iomodel->FindConstant(&ismasstransport,"md.transient.ismasstransport");
+			iomodel->FindConstant(&ismmemasstransport,"md.transient.ismmemasstransport");
 			iomodel->FindConstant(&isoceantransport,"md.transient.isoceantransport");
 			iomodel->FindConstant(&isstressbalance,"md.transient.isstressbalance");
 			iomodel->FindConstant(&isgroundingline,"md.transient.isgroundingline");
@@ -918,6 +919,9 @@ void FemModel::SolutionAnalysesList(int** panalyses,int* pnumanalyses,IoModel* i
 			}
 			if(isoceantransport){
 				analyses_temp[numanalyses++]=OceantransportAnalysisEnum;
+			}
+			if(ismmemasstransport){
+				analyses_temp[numanalyses++]=MmemasstransportAnalysisEnum;
 			}
 			if(isslc){
 				analyses_temp[numanalyses++]=SealevelchangeAnalysisEnum;
@@ -1808,6 +1812,19 @@ void FemModel::IceVolumex(IssmDouble* pV, bool scaled){/*{{{*/
 	*pV=total_ice_volume;
 
 }/*}}}*/
+void FemModel::InputToP0(int inputenum,int outputenum){/*{{{*/
+
+	IssmDouble average;
+
+	/*Collapse input to P0, by doing the average. We need to have the elements 
+	 * to do so, so loop onto elements: */
+	for(Object* & object : this->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		Input*  input = element->GetInput(inputenum);
+		input->GetInputAverage(&average);
+		element->AddInput(outputenum,&average,P0Enum);
+	}
+}/*}}}*/
 void FemModel::MassFluxx(IssmDouble* pmass_flux){/*{{{*/
 
 	int          i,j;
@@ -2162,7 +2179,7 @@ void FemModel::MinVzx(IssmDouble* pminvz){/*{{{*/
 }/*}}}*/
 void FemModel::MmeToInputFromId(int id, int rootenum, int interpolationenum){ /*{{{*/
 
-	MmeToInputFromIdx(this->inputs,this->elements,id,rootenum,interpolationenum);
+	MmeToInputFromIdx(this->inputs,this->elements,this->parameters,id,rootenum,interpolationenum);
 
 }	//}}}
 void FemModel::OmegaAbsGradientx( IssmDouble* pJ){/*{{{*/
