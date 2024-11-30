@@ -37,121 +37,100 @@ classdef continuous_design
 		upper     = Inf;
 		scale_type='none';
 		scale     = 1.;
+		partition = [];
+		nsteps    = 0;
 	end
 
 	methods
-		function [cdv]=continuous_design(varargin)
+		function self=continuous_design(varargin) % {{{
 
-			switch nargin
+			%recover options:
+			options=pairoptions(varargin{:});
 
-				%  create a default object
+			%initialize fields:
+			self.descriptor=getfieldvalue(options,'descriptor');
+			self.initpt=getfieldvalue(options,'initpt');
+			self.lower=getfieldvalue(options,'lower');
+			self.upper=getfieldvalue(options,'upper');
+			self.scale_type=getfieldvalue(options,'scale_type','none');
+			self.scale=getfieldvalue(options,'scale',1.);
 
-				case 0
+			%if the variable is scaled,  a partition vector should have been 
+			%supplied, and that partition vector should have as many partitions 
+			%as the upper and lower vectors: 
+			if self.isscaled() | self.isdistributed(),
+				self.partition=getfieldvalue(options,'partition');
+				self.nsteps=getfieldvalue(options,'nsteps',1);
+				npart=qmupart2npart(self.partition);
+				if npart~=size(self.upper,1),
+					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the row size of the upper field should be identical to the number of partitions']);
+				end
+				if npart~=size(self.lower,1),
+					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the row size of the lower field should be identical to the number of partitions']);
+				end
+				if self.nsteps~=size(self.upper,2),
+					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the col size of the upper field should be identical to the number of time steps']);
+				end
+				if self.nsteps~=size(self.lower,2),
+					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the col size of the lower field should be identical to the number of time steps']);
+				end
 
-					%  copy the object
-
-				case 1
-					if isa(varargin{1},'continuous_design')
-						cdv=varargin{1};
-					else
-						error('Object ''%s'' is a ''%s'' class object, not ''%s''.',...
-							inputname(1),class(varargin{1}),'continuous_design');
-					end
-
-					%  create the object from the input
-
-				otherwise
-					asizec=num2cell(array_size(varargin{1:min(nargin,6)}));
-					cdv(asizec{:})=continuous_design;
-					clear asizec
-
-					if ischar(varargin{1})
-						varargin{1}=cellstr(varargin{1});
-					end
-					for i=1:numel(cdv)
-						if (numel(varargin{1}) > 1)
-							cdv(i).descriptor=varargin{1}{i};
-						else
-							cdv(i).descriptor=[char(varargin{1}) string_dim(cdv,i,'vector')];
-						end
-					end
-
-					if (nargin >= 2)
-						for i=1:numel(cdv)
-							if (numel(varargin{2}) > 1)
-								cdv(i).initpt    =varargin{2}(i);
-							else
-								cdv(i).initpt    =varargin{2};
-							end
-						end
-						if (nargin >= 3)
-							for i=1:numel(cdv)
-								if (numel(varargin{3}) > 1)
-									cdv(i).lower     =varargin{3}(i);
-								else
-									cdv(i).lower     =varargin{3};
-								end
-							end
-							if (nargin >= 4)
-								for i=1:numel(cdv)
-									if (numel(varargin{4}) > 1)
-										cdv(i).upper     =varargin{4}(i);
-									else
-										cdv(i).upper     =varargin{4};
-									end
-								end
-								if (nargin >= 5)
-									if ischar(varargin{5})
-										varargin{5}=cellstr(varargin{5});
-									end
-									for i=1:numel(cdv)
-										if (numel(varargin{5}) > 1)
-											cdv(i).scale_type=varargin{5}{i};
-										else
-											cdv(i).scale_type=char(varargin{5});
-										end
-									end
-									if (nargin >= 6)
-										for i=1:numel(cdv)
-											if (numel(varargin{6}) > 1)
-												cdv(i).scale     =varargin{6}(i);
-											else
-												cdv(i).scale     =varargin{6};
-											end
-										end
-										if (nargin > 6)
-											warning('continuous_design:extra_arg',...
-												'Extra arguments for object of class ''%s''.',...
-												class(cdv));
-										end
-									end
-								end
-							end
-						end
-					end
 			end
 
-		end
 
-		function []=disp(cdv)
 
-			%  display the object
+		end % }}}
+		function disp(self) % {{{
 
-			disp(sprintf('\n'));
-			for i=1:numel(cdv)
-				disp(sprintf('class ''%s'' object ''%s%s'' = \n',...
-					class(cdv),inputname(1),string_dim(cdv,i)));
-				disp(sprintf('    descriptor: ''%s'''  ,cdv(i).descriptor));
-				disp(sprintf('        initpt: %g'      ,cdv(i).initpt));
-				disp(sprintf('         lower: %g'      ,cdv(i).lower));
-				disp(sprintf('         upper: %g'      ,cdv(i).upper));
-				disp(sprintf('    scale_type: ''%s'''  ,cdv(i).scale_type));
-				disp(sprintf('         scale: %g\n'    ,cdv(i).scale));
+			disp(sprintf('   continuous design variable: '));
+			fielddisplay(self,'descriptor','name tag');
+			fielddisplay(self,'initpt','initial point');
+			fielddisplay(self,'lower','lower values');
+			fielddisplay(self,'upper','upper values');
+			fielddisplay(self,'scale_type','scale type');
+			fielddisplay(self,'scale','scale');
+
+		end % }}}
+			function md=checkconsistency(self,md,solution,analyses) % {{{
+
+			md = checkfield(md,'field',self.upper,'fieldname','continuous_design.upper','NaN',1,'Inf',1,'>=',0);
+			md = checkfield(md,'field',self.lower,'fieldname','continuous_design.lower','NaN',1,'Inf',1,'>=',0);
+			if self.isscaled(),
+				if isempty(self.partition),
+					error('continuous_design is a scaled variable, but it''s missing a partition vector');
+				end
+				%better have a partition vector that has as many partitions as loer's size:
+				if size(self.lower,1)~=partition_npart(self.partition),
+					error('continuous_design error message: row size of lower and partition size should be identical');
+				end
+				if size(self.upper,1)~=partition_npart(self.partition),
+					error('continuous_design error message: row size of upper and partition size should be identical');
+				end
+				%we need as steps in lower and upper as there are time steps: 
+				if size(self.lower,2)~=self.nsteps,
+					error('continuous_design error message: col size of lower and number of time steps should be identical');
+				end
+				if size(self.upper,2)~=self.nsteps,
+					error('continuous_design error message: col size of upper and number of time steps should be identical');
+				end
+
+				md = checkfield(md,'field',self.partition,'fieldname','continuous_design.partition','NaN',1,'Inf',1,'>=',-1,'numel',[md.mesh.numberofvertices,md.mesh.numberofelements]);
+				if size(self.partition,2)>1,
+					error('continuous_design error message: partition should be a column vector');
+				end
+				partcheck=unique(self.partition);
+				partmin=min(partcheck);
+				partmax=max(partcheck);
+				if partmax<-1,
+					error('continuous_design error message: partition vector''s min value should be -1 (for no partition), or start at 0');
+				end
+				nmax=max(md.mesh.numberofelements,md.mesh.numberofvertices);
+				if partmax>nmax,
+					error('continuous_design error message: partition vector''s values cannot go over the number of vertices or elements');
+				end
 			end
-
-		end
-
-		function [desc]  =prop_desc(cdv,dstr)
+		end % }}}
+		function [desc]  =prop_desc(cdv,dstr) % {{{
 			desc=cell(1,numel(cdv));
 			for i=1:numel(cdv)
 				if ~isempty(cdv(i).descriptor)
@@ -165,51 +144,51 @@ classdef continuous_design
 				end
 			end
 			desc=allempty(desc);
-		end
-		function [initpt]=prop_initpt(cdv)
+		end % }}}
+		function [initpt]=prop_initpt(cdv) % {{{
 			initpt=zeros(1,numel(cdv));
 			for i=1:numel(cdv)
 				initpt(i)=cdv(i).initpt;
 			end
 			initpt=allequal(initpt,0.);
-		end
-		function [lower] =prop_lower(cdv)
+		end % }}}
+		function [lower] =prop_lower(cdv) % {{{
 			lower=zeros(1,numel(cdv));
 			for i=1:numel(cdv)
 				lower(i)=cdv(i).lower;
 			end
 			lower=allequal(lower,-Inf);
-		end
-		function [upper] =prop_upper(cdv)
+		end % }}}
+		function [upper] =prop_upper(cdv) % {{{
 			upper=zeros(1,numel(cdv));
 			for i=1:numel(cdv)
 				upper(i)=cdv(i).upper;
 			end
 			upper=allequal(upper, Inf);
-		end
-		function [mean]  =prop_mean(cdv)
+		end % }}}
+		function [mean]  =prop_mean(cdv) % {{{
 			mean=[];
-		end
-		function [stddev]=prop_stddev(cdv)
+		end % }}}
+		function [stddev]=prop_stddev(cdv)  % {{{
 			stddev=[];
-		end
-		function [initst]=prop_initst(cdv)
+		end % }}}
+		function [initst]=prop_initst(cdv) % {{{
 			initst=[];
-		end
-		function [stype] =prop_stype(cdv)
+		end % }}}
+		function [stype] =prop_stype(cdv) % {{{
 			stype=cell(1,numel(cdv));
 			for i=1:numel(cdv)
 				stype(i)=cellstr(cdv(i).scale_type);
 			end
 			stype=allequal(stype,'none');
-		end
-		function [scale] =prop_scale(cdv)
+		end % }}}
+		function [scale] =prop_scale(cdv) % {{{
 			scale=zeros(1,numel(cdv));
 			for i=1:numel(cdv)
 				scale(i)=cdv(i).scale;
 			end
 			scale=allequal(scale,1.);
-		end
+		end % }}}
 		function [abscissas] =prop_abscissas(hbu) % {{{
             abscissas=[]; 
         end % }}}
@@ -219,21 +198,29 @@ classdef continuous_design
         function [pairs_per_variable] =prop_pairs_per_variable(hbu) % {{{
 			pairs_per_variable=[];
         end % }}}
-		function checkconsistency(self,md,solution,analyses) % {{{
-		end % }}}
-
+		%new methods:
+			function distributed=isdistributed(self) % {{{
+				if strncmp(self.descriptor,'distributed_',12),
+					distributed=1;
+				else
+					distributed=0;
+				end
+			end % }}}
+				function scaled=isscaled(self) % {{{
+					if strncmp(self.descriptor,'scaled_',7),
+						scaled=1;
+					else
+						scaled=0;
+					end
+				end % }}}
 	end
 
 	methods (Static)
-		function []=dakota_write(fidi,dvar)
-
+		function []=dakota_write(fidi,dvar) % {{{
 			%  collect only the variables of the appropriate class
-
 			cdv=struc_class(dvar,'continuous_design');
-
 			%  write variables
-
 			vlist_write(fidi,'continuous_design','cdv',cdv);
-		end
+		end % }}}
 	end
 end
