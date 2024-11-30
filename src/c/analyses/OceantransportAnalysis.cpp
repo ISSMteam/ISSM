@@ -71,7 +71,7 @@ void OceantransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 	/*Deal with dsl multi-model ensembles: {{{*/
 	iomodel->FetchData(&dslmodel,"md.dsl.model");
 	if(dslmodel==2){
-		IssmDouble modelid; 
+		int modelid; 
 		int nummodels;
 
 		/*create double param, not int param, because Dakota will be updating it as 
