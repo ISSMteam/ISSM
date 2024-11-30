@@ -388,9 +388,13 @@ const char* EnumToStringx(int en){
 		case MasstransportIsfreesurfaceEnum : return "MasstransportIsfreesurface";
 		case MasstransportMinThicknessEnum : return "MasstransportMinThickness";
 		case MasstransportNumRequestedOutputsEnum : return "MasstransportNumRequestedOutputs";
+		case MmemasstransportNumRequestedOutputsEnum : return "MmemasstransportNumRequestedOutputs";
 		case MasstransportPenaltyFactorEnum : return "MasstransportPenaltyFactor";
 		case MasstransportRequestedOutputsEnum : return "MasstransportRequestedOutputs";
+		case MmemasstransportRequestedOutputsEnum : return "MmemasstransportRequestedOutputs";
 		case MasstransportStabilizationEnum : return "MasstransportStabilization";
+		case MmemasstransportModelidsEnum : return "MmemasstransportModelids";
+		case MmemasstransportPartitionEnum : return "MmemasstransportPartition";
 		case MaterialsBetaEnum : return "MaterialsBeta";
 		case MaterialsEarthDensityEnum : return "MaterialsEarthDensity";
 		case MaterialsEffectiveconductivityAveragingEnum : return "MaterialsEffectiveconductivityAveraging";
@@ -696,6 +700,7 @@ const char* EnumToStringx(int en){
 		case TransientIsgroundinglineEnum : return "TransientIsgroundingline";
 		case TransientIshydrologyEnum : return "TransientIshydrology";
 		case TransientIsmasstransportEnum : return "TransientIsmasstransport";
+		case TransientIsmmemasstransportEnum : return "TransientIsmmemasstransport";
 		case TransientIsoceantransportEnum : return "TransientIsoceantransport";
 		case TransientIsmovingfrontEnum : return "TransientIsmovingfront";
 		case TransientIsoceancouplingEnum : return "TransientIsoceancoupling";
@@ -950,6 +955,9 @@ const char* EnumToStringx(int en){
 		case MaskIceLevelsetEnum : return "MaskIceLevelset";
 		case MaskIceRefLevelsetEnum : return "MaskIceRefLevelset";
 		case MasstransportSpcthicknessEnum : return "MasstransportSpcthickness";
+		case MmemasstransportThicknessEnum : return "MmemasstransportThickness";
+		case MmemasstransportMaskIceLevelsetEnum : return "MmemasstransportMaskIceLevelset";
+		case MmemasstransportMaskOceanLevelsetEnum : return "MmemasstransportMaskOceanLevelset";
 		case MaterialsRheologyBEnum : return "MaterialsRheologyB";
 		case MaterialsRheologyBbarEnum : return "MaterialsRheologyBbar";
 		case MaterialsRheologyEEnum : return "MaterialsRheologyE";
@@ -1632,6 +1640,8 @@ const char* EnumToStringx(int en){
 		case MassconaxpbyEnum : return "Massconaxpby";
 		case MassfluxatgateEnum : return "Massfluxatgate";
 		case MasstransportAnalysisEnum : return "MasstransportAnalysis";
+		case MmemasstransportAnalysisEnum : return "MmemasstransportAnalysis";
+		case MmemasstransportSolutionEnum : return "MmemasstransportSolution";
 		case MasstransportSolutionEnum : return "MasstransportSolution";
 		case MatdamageiceEnum : return "Matdamageice";
 		case MatenhancediceEnum : return "Matenhancedice";
