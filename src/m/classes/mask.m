@@ -105,15 +105,15 @@ classdef mask
 		function marshall(self,prefix,md,fid) % {{{
 
 			if isa(self.ocean_levelset,'cell'),
-				WriteData(fid,prefix,'object',self,'fieldname','ocean_levelset','name','md.mask.ocean_levelset','format','MatArray','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+				WriteData(fid,prefix,'object',self,'fieldname','ocean_levelset','name','md.mask.ocean_levelset','format','MatArray','timeseries',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			else
-				WriteData(fid,prefix,'object',self,'fieldname','ocean_levelset','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+				WriteData(fid,prefix,'object',self,'fieldname','ocean_levelset','format','DoubleMat','mattype',1,'timeseries',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			end
-
+			
 			if isa(self.ice_levelset,'cell'),
-				WriteData(fid,prefix,'object',self,'fieldname','ice_levelset','name','md.mask.ice_levelset','format','MatArray','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+				WriteData(fid,prefix,'object',self,'fieldname','ice_levelset','name','md.mask.ice_levelset','format','MatArray','timeseries',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			else
-				WriteData(fid,prefix,'object',self,'fieldname','ice_levelset','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+				WriteData(fid,prefix,'object',self,'fieldname','ice_levelset','format','DoubleMat','mattype',1,'timeseries',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			end
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{

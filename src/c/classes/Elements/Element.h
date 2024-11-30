@@ -138,6 +138,7 @@ class Element: public Object{
 		int                Id();
 		void               InputCreate(IssmDouble* vector,Inputs* inputs,IoModel* iomodel,int M,int N,int vector_type,int vector_enum,int code);
 		void               InputCreateP1FromConstant(Inputs* inputs,IoModel* iomodel,IssmDouble value,int vector_enum);
+		void               InputCreateP0FromConstant(Inputs* inputs,IoModel* iomodel,IssmDouble value,int vector_enum);
 		void               ControlInputCreate(IssmDouble* doublearray,IssmDouble* independents_min,IssmDouble* independents_max,Inputs*inputs,IoModel* iomodel,int M,int N,IssmDouble scale,int input_enum,int id);
 		void					 DatasetInputAdd(int enum_type,IssmDouble* vector,Inputs* inputs,IoModel* iomodel,int M,int N,int vector_type,int vector_enum,int input_enum);
 		void               InputUpdateFromConstant(IssmDouble constant, int name);

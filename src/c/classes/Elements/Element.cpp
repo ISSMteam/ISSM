@@ -2096,6 +2096,12 @@ void       Element::InputCreateP1FromConstant(Inputs* inputs,IoModel* iomodel,Is
 
 }
 /*}}}*/
+void       Element::InputCreateP0FromConstant(Inputs* inputs,IoModel* iomodel,IssmDouble value_in,int vector_enum){/*{{{*/
+
+	this->SetElementInput(inputs,vector_enum,value_in);
+
+}
+/*}}}*/
 void       Element::ControlInputCreate(IssmDouble* vector,IssmDouble* min_vector,IssmDouble* max_vector,Inputs* inputs,IoModel* iomodel,int M,int N,IssmDouble scale,int input_enum,int id){/*{{{*/
 
 	/*Intermediaries*/
