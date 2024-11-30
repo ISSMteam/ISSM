@@ -457,10 +457,6 @@ classdef model
 			if numel(md.masstransport.spcthickness)>1,
 				md.masstransport.spcthickness=project2d(md,md.masstransport.spcthickness,md.mesh.numberoflayers);
 			end
-			if numel(md.mmemasstransport.spcthickness)>1,
-        			md.mmemasstransport.deltathickness=project2d(md,md.mmemasstransport.deltathickness,md.mesh.numberoflayers);
-			end
-
 			if numel(md.damage.spcdamage)>1,
 				md.damage.spcdamage=project2d(md,md.damage.spcdamage,md.mesh.numberoflayers);
 			end
