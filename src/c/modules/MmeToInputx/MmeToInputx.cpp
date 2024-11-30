@@ -32,8 +32,14 @@ void  MmeToInputx(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* 
 	for(Object* & object : femmodel->elements->objects){
 		Tria*   element=xDynamicCast<Tria*>(object);
 
-		if(reCast<int>(variable_partition[element->Sid()])==-1)id=0; //grab background field
-		else id=distributed_values[reCast<int>(variable_partition[element->Sid()])]-1; //grab partition field
+		if (reCast<int>(variable_partition[element->Sid()])==-1){
+			/*grab background field*/
+			id=0; 
+		}
+		else{
+			/*grab partition field*/
+			id=reCast<int>(distributed_values[reCast<int>(variable_partition[element->Sid()])])-1; 
+		}
 
 		/*recover the right field from the mme: */
 		transientinput = datasetinput->GetTransientInputByOffset(id); _assert_(transientinput);
