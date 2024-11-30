@@ -36,7 +36,7 @@ void  UpdateMmesx(FemModel* femmodel){
 	/*Deal with dsl: {{{*/
 	if (femmodel->inputs->Exist(OceantransportSpcdslEnum) && femmodel->inputs->GetInputObjectEnum(OceantransportSpcdslEnum)==DatasetInputEnum){
 		
-		IssmDouble modelid=0;
+		int modelid;
 		femmodel->parameters->FindParam(&modelid,DslModelidEnum);
 
 		/*replace dataset of forcings with only one, the modelid'th:*/
