@@ -7054,7 +7054,6 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 
 }
 /*}}}*/
-
 void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom){ /*{{{*/
 
 	/*Declarations:{{{*/
@@ -7224,15 +7223,19 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 	bool isoceanonly=false;
 	bool isice=false;
 	bool isiceonly=false;
-	bool  computeice=false;
-	bool  computebp=false;
-	bool  computehydro=false;
+	bool computeice=false;
+	bool computebp=false;
+	bool computehydro=false;
+	bool ismasstransport=false;
+	bool ismmemasstransport=false;
 
 	/*constants:*/
 	IssmDouble constant=0;
 
 	/*recover parameters:*/
-	this->parameters->FindParam(&computeice,TransientIsmasstransportEnum);
+	this->parameters->FindParam(&ismasstransport,TransientIsmasstransportEnum);
+	this->parameters->FindParam(&ismmemasstransport,TransientIsmmemasstransportEnum);
+	if(ismasstransport || ismmemasstransport)computeice=true;
 	this->parameters->FindParam(&computebp,TransientIsoceantransportEnum);
 	this->parameters->FindParam(&computehydro,TransientIshydrologyEnum);
 	this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
@@ -8031,7 +8034,7 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 			}
 		}
 		//av+=1;
-	} /*}}}*/
+	} 
 
 	//free resources
 	xDelete<IssmDouble>(horiz_projection);
@@ -8043,7 +8046,6 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	return grdfield;
 
 } /*}}}*/
-
 void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDouble* grdfield, SealevelGeometry* slgeom, int nel, bool percpu, int viscousenum, bool computefuture) { /*{{{*/
 
 	//This function aligns grdfield with the requested output format: in a size 3 vector or in a size numberofvertices vector

@@ -24,6 +24,9 @@ namespace SIM {
 		if(world_rank!=0){
 			femmodel_init= new FemModel(argc,argv,evaluation_comm);
 			femmodel_init->profiler->Start(CORE);
+
+			/*Need to know we are firing up from ISSM main, not a coupler driver like issm_slcp or issm_ocean:*/
+			femmodel_init->parameters->AddObject(new IntParam(IsSlcCouplingEnum,0));
 		}
 
 	}
