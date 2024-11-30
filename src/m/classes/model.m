@@ -291,6 +291,7 @@ classdef model
 			md.hydrology        = hydrologyshreve();
 			md.debris           = debris();
 			md.masstransport    = masstransport();
+			md.mmemasstransport = mmemasstransport();
 			md.thermal          = thermal();
 			md.steadystate      = steadystate();
 			md.transient        = transient();
