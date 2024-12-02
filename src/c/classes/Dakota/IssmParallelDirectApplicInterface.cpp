@@ -19,6 +19,8 @@ namespace SIM {
 
 		int world_rank;
 		ISSM_MPI_Comm_rank(ISSM_MPI_COMM_WORLD,&world_rank);
+		void     (*solutionprecore)(FemModel*) = NULL;
+		int        solution_type;
 
 		/*Build an femmodel if you are a slave, using the corresponding communicator:*/
 		if(world_rank!=0){
@@ -27,6 +29,11 @@ namespace SIM {
 
 			/*Need to know we are firing up from ISSM main, not a coupler driver like issm_slcp or issm_ocean:*/
 			femmodel_init->parameters->AddObject(new IntParam(IsSlcCouplingEnum,0));
+
+			/*Launch cores that build data only once, for all future solutions during the uncertainty quantification: */
+			femmodel_init->parameters->FindParam(&solution_type,SolutionTypeEnum);
+			WrapperPreCorePointerFromSolutionEnum(&solutionprecore,femmodel_init->parameters,solution_type);
+			if(solutionprecore)solutionprecore(femmodel_init);
 		}
 
 	}

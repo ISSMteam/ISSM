@@ -663,6 +663,8 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->parameters->AddObject(new DoubleVecParam(YyeEnum,yye,nel));
 	femmodel->parameters->AddObject(new DoubleVecParam(ZzeEnum,zze,nel));
 	femmodel->parameters->AddObject(new DoubleVecParam(AreaeEnum,areae,nel));
+	
+	femmodel->parameters->AddObject(new DoubleVecParam(AreaeEnum,areae,nel));
 
 	#ifdef _ISSM_DEBUG_
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,XxeEnum,xxe,nel,1,1,1));
@@ -670,6 +672,9 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,ZzeEnum,zze,nel,1,1,1));
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,AreaeEnum,areae,nel,1,1,1));
 	#endif
+	
+	geometrydone=true;
+	femmodel->parameters->SetParam(geometrydone,SealevelchangeGeometryDoneEnum);
 
 	xDelete<IssmDouble>(xxe);
 	xDelete<IssmDouble>(yye);
