@@ -376,7 +376,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		//broadcast sea level loads 
 		loads->BroadcastSealevelLoads();
 
-		if (!sal) xDelete<IssmDouble>(oldsealevelloads); break;
+		if (!sal) {xDelete<IssmDouble>(oldsealevelloads); break;}
 
 		//convergence?
 		if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
@@ -663,8 +663,6 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->parameters->AddObject(new DoubleVecParam(YyeEnum,yye,nel));
 	femmodel->parameters->AddObject(new DoubleVecParam(ZzeEnum,zze,nel));
 	femmodel->parameters->AddObject(new DoubleVecParam(AreaeEnum,areae,nel));
-	
-	femmodel->parameters->AddObject(new DoubleVecParam(AreaeEnum,areae,nel));
 
 	#ifdef _ISSM_DEBUG_
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,XxeEnum,xxe,nel,1,1,1));
@@ -880,13 +878,8 @@ IssmDouble  SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* ocean
 	IssmDouble sealevelloadsaverage;	
 	IssmDouble subsealevelloadsaverage;	
 
-	Vector<IssmDouble>* vsealevelloadsvolume=loads->vsealevelloads->Duplicate();
-	Vector<IssmDouble>* vsubsealevelloadsvolume=loads->vsubsealevelloads->Duplicate();
-
-	vsealevelloadsvolume->Sum(&sealevelloadsaverage);
-	vsubsealevelloadsvolume->Sum(&subsealevelloadsaverage);
-	delete vsealevelloadsvolume; 
-	delete vsubsealevelloadsvolume; 
+	loads->vsealevelloads->Sum(&sealevelloadsaverage);
+	loads->vsubsealevelloads->Sum(&subsealevelloadsaverage);
 
 	return (sealevelloadsaverage+subsealevelloadsaverage)/totaloceanarea;
 } /*}}}*/
