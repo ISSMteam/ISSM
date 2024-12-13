@@ -397,7 +397,7 @@ if [ $PYTHON_TEST -eq 1 ]; then
 	else
 		export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
 	fi
-	export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
+	export PYTHONSTARTUP="${ISSM_DIR}/src/m/dev/devpath.py"
 	export PYTHONUNBUFFERED=1 # We don't want Python to buffer otherwise issm.exe output is not captured
 	for (( i=1;i<=$NUMCPUS_RUN;i++ ))
 	do

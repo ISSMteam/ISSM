@@ -12,13 +12,12 @@ from plotoptions import plotoptions
 
 
 def plotmodel(md, *args):
-    '''
-    PLOTMODEL - At command prompt, type 'plotdoc()' for additional
+    """plotmodel - At command prompt, type 'plotdoc()' for additional
     documentation.
 
     TODO:
         - Fix 'plotdoc()', as it is not currently working.
-    '''
+    """
 
     #First process options
     options = plotoptions(*args)

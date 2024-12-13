@@ -5,7 +5,7 @@ function issmscpin(host, login,port,path, packages)
 %
 % NOTE: If users again have issues with file list (i.e.
 %
-%   {<FILE1>,<FILE2>,...<FILEN>}
+%   {<FILE1>,<FILE2>,...,<FILEN>}
 %
 % ), note that this a bash'ism and default shell should be checked. View file 
 % history for potential fix (i.e. some combination of -O and -T options).
