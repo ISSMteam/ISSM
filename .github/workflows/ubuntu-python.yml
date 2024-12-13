@@ -44,7 +44,7 @@ jobs:
         cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/petsc    && ./install-3.22-linux.sh
         cd $ISSM_DIR/externalpackages/semic    && ./install.sh
-      test_cases: '["range(101,216)", "range(217,400)", "range(401, 900)"]'
+      test_cases: '["101:399", "401:899"]'
       additional_options: " "
     secrets: inherit
     name: build-test-ubuntu-python

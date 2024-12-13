@@ -6,7 +6,7 @@ on:
       os:
         required: true
         type: string
-      build_type: 
+      build_type:
         required: true
         type: string
       build_command:
@@ -29,80 +29,80 @@ on:
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
-  
+
 jobs:
   build:
-    name: build-ISSM-${{ inputs.os }}-${{ inputs.build_type}}
+    name: build-ISSM-${{ inputs.os }}-${{ inputs.build_type }}
     runs-on: ${{ inputs.os }}
     outputs:
-      test_matrix: ${{ steps.creatTestMatrix.outputs.test_output }}
+      test_matrix: ${{ steps.createTestMatrix.outputs.test_output }}
     steps:
-      - name: Check out repository code
+      - name: Check out copy of repository
         uses: actions/checkout@v4
-          
-      - name: Cache externalpackages
+
+      - name: Cache external packages
         uses: actions/cache@v3
         id: cache-externalpackages
         env:
-          cache-name: cache-externalpackages-${{ inputs.build_type}}
+          cache-name: cache-externalpackages-${{ inputs.build_type }}
         with:
           path: |
             ${{ env.ISSM_DIR }}/externalpackages/
             !${{ env.ISSM_DIR }}/externalpackages/petsc/src/
           key: ${{ runner.os }}-build-${{ env.cache-name }}
-          
-      - name: Prepare External Packages
-        if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true'}}
+
+      - name: Prepare external packages
+        if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true' }}
         run: |
           ${{ inputs.ext_install_command }}
 
       - name: Get MATLAB
-        if: ${{inputs.interface == 'matlab'}}
-        id:   setup-matlab
+        if: ${{ inputs.interface == 'matlab' }}
+        id: setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
           cache: true
 
-      - name: Prepare python
+      - name: Prepare Python
         if: contains( inputs.interface, 'python')
         uses: actions/setup-python@v5
         id: setup-python
         with:
           python-version: ${{ inputs.python_version }}
 
-      - name: Install dependencies
-        if: contains( inputs.interface, 'python')
+      - name: Install Python dependencies
+        if: contains(inputs.interface, 'python')
         run: |
           sudo apt-get install libpython${{ inputs.python_version }}-dev
           sudo apt-get install python3-dev
           python -m pip install --upgrade pip
           sudo apt-get update && sudo apt-get install -y python-tk python3-tk
-          python -m pip install numpy scipy matplotlib nose
+          python -m pip install numpy==2.1.0 scipy matplotlib nose
 
-      - name: build ISSM
+      - name: Build ISSM
         run: |
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python3.11/site-packages/numpy
-          ${{ inputs.build_command}}
+          ${{ inputs.build_command }}
 
       - name: Compile ISSM
         run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar -C ${{ env.ISSM_DIR }}/ .
-        
+        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar -C ${{ env.ISSM_DIR }}/ .
+
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
         with:
           name: ISSM-${{ runner.os }}-${{ inputs.build_type }}
           path: ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
-          compression-level: 1          
-      - id: creatTestMatrix
+          compression-level: 1
+      - id: createTestMatrix
         run: |
           TESTS='${{ inputs.test_cases }}'
-          echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT  
+          echo "test_output=$(jq -cn --argjson values "$TESTS" '{test_cases: $values}')" >> $GITHUB_OUTPUT
   test:
     runs-on: ${{ inputs.os }}
     needs: build
@@ -113,26 +113,26 @@ jobs:
       - name: Download ISSM artifact
         uses: actions/download-artifact@v4
         with:
-          name: ISSM-${{ runner.os }}-${{ inputs.build_type}}
+          name: ISSM-${{ runner.os }}-${{ inputs.build_type }}
           path: ${{ env.ISSM_DIR }}
-      
-      - name: uncompress ISSM artifact
+
+      - name: Unpack ISSM artifact
         run: |
-          tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type}}.tar
+          tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
           source $ISSM_DIR/etc/environment.sh
         working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
-          
+
       - name: Get MATLAB
-        if: ${{inputs.interface == 'matlab'}}
-        id:   setup-matlab
+        if: ${{ inputs.interface == 'matlab' }}
+        id: setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
           release: R2023b
           cache: true
-          
+
       - name: Creating matlab_ci.m
-        if: ${{inputs.interface == 'matlab'}}
+        if: ${{ inputs.interface == 'matlab' }}
         run: |
           cat > ${ISSM_DIR}/matlab_ci.m << EOF
           % Go to the test directory
@@ -143,43 +143,43 @@ jobs:
           devpath;
 
           % Run tests
-          runme('exclude',[IdFromString('Dakota')],${{inputs.additional_options}} 'id',[${{matrix.test_cases}}],'quitonerror',1);
+          runme('exclude',[IdFromString('Dakota')],${{ inputs.additional_options }} 'id',[${{ matrix.test_cases }}],'quitonerror',1);
           quit(0);
           EOF
           cat ${ISSM_DIR}/matlab_ci.m
-          
+
       - name: Get run-matlab-command
-        if: ${{inputs.interface == 'matlab'}}
+        if: ${{ inputs.interface == 'matlab' }}
         run: |
           wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
           chmod +x /usr/local/bin/run-matlab-command
-          
+
       - name: Run MATLAB tests
         if: ${{inputs.interface == 'matlab'}}
         run: |
           source $ISSM_DIR/etc/environment.sh
           LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so run-matlab-command "matlab_ci"
-  
-      - name: Prepare python
-        if: contains( inputs.interface, 'python')
+
+      - name: Prepare Python
+        if: contains(inputs.interface, 'python')
         uses: actions/setup-python@v5
         id: setup-python
         with:
           python-version: ${{ inputs.python_version }}
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         if: contains( inputs.interface, 'python')
         run: |
           python -m pip install --upgrade pip
           sudo apt-get update && sudo apt-get install -y python-tk python3-tk
-          python -m pip install numpy scipy matplotlib nose netCDF4
+          python -m pip install numpy==2.1.0 scipy matplotlib nose netCDF4
 
       - name: Run Python tests
-        if: contains( inputs.interface, 'python')
+        if: contains(inputs.interface, 'python')
         run: |
           export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
-          export PYTHONSTARTUP="${PYTHONPATH}/devpath.py"
+          export PYTHONSTARTUP="${ISSM_DIR}/src/m/dev/devpath.py"
           export PYTHONUNBUFFERED=1
           source $ISSM_DIR/etc/environment.sh
           cd $ISSM_DIR/test/NightlyRun
-          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so ./runme.py --output=nightly --rank=1 --numprocs=1 --id {{matrix.test_cases}} --exclude Dakota 234 418 420
+          LD_PRELOAD=/lib/x86_64-linux-gnu/libstdc++.so.6:$ISSM_DIR/externalpackages/petsc/install/lib/libmpi.so:$ISSM_DIR/externalpackages/petsc/install/lib/libmpifort.so ./runme.py --output=nightly --rank=1 --numprocs=1 --id ${{ matrix.test_cases }} --exclude Dakota 234 418 420
