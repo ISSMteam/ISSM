@@ -20,13 +20,13 @@ def GetAreas(index, x, y, z=np.array([])):
     nods = np.shape(x)[0]
 
     # Some checks
-    if np.shape(y)[0] != nods or (z and np.shape(z)[0] != nods):
+    if (np.shape(y)[0] != nods) or (z.size > 0 and np.shape(z)[0] != nods):
         raise TypeError('GetAreas error message: x, y and z do not have the same length.')
     if np.max(index) > nods:
         raise TypeError('GetAreas error message: index should not have values above {}.'.format(nods))
-    if (not z and np.shape(index)[1] != 3):
+    if z.size == 0 and np.shape(index)[1] != 3:
         raise TypeError('GetAreas error message: index should have 3 columns for 2d meshes.')
-    if (z and np.shape(index)[1] != 6):
+    if z.size > 0 and np.shape(index)[1] != 6:
         raise TypeError('GetAreas error message: index should have 6 columns for 3d meshes.')
 
     # Initialization
@@ -39,7 +39,7 @@ def GetAreas(index, x, y, z=np.array([])):
     y3 = y[index[:, 2] - 1]
 
     # Compute the volume of each element
-    if not z:
+    if z.size == 0:
         # Compute the surface of the triangle
         areas = (0.5 * ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)))
     else:
