@@ -1,35 +1,44 @@
-function dataout = interpFromGeotiff(geotiffname,X,Y,nanValue,fillholes)
+function dataout = interpFromGeotiff(geotiffname, X, Y, nanValue, fillholes, method)
 %INTERPFROMGEOTIFF - interpolate field in geotiff onto list of points
 %
 %   Usage:
-%      dataout = interpFromGeotiff(geotiffname,X,Y,nanValue,fillholes)
+%      dataout = interpFromGeotiff(geotiffname,X,Y,nanValue,fillholes,method)
 %      dataout = interpFromGeotiff(geotiffname,X,Y);
+%
+%   Options:
+%      nanValue:  which values are considered NaN? default is 1e30
+%      fillholes: default is false
+%      method:    default is 'linear'
 
-
-if nargin < 4
-	nanValue = 10^30;
-	fillholes = false;
+%Default options
+if nargin < 6
+	method = 'linear';
 end
 if nargin < 5
 	fillholes = false;
 end
+if nargin < 4
+	nanValue = 10^30;
+end
+
 
 usemap = 0;
-if license('test','map_toolbox')==0,
-	disp('WARNING: map toolbox not installed, trying house code');
+if license('test','map_toolbox')==0
+	disp('WARNING: map toolbox not installed, trying in-house code');
 	usemap = 0;
 elseif license('checkout','map_toolbox')==0
-	disp('WARNING: map toolbox not available (checkout failed), trying house code');
+	disp('WARNING: map toolbox not available (checkout failed), trying in-house code');
 	usemap = 0;
 end
 
-if usemap,
+if usemap
 	[data,R] = geotiffread(geotiffname);
 	data=double(flipud(data));
 	xdata=R.XLimWorld(1):R.DeltaX:R.XLimWorld(2); xdata=xdata(:);
 	xdata =(xdata(1:end-1)+xdata(2:end))/2;
 	ydata=R.YLimWorld(2):R.DeltaY:R.YLimWorld(1); ydata=flipud(ydata(:));
 	ydata =(ydata(1:end-1)+ydata(2:end))/2;
+
 else
 
 	%Get image info
@@ -68,17 +77,22 @@ else
 	else
 		data=double(flipud(imread(geotiffname)));
 	end
-	if nanValue > 0
-		data(find(abs(data)>=nanValue))=NaN;
-	else 
-		data(find(data<=nanValue))=NaN;
-	end
-	if fillholes
-		disp('Filling holes');
-		data = inpaint_nans(data);
-		disp('done');
-	end
 end
 
-dataout = InterpFromGrid(xdata,ydata,data,X,Y);
+%Deal with NaNs
+if nanValue > 0
+	data(find(abs(data)>=nanValue))=NaN;
+else 
+	data(find(data<=nanValue))=NaN;
+end
+
+%Fill holes using inpaint_nans
+if fillholes
+	disp('Filling holes');
+	data = inpaint_nans(data);
+	disp('done');
+end
+
+%Interpolate
+dataout = InterpFromGrid(xdata, ydata, data, X, Y, method);
 dataout(dataout==-9999)=NaN;
