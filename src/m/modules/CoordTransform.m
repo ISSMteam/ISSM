@@ -38,6 +38,7 @@ whatproj=what('share/proj');
 if ~isempty(whatproj) && isdir(whatproj.path)
 	setenv('PROJ_LIB', whatproj.path);
 end
+setenv('DYLD_LIBRARY_PATH',[issmdir() '/externalpackages/proj/install/lib']);
 
 % Call mex module
 [xout, yout] = CoordTransform_matlab(xin,yin,projin,projout);
