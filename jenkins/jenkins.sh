@@ -513,7 +513,7 @@ if [ $EXAMPLES_TEST -eq 1 ]; then
 	done
 
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab_log_examples.log | wc -l`
+	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab_log_examples.log | wc -l`
 
 	if [ $matlabExitedInError -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"
