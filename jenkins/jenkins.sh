@@ -459,8 +459,20 @@ if [ $MATLAB_TEST -eq 1 ]; then
 		juLog -test=MATLAB-$i -name=Failure -error=FAILURE awk "/starting:${i}-/{flag=1;next}/finished:${i}-/{flag=0} flag{print}" matlab_log.log
 	done
 
+	# Check if MATLAB license needs to be updated
+	matlabLicenseWarning=`grep -E "Your license will expire" matlab_log.log | wc -l`
+
+	if [ $matlabLicenseWarning -ne 0 ]; then
+		echo "MATLAB license needs to be updated on this node"
+
+		# Clean up execution directory
+		rm -rf $ISSM_DIR/execution/*
+
+		exit 1
+	fi
+
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab_log.log | wc -l`
+	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab_log.log | wc -l`
 
 	if [ $matlabExitedInError -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"

@@ -1,4 +1,4 @@
-%Test Name:SquareNoDynUnConfinedHydroDC
+%Test Name: SquareNoDynUnConfinedHydroDC
 md=triangle(model(),'../Exp/Square.exp',100000.);
 md=setmask(md,'','');
 %reduced slab (20m long)
