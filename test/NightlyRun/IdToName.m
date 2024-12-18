@@ -1,6 +1,6 @@
 function name=IdToName(id);
 %IDTONAME- return name of test
-%  
+%
 %   if id=0, the full list of test is returned
 %
 %   Usage:
@@ -36,11 +36,11 @@ if ~exist(filename,'file')
 	error(['file ' filename ' does not exist']);
 end
 
-string='%TestName:';
+string='%Test Name: ';
 fid=fopen(filename,'r');
-A=fscanf(fid,'%s',3);
-if ~strncmp(A,string,numel(string)) | numel(A)<numel(string)+2,
-	error(['Test file ' filename ' does to start with a test name']);
+A=fgetl(fid);
+if ~strncmp(A,string,numel(string)) | strcmp(A, string),
+	error(['Test file ' filename ' does not start with a test name or it is not in format ''' string '<TEST NAME>''']);
 end
 name = A(numel(string)+1:end);
 fclose(fid);

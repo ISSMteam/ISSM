@@ -153,8 +153,20 @@ if [ ${skip_tests} -eq 0 ]; then
 	# Run tests, redirecting output to logfile and suppressing output to console
 	${MATLAB_PATH}/bin/matlab -nojvm -nosplash -nojvm -r "try, addpath ${ISSM_DIR}/bin ${ISSM_DIR}/lib ${ISSM_DIR}/share; runme(${MATLAB_NROPTIONS}); exit; catch me,fprintf('%s',getReport(me)); exit; end" &> matlab.log
 
+	# Check if MATLAB license needs to be updated
+	matlabLicenseWarning=`grep -E "Your license will expire" matlab_log.log | wc -l`
+
+	if [ $matlabLicenseWarning -ne 0 ]; then
+		echo "MATLAB license needs to be updated on this node"
+
+		# Clean up execution directory
+		rm -rf $ISSM_DIR/execution/*
+
+		exit 1
+	fi
+
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab.log`
+	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab.log`
 
 	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"

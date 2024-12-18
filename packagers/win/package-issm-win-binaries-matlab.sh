@@ -195,9 +195,22 @@ if [ ${skip_tests} -eq 0 ]; then
 
 	# Filter out Windows characters
 	cat matlab.log | tr -cd '\11\12\40-\176' > matlab.log2 && mv matlab.log2 matlab.log
+	
+
+	# Check if MATLAB license needs to be updated
+	matlabLicenseWarning=`grep -E "Your license will expire" matlab_log.log | wc -l`
+
+	if [ $matlabLicenseWarning -ne 0 ]; then
+		echo "MATLAB license needs to be updated on this node"
+
+		# Clean up execution directory
+		rm -rf $ISSM_DIR/execution/*
+
+		exit 1
+	fi
 
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab.log`
+	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab.log`
 
 	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"

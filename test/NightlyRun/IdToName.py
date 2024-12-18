@@ -10,6 +10,6 @@ def IdToName(test_id):
     infile = open('test' + str(test_id) + '.py', 'r')
     file_text = infile.readline()
 
-    string = '#Test Name:'
+    string = '#Test Name: '
     name = file_text[len(string) + 1:-1]
     return name
