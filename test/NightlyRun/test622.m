@@ -1,4 +1,4 @@
-%Test Name:79NorthHydrologyArmapw
+%Test Name: 79NorthHydrologyArmapw
 md=triangle(model(),'../Exp/79North.exp',6000.);
 md=setmask(md,'../Exp/79NorthShelf.exp','');
 md=parameterize(md,'../Par/79North.par');
