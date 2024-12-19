@@ -51,7 +51,6 @@ class SparseRow{
 		} /*}}}*/
 		void SetValues(int numvalues,int* cols,doubletype* vals, int* mods){ /*{{{*/
 
-			int count;
 			int i,j;
 
 			if(!M)_error_("unknow dimension for this sparse row!");
@@ -78,31 +77,36 @@ class SparseRow{
 
 			/*Go through cols and resolve duplicates: */
 			for(i=0;i<numvalues;i++){
-				for(j=i+1;j<numvalues;j++){
-					if (cols[j]==cols[i]){
-						if (mods[j]==ADD_VAL){
-							vals[i]+=vals[j];
+				if (cols[i] != -1){
+					for(j=i+1;j<numvalues;j++){
+						if (cols[j]==cols[i]){
+							if (mods[j]==ADD_VAL){
+								vals[i]+=vals[j];
+							}
+							else{
+								vals[i]=vals[j];
+							}
+
+							/*Ensure that this value will not be used anymore: */
+							cols[j]=-1;
 						}
-						else vals[i]=vals[j];
-						cols[j]=-1;
 					}
-					/*Ensure that this value will not be used anymore: */
 				}
 			}
 
 			/*Now go through cols once more, and retrieve only what we need: */
 			ncols=0;
-			for(i=0;i<numvalues;i++)if(cols[i]>=0)ncols++;
+			for(i=0;i<numvalues;i++) if(cols[i]>=0) ncols++;
 
 			/*Allocate and fill: */
-			indices=xNew<int>(ncols); _assert_(indices);
-			values=xNewZeroInit<doubletype>(ncols);  _assert_(values);
+			indices = xNew<int>(ncols); _assert_(indices);
+			values  = xNewZeroInit<doubletype>(ncols);  _assert_(values);
 
-			count=0;
+			int count=0;
 			for(i=0;i<numvalues;i++){
 				if(cols[i]>=0){
-					indices[count]=cols[i];
-					values[count]=vals[i];
+					indices[count] = cols[i];
+					values[count]  = vals[i];
 					count++;
 				}
 			}
@@ -116,7 +120,7 @@ class SparseRow{
 			}
 #endif
 
-			if(count!=ncols)_error_("counter problem during set values operations");
+			if(count!=ncols) _error_("counter problem during set values operations");
 		} /*}}}*/
 		doubletype Norm(NormMode mode){ /*{{{*/
 
