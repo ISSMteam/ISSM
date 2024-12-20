@@ -325,6 +325,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 				dnl Make sure mexFunction.map is not in MEXLIB to avoid problems with global variables
 				dnl MEXLINKFLAGS=$(echo ${MEXLINKFLAGS} | sed -e "s/,-expo.*mexFunction\\.map\"//g" | sed -e "s/-[[^ ]]*mexFunction\\.map//g")
 				MEXLINKFLAGS="" dnl We actually don't need MEXLINK????
+
+				dnl on new versions of macOS, MATLAB adds a -weak prefix to its library which makes libtool trip, remove
+				MEXLIB=$(echo $MEXLIB | sed -e "s/weak-//g")
 			;;
 		esac
 		AC_MSG_RESULT([done])
