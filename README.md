@@ -56,6 +56,13 @@ git push
 
 If you find yourself making a lot of commits and pull requests, consider asking us to add you to the 'ISSM Contributors' group, which will allow you to make commits directly to the repository.
 
+## Accessing Older Revisions of Code Base
+Older revisions of the code base (before we migrated from SVN to GitHub) can still be accessed at,
+```
+https://issm.ess.uci.edu/svn/issm/issm/trunk
+```
+with credentials `anon:anon`
+
 ## Troubleshooting
 ### fatal: unable to access 'https[]()://github.com/ISSMteam/ISSM.git/': The requested URL returned error: 403
 If you get this error on commit to the repository, it means you originally cloned via HTTPS. You have two options here,
