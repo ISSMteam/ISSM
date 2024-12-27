@@ -47,6 +47,9 @@ cp configs/${VER}/cmake/DakotaDev.cmake ${DAK_SRC}/cmake
 # Patch source
 patch ${DAK_SRC}/src/dakota_data_io.hpp configs/${VER}/src/dakota_data_io.hpp.patch
 
+# Disable requirement of Python 2 for TriBITS
+sed -i'' -e 's|SET(PythonInterp_FIND_VERSION|#SET(PythonInterp_FIND_VERSION|' ${DAK_SRC}/packages/teuchos/cmake/tribits/package_arch/TribitsFindPythonInterp.cmake
+
 # Configure
 cd ${DAK_BUILD}
 cmake \

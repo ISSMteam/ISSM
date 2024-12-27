@@ -43,6 +43,9 @@ patch ${DAK_SRC}/packages/surfpack/src/surfaces/nkm/NKM_KrigingModel.cpp configs
 patch ${DAK_SRC}/packages/DDACE/src/Analyzer/MainEffectsExcelOutput.cpp configs/${VER}/MainEffectsExcelOutput.patch
 patch ${DAK_SRC}/src/DakotaInterface.cpp configs/${VER}/DakotaInterface.patch
 
+# Disable requirement of Python 2 for TriBITS
+sed -i'' -e 's|SET(PythonInterp_FIND_VERSION|#SET(PythonInterp_FIND_VERSION|' ${DAK_SRC}/packages/teuchos/cmake/tribits/package_arch/TribitsFindPythonInterp.cmake
+
 #Configure dakota
 cd $DAK_BUILD
 

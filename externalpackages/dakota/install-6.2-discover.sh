@@ -43,6 +43,8 @@ patch ${DAK_SRC}/src/dakota_data_io.hpp configs/${VER}/src/dakota_data_io.hpp.pa
 patch ${DAK_SRC}/cmake/BuildDakotaCustom.cmake configs/${VER}/BuildDakotaCustom.cmake.discover.patch
 patch ${DAK_SRC}/CMakeLists.txt configs/${VER}/CMakeLists.txt.discover20.patch
 
+# Disable requirement of Python 2 for TriBITS
+sed -i'' -e 's|SET(PythonInterp_FIND_VERSION|#SET(PythonInterp_FIND_VERSION|' ${DAK_SRC}/packages/teuchos/cmake/tribits/package_arch/TribitsFindPythonInterp.cmake
 
 #Configure dakota
 cd $DAK_BUILD
