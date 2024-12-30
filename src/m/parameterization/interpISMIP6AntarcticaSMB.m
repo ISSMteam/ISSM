@@ -22,12 +22,14 @@ function smb = interpISMIP6AntarcticaSMB(md,model_name)
 %            time series from 1995-2100
 %
 %   Examples:
-%      md.smb = interpISMIP6AntarcticaSMB(md,'miroc-esm-chem_rcp8.5');
+%      Omd.smb = interpISMIP6AntarcticaSMB(md,'miroc-esm-chem_rcp8.5');
 
 % Find appropriate directory
 switch oshostname(),
-	case {'totten'}
-		path='/totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/';
+        case {'totten'}
+                 path='/totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/';
+        case {'amundsen.thayer.dartmouth.edu'}
+                 path='/local/ModelData/ISMIP6Data/Forcings2100/Atmosphere/';
 	otherwise
 		error('machine not supported yet, please provide your own path');
 end
