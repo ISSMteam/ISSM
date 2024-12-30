@@ -159,9 +159,9 @@ classdef SMBsemic
 			self.rcrit = 0.85; % from Krapp et al. (2017)
 		
 			self.desfac		      = -log(2.0)/1000;
-			self.desfacElevation = 2000;
+			self.desfacElevation  = 2000;
 			self.rlaps		      = 7.4;
-			self.rdl			      = 0.29;
+			self.rdl			  = 29; % from  Marty et al. (2002)
 
 			self.ismethod        = 0;
 			self.requested_outputs={'default'};
@@ -235,7 +235,7 @@ classdef SMBsemic
 			fielddisplay(self,'dailytemperature','daily surface air temperature [K]');
 			fielddisplay(self,'rlaps','present day lapse rate (default is 7.4 [degree/km]; Erokhina et al. 2017)');
 			fielddisplay(self,'desfac','desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)');
-			fielddisplay(self,'rdl','longwave downward radiation decrease (default is 0.29 [W/m^2/km]; Marty et al. 2002)');
+			fielddisplay(self,'rdl','longwave downward radiation decrease (default is 29 [W/m^2/km]; Marty et al. 2002)');
 			fielddisplay(self,'s0gcm','GCM reference elevation; (default is 0) [m]');
 
 			fielddisplay(self,'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)');
