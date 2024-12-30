@@ -92,7 +92,7 @@ class SMBsemic(object):
         s += '{}\n'.format(fielddisplay(self, 'dailyairhumidity', 'daily air specific humidity [kg/kg]'))
         s += '{}\n'.format(fielddisplay(self, 'rlaps', 'present day lapse rate (default is 7.4 [degree/km]; Erokhina et al. 2017)'))
         s += '{}\n'.format(fielddisplay(self, 'desfac', 'desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)'))
-        s += '{}\n'.format(fielddisplay(self, 'rdl', 'longwave downward radiation decrease (default is 0.29 [W/m^2/km]; Marty et al. 2002)'))
+        s += '{}\n'.format(fielddisplay(self, 'rdl', 'longwave downward radiation decrease (default is 29 [W/m^2/km]; Marty et al. 2002)'))
         s += '{}\n'.format(fielddisplay(self, 's0gcm', 'GCM reference elevation; (default is 0) [m]'))
         s += '{}\n'.format(fielddisplay(self, 'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)'))
         if self.ismethod: # transient mode
@@ -228,7 +228,7 @@ class SMBsemic(object):
         self.desfac = -log(2.0) / 1000
         self.desfacElevation = 2000
         self.rlaps = 7.4
-        self.rdl = 0.29
+        self.rdl   = 29 # from Marty et al. (2002)
 
         self.ismethod = 0
         self.requested_outputs = ['default']
