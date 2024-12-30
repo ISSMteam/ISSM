@@ -29,7 +29,9 @@ function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
 % Find appropriate directory
 switch oshostname(),
 	case {'totten'}
-		path='/totten_1/ModelData/ISMIP6/Projections/AIS/Ocean_Forcing/';
+	        path='/totten_1/ModelData/ISMIP6/Projections/AIS/Ocean_Forcing/';
+        case {'amundsen.thayer.dartmouth.edu'}
+                path='/local/ModelData/ISMIP6Data/Forcings2100/Atmosphere/';
 	otherwise
 		error('machine not supported yet, please provide your own path');
 end
