@@ -62,7 +62,7 @@ cd ${PETSC_DIR}
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--PETSC_ARCH="${PETSC_ARCH}" \
-	--CFLAGS="-fPIC -Wl,-static -Wno-error=implicit-function-declaration" \
+	--CFLAGS="-fPIC -Wl,-static -Wno-error=implicit-function-declaration -Wno-error=implicit-int" \
 	--CXXFLAGS="-fPIC -Wl,-static" \
 	--FFLAGS="-fPIC -Wl,-static -fallow-argument-mismatch -fallow-invalid-boz" \
 	--with-shared-libraries=0 \
