@@ -4851,9 +4851,9 @@ void       Element::SmbSemicTransient(){/*{{{*/
 		}
 
 		/* downward longwave radiation correction (Marty et al. 2002) */
-        /* Unit of "md.smb.rdl" is defined in W m-2 km-1 */
+      /* Unit of "md.smb.rdl" is defined in W m-2 km-1 */
 		st[iv]=(s[iv]-s0gcm[iv])/1000.; /* unit in km */
-		dailydlradiation[iv]=dailydlradiation[iv]+rdl*st[iv];
+		dailydlradiation[iv]=dailydlradiation[iv]-rdl*st[iv];
 	}
 	if(isverbose && this->Sid()==0){
 		_printf0_("smb core: assign tsurf_in        :" << tsurf_in[0] << "\n");
