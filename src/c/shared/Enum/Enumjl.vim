@@ -186,6 +186,7 @@ syn keyword juliaConstC EarthIdEnum
 syn keyword juliaConstC ElasticEnum
 syn keyword juliaConstC EplZigZagCounterEnum
 syn keyword juliaConstC EsaHElasticEnum
+syn keyword juliaConstC EsaGElasticEnum
 syn keyword juliaConstC EsaHemisphereEnum
 syn keyword juliaConstC EsaRequestedOutputsEnum
 syn keyword juliaConstC EsaUElasticEnum
@@ -619,6 +620,8 @@ syn keyword juliaConstC SmbSemicTauFEnum
 syn keyword juliaConstC SmbSemicTminEnum
 syn keyword juliaConstC SmbSemicTmidEnum
 syn keyword juliaConstC SmbSemicTmaxEnum
+syn keyword juliaConstC SmbSemicIsDesertificationEnum
+syn keyword juliaConstC SmbSemicIsLWDcorrectEnum
 syn keyword juliaConstC SmbStepsPerStepEnum
 syn keyword juliaConstC SmbSwIdxEnum
 syn keyword juliaConstC SmbSWgradEnum
@@ -849,6 +852,7 @@ syn keyword juliaConstC EsaStrainrateyyEnum
 syn keyword juliaConstC EsaUmotionEnum
 syn keyword juliaConstC EsaXmotionEnum
 syn keyword juliaConstC EsaYmotionEnum
+syn keyword juliaConstC EsaGravitationalAccelerationEnum
 syn keyword juliaConstC EtaDiffEnum
 syn keyword juliaConstC FlowequationBorderFSEnum
 syn keyword juliaConstC FrictionAlpha2Enum
@@ -1603,12 +1607,15 @@ syn keyword juliaConstC LliboutryDuvalEnum
 syn keyword juliaConstC LoadsEnum
 syn keyword juliaConstC LoveAnalysisEnum
 syn keyword juliaConstC LoveHfEnum
+syn keyword juliaConstC LoveHfiEnum
 syn keyword juliaConstC LoveHtEnum
 syn keyword juliaConstC LoveKernelsImagEnum
 syn keyword juliaConstC LoveKernelsRealEnum
 syn keyword juliaConstC LoveKfEnum
+syn keyword juliaConstC LoveKfiEnum
 syn keyword juliaConstC LoveKtEnum
 syn keyword juliaConstC LoveLfEnum
+syn keyword juliaConstC LoveLfiEnum
 syn keyword juliaConstC LoveLtEnum
 syn keyword juliaConstC LoveTidalHtEnum
 syn keyword juliaConstC LoveTidalKtEnum
