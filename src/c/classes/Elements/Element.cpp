@@ -4767,8 +4767,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	GetInputListOnVertices(&s0gcm[0],SmbS0gcmEnum);
 
 	/* Get specific parameter options */
-	isdesertification = this->FindParam(SmbSemicIsDesertificationEnum);
-	isLWDcorrect      = this->FindParam(SmbSemicIsLWDcorrectEnum);
+	this->FindParam(&isdesertification, SmbSemicIsDesertificationEnum);
+	this->FindParam(&isLWDcorrect, SmbSemicIsLWDcorrectEnum);
 
 	if(isverbose && this->Sid()==0){
 		_printf0_("smb core: allocate inputs.\n");
