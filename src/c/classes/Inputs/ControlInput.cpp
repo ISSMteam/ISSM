@@ -64,11 +64,11 @@ ControlInput::ControlInput(int enum_in,int nbe, int nbv,int id,IssmDouble* times
 }
 /*}}}*/
 ControlInput::~ControlInput(){/*{{{*/
-	if(values)      delete values;
-	if(savedvalues) delete savedvalues;
-	if(minvalues)   delete minvalues;
-	if(maxvalues)   delete maxvalues;
-	if(gradient)    delete gradient;
+	delete values;
+	delete savedvalues;
+	delete minvalues;
+	delete maxvalues;
+	delete gradient;
 }
 /*}}}*/
 
