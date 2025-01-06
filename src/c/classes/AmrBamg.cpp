@@ -73,10 +73,10 @@ AmrBamg::AmrBamg(){/*{{{*/
 /*}}}*/
 AmrBamg::~AmrBamg(){/*{{{*/
 
-	if(this->geometry) delete this->geometry;
-	if(this->fathermesh) delete this->fathermesh;
-	if(this->previousmesh) delete this->previousmesh;
-	if(this->options) delete this->options;
+	delete this->geometry;
+	delete this->fathermesh;
+	delete this->previousmesh;
+	delete this->options;
 	if(this->x) xDelete<IssmDouble>(this->x);
 	if(this->y) xDelete<IssmDouble>(this->y);
 	if(this->elementslist) xDelete<int>(this->elementslist);
