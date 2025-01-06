@@ -1,0 +1,94 @@
+%required Data
+accpath   = ['/home/ModelData/Greenland/RACMO2Accumulation/SMBGreenland/smb_1961-1990.mat'];
+velpath   = ['/home/ModelData/Greenland/VelMouginot/RignotGreenland2012Vel.mat'];
+
+%WARNING: we do have a levelset here, so we must set it to one even for stressbalances...
+md.transient.ismovingfront=1;
+
+disp('   Interpolating mask');
+mask = int8(interpBedmachineGreenland(md.mesh.x,md.mesh.y,'mask'));
+md.mask.ice_levelset= -1*ones(md.mesh.numberofvertices,1);
+pos = find(mask<1);
+md.mask.ice_levelset(pos)=1;
+
+disp('      reading MC bed (assumes no floating ice)');
+md.geometry.bed  = interpBedmachineGreenland(md.mesh.x,md.mesh.y,'bed');
+md.geometry.base = md.geometry.bed;
+
+disp('      reading Howat surface');
+md.geometry.surface=interpBedmachineGreenland(md.mesh.x,md.mesh.y,'surface');
+pos = find(md.mask.ice_levelset>0);
+md.geometry.surface(pos) = md.geometry.base(pos)+10; %Minimum thickness
+
+md.geometry.thickness = md.geometry.surface - md.geometry.bed;
+pos=find(md.geometry.thickness<=10);
+md.geometry.surface(pos) = md.geometry.base(pos)+10; %Minimum thickness
+md.geometry.thickness = md.geometry.surface - md.geometry.bed;
+
+md.masstransport.min_thickness = 10;
+
+disp('   Adjusting ice mask');
+%Tricky part here: we want to offset the mask by one element so that we don't end up with a cliff at the transition
+pos = find(max(md.mask.ice_levelset(md.mesh.elements),[],2)>0);
+md.mask.ice_levelset(md.mesh.elements(pos,:)) = 1;
+% For the region where surface is NaN, set thickness to small value (consistency requires >0)
+pos=find((md.mask.ice_levelset<0).*(md.geometry.surface<0));
+md.mask.ice_levelset(pos)=1;
+pos=find((md.mask.ice_levelset<0).*(isnan(md.geometry.surface)));
+md.mask.ice_levelset(pos)=1;
+
+disp('      -- reconstruct thickness');
+md.geometry.thickness=md.geometry.surface-md.geometry.base;
+
+disp('      reading velocities ');
+[md.inversion.vx_obs md.inversion.vy_obs]=interpJoughinCompositeGreenland(md.mesh.x,md.mesh.y);
+pos=find(isnan(md.inversion.vx_obs) | isnan(md.inversion.vy_obs));
+md.inversion.vx_obs(pos)=0;
+md.inversion.vy_obs(pos)=0;
+md.inversion.vel_obs  = sqrt(md.inversion.vx_obs.^2+md.inversion.vy_obs.^2);
+md.initialization.vx  = md.inversion.vx_obs;
+md.initialization.vy  = md.inversion.vy_obs;
+md.initialization.vz  = zeros(md.mesh.numberofvertices,1);
+md.initialization.vel = md.inversion.vel_obs;
+
+%drag md.drag or stress
+md.friction.coefficient = 20*ones(md.mesh.numberofvertices,1); %q = 1.
+md.friction.p           = ones(md.mesh.numberofelements,1);
+md.friction.q           = ones(md.mesh.numberofelements,1);
+
+%No friction on PURELY ocean element
+pos_e = find(min(md.mask.ice_levelset(md.mesh.elements),[],2)<0);
+flags=ones(md.mesh.numberofvertices,1);
+flags(md.mesh.elements(pos_e,:))=0;
+md.friction.coefficient(find(flags))=0;
+
+%flow law
+disp('   Creating flow law parameters (assume ice is at 0°C for now)');
+md.materials.rheology_n = 3*ones(md.mesh.numberofelements,1);
+md.materials.rheology_B = cuffey(273.15 - 10)*ones(md.mesh.numberofvertices,1);
+
+md.basalforcings.groundedice_melting_rate = zeros(md.mesh.numberofvertices,1);
+md.basalforcings.floatingice_melting_rate = zeros(md.mesh.numberofvertices,1);
+
+disp('   Geothermal flux from Shapiro et al.');
+md.basalforcings.geothermalflux=interpSeaRISE(md.mesh.x,md.mesh.y,'bheatflx');
+
+disp('   Setting up thermal model');
+md.initialization.temperature=min(0,interpSeaRISE(md.mesh.x,md.mesh.y,'surftemp'))+273.15;
+md.initialization.waterfraction=zeros(md.mesh.numberofvertices,1);
+md.initialization.watercolumn=zeros(md.mesh.numberofvertices,1);
+md.thermal.spctemperature=md.initialization.temperature;
+md.thermal.isenthalpy=1;
+md.thermal.isdynamicbasalspc=1;
+
+%Deal with boundary conditions:
+disp('   Set Boundary conditions');
+md.stressbalance.spcvx=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvy=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.spcvz=NaN*ones(md.mesh.numberofvertices,1);
+md.stressbalance.referential=NaN*ones(md.mesh.numberofvertices,6);
+md.stressbalance.loadingforce=0*ones(md.mesh.numberofvertices,3);
+pos=find((md.mask.ice_levelset<0).*(md.mesh.vertexonboundary));
+md.stressbalance.spcvx(pos)=md.initialization.vx(pos);
+md.stressbalance.spcvy(pos)=md.initialization.vy(pos);
+md.stressbalance.spcvz(pos)=0;
