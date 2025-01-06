@@ -31,7 +31,7 @@ switch oshostname(),
 	case {'totten'}
 	        path='/totten_1/ModelData/ISMIP6/Projections/AIS/Ocean_Forcing/';
         case {'amundsen.thayer.dartmouth.edu'}
-                path='/local/ModelData/ISMIP6Data/Forcings2100/Atmosphere/';
+                path='/local/ModelData/ISMIP6Data/Forcings2100/Ocean/';
 	otherwise
 		error('machine not supported yet, please provide your own path');
 end
