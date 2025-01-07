@@ -244,6 +244,7 @@ enum definitions{
 	GrdModelEnum,
 	GroundinglineFrictionInterpolationEnum,
 	GroundinglineIntrusionDistanceEnum,
+	GroundinglineIntrusionDistanceMapEnum,
 	GroundinglineMeltInterpolationEnum,
 	GroundinglineMigrationEnum,
 	GroundinglineNumRequestedOutputsEnum,

@@ -9,6 +9,7 @@ classdef groundingline
 		friction_interpolation = '';
 		melt_interpolation     = '';
 		intrusion_distance     = 0;
+		intrusion_distance_map = NaN;
 		requested_outputs      = {};
 	end
 	methods
@@ -37,6 +38,7 @@ classdef groundingline
 			md = checkfield(md,'fieldname','groundingline.friction_interpolation','values',{'NoFrictionOnPartiallyFloating' 'SubelementFriction1' 'SubelementFriction2'});
 			md = checkfield(md,'fieldname','groundingline.melt_interpolation','values',{'NoMeltOnPartiallyFloating' 'SubelementMelt1' 'SubelementMelt2' 'IntrusionMelt' 'FullMeltOnPartiallyFloating'});
 			md = checkfield(md,'fieldname','groundingline.intrusion_distance','>=',0); 
+			md = checkfield(md,'fieldname','groundingline.intrusion_distance_map','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1],'>=',0, '<=',6);
 			md = checkfield(md,'fieldname','groundingline.requested_outputs','stringrow',1);
 
 			if ~strcmp(self.migration,'None') & strcmp(solution,'TransientSolution') & md.transient.isgroundingline==1,
@@ -65,6 +67,7 @@ classdef groundingline
 			fielddisplay(self,'friction_interpolation','type of friction interpolation for partially floating elements: ''NoFrictionOnPartiallyFloating'',''SubelementFriction1'', or ''SubelementFriction2''');
 			fielddisplay(self,'melt_interpolation','type of melt interpolation for partially floating elements: ''NoMeltOnPartiallyFloating'',''SubelementMelt1'',''SubelementMelt2'',''IntrusionMelt'' or ''FullMeltOnPartiallyFloating''');
 			fielddisplay(self,'intrusion_distance','distance of seawater intrusion from grounding line [m]');
+			fielddisplay(self,'intrusion_distance_map','2d map of distance of seawater intrusion from grounding line [m]');
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 
 		end % }}}
@@ -73,6 +76,7 @@ classdef groundingline
 			WriteData(fid,prefix,'data',self.friction_interpolation,'name','md.groundingline.friction_interpolation','format','String');
 			WriteData(fid,prefix,'data',self.melt_interpolation,'name','md.groundingline.melt_interpolation','format','String');
 			WriteData(fid,prefix,'object',self,'fieldname','intrusion_distance','format','Double');
+			WriteData(fid,prefix,'object',self,'fieldname','intrusion_distance_map','format','DoubleMat','mattype',1);
 			
 			%process requested outputs
          outputs = self.requested_outputs;
@@ -89,6 +93,7 @@ classdef groundingline
 			writejsstring(fid,[modelname '.groundingline.friction_interpolation'],self.friction_interpolation);
 			writejsstring(fid,[modelname '.groundingline.melt_interpolation'],self.melt_interpolation);
 			writejsdouble(fid,[modelname '.groundingline.intrusion_distance'],self.intrusion_distance);
+			writejs1Darray(fid,[modelname '.groundingline.intrusion_distance_map'],self.intrusion_distance_map);
 			writejscellstring(fid,[modelname '.groundingline.requested_outputs'],self.requested_outputs);
 
 		end % }}}
