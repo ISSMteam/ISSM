@@ -616,6 +616,8 @@
 	SmbSemicTminEnum
 	SmbSemicTmidEnum
 	SmbSemicTmaxEnum
+	SmbSemicIsDesertificationEnum
+	SmbSemicIsLWDcorrectEnum
 	SmbStepsPerStepEnum
 	SmbSwIdxEnum
 	SmbSWgradEnum
@@ -1601,12 +1603,15 @@
 	LoadsEnum
 	LoveAnalysisEnum
 	LoveHfEnum
+	LoveHfiEnum
 	LoveHtEnum
 	LoveKernelsImagEnum
 	LoveKernelsRealEnum
 	LoveKfEnum
+	LoveKfiEnum
 	LoveKtEnum
 	LoveLfEnum
+	LoveLfiEnum
 	LoveLtEnum
 	LoveTidalHtEnum
 	LoveTidalKtEnum
@@ -2437,6 +2442,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbSemicTminEnum) return "SmbSemicTmin" end
 	if(enum==SmbSemicTmidEnum) return "SmbSemicTmid" end
 	if(enum==SmbSemicTmaxEnum) return "SmbSemicTmax" end
+	if(enum==SmbSemicIsDesertificationEnum) return "SmbSemicIsDesertification" end
+	if(enum==SmbSemicIsLWDcorrectEnum) return "SmbSemicIsLWDcorrect" end
 	if(enum==SmbStepsPerStepEnum) return "SmbStepsPerStep" end
 	if(enum==SmbSwIdxEnum) return "SmbSwIdx" end
 	if(enum==SmbSWgradEnum) return "SmbSWgrad" end
@@ -3422,12 +3429,15 @@ function EnumToString(enum::IssmEnum)
 	if(enum==LoadsEnum) return "Loads" end
 	if(enum==LoveAnalysisEnum) return "LoveAnalysis" end
 	if(enum==LoveHfEnum) return "LoveHf" end
+	if(enum==LoveHfiEnum) return "LoveHfi" end
 	if(enum==LoveHtEnum) return "LoveHt" end
 	if(enum==LoveKernelsImagEnum) return "LoveKernelsImag" end
 	if(enum==LoveKernelsRealEnum) return "LoveKernelsReal" end
 	if(enum==LoveKfEnum) return "LoveKf" end
+	if(enum==LoveKfiEnum) return "LoveKfi" end
 	if(enum==LoveKtEnum) return "LoveKt" end
 	if(enum==LoveLfEnum) return "LoveLf" end
+	if(enum==LoveLfiEnum) return "LoveLfi" end
 	if(enum==LoveLtEnum) return "LoveLt" end
 	if(enum==LoveTidalHtEnum) return "LoveTidalHt" end
 	if(enum==LoveTidalKtEnum) return "LoveTidalKt" end
@@ -4258,6 +4268,8 @@ function StringToEnum(name::String)
 	if(name=="SmbSemicTmin") return SmbSemicTminEnum  end
 	if(name=="SmbSemicTmid") return SmbSemicTmidEnum  end
 	if(name=="SmbSemicTmax") return SmbSemicTmaxEnum  end
+	if(name=="SmbSemicIsDesertification") return SmbSemicIsDesertificationEnum  end
+	if(name=="SmbSemicIsLWDcorrect") return SmbSemicIsLWDcorrectEnum  end
 	if(name=="SmbStepsPerStep") return SmbStepsPerStepEnum  end
 	if(name=="SmbSwIdx") return SmbSwIdxEnum  end
 	if(name=="SmbSWgrad") return SmbSWgradEnum  end
@@ -5243,12 +5255,15 @@ function StringToEnum(name::String)
 	if(name=="Loads") return LoadsEnum  end
 	if(name=="LoveAnalysis") return LoveAnalysisEnum  end
 	if(name=="LoveHf") return LoveHfEnum  end
+	if(name=="LoveHfi") return LoveHfiEnum  end
 	if(name=="LoveHt") return LoveHtEnum  end
 	if(name=="LoveKernelsImag") return LoveKernelsImagEnum  end
 	if(name=="LoveKernelsReal") return LoveKernelsRealEnum  end
 	if(name=="LoveKf") return LoveKfEnum  end
+	if(name=="LoveKfi") return LoveKfiEnum  end
 	if(name=="LoveKt") return LoveKtEnum  end
 	if(name=="LoveLf") return LoveLfEnum  end
+	if(name=="LoveLfi") return LoveLfiEnum  end
 	if(name=="LoveLt") return LoveLtEnum  end
 	if(name=="LoveTidalHt") return LoveTidalHtEnum  end
 	if(name=="LoveTidalKt") return LoveTidalKtEnum  end

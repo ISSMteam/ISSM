@@ -621,6 +621,8 @@ enum definitions{
 	SmbSemicTminEnum,
 	SmbSemicTmidEnum,
 	SmbSemicTmaxEnum,
+	SmbSemicIsDesertificationEnum,
+	SmbSemicIsLWDcorrectEnum,
 	SmbStepsPerStepEnum,
 	SmbSwIdxEnum,
 	SmbSWgradEnum,

@@ -629,6 +629,8 @@ const char* EnumToStringx(int en){
 		case SmbSemicTminEnum : return "SmbSemicTmin";
 		case SmbSemicTmidEnum : return "SmbSemicTmid";
 		case SmbSemicTmaxEnum : return "SmbSemicTmax";
+		case SmbSemicIsDesertificationEnum : return "SmbSemicIsDesertification";
+		case SmbSemicIsLWDcorrectEnum : return "SmbSemicIsLWDcorrect";
 		case SmbStepsPerStepEnum : return "SmbStepsPerStep";
 		case SmbSwIdxEnum : return "SmbSwIdx";
 		case SmbSWgradEnum : return "SmbSWgrad";

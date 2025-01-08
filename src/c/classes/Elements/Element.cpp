@@ -4726,6 +4726,8 @@ void       Element::SmbSemicTransient(){/*{{{*/
 
 	IssmDouble tstart, time,yts,time_yr,dt;
 
+	int isdesertification, isLWDcorrect;
+
 	/* Get time: */
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&dt,TimesteppingTimeStepEnum);
@@ -4763,6 +4765,10 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	/* Recover info at the vertices: */
 	GetInputListOnVertices(&s[0],SurfaceEnum);
 	GetInputListOnVertices(&s0gcm[0],SmbS0gcmEnum);
+
+	/* Get specific parameter options */
+	this->FindParam(&isdesertification, SmbSemicIsDesertificationEnum);
+	this->FindParam(&isLWDcorrect, SmbSemicIsLWDcorrectEnum);
 
 	if(isverbose && this->Sid()==0){
 		_printf0_("smb core: allocate inputs.\n");
@@ -4842,18 +4848,22 @@ void       Element::SmbSemicTransient(){/*{{{*/
 		dailytemperature[iv]=dailytemperature[iv]-rlaps *st[iv];
 
 		/* Precipitation correction (Vizcaino et al. 2010) */
-		if (s0gcm[iv] < desfacElev) {
-			dailysnowfall[iv] = dailysnowfall[iv]*exp(desfac*(max(s[iv],desfacElev)-desfacElev));
-			dailyrainfall[iv] = dailyrainfall[iv]*exp(desfac*(max(s[iv],desfacElev)-desfacElev));
-		}else{
-			dailysnowfall[iv] = dailysnowfall[iv]*exp(desfac*(max(s[iv],desfacElev)-s0gcm[iv]));
-			dailyrainfall[iv] = dailyrainfall[iv]*exp(desfac*(max(s[iv],desfacElev)-s0gcm[iv]));
+		if (isdesertification == 1){
+			if (s0gcm[iv] < desfacElev) {
+				dailysnowfall[iv] = dailysnowfall[iv]*exp(desfac*(max(s[iv],desfacElev)-desfacElev));
+				dailyrainfall[iv] = dailyrainfall[iv]*exp(desfac*(max(s[iv],desfacElev)-desfacElev));
+			}else{
+				dailysnowfall[iv] = dailysnowfall[iv]*exp(desfac*(max(s[iv],desfacElev)-s0gcm[iv]));
+				dailyrainfall[iv] = dailyrainfall[iv]*exp(desfac*(max(s[iv],desfacElev)-s0gcm[iv]));
+			}
 		}
 
 		/* downward longwave radiation correction (Marty et al. 2002) */
-        /* Unit of "md.smb.rdl" is defined in W m-2 km-1 */
-		st[iv]=(s[iv]-s0gcm[iv])/1000.; /* unit in km */
-		dailydlradiation[iv]=dailydlradiation[iv]+rdl*st[iv];
+      /* Unit of "md.smb.rdl" is defined in W m-2 km-1 */
+		if (isLWDcorrect == 1){
+			st[iv]=(s[iv]-s0gcm[iv])/1000.; /* unit in km */
+			dailydlradiation[iv]=dailydlradiation[iv]-rdl*st[iv];
+		}
 	}
 	if(isverbose && this->Sid()==0){
 		_printf0_("smb core: assign tsurf_in        :" << tsurf_in[0] << "\n");
