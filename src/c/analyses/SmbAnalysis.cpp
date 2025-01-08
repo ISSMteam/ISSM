@@ -483,6 +483,10 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				//albedo parameter - alex
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmid",SmbSemicTmidEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.afac",SmbSemicAfacEnum));
+
+				/* Set specific options*/
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.isdesertification",SmbSemicIsDesertificationEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.isLWDcorrect",SmbSemicIsLWDcorrectEnum));
 			}
 			/*Nothing to add to parameters*/
 			break;
