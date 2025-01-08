@@ -30,16 +30,11 @@ KML_Polygon::KML_Polygon(){/*{{{*/
 /*}}}*/
 KML_Polygon::~KML_Polygon(){/*{{{*/
 
-	if (inner) {
-		delete inner;
-		inner     =NULL;
-	}
+	delete inner;
+	inner = NULL;
 
-	if (outer) {
-		delete outer;
-		outer     =NULL;
-	}
-
+	delete outer;
+	outer = NULL;
 }
 /*}}}*/
 
