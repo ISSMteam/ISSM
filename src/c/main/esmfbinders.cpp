@@ -150,6 +150,32 @@ extern "C" {
 		delete femmodel; femmodel=NULL;
 	} /*}}}*/
 
+    void GetNodesISSM(int* nodeIds, IssmDouble* nodeCoords){ 
+        /*obtain nodes of mesh for creating ESMF version in Fortran interface*/
+        /*nodeIds are the global Id's of the nodes and nodeCoords are the    */
+        /*(x,y) coordinates, as described in the ESMF reference document     */
+        int sdim = 2; // spatial dimension (2D map-plane)
+        for (int i=0;i<femmodel->vertices->Size();i++){
+            Vertex* vertex = xDynamicCast<Vertex*>(femmodel->vertices->GetObjectByOffset(i));
+            *(nodeIds+i)     = vertex->Sid()+1;
+            *(nodeCoords+sdim*i+0) = vertex->x;
+            *(nodeCoords+sdim*i+1) = vertex->y;
+        }
+    }
+
+    void GetElementsISSM(int* elementIds, int* elementConn){
+        /*obtain elements of mesh for creating ESMF version in Fortran interface*/
+        /*Element connectivity (elementConn) contains the indices of the nodes  */
+        /*that form the element as described in the ESMF reference document     */ 
+        for(int i=0;i<femmodel->elements->Size();i++){
+            Element* element=xDynamicCast<Element*>(femmodel->elements->GetObjectByOffset(i));
+            *(elementIds + i)    = element->Sid()+1;
+            *(elementConn + i*3+0) = element->vertices[0]->Lid()+1;
+            *(elementConn + i*3+1) = element->vertices[1]->Lid()+1;
+            *(elementConn + i*3+2) = element->vertices[2]->Lid()+1;
+        }
+    }
+
 	/*TODO: we need 2 initialize routines, the second one will be empty for now
 	 * In: ESMF config, ESMF Field bundle
 	 */
