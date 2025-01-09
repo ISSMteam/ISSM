@@ -733,6 +733,10 @@ modules_sources += \
 	./modules/Krigingx/pKrigingx.cpp
 endif
 #}}}
+
+# figure out where to put this:
+issm_sources += ./main/esmfbinders.cpp
+
 # Library flags and sources {{{
 ALL_CXXFLAGS = $(CXXFLAGS)
 
