@@ -365,7 +365,7 @@ def CreateVar(NCData, var, field, Group, DimDict, *SupDim):  # {{{
             ncvar = None
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), str, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), str, dimensions=dimensions, zlib=False)
     # treating list as string table
     elif val_type == list:
         # try to get the type from the first element
@@ -375,24 +375,24 @@ def CreateVar(NCData, var, field, Group, DimDict, *SupDim):  # {{{
             nctype = str  # most probably an empty list take str for that
 
         if val_shape in [(), (0,), 0]:
-            ncvar = Group.createVariable(str(field), nctype, zlib=True)
+            ncvar = Group.createVariable(str(field), nctype, zlib=False)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), nctype, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), nctype, dimensions=dimensions, zlib=False)
     # treating  dict as string tables
     elif val_type in [collections.OrderedDict, dict]:
         if val_shape in [(), (0,), 0]:
-            ncvar = Group.createVariable(str(field), str, zlib=True)
+            ncvar = Group.createVariable(str(field), str, zlib=False)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), str, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), str, dimensions=dimensions, zlib=False)
     # treating bool as integers
     elif val_type == 'bool':
         if val_shape in [(), (0,), 0]:
-            ncvar = Group.createVariable(str(field), int, zlib=True)
+            ncvar = Group.createVariable(str(field), int, zlib=False)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), int, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), int, dimensions=dimensions, zlib=False)
     # Now dealing with doubles, we convert them to int if possible
     elif val_type in [float, 'float64', np.float64]:
         try:
@@ -404,20 +404,20 @@ def CreateVar(NCData, var, field, Group, DimDict, *SupDim):  # {{{
         if IsInt:
             val_type = 'int64'
         if val_shape in [(), (0,), 0] and not SupDim:
-            ncvar = Group.createVariable(str(field), TypeDict[val_type], zlib=True)
+            ncvar = Group.createVariable(str(field), TypeDict[val_type], zlib=False)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
             if SupDim:
                 dimensions = SupDim + dimensions
-            ncvar = Group.createVariable(str(field), TypeDict[val_type], dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), TypeDict[val_type], dimensions=dimensions, zlib=False)
     elif val_type in [int, 'int64']:
         if val_shape in [(), (0,), 0] and not SupDim:
-            ncvar = Group.createVariable(str(field), TypeDict[val_type], zlib=True)
+            ncvar = Group.createVariable(str(field), TypeDict[val_type], zlib=False)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
             if SupDim:
                 dimensions = SupDim + dimensions
-            ncvar = Group.createVariable(str(field), TypeDict[val_type], dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), TypeDict[val_type], dimensions=dimensions, zlib=False)
     else:
         print(('WARNING type "{}" is unknown for "{}.{}"'.format(val_type, Group.name, field)))
         ncvar = None
