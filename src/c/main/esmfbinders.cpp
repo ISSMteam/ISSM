@@ -16,34 +16,31 @@ extern "C" {
 	FemModel *femmodel;
 
 	/*GEOS 5*/
-	void InitializeISSM(int argc, char** argv, int** pelementsonlocalrank, int* pnumberofelements, ISSM_MPI_Comm comm_init){ /*{{{*/
-
+      void InitializeISSM(int argc, char** argv, int* pnumberofelements, int* pnumberofnodes, MPI_Fint* Fcomm){ /*{{{*/
 		int numberofelements;
-		int* elementsonlocalrank=NULL;
+        int numberofnodes;
+          
+        /* convert Fortran MPI comm to C MPI comm */
+        MPI_Comm Ccomm = MPI_Comm_f2c(*Fcomm);             
+                
+        /*Initialize femmodel from arguments provided command line: */
+		femmodel = new FemModel(argc,argv,Ccomm);
 
-		/*Initialize femmodel from arguments provided command line: */
-		femmodel = new FemModel(argc,argv,comm_init);
-
-		/*Figure out the partition for elements, and return: */
+		/*Get number of nodes and elements from the mesh: */
 		numberofelements=femmodel->elements->NumberOfElements();
+        numberofnodes=femmodel->vertices->Size();
 
-		elementsonlocalrank=xNewZeroInit<int>(numberofelements); 
-		for(Object* & object : femmodel->elements->objects){
-			Element* element=dynamic_cast<Element*>(object);
-			elementsonlocalrank[element->Sid()]=1;
-		}
+		/*Bypass SMB model, will be provided by GCM! */
+		femmodel->parameters->SetParam(SMBgcmEnum,SmbEnum); 
 
-		/*Some specific code here for the binding: */
-		femmodel->parameters->SetParam(SMBgcmEnum,SmbEnum); //bypass SMB model, will be provided by GCM!
-
-		/*Restart file: */
+        /*Restart file: */
 		femmodel->Restart();
 
 		/*Assign output pointers: */
 		*pnumberofelements=numberofelements;
-		*pelementsonlocalrank=elementsonlocalrank;
-
+        *pnumberofnodes=numberofnodes;
 	} /*}}}*/
+
 	void RunISSM(IssmDouble dt, IssmDouble* gcmforcings, IssmDouble* issmoutputs){ /*{{{*/
 
 		int numberofelements;
@@ -140,6 +137,7 @@ extern "C" {
 		/*For the next time around, save the final time as start time */
 		femmodel->parameters->SetParam(final_time,TimesteppingStartTimeEnum);
 	} /*}}}*/
+
 	void FinalizeISSM(){ /*{{{*/
 
 		/*Output results: */
