@@ -1680,7 +1680,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		if test -z "${BLASLAPACK_LIB}"; then
 			if ! test -d "${BLAS_ROOT}" || ! test -d "${LAPACK_ROOT}"; then
 				if ! test -d "${BLASLAPACK_ROOT}"; then
-					AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir]);
+					AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir *or* --with-blaslapack-lib and supply libflags]);
 				fi
 			fi
 		fi
@@ -1689,7 +1689,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl BLAS/LAPACK libraries and header files
 	if test "x${HAVE_BLASLAPACK}" == "xyes"; then
-		if test ! -z "${BLASLAPACK_LIB}"; then
+		if test "x${BLASLAPACK_LIB}" != "xno"; then
 			BLASLAPACKLIB="${BLASLAPACK_LIB}"
 		else
 			case "${host_os}" in

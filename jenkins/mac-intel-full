@@ -14,7 +14,7 @@ MATLAB_PATH="/Applications/MATLAB_R2023b.app"
 #--------------------#
 
 ISSM_CONFIG='\
-	--prefix=${ISSM_DIR} \
+	--prefix="${ISSM_DIR}" \
 	--disable-static \
 	--enable-development \
 	--enable-debugging \
@@ -22,11 +22,11 @@ ISSM_CONFIG='\
 	--with-matlab-dir=${MATLAB_PATH} \
 	--with-python-version=3.9 \
 	--with-python-dir=/System/Volumes/Data/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9 \
-	--with-python-numpy-dir=${HOME}/.venv/issm/lib/python3.9/site-packages/numpy \
+	--with-python-numpy-dir="${HOME}/.venv/issm/lib/python3.9/site-packages/numpy" \
 	--with-fortran-lib="-L/usr/local/Cellar/gcc/14.2.0_1/lib/gcc/current -lgfortran" \
-	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
+	--with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
-	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
+	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-metis-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
