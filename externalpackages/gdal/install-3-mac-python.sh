@@ -8,7 +8,7 @@ set -e
 
 ## Constants
 #
-VER="3.8.4"
+VER="3.10.0"
 
 PREFIX="${ISSM_DIR}/externalpackages/gdal/install"
 

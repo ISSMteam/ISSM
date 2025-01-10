@@ -10,12 +10,12 @@ PREFIX="${ISSM_DIR}/externalpackages/dakota/install" # Set to location where ext
 
 ## Environment
 #
-export BLAS_LIBS="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it; should upate to /nasa/intel/Compiler/2021.4.0/mkl/2021.4.0/lib/intel64
-export CXXFLAGS='-std=c++11'
+export BLAS_LIBS="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export CXXFLAGS='-std=c++98'
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
-export LAPACK_LIBS="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it; should upate to /nasa/intel/Compiler/2021.4.0/mkl/2021.4.0/lib/intel64
+export LAPACK_LIBS="-L${COMP_INTEL_ROOT}/mkl/lib/intel64/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 
 # Cleanup
 rm -rf ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
@@ -58,7 +58,7 @@ cmake \
 	-DCMAKE_C_COMPILER=mpicc \
 	-DCMAKE_C_FLAGS="-Wno-error=implicit-function-declaration" \
 	-DCMAKE_CXX_COMPILER=mpicxx \
-	-DCMAKE_Fortran_COMPILER=/usr/bin/gfortran \
+	-DCMAKE_Fortran_COMPILER=gfortran \
 	-DBoost_NO_BOOST_CMAKE=TRUE \
 	-DHAVE_ACRO=OFF \
 	-DHAVE_JEGA=OFF \

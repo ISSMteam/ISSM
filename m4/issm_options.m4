@@ -258,6 +258,31 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_WARN([If you want to use the optimization flags provided by CXXOPTFLAGS (${CXXOPTFLAGS}), please pass them via CXXFLAGS])
 	fi
 	dnl }}}
+	dnl Xlib (graphics library){{{
+	AC_MSG_CHECKING([for Xlib (graphics library)])
+	AC_ARG_WITH(
+		[graphics-lib],
+		AS_HELP_STRING([--with-graphics-lib=options], [Xlib (graphics library) to use]),
+		[GRAPHICS_LIB=${withval}],
+		[GRAPHICS_LIB=""]
+	)
+	if test -n "${GRAPHICS_LIB}"; then
+		GRAPHICS_DIR=$(echo ${GRAPHICS_LIB} | sed -e "s/-L//g" | awk '{print $[1]}')
+		if test -d "${GRAPHICS_DIR}" || test -f "${GRAPHICS_DIR}"; then
+			HAVE_GRAPHICS=yes
+			GRAPHICSLIB="${GRAPHICS_LIB}"
+			AC_DEFINE([_HAVE_GRAPHICS_], [1], [with Xlib (graphics library) in ISSM src])
+			AC_SUBST([GRAPHICSLIB])
+		else
+			if test -f "${PETSC_ROOT}/conf/petscvariables"; then
+				PETSC_REC_GRAPHICS_LIB=$(cat ${PETSC_ROOT}/conf/petscvariables | grep X_LIB)
+				AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist! PETSc suggests the following library: ${PETSC_REC_GRAPHICS_LIB}]);
+			fi
+			AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([done])
+	dnl }}}
 	dnl MATLAB{{{
 	dnl See if MATLAB has been provided
 	AC_MSG_CHECKING([for MATLAB])
@@ -1642,13 +1667,21 @@ AC_DEFUN([ISSM_OPTIONS],[
 		[BLASLAPACK_ROOT=$withval],
 		[BLASLAPACK_ROOT="no"]
 	)
-	if (test "x${BLAS_ROOT}" = "xno" || test "x${LAPACK_ROOT}" = "xno") && test "x${BLASLAPACK_ROOT}" = "xno"; then
+	AC_ARG_WITH(
+		[blas-lapack-lib],
+		AS_HELP_STRING([--with-blas-lapack-lib=LIBFLAGS], [BLAS/LAPACK libflags]),
+		[BLASLAPACK_LIB=$withval],
+		[BLASLAPACK_LIB="no"]
+	)
+	if (test "x${BLAS_ROOT}" = "xno" || test "x${LAPACK_ROOT}" = "xno") && test "x${BLASLAPACK_ROOT}" = "xno" && test "x${BLASLAPACK_LIB}" = "xno"; then
 		HAVE_BLASLAPACK=no
 	else
 		HAVE_BLASLAPACK=yes
-		if ! test -d "${BLAS_ROOT}" || ! test -d "${LAPACK_ROOT}"; then
-			if ! test -d "${BLASLAPACK_ROOT}"; then
-				AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir]);
+		if test -z "${BLASLAPACK_LIB}"; then
+			if ! test -d "${BLAS_ROOT}" || ! test -d "${LAPACK_ROOT}"; then
+				if ! test -d "${BLASLAPACK_ROOT}"; then
+					AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir]);
+				fi
 			fi
 		fi
 	fi
@@ -1656,48 +1689,52 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl BLAS/LAPACK libraries and header files
 	if test "x${HAVE_BLASLAPACK}" == "xyes"; then
-		case "${host_os}" in
-			*darwin*)
-				BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
-				if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lopenblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lflapack -lfblas"
-				else
-					BLASLAPACKLIB+=" -llapack -lblas"
-				fi
-			;;
-			*linux*)
-				BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
-				if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lopenblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lflapack -lfblas"
-				else
-					BLASLAPACKLIB+=" -llapack -lblas"
-				fi
-			;;
-			*mingw*)
-				if test -d "${BLASLAPACK_ROOT}"; then
-					BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib"
+		if test ! -z "${BLASLAPACK_LIB}"; then
+			BLASLAPACKLIB="${BLASLAPACK_LIB}"
+		else
+			case "${host_os}" in
+				*darwin*)
+					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
 					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
 						BLASLAPACKLIB+=" -lopenblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
 						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib -Wl,-lflapack -Wl,-lfblas"
+						BLASLAPACKLIB+=" -lflapack -lfblas"
 					else
-						BLASLAPACKLIB+=" -Wl,-llapack -Wl,-lblas"
+						BLASLAPACKLIB+=" -llapack -lblas"
 					fi
-				else
-					BLASLAPACKLIB="${LAPACK_ROOT}/lib/liblapack.a ${BLAS_ROOT}/lib/libblas.a"
-				fi
-			;;
-		esac
+				;;
+				*linux*)
+					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
+					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lopenblas"
+					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lflapack -lfblas"
+					else
+						BLASLAPACKLIB+=" -llapack -lblas"
+					fi
+				;;
+				*mingw*)
+					if test -d "${BLASLAPACK_ROOT}"; then
+						BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib"
+						if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB+=" -lopenblas"
+						elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+						elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib -Wl,-lflapack -Wl,-lfblas"
+						else
+							BLASLAPACKLIB+=" -Wl,-llapack -Wl,-lblas"
+						fi
+					else
+						BLASLAPACKLIB="${LAPACK_ROOT}/lib/liblapack.a ${BLAS_ROOT}/lib/libblas.a"
+					fi
+				;;
+			esac
+		fi
 		AC_DEFINE([_HAVE_BLASLAPACK_], [1], [with BLAS/LAPACK in ISSM src])
 		AC_SUBST([BLASLAPACKLIB])
 	fi
