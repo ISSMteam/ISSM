@@ -2,30 +2,32 @@
 # Environment #
 #-------------#
 
-export CC=icc
-export CFLAGS="-O3 -D_INTEL_LINUX_"
-export CXX=icpc
-export CXXFLAGS="-g -O3 -D_INTEL_LINUX_ -std=c++11 -axCORE-AVX2,AVX -xSSE4.2 -ipo -no-inline-min-size -inline-max-size=345 -no-inline-max-total-size -no-inline-max-per-routine -no-inline-max-per-compile"
+export CFLAGS="-O3"
+export CXXFLAGS="-O3 -std=c++11"
 
 #--------------------#
 # ISSM Configuration #
 #--------------------#
 
 ISSM_CONFIG='\
-	--prefix=${ISSM_DIR} \
-	--with-wrappers=no \
-	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
-	--with-mpi-include=" " \
-	--with-mpi-libflags=" -lmpi" \
-	--with-mkl-libflags="-L/nasa/intel/Compiler/2016.2.181/mkl/lib/intel64/ -mkl=cluster " \
-	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-fortran-lib="-L/nasa/intel/Compiler/2016.2.181/compilers_and_libraries_2016.2.181/linux/compiler/lib/intel64/ -lifcore -lifport" \
+	--prefix="${ISSM_DIR}" \
 	--enable-development \
-	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+	--enable-standalone-libraries \
+	--with-wrappers=no \
+	--with-graphics-lib="/usr/lib64/libX11.so" \
+	--with-fortran-lib="-L${COMP_INTEL_ROOT}/compiler/lib/intel64_lin -lifcore -lifport -lgfortran" \
+	--with-mkl-libflags="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm" \
+	--with-mpi-include="/nasa/hpe/mpt/2.30_rhel810/include" \
+	--with-mpi-libflags="-L/nasa/hpe/mpt/2.30_rhel810/lib -lmpi" \
+	--with-blas-lapack-lib="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_blas95_lp64 -lmkl_lapack95_lp64" \
+	--with-metis-dir="${PETSC_DIR}" \
+	--with-parmetis-dir="${PETSC_DIR}" \
+	--with-scalapack-lib="-L${COMP_INTEL_ROOT}/mkl/lib/intel64/libmkl_scalapack_lp64.so" \
+	--with-mumps-dir="${PETSC_DIR}" \
+	--with-petsc-dir="${PETSC_DIR}" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
 #-------------------#
@@ -33,9 +35,9 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	petsc	install-3.13-pleiades.sh
-	m1qn3	install-linux.sh
-	semic	install.sh
+	triangle	install-linux.sh
+	m1qn3		install-linux.sh
+	semic		install.sh
 "
 
 #---------#

@@ -8,7 +8,7 @@ set -eu
 
 ## Constants
 #
-VER="3.5.3"
+VER="3.10.0"
 
 ## Environment
 #

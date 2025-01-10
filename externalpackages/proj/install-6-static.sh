@@ -4,7 +4,7 @@ set -eu
 
 # Constants
 #
-VER="6.2.1"
+VER="6.3.2"
 
 PREFIX="${ISSM_DIR}/externalpackages/proj/install" # Set to location where external package should be installed
 
