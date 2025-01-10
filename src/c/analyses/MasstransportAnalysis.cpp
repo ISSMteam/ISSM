@@ -155,6 +155,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.groundedice_melting_rate",BasalforcingsGroundediceMeltingRateEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum);
 
 	if(isgroundingline) 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.bed",BedEnum);
 	/*Initialize ThicknessResidual input*/
@@ -675,9 +676,9 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* vxaverage_input  = element->GetInput(VxAverageEnum);										_assert_(vxaverage_input);
 	Input* vyaverage_input  = element->GetInput(VyAverageEnum);										_assert_(vyaverage_input);
 	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
-	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
+	//Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
 
-	element->GetInputValue(&intrusiondist,GroundinglineIntrusionDistanceEnum);
+	//element->GetInputValue(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	h=element->CharacteristicLength();
 
@@ -688,7 +689,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	    gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else if(melt_style==IntrusionMeltEnum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
        	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -727,7 +728,8 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 			else mb=gmb;
 		}
 		else if(melt_style==IntrusionMeltEnum){
-			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input);
+			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum); 			_assert_(gldistance_input);
+			Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
 
 			gldistance_input->GetInputValue(&gldistance,gauss);
 			intrusiondist_input->GetInputValue(&intrusiondist,gauss);

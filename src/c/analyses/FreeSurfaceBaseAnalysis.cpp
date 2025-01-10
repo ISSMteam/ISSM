@@ -107,6 +107,8 @@ void FreeSurfaceBaseAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 	iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.groundedice_melting_rate",BasalforcingsGroundediceMeltingRateEnum,0.);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum);
+
 	if(iomodel->domaindim==3){
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vz",VzEnum);
 	}
@@ -394,7 +396,8 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	basalelement->FindParam(&dt,TimesteppingTimeStepEnum);
 	basalelement->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
-	basalelement->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
+	//basalelement->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
+	basalelement->GetInputValue(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* groundedice_input   = basalelement->GetInput(MaskOceanLevelsetEnum);              _assert_(groundedice_input);
 	Input* gmb_input           = basalelement->GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(gmb_input);
@@ -427,7 +430,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	if(melt_style==IntrusionMeltEnum){
-		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist);
+		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -466,7 +469,11 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 		}
 		else if(melt_style==IntrusionMeltEnum){
 			Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
+			Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
+
 			gldistance_input->GetInputValue(&gldistance,gauss);
+			intrusiondist_input->GetInputValue(&intrusiondist,gauss);
+
 			if(intrusiondist==0){
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;

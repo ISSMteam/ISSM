@@ -8,7 +8,7 @@ classdef groundingline
 		migration              = '';
 		friction_interpolation = '';
 		melt_interpolation     = '';
-		intrusion_distance     = 0;
+		intrusion_distance     = NaN;
 		requested_outputs      = {};
 	end
 	methods
@@ -26,7 +26,6 @@ classdef groundingline
 			self.migration             = 'SubelementMigration';
 			self.friction_interpolation= 'SubelementFriction1';
 			self.melt_interpolation    = 'NoMeltOnPartiallyFloating';
-			self.intrusion_distance    = 0;
 			%default output
 			self.requested_outputs     = {'default'};
 
