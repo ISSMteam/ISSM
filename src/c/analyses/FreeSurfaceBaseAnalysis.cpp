@@ -397,7 +397,6 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	basalelement->FindParam(&dt,TimesteppingTimeStepEnum);
 	basalelement->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
 	//basalelement->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
-	basalelement->GetInputValue(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* groundedice_input   = basalelement->GetInput(MaskOceanLevelsetEnum);              _assert_(groundedice_input);
 	Input* gmb_input           = basalelement->GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(gmb_input);
@@ -407,6 +406,9 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	Input* vz_input = NULL;
 	Input* vx_input = NULL;
 	Input* vy_input = NULL;
+	Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
+	Input* intrusiondist_input = basalelement->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
+	
 	switch(dim){
 		case 1: 
 			vx_input=basalelement->GetInput(VxEnum); _assert_(vx_input);
@@ -469,9 +471,6 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 			else mb=gmb;
 		}
 		else if(melt_style==IntrusionMeltEnum){
-			Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
-			Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
-
 			gldistance_input->GetInputValue(&gldistance,gauss);
 			intrusiondist_input->GetInputValue(&intrusiondist,gauss);
 
