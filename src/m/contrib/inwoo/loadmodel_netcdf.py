@@ -133,6 +133,10 @@ def loadmodel_netcdf(filename, verbose:bool=0):
                 md.outputdefinition.definitions = []
             else:
                 md.outputdefinition.definitions = definitions
+        elif groupName in 'mmemasstransport':
+            # NOTE: mmemasstransport is not implemented in python.
+            warnings.warn('WARNING: "mmemasstransport" is not implemented in Python.')
+            continue
         elif (not mclass in ['verbose',
                                 'hpc_simba','fourierlove',
                                 ]) & isinstance(gclass,str): # skip specific class..
