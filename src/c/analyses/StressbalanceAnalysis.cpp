@@ -1375,7 +1375,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAFriction(Element* element)
 	if(!(friction_style==SubelementFriction2Enum)) phi=element->GetGroundedPortion(xyz_list);
 	if(friction_style==SubelementFriction2Enum){
 		gllevelset_input=element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	   gauss = element->NewGauss(point1,fraction1,fraction2,mainlyfloating,2);
 	}
 	else{
@@ -1667,7 +1667,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 
 	int ig=-1;// needed for driving stress parameterization
 	if(partly_floating){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	   gauss=element->NewGauss(point1,fraction1,fraction2,3); //considering the entire element
 		gauss_subelem=element->NewGauss(fraction1,fraction2,3);//gauss on each subelement
 	}
@@ -2845,7 +2845,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixMOLHOFriction(Element* elemen
 	if(!(friction_style==SubelementFriction2Enum)) phi=element->GetGroundedPortion(xyz_list);
 	if(friction_style==SubelementFriction2Enum){
 		gllevelset_input=element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	   gauss = element->NewGauss(point1,fraction1,fraction2,mainlyfloating,2);
 	}
 	else{
@@ -3483,7 +3483,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOFriction(Element* element){
 	if(!(friction_style==SubelementFriction2Enum)) phi=element->GetGroundedPortion(xyz_list_base);
 	if(friction_style==SubelementFriction2Enum){
 		gllevelset_input=element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 		gauss = element->NewGauss(point1,fraction1,fraction2,mainlyfloating,2);
 	}
 	else{
@@ -5220,7 +5220,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFriction(Element* element){
 	if(friction_style==SubelementFriction2Enum){
 		if(domaintype==Domain2DverticalEnum) _error_("Subelement Friction 2 not implemented yet for Flowline");
 		gllevelset_input=element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 		//gauss = element->NewGauss(point1,fraction1,fraction2,mainlyfloating,2);
 		gauss=element->NewGaussBase(3);
 	}
@@ -5460,7 +5460,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSFrictionNitsche(Element* el
 	if(friction_style==SubelementFriction2Enum){
 		if(domaintype==Domain2DverticalEnum) _error_("Subelement Friction 2 not implemented yet for Flowline");
 		gllevelset_input=element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating, MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 		gauss=element->NewGaussBase(3);
 	}
 	else{

@@ -428,12 +428,12 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	phi=basalelement->GetGroundedPortion(xyz_list);
 	Gauss*      gauss     = NULL;
 	if(melt_style==SubelementMelt2Enum){
-		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	if(melt_style==IntrusionMeltEnum){
 		/* Calculate here the intrusion distance value (value in the middle of the element?) to pass as last input to GetGroundedPart*/
-		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,0);
+		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{

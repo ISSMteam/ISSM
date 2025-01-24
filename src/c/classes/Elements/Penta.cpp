@@ -1428,21 +1428,23 @@ void       Penta::GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, i
 	*ptrapezeisnegative = trapezeisnegative;
 }
 /*}}}*/
-void       Penta::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance){/*{{{*/
+void       Penta::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, int intrusion_enum){/*{{{*/
 	/*Computeportion of the element that is grounded*/
 
 	bool               floating=true;
 	int                point;
 	const IssmPDouble  epsilon= 1.e-15;
 	IssmDouble         gl[NUMVERTICES];
+	IssmDouble         intrusion_distance[NUMVERTICES];
 	IssmDouble         f1,f2;
 
 	/*Recover parameters and values*/
 	Element::GetInputListOnVertices(&gl[0],distance_enum);
+	Element::GetInputListOnVertices(&intrusion_distance[0],intrusion_enum);
 
 	/*Determine where to apply sub-element melt using intrusion distance*/
 	for(int i=0; i<NUMVERTICES; i++){
-		gl[i] -= intrusion_distance;
+		gl[i] -= intrusion_distance[i];
 	}
 
 	/*Be sure that values are not zero*/
@@ -4189,7 +4191,7 @@ IssmDouble Penta::TotalFloatingBmb(bool scaled){/*{{{*/
 	}
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 
-	this->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+	this->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	/* Start  looping on the number of gaussian points: */
 	gauss = this->NewGauss(point1,fraction1,fraction2,1-mainlyfloating,3);
 	while(gauss->next()){
@@ -4232,7 +4234,7 @@ IssmDouble Penta::TotalGroundedBmb(bool scaled){/*{{{*/
 	}
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 
-	this->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+	this->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	/* Start  looping on the number of gaussian points: */
 	gauss = this->NewGauss(point1,fraction1,fraction2,mainlyfloating,3);
 	while(gauss->next()){

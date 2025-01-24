@@ -273,7 +273,7 @@ class Element: public Object{
 		virtual Element*   GetBasalElement(void)=0;
 		virtual int        GetElementType(void)=0;
 		virtual IssmDouble GetHorizontalSurfaceArea(void){_error_("not implemented");};
-		virtual void       GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating,int distance_enum, IssmDouble intrusion_distance)=0;
+		virtual void       GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating,int distance_enum, int intrusion_enum)=0;
 		virtual IssmDouble GetGroundedPortion(IssmDouble* xyz_list)=0;
 		virtual void        GetFractionGeometry(IssmDouble* weights, IssmDouble* pphi, int* ppoint1,IssmDouble* pfraction1,IssmDouble* pfraction2, bool* ptrapezeisnegative, IssmDouble* gl)=0;
 		virtual void       GetNodalWeightsAndAreaAndCentroidsFromLeveset(IssmDouble* loadweights, IssmDouble* ploadarea, IssmDouble* platbar, IssmDouble* plongbar, IssmDouble late, IssmDouble longe, IssmDouble area,  int levelsetenum)=0;

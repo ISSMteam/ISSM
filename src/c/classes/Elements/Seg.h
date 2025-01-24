@@ -61,7 +61,7 @@ class Seg: public Element,public ElementHook,public SegRef{
 		void        FSContactMigration(Vector<IssmDouble>* vertexgrounded,Vector<IssmDouble>* vertexfloating){_error_("not implemented yet");};
 		Element*    GetBasalElement(void){_error_("not implemented yet");};
 		int         GetElementType(void){_error_("not implemented yet");};
-		void        GetGroundedPart(int* point1,IssmDouble* fraction1, IssmDouble* fraction2,bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance){_error_("not implemented yet");};
+		void        GetGroundedPart(int* point1,IssmDouble* fraction1, IssmDouble* fraction2,bool* mainlyfloating, int distance_enum, int intrusion_enum){_error_("not implemented yet");};
 		IssmDouble  GetGroundedPortion(IssmDouble* xyz_list);
 		void        GetFractionGeometry(IssmDouble* weights, IssmDouble* pphi, int* ppoint1,IssmDouble* pfraction1,IssmDouble* pfraction2, bool* ptrapezeisnegative, IssmDouble* gl){_error_("not implemented yet");};
 		void       GetNodalWeightsAndAreaAndCentroidsFromLeveset(IssmDouble* loadweights, IssmDouble* ploadarea, IssmDouble* platbar, IssmDouble* plongbar, IssmDouble late, IssmDouble longe, IssmDouble area,  int levelsetenum){_error_("not implemented yet");};

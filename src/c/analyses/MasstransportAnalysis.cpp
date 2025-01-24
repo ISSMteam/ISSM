@@ -684,12 +684,13 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	/*Recover portion of element that is grounded*/
 	phi=element->GetGroundedPortion(xyz_list);
 	if(melt_style==SubelementMelt2Enum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	    gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else if(melt_style==IntrusionMeltEnum){
 		/* Calculate here the intrusion distance value (value in the middle of the element?) to pass as last input to GetGroundedPart*/
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
+
        	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -828,11 +829,11 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
    Gauss* gauss=NULL;
    phi=element->GetGroundedPortion(xyz_list);
    if(melt_style==SubelementMelt2Enum){
-      element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+      element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
       gauss = element->NewGauss(point1,fraction1,fraction2,3);
    }
    else if(melt_style==IntrusionMeltEnum){
-	    element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist);
+	    element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
        gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
    else{
@@ -1170,7 +1171,7 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Recover portion of element that is grounded*/
 	phi=element->GetGroundedPortion(xyz_list);
 	if(melt_style==SubelementMelt2Enum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
 	   gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
