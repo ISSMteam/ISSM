@@ -1,9 +1,10 @@
 import numpy as np
 from GetNodalFunctionsCoeff import GetNodalFunctionsCoeff
 from results import results
+from pairoptions import pairoptions
 
 
-def mechanicalproperties(md, vx, vy, **kwargs):
+def mechanicalproperties(md, vx, vy, *args):
     """MECHANICALPROPERTIES - compute stress and strain rate for a given 
     velocity
 
@@ -30,14 +31,17 @@ def mechanicalproperties(md, vx, vy, **kwargs):
         print('Warning: the model has some non SSA elements. These will be treated like SSA elements')
 
     #unpack kwargs
-    if 'damage' in kwargs:
-        damage = kwargs.pop('damage')
-        if len(damage) != md.mesh.numberofvertices:
-            raise ValueError('if damage is supplied it should be of size ' + md.mesh.numberofvertices)
-            if np.ndim(damage) == 2:
-                damage = np.squeeze(damage)
-        else:
-            damage = None
+    #if 'damage' in kwargs:
+    #    damage = kwargs.pop('damage')
+    #    if len(damage) != md.mesh.numberofvertices:
+    #        raise ValueError('if damage is supplied it should be of size ' + md.mesh.numberofvertices)
+    #        if np.ndim(damage) == 2:
+    #            damage = np.squeeze(damage)
+    #    #else:
+    #    #    damage = None
+    #get damage, if passed
+    options = pairoptions(*args)
+    damage = options.getfieldvalue('damage',np.zeros((md.mesh.numberofvertices,)))
 
     if np.ndim(vx) == 2:
         vx = np.squeeze(vx)
@@ -83,7 +87,7 @@ def mechanicalproperties(md, vx, vy, **kwargs):
         nu[location] = B_bar[location]
         location = np.nonzero(np.logical_and(second_inv == 0, power != 0))
         nu[location] = pow(10, 18)
-    elif 'matdamageice' in md.materials.__module__ and damage is not None:
+    elif 'matdamageice' in md.materials.__module__:
         print('computing damage-dependent properties!')
         Zinv = np.dot(1 - damage[index - 1], summation / 3.).reshape(-1, )
         location = np.nonzero(second_inv)
@@ -144,7 +148,7 @@ def mechanicalproperties(md, vx, vy, **kwargs):
     deviatoricstress.principalaxis1 = directionsstress[:, 1:2]
     deviatoricstress.principalvalue2 = valuesstress[:, 1]
     deviatoricstress.principalaxis2 = directionsstress[:, 2:4]
-    deviatoricstress.effectivevalue = 1. / np.sqrt(2.) * np.sqrt(stress.xx**2 + stress.yy**2 + 2. * stress.xy**2)
+    deviatoricstress.effectivevalue = 1. / np.sqrt(2.) * np.sqrt(deviatoricstress.xx**2 + deviatoricstress.yy**2 + 2. * deviatoricstress.xy**2)
     md.results.deviatoricstress = deviatoricstress
 
     return md
