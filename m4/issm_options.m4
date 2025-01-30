@@ -714,6 +714,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
 		elif test -f "${PYTHON_ROOT}/Headers/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
+		elif test -f "${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/include/python${PYTHON_VERSION}/Python.h"; then
+			PYTHONINCL=-I${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/include/python${PYTHON_VERSION}
 		else
 			AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
@@ -732,6 +734,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 			PYTHONLIB="-L${PYTHON_ROOT}/lib64 -lpython${PYTHON_VERSION}m"
 		elif ls ${PYTHON_ROOT}/lib64/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
 			PYTHONLIB="-L${PYTHON_ROOT}/lib64 -lpython${PYTHON_VERSION}"
+		elif ls ${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib -lpython${PYTHON_VERSION}"
 		else
 			AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
