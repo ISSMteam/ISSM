@@ -24,6 +24,8 @@ Given a NetCDF4 file, this set of functions will perform the following:
 
 # make a model framework to fill that is in the scope of this file
 model_copy = model()
+# make a blank requested output for hydrology
+hydro_rout_list = ['default']
 
 def read_netCDF(filename, verbose = False):
     if verbose:
@@ -82,7 +84,7 @@ def read_netCDF(filename, verbose = False):
         # check the hydrology class used
         try:
             NCData.groups['hydrology']
-            check_hydrology_class(NCData, verbose)
+            hydro_rout_list = check_hydrology_class(NCData, verbose)            
         except:
             pass
         
@@ -96,6 +98,7 @@ def read_netCDF(filename, verbose = False):
                 # have to send a custom name to this function: filename.groups['group']
                 name = "NCData.groups['" + str(group) + "']"
                 walk_nested_groups(name, NCData, verbose)
+                model_copy.hydrology.requested_outputs = hydro_rout_list
         
         if verbose:
             print("Model Successfully Loaded.")
@@ -268,6 +271,9 @@ def check_hydrology_class(NCData, verbose = False):
     #
     # Note: hydrology, hydrologyarmapw, hydrologytws do not have a python implementation
     hydrology_class_is = NCData.groups['hydrology'].variables['hydrology_class_name'][:][...].tobytes().decode()
+    hydro_rout = NCData.groups['hydrology'].variables['requested_outputs'][:][...].tobytes().decode()
+    hydro_rout_list = hydro_rout.split()
+    model_copy.hydrology.requested_outputs = hydro_rout_list
     if hydrology_class_is == 'hydrologyshreve':
         #if it is hydrologyshreve, load hydrologyshreve
         model_copy.hydrology = hydrologyshreve()
@@ -296,6 +302,7 @@ def check_hydrology_class(NCData, verbose = False):
     else:
         print('Conversion unsuccessful, hydrology requested is not present and/or working yet in Python!')
         pass
+    return hydro_rout_list
         
 def walk_nested_groups(group_location_in_file, NCData, verbose = False):
     # first, we enter the group by: filename.groups['group_name']
