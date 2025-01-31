@@ -191,6 +191,7 @@ function walk_through_subclasses(model_subclass, empty_model_subclass, given_lis
         if strcmp(given_list_of_layers{1}, 'inversion')
             create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
             check_inversion_class(model_subclass, NetCDF, verbose);
+
         elseif strcmp(given_list_of_layers{1},'smb')
             create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
             check_smb_class(model_subclass, NetCDF, verbose);
