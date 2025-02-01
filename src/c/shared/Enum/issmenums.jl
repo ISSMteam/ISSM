@@ -276,7 +276,6 @@
 	HydrologySheetAlphaEnum
 	HydrologySheetBetaEnum
 	HydrologyStepsPerStepEnum
-	HydrologyStorageEnum
 	HydrologydcEplColapseThicknessEnum
 	HydrologydcEplConductivityEnum
 	HydrologydcEplInitialThicknessEnum
@@ -917,6 +916,7 @@
 	HydrologySheetDischargeEnum
 	HydrologySheetThicknessEnum
 	HydrologySheetThicknessOldEnum
+	HydrologyStorageEnum
 	HydrologyTwsEnum
 	HydrologyTwsSpcEnum
 	HydrologyTwsAnalysisEnum
@@ -2102,7 +2102,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologySheetAlphaEnum) return "HydrologySheetAlpha" end
 	if(enum==HydrologySheetBetaEnum) return "HydrologySheetBeta" end
 	if(enum==HydrologyStepsPerStepEnum) return "HydrologyStepsPerStep" end
-	if(enum==HydrologyStorageEnum) return "HydrologyStorage" end
 	if(enum==HydrologydcEplColapseThicknessEnum) return "HydrologydcEplColapseThickness" end
 	if(enum==HydrologydcEplConductivityEnum) return "HydrologydcEplConductivity" end
 	if(enum==HydrologydcEplInitialThicknessEnum) return "HydrologydcEplInitialThickness" end
@@ -2743,6 +2742,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologySheetDischargeEnum) return "HydrologySheetDischarge" end
 	if(enum==HydrologySheetThicknessEnum) return "HydrologySheetThickness" end
 	if(enum==HydrologySheetThicknessOldEnum) return "HydrologySheetThicknessOld" end
+	if(enum==HydrologyStorageEnum) return "HydrologyStorage" end
 	if(enum==HydrologyTwsEnum) return "HydrologyTws" end
 	if(enum==HydrologyTwsSpcEnum) return "HydrologyTwsSpc" end
 	if(enum==HydrologyTwsAnalysisEnum) return "HydrologyTwsAnalysis" end
@@ -3928,7 +3928,6 @@ function StringToEnum(name::String)
 	if(name=="HydrologySheetAlpha") return HydrologySheetAlphaEnum  end
 	if(name=="HydrologySheetBeta") return HydrologySheetBetaEnum  end
 	if(name=="HydrologyStepsPerStep") return HydrologyStepsPerStepEnum  end
-	if(name=="HydrologyStorage") return HydrologyStorageEnum  end
 	if(name=="HydrologydcEplColapseThickness") return HydrologydcEplColapseThicknessEnum  end
 	if(name=="HydrologydcEplConductivity") return HydrologydcEplConductivityEnum  end
 	if(name=="HydrologydcEplInitialThickness") return HydrologydcEplInitialThicknessEnum  end
@@ -4569,6 +4568,7 @@ function StringToEnum(name::String)
 	if(name=="HydrologySheetDischarge") return HydrologySheetDischargeEnum  end
 	if(name=="HydrologySheetThickness") return HydrologySheetThicknessEnum  end
 	if(name=="HydrologySheetThicknessOld") return HydrologySheetThicknessOldEnum  end
+	if(name=="HydrologyStorage") return HydrologyStorageEnum  end
 	if(name=="HydrologyTws") return HydrologyTwsEnum  end
 	if(name=="HydrologyTwsSpc") return HydrologyTwsSpcEnum  end
 	if(name=="HydrologyTwsAnalysis") return HydrologyTwsAnalysisEnum  end

@@ -15,7 +15,7 @@ classdef hydrologyshakti
 		spchead         = NaN;
 		neumannflux     = NaN;
 		relaxation      = 0;
-		storage         = 0;
+		storage         = NaN;
 		requested_outputs = {};
 	end
 	methods
@@ -67,7 +67,7 @@ classdef hydrologyshakti
 			md = checkfield(md,'fieldname','hydrology.neumannflux','timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.spchead','Inf',1,'timeseries',1);
 			md = checkfield(md,'fieldname','hydrology.relaxation','>=',0);	
-			md = checkfield(md,'fieldname','hydrology.storage','>=',0);
+			md = checkfield(md,'fieldname','hydrology.storage','>=',0,'universal',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.requested_outputs','stringrow',1);
 		end % }}}
 		function disp(self) % {{{
@@ -100,7 +100,13 @@ classdef hydrologyshakti
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','neumannflux','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','spchead','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','relaxation','format','Double');
-			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','storage','format','Double');
+			if(size(self.storage,1)==md.mesh.numberofvertices | size(self.storage,1)==md.mesh.numberofvertices+1 | (size(self.storage,1)==md.mesh.numberofelements && size(self.storage,2)>1))
+				mattype=1; tsl = md.mesh.numberofvertices;
+			else
+				mattype=2; tsl = md.mesh.numberofelements;
+			end
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','storage','format','DoubleMat','mattype',mattype,'timeserieslength',tsl+1,'yts',md.constants.yts);
+
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
 			if ~isempty(pos),
