@@ -1,3 +1,4 @@
+import numpy as np
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 from WriteData import WriteData
@@ -22,7 +23,7 @@ class hydrologyshakti(object):
         self.spchead = float('NaN')
         self.neumannflux = float('NaN')
         self.relaxation = 0
-        self.storage = 0
+        self.storage = np.nan
         self.requested_outputs = []
 
     #set defaults
