@@ -13,6 +13,9 @@ switch (oshostname())
 		error('hostname not supported yet');
 end
 
+disp('   -- IBCSOv2-2024: Changing Coordinate system from 3031 to 9354 (can take a few minutes)');
+[X Y]=CoordTransform(double(X),double(Y),'EPSG:3031','EPSG:9354');
+
 disp('   -- IBCSOv2-2024: interpolating bathymetry');
 bedout = interpFromGeotiff(bedpath, X, Y, -32768);
 
