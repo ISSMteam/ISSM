@@ -78,7 +78,7 @@ class hydrologyshakti(object):
         md = checkfield(md, 'fieldname', 'hydrology.neumannflux', 'timeseries', 1, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.spchead', 'Inf', 1, 'timeseries', 1)
         md = checkfield(md, 'fieldname', 'hydrology.relaxation', '>=', 0)
-        md = checkfield(md, 'fieldname', 'hydrology.storage', '>=', 0)
+        md = checkfield(md, 'fieldname', 'materials.storage', '>', 0, 'universal', 1, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.requested_outputs', 'stringrow', 1)
         return md
     # }}}
@@ -97,7 +97,15 @@ class hydrologyshakti(object):
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'neumannflux', 'format', 'DoubleMat', 'mattype', 2, 'timeserieslength', md.mesh.numberofelements + 1, 'yts', yts)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'spchead', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'relaxation', 'format', 'Double')
-        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'storage', 'format', 'Double')
+        # NOTE: We first have to check if we have a NumPy array here
+        if np.size(self.storage)==1 or (((np.shape(self.storage)[0] == md.mesh.numberofvertices) or (np.shape(self.storage)[0] == md.mesh.numberofvertices + 1)) or ((len(np.shape(self.storage)) == 2) and (np.shape(self.storage)[0] == md.mesh.numberofelements) and (np.shape(self.storage)[1] > 1))):
+            mattype = 1
+            tsl = md.mesh.numberofvertices
+        else:
+            mattype = 2
+            tsl = md.mesh.numberofelements
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'storage', 'format', 'DoubleMat', 'mattype', mattype, 'timeserieslength', tsl + 1, 'yts', md.constants.yts)
+
     #process requested outputs
         outputs = self.requested_outputs
         indices = [i for i, x in enumerate(outputs) if x == 'default']

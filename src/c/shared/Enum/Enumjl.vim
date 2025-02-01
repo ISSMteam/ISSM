@@ -280,7 +280,6 @@ syn keyword juliaConstC HydrologySedimentKmaxEnum
 syn keyword juliaConstC HydrologySheetAlphaEnum
 syn keyword juliaConstC HydrologySheetBetaEnum
 syn keyword juliaConstC HydrologyStepsPerStepEnum
-syn keyword juliaConstC HydrologyStorageEnum
 syn keyword juliaConstC HydrologydcEplColapseThicknessEnum
 syn keyword juliaConstC HydrologydcEplConductivityEnum
 syn keyword juliaConstC HydrologydcEplInitialThicknessEnum
@@ -921,6 +920,7 @@ syn keyword juliaConstC HydrologySheetConductivityEnum
 syn keyword juliaConstC HydrologySheetDischargeEnum
 syn keyword juliaConstC HydrologySheetThicknessEnum
 syn keyword juliaConstC HydrologySheetThicknessOldEnum
+syn keyword juliaConstC HydrologyStorageEnum
 syn keyword juliaConstC HydrologyTwsEnum
 syn keyword juliaConstC HydrologyTwsSpcEnum
 syn keyword juliaConstC HydrologyTwsAnalysisEnum

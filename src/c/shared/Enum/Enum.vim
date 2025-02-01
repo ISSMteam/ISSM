@@ -287,7 +287,6 @@ syn keyword cConstant HydrologySedimentKmaxEnum
 syn keyword cConstant HydrologySheetAlphaEnum
 syn keyword cConstant HydrologySheetBetaEnum
 syn keyword cConstant HydrologyStepsPerStepEnum
-syn keyword cConstant HydrologyStorageEnum
 syn keyword cConstant HydrologydcEplColapseThicknessEnum
 syn keyword cConstant HydrologydcEplConductivityEnum
 syn keyword cConstant HydrologydcEplInitialThicknessEnum
@@ -928,6 +927,7 @@ syn keyword cConstant HydrologySheetConductivityEnum
 syn keyword cConstant HydrologySheetDischargeEnum
 syn keyword cConstant HydrologySheetThicknessEnum
 syn keyword cConstant HydrologySheetThicknessOldEnum
+syn keyword cConstant HydrologyStorageEnum
 syn keyword cConstant HydrologyTwsEnum
 syn keyword cConstant HydrologyTwsSpcEnum
 syn keyword cConstant HydrologyTwsAnalysisEnum
@@ -1959,6 +1959,7 @@ syn keyword cType SpcTransient
 syn keyword cType SphericalVariogram
 syn keyword cType StringArrayParam
 syn keyword cType StringParam
+syn keyword cType TEMP
 syn keyword cType Tetra
 syn keyword cType TetraRef
 syn keyword cType TransientArrayParam
