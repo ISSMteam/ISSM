@@ -75,7 +75,7 @@ class GenericExternalResult: public ExternalResult {
 			time        = 0;
 			value       = 0;
 		} /*}}}*/
-		GenericExternalResult(int in_id, int in_enum_type,ResultType in_values, int in_M,int in_N,int in_step,IssmDouble in_time){/*{{{*/
+		GenericExternalResult(int in_id, int in_enum_type,ResultType in_values, int in_M,int in_N,int in_step=UNDEF,IssmDouble in_time=UNDEF){/*{{{*/
 			id        = in_id;
 			step      = in_step;
 			time      = in_time;

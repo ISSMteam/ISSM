@@ -552,8 +552,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		for(int i=0;i<num_controls;i++){
 
 			/*Disect results*/
-			GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i],1,0.);
-			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X[offset],N[i],M[i],1,0.);
+			GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
+			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X[offset],N[i],M[i]);
 
 			/*transpose for consistency with MATLAB's formating*/
 			G_output->Transpose();
