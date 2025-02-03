@@ -4,7 +4,7 @@ set -eu
 
 ## Constants
 #
-VER="3.22.0"
+VER="3.22.3"
 
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed

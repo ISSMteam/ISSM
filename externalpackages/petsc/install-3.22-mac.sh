@@ -1,9 +1,10 @@
 #!/bin/bash
 set -eu
 
+
 ## Constants
 #
-VER="3.22.0"
+VER="3.22.3"
 
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed
@@ -43,7 +44,7 @@ cd ${PETSC_DIR}
 	--with-pic=1 \
 	--download-fblaslapack=1 \
 	--download-metis=1 \
-	--download-mpich=1 \
+	--download-mpich=https://www.mpich.org/static/downloads/4.3.0/mpich-4.3.0.tar.gz \
 	--download-mumps=1 \
 	--download-parmetis=1 \
 	--download-scalapack=1 \
