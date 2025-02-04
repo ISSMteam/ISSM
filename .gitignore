@@ -67,6 +67,8 @@ externalpackages/*/*.zip
 externalpackages/*/*.gz
 externalpackages/*/*.tgz
 externalpackages/chaco/chaco*guide.pdf
+externalpackages/export_fig/.ignore
+externalpackages/vim/addons/vim/.netrwhist
 
 # Jenkins #
 #==========
