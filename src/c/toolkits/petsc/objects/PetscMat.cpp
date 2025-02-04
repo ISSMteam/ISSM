@@ -3,19 +3,15 @@
  */
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
-
 #include <stdio.h>
 #include <string.h>
 #include "../petscincludes.h"
 #include "../../../shared/shared.h"
-
-/*}}}*/
 
 /*PetscMat constructors and destructor*/
 PetscMat::PetscMat(){/*{{{*/
@@ -156,10 +152,9 @@ void PetscMat::MatMult(PetscVec* X,PetscVec* AX){/*{{{*/
 
 	_assert_(this->matrix);
 	_assert_(X->vector);
-	MatMultPatch(this->matrix,X->vector,AX->vector,IssmComm::GetComm());
 
-}
-/*}}}*/
+	::MatMult(this->matrix, X->vector, AX->vector);
+}/*}}}*/
 PetscMat* PetscMat::Duplicate(void){/*{{{*/
 
 	PetscMat* output=new PetscMat();
