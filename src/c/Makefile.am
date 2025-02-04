@@ -391,7 +391,6 @@ issm_sources += \
 	./toolkits/petsc/patches/VecFree.cpp \
 	./toolkits/petsc/patches/KSPFree.cpp \
 	./toolkits/petsc/patches/MatFree.cpp \
-	./toolkits/petsc/patches/MatMultPatch.cpp \
 	./toolkits/petsc/patches/ISSMToPetscMatrixType.cpp \
 	./toolkits/petsc/patches/ISSMToPetscInsertMode.cpp \
 	./toolkits/petsc/patches/ISSMToPetscNormMode.cpp \

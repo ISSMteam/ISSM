@@ -25,7 +25,6 @@ void VecFree(Vec* pvec);
 void KSPFree(KSP* pksp);
 int MatPartition(Mat* poutmatrix,Mat matrixA,double* row_partition_vector,int row_partition_vector_size, double* col_partition_vector,int col_partition_vector_size);
 void PetscOptionsDetermineSolverType(int* psolver_type);
-void MatMultPatch(Mat A,Vec X, Vec AX,ISSM_MPI_Comm comm);
 void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broadcast=true);
 Vec  SerialToVec(double* vector,int vector_size);
 InsertMode ISSMToPetscInsertMode(InsMode mode);
