@@ -42,9 +42,9 @@ cd ${PETSC_DIR}
 	--with-ssl=0 \
 	--with-pic=1 \
 	--with-blas-lapack-dir="/usr/local/intel/oneapi/2021/mkl/2021.4.0/" \
-	--with-cc="/usr/local/intel/oneapi/2021/mpi/2021.4.0/bin/mpicc" \
-	--with-cxx="/usr/local/intel/oneapi/2021/mpi/2021.4.0/bin/mpicxx" \
-	--with-fc="/usr/local/intel/oneapi/2021/mpi/2021.4.0/bin/mpif90" \
+	--with-cc="mpicc" \
+	--with-cxx="mpicxx" \
+	--with-fc="mpif90" \
 	--download-metis=1 \
 	--download-mumps=1 \
 	--download-parmetis=1 \
