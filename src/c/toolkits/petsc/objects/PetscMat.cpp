@@ -157,12 +157,16 @@ void PetscMat::MatMult(PetscVec* X,PetscVec* AX){/*{{{*/
 }/*}}}*/
 PetscMat* PetscMat::Duplicate(void){/*{{{*/
 
-	PetscMat* output=new PetscMat();
 	_assert_(this->matrix);
+
+	/*Instantiate output Matrix*/
+	PetscMat* output=new PetscMat();
+
+	/*Duplicate matrix*/
 	MatDuplicate(this->matrix,MAT_COPY_VALUES,&output->matrix);
 
+	/*Return new matrix*/
 	return output;
-
 }
 /*}}}*/
 IssmDouble* PetscMat::ToMPISerial(void){/*{{{*/
