@@ -16,7 +16,7 @@ except ImportError:
 from QueueRequirements import QueueRequirements
 
 class pfe(object):
-    """PFE cluster class definition
+    """pfe cluster class definition
 
     Usage:
         cluster = pfe()
