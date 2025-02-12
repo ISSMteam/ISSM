@@ -158,12 +158,12 @@ class gadi(object):
         # Optionally request memory (example: 4GB x nprocs):
         # fid.write('#PBS -l mem={}GB\n'.format(4 * self.nprocs()))
         fid.write('#PBS -l walltime={}\n'.format(walltime_str))
-        fid.write('#PBS -l wd\n')  # so we start in the submission directory
+        fid.write('#PBS -l wd\n')  
         fid.write('#PBS -j oe\n')
         fid.write('#PBS -l storage=scratch/{0}+gdata/{0}\n'.format(self.project))
         fid.write('#PBS -m bea\n')
         fid.write('#PBS -o {}/{}/{}.outlog \n'.format(self.executionpath, dirname, modelname))
-        fid.write('#PBS -e {}/{}/{}.errlog \n\n'.format(self.executionpath, dirname, modelname))   #PBS -l storage=scratch/ek9+gdata/ek9
+        fid.write('#PBS -e {}/{}/{}.errlog \n\n'.format(self.executionpath, dirname, modelname))   
 
         fid.write('\n# Load modules as needed:\n')
         fid.write('module purge\n')
