@@ -185,6 +185,7 @@ if exist(options,'>=')
 	field2=field(:);
 	if getfieldvalue(options,'timeseries',0),       field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
+	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if any(field2<lowerbound),
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values above ' num2str(lowerbound(1,1))]));
@@ -195,6 +196,7 @@ if exist(options,'>')
 	field2=reshape(field,prod(size(field)),1);
 	if getfieldvalue(options,'timeseries',0),       field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
+	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if any(field2<=lowerbound),
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values above ' num2str(lowerbound(1,1))]));
@@ -207,6 +209,7 @@ if exist(options,'<=')
 	field2=reshape(field,prod(size(field)),1);
 	if getfieldvalue(options,'timeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
+	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if any(field2>upperbound),
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values below ' num2str(upperbound(1,1))]));
@@ -217,6 +220,7 @@ if exist(options,'<')
 	field2=reshape(field,prod(size(field)),1);
 	if getfieldvalue(options,'timeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
+	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if any(field2>=upperbound),
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values below ' num2str(upperbound(1,1))]));
@@ -290,5 +294,17 @@ if getfieldvalue(options,'singletimeseries',0)
 	else
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have 2 lines or be a scalar']));
+	end
+end
+
+%Check mapped forcings (size and times)
+if getfieldvalue(options,'mappedtimeseries',0)
+	if any(field(end,:)~=sort(field(end,:))),
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' columns should be sorted chronologically']));
+	end
+	if any(field(end,1:end-1)==field(end,2:end))
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' columns must not contain duplicate timesteps']));
 	end
 end

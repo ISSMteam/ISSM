@@ -548,6 +548,7 @@
 	SmbARMAmalagcoefsEnum
 	SmbARMApolyparamsEnum
 	SmbAveragingEnum
+	SmbCParamEnum
 	SmbDebrisalbedoEnum
 	SmbIcealbedoEnum
 	SmbSnowalbedoEnum
@@ -558,11 +559,15 @@
 	SmbDesfacElevEnum
 	SmbDpermilEnum
 	SmbDsnowIdxEnum
+	SmbEAirParamEnum
 	SmbElevationBinsEnum
 	SmbCldFracEnum
 	SmbDelta18oEnum
 	SmbDelta18oSurfaceEnum
 	SmbDenIdxEnum
+	SmbDlwrfParamEnum
+	SmbDswrfParamEnum
+	SmbDswdiffrfParamEnum
 	SmbDtEnum
 	SmbEnum
 	SmbEIdxEnum
@@ -578,6 +583,7 @@
 	SmbIsdeltaLWupEnum
 	SmbIsfirnwarmingEnum
 	SmbIsgraingrowthEnum
+	SmbIsmappedforcingEnum
 	SmbIsmeltEnum
 	SmbIsmungsmEnum
 	SmbIsprecipscaledEnum
@@ -587,14 +593,19 @@
 	SmbIsthermalEnum
 	SmbIsturbulentfluxEnum
 	SmbKEnum
+	SmbLapsedlwrfValueEnum
 	SmbLapseRatesEnum
+	SmbLapseTaValueEnum
 	SmbLWgradEnum
+	SmbMappedforcingelevationEnum
 	SmbNumBasinsEnum
 	SmbNumBreaksEnum
 	SmbNumElevationBinsEnum
 	SmbNumParamsEnum
 	SmbNumRequestedOutputsEnum
+	SmbPAirParamEnum
 	SmbPfacEnum
+	SmbPParamEnum
 	SmbRdlEnum
 	SmbRefElevationEnum
 	SmbRequestedOutputsEnum
@@ -622,12 +633,18 @@
 	SmbSWgradEnum
 	SmbT0dryEnum
 	SmbT0wetEnum
+	SmbTaParamEnum
 	SmbTcIdxEnum
 	SmbTeThreshEnum
 	SmbTdiffEnum
 	SmbThermoDeltaTScalingEnum
 	SmbTemperaturesReconstructedYearsEnum
+	SmbTmeanParamEnum
+	SmbTzParamEnum
 	SmbPrecipitationsReconstructedYearsEnum
+	SmbVParamEnum
+	SmbVmeanParamEnum
+	SmbVzParamEnum
 	SmbWindspeedgradEnum
 	SmoothThicknessMultiplierEnum
 	SolutionTypeEnum
@@ -1135,6 +1152,7 @@
 	SmbHrefEnum
 	SmbIsInitializedEnum
 	SmbMAddEnum
+	SmbMappedforcingpointEnum
 	SmbMassBalanceEnum
 	SmbMassBalanceSnowEnum
 	SmbMassBalanceIceEnum
@@ -2374,6 +2392,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbARMAmalagcoefsEnum) return "SmbARMAmalagcoefs" end
 	if(enum==SmbARMApolyparamsEnum) return "SmbARMApolyparams" end
 	if(enum==SmbAveragingEnum) return "SmbAveraging" end
+	if(enum==SmbCParamEnum) return "SmbCParam" end
 	if(enum==SmbDebrisalbedoEnum) return "SmbDebrisalbedo" end
 	if(enum==SmbIcealbedoEnum) return "SmbIcealbedo" end
 	if(enum==SmbSnowalbedoEnum) return "SmbSnowalbedo" end
@@ -2384,11 +2403,15 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbDesfacElevEnum) return "SmbDesfacElev" end
 	if(enum==SmbDpermilEnum) return "SmbDpermil" end
 	if(enum==SmbDsnowIdxEnum) return "SmbDsnowIdx" end
+	if(enum==SmbEAirParamEnum) return "SmbEAirParam" end
 	if(enum==SmbElevationBinsEnum) return "SmbElevationBins" end
 	if(enum==SmbCldFracEnum) return "SmbCldFrac" end
 	if(enum==SmbDelta18oEnum) return "SmbDelta18o" end
 	if(enum==SmbDelta18oSurfaceEnum) return "SmbDelta18oSurface" end
 	if(enum==SmbDenIdxEnum) return "SmbDenIdx" end
+	if(enum==SmbDlwrfParamEnum) return "SmbDlwrfParam" end
+	if(enum==SmbDswrfParamEnum) return "SmbDswrfParam" end
+	if(enum==SmbDswdiffrfParamEnum) return "SmbDswdiffrfParam" end
 	if(enum==SmbDtEnum) return "SmbDt" end
 	if(enum==SmbEnum) return "Smb" end
 	if(enum==SmbEIdxEnum) return "SmbEIdx" end
@@ -2404,6 +2427,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsdeltaLWupEnum) return "SmbIsdeltaLWup" end
 	if(enum==SmbIsfirnwarmingEnum) return "SmbIsfirnwarming" end
 	if(enum==SmbIsgraingrowthEnum) return "SmbIsgraingrowth" end
+	if(enum==SmbIsmappedforcingEnum) return "SmbIsmappedforcing" end
 	if(enum==SmbIsmeltEnum) return "SmbIsmelt" end
 	if(enum==SmbIsmungsmEnum) return "SmbIsmungsm" end
 	if(enum==SmbIsprecipscaledEnum) return "SmbIsprecipscaled" end
@@ -2413,14 +2437,19 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsthermalEnum) return "SmbIsthermal" end
 	if(enum==SmbIsturbulentfluxEnum) return "SmbIsturbulentflux" end
 	if(enum==SmbKEnum) return "SmbK" end
+	if(enum==SmbLapsedlwrfValueEnum) return "SmbLapsedlwrfValue" end
 	if(enum==SmbLapseRatesEnum) return "SmbLapseRates" end
+	if(enum==SmbLapseTaValueEnum) return "SmbLapseTaValue" end
 	if(enum==SmbLWgradEnum) return "SmbLWgrad" end
+	if(enum==SmbMappedforcingelevationEnum) return "SmbMappedforcingelevation" end
 	if(enum==SmbNumBasinsEnum) return "SmbNumBasins" end
 	if(enum==SmbNumBreaksEnum) return "SmbNumBreaks" end
 	if(enum==SmbNumElevationBinsEnum) return "SmbNumElevationBins" end
 	if(enum==SmbNumParamsEnum) return "SmbNumParams" end
 	if(enum==SmbNumRequestedOutputsEnum) return "SmbNumRequestedOutputs" end
+	if(enum==SmbPAirParamEnum) return "SmbPAirParam" end
 	if(enum==SmbPfacEnum) return "SmbPfac" end
+	if(enum==SmbPParamEnum) return "SmbPParam" end
 	if(enum==SmbRdlEnum) return "SmbRdl" end
 	if(enum==SmbRefElevationEnum) return "SmbRefElevation" end
 	if(enum==SmbRequestedOutputsEnum) return "SmbRequestedOutputs" end
@@ -2448,12 +2477,18 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbSWgradEnum) return "SmbSWgrad" end
 	if(enum==SmbT0dryEnum) return "SmbT0dry" end
 	if(enum==SmbT0wetEnum) return "SmbT0wet" end
+	if(enum==SmbTaParamEnum) return "SmbTaParam" end
 	if(enum==SmbTcIdxEnum) return "SmbTcIdx" end
 	if(enum==SmbTeThreshEnum) return "SmbTeThresh" end
 	if(enum==SmbTdiffEnum) return "SmbTdiff" end
 	if(enum==SmbThermoDeltaTScalingEnum) return "SmbThermoDeltaTScaling" end
 	if(enum==SmbTemperaturesReconstructedYearsEnum) return "SmbTemperaturesReconstructedYears" end
+	if(enum==SmbTmeanParamEnum) return "SmbTmeanParam" end
+	if(enum==SmbTzParamEnum) return "SmbTzParam" end
 	if(enum==SmbPrecipitationsReconstructedYearsEnum) return "SmbPrecipitationsReconstructedYears" end
+	if(enum==SmbVParamEnum) return "SmbVParam" end
+	if(enum==SmbVmeanParamEnum) return "SmbVmeanParam" end
+	if(enum==SmbVzParamEnum) return "SmbVzParam" end
 	if(enum==SmbWindspeedgradEnum) return "SmbWindspeedgrad" end
 	if(enum==SmoothThicknessMultiplierEnum) return "SmoothThicknessMultiplier" end
 	if(enum==SolutionTypeEnum) return "SolutionType" end
@@ -2961,6 +2996,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbHrefEnum) return "SmbHref" end
 	if(enum==SmbIsInitializedEnum) return "SmbIsInitialized" end
 	if(enum==SmbMAddEnum) return "SmbMAdd" end
+	if(enum==SmbMappedforcingpointEnum) return "SmbMappedforcingpoint" end
 	if(enum==SmbMassBalanceEnum) return "SmbMassBalance" end
 	if(enum==SmbMassBalanceSnowEnum) return "SmbMassBalanceSnow" end
 	if(enum==SmbMassBalanceIceEnum) return "SmbMassBalanceIce" end
@@ -4200,6 +4236,7 @@ function StringToEnum(name::String)
 	if(name=="SmbARMAmalagcoefs") return SmbARMAmalagcoefsEnum  end
 	if(name=="SmbARMApolyparams") return SmbARMApolyparamsEnum  end
 	if(name=="SmbAveraging") return SmbAveragingEnum  end
+	if(name=="SmbCParam") return SmbCParamEnum  end
 	if(name=="SmbDebrisalbedo") return SmbDebrisalbedoEnum  end
 	if(name=="SmbIcealbedo") return SmbIcealbedoEnum  end
 	if(name=="SmbSnowalbedo") return SmbSnowalbedoEnum  end
@@ -4210,11 +4247,15 @@ function StringToEnum(name::String)
 	if(name=="SmbDesfacElev") return SmbDesfacElevEnum  end
 	if(name=="SmbDpermil") return SmbDpermilEnum  end
 	if(name=="SmbDsnowIdx") return SmbDsnowIdxEnum  end
+	if(name=="SmbEAirParam") return SmbEAirParamEnum  end
 	if(name=="SmbElevationBins") return SmbElevationBinsEnum  end
 	if(name=="SmbCldFrac") return SmbCldFracEnum  end
 	if(name=="SmbDelta18o") return SmbDelta18oEnum  end
 	if(name=="SmbDelta18oSurface") return SmbDelta18oSurfaceEnum  end
 	if(name=="SmbDenIdx") return SmbDenIdxEnum  end
+	if(name=="SmbDlwrfParam") return SmbDlwrfParamEnum  end
+	if(name=="SmbDswrfParam") return SmbDswrfParamEnum  end
+	if(name=="SmbDswdiffrfParam") return SmbDswdiffrfParamEnum  end
 	if(name=="SmbDt") return SmbDtEnum  end
 	if(name=="Smb") return SmbEnum  end
 	if(name=="SmbEIdx") return SmbEIdxEnum  end
@@ -4230,6 +4271,7 @@ function StringToEnum(name::String)
 	if(name=="SmbIsdeltaLWup") return SmbIsdeltaLWupEnum  end
 	if(name=="SmbIsfirnwarming") return SmbIsfirnwarmingEnum  end
 	if(name=="SmbIsgraingrowth") return SmbIsgraingrowthEnum  end
+	if(name=="SmbIsmappedforcing") return SmbIsmappedforcingEnum  end
 	if(name=="SmbIsmelt") return SmbIsmeltEnum  end
 	if(name=="SmbIsmungsm") return SmbIsmungsmEnum  end
 	if(name=="SmbIsprecipscaled") return SmbIsprecipscaledEnum  end
@@ -4239,14 +4281,19 @@ function StringToEnum(name::String)
 	if(name=="SmbIsthermal") return SmbIsthermalEnum  end
 	if(name=="SmbIsturbulentflux") return SmbIsturbulentfluxEnum  end
 	if(name=="SmbK") return SmbKEnum  end
+	if(name=="SmbLapsedlwrfValue") return SmbLapsedlwrfValueEnum  end
 	if(name=="SmbLapseRates") return SmbLapseRatesEnum  end
+	if(name=="SmbLapseTaValue") return SmbLapseTaValueEnum  end
 	if(name=="SmbLWgrad") return SmbLWgradEnum  end
+	if(name=="SmbMappedforcingelevation") return SmbMappedforcingelevationEnum  end
 	if(name=="SmbNumBasins") return SmbNumBasinsEnum  end
 	if(name=="SmbNumBreaks") return SmbNumBreaksEnum  end
 	if(name=="SmbNumElevationBins") return SmbNumElevationBinsEnum  end
 	if(name=="SmbNumParams") return SmbNumParamsEnum  end
 	if(name=="SmbNumRequestedOutputs") return SmbNumRequestedOutputsEnum  end
+	if(name=="SmbPAirParam") return SmbPAirParamEnum  end
 	if(name=="SmbPfac") return SmbPfacEnum  end
+	if(name=="SmbPParam") return SmbPParamEnum  end
 	if(name=="SmbRdl") return SmbRdlEnum  end
 	if(name=="SmbRefElevation") return SmbRefElevationEnum  end
 	if(name=="SmbRequestedOutputs") return SmbRequestedOutputsEnum  end
@@ -4274,12 +4321,18 @@ function StringToEnum(name::String)
 	if(name=="SmbSWgrad") return SmbSWgradEnum  end
 	if(name=="SmbT0dry") return SmbT0dryEnum  end
 	if(name=="SmbT0wet") return SmbT0wetEnum  end
+	if(name=="SmbTaParam") return SmbTaParamEnum  end
 	if(name=="SmbTcIdx") return SmbTcIdxEnum  end
 	if(name=="SmbTeThresh") return SmbTeThreshEnum  end
 	if(name=="SmbTdiff") return SmbTdiffEnum  end
 	if(name=="SmbThermoDeltaTScaling") return SmbThermoDeltaTScalingEnum  end
 	if(name=="SmbTemperaturesReconstructedYears") return SmbTemperaturesReconstructedYearsEnum  end
+	if(name=="SmbTmeanParam") return SmbTmeanParamEnum  end
+	if(name=="SmbTzParam") return SmbTzParamEnum  end
 	if(name=="SmbPrecipitationsReconstructedYears") return SmbPrecipitationsReconstructedYearsEnum  end
+	if(name=="SmbVParam") return SmbVParamEnum  end
+	if(name=="SmbVmeanParam") return SmbVmeanParamEnum  end
+	if(name=="SmbVzParam") return SmbVzParamEnum  end
 	if(name=="SmbWindspeedgrad") return SmbWindspeedgradEnum  end
 	if(name=="SmoothThicknessMultiplier") return SmoothThicknessMultiplierEnum  end
 	if(name=="SolutionType") return SolutionTypeEnum  end
@@ -4787,6 +4840,7 @@ function StringToEnum(name::String)
 	if(name=="SmbHref") return SmbHrefEnum  end
 	if(name=="SmbIsInitialized") return SmbIsInitializedEnum  end
 	if(name=="SmbMAdd") return SmbMAddEnum  end
+	if(name=="SmbMappedforcingpoint") return SmbMappedforcingpointEnum  end
 	if(name=="SmbMassBalance") return SmbMassBalanceEnum  end
 	if(name=="SmbMassBalanceSnow") return SmbMassBalanceSnowEnum  end
 	if(name=="SmbMassBalanceIce") return SmbMassBalanceIceEnum  end
