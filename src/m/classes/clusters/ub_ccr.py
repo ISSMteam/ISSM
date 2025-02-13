@@ -37,8 +37,10 @@ class ub_ccr(object):
         self.qos = 'general-compute'
         self.time = 1 * 60 * 60
         self.nodes = 1
+        self.ntasks = 1
         self.ntaskspernode = 1
         self.cpuspertask = 1
+        self.exclusive = False
         self.mem = '10000'
         self.jobname = ''
         self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0', 'openmpi/4.1.1']
@@ -80,8 +82,10 @@ class ub_ccr(object):
         s += '    qos: {}\n'.format(self.qos)
         s += '    time: {}\n'.format(self.time)
         s += '    nodes: {}\n'.format(self.nodes)
+        s += '    ntasks: {}\n'.format(self.ntasks)
         s += '    ntaskspernode: {}\n'.format(self.ntaskspernode)
         s += '    cpuspertask: {}\n'.format(self.cpuspertask)
+        s += '    exclusive: {}\n'.format(self.exclusive)
         s += '    mem: {}\n'.format(self.mem)
         s += '    jobname: {}\n'.format(self.jobname)
         s += '    modules: {}\n'.format(strjoin(self.modules, ', '))
@@ -96,7 +100,7 @@ class ub_ccr(object):
     # }}}
 
     def nprocs(self):  # {{{
-        return self.ntaskspernode * self.nodes
+        return self.ntasks
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
@@ -147,10 +151,16 @@ class ub_ccr(object):
 
         fid.write('#!/bin/bash -l\n')
         fid.write('#SBATCH --time {:02d}:{:02d}:00\n'.format(int(floor(self.time / 3600)), int(floor(self.time % 3600) / 60)))
-        fid.write('#SBATCH --nodes={}\n'.format(self.nodes))
-        fid.write('#SBATCH --ntasks-per-node={}\n'.format(self.ntaskspernode))
+        if self.nodes != 1:
+            fid.write('#SBATCH --nodes={}\n'.format(self.nodes))
+        if self.ntasks != 1:
+            fid.write('#SBATCH --ntasks={}\n'.format(self.ntasks))
+        if self.ntaskspernode != 1:
+            fid.write('#SBATCH --ntasks-per-node={}\n'.format(self.ntaskspernode))
         if self.cpuspertask != 1:
             fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
+        if self.exclusive:
+            fid.write('#SBATCH --exclusive\n')
         fid.write('#SBATCH --mem={}\n'.format(self.mem))
         fid.write('#SBATCH --job-name={}\n'.format(self.jobname))
         fid.write('#SBATCH --output={}.outlog\n'.format(modelname))

@@ -159,11 +159,14 @@ void PetscVec::GetLocalVector(IssmDouble** pvector,int** pindices){/*{{{*/
 PetscVec* PetscVec::Duplicate(void){/*{{{*/
 
 	_assert_(this->vector);
-	Vec vec_output=NULL;
-	VecDuplicate(this->vector,&vec_output);
-	PetscVec* output=new PetscVec(vec_output);
-	VecFree(&vec_output);
 
+	/*Instantiate output Vector*/
+	PetscVec* output=new PetscVec();
+
+	/*Duplicate using "this" layout*/
+	VecDuplicate(this->vector,&output->vector);
+
+	/*Return new vector*/
 	return output;
 }
 /*}}}*/
