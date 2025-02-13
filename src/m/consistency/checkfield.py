@@ -178,6 +178,8 @@ def checkfield(md, *args):
                     minval = field
                 else:
                     minval = np.nanmin(field[0])
+            elif options.getfieldvalue('mappedtimeseries', 0):
+                minval = np.nanmin(field[:-1])
 
             if minval < lowerbound:
                 md = md.checkmessage(options.getfieldvalue('message', "field {} should have values above {}".format(fieldname, lowerbound)))
@@ -198,6 +200,8 @@ def checkfield(md, *args):
                     minval = field
                 else:
                     minval = np.nanmin(field[0])
+            elif options.getfieldvalue('mappedtimeseries', 0):
+                minval = np.nanmin(field[:-1])
 
             if minval <= lowerbound:
                 md = md.checkmessage(options.getfieldvalue('message', "field {} should have values above {}".format(fieldname, lowerbound)))
@@ -219,6 +223,8 @@ def checkfield(md, *args):
                     maxval = field
                 else:
                     maxval = np.nanmax(field[0])
+            elif options.getfieldvalue('mappedtimeseries', 0):
+                maxval = np.nanmax(field[:-1])
             elif hasattr(field, 'fov_forward_indices'):
                 maxval = field.fov_forward_indices[0]
             if maxval > upperbound:
@@ -241,9 +247,11 @@ def checkfield(md, *args):
                     maxval = field.copy()
                 else:
                     maxval = np.nanmax(field[0])
+            elif options.getfieldvalue('mappedtimeseries', 0):
+                maxval = np.nanmax(field[:-1])
 
-                if maxval >= upperbound:
-                    md = md.checkmessage(options.getfieldvalue('message', "field {} should have values below {}".format(fieldname, upperbound)))
+            if maxval >= upperbound:
+                md = md.checkmessage(options.getfieldvalue('message', "field {} should have values below {}".format(fieldname, upperbound)))
 
     #check file
     if options.getfieldvalue('file', 0):
@@ -281,4 +289,11 @@ def checkfield(md, *args):
         else:
             md = md.checkmessage(options.getfieldvalue('message', "field {} should have 2 lines or be a scalar".format(fieldname)))
 
+    #Check forcings (size and times)
+    if options.getfieldvalue('mappedtimeseries', 0):
+        if np.ndim(field) > 1 and not all(field[-1, :] == np.sort(field[-1, :])):
+            md = md.checkmessage(options.getfieldvalue('message', "field {} columns should be sorted chronologically".format(fieldname)))
+        if np.ndim(field) > 1 and any(field[-1, 0:-1] == field[-1, 1:]):
+            md = md.checkmessage(options.getfieldvalue('message', "field {} columns must not contain duplicate timesteps".format(fieldname)))
+  
     return md

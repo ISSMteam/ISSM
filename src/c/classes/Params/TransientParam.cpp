@@ -99,7 +99,7 @@ void  TransientParam::GetParameterValue(IssmDouble* pdouble,IssmDouble time){/*{
 	IssmDouble output;
 	bool   found;
 
-	if(this->cycle) _error_("not implemented yet!");
+	if(this->cycle) _error_("not implemented yet");
 
 	/*Ok, we have the time, go through the timesteps, and figure out which interval we 
 	 *fall within. Then interpolate the values on this interval: */
@@ -140,3 +140,49 @@ void  TransientParam::GetParameterValue(IssmDouble* pdouble,IssmDouble time){/*{
 	*pdouble=output;
 }
 /*}}}*/
+void  TransientParam::GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){/*{{{*/
+
+	bool cycle = this->cycle;
+
+	if(cycle){
+
+		/*Change input time if we cycle through the forcing*/
+		IssmDouble time0 = this->timesteps[0];
+		IssmDouble time1 = this->timesteps[this->N - 1];
+
+		if(timestepping!=AdaptiveTimesteppingEnum){
+			/*We need the end time to be the last timestep that would be taken*/
+			/* i.e., the case where GEMB has time stamps (finer timestep) after the last timestep */
+			/* warning: this assumes dt = constant!!*/
+			IssmDouble nsteps = reCast<int,IssmDouble>(time1/dt);
+			if (reCast<IssmDouble>(nsteps)<time1/dt) nsteps=nsteps+1;
+			time1 = nsteps*dt;
+		}
+
+		/*See by how many intervals we have to offset time*/
+		IssmDouble deltat = time1-time0;
+
+		//int num_intervals = floor((time-time0)/deltat); //Cannot do that because of AD!
+		int num_intervals = reCast<int,IssmDouble>(fabs(time-time0)/deltat);
+
+		/*Uncomment following line if you would like to apply a cycle BEFORE the time series starts*/
+		if(time<time0) num_intervals = -num_intervals-1;
+
+		if(fabs(time-time0)/deltat == reCast<IssmDouble>(num_intervals)){
+			/*Hack to make sure we always cover the last value of the series (discussion with Nicole)*/
+			time = time1;
+		}
+		else{
+			/*Now offset time so that we do the right interpolation below*/
+			time = time - num_intervals*deltat;
+		}
+
+		this->cycle = false;
+	}
+
+	this->GetParameterValue(pdouble,time);
+
+	this->cycle = cycle;
+}
+/*}}}*/
+

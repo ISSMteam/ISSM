@@ -60,7 +60,7 @@ template <class P> class GenericParam: public Param{
                 int   ObjectEnum() {return GenericParamEnum;};
 
                 /*}}}*/
-                /*Param vritual function definitions: {{{*/
+                /*Param virtual function definitions: {{{*/
                 P& GetParameterValue() { return myP;}
                 const P& GetParameterValue()const { return myP;};
                 int   InstanceEnum(){return myEnumVal;}
@@ -72,6 +72,7 @@ template <class P> class GenericParam: public Param{
                 void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return an array of integers");}
                 void  GetParameterValue(IssmDouble* pIssmDouble){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a IssmDouble");}
                 void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a IssmDouble for a given time");}
+					 void  GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a IssmDouble for a given time");}
                 void  GetParameterValue(char** pstring){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a string");}
                 void  GetParameterValue(char*** pstringarray,int* pM){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a string array");}
                 void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot return a IssmDouble array");}
