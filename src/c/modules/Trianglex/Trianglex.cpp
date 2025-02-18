@@ -156,7 +156,7 @@ void Trianglex(int** pindex,IssmPDouble** px,IssmPDouble** py,int** psegments,in
 	/*   zero (z), assign a regional attribute to each element (A), and  */
 	/*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
 	/*   neighbor list (n).                                              */
-	sprintf(options,"%s%lf","pQzDq30ia",area); /*replace V by Q to quiet down the logging*/
+	snprintf(options, sizeof(options),"%s%lf","pQzDq30ia",area); /*replace V by Q to quiet down the logging*/
 	triangulate(options, &in, &out, NULL);
 	/*report(&out, 0, 1, 1, 1, 1, 0);*/
 
