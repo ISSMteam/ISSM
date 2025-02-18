@@ -19,6 +19,8 @@ jobs:
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf
+        ls ${ISSM_DIR}/externalpackages/petsc/install/bin/
+        which mpicxx
         ./configure --prefix=${ISSM_DIR} \
         --disable-static \
         --enable-development \
