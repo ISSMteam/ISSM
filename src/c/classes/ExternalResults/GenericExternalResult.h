@@ -97,7 +97,7 @@ class GenericExternalResult: public ExternalResult {
 			_error_("template GenericExternalResult(int in_id, int in_enum_type,double* in_values, int in_M,int in_N,int in_step,IssmDouble in_time) not implemented for this ResultType\n");
 		}
 		/*}}}*/
-		GenericExternalResult(int in_id, int in_enum_type,ResultType in_value,int in_step, IssmDouble in_time){ /*{{{*/
+		GenericExternalResult(int in_id, int in_enum_type,ResultType in_value,int in_step=UNDEF, IssmDouble in_time=UNDEF){ /*{{{*/
 			id        = in_id;
 			value     = in_value;
 			step      = in_step;
@@ -109,25 +109,13 @@ class GenericExternalResult: public ExternalResult {
 			EnumToStringx(&this->result_name,in_enum_type);
 		}
 		/*}}}*/
-		GenericExternalResult(int in_id, int in_enum_type,ResultType in_value){ /*{{{*/
-			id        = in_id;
-			value     = in_value;
-			step      = UNDEF;
-			time      = UNDEF;
-			M         = 1;
-			N         = 1;
-
-			/*Convert enum to name*/
-			EnumToStringx(&this->result_name,in_enum_type);
-		}
-		/*}}}*/
-		GenericExternalResult(int in_id,const char* in_result_name,ResultType in_value,int in_step, IssmDouble in_time){ /*{{{*/
-			id        = in_id;
-			value     = in_value;
-			step      = in_step;
-			time      = in_time;
-			M         = 1;
-			N         = 1;
+		GenericExternalResult(int in_id,const char* in_result_name,ResultType in_value,int in_step=UNDEF, IssmDouble in_time=UNDEF){ /*{{{*/
+			id    = in_id;
+			value = in_value;
+			step  = in_step;
+			time  = in_time;
+			M     = 1;
+			N     = 1;
 
 			/*Copy name*/
 			this->result_name = xNew<char>(strlen(in_result_name)+1);
@@ -266,25 +254,14 @@ template <> inline void GenericExternalResult<double>::Marshall(MarshallHandle* 
 /*Specific instantiations for char*: */
 template <> inline GenericExternalResult<char*>::GenericExternalResult(int in_id, int in_enum_type,char* in_value,int in_step, IssmDouble in_time){ /*{{{*/
 
-	id = in_id;
+	id   = in_id;
+	step = in_step;
+	time = in_time;
+	M    = 1;
+	N    = 1;
+
 	value = xNew<char>(strlen(in_value)+1);
 	xMemCpy<char>(value,in_value,(strlen(in_value)+1));
-	step  = in_step;
-	time  = in_time;
-	M     = 1;
-	N     = 1;
-
-	/*Convert enum to name*/
-	EnumToStringx(&this->result_name,in_enum_type);
-
-} /*}}}*/
-template <> inline GenericExternalResult<char*>::GenericExternalResult(int in_id, int in_enum_type,char* in_value){ /*{{{*/
-
-	id = in_id;
-	value = xNew<char>(strlen(in_value)+1);
-	xMemCpy<char>(value,in_value,(strlen(in_value)+1));
-	step = UNDEF;  
-	time  = UNDEF;
 
 	/*Convert enum to name*/
 	EnumToStringx(&this->result_name,in_enum_type);

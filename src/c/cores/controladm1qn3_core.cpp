@@ -547,7 +547,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	if (solution_type == TransientSolutionEnum){
 		int step = 1;
 		femmodel->parameters->SetParam(step,StepEnum);
-		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N,1,0));
+		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N));
 
 		int offset = 0;
 		for(int i=0;i<num_controls;i++){
