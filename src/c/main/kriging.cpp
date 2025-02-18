@@ -92,41 +92,31 @@ int main(int argc,char **argv){
 }
 
 void ProcessArguments2(char** pbinfilename,char** poutbinfilename,char** plockfilename,char** prootpath,int argc,char **argv){
-	char *modelname      = NULL;
-	char *binfilename    = NULL;
-	char *outbinfilename = NULL;
-	char *lockfilename   = NULL;
-	char *rootpatharg    = NULL;
-	char *rootpath       = NULL;
 
 	if(argc<1)_error_("Usage error: no execution path provided");
 	if(argc<2)_error_("Usage error: missing model name");
 
-	rootpatharg=argv[1];
-	if(strcmp(strstr(rootpatharg,"/"),"/")!=0){
-		rootpath       = xNew<char>(strlen(rootpatharg)+2); sprintf(rootpath,"%s/",rootpatharg);
-	}
-	else{
-		rootpath       = xNew<char>(strlen(rootpatharg)+1); sprintf(rootpath,"%s",rootpatharg);
-	}
+	/*Create rootpath from argument*/
+	char* rootpatharg=argv[1];
+	int   rootpath_len = strlen(rootpatharg)+2;
+	char* rootpath = xNew<char>(rootpath_len);
+	snprintf(rootpath, rootpath_len,"%s/",rootpatharg);
 
-	modelname=argv[2];
-	if(strstr(modelname,rootpath)==NULL){
-		binfilename    = xNew<char>(strlen(rootpath)+strlen(modelname)+strlen(".bin")   +1); sprintf(binfilename,   "%s%s%s",rootpath,modelname,".bin");
-		outbinfilename = xNew<char>(strlen(rootpath)+strlen(modelname)+strlen(".outbin")+1); sprintf(outbinfilename,"%s%s%s",rootpath,modelname,".outbin");
-		lockfilename   = xNew<char>(strlen(rootpath)+strlen(modelname)+strlen(".lock")  +1); sprintf(lockfilename,  "%s%s%s",rootpath,modelname,".lock");
-	}
-	else{
-		binfilename    = xNew<char>(strlen(modelname)+strlen(".bin")   +1); sprintf(binfilename,   "%s%s",modelname,".bin");
-		outbinfilename = xNew<char>(strlen(modelname)+strlen(".outbin")+1); sprintf(outbinfilename,"%s%s",modelname,".outbin");
-		lockfilename   = xNew<char>(strlen(modelname)+strlen(".lock")  +1); sprintf(lockfilename,  "%s%s",modelname,".lock");
-	}
+	/*Create all file paths*/
+	char* modelname = argv[2];
+	int base_length = strlen(rootpath)+strlen(modelname);
+	int binfilename_len    = base_length+strlen(".bin")     +1;
+	int outbinfilename_len = base_length+strlen(".outbin")  +1;
+	int lockfilename_len   = base_length+strlen(".lock")    +1;
+	char* binfilename    = xNew<char>(binfilename_len);      snprintf(binfilename,      binfilename_len,     "%s%s%s",rootpath,modelname,".bin");
+	char* outbinfilename = xNew<char>(outbinfilename_len);   snprintf(outbinfilename,   outbinfilename_len,  "%s%s%s",rootpath,modelname,".outbin");
+	char* lockfilename   = xNew<char>(lockfilename_len);     snprintf(lockfilename,     lockfilename_len,    "%s%s%s",rootpath,modelname,".lock");
 
 	/*Clean up and assign output pointer*/
-	*pbinfilename=binfilename;
-	*poutbinfilename=outbinfilename;
-	*plockfilename=lockfilename;
-	*prootpath=rootpath;
+	*pbinfilename    = binfilename;
+	*poutbinfilename = outbinfilename;
+	*plockfilename   = lockfilename;
+	*prootpath       = rootpath;
 }
 
 void ProcessInputfile(double **px,double **py,double **pdata,int *pnobs,double **px_interp,double **py_interp,int *pninterp,Options **poptions,FILE* fid){
