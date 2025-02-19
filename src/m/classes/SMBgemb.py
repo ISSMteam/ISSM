@@ -210,7 +210,7 @@ class SMBgemb(object):
             '3: density and cloud amount [Greuell & Konzelmann, 1994]',
             '4: exponential time decay & wetness [Bougamont & Bamber, 2005]']))
 
-        s += '{}\n'.format(fielddisplay(self, 'dulwrfValue', 'Specified bias to be applied to the outward long wave radiation every element (W/m-2, +upward)'))
+        s += '{}\n'.format(fielddisplay(self, 'dulwrfValue', 'Specified bias to be applied to the outward long wave radiation at every element (W/m-2, +upward)'))
         s += '{}\n'.format(fielddisplay(self, 'teValue', 'Outward longwave radiation thermal emissivity forcing at every element (default in code is 1)'))
         s += '{}\n'.format(fielddisplay(self, 'teThresh', ['Apply eIdx method to all areas with effective grain radius above this value (mm),', 'or else apply direct input value from teValue, allowing emissivity to be altered.']))
         s += '{}\n'.format(fielddisplay(self, 'eIdx', ['method for calculating emissivity (default is 1)',
