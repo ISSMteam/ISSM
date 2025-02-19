@@ -14,11 +14,11 @@ AC_MSG_NOTICE(==================================================================
 AC_CANONICAL_TARGET
 
 #Compilers
-AC_PROG_CC([icc cl icl gcc])
-AC_PROG_CPP
-AC_PROG_CXX([icpc cl icl g++])
-AC_PROG_F77([ifort g77 gfortran])
-AC_PROG_FC([ifort gfortran])
+AC_PROG_CC( [mpicc icc cl icl gcc])             # C compiler
+AC_PROG_CPP                                     # C preprocessor (after CC)
+AC_PROG_CXX([mpicxx mpic++ icpc cl icl g++])    # C++ compiler
+AC_PROG_F77([mpifort ifort g77 gfortran])       # Fortran 77 compiler
+AC_PROG_FC( [mpifort ifort gfortran])           # Fortran compiler
 
 #AUTOMAKE
 AM_INIT_AUTOMAKE([foreign])     # Initialize automake and declare foreign (don't need a ChangeLog, INSTALL, etc)

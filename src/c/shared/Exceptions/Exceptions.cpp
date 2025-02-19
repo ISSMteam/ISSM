@@ -69,15 +69,15 @@ const char* ErrorException::WrapperReport() const{/*{{{*/
 
 	/*Output*/
 	std::ostringstream buffer;
-	char *message = NULL;
 
 	buffer << "\nError in ==> " << this->file_name << ":" << file_line << "\n";
 	buffer << this->function_name << " error message: " << this->what_str;
 
 	/*Convert std::ostringstream to std::string and then create char* */
 	std::string buffer2 = buffer.str();
-	message = new char[strlen(buffer2.c_str())+1];
-	sprintf(message,"%s",buffer2.c_str());
+	int   message_len = strlen(buffer2.c_str())+1;
+	char* message = new char[message_len];
+	snprintf(message, message_len,"%s",buffer2.c_str());
 
 	return message;
 }/*}}}*/
