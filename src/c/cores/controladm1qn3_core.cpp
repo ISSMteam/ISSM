@@ -501,16 +501,17 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 
 	/*Print exit flag*/
 	InversionStatsFooter(num_cost_functions);
+	_printf0_("   Exit code "<<int(omode));
 	switch(int(omode)){
-		case 0:  _printf0_("   Stop requested (indic = 0)\n"); break;
-		case 1:  _printf0_("   Convergence reached (gradient satisfies stopping criterion)\n"); break;
-		case 2:  _printf0_("   Bad initialization\n"); break;
-		case 3:  _printf0_("   Line search failure\n"); break;
-		case 4:  _printf0_("   Maximum number of iterations exceeded\n");break;
-		case 5:  _printf0_("   Maximum number of function calls exceeded\n"); break;
-		case 6:  _printf0_("   stopped on dxmin during line search\n"); break;
-		case 7:  _printf0_("   <g,d> > 0  or  <y,s> <0\n"); break;
-		default: _printf0_("   Unknown end condition\n");
+		case 0:  _printf0_(": Stop requested (indic = 0)\n"); break;
+		case 1:  _printf0_(": Convergence reached (gradient satisfies stopping criterion)\n"); break;
+		case 2:  _printf0_(": Bad initialization\n"); break;
+		case 3:  _printf0_(": Line search failure\n"); break;
+		case 4:  _printf0_(": Maximum number of iterations exceeded\n");break;
+		case 5:  _printf0_(": Maximum number of function calls exceeded\n"); break;
+		case 6:  _printf0_(": stopped on dxmin during line search\n"); break;
+		case 7:  _printf0_(": <g,d> > 0  or  <y,s> <0\n"); break;
+		default: _printf0_(": Unknown end condition\n");
 	}
 
 	/*Constrain solution vector*/
@@ -546,7 +547,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	if (solution_type == TransientSolutionEnum){
 		int step = 1;
 		femmodel->parameters->SetParam(step,StepEnum);
-		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N,1,0));
+		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N));
 
 		int offset = 0;
 		for(int i=0;i<num_controls;i++){

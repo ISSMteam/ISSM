@@ -269,7 +269,6 @@ issm_sources += \
 	./solutionsequences/solutionsequence_sampling.cpp \
 	./solutionsequences/convergence.cpp \
 	./classes/Options/Options.cpp \
-	./classes/Options/OptionUtilities.cpp \
 	./classes/RiftStruct.cpp \
 	./modules/ModelProcessorx/Transient/UpdateElementsTransient.cpp \
 	./modules/ModelProcessorx/Transient/UpdateParametersTransient.cpp \

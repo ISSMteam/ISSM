@@ -77,10 +77,10 @@ void OutputResultsx(FemModel* femmodel){
 					femmodel->parameters->FindParam(&nfilesperdirectory,QmuNfilesPerDirectoryEnum);
 					femmodel->parameters->FindParam(&root,RootPathEnum);
 					femmodel->parameters->FindParam(&modelname,ModelnameEnum);
-					sprintf(outputfilename2,"%s/%i/%s.outbin.%i",root,(int)(floor((currEvalId-1)/nfilesperdirectory)+1),modelname,currEvalId);
+					snprintf(outputfilename2, sizeof(outputfilename2),"%s/%i/%s.outbin.%i",root,(int)(floor((currEvalId-1)/nfilesperdirectory)+1),modelname,currEvalId);
 				}
 				else{
-					sprintf(outputfilename2,"%s.%i",outputfilename,currEvalId);
+					snprintf(outputfilename2, sizeof(outputfilename2),"%s.%i",outputfilename,currEvalId);
 				}
 				fid=pfopen0(outputfilename2,"ab+");
 			}
@@ -88,7 +88,7 @@ void OutputResultsx(FemModel* femmodel){
 	}
 	else{
 		/*We are opening different  files for output on all cpus. Append the  rank to the filename, and open: */
-		sprintf(outputfilename2,"%s.%i",outputfilename,my_rank);
+		snprintf(outputfilename2, sizeof(outputfilename2),"%s.%i",outputfilename,my_rank);
 		fid=pfopen(outputfilename2 ,"ab+");
 	}
 
