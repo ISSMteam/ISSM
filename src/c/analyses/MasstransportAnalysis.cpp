@@ -635,7 +635,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	int         melt_style,point1;
 	bool        mainlyfloating;
 	IssmDouble  fraction1,fraction2;
-	IssmDouble  Jdet,dt,intrusiondist;
+	IssmDouble  Jdet,dt,intrusiondist_avg;
 	IssmDouble  ms,mb,gmb,fmb,thickness,fmb_pert,gldistance;
 	IssmDouble  vx,vy,vel,dvxdx,dvydy,xi,h,tau;
 	IssmDouble  dvx[2],dvy[2];
@@ -665,7 +665,6 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	element->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,MasstransportStabilizationEnum);
-	//element->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum);	_assert_(gmb_input);
 	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum);  	_assert_(fmb_input);
@@ -677,20 +676,19 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* vyaverage_input  = element->GetInput(VyAverageEnum);								_assert_(vyaverage_input);
 	Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
-	//element->GetInputValue(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	h=element->CharacteristicLength();
 
 	/*Recover portion of element that is grounded*/
 	phi=element->GetGroundedPortion(xyz_list);
 	if(melt_style==SubelementMelt2Enum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
 	    gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else if(melt_style==IntrusionMeltEnum){
-		/* Calculate here the intrusion distance value (value in the middle of the element?) to pass as last input to GetGroundedPart*/
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
-
+		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
        	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -730,7 +728,6 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		}
 		else if(melt_style==IntrusionMeltEnum){
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			intrusiondist_input->GetInputValue(&intrusiondist,gauss);
 			
 			/* Helene's idea: here you may want to calculate gz from analytical formula based on observations and bed slope / difference from floatation.
 			//if(gldistance == -1 && gldistance < 6000) {
@@ -738,15 +735,15 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 				//retrieve slope
 			//} */
 
-			if(intrusiondist==0){
+			if(intrusiondist_avg==0){
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
 			}
-			else if(gldistance>intrusiondist) {
+			else if(gldistance>intrusiondist_avg) {
 				mb=gmb;
 			}
-			else if(gldistance<=intrusiondist && gldistance>0) {
-				mb=fmb*(1-gldistance/intrusiondist); 
+			else if(gldistance<=intrusiondist_avg && gldistance>0) {
+				mb=fmb*(1-gldistance/intrusiondist_avg); 
 			}
 			else{
 				mb=fmb;
@@ -802,7 +799,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	int melt_style, point1;
 	bool mainlyfloating;
 	IssmDouble  fraction1,fraction2,gllevelset;
-	IssmDouble  Jdet,dt,intrusiondist;
+	IssmDouble  Jdet,dt,intrusiondist_avg;
 	IssmDouble  ms,mb,gmb,fmb,thickness,phi=1.,gldistance;
 	IssmDouble* xyz_list = NULL;
 
@@ -817,24 +814,27 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
-	element->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum); _assert_(gmb_input);
 	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum); _assert_(fmb_input);
 	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                      _assert_(ms_input);
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);             _assert_(gllevelset_input);
 	Input* thickness_input  = element->GetInput(ThicknessEnum);                           _assert_(thickness_input);
+	Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
+	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
 
    /*Recover portion of element that is grounded*/
    Gauss* gauss=NULL;
    phi=element->GetGroundedPortion(xyz_list);
    if(melt_style==SubelementMelt2Enum){
-      element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
+      element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
       gauss = element->NewGauss(point1,fraction1,fraction2,3);
    }
-   else if(melt_style==IntrusionMeltEnum){
-	    element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
-       gauss = element->NewGauss(point1,fraction1,fraction2,3);
+   else if(melt_style==IntrusionMeltEnum){		
+		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
+       	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
    else{
       gauss = element->NewGauss(3);
@@ -869,15 +869,14 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
          else mb=gmb;
       	}
 	  	else if(melt_style==IntrusionMeltEnum){
-			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
-        	gldistance_input->GetInputValue(&gldistance,gauss);
-			if (intrusiondist==0)
+			gldistance_input->GetInputValue(&gldistance,gauss);
+			if (intrusiondist_avg==0)
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
-	        else if(gldistance>intrusiondist) 
+	        else if(gldistance>intrusiondist_avg) 
 				mb=gmb;
-			else if(gldistance<=intrusiondist && gldistance>0) 
-				mb=fmb*(1-gldistance/intrusiondist); 
+			else if(gldistance<=intrusiondist_avg && gldistance>0) 
+				mb=fmb*(1-gldistance/intrusiondist_avg); 
 			else
 				mb=fmb;
     	}
@@ -1171,7 +1170,7 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Recover portion of element that is grounded*/
 	phi=element->GetGroundedPortion(xyz_list);
 	if(melt_style==SubelementMelt2Enum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
 	   gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{

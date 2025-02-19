@@ -355,7 +355,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*Intermediaries*/
 	int         domaintype,dim,stabilization;
-	IssmDouble  Jdet,dt,intrusiondist,factor;
+	IssmDouble  Jdet,dt,intrusiondist_avg,factor;
 	IssmDouble  gmb,fmb,mb,bed,vx,vy,vz,tau,gldistance;
 	Element*    basalelement = NULL;
 	IssmDouble *xyz_list  = NULL;
@@ -428,12 +428,13 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	phi=basalelement->GetGroundedPortion(xyz_list);
 	Gauss*      gauss     = NULL;
 	if(melt_style==SubelementMelt2Enum){
-		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,GroundinglineIntrusionDistanceEnum);
+		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	if(melt_style==IntrusionMeltEnum){
-		/* Calculate here the intrusion distance value (value in the middle of the element?) to pass as last input to GetGroundedPart*/
-		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,GroundinglineIntrusionDistanceEnum);
+		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
+		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
 		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -472,17 +473,16 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 		}
 		else if(melt_style==IntrusionMeltEnum){
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			intrusiondist_input->GetInputValue(&intrusiondist,gauss);
 
-			if(intrusiondist==0){
+			if(intrusiondist_avg==0){
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
 			}
-			else if(gldistance>intrusiondist) {
+			else if(gldistance>intrusiondist_avg) {
 				mb=gmb;
 			}
-			else if(gldistance<=intrusiondist && gldistance>0) {
-				mb=fmb*(1-gldistance/intrusiondist); 
+			else if(gldistance<=intrusiondist_avg && gldistance>0) {
+				mb=fmb*(1-gldistance/intrusiondist_avg); 
 			}
 			else{
 				mb=fmb;
