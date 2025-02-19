@@ -25,23 +25,29 @@ void ProcessArguments(int* solution_type,char** pbinfilename,char** poutbinfilen
 	int rank_length = (my_rank == 0 ? 1 : (int)(log10(static_cast<double>(my_rank))+1)); 
 
 	/*Create rootpath from argument*/
-	char* rootpath = xNew<char>(strlen(rootpatharg)+2); sprintf(rootpath,"%s/",rootpatharg);
+	int   rootpath_len = strlen(rootpatharg)+2;
+	char* rootpath = xNew<char>(rootpath_len);
+	snprintf(rootpath, rootpath_len,"%s/",rootpatharg);
 
 	/*Create all file paths*/
-	int   base_length = strlen(rootpath)+strlen(modelname);
-	char* binfilename      = xNew<char>(base_length+strlen(".bin")     +1); sprintf(binfilename,   "%s%s%s",rootpath,modelname,".bin");
-	char* outbinfilename   = xNew<char>(base_length+strlen(".outbin")  +1); sprintf(outbinfilename,"%s%s%s",rootpath,modelname,".outbin");
-	char* toolkitsfilename = xNew<char>(base_length+strlen(".toolkits")+1); sprintf(toolkitsfilename,"%s%s%s",rootpath,modelname,".toolkits");
-	char* lockfilename     = xNew<char>(base_length+strlen(".lock")    +1); sprintf(lockfilename,  "%s%s%s",rootpath,modelname,".lock");
-	char* restartfilename  = xNew<char>(base_length+strlen("_rank")+rank_length+strlen(".rst")+1);
-	sprintf(restartfilename,"%s%s%s%i%s",rootpath,modelname,"_rank",my_rank,".rst");
+	int base_length = strlen(rootpath)+strlen(modelname);
+	int binfilename_len      = base_length+strlen(".bin")     +1;
+	int outbinfilename_len   = base_length+strlen(".outbin")  +1;
+	int toolkitsfilename_len = base_length+strlen(".toolkits")+1;
+	int lockfilename_len     = base_length+strlen(".lock")    +1;
+	int restartfilename_len  = base_length+strlen("_rank")+rank_length+strlen(".rst")+1;
+	char* binfilename      = xNew<char>(binfilename_len);      snprintf(binfilename,      binfilename_len,     "%s%s%s",rootpath,modelname,".bin");
+	char* outbinfilename   = xNew<char>(outbinfilename_len);   snprintf(outbinfilename,   outbinfilename_len,  "%s%s%s",rootpath,modelname,".outbin");
+	char* toolkitsfilename = xNew<char>(toolkitsfilename_len); snprintf(toolkitsfilename, toolkitsfilename_len,"%s%s%s",rootpath,modelname,".toolkits");
+	char* lockfilename     = xNew<char>(lockfilename_len);     snprintf(lockfilename,     lockfilename_len,    "%s%s%s",rootpath,modelname,".lock");
+	char* restartfilename  = xNew<char>(restartfilename_len);  snprintf(restartfilename,  restartfilename_len, "%s%s%s%i%s",rootpath,modelname,"_rank",my_rank,".rst");
 
 	/*Clean up and assign output pointer*/
-	*pbinfilename=binfilename;
-	*poutbinfilename=outbinfilename;
-	*ptoolkitsfilename=toolkitsfilename;
-	*plockfilename=lockfilename;
-	*prestartfilename=restartfilename;
-	*prootpath=rootpath;
-	*pmodelname=modelname;
+	*pbinfilename      = binfilename;
+	*poutbinfilename   = outbinfilename;
+	*ptoolkitsfilename = toolkitsfilename;
+	*plockfilename     = lockfilename;
+	*prestartfilename  = restartfilename;
+	*prootpath         = rootpath;
+	*pmodelname        = modelname;
 }

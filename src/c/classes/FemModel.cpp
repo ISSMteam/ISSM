@@ -294,8 +294,9 @@ void FemModel::CheckPointAD(int step){/*{{{*/
 	int step_length = (step    == 0 ? 1 : int(log10(static_cast<double>(step))   +1));
 
 	/*Create restart file*/
-	char* restartfilename  = xNew<char>(strlen("AD_step_")+step_length+strlen("_rank_")+rank_length+strlen(".ckpt")+1);
-	sprintf(restartfilename,"%s%i%s%i%s","AD_step_",step,"_rank_",my_rank,".ckpt");
+	int restartfilename_len = strlen("AD_step_")+step_length+strlen("_rank_")+rank_length+strlen(".ckpt")+1;
+	char* restartfilename = xNew<char>(restartfilename_len);
+	snprintf(restartfilename, restartfilename_len, "%s%i%s%i%s","AD_step_",step,"_rank_",my_rank,".ckpt");
 	this->parameters->AddObject(new StringParam(RestartFileNameEnum,restartfilename));
 
 	/*Write files*/
@@ -647,15 +648,16 @@ void FemModel::RestartAD(int step){ /*{{{*/
 	int step_length = (step    == 0 ? 1 : int(log10(static_cast<double>(step))   +1));
 
 	/*Create restart file*/
-	char* restartfilename  = xNew<char>(strlen("AD_step_")+step_length+strlen("_rank_")+rank_length+strlen(".ckpt")+1);
-	sprintf(restartfilename,"%s%i%s%i%s","AD_step_",step,"_rank_",my_rank,".ckpt");
+	int   restartfilename_len = strlen("AD_step_")+step_length+strlen("_rank_")+rank_length+strlen(".ckpt")+1;
+	char* restartfilename  = xNew<char>(restartfilename_len);
+	snprintf(restartfilename, restartfilename_len,"%s%i%s%i%s","AD_step_",step,"_rank_",my_rank,".ckpt");
 	this->parameters->AddObject(new StringParam(RestartFileNameEnum,restartfilename));
 
 	/*Read files*/
 	this->Restart(1);
 
 	/*Delete checkpoint file to save disk space*/
-	_printf0_("    == deleting  file  "<<restartfilename<<"\n");
+	/*_printf0_("    == deleting  file  "<<restartfilename<<"\n");*/
 	std::remove(restartfilename);
 
 	/*Clean up and return*/
