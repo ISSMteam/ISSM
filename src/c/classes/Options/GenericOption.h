@@ -15,7 +15,7 @@
 #include <cstring>
 #include "../../shared/shared.h"
 #include "../../datastructures/datastructures.h"
-#include "./OptionUtilities.h"
+#include "./Option.h"
 /*}}}*/
 
 template <class OptionType> 

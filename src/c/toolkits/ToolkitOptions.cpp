@@ -22,10 +22,12 @@ void  ToolkitOptions::Init(const char* toolkit_in,const char* options){ /*{{{*/
 	/*copy options into toolkitoptions:*/
 	_assert_(toolkit_in);
 	_assert_(options);
-	toolkittype = xNew<char>(strlen(toolkit_in)+1); 
-	sprintf(toolkittype,"%s",toolkit_in);
-	toolkitoptions = xNew<char>(strlen(options)+1); 
-	sprintf(toolkitoptions,"%s",options);
+	int toolkittype_len    = strlen(toolkit_in)+1;
+	int toolkitoptions_len =  strlen(options)+1;
+	toolkittype    = xNew<char>(toolkittype_len); 
+	toolkitoptions = xNew<char>(toolkitoptions_len);
+	snprintf(toolkittype, toolkittype_len,"%s",toolkit_in);
+	snprintf(toolkitoptions, toolkitoptions_len,"%s",options);
 }/*}}}*/
 void  ToolkitOptions::Init(){ /*{{{*/
 	toolkittype    = NULL;
@@ -40,8 +42,9 @@ void  ToolkitOptions::Delete(){ /*{{{*/
 char* ToolkitOptions::GetToolkitType(){  /*{{{*/
 
 	if(toolkittype==NULL) _error_("toolkittype not set (may be a mex?)");
-	char* toolkittype_out = xNew<char>(strlen(toolkittype)+1); 
-	sprintf(toolkittype_out,"%s",toolkittype);
+	int   toolkittype_out_len = strlen(toolkittype)+1;
+	char* toolkittype_out = xNew<char>(toolkittype_out_len); 
+	snprintf(toolkittype_out, toolkittype_out_len, "%s", toolkittype);
 	return toolkittype_out;
 }/*}}}*/
 char* ToolkitOptions::GetToolkitOptionValue(const char* option){  /*{{{*/
@@ -60,8 +63,9 @@ char* TokenValue(char* tokenlist,const char* target){ /*{{{*/
 
 	/*First, because tokenizing destroys a string, copy what we have: */
 	if(tokenlist==NULL) _error_("tokenlist not set (may be a mex?)");
-	tokenlistcopy= xNew<char>(strlen(tokenlist)+1); 
-	sprintf(tokenlistcopy,"%s",tokenlist);
+	int tokenlist_len = strlen(tokenlist)+1;
+	tokenlistcopy= xNew<char>(tokenlist_len);
+	snprintf(tokenlistcopy, tokenlist_len,"%s",tokenlist);
 
 	/*Now go through list of tokens, and look for  target, return value: */
 	token=strtok(tokenlistcopy, " ");
@@ -75,14 +79,16 @@ char* TokenValue(char* tokenlist,const char* target){ /*{{{*/
 				/*This token could actually be another option start with "-", just be sure: */
 				if (strncmp(token,"-",1)==0){
 					/*ok, we hit another option, which means our target value is "":*/
-					value= xNew<char>(strlen("")+1); 
-					sprintf(value,"%s","");
+					int value_len = strlen("")+1;
+					value = xNew<char>(value_len);
+					snprintf(value, value_len,"%s","");
 					continue;
 				}
 				else{
 					/*this token is the value we are looking for, copy: */
-					value= xNew<char>(strlen(token)+1); 
-					sprintf(value,"%s",token);
+					int value_len = strlen(token)+1;
+					value= xNew<char>(value_len);
+					snprintf(value, value_len,"%s",token);
 				}
 			}
 			else{
