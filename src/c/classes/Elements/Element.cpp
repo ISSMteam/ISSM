@@ -5498,8 +5498,8 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&eAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
 		parameters->FindParam(&pAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
-		Ta = taparam + (elevation[Mappedpoint-1]-currentsurface)*tlapse;
-		dlw = dlwrfparam + (elevation[Mappedpoint-1]-currentsurface)*dlwlapse;
+		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
+		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
 
 		xDelete<IssmDouble>(elevation);
 	}
