@@ -201,7 +201,7 @@ classdef SMBgemb
 			fielddisplay(self,'InitDensityScaling',{'initial scaling factor multiplying the density of ice','which describes the density of the snowpack.'});
 			fielddisplay(self,'ThermoDeltaTScaling',{'scaling factor to multiply the thermal diffusion timestep (delta t)'});
 			fielddisplay(self,'outputFreq','output frequency in days (default is monthly, 30)');
-			fielddisplay(self,'adThresh',{'Apply aIdx method to all areas with densities below this value,','or else apply direct input value from aValue, allowing albedo to be altered.'});
+			fielddisplay(self,'adThresh','Apply aIdx method to all areas with densities below this value, or else apply direct input value from aValue, allowing albedo to be altered.');
 			fielddisplay(self,'aIdx',{'method for calculating albedo and subsurface absorption (default is 1)',...
 				'0: direct input from aValue parameter',...
 				'1: effective grain radius [Gardner & Sharp, 2009]',...
@@ -209,7 +209,7 @@ classdef SMBgemb
 				'3: density and cloud amount [Greuell & Konzelmann, 1994]',...
 				'4: exponential time decay & wetness [Bougamont & Bamber, 2005]'})
 
-			fielddisplay(self,'dulwrfValue','Specified bias to be applied to the outward long wave radiation every element (W/m-2, +upward)');
+			fielddisplay(self,'dulwrfValue','Specified bias to be applied to the outward long wave radiation at every element (W/m-2, +upward)');
 			fielddisplay(self,'teValue','Outward longwave radiation thermal emissivity forcing at every element (default in code is 1)');
 			fielddisplay(self,'teThresh',{'Apply eIdx method to all areas with effective grain radius above this value (mm),','or else apply direct input value from teValue, allowing emissivity to be altered.'});
 			fielddisplay(self,'eIdx',{'method for calculating emissivity (default is 1)',...
