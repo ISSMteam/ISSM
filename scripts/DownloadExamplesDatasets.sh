@@ -41,7 +41,7 @@ dataset_urls=$(\
 # Get datasets
 #
 echo "Downloading examples datasets..."
-wget --quiet --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i - <<< "${dataset_urls}"
+wget --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i - <<< "${dataset_urls}"
 
 # Expand zip files
 unzip -n -d "${DIRECTORY_PREFIX}" "${DIRECTORY_PREFIX}/*.zip"
