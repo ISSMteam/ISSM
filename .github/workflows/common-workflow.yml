@@ -29,6 +29,9 @@ on:
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
+  CC: $ISSM_DIR/externalpackages/petsc/install/bin/mpicc
+  CXX: $ISSM_DIR/externalpackages/petsc/install/bin/mpicxx
+  FC: $ISSM_DIR/externalpackages/petsc/install/bin/mpifort
 
 jobs:
   build:
