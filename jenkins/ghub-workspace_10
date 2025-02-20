@@ -27,7 +27,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${ISSM_EXT_DIR}/petsc/install" \
 	--with-hdf5-dir="${ISSM_EXT_DIR}/hdf5/install" \
 	--with-petsc-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-gsl-dir="${ISSM_EXT_DIR}/gsl/install" \
 	--with-boost-dir="/apps/share64/debian10/anaconda/anaconda-7/pkgs/boost-cpp-1.78.0-h75c5d50_1" \
 	--with-dakota-dir="${ISSM_EXT_DIR}/dakota/install" \
 	--with-chaco-dir="${ISSM_EXT_DIR}/chaco/install" \
@@ -45,7 +44,6 @@ EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
 	petsc		install-3.17-linux.sh
-	gsl			install.sh
 	dakota		install-6.2-ghub-workspace_10.sh
 	chaco		install-linux.sh
 	curl		install-7-linux.sh

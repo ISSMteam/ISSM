@@ -27,7 +27,6 @@ ISSM_CONFIG='\
 	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
-	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-adolc-dir=${ISSM_DIR}/externalpackages/adolc/install \
 	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
 '
@@ -44,7 +43,6 @@ EXTERNALPACKAGES="
 	autotools		install-linux.sh
 	cmake			install.sh
 	petsc			install-3.22-linux.sh
-	gsl				install.sh
 	triangle		install-linux.sh
 	adjoinablempi	install-linux.sh
 	adolc			install-with_ampi.sh

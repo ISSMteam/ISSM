@@ -23,7 +23,6 @@ ISSM_CONFIG='\
 	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
 	--with-m1qn3-dir=${ISSM_DIR}/externalpackages/m1qn3/install \
 	--with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
@@ -39,7 +38,6 @@ EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
 	petsc		install-3.22-linux.sh
-	gsl			install.sh
 	triangle	install-linux.sh
 	m1qn3		install-linux.sh
 	medipack	install.sh
