@@ -25,7 +25,6 @@ ISSM_CONFIG='\
 	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-mplapack-dir="${ISSM_DIR}/externalpackages/mplapack/install" \
-	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
 	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
 	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
@@ -44,7 +43,6 @@ EXTERNALPACKAGES="
 	cmake		install.sh
 	petsc		install-3.22-linux.sh
 	mplapack	install-2-linux.sh
-	gsl			install.sh
 	boost		install-1.7-linux.sh
 	dakota		install-6.2-linux.sh
 	chaco		install-linux.sh

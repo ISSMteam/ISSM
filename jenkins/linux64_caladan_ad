@@ -11,7 +11,6 @@ ISSM_CONFIG='\
 	--without-kriging \
 	--without-kml \
 	--without-Sealevelchange \
-	--with-gsl-dir=$ISSM_DIR/externalpackages/gsl/install \
 	--with-adolc-dir=$ISSM_DIR/externalpackages/adolc/install \
 	--with-matlab-dir=$MATLAB_PATH \
 	--with-triangle-dir=$ISSM_DIR/externalpackages/triangle/install
@@ -26,7 +25,6 @@ EXTERNALPACKAGES="
 	cmake		install.sh
 	mpich		install-3.2-linux64.sh
 	petsc		install-3.7-linux64.sh
-	gsl			install.sh
 	triangle	install-linux.sh
 	adolc		install.sh
 	shell2junit	install.sh
