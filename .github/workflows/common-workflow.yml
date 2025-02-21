@@ -29,9 +29,6 @@ on:
         type: string
 env:
   ISSM_DIR: ${{ github.workspace }}
-  CC: $ISSM_DIR/externalpackages/petsc/install/bin/mpicc
-  CXX: $ISSM_DIR/externalpackages/petsc/install/bin/mpicxx
-  FC: $ISSM_DIR/externalpackages/petsc/install/bin/mpifort
 
 jobs:
   build:
@@ -85,6 +82,9 @@ jobs:
 
       - name: Build ISSM
         run: |
+          export CC=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpicc
+          export CXX=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpicxx
+          export FC=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpifort
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python${{ inputs.python_version }}/site-packages/numpy
