@@ -30,7 +30,7 @@ void steadystate_core(FemModel* femmodel){ //{{{
 	bool        save_results,isenthalpy;
 	int         maxiter;
 	IssmDouble  reltol;
-	int         numoutputs        = 0;
+	int         numoutputs   = 0;
 	char** requested_outputs = NULL;
 
 	/* recover parameters:*/
@@ -48,7 +48,7 @@ void steadystate_core(FemModel* femmodel){ //{{{
 	for(;;){
 
 		/* Compute first velocity, then temperature due to high sensitivity of temperature to velocity. */
-		if(VerboseSolution()) _printf0_("\n======================================================\n");
+		if(VerboseSolution()) _printf0_("\n==================================================\n");
 		if(VerboseSolution()) _printf0_("   computing velocity and temperature for step: " << step << "\n");
 		if(VerboseSolution()) _printf0_("====================================================\n");
 
@@ -65,7 +65,7 @@ void steadystate_core(FemModel* femmodel){ //{{{
 			if(VerboseSolution()) _printf0_("   checking steadystate convergence\n");
 			if(steadystateconvergence(tg,tg_old,ug,ug_old,reltol)) break;
 		}
-		if(step>maxiter){
+		if(step>=maxiter){
 			if(VerboseSolution()) _printf0_("   maximum number steadystate iterations " << maxiter << " reached\n");
 			break;
 		}
