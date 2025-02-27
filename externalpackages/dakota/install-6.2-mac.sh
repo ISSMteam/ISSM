@@ -19,11 +19,12 @@ LIBGFORTRAN_ROOT=${LIBGFORTRAN%/*}
 
 ## Environment
 #
-export BLAS_LIBS="-L${BLAS_ROOT}/lib -lfblas -L${LIBGFORTRAN_ROOT} -lgfortran" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export BLAS_LIBS="-L${BLAS_ROOT}/lib -lfblas" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
-export LAPACK_LIBS="-L${LAPACK_ROOT}/lib -lflapack -L${LIBGFORTRAN_ROOT} -lgfortran" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export FLIBS="-L${LIBGFORTRAN_ROOT} -lgfortran"
+export LAPACK_LIBS="-L${LAPACK_ROOT}/lib -lflapack" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export LDFLAGS="-framework CoreFoundation"
 
 # Cleanup
@@ -42,7 +43,6 @@ rm -rf dakota-${VER}.0.src
 
 # Copy customized source and configuration files to 'src' directory
 cp configs/${VER}/packages/DDACE/src/Analyzer/MainEffectsExcelOutput.cpp ${DAK_SRC}/packages/DDACE/src/Analyzer
-cp configs/${VER}/packages/queso/src/misc/src/1DQuadrature.C ${DAK_SRC}/packages/queso/src/misc/src
 cp configs/${VER}/packages/surfpack/src/surfaces/nkm/NKM_KrigingModel.cpp ${DAK_SRC}/packages/surfpack/src/surfaces/nkm
 cp configs/${VER}/packages/VPISparseGrid/src/sandia_rules.cpp ${DAK_SRC}/packages/VPISparseGrid/src
 cp configs/${VER}/src/DakotaInterface.cpp ${DAK_SRC}/src
@@ -81,8 +81,6 @@ cmake \
 	-DBoost_NO_BOOST_CMAKE=TRUE \
 	-DHAVE_ACRO=OFF \
 	-DHAVE_JEGA=OFF \
-	-DHAVE_QUESO=ON \
-	-DDAKOTA_HAVE_GSL=ON \
 	-C${DAK_SRC}/cmake/BuildDakotaCustom.cmake \
 	-C${DAK_SRC}/cmake/DakotaDev.cmake \
 	${DAK_SRC}
@@ -138,3 +136,4 @@ install_name_tool -change libsurfpack_fortran.dylib ${DAK_INSTALL}/lib/libsurfpa
 install_name_tool -add_rpath ${LIBGFORTRAN_ROOT} libpecos.dylib
 install_name_tool -add_rpath ${LIBGFORTRAN_ROOT} libteuchos.dylib
 install_name_tool -add_rpath ${LIBGFORTRAN_ROOT} liboptpp.dylib
+

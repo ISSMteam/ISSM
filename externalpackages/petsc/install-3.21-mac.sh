@@ -32,7 +32,6 @@ cd ${PETSC_DIR}
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
 	--CFLAGS="-g -O2" --CXXFLAGS="-g -O2" --FFLAGS="-g -O2" \
-	--LDFLAGS="-Wl,-ld_classic -Wl,-commons,use_dylibs" \
 	--with-debugging=1 \
 	--with-valgrind=0 \
 	--with-x=0 \

@@ -33,7 +33,7 @@ fi
 #
 dataset_urls=$(\
 	DYLD_LIBRARY_PATH=""; \
-	curl -Ls ${DATASETS_URL} |\
+	/usr/bin/curl -Lks ${DATASETS_URL} |\
 	sed '/<!--DATASETS LIST START-->/,/<!--DATASETS LIST END-->/ !d' |\
 	sed -n 's/.*<li><a href="\([^"]*\)">.*/\1/p'
 )
