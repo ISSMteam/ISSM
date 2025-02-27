@@ -22,7 +22,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${ISSM_EXT_DIR}/petsc/install" \
 	--with-hdf5-dir="${ISSM_EXT_DIR}/petsc/install" \
 	--with-petsc-dir="${ISSM_EXT_DIR}/petsc/install" \
-	--with-gsl-dir="${ISSM_EXT_DIR}/gsl/install" \
 	--with-boost-dir="${ISSM_EXT_DIR}/boost/install" \
 	--with-dakota-dir="${ISSM_EXT_DIR}/dakota/install" \
 	--with-chaco-dir="${ISSM_EXT_DIR}/chaco/install" \
@@ -40,7 +39,6 @@ EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
 	petsc		install-3.14-linux.sh
-	gsl			install.sh
 	boost		install-1.7-linux.sh
 	dakota		install-6.2-linux.sh
 	chaco		install-linux.sh

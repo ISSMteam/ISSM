@@ -82,6 +82,11 @@ jobs:
 
       - name: Build ISSM
         run: |
+          export CC=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpicc
+          export CXX=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpicxx
+          export FC=${{ env.ISSM_DIR }}/externalpackages/petsc/install/bin/mpifort
+          export F77=$FC
+          export F90=$FC
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
           export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python${{ inputs.python_version }}/site-packages/numpy

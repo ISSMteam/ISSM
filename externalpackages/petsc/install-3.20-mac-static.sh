@@ -36,7 +36,6 @@ cd ${PETSC_DIR}
 ./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
-	--LDFLAGS="${LDFLAGS}" \
 	--with-shared-libraries=0 \
 	--CFLAGS="-fPIC" \
 	--CXXFLAGS="-fPIC" \
@@ -61,9 +60,3 @@ make install
 ln -s ${PREFIX}/lib/libmpi.a ${PREFIX}/lib/libmpich.a
 ln -s ${PREFIX}/lib/libmpicxx.a ${PREFIX}/lib/libmpichcxx.a
 ln -s ${PREFIX}/lib/libmpifort.a ${PREFIX}/lib/libmpichf90.a
-
-# Need to make sure classic linker is used (should be able to remove this once MPICH fixes it)
-if [[ ${LDFLAGS} =~ "-Wl,-ld_classic" ]]; then
-	sed -i'' -e 's/-Wl,-commons,use_dylibs//g' ${PREFIX}/bin/mpicc
-	sed -i'' -e 's/-Wl,-commons,use_dylibs//g' ${PREFIX}/bin/mpicxx
-fi

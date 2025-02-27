@@ -14,7 +14,6 @@ ISSM_CONFIG='\
 	--enable-development \
 	--enable-standalone-libraries \
 	--with-wrappers=no \
-	--with-graphics-lib="/usr/lib64/libX11.so" \
 	--with-fortran-lib="-L${COMP_INTEL_ROOT}/compiler/lib/intel64_lin -lifcore -lifport -lgfortran" \
 	--with-mkl-libflags="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm" \
 	--with-mpi-include="/nasa/hpe/mpt/2.30_rhel810/include" \
@@ -26,7 +25,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${PETSC_DIR}" \
 	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
 	--with-petsc-dir="${PETSC_DIR}" \
-	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
 	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
 	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
@@ -43,7 +41,6 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	zlib		install-1.sh
 	hdf5		install-1.sh
-	gsl			install-pleiades.sh
 	boost		install-1.7-linux.sh
 	dakota		install-6.2-pleiades.sh
 	chaco		install-linux.sh
