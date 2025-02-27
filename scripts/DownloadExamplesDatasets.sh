@@ -33,7 +33,7 @@ fi
 #
 dataset_urls=$(\
 	DYLD_LIBRARY_PATH=""; \
-	curl -Ls ${DATASETS_URL} |\
+	/usr/bin/curl -Lks ${DATASETS_URL} |\
 	sed '/<!--DATASETS LIST START-->/,/<!--DATASETS LIST END-->/ !d' |\
 	sed -n 's/.*<li><a href="\([^"]*\)">.*/\1/p'
 )
@@ -41,7 +41,7 @@ dataset_urls=$(\
 # Get datasets
 #
 echo "Downloading examples datasets..."
-wget --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i - <<< "${dataset_urls}"
+wget --quiet --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i - <<< "${dataset_urls}"
 
 # Expand zip files
 unzip -n -d "${DIRECTORY_PREFIX}" "${DIRECTORY_PREFIX}/*.zip"
