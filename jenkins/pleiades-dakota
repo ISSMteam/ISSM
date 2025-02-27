@@ -25,7 +25,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${PETSC_DIR}" \
 	--with-scalapack-lib="-L${COMP_INTEL_ROOT}/mkl/lib/intel64/libmkl_scalapack_lp64.so" \
 	--with-petsc-dir="${PETSC_DIR}" \
-	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
 	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
 	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
@@ -39,7 +38,6 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	gsl			install-pleiades.sh
 	boost		install-1.7-linux.sh
 	dakota		install-6.2-pleiades.sh
 	chaco		install-linux.sh

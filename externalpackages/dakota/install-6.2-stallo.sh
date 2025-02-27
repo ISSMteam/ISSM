@@ -49,14 +49,15 @@ sed -i'' -e 's|SET(PythonInterp_FIND_VERSION|#SET(PythonInterp_FIND_VERSION|' ${
 #Configure dakota
 cd $DAK_BUILD
 
-cmake -D CMAKE_C_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicc \
-	   -D CMAKE_CXX_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicxx \
-	   -D CMAKE_Fortran_COMPILER=gfortran \
-		-DHAVE_ACRO=off \
-		-DHAVE_JEGA=off \
-		-C $DAK_SRC/cmake/BuildDakotaCustom.cmake \
-		-C $DAK_SRC/cmake/DakotaDev.cmake \
-		$DAK_SRC
+cmake \
+	-DCMAKE_C_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicc \
+	-DCMAKE_CXX_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicxx \
+	-DCMAKE_Fortran_COMPILER=gfortran \
+	-DHAVE_ACRO=off \
+	-DHAVE_JEGA=off \
+	-C $DAK_SRC/cmake/BuildDakotaCustom.cmake \
+	-C $DAK_SRC/cmake/DakotaDev.cmake \
+	$DAK_SRC
 cd ..
 
 #Compile and install dakota
