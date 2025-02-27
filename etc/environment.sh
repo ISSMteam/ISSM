@@ -206,15 +206,6 @@ if [[ ${OS_NAME} == "Darwin" ]]; then
 		echo "Error: On macOS, either Xcode or the Command Line Tools must be installed!"
 		exit 1
 	fi
-
-	if [[ ${BUILD_TOOL_VER} -ge 15 ]]; then
-		 # Add flag for classic linker only if it has not already been added
-		if [[ -z $(echo $LDFLAGS | /usr/bin/grep "\-Wl,\-ld_classic") ]]; then
-			export LDFLAGS="${LDFLAGS} -Wl,-ld_classic -Wl,-commons,use_dylibs"
-		fi
-	else
-		export LDFLAGS="${LDFLAGS}" # At least set LDFLAGS to null string if it is not already set (used in installation of ISSM and some external packages). Can remove this when issues with new Xcode linker have settled.
-	fi
 fi
 
 ## Windows

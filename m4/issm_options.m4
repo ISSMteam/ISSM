@@ -561,7 +561,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				elif test "${DAKOTA_VERSION}" == "6.1" || test "${DAKOTA_VERSION}" == "6.2"; then
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
-						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lqueso -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
+						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
 						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
 						DAKOTALIB+=" ${BLASLAPACKLIB}"
 					fi
@@ -594,7 +594,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				elif test "${DAKOTA_VERSION}" == "6.1" || test "${DAKOTA_VERSION}" == "6.2"; then
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
-						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lqueso -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
+						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
 						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
 						DAKOTALIB+=" ${BLASLAPACKLIB}"
 					fi
