@@ -23,6 +23,8 @@ classdef SMBgemb
 		isturbulentflux     = 0;
 		isconstrainsurfaceT = 0;
 		isdeltaLWup         = 0;
+		ismappedforcing     = 0;
+		iscompressedforcing = 0;
 
 		%inputs:
 		Ta    = NaN; %2 m air temperature, in Kelvin
@@ -43,7 +45,15 @@ classdef SMBgemb
 		aValue = NaN; %Albedo forcing at every element.  Used only if aIdx == 0, or density exceeds adThresh
 		teValue = NaN; %Outward longwave radiation thermal emissivity forcing at every element (default in code is 1). 
 		               %Used only if eIdx== 0, or effective grain radius exceeds teThresh
-		dulwrfValue = NaN; %Delta with which to perturn the long wave radiation upwards. Use if isdeltaLWup is true;  
+		dulwrfValue = NaN; %Delta with which to perturb the long wave radiation upwards. Use if isdeltaLWup is true.  
+		mappedforcingpoint = NaN; %Mapping of which forcing point will map to each mesh element (integer). Of size number of elements.
+		                        %Use if ismappedforcing is true.
+		mappedforcingelevation = NaN; %The elevation of each mapped forcing location (m above sea level). Of size number
+		                        %of forcing points. Use if ismappedforcing is true.
+		lapseTaValue = NaN; %Temperature lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true.
+		                    % (Default value is -0.006 K m-1.)
+		lapsedlwrfValue = NaN; %Longwave down lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true.
+		                    % (Default value is -0.032 W m-2 m-1.)
 
 		% Initialization of snow properties
 		Dzini = NaN; %cell depth (m)
@@ -167,6 +177,8 @@ classdef SMBgemb
 			fielddisplay(self,'isturbulentflux','run turbulant heat fluxes module (default true)');
 			fielddisplay(self,'isconstrainsurfaceT','constrain surface temperatures to air temperature, turn off EC and surface flux contribution to surface temperature change (default false)');
 			fielddisplay(self,'isdeltaLWup','set to true to invoke a bias in the long wave upward spatially, specified by dulwrfValue (default false)'); 
+			fielddisplay(self,'ismappedforcing','set to true if forcing grid does not match model mesh, mapping specified by mappedforcingpoint (default false)');
+			fielddisplay(self,'iscompressedforcing','set to true to compress the input matrices when writing to binary (default false)');
 			fielddisplay(self,'Ta','2 m air temperature, in Kelvin');
 			fielddisplay(self,'V','wind speed (m s-1)');
 			fielddisplay(self,'dswrf','downward shortwave radiation flux [W/m^2]');
@@ -189,7 +201,7 @@ classdef SMBgemb
 			fielddisplay(self,'InitDensityScaling',{'initial scaling factor multiplying the density of ice','which describes the density of the snowpack.'});
 			fielddisplay(self,'ThermoDeltaTScaling',{'scaling factor to multiply the thermal diffusion timestep (delta t)'});
 			fielddisplay(self,'outputFreq','output frequency in days (default is monthly, 30)');
-			fielddisplay(self,'adThresh',{'Apply aIdx method to all areas with densities below this value,','or else apply direct input value from aValue, allowing albedo to be altered.'});
+			fielddisplay(self,'adThresh','Apply aIdx method to all areas with densities below this value, or else apply direct input value from aValue, allowing albedo to be altered.');
 			fielddisplay(self,'aIdx',{'method for calculating albedo and subsurface absorption (default is 1)',...
 				'0: direct input from aValue parameter',...
 				'1: effective grain radius [Gardner & Sharp, 2009]',...
@@ -197,7 +209,7 @@ classdef SMBgemb
 				'3: density and cloud amount [Greuell & Konzelmann, 1994]',...
 				'4: exponential time decay & wetness [Bougamont & Bamber, 2005]'})
 
-			fielddisplay(self,'dulwrfValue','Specified bias to be applied to the outward long wave radiation every element (W/m-2, +upward)');
+			fielddisplay(self,'dulwrfValue','Specified bias to be applied to the outward long wave radiation at every element (W/m-2, +upward)');
 			fielddisplay(self,'teValue','Outward longwave radiation thermal emissivity forcing at every element (default in code is 1)');
 			fielddisplay(self,'teThresh',{'Apply eIdx method to all areas with effective grain radius above this value (mm),','or else apply direct input value from teValue, allowing emissivity to be altered.'});
 			fielddisplay(self,'eIdx',{'method for calculating emissivity (default is 1)',...
@@ -208,6 +220,11 @@ classdef SMBgemb
 			fielddisplay(self,'tcIdx',{'method for calculating thermal conductivity (default is 1)',...
 				'1: after Sturm et al, 1997',...
 				'2: after Calonne et al., 2011'});
+
+			fielddisplay(self,'mappedforcingpoint','Mapping of which forcing point will map to each mesh element for ismappedforcing option (integer). Size number of elements.');
+			fielddisplay(self,'mappedforcingelevation','The elevation of each mapped forcing location (m above sea level) for ismappedforcing option. Size number of forcing points.');
+			fielddisplay(self,'lapseTaValue','Temperature lapse rate if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.006 K m-1.)');
+			fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.032 W m-2 m-1.)');
 
 			%snow properties init
 			fielddisplay(self,'Dzini','Initial cell depth when restart [m]');
@@ -269,13 +286,15 @@ classdef SMBgemb
 		end % }}}
 		function self = extrude(self,md) % {{{
 
-			self.Ta=project3d(md,'vector',self.Ta,'type','element');
-			self.V=project3d(md,'vector',self.V,'type','element');
-			self.dswrf=project3d(md,'vector',self.dswrf,'type','element');
-			self.dlwrf=project3d(md,'vector',self.dlwrf,'type','element');
-			self.P=project3d(md,'vector',self.P,'type','element');
-			self.eAir=project3d(md,'vector',self.eAir,'type','element');
-			self.pAir=project3d(md,'vector',self.pAir,'type','element');
+			if size(self.Ta,1)==md.mesh.numberofelements | size(self.Ta,1)==md.mesh.numberofelements+1
+				self.Ta=project3d(md,'vector',self.Ta,'type','element');
+				self.V=project3d(md,'vector',self.V,'type','element');
+				self.dswrf=project3d(md,'vector',self.dswrf,'type','element');
+				self.dlwrf=project3d(md,'vector',self.dlwrf,'type','element');
+				self.P=project3d(md,'vector',self.P,'type','element');
+				self.eAir=project3d(md,'vector',self.eAir,'type','element');
+				self.pAir=project3d(md,'vector',self.pAir,'type','element');
+			end
 
 			if ~isnan(self.Dzini)
 				self.Dzini=project3d(md,'vector',self.Dzini,'type','element');
@@ -329,6 +348,9 @@ classdef SMBgemb
 			if ~isnan(self.teValue)
 				self.teValue=project3d(md,'vector',self.teValue,'type','element');
 			end
+			if ~isnan(self.mappedforcingpoint)
+				self.mappedforcingpoint=project3d(md,'vector',self.mappedforcingpoint,'type','element');
+			end
 
 		end % }}}
 		function list = defaultoutputs(self,md) % {{{
@@ -346,6 +368,8 @@ classdef SMBgemb
 			self.isturbulentflux=1;
 			self.isconstrainsurfaceT=0;
 			self.isdeltaLWup=0;
+			self.ismappedforcing=0;
+			self.iscompressedforcing=0;
 
 			self.aIdx = 1;
 			self.eIdx = 1;
@@ -380,6 +404,9 @@ classdef SMBgemb
 			self.aValue = self.aSnow*ones(mesh.numberofelements,1);
 			self.dulwrfValue = zeros(mesh.numberofelements,1);
 
+			self.lapseTaValue = -0.006;
+			self.lapsedlwrfValue = -0.032; 
+
 			self.dswdiffrf=0.0*ones(mesh.numberofelements,1);
 			self.szaValue=0.0*ones(mesh.numberofelements,1);
 			self.cotValue=0.0*ones(mesh.numberofelements,1);
@@ -413,23 +440,33 @@ classdef SMBgemb
 			md = checkfield(md,'fieldname','smb.isturbulentflux','values',[0 1]);
 			md = checkfield(md,'fieldname','smb.isconstrainsurfaceT','values',[0 1]);
 			md = checkfield(md,'fieldname','smb.isdeltaLWup','values',[0 1]);
+			md = checkfield(md,'fieldname','smb.ismappedforcing','values',[0 1]);
+			md = checkfield(md,'fieldname','smb.iscompressedforcing','values',[0 1]);
 
-			md = checkfield(md,'fieldname','smb.Ta','timeseries',1,'NaN',1,'Inf',1,'>',273-100,'<',273+100); %-100/100 celsius min/max value
-			md = checkfield(md,'fieldname','smb.V','timeseries',1,'NaN',1,'Inf',1,'>=',0,'<',45,'size',size(self.Ta)); %max 500 km/h
-			md = checkfield(md,'fieldname','smb.dswrf','timeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',1400,'size',size(self.Ta));
-			md = checkfield(md,'fieldname','smb.dswdiffrf','timeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',1400);
-			md = checkfield(md,'fieldname','smb.dlwrf','timeseries',1,'NaN',1,'Inf',1,'>=',0,'size',size(self.Ta));
-			md = checkfield(md,'fieldname','smb.P','timeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',200,'size',size(self.Ta));
-			md = checkfield(md,'fieldname','smb.eAir','timeseries',1,'NaN',1,'Inf',1,'size',size(self.Ta));
+			sizeta=size(self.Ta);
+			md = checkfield(md,'fieldname','smb.Ta','mappedtimeseries',1,'NaN',1,'Inf',1,'>',273-100,'<',273+100); %-100/100 celsius min/max value
+			md = checkfield(md,'fieldname','smb.V','mappedtimeseries',1,'NaN',1,'Inf',1,'>=',0,'<',45,'size',sizeta); %max 500 km/h
+			md = checkfield(md,'fieldname','smb.dswrf','mappedtimeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',1400,'size',sizeta);
+			md = checkfield(md,'fieldname','smb.dswdiffrf','mappedtimeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',1400);
+			md = checkfield(md,'fieldname','smb.dlwrf','mappedtimeseries',1,'NaN',1,'Inf',1,'>=',0,'size',sizeta);
+			md = checkfield(md,'fieldname','smb.P','mappedtimeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',200,'size',sizeta);
+			md = checkfield(md,'fieldname','smb.eAir','mappedtimeseries',1,'NaN',1,'Inf',1,'size',sizeta);
 
-			md = checkfield(md,'fieldname','smb.Tmean','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>',273-100,'<',273+100); %-100/100 celsius min/max value
-			md = checkfield(md,'fieldname','smb.C','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>',0);
-			md = checkfield(md,'fieldname','smb.Vmean','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>=',0);
-			md = checkfield(md,'fieldname','smb.Tz','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>=',0,'<=',5000);
-			md = checkfield(md,'fieldname','smb.Vz','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>=',0,'<=',5000);
+			md = checkfield(md,'fieldname','smb.Tmean','size',[sizeta(1)-1 1],'NaN',1,'Inf',1,'>',273-100,'<',273+100); %-100/100 celsius min/max value
+			md = checkfield(md,'fieldname','smb.C','size',[sizeta(1)-1 1],'NaN',1,'Inf',1,'>',0);
+			md = checkfield(md,'fieldname','smb.Vmean','size',[sizeta(1)-1 1],'NaN',1,'Inf',1,'>=',0);
+			md = checkfield(md,'fieldname','smb.Tz','size',[sizeta(1)-1 1],'NaN',1,'Inf',1,'>=',0,'<=',5000);
+			md = checkfield(md,'fieldname','smb.Vz','size',[sizeta(1)-1 1],'NaN',1,'Inf',1,'>=',0,'<=',5000);
 
 			md = checkfield(md,'fieldname','smb.teValue','timeseries',1,'NaN',1,'Inf',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','smb.dulwrfValue','timeseries',1,'NaN',1,'Inf',1);
+
+			if (self.ismappedforcing)
+				md = checkfield(md,'fieldname','smb.mappedforcingpoint','size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1,'>',0,'<=',sizeta(1)-1);
+				md = checkfield(md,'fieldname','smb.mappedforcingelevation','size',[sizeta(1)-1 1],'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','smb.lapseTaValue','NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','smb.lapsedlwrfValue','NaN',1,'Inf',1);
+			end
 
 			md = checkfield(md,'fieldname','smb.aIdx','NaN',1,'Inf',1,'values',[0,1,2,3,4]);
 			md = checkfield(md,'fieldname','smb.eIdx','NaN',1,'Inf',1,'values',[0,1,2]);
@@ -493,15 +530,22 @@ classdef SMBgemb
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isturbulentflux','format','Boolean');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isconstrainsurfaceT','format','Boolean');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isdeltaLWup','format','Boolean');
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ismappedforcing','format','Boolean');
 
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','Ta','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','V','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dswrf','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dswdiffrf','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dlwrf','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','P','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','eAir','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','pAir','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
+			if self.iscompressedforcing
+				writetype='CompressedMat';
+			else
+				writetype='DoubleMat';
+			end
+
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','Ta','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','V','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dswrf','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dswdiffrf','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','dlwrf','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','P','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','eAir','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','pAir','format',writetype,'mattype',2,'timeserieslength',size(self.Ta,1),'yts',md.constants.yts);
 
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','Tmean','format','DoubleMat','mattype',2);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','C','format','DoubleMat','mattype',2);
@@ -555,6 +599,14 @@ classdef SMBgemb
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','Sizeini','format','IntMat','mattype',2);
 			WriteData(fid, prefix, 'object', self, 'fieldname', 'steps_per_step', 'format', 'Integer');
 			WriteData(fid, prefix, 'object', self, 'fieldname', 'averaging', 'format', 'Integer');
+
+			if (self.ismappedforcing)
+				WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingpoint','format','IntMat','mattype',2);
+				WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingelevation','format','DoubleMat','mattype',3);
+				WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','Double');
+				WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','Double');
+			end
+
 			%figure out dt from forcings:
 			if (any(md.smb.P(end,:) - md.smb.Ta(end,:) ~= 0) | ...
 					any(md.smb.V(end,:) - md.smb.Ta(end,:) ~= 0) | ...
@@ -597,6 +649,11 @@ classdef SMBgemb
 			% Check if smb_dt goes evenly into transient core time step
 			if (mod(md.timestepping.time_step,dt) >= 1e-10)
 				error('smb_dt/dt = %f. The number of SMB time steps in one transient core time step has to be an an integer',md.timestepping.time_step/dt);
+			end
+
+			% Make sure that adaptive time step is off
+			if isa(md.timestepping,'timesteppingadaptive')
+				error('GEMB cannot be run with adaptive timestepping.  Check class type of md.timestepping');
 			end
 
 			%process requested outputs

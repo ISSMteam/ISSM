@@ -42,14 +42,16 @@ class TransientArrayParam: public Param{
 		void Marshall(MarshallHandle* marshallhandle);
 		int   ObjectEnum();
 		/*}}}*/
-		/*Param vritual function definitions: {{{*/
+		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(bool* pbool){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return an integer");}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return an array of integers");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a array of integers");}
 		void  GetParameterValue(IssmDouble* pIssmDouble){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time);
+		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time, int timestepping, IssmDouble dt);
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}
+		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping, IssmDouble dt){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}
 		void  GetParameterValue(char** pstring){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a string");}
 		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a string array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble array");}

@@ -48,6 +48,7 @@ class ControlParam: public Param{
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a matrix");}
 		void  GetParameterValue(IssmDouble* pIssmDouble);
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time);
+		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){_error_("Param "<< EnumToStringx(enum_type) << " does not support cycling of forcing");}
 		void  GetParameterValue(char** pstring){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string");}
 		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM);

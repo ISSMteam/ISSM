@@ -38,13 +38,14 @@ class DataSetParam: public Param{
 		void Marshall(MarshallHandle* marshallhandle);
 		int   ObjectEnum();
 		/*}}}*/
-		/*Param vritual function definitions: {{{*/
+		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(bool* pbool){  _error_("Param "<< EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(IssmDouble* pIssmDouble){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble for a given time");}
+		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble for a given time");}
 		void  GetParameterValue(FILE** pfile){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a file pointer");}
 		void  GetParameterValue(char** pstring){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string");}
 		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string array");}
