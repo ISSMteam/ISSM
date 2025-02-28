@@ -38,13 +38,14 @@ class DoubleParam: public Param{
 		void Marshall(MarshallHandle* marshallhandle);
 		int   ObjectEnum();
 		/*}}}*/
-		/*Param vritual function definitions: {{{*/
+		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(bool* pbool);
 		void  GetParameterValue(int* pinteger);
 		void  GetParameterValue(int** pintarray,int* pM);
 		void  GetParameterValue(int** pintarray,int* pM,int* pN);
 		void  GetParameterValue(IssmDouble* pIssmDouble){*pIssmDouble=value;};
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){*pdouble=value;};
+		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){*pdouble=value;};
 		void  GetParameterValue(char** pstring){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string");}
 		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM);

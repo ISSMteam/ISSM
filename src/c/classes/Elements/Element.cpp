@@ -5035,12 +5035,15 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble ccsnowValue=0.0;
 	IssmDouble cciceValue=0.0;
 	IssmDouble dt,time,smb_dt;
+	IssmDouble currentsurface;
+	int        Mappedpoint=0;
 	int        aIdx=0;
 	int        eIdx=0;
 	int        tcIdx=0;
 	int        denIdx=0;
 	int        dsnowIdx=0;
 	int        swIdx=0;
+	int        N=0;
 	IssmDouble cldFrac,t0wet, t0dry, K;
 	IssmDouble lhf=0.0;
 	IssmDouble shf=0.0;
@@ -5065,13 +5068,15 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble accsumEC=0.0;
 	IssmDouble accsumP=0.0;
 	IssmDouble accsumRa=0.0;
-	bool isgraingrowth,isalbedo,isshortwave,isthermal,isaccumulation,ismelt,isdensification,isturbulentflux;
+	bool isgraingrowth,isalbedo,isshortwave,isthermal,isaccumulation,ismelt,isdensification,isturbulentflux,ismappedforcing;
 	bool isconstrainsurfaceT=false;
 	bool isdeltaLWup=false;
 	IssmDouble init_scaling=0.0;
 	IssmDouble thermo_scaling=1.0;
 	IssmDouble adThresh=1023.0;
 	IssmDouble teThresh=10;
+	IssmDouble tlapse=0.0;
+	IssmDouble dlwlapse=0.0;
 	/*}}}*/
 	/*Output variables:{{{ */
 	IssmDouble* dz=NULL;
@@ -5159,6 +5164,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	parameters->FindParam(&thermo_scaling,SmbThermoDeltaTScalingEnum);
 	parameters->FindParam(&adThresh,SmbAdThreshEnum);
 	parameters->FindParam(&teThresh,SmbTeThreshEnum);
+	parameters->FindParam(&ismappedforcing,SmbIsmappedforcingEnum);
 	/*}}}*/
 	/*Retrieve inputs: {{{*/
 	Input *zTop_input          = this->GetInput(SmbZTopEnum);         _assert_(zTop_input);
@@ -5167,11 +5173,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	Input *zMax_input          = this->GetInput(SmbZMaxEnum);         _assert_(zMax_input);
 	Input *zMin_input          = this->GetInput(SmbZMinEnum);         _assert_(zMin_input);
 	Input *zY_input            = this->GetInput(SmbZYEnum);           _assert_(zY_input);
-	Input *Tmean_input         = this->GetInput(SmbTmeanEnum);        _assert_(Tmean_input);
-	Input *Vmean_input         = this->GetInput(SmbVmeanEnum);        _assert_(Vmean_input);
-	Input *C_input             = this->GetInput(SmbCEnum);            _assert_(C_input);
-	Input *Tz_input            = this->GetInput(SmbTzEnum);           _assert_(Tz_input);
-	Input *Vz_input            = this->GetInput(SmbVzEnum);           _assert_(Vz_input);
 	Input *EC_input            = NULL;
 
 	/*Retrieve input values:*/
@@ -5184,11 +5185,47 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	zMax_input->GetInputValue(&zMax,gauss);
 	zMin_input->GetInputValue(&zMin,gauss);
 	zY_input->GetInputValue(&zY,gauss);
-	Tmean_input->GetInputValue(&Tmean,gauss);
-	Vmean_input->GetInputValue(&Vmean,gauss);
-	C_input->GetInputValue(&C,gauss);
-	Tz_input->GetInputValue(&Tz,gauss);
-	Vz_input->GetInputValue(&Vz,gauss);
+
+	if (!ismappedforcing) {
+		Input *Tmean_input         = this->GetInput(SmbTmeanEnum);        _assert_(Tmean_input);
+		Input *Vmean_input         = this->GetInput(SmbVmeanEnum);        _assert_(Vmean_input);
+		Input *C_input             = this->GetInput(SmbCEnum);            _assert_(C_input);
+		Input *Tz_input            = this->GetInput(SmbTzEnum);           _assert_(Tz_input);
+		Input *Vz_input            = this->GetInput(SmbVzEnum);           _assert_(Vz_input);
+
+		Tmean_input->GetInputValue(&Tmean,gauss);
+		Vmean_input->GetInputValue(&Vmean,gauss);
+		C_input->GetInputValue(&C,gauss);
+		Tz_input->GetInputValue(&Tz,gauss);
+		Vz_input->GetInputValue(&Vz,gauss);
+
+	} else {
+		this->GetInputValue(&Mappedpoint,SmbMappedforcingpointEnum);
+
+		IssmDouble* tmean = NULL;
+		IssmDouble* vmean = NULL;
+		IssmDouble* cmean = NULL;
+		IssmDouble* tzval = NULL;
+		IssmDouble* vzval = NULL;
+	
+		parameters->FindParam(&tmean,&N,SmbTmeanParamEnum);
+		parameters->FindParam(&vmean,&N,SmbVmeanParamEnum);
+		parameters->FindParam(&cmean,&N,SmbCParamEnum);
+		parameters->FindParam(&tzval,&N,SmbTzParamEnum);
+		parameters->FindParam(&vzval,&N,SmbVzParamEnum);
+
+		Tmean = tmean[Mappedpoint-1];
+		Vmean = vmean[Mappedpoint-1];
+		C = cmean[Mappedpoint-1];
+		Tz = tzval[Mappedpoint-1];
+		Vz = vzval[Mappedpoint-1];
+
+		xDelete<IssmDouble>(tmean);
+		xDelete<IssmDouble>(vmean);
+		xDelete<IssmDouble>(cmean);
+		xDelete<IssmDouble>(tzval);
+		xDelete<IssmDouble>(vzval);
+	}
 	/*}}}*/
 
 	/*First, check that the initial structures have been setup in GEMB. If not, initialize profile variables: layer thickness dz, * density d, temperature T, etc. {{{*/
@@ -5395,15 +5432,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	Msurf_input->GetInputAverage(&Msurf);
 	Msurf=Msurf*dt*rho_ice;
 
-	// Get time forcing inputs
-	Input *Ta_input  = this->GetInput(SmbTaEnum,timeinputs);    _assert_(Ta_input);
-	Input *V_input   = this->GetInput(SmbVEnum,timeinputs);     _assert_(V_input);
-	Input *Dlwr_input= this->GetInput(SmbDlwrfEnum,timeinputs); _assert_(Dlwr_input);
-	Input *Dswr_input= this->GetInput(SmbDswrfEnum,timeinputs); _assert_(Dswr_input);
-	Input *Dswrdiff_input= this->GetInput(SmbDswdiffrfEnum,timeinputs); _assert_(Dswrdiff_input);
-	Input *P_input   = this->GetInput(SmbPEnum,timeinputs);     _assert_(P_input);
-	Input *eAir_input= this->GetInput(SmbEAirEnum,timeinputs);  _assert_(eAir_input);
-	Input *pAir_input= this->GetInput(SmbPAirEnum,timeinputs);  _assert_(pAir_input);
 	Input *teValue_input= this->GetInput(SmbTeValueEnum,timeinputs); _assert_(teValue_input);
 	Input *aValue_input= this->GetInput(SmbAValueEnum,timeinputs); _assert_(aValue_input);
 	Input *dulwrfValue_input= this->GetInput(SmbDulwrfValueEnum,timeinputs); _assert_(dulwrfValue_input);
@@ -5412,15 +5440,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	Input *ccsnowValue_input= this->GetInput(SmbCcsnowValueEnum,timeinputs); _assert_(ccsnowValue_input);
 	Input *cciceValue_input= this->GetInput(SmbCciceValueEnum,timeinputs); _assert_(cciceValue_input);
 
-	/*extract daily data:{{{*/
-	Ta_input->GetInputValue(&Ta,gauss);//screen level air temperature [K]
-	V_input->GetInputValue(&V,gauss);  //wind speed [m s-1]
-	Dlwr_input->GetInputValue(&dlw,gauss);   //downward longwave radiation flux [W m-2]
-	Dswr_input->GetInputValue(&dsw,gauss);   //downward shortwave radiation flux [W m-2]
-	Dswrdiff_input->GetInputValue(&dswdiff,gauss);   //downward shortwave diffuse radiation flux [W m-2]
-	P_input->GetInputValue(&P,gauss);        //precipitation [kg m-2]
-	eAir_input->GetInputValue(&eAir,gauss);  //screen level vapor pressure [Pa]
-	pAir_input->GetInputValue(&pAir,gauss);  // screen level air pressure [Pa]
 	teValue_input->GetInputValue(&teValue,gauss);  // Emissivity [0-1]
 	dulwrfValue_input->GetInputValue(&dulwrfValue,gauss);  // LWup perturbation [W m-2]
 	aValue_input->GetInputValue(&aValue,gauss);  // Albedo [0 1]
@@ -5428,7 +5447,62 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	cotValue_input->GetInputValue(&cotValue,gauss);  // Cloud Optical Thickness
 	ccsnowValue_input->GetInputValue(&ccsnowValue,gauss); //concentration of light absorbing carbon for snow [ppm1]
 	cciceValue_input->GetInputValue(&cciceValue,gauss); //concentration of light absorbing carbon for ice [ppm1]
-	//_printf_("Time: " << t << " Ta: " << Ta << " V: " << V << " dlw: " << dlw << " dsw: " << dsw << " P: " << P << " eAir: " << eAir << " pAir: " << pAir << "\n");
+
+	/*extract daily data:{{{*/
+	// Get time forcing inputs
+	if (!ismappedforcing) {
+		Input *Ta_input  = this->GetInput(SmbTaEnum,timeinputs);    _assert_(Ta_input);
+		Input *V_input   = this->GetInput(SmbVEnum,timeinputs);     _assert_(V_input);
+		Input *Dlwr_input= this->GetInput(SmbDlwrfEnum,timeinputs); _assert_(Dlwr_input);
+		Input *Dswr_input= this->GetInput(SmbDswrfEnum,timeinputs); _assert_(Dswr_input);
+		Input *Dswrdiff_input= this->GetInput(SmbDswdiffrfEnum,timeinputs); _assert_(Dswrdiff_input);
+		Input *P_input   = this->GetInput(SmbPEnum,timeinputs);     _assert_(P_input);
+		Input *eAir_input= this->GetInput(SmbEAirEnum,timeinputs);  _assert_(eAir_input);
+		Input *pAir_input= this->GetInput(SmbPAirEnum,timeinputs);  _assert_(pAir_input);
+
+		Ta_input->GetInputValue(&Ta,gauss);//screen level air temperature [K]
+		V_input->GetInputValue(&V,gauss);  //wind speed [m s-1]
+		Dlwr_input->GetInputValue(&dlw,gauss);   //downward longwave radiation flux [W m-2]
+		Dswr_input->GetInputValue(&dsw,gauss);   //downward shortwave radiation flux [W m-2]
+		Dswrdiff_input->GetInputValue(&dswdiff,gauss);   //downward shortwave diffuse radiation flux [W m-2]
+		P_input->GetInputValue(&P,gauss);        //precipitation [kg m-2]
+		eAir_input->GetInputValue(&eAir,gauss);  //screen level vapor pressure [Pa]
+		pAir_input->GetInputValue(&pAir,gauss);  // screen level air pressure [Pa]
+		//_printf_("Time: " << t << " Ta: " << Ta << " V: " << V << " dlw: " << dlw << " dsw: " << dsw << " P: " << P << " eAir: " << eAir << " pAir: " << pAir << "\n");
+	} else {
+
+		int timestepping;
+		IssmDouble dt;
+		parameters->FindParam(&dt,TimesteppingTimeStepEnum);          /*transient core time step*/
+		parameters->FindParam(&timestepping,TimesteppingTypeEnum);
+
+		Input *currentsurface_input = this->GetInput(SurfaceEnum);  _assert_(currentsurface_input);
+		currentsurface_input->GetInputAverage(&currentsurface);
+
+		parameters->FindParam(&tlapse,SmbLapseTaValueEnum);
+		parameters->FindParam(&dlwlapse,SmbLapsedlwrfValueEnum);
+
+		IssmDouble* elevation = NULL;
+		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
+
+		//Variables for downscaling
+		IssmDouble taparam, dlwrfparam; 
+		parameters->FindParam(&taparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbTaParamEnum);
+		parameters->FindParam(&dlwrfparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbDlwrfParamEnum);
+
+		//Variables not downscaled
+		parameters->FindParam(&V, Mappedpoint-1, timeinputs, timestepping, dt, SmbVParamEnum);
+		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
+		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
+		parameters->FindParam(&P, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
+		parameters->FindParam(&eAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
+		parameters->FindParam(&pAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
+
+		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
+		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
+
+		xDelete<IssmDouble>(elevation);
+	}
 	/*}}}*/
 
 	/*Snow grain metamorphism:*/

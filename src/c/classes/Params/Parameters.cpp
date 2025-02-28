@@ -286,18 +286,32 @@ void Parameters::FindParam(IssmDouble* pscalar,int param_enum){ _assert_(this);/
 	this->params[index]->GetParameterValue(pscalar);
 }
 /*}}}*/
-void Parameters::FindParam(IssmDouble* pscalar, int param_enum,IssmDouble time){ _assert_(this);/*{{{*/
+void Parameters::FindParam(IssmDouble* pscalar, int param_enum, IssmDouble time){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pscalar,time);
 }
 /*}}}*/
-void Parameters::FindParam(IssmDouble* pscalar,int row,IssmDouble time, int param_enum){ _assert_(this);/*{{{*/
+void Parameters::FindParam(IssmDouble* pscalar, int param_enum, IssmDouble time, int timestepping, IssmDouble dt){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pscalar,time,timestepping,dt);
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble* pscalar,int row, IssmDouble time, int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pscalar,row,time);
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble* pscalar,int row, IssmDouble time, int timestepping, IssmDouble dt, int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pscalar,row,time,timestepping,dt);
 }
 /*}}}*/
 void Parameters::FindParam(char** pstring,int param_enum){ _assert_(this);/*{{{*/
