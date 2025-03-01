@@ -124,9 +124,7 @@ if MAC
 if HAVE_FORTRANDIR
 AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
-if MAC
 AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
-endif
 endif
 endif
 
