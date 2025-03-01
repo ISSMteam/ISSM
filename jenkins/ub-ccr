@@ -31,7 +31,6 @@ ISSM_CONFIG='\
 
 EXTERNALPACKAGES="
 	petsc			install-3.22-linux.sh
-	curl			install-7-linux.sh
 	hdf5			install-1.sh
 	netcdf			install-4.sh
 	proj			install-6.sh

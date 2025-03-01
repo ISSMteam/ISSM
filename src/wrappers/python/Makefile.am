@@ -111,6 +111,7 @@ AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
 if MAC
 AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+AM_LDFLAGS += -Wl,-rpath,/System/Volumes/Data/Library/Developer/CommandlLineTools/Library/Frameworks
 endif
 endif
 endif
