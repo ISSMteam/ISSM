@@ -1,7 +1,13 @@
-function [vxout vyout] = interpJoughinCompositeGreenland(X,Y),
+function [vxout vyout] = interpJoughinCompositeGreenland(X,Y,ncpath),
 
-%data=load(['/u/astrid-r1b/morlighe/issmjpl/proj-morlighem/DatasetGreenland/Data/VelJoughin/IanGreenVel.mat']);
-filename = '/totten_1/ModelData/Greenland/VelJoughin/IanGreenVel.mat';
+%   - optional input argument: path to dataset IanGreenVel.mat
+
+if nargin<3
+	%data=load(['/u/astrid-r1b/morlighe/issmjpl/proj-morlighem/DatasetGreenland/Data/VelJoughin/IanGreenVel.mat']);
+	filename = '/totten_1/ModelData/Greenland/VelJoughin/IanGreenVel.mat';
+else
+	filename = [ncpath '/IanGreenVel.mat']; 
+end
 
 %Figure out what subset of the matrix should be read
 load(filename,'x_m','y_m');
