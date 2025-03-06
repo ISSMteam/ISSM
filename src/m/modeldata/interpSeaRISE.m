@@ -28,10 +28,11 @@ function [dataout] = interpSeaRISE(X,Y,string,varargin),
 %   Hemisphere: +1 Greenland, -1 Antarctica
 %
 %   Usage:
-%      [dataout] = /totten_1/dmangini/trunk-jpl/src/m/modeldata/interpSeaRISE.m(X,Y,string,hemisphere)
+%      [dataout] = /totten_1/dmangini/trunk-jpl/src/m/modeldata/interpSeaRISE.m(X,Y,string,hemisphere,ncfile)
 %
 %   Examples:
 %      md.basalforcings.geothermalflux  = interpSeaRISE(md.mesh.x,md.mesh.y,'bheatflx_shapiro',-1); 
+%      md.basalforcings.geothermalflux  = interpSeaRISE(md.mesh.x,md.mesh.y,'bheatflx_shapiro',-1,'/home/ModelData/SeaRISE/Greenland_5km_dev1.2.nc');
 
 verbose=0;
 
@@ -41,28 +42,32 @@ else
 	hemisphere = varargin{1};
 end
 
-%read data
-switch (oshostname()),
-	case {'ronne'}
-		if hemisphere==1,
-			searisenc='/home/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
-		elseif hemisphere==-1,
-			searisenc='/home/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
-		end
-	case {'thwaites','larsen','murdo','astrid'}
-		if hemisphere==1,
-			searisenc='/u/astrid-r1b/ModelData/SeaRISE/Greenland5km_v1.2/Greenland_5km_dev1.2.nc';
-		elseif hemisphere==-1,
-			searisenc='/u/astrid-r1b/ModelData/SeaRISE/Antarctica5km_shelves_v1.0/Antarctica_5km_dev1.0.nc';
-		end
-	case {'totten'}
-		if hemisphere==1,
-			searisenc='/totten_1/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
-		elseif hemisphere==-1,
-			searisenc='/totten_1/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
-		end
-	otherwise
-		error('hostname not supported yet');
+if nargin==5,
+	searisenc = varargin{2};
+else
+	%read data
+	switch (oshostname()),
+		case {'ronne'}
+			if hemisphere==1,
+				searisenc='/home/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
+			elseif hemisphere==-1,
+				searisenc='/home/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
+			end
+		case {'thwaites','larsen','murdo','astrid'}
+			if hemisphere==1,
+				searisenc='/u/astrid-r1b/ModelData/SeaRISE/Greenland5km_v1.2/Greenland_5km_dev1.2.nc';
+			elseif hemisphere==-1,
+				searisenc='/u/astrid-r1b/ModelData/SeaRISE/Antarctica5km_shelves_v1.0/Antarctica_5km_dev1.0.nc';
+			end
+		case {'totten'}
+			if hemisphere==1,
+				searisenc='/totten_1/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
+			elseif hemisphere==-1,
+				searisenc='/totten_1/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
+			end
+		otherwise
+			error('hostname not supported yet');
+	end
 end
 
 %convert coordinates to SeaRISE projection
