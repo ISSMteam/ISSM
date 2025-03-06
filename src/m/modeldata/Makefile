@@ -1,2 +1,2 @@
 all:
-	/Applications/MATLAB_R2019a.app/bin/mex InterpFromGrid.cpp
+	$(MATLAB_DIR)/bin/mex InterpFromGrid.cpp
