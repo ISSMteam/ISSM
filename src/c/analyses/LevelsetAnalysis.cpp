@@ -819,9 +819,26 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 	IssmDouble mig_max = femmodel->parameters->FindParam(MigrationMaxEnum);
 	IssmDouble dt      = femmodel->parameters->FindParam(TimesteppingTimeStepEnum);
 
-   /*Get current distance to terminus*/
-   InputDuplicatex(femmodel,MaskIceLevelsetEnum,DistanceToCalvingfrontEnum);
-   femmodel->DistanceToFieldValue(MaskIceLevelsetEnum,0,DistanceToCalvingfrontEnum);
+   /* Get current distance to terminus
+	 * Only do this if necessary, PostProcess is already doing it for a few calving law
+	 * Do not repeat the process is this function is particularly slow*/
+	bool computedistance = true;
+	if(
+				calvinglaw==CalvingMinthicknessEnum ||
+				calvinglaw==CalvingVonmisesEnum ||
+				calvinglaw==CalvingParameterizationEnum ||
+				calvinglaw==CalvingVonmisesADEnum ||
+				calvinglaw==CalvingCalvingMIPEnum){
+		int step;
+		femmodel->parameters->FindParam(&step,StepEnum);
+		if(step>1){
+			computedistance = false;
+		}
+	}
+	if(computedistance){
+		InputDuplicatex(femmodel,MaskIceLevelsetEnum,DistanceToCalvingfrontEnum);
+		femmodel->DistanceToFieldValue(MaskIceLevelsetEnum,0,DistanceToCalvingfrontEnum);
+	}
 
    if(calvinglaw==CalvingHabEnum){
 
