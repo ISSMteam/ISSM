@@ -111,7 +111,14 @@ if MAC
 if HAVE_FORTRANDIR
 AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
-AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+endif
+endif
+
+if !STANDALONE_LIBRARIES
+if MAC
+if PROJ
+libISSMCore_la_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+endif
 endif
 endif
 

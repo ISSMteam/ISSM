@@ -100,7 +100,7 @@ class ub_ccr(object):
     # }}}
 
     def nprocs(self):  # {{{
-        return self.ntasks
+        return self.ntasks * self.ntaskspernode
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
@@ -161,6 +161,7 @@ class ub_ccr(object):
             fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
         if self.exclusive:
             fid.write('#SBATCH --exclusive\n')
+        fid.write('#SBATCH --constraint="[SAPPHIRE-RAPIDS-IB|ICE-LAKE-IB|CASCADE-LAKE-IB|EMERALD-RAPIDS-IB]"\n')
         fid.write('#SBATCH --mem={}\n'.format(self.mem))
         fid.write('#SBATCH --job-name={}\n'.format(self.jobname))
         fid.write('#SBATCH --output={}.outlog\n'.format(modelname))
