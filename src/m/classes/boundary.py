@@ -10,7 +10,7 @@ from shpread import shpread
 
 
 class boundary(object):  # {{{
-    """BOUNDARY class definition
+    """boundary class definition
 
     Usage:
         boundary = boundary()
@@ -119,7 +119,7 @@ class boundary(object):  # {{{
         #convert boundary to another reference frame #{{{
         for i in range(len(domain)):
             try:
-                x, y = gdaltransform(domain[i]['x'], domain[i]['y'], self.proj, proj)
+                x, y = CoordTransform(domain[i]['x'], domain[i]['y'], self.proj, proj)
             except error as e:
                 print(e)
                 print(self)
