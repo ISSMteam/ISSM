@@ -130,7 +130,7 @@ endif
 if !STANDALONE_LIBRARIES
 if MAC
 if PROJ
-libISSMCore_la_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
 endif
 endif
 endif
