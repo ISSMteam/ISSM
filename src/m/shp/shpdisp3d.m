@@ -30,7 +30,7 @@ domain=shpread(domainoutline);
 if epsg~=4326,
 	%transform to lat,long:
 	for i=1:length(domain),
-		[x,y] = gdaltransform(domain(i).x,domain(i).y,'EPSG:4326',sprintf('EPSG:%i',epsg));
+		[x,y] = CoordTransform(domain(i).x,domain(i).y,'EPSG:4326',sprintf('EPSG:%i',epsg));
 		domain(i).x=x; domain(i).y=y;
 	end
 end
