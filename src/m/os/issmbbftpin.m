@@ -3,7 +3,6 @@ function issmbbftpin(host, login,port,numstreams,path, packages)
 %
 %   usage: scpin(host,packages,path)
 %
-%
 
 %first get hostname
 hostname=oshostname();
@@ -18,7 +17,7 @@ end
 %if hostname and host are the same, do a simple copy
 if strcmpi(hostname,host),
 
-    for i=1:numel(packages),
+	for i=1:numel(packages),
 		success=copyfile([path '/' packages{i}]); %keep going, even if success=0
 	end
 
