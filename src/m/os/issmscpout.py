@@ -31,7 +31,7 @@ def issmscpout(host, path, login, port, packages):
             subproc_cmd = 'scp -P {} {} {}@localhost:{}'.format(port, string, login, path)
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
-                if errs != '':
+            if errs != '':
                 subproc_cmd = 'scp -OT -P {} {} {}@localhost:{}'.format(port, string, login, path)
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
@@ -39,7 +39,7 @@ def issmscpout(host, path, login, port, packages):
             subproc_cmd = 'scp {} {}@{}:{}'.format(string, login, host, path)
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
-                if errs != '':
+            if errs != '':
                 subproc_cmd = 'scp -OT {} {}@{}:{}'.format(string, login, host, path)
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
