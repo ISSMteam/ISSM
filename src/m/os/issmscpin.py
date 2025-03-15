@@ -28,7 +28,7 @@ def issmscpin(host, login, port, path, packages):
             subproc_cmd = 'scp -P {} {}@localhost:{} {}'.format(port, login, fileliststr, os.getcwd())
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
-                if errs != '':
+            if errs != '':
                 subproc_cmd = 'scp -OT -P {} {}@localhost:{} {}'.format(port, login, fileliststr, os.getcwd())
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
@@ -36,7 +36,7 @@ def issmscpin(host, login, port, path, packages):
             subproc_cmd = 'scp {}@{}:{} {}'.format(login, host, fileliststr, os.getcwd())
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
-                if errs != '':
+            if errs != '':
                 subproc_cmd = 'scp -OT {}@{}:{} {}'.format(login, host, fileliststr, os.getcwd())
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
