@@ -191,6 +191,18 @@ function walk_through_subclasses(model_subclass, empty_model_subclass, given_lis
         if strcmp(given_list_of_layers{1}, 'inversion')
             create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
             check_inversion_class(model_subclass, NetCDF, verbose);
+
+        elseif strcmp(given_list_of_layers{1},'smb')
+            create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
+            check_smb_class(model_subclass, NetCDF, verbose);
+        
+        elseif strcmp(given_list_of_layers{1},'friction')
+            create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
+            check_friction_class(model_subclass, NetCDF, verbose);
+    
+        elseif strcmp(given_list_of_layers{1},'hydrology')
+            create_group(model_subclass, given_list_of_layers, NetCDF, verbose);
+            check_hydrology_class(model_subclass, NetCDF, verbose);
         end
     end
     
@@ -508,6 +520,238 @@ function check_inversion_class(model_var, NetCDF, verbose)
     end
 end
 
+%Write a name for the smb class
+function check_smb_class(model_var, NetCDF, verbose)
+
+% Define a persistent variable to ensure this function is only run once
+persistent executed;
+% Check if the function has already been executed
+if isempty(executed)
+    if verbose
+        disp('Deconstructing smb class instance')
+    end
+    % Need to make sure that we have the right smb class
+    groupid = netcdf.inqNcid(NetCDF,'smb');
+
+    if isa(model_var, 'SMBforcing')
+        write_string_to_netcdf('smb_class_name', 'SMBforcing', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBforcing')
+        end
+    elseif isa(model_var, 'SMB')
+        write_string_to_netcdf('smb_class_name', 'SMB', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMB')
+        end
+    elseif isa(model_var, 'SMBcomponents')
+        write_string_to_netcdf('smb_class_name', 'SMBcomponents', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBcomponents')
+        end
+    elseif isa(model_var, 'SMBd18opdd')
+        write_string_to_netcdf('smb_class_name', 'SMBd18opdd', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBd18opdd')
+        end
+    elseif isa(model_var, 'SMBdebrisEvatt')
+        write_string_to_netcdf('smb_class_name', 'SMBdebrisEvatt', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBdebrisEvatt')
+        end
+    elseif isa(model_var, 'SMBgemb')
+        write_string_to_netcdf('smb_class_name', 'SMBgemb', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBgemb')
+        end
+    elseif isa(model_var, 'SMBgradients')
+        write_string_to_netcdf('smb_class_name', 'SMBgradients', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBgradients')
+        end
+    elseif isa(model_var, 'SMBgradientscomponents')
+        write_string_to_netcdf('smb_class_name', 'SMBgradientscomponents', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBgradientscomponents')
+        end
+    elseif isa(model_var, 'SMBgradientsela')
+        write_string_to_netcdf('smb_class_name', 'SMBgradientsela', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBgradientsela')
+        end
+    elseif isa(model_var, 'SMBhenning')
+        write_string_to_netcdf('smb_class_name', 'SMBhenning', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBhenning')
+        end
+    elseif isa(model_var, 'SMBmeltcomponents')
+        write_string_to_netcdf('smb_class_name', 'SMBmeltcomponents', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBmeltcomponents')
+        end
+    elseif isa(model_var, 'SMBpdd')
+        write_string_to_netcdf('smb_class_name', 'SMBpdd', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBpdd')
+        end
+    elseif isa(model_var, 'SMBpddSicopolis')
+        write_string_to_netcdf('smb_class_name', 'SMBpddSicopolis', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBpddSicopolis')
+        end
+    elseif isa(model_var, 'SMBsemic')
+        write_string_to_netcdf('smb_class_name', 'SMBsemic', groupid, NetCDF,  verbose);
+        if verbose
+            disp('Successfully saved smb class instance SMBsemic')
+        end
+    end
+
+    % Set the persistent variable to indicate that the function has been executed
+    executed = true;
+end
+end
+
+function check_friction_class(model_var, NetCDF, verbose)
+% Define a persistent variable to ensure this function is only run once
+persistent executed;
+% Check if the function has already been executed
+if isempty(executed)
+    if verbose
+        disp('Deconstructing friction class instance')
+    end
+    % Need to make sure that we have the right friction class
+    groupid = netcdf.inqNcid(NetCDF,'friction');
+    if isa(model_var, 'friction')
+        write_string_to_netcdf('friction_class_name', 'friction', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance friction')
+        end
+    elseif isa(model_var, 'frictioncoulomb')
+        write_string_to_netcdf('friction_class_name', 'frictioncoulomb', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictioncoulomb')
+        end
+    elseif isa(model_var, 'frictioncoulomb2')
+        write_string_to_netcdf('friction_class_name', 'frictioncoulomb2', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictioncoulomb2')
+        end
+    elseif isa(model_var, 'frictionhydro')
+        write_string_to_netcdf('friction_class_name', 'frictionhydro', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionhydro')
+        end
+    elseif isa(model_var, 'frictionjosh')
+        write_string_to_netcdf('friction_class_name', 'frictionjosh', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionjosh')
+        end
+    elseif isa(model_var, 'frictionpism')
+        write_string_to_netcdf('friction_class_name', 'frictionpism', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionpism')
+        end
+    elseif isa(model_var, 'frictionregcoulomb')
+        write_string_to_netcdf('friction_class_name', 'frictionregcoulomb', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionregcoulomb')
+        end
+    elseif isa(model_var, 'frictionregcoulomb2')
+        write_string_to_netcdf('friction_class_name', 'frictionregcoulomb2', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionregcoulomb2')
+        end
+    elseif isa(model_var, 'frictionschoof')
+        write_string_to_netcdf('friction_class_name', 'frictionschoof', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionschoof')
+        end
+    elseif isa(model_var, 'frictionshakti')
+        write_string_to_netcdf('friction_class_name', 'frictionshakti', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionshakti')
+        end
+    elseif isa(model_var, 'frictiontsai')
+        write_string_to_netcdf('friction_class_name', 'frictiontsai', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictiontsai')
+        end
+    elseif isa(model_var, 'frictionwaterlayer')
+        write_string_to_netcdf('friction_class_name', 'frictionwaterlayer', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionwaterlayer')
+        end
+    elseif isa(model_var, 'frictionweertman')
+        write_string_to_netcdf('friction_class_name', 'frictionweertman', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionweertman')
+        end
+    elseif isa(model_var, 'frictionweertmantemp')
+        write_string_to_netcdf('friction_class_name', 'frictionweertmantemp', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved friction class instance frictionweertmantemp')
+        end
+    end
+    % Set the persistent variable to indicate that the function has been executed
+    executed = true;
+end
+end
+
+function check_hydrology_class(model_var, NetCDF, verbose)
+% Define a persistent variable to ensure this function is only run once
+persistent executed;
+% Check if the function has already been executed
+if isempty(executed)
+    if verbose
+        disp('Deconstructing hydrology class instance')
+    end
+    % Need to make sure that we have the right hydrology class
+    groupid = netcdf.inqNcid(NetCDF,'hydrology');
+    if isa(model_var, 'hydrologyshreve')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologyshreve', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologyshreve')
+        end
+    elseif isa(model_var, 'hydrology')
+        write_string_to_netcdf('hydrology_class_name', 'hydrology', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrology')
+        end
+    elseif isa(model_var, 'hydrologyarmapw')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologyarmapw', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologyarmapw')
+        end
+    elseif isa(model_var, 'hydrologydc')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologydc', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologydc')
+        end
+    elseif isa(model_var, 'hydrologyglads')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologyglads', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologyglads')
+        end
+    elseif isa(model_var, 'hydrologypism')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologypism', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologypism')
+        end
+    elseif isa(model_var, 'hydrologyshakti')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologyshakti', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologyshakti')
+        end
+    elseif isa(model_var, 'hydrologytws')
+        write_string_to_netcdf('hydrology_class_name', 'hydrologytws', groupid, NetCDF, verbose);
+        if verbose
+            disp('Successfully saved hydrology class instance hydrologytws')
+        end
+
+    end
+    % Set the persistent variable to indicate that the function has been executed
+    executed = true;
+end
+end
 
 function create_var(variable_name, address_of_child, group, NetCDF, verbose)
     % There are lots of different variable types that we need to handle from the model class
