@@ -696,7 +696,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	IssmDouble* areae  = NULL;
 
 	int nel;
-	int  grdmodel=0;
+	int grdmodel=0;
 	int isgrd=0;
 	int count, frequency;
 	SealevelGeometry* slgeom=NULL;
@@ -707,7 +707,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 	if(grdmodel!=ElasticEnum || !isgrd) return NULL;
-	if(count!=frequency)return NULL;
+	if(count!=frequency) return NULL;
 
 	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&xxe,&nel,XxeEnum);
