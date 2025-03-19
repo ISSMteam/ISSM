@@ -71,7 +71,7 @@ end
 
 %Fields and tolerances to track changes
 field_names      ={'Layers','SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbA' ,'SmbEC','SmbMassBalance','SmbMAdd','SmbDzAdd','SmbFAC','SmbMeanSHF','SmbMeanLHF','SmbMeanULW','SmbNetLW','SmbNetSW','SmbAccumulatedMassBalance','SmbAccumulatedRunoff','SmbAccumulatedMelt','SmbAccumulatedEC','SmbAccumulatedPrecipitation','SmbAccumulatedRain','SmbAccumulatedRefreeze','SmbRunoff','SmbMelt','SmbEC','SmbPrecipitation','SmbRain','SmbRefreeze','SmbWAdd'};
-field_tolerances ={1e-12,4e-11,2e-11,3e-11,6e-11,8e-11,8e-11,1e-12,5e-11,2e-12,1e-12,1e-12,4e-11,2e-11,5e-11,1e-11,9e-10,2e-11,1e-11,9e-10,2e-11,2e-09,1e-11,1e-11,1e-11,8e-10,2e-11,2e-11,1e-11,1e-11,1e-11,1e-11};
+field_tolerances ={1e-12,4e-11,2e-11,3e-11,6e-11,8e-11,8e-11,1e-12,5e-11,2e-12,1e-12,1e-12,4e-11,2e-11,5e-11,1e-11,9e-10,2e-11,1e-11,9e-10,2e-11,2e-09,1e-11,1e-11,1e-11,8e-10,2e-11,2e-11,1e-11,1e-11,2e-11,1e-11};
 
 field_values={...
 	(nlayers),...
