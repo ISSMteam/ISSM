@@ -790,23 +790,15 @@ void              sealevelchange_finalize(FemModel* femmodel) {  /*{{{*/
 
 
 void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
-	int  grdmodel=0;
-	int isgrd=0;
-	int horiz=0;
-	int count, frequency;
 
 	/*early return?:*/
-	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
-	femmodel->parameters->FindParam(&isgrd,SolidearthSettingsGRDEnum);
-	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
-	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
-	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
-	if(grdmodel!=ElasticEnum || !isgrd) return;
-	if(count!=frequency)return;
+	if(slgeom==NULL) return;
 
+	int horiz;
+	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	for (int l=0;l<SLGEOM_NUMLOADS;l++){
 		femmodel->inputs->DeleteInput(slgeom->AlphaIndexEnum(l));
-		if (horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
+		if(horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
 	}
 
 	delete slgeom;
@@ -1340,6 +1332,7 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 				}
 				ISSM_MPI_Send(&nv, 1, ISSM_MPI_INT, 0, i, tocomms[i]);
 				ISSM_MPI_Send(forcing, nv, ISSM_MPI_DOUBLE, 0, i, tocomms[i]);
+				xDelete<IssmDouble>(forcing);
 			}
 		}
 		else{
