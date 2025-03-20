@@ -25,7 +25,6 @@ GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	this->vloads=new Vector<IssmDouble>(nel);
 	for (int i=0;i<SLGEOM_NUMLOADS;i++) {
 		this->vsubloads[i] = new Vector<IssmDouble>(slgeom->nbar[i]);
-		this->combined_subloads[i] = xNewZeroInit<IssmDouble>(slgeom->nbar[i]);
 	}
 
 	this->vsealevelloads=new Vector<IssmDouble>(nel);

@@ -116,14 +116,16 @@ int main(int argc,char **argv){
 
 	/*Wrap up: */
 	femmodel->CleanUp();
-
-	/*Delete Model and communicators */
 	delete femmodel;
+
+	/*Delete communicators */
 	ISSM_MPI_Comm_free(&modelcomm);
-	ISSM_MPI_Comm_free(&toearthcomm);
 	if(modelid==earthid){
 		for(int i=0;i<earthid;i++) ISSM_MPI_Comm_free(&fromicecomms[i]);
 		xDelete<ISSM_MPI_Comm>(fromicecomms);
+	}
+	else{
+		ISSM_MPI_Comm_free(&toearthcomm);
 	}
 	xDelete<int>(rankzeros);
 	xDelete<int>(commsizes);
