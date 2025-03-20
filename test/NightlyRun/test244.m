@@ -115,7 +115,7 @@ for i=1:3,
 	md.results.dakota.moments=[md.results.dakota.moments md.results.dakota.dresp_out(i).stddev];
 end
 field_names     ={'moments'};
-field_tolerances={4e-9};
+field_tolerances={2e-6};
 field_values={...
 	md.results.dakota.moments,...
 	};

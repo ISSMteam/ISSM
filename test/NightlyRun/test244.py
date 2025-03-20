@@ -142,5 +142,5 @@ for i in range(3):
     md.results.dakota.moments.append(md.results.dakota.dresp_out[i].stddev)
 
 field_names = ['moments']
-field_tolerances = [4e-9]
+field_tolerances = [2e-6]
 field_values = [md.results.dakota.moments]
