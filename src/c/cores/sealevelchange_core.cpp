@@ -1258,6 +1258,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		xDelete<IssmDouble*>(forcings);
 	}
 	if(forcing)xDelete<IssmDouble>(forcing);
+	if(transfercount) xDelete<IssmDouble>(transfercount);
 	if(forcingglobal)delete forcingglobal;
 	if(transitions){
 		for(int i=0;i<earthid;i++){
