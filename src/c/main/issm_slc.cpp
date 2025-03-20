@@ -117,17 +117,8 @@ int main(int argc,char **argv){
 	/*Wrap up: */
 	femmodel->CleanUp();
 
-	/*Delete Model: */
+	/*Delete Model and communicators */
 	delete femmodel;
-
-	/*Finalize environment:*/
-	EnvironmentFinalize();
-
-	/*Finalize exception trapping: */
-	ExceptionTrapEnd();
-
-	/*Free resources:*/
-	ISSM_MPI_Comm_free(&worldcomm);
 	ISSM_MPI_Comm_free(&modelcomm);
 	ISSM_MPI_Comm_free(&toearthcomm);
 	if(modelid==earthid){
@@ -136,6 +127,14 @@ int main(int argc,char **argv){
 	}
 	xDelete<int>(rankzeros);
 	xDelete<int>(commsizes);
+
+	/*Finalize environment:*/
+	EnvironmentFinalize();
+
+	/*Finalize exception trapping: */
+	ExceptionTrapEnd();
+
+	/*Free resources:*/
 	for(int i=0;i<nummodels;i++){
 		char* string=NULL;
 		string=dirnames[i]; xDelete<char>(string);
