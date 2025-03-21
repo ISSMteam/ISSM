@@ -52,7 +52,7 @@ classdef cfsurfacesquaretransient
 				error('cfsurfacesquaretransient error message: ''name'' field should be a string!');
 			end
 			OutputdefinitionStringArray={};
-			for i=1:100
+			for i=1:2000
 				OutputdefinitionStringArray{i}=strcat('Outputdefinition',num2str(i));
 			end
 			md = checkfield(md,'fieldname','self.definitionstring','field',self.definitionstring,'values',OutputdefinitionStringArray);
