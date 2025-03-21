@@ -7,7 +7,7 @@ md.materials.rho_ice=910;
 md.cluster=generic('name',oshostname(),'np',3);
 
 % Use of Gemb method for SMB computation
-md.smb = SMBgemb(md.mesh,md.geometry);
+md.smb = SMBgemb(md.mesh);
 md.smb.dsnowIdx = 4;
 md.smb.swIdx = 1;
 md.smb.tcIdx = 2;

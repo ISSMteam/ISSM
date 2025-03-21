@@ -10,7 +10,7 @@ class SMBgemb(object):
     """SMBGEMB class definition
 
     Usage:
-        SMB = SMBgemb()
+        SMB = SMBgemb(md.mesh)
     """
 
     def __init__(self, *args):  # {{{
@@ -157,10 +157,9 @@ class SMBgemb(object):
         nargin = len(args)
         if nargin == 2:
             mesh = args[0]
-            geometry = args[1]
-            self.setdefaultparameters(mesh, geometry)
+            self.setdefaultparameters(mesh)
         else:
-            raise Exception('constructor not supported: need mesh and geometry to set defaults')
+            raise Exception('constructor not supported: need mesh to set defaults')
         # }}}
 
     def __repr__(self):  # {{{
@@ -337,7 +336,7 @@ class SMBgemb(object):
         return ['SmbMassBalance','SmbAccumulatedMassBalance']
     # }}}
 
-    def setdefaultparameters(self, mesh, geometry):  # {{{
+    def setdefaultparameters(self, mesh):  # {{{
         self.isgraingrowth = 1
         self.isalbedo = 1
         self.isshortwave = 1
