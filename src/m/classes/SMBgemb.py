@@ -155,7 +155,7 @@ class SMBgemb(object):
         #elev:  this is taken from the ISSM surface itself.
 
         nargin = len(args)
-        if nargin == 2:
+        if nargin == 1:
             mesh = args[0]
             self.setdefaultparameters(mesh)
         else:

@@ -155,7 +155,7 @@ classdef SMBgemb
 	methods
 		function self = SMBgemb(varargin) % {{{
 			switch nargin
-				case 2
+				case 1
 					mesh=varargin{1};
 					self=setdefaultparameters(self,mesh);
 				otherwise
