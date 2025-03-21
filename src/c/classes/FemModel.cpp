@@ -2761,7 +2761,7 @@ void FemModel::Responsex(IssmDouble* responses,int response_descriptor_enum){/*{
 		case VelEnum:                            this->ElementResponsex(responses,VelEnum); break;
 		case FrictionCoefficientEnum:            NodalValuex(responses, FrictionCoefficientEnum,elements,nodes, vertices, loads, materials, parameters); break;
 		default:
-			if(response_descriptor_enum>=Outputdefinition1Enum && response_descriptor_enum <=Outputdefinition100Enum){
+			if(response_descriptor_enum>=Outputdefinition1Enum && response_descriptor_enum <=Outputdefinition2000Enum){
 				int ierr = OutputDefinitionsResponsex(responses, this,response_descriptor_enum);
 				if(ierr) _error_("could not evaluate response");
 			}
