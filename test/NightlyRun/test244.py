@@ -27,7 +27,7 @@ md.cluster = generic('name', gethostname(), 'np', 3)
 md.geometry.bed = md.geometry.base
 
 # Use of Gemb method for SMB computation
-md.smb = SMBgemb(md.mesh, md.geometry)
+md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 0
 md.smb.swIdx = 1
 
