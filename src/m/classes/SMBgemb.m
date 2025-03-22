@@ -3,7 +3,7 @@
 %   Alex Gardner, University of Alberta.
 %
 %   Usage:
-%      SMBgemb=SMBgemb();
+%      SMBgemb=SMBgemb(md.mesh);
 
 classdef SMBgemb
 	properties (SetAccess=public)
@@ -155,12 +155,11 @@ classdef SMBgemb
 	methods
 		function self = SMBgemb(varargin) % {{{
 			switch nargin
-				case 2
+				case 1
 					mesh=varargin{1};
-					geometry=varargin{2};
-					self=setdefaultparameters(self,mesh,geometry);
+					self=setdefaultparameters(self,mesh);
 				otherwise
-					error('constructor not supported: need geometry and mesh to set defaults');
+					error('constructor not supported: need mesh to set defaults');
 			end
 		end % }}}
 		function disp(self) % {{{
@@ -356,7 +355,7 @@ classdef SMBgemb
 		function list = defaultoutputs(self,md) % {{{
 			list = {'SmbMassBalance','SmbAccumulatedMassBalance'};
 		end % }}}
-		function self = setdefaultparameters(self,mesh,geometry) % {{{
+		function self = setdefaultparameters(self,mesh) % {{{
 
 			self.isgraingrowth=1;
 			self.isalbedo=1;

@@ -11,7 +11,7 @@ md2=setmask(md2,'all','');
 md2=parameterize(md2,'../Par/SquareShelf.par');
 
 % Use of Gemb method for SMB computation
-md.smb = SMBgemb(md.mesh,md.geometry);
+md.smb = SMBgemb(md.mesh);
 md.smb.dsnowIdx = 1;
 md.smb.swIdx = 1;
 
