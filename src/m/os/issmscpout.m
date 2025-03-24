@@ -28,8 +28,10 @@ if strcmpi(host,hostname)
 			system(['ln -s ' here '/' packages{i} ' ' path]);
 		end
 	end
+
+%General case, this is not a local machine
 else
-	if numel(packages)==1,
+	if numel(packages)==1
 		fileliststr=packages{1};
 	else
 		fileliststr='\{';
@@ -38,22 +40,23 @@ else
 		end
 		fileliststr=[fileliststr packages{end} '\}'];
 	end
-	if port,
-		[status,cmdout]=system(['!scp -P ' num2str(port) ' ' string ' ' login '@localhost:' path]);
-		if status ~= 0,
+	if port
+		disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])
+		[status,cmdout]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
+		if status~=0
 			%List expansion is a bash'ism. Try again with -OT.
-			[status,cmdout]=system(['!scp -OT -P ' num2str(port) ' ' string ' ' login '@localhost:' path]);
+			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
 		end
 	else
-		[status,cmdout]=system(['!scp ' string ' ' login '@' host ':' path]);
-		if status ~= 0,
+		[status,cmdout]=system(['scp ' fileliststr ' ' login '@' host ':' path]);
+		if status~=0
 			%List expansion is a bash'ism. Try again with -OT.
-			[status,cmdout]=system(['!scp -OT ' string ' ' login '@' host ':' path]);
+			[status,cmdout]=system(['scp -OT ' fileliststr ' ' login '@' host ':' path]);
 		end
 	end
 
 	%check scp worked
-	if status ~= 0,
+	if status~=0
 		error(['issmscpin error message: ' cmdout])
 	end
 end
