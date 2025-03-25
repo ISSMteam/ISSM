@@ -24,16 +24,16 @@ else
 	end
 
 	if port,
-		[status,cmdout]=system(['!scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		[status,cmdout]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
 		if status ~= 0,
 			%List expansion is a bash'ism. Try again with -OT.
-			[status,cmdout]=system(['!scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
 		end
 	else
-		[status,cmdout]=system(['!scp ' login '@' host ':' path '/' fileliststr ' ./']);
+		[status,cmdout]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
 		if status ~= 0,
 			%List expansion is a bash'ism. Try again with -OT.
-			[status,cmdout]=system(['!scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
+			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
 		end
 	end
 
