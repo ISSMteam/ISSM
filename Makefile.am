@@ -1,4 +1,4 @@
-EXTRA_DIST = autom4te.cache aux-config examples scripts execution autom4te.cache externalpackages m4 etc jenkins packagers test
+EXTRA_DIST = examples scripts execution etc test
 
 SUBDIRS = src
 
