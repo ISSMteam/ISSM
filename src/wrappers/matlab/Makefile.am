@@ -48,6 +48,7 @@ lib_LTLIBRARIES += \
 	ExpSimplify_matlab.la \
 	ExpToLevelSet_matlab.la \
 	InterpFromGridToMesh_matlab.la \
+	InterpFromGrid.la \
 	InterpFromMesh2d_matlab.la \
 	InterpFromMeshToGrid_matlab.la \
 	InterpFromMeshToMesh2d_matlab.la \
@@ -224,6 +225,11 @@ ExpToLevelSet_matlab_la_LIBADD = ${deps}
 ExpSimplify_matlab_la_SOURCES = ../ExpSimplify/ExpSimplify.cpp
 ExpSimplify_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ExpSimplify_matlab_la_LIBADD = ${deps}
+
+#Very specific case for this mex: do not compile like other modules
+InterpFromGrid_la_SOURCES = ../InterpFromGrid/InterpFromGrid.cpp
+InterpFromGrid_la_CXXFLAGS = ${MEXLIB}
+InterpFromGrid_la_LIBADD = 
 
 InterpFromGridToMesh_matlab_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
 InterpFromGridToMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
