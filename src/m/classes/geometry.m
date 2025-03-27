@@ -57,7 +57,7 @@ classdef geometry
 				if strcmp(solution,'TransientSolution') & md.transient.isgroundingline,
 					md = checkfield(md,'fieldname','geometry.bed','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					if any(self.bed-self.base>10^-12),
-						md = checkmessage(md,['base<bed on one or more vertex']);
+						md = checkmessage(md,['base<bed on one or more vertices']);
 					end 
 					pos = find(md.mask.ocean_levelset>0);
 					if any(abs(self.bed(pos)-self.base(pos))>10^-9),

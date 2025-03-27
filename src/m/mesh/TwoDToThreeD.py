@@ -1,7 +1,6 @@
 import numpy as np
 
 from epsg2proj import epsg2proj
-from gdaltransform import gdaltransform
 from mesh3dsurface import mesh3dsurface
 from planetradius import planetradius
 
@@ -9,7 +8,7 @@ from planetradius import planetradius
 def TwoDToThreeD(md, planet):
     # Reproject model into lat, long if necessary
     if md.mesh.proj != epsg2proj(4326):
-        md.mesh.x, md.mesh.y = gdaltransform(md.mesh.x, md.mesh.y, md.mesh.proj, 'EPSG:4326')
+        md.mesh.x, md.mesh.y = CoordTransform(md.mesh.x, md.mesh.y, md.mesh.proj, 'EPSG:4326')
 
     # Make a 3dsurface mesh out of this
     R = planetradius(planet)

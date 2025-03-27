@@ -18,33 +18,33 @@ using namespace std;
 /*Object constructors and destructor*/
 GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 
-	/*allocate:*/
-	nactiveloads=0;
+	_assert_(slgeom);
 
-	vloads=new Vector<IssmDouble>(nel);
+	/*allocate:*/
+	this->nactiveloads=0;
+	this->vloads=new Vector<IssmDouble>(nel);
 	for (int i=0;i<SLGEOM_NUMLOADS;i++) {
-		vsubloads[i]=new Vector<IssmDouble>(slgeom->nbar[i]);
-		combined_subloads[i]=xNewZeroInit<IssmDouble>(slgeom->nbar[i]);
+		this->vsubloads[i] = new Vector<IssmDouble>(slgeom->nbar[i]);
 	}
 
-	vsealevelloads=new Vector<IssmDouble>(nel);
-	vsealevelloads->Set(0);vsealevelloads->Assemble();
+	this->vsealevelloads=new Vector<IssmDouble>(nel);
+	this->vsealevelloads->Set(0);vsealevelloads->Assemble();
 
-	vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
 
-	combined_loads=NULL;
-	combined_loads_index=NULL;
+	this->combined_loads=NULL;
+	this->combined_loads_index=NULL;
 	for (int i=0;i<SLGEOM_NUMLOADS;i++) {
-		nactivesubloads[i]=0;
-		combined_subloads[i]=NULL;
-		combined_subloads_index[i]=NULL;
+		this->nactivesubloads[i]=0;
+		this->combined_subloads[i]=NULL;
+		this->combined_subloads_index[i]=NULL;
 	}
 
 	/*make sure all pointers that are not allocated are NULL:*/
-	loads=NULL;
-	for (int i=0;i<SLGEOM_NUMLOADS;i++)subloads[i]=NULL;
-	sealevelloads=NULL;
-	subsealevelloads=NULL;
+	this->loads=NULL;
+	for(int i=0;i<SLGEOM_NUMLOADS;i++) this->subloads[i]=NULL;
+	this->sealevelloads=NULL;
+	this->subsealevelloads=NULL;
 
 }; /*}}}*/
 GrdLoads::~GrdLoads(){ /*{{{*/

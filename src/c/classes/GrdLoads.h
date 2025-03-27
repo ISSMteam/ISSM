@@ -13,7 +13,7 @@ class GrdLoads{
 
 	public: 
 
-		int nactiveloads=0;
+		int nactiveloads;
 		int nactivesubloads[SLGEOM_NUMLOADS];
 		Vector<IssmDouble>* vloads=NULL;
 		IssmDouble*         loads=NULL;

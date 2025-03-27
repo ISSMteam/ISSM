@@ -51,7 +51,7 @@ class geometry(object):
             if solution == 'TransientSolution' and md.transient.isgroundingline:
                 md = checkfield(md, 'fieldname', 'geometry.bed', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices])
                 if np.any(self.bed - self.base > 1e-12):
-                    md.checkmessage('base < bed on one or more vertex')
+                    md.checkmessage('base < bed on one or more vertices')
                 pos = np.where(md.mask.ocean_levelset > 0)
                 if np.any(np.abs(self.bed[pos] - self.base[pos]) > 1e-9):
                     md.checkmessage('equality base = bed on grounded ice violated')

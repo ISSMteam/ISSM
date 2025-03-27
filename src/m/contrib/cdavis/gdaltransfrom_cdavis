@@ -1,9 +1,0 @@
-#!/bin/bash
-
-#gdaltransform -s_srs $1 -t_srs $2 < $3 > $4
-echo "PROJ_LIB: $PROJ_LIB"
-echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-export PROJ_LIB="/home/connord/issm/ISSM-Davis/externalpackages/proj/install/share/proj/"
-export LD_LIBRARY_PATH="/issm/ISSM-Davis/externalpackages/proj/install/lib:$LD_LIBRARY_PATH"
-gdaltransform -s_srs $1 -t_srs "$2" < $3 > $4  # Full path to gdaltransform
-
