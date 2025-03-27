@@ -2,7 +2,6 @@ import matplotlib.patches.Polygon as Polygon
 import numpy as np
 
 from AboveGround import AboveGround
-from gdaltransform import gdaltransform
 
 
 def plot_coastlines(mesh, *args):  # {{{
@@ -9906,7 +9905,7 @@ def plot_coastlines(mesh, *args):  # {{{
         # Project
         xl = options.getfieldvalue('xlim', xlim)
         yl = options.getfieldvalue('xlim', ylim)
-        x, y = gdaltransform(coastlat, coastlon, 'EPSG:4326', mesh.proj)
+        x, y = CoordTransform(coastlat, coastlon, 'EPSG:4326', mesh.proj)
         # Plot
     else:
         if options.getfieldvalue('coord', 'xy') != 'latlon' and options.getfieldvalue('coord', 'xy') != 'latlong':

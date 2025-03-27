@@ -1,13 +1,24 @@
-function [vxout vyout]= interpMouginotAnt2019(X,Y),
+function [vxout vyout]= interpMouginotAnt2019(X,Y,ncfile),
+%INTERPMEASURESVELOCITYANTARCTICA - interpolate Antarctic velocity data onto X and Y
+%
+%   Examples:
+%      [vx vy] = interpMouginotAnt2019(X,Y);
+%      [vx vy] = interpMouginotAnt2019(X,Y,'../Data/v_mix.v13Mar2019.nc');
+%
+%   - optional 3rd input argument: path to dataset.
 
 %read data
-switch (oshostname()),
-	case {'ronne'}
-		nc = '/home/ModelData/Antarctica/MouginotVel/v_mix.v13Mar2019.nc';
-	case {'totten'}
-		nc = '/totten_1/ModelData/Antarctica/MouginotVel/v_mix.v8Jul2019.nc';
-	otherwise
-		error('hostname not supported yet');
+if nargin==3
+   nc = ncfile;
+else
+	switch (oshostname()),
+		case {'ronne'}
+			nc = '/home/ModelData/Antarctica/MouginotVel/v_mix.v13Mar2019.nc';
+		case {'totten'}
+			nc = '/totten_1/ModelData/Antarctica/MouginotVel/v_mix.v8Jul2019.nc';
+		otherwise
+			error('hostname not supported yet');
+	end
 end
 
 xdata = double(ncread(nc,'x'));

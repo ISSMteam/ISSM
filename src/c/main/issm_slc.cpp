@@ -93,6 +93,11 @@ int main(int argc,char **argv){
 
 	/*Initialize femmodel from arguments provided command line: */
 	FemModel *femmodel = new FemModel(4,arguments,modelcomm);
+	xDelete<char>(arguments[0]);
+	xDelete<char>(arguments[1]);
+	xDelete<char>(arguments[2]);
+	xDelete<char>(arguments[3]);
+	xDelete<char*>(arguments);
 
 	/*Now that the models are initialized, keep communicator information in the parameters datasets of each model: */
 	femmodel->parameters->AddObject(new GenericParam<ISSM_MPI_Comm>(worldcomm,WorldCommEnum));
@@ -111,9 +116,19 @@ int main(int argc,char **argv){
 
 	/*Wrap up: */
 	femmodel->CleanUp();
-
-	/*Delete Model: */
 	delete femmodel;
+
+	/*Delete communicators */
+	ISSM_MPI_Comm_free(&modelcomm);
+	if(modelid==earthid){
+		for(int i=0;i<earthid;i++) ISSM_MPI_Comm_free(&fromicecomms[i]);
+		xDelete<ISSM_MPI_Comm>(fromicecomms);
+	}
+	else{
+		ISSM_MPI_Comm_free(&toearthcomm);
+	}
+	xDelete<int>(rankzeros);
+	xDelete<int>(commsizes);
 
 	/*Finalize environment:*/
 	EnvironmentFinalize();
@@ -122,7 +137,6 @@ int main(int argc,char **argv){
 	ExceptionTrapEnd();
 
 	/*Free resources:*/
-	xDelete<int>(commsizes);
 	for(int i=0;i<nummodels;i++){
 		char* string=NULL;
 		string=dirnames[i]; xDelete<char>(string);

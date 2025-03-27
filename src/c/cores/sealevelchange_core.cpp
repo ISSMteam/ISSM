@@ -696,7 +696,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	IssmDouble* areae  = NULL;
 
 	int nel;
-	int  grdmodel=0;
+	int grdmodel=0;
 	int isgrd=0;
 	int count, frequency;
 	SealevelGeometry* slgeom=NULL;
@@ -707,7 +707,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 	if(grdmodel!=ElasticEnum || !isgrd) return NULL;
-	if(count!=frequency)return NULL;
+	if(count!=frequency) return NULL;
 
 	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&xxe,&nel,XxeEnum);
@@ -790,23 +790,15 @@ void              sealevelchange_finalize(FemModel* femmodel) {  /*{{{*/
 
 
 void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
-	int  grdmodel=0;
-	int isgrd=0;
-	int horiz=0;
-	int count, frequency;
 
 	/*early return?:*/
-	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
-	femmodel->parameters->FindParam(&isgrd,SolidearthSettingsGRDEnum);
-	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
-	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
-	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
-	if(grdmodel!=ElasticEnum || !isgrd) return;
-	if(count!=frequency)return;
+	if(slgeom==NULL) return;
 
+	int horiz;
+	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	for (int l=0;l<SLGEOM_NUMLOADS;l++){
 		femmodel->inputs->DeleteInput(slgeom->AlphaIndexEnum(l));
-		if (horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
+		if(horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
 	}
 
 	delete slgeom;
@@ -1131,6 +1123,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 	Vector<IssmDouble>* forcingglobal=NULL; 
 	IssmDouble* transfercount=NULL; 
 	int*         nvs=NULL;
+   int modelid,earthid,nummodels;
 
 	/*transition vectors:*/
 	IssmDouble** transitions=NULL;
@@ -1141,18 +1134,19 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 	int          existforcing=0;         
 
 	/*communicators:*/
-	ISSM_MPI_Comm tocomm;
-	ISSM_MPI_Comm* fromcomms=NULL;
-	ISSM_MPI_Status status;
-	int         my_rank;
-	int         modelid,earthid;
-	int         nummodels;
+	ISSM_MPI_Comm    tocomm;
+	ISSM_MPI_Comm   *fromcomms = NULL;
+	ISSM_MPI_Status  status;
+	ISSM_MPI_Request send_request_1=ISSM_MPI_REQUEST_NULL;
+   ISSM_MPI_Request send_request_2=ISSM_MPI_REQUEST_NULL;
+	ISSM_MPI_Request send_request_3=ISSM_MPI_REQUEST_NULL;
 
 	/*Recover some parameters: */
 	femmodel->parameters->FindParam(&modelid,ModelIdEnum);
 	femmodel->parameters->FindParam(&earthid,EarthIdEnum);
 	femmodel->parameters->FindParam(&nummodels,NumModelsEnum);
-	my_rank=IssmComm::GetRank();
+	int my_rank=IssmComm::GetRank();
+
 
 	/*retrieve the inter communicators that will be used to send data from each ice cap to the earth: */
 	if(modelid==earthid){
@@ -1177,7 +1171,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		}
 	}
 
-	/*Send the forcing to the earth model:{{{*/
+	/*Send the forcing to the earth model*/
 	if(my_rank==0){
 		if(modelid==earthid){
 			forcings=xNew<IssmDouble*>(nummodels-1);
@@ -1196,14 +1190,13 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 
 		}
 		else{
-			ISSM_MPI_Send(&existforcing, 1, ISSM_MPI_INT, 0, modelid, tocomm);
+			ISSM_MPI_Isend(&existforcing, 1, ISSM_MPI_INT, 0, modelid, tocomm,&send_request_1);
 			if(existforcing){
-				ISSM_MPI_Send(&nv, 1, ISSM_MPI_INT, 0, modelid, tocomm);
-				ISSM_MPI_Send(forcing, nv, ISSM_MPI_DOUBLE, 0, modelid, tocomm);
+				ISSM_MPI_Isend(&nv, 1, ISSM_MPI_INT, 0, modelid, tocomm, &send_request_2);
+				ISSM_MPI_Isend(forcing, nv, ISSM_MPI_DOUBLE, 0, modelid, tocomm, &send_request_3);
 			}
 		}
 	}
-	/*}}}*/
 
 	/*On the earth model, consolidate all the forcings into one, and update the elements dataset accordingly: {{{*/
 	if(modelid==earthid){
@@ -1213,7 +1206,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		nv=femmodel->vertices->NumberOfVertices();
 		GetVectorFromInputsx(&forcingglobal,femmodel,forcingenum,VertexSIdEnum);
 
-		forcingglobal->Set(0.0);
+		forcingglobal->Set(0.);
 
 		/*Retrieve transition vectors, used to plug from each ice cap into the global forcing:*/
 		femmodel->parameters->FindParam(&transitions,&ntransitions,&transitions_m,&transitions_n,SealevelchangeTransitionsEnum);
@@ -1230,7 +1223,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 					int         M=transitions_m[i];
 
 					/*build index to plug values: */
-					int*        index=xNew<int>(M); for(int i=0;i<M;i++)index[i]=reCast<int>(transition[i])-1; //matlab indexing!
+					int* index=xNew<int>(M); for(int i=0;i<M;i++)index[i]=reCast<int>(transition[i])-1; //matlab indexing!
 
 					/*We are going to plug this vector into the earth model, at the right vertices corresponding to this particular 
 					 * ice cap: */
@@ -1247,17 +1240,21 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		/*Plug into elements:*/
 		InputUpdateFromVectorx(femmodel,forcingglobal,forcingenum,VertexSIdEnum);
 	} 
-	/*}}}*/
 
-	/*Free resources:{{{*/
-	if(forcings){
-		for(int i=0;i<nummodels-1;i++){
-			IssmDouble* temp=forcings[i]; 
-			if(temp)xDelete<IssmDouble>(temp);
+	/*Free resources:*/
+	if(my_rank==0 && modelid!=earthid){
+		ISSM_MPI_Wait(&send_request_1,&status);
+		if(existforcing){
+			ISSM_MPI_Wait(&send_request_2,&status);
+			ISSM_MPI_Wait(&send_request_3,&status);
 		}
+	}
+	if(forcings){
+		for(int i=0;i<nummodels-1;i++) xDelete<IssmDouble>(forcings[i]);
 		xDelete<IssmDouble*>(forcings);
 	}
 	if(forcing)xDelete<IssmDouble>(forcing);
+	if(transfercount) xDelete<IssmDouble>(transfercount);
 	if(forcingglobal)delete forcingglobal;
 	if(transitions){
 		for(int i=0;i<earthid;i++){
@@ -1269,8 +1266,6 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		xDelete<int>(transitions_n);
 	}
 	if(nvs)xDelete<int>(nvs);
-	/*}}}*/
-
 } /*}}}*/
 void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 
@@ -1283,22 +1278,23 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 	int          ntransitions; 
 	int*         transitions_m=NULL;
 	int*         transitions_n=NULL;
-	int          nv;
+	int  nv;
+	int  modelid,earthid,nummodels;
+	int  numcoms;
 
 	/*communicators:*/
 	ISSM_MPI_Comm fromcomm;
 	ISSM_MPI_Comm* tocomms=NULL;
 	ISSM_MPI_Status status;
-	int         my_rank;
-	int         modelid,earthid;
-	int         nummodels;
-	int         numcoms;
+	ISSM_MPI_Request* send_requests_1=NULL;
+	ISSM_MPI_Request* send_requests_2=NULL;
+
 
 	/*Recover some parameters: */
 	femmodel->parameters->FindParam(&modelid,ModelIdEnum);
 	femmodel->parameters->FindParam(&earthid,EarthIdEnum);
 	femmodel->parameters->FindParam(&nummodels,NumModelsEnum);
-	my_rank=IssmComm::GetRank();
+	int my_rank=IssmComm::GetRank();
 
 	/*retrieve the inter communicators that will be used to send data from earth to ice caps:*/
 	if(modelid==earthid){
@@ -1327,8 +1323,15 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 
 			/*Retrieve transition vectors, used to figure out global forcing contribution to each ice cap's own elements: */
 			femmodel->parameters->FindParam(&transitions,&ntransitions,&transitions_m,&transitions_n,SealevelchangeTransitionsEnum);
+			if(ntransitions!=earthid) _error_("TransferSealevel error message: number of transition vectors is not equal to the number of icecaps!");
 
-			if(ntransitions!=earthid)_error_("TransferSealevel error message: number of transition vectors is not equal to the number of icecaps!");
+			/*Prepare requests*/
+			send_requests_1 = xNew<ISSM_MPI_Request>(earthid);
+			send_requests_2 = xNew<ISSM_MPI_Request>(earthid);
+			for(int i=0;i<earthid;i++){
+				send_requests_1[i] = ISSM_MPI_REQUEST_NULL;
+				send_requests_2[i] = ISSM_MPI_REQUEST_NULL;
+			}
 
 			for(int i=0;i<earthid;i++){
 				nv=transitions_m[i];
@@ -1337,8 +1340,9 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 				for(int j=0;j<nv;j++){
 					forcing[j]=forcingglobal[reCast<int>(transition[j])-1];
 				}
-				ISSM_MPI_Send(&nv, 1, ISSM_MPI_INT, 0, i, tocomms[i]);
-				ISSM_MPI_Send(forcing, nv, ISSM_MPI_DOUBLE, 0, i, tocomms[i]);
+				ISSM_MPI_Isend(&nv, 1, ISSM_MPI_INT, 0, i, tocomms[i], &send_requests_1[i]);
+				ISSM_MPI_Isend(forcing, nv, ISSM_MPI_DOUBLE, 0, i, tocomms[i], &send_requests_2[i]);
+				xDelete<IssmDouble>(forcing);
 			}
 		}
 		else{
@@ -1361,7 +1365,15 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 	} 
 	/*}}}*/
 
-	/*Free resources:{{{*/
+	/*Free resources:*/
+	if(my_rank==0 && modelid==earthid){
+		for(int i=0;i<earthid;i++){
+			ISSM_MPI_Wait(&send_requests_1[i],&status);
+			ISSM_MPI_Wait(&send_requests_2[i],&status);
+		}
+		xDelete<ISSM_MPI_Request>(send_requests_1);
+		xDelete<ISSM_MPI_Request>(send_requests_2);
+	}
 	if(forcingglobal)xDelete<IssmDouble>(forcingglobal);
 	if(forcing)xDelete<IssmDouble>(forcing);
 	if(transitions){
@@ -1373,6 +1385,5 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 		xDelete<int>(transitions_m);
 		xDelete<int>(transitions_n);
 	}
-	/*}}}*/
 
 } /*}}}*/
