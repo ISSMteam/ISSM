@@ -24,6 +24,8 @@ Given a NetCDF4 file, this set of functions will perform the following:
 
 # make a model framework to fill that is in the scope of this file
 model_copy = model()
+# make a blank requested output for hydrology
+hydro_rout_list = ['default']
 
 def read_netCDF(filename, verbose = False):
     if verbose:
@@ -65,6 +67,29 @@ def read_netCDF(filename, verbose = False):
         except:
             pass
         
+        # check the smb class used
+        try:
+            NCData.groups['smb']
+            check_smb_class(NCData, verbose)
+        except:
+            pass
+        
+        # check the friction class used
+        try:
+            NCData.groups['friction']
+            check_friction_class(NCData, verbose)
+        except:
+            pass
+        
+        # check the hydrology class used
+        try:
+            NCData.groups['hydrology']
+            hydro_rout_list = check_hydrology_class(NCData, verbose)            
+        except:
+            pass
+        
+        
+        
         # walk through each group looking for subgroups and variables
         for group in NCData.groups.keys():
             if 'debris' in group:
@@ -73,6 +98,7 @@ def read_netCDF(filename, verbose = False):
                 # have to send a custom name to this function: filename.groups['group']
                 name = "NCData.groups['" + str(group) + "']"
                 walk_nested_groups(name, NCData, verbose)
+                model_copy.hydrology.requested_outputs = hydro_rout_list
         
         if verbose:
             print("Model Successfully Loaded.")
@@ -124,8 +150,160 @@ def check_inversion_class(NCData, verbose = False):
         if verbose:
             print('Conversion successful')
     else: pass
-
-
+    
+def check_smb_class(NCData, verbose = False):
+    # get the name of the smb class, either: SMBforcing, SMB, SMBcomponents, SMBd18opdd, 
+    # SMBdebrisEvatt, SMBgemb, SMBgradients, SMBgradientscomponents, SMBgradientsela, 
+    # SMBhenning, SMBmeltcomponents, SMBpdd, SMBpddSicopolis, or SMBsemic
+    # 
+    # Note: SMB, SMBdebrisEvatt, SMBgemb, SMBgradientscomponents, SMBgradientsela, SMBhenning,
+    # SMBpddSicopolis, and SMBsemic do not have python versions as of yet
+    smb_class_is = NCData.groups['smb'].variables['smb_class_name'][:][...].tobytes().decode()
+    if smb_class_is == 'SMBforcing':
+        # if it is SMBforcing there is no real need to do anything since that is the default, 
+        # but I have done it anyway to match everything else
+        model_copy.smb = SMBforcing()
+        if verbose:
+            print('Conversion successful')
+    elif smb_class_is == 'SMBcomponents':
+        # if it is SMBcomponents load the SMBcomponents module
+        model_copy.smb = SMBcomponents()
+        if verbose:
+            print('Conversion successful')
+    elif smb_class_is == 'SMBd18opdd':
+        # if it is SMBd18opdd load the SMBd18opdd module
+        model_copy.smb = SMBd18opdd()
+        if verbose:
+            print('Conversion successful')
+    elif smb_class_is == 'SMBgradients':
+        # if it is SMBgradients load the SMBgradients module
+        model_copy.smb = SMBgradients()
+        if verbose:
+            print('Conversion successful')
+    elif smb_class_is == 'SMBmeltcomponents':
+        # you guessed it! if it is the SMBmeltcomponents module, load SMBmeltcomponents
+        model_copy.smb = SMBmeltcomponents()
+        if verbose:
+            print('Conversion successful')
+    elif smb_class_is == 'SMBpdd':
+        # one more for luck: if it is SMBpdd, load SMBpdd
+        model_copy.smb = SMBpdd()
+        if verbose:
+            print('Conversion successful')
+    else:
+        print('Conversion unsuccessful, SMB requested is not yet in Python!')
+        pass
+    
+def check_friction_class(NCData, verbose = False):
+    # get the name of the friction class, either: friction(default), frictioncoulomb, frictioncoulomb2, 
+    # frictionhydro, frictionjosh, frictionpism, frictionregcoulomb, frictionregcoulomb2,frictionschoof,
+    # frictionshakti, frictiontemp, frictiontsai, frictionwaterlayer, frictionweertman, or frictionweertmantemp
+    #
+    # Note: frictionregcoulomb, frictionregcoulomb, frictiontemp, frictiontsai, and frictionweertmantemp either
+    # are not present or tripped an error
+    friction_class_is = NCData.groups['friction'].variables['friction_class_name'][:][...].tobytes().decode()
+    if friction_class_is == 'friction':
+        # if it is friction, load friction (the default)
+        model_copy.friction = friction()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictioncoulomb':
+        # if it is frictioncoulomb, import the module, load frictioncoulomb
+        from frictioncoulomb import frictioncoulomb
+        model_copy.friction = frictioncoulomb()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictioncoulomb2':
+        # if it is frictioncoulomb2, import the module, load frictioncoulomb2
+        from frictioncoulomb2 import frictioncoulomb2
+        model_copy.friction = frictioncoulomb2()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionhydro':
+        # if it is frictionhydro, import the module, load frictionhydro
+        from frictionhydro import frictionhydro
+        model_copy.friction = frictionhydro()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionjosh':
+        # if it is frictionjosh, import the module, load frictionjosh
+        from frictionjosh import frictionjosh
+        model_copy.friction = frictionjosh()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionpism':
+        # if it is frictionpism, import the module, load frictionpism
+        from frictionpism import frictionpism
+        model_copy.friction = frictionpism()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionschoof':
+        # if it is frictionschoof, import the module, load frictionschoof
+        from frictionschoof import frictionschoof
+        model_copy.friction = frictionschoof()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionshakti':
+        #if it is frictionshakti, import the module, load frictionshakti
+        from frictionshakti import frictionshakti
+        model_copy.friction = frictionshakti()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionwaterlayer':
+        #if it is frictionwaterlayer, import the module, load frictionwaterlayer
+        from frictionwaterlayer import frictionwaterlayer
+        model_copy.friction = frictionwaterlayer()
+        if verbose:
+            print('Conversion successful')
+    elif friction_class_is == 'frictionweertman':
+        #if it is frictionweertman, import the module, load frictionweertman
+        from frictionweertman import frictionweertman
+        model_copy.friction = frictionweertman()
+        if verbose:
+            print('Conversion successful')
+    else:
+        print('Conversion unsuccessful, friction requested is not present and/or working yet in Python!')
+        pass
+    
+def check_hydrology_class(NCData, verbose = False):
+    # get the name of the hydrology class, either: hydrologyshreve (default), hydrology, hydrologyarmapw,
+    # hydrologydc, hydrologyglads, hydrologypism, hydrologyshakti, hydrologtws
+    #
+    # Note: hydrology, hydrologyarmapw, hydrologytws do not have a python implementation
+    hydrology_class_is = NCData.groups['hydrology'].variables['hydrology_class_name'][:][...].tobytes().decode()
+    hydro_rout = NCData.groups['hydrology'].variables['requested_outputs'][:][...].tobytes().decode()
+    hydro_rout_list = hydro_rout.split()
+    model_copy.hydrology.requested_outputs = hydro_rout_list
+    if hydrology_class_is == 'hydrologyshreve':
+        #if it is hydrologyshreve, load hydrologyshreve
+        model_copy.hydrology = hydrologyshreve()
+        if verbose:
+            print('Conversion successful')
+    elif hydrology_class_is == 'hydrologydc':
+        #if it is hydrologydc, load hydrologydc
+        model_copy.hydrology = hydrologydc()
+        if verbose:
+            print('Conversion successful')
+    elif hydrology_class_is == 'hydrologyglads':
+        #if it is hydrologyglads, load hydrologyglads
+        model_copy.hydrology = hydrologyglads()
+        if verbose:
+            print('Conversion successful')
+    elif hydrology_class_is == 'hydrologypism':
+        #if it is hydrologypism, load hydrologypism
+        model_copy.hydrology = hydrologypism()
+        if verbose:
+            print('Conversion successful')
+    elif hydrology_class_is == 'hydrologyshakti':
+        #if it is hydrologyshakti, load hydrologyshakti
+        model_copy.hydrology = hydrologyshakti()
+        if verbose:
+            print('Conversion successful')
+    else:
+        print('Conversion unsuccessful, hydrology requested is not present and/or working yet in Python!')
+        pass
+    return hydro_rout_list
+        
 def walk_nested_groups(group_location_in_file, NCData, verbose = False):
     # first, we enter the group by: filename.groups['group_name']
     # second we search the current level for variables: filename.groups['group_name'].variables.keys()

@@ -1,7 +1,7 @@
 function md=TwoDToThreeD(md,planet)
 	%reproject model into lat,long if necessary:
 	if ~strcmpi(md.mesh.proj,epsg2proj(4326)),
-		[md.mesh.x,md.mesh.y]=gdaltransform(md.mesh.x,md.mesh.y,md.mesh.proj,'EPSG:4326');
+		[md.mesh.x,md.mesh.y]=CoordTransform(md.mesh.x,md.mesh.y,md.mesh.proj,'EPSG:4326');
 	end
 
 	%Make a 3dsurface mesh out of this: 

@@ -58,8 +58,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 		switch(timestepping){
 			case AdaptiveTimesteppingEnum:
 				femmodel->TimeAdaptx(&dt);
-				if(time+dt>finaltime) dt=finaltime-time;
-				femmodel->parameters->SetParam(dt,TimesteppingTimeStepEnum);
+
 				break;
 			case FixedTimesteppingEnum:
 				femmodel->parameters->FindParam(&dt,TimesteppingTimeStepEnum);
@@ -67,6 +66,12 @@ void transient_core(FemModel* femmodel){/*{{{*/
 			default:
 				_error_("Time stepping \""<<EnumToStringx(timestepping)<<"\" not supported yet");
 		}
+
+		/*Do not exceed final time*/
+		if(time+dt>finaltime) dt=finaltime-time;
+		femmodel->parameters->SetParam(dt,TimesteppingTimeStepEnum);
+
+		/*Set new step number and time step size*/
 		step+=1;
 		time+=dt;
 		femmodel->parameters->SetParam(time,TimeEnum);
@@ -125,7 +130,6 @@ void transient_core(FemModel* femmodel){/*{{{*/
 
 	/*finalize:*/
 	transient_postcore(femmodel);
-
 
 }/*}}}*/
 void transient_step(FemModel* femmodel){/*{{{*/

@@ -21,7 +21,7 @@ pos1 = find(yE>=5e5);	 md.basalforcings.basin_id(pos1)=1;
 pos2 = find(yE<5e5);     md.basalforcings.basin_id(pos2)=2;
 md.basalforcings.num_basins = 2;
 md.basalforcings.farocean_temperature = [271.15 272.15 273.15; 274.15 275.15 276.15; 0.5 1 1.5]; %K
-md.basalforcings.farocean_salinity    = [31 32 33; 34 35 36; 0.5 1 1.5]; %PSU                
+md.basalforcings.farocean_salinity    = [31 32 33; 34 35 36;0.5 1 1.5]; %PSU                
 md.basalforcings.maxboxcount=5;
 md.basalforcings.isplume = 0;
 

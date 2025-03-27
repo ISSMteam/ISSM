@@ -28,7 +28,7 @@ function mh=patchglobe(mh,mh2d,varargin)
 	expcontract([temproot '/PatchBroad.exp'],[temproot '/PatchBroad.exp'],-bandwidth);
 
 	%now flag vertices (from mh2d's broad contour that are on the global mesh: do this in the local 2d mesh reference system. 
-	[x,y]=gdaltransform(mh.long,mh.lat,'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
+	[x,y]=CoordTransform(mh.long,mh.lat,'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
 	flagsnods=ContourToNodes(x,y,[temproot '/PatchBroad.exp'],1);
 
 	%expand flags to any element that touches the contour: 
@@ -42,14 +42,14 @@ function mh=patchglobe(mh,mh2d,varargin)
 	mh.segments=alignsegments(mh.segments);
 
 	%x,y for segments: 
-	[xsegs,ysegs]=gdaltransform(mh.long(mh.segments(:,1)),mh.lat(mh.segments(:,1)),'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
+	[xsegs,ysegs]=CoordTransform(mh.long(mh.segments(:,1)),mh.lat(mh.segments(:,1)),'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
 
 	%create lat,long contour out of these segments:
 	meshtodomain(mh,[temproot '/PatchEnveloppe.exp'],'latlong','on');
 		
 	%get these lat,long transformed to local mesh referencial:
 	env=expread([temproot '/PatchEnveloppe.exp']); 
-	[env.x,env.y]=gdaltransform(env.x,env.y,'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
+	[env.x,env.y]=CoordTransform(env.x,env.y,'EPSG:4326',['EPSG:' num2str(mh2d.epsg)]);
 
 	%now, create domain outine from broad enveloppe and initial mesh 
 	dom=expread([temproot '/Patch.exp']);
@@ -81,7 +81,7 @@ function mh=patchglobe(mh,mh2d,varargin)
 	end
 
 	%augment patch with band
-	[mhb.long,mhb.lat]=gdaltransform(mhb.x,mhb.y,['EPSG:' num2str(mh2d.epsg)],'EPSG:4326');
+	[mhb.long,mhb.lat]=CoordTransform(mhb.x,mhb.y,['EPSG:' num2str(mh2d.epsg)],'EPSG:4326');
 	mh2db=augment2dmesh(mh2d,mhb);
 
 	%merge inner band and earth: 
