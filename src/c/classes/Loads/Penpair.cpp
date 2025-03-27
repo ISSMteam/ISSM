@@ -181,6 +181,8 @@ void  Penpair::PenaltyCreateKMatrix(Matrix<IssmDouble>* Kff, Matrix<IssmDouble>*
 			Ke=PenaltyCreateKMatrixStressbalanceHoriz(kmax);
 			break;
 		case MasstransportAnalysisEnum:
+		case FreeSurfaceBaseAnalysisEnum:
+		case FreeSurfaceTopAnalysisEnum:
 			Ke=PenaltyCreateKMatrixMasstransport(kmax);
 			break;
 		default:
@@ -289,16 +291,14 @@ void  Penpair::InputUpdateFromVector(IssmDouble* vector, int name, int type){/*{
 /*Penpair management:*/
 ElementMatrix* Penpair::PenaltyCreateKMatrixMasstransport(IssmDouble kmax){/*{{{*/
 
-	const int numdof=NUMVERTICES*1;
-	IssmDouble penalty_factor;
-
 	/*Initialize Element vector and return if necessary*/
-	ElementMatrix* Ke=new ElementMatrix(nodes,NUMVERTICES,this->parameters);
+	const int      numdof = NUMVERTICES*1;
+	ElementMatrix* Ke     = new ElementMatrix(nodes,NUMVERTICES,this->parameters);
 
 	/*recover parameters: */
-	parameters->FindParam(&penalty_factor,MasstransportPenaltyFactorEnum);
+	IssmDouble penalty_factor = parameters->FindParam(MasstransportPenaltyFactorEnum);
 
-	//Create elementary matrix: add penalty to 
+	/*Create elementary matrix: add penalty to*/
 	Ke->values[0*numdof+0]=+kmax*pow(10.,penalty_factor);
 	Ke->values[0*numdof+1]=-kmax*pow(10.,penalty_factor);
 	Ke->values[1*numdof+0]=-kmax*pow(10.,penalty_factor);

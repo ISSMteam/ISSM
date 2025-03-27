@@ -18,7 +18,7 @@ md.materials.rho_ice = 910
 md.cluster = generic('name', gethostname(), 'np', 3)
 
 #Use of Gemb method for SMB computation
-md.smb = SMBgemb(md.mesh, md.geometry)
+md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 1
 md.smb.swIdx = 1
 

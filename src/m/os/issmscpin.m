@@ -1,14 +1,7 @@
 function issmscpin(host, login,port,path, packages)
-%ISSMSCPIN get packages from host, using scp on unix, and pscp on windows
+%ISSMSCPIN get packages from host
 %
 %   usage: issmscpin(host,packages,path)
-%
-% NOTE: If users again have issues with file list (i.e.
-%
-%   {<FILE1>,<FILE2>,...,<FILEN>}
-%
-% ), note that this a bash'ism and default shell should be checked. View file 
-% history for potential fix (i.e. some combination of -O and -T options).
 %
 
 %first get hostname
@@ -31,12 +24,23 @@ else
 	end
 
 	if port,
-		eval(['!scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		[status,cmdout]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		if status ~= 0,
+			%List expansion is a bash'ism. Try again with -OT.
+			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		end
 	else
-		eval(['!scp ' login '@' host ':' path '/' fileliststr ' ./']);
+		[status,cmdout]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
+		if status ~= 0,
+			%List expansion is a bash'ism. Try again with -OT.
+			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
+		end
 	end
 
 	%check scp worked
+	if status ~= 0,
+		error(['issmscpin error message: ' cmdout])
+	end
 	for i=1:numel(packages),
 		if ~exist(['./' packages{i}]),
 			warning(['issmscpin error message: could not scp ' packages{i}]);

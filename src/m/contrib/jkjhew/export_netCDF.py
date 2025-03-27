@@ -378,14 +378,14 @@ def CreateVar(NCData, var, field, Group, DimDict, *SupDim):  # {{{
             ncvar = Group.createVariable(str(field), nctype, zlib=True)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), nctype, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), nctype, dimensions=dimensions)
     # treating  dict as string tables
     elif val_type in [collections.OrderedDict, dict]:
         if val_shape in [(), (0,), 0]:
             ncvar = Group.createVariable(str(field), str, zlib=True)
         else:
             dimensions, DimDict = GetDim(NCData, val_shape, val_type, DimDict, val_dim)
-            ncvar = Group.createVariable(str(field), str, dimensions=dimensions, zlib=True)
+            ncvar = Group.createVariable(str(field), str, dimensions=dimensions)
     # treating bool as integers
     elif val_type == 'bool':
         if val_shape in [(), (0,), 0]:

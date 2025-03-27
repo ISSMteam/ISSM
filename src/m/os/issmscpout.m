@@ -1,8 +1,7 @@
 function issmscpout(host,path,login,port,packages,varargin)
-%ISSMSCPOUT send packages to a host, using scp on unix, and pscp on windows
+%ISSMSCPOUT send files to host
 %
 %   usage: issmscpout(host,path,login,port,packages)
-%
 %
 
 %get hostname
@@ -29,40 +28,35 @@ if strcmpi(host,hostname)
 			system(['ln -s ' here '/' packages{i} ' ' path]);
 		end
 	end
-else 
-	if ispc & ~ismingw
-		%use the putty project pscp.exe: it should be in the path.
 
-		%get ISSM_DIR variable
-		[status,ISSM_DIR]=system('echo [%ISSM_DIR_WIN%]');
-		if status, 
-			error('issmscpout error message: could not find ISSM_DIR_WIN environment variable');
-		end
-		ISSM_DIR=ISSM_DIR(2:end-2);
-
-		username=input('Username: (quoted string) ');
-		key=input('Key: (quoted string) ');
-
-		for i=1:numel(packages),
-			[status,result]=system([ISSM_DIR '/externalpackages/ssh/pscp.exe -l "' username '" -pw "' key '" ' packages{i} ' ' host ':' path]);
-			if status, 
-				error('issmscpout error message: could not call putty pscp');
-			end
-		end
-
+%General case, this is not a local machine
+else
+	if numel(packages)==1
+		fileliststr=packages{1};
 	else
-		%just use standard unix scp
-		%create string of packages being sent
-		string='';
-		for i=1:numel(packages)
-			string=[string ' ' packages{i}];
+		fileliststr='\{';
+		for i=1:numel(packages)-1,
+			fileliststr=[fileliststr packages{i} ','];
 		end
-		string=[string ' '];
+		fileliststr=[fileliststr packages{end} '\}'];
+	end
+	if port
+		disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])
+		[status,cmdout]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
+		if status~=0
+			%List expansion is a bash'ism. Try again with -OT.
+			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
+		end
+	else
+		[status,cmdout]=system(['scp ' fileliststr ' ' login '@' host ':' path]);
+		if status~=0
+			%List expansion is a bash'ism. Try again with -OT.
+			[status,cmdout]=system(['scp -OT ' fileliststr ' ' login '@' host ':' path]);
+		end
+	end
 
-		if port,
-			eval(['!scp -P ' num2str(port) ' ' string ' ' login '@localhost:' path]);
-		else
-			eval(['!scp ' string ' ' login '@' host ':' path]);
-		end
+	%check scp worked
+	if status~=0
+		error(['issmscpin error message: ' cmdout])
 	end
 end
