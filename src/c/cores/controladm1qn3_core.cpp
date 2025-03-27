@@ -581,6 +581,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	/*Finalize*/
 	if(VerboseControl()) _printf0_("   preparing final solution\n");
 	femmodel->parameters->SetParam(true,SaveResultsEnum);
+	femmodel->parameters->SetParam(0,SettingsCheckpointFrequencyEnum);
 	void (*solutioncore)(FemModel*)=NULL;
 	CorePointerFromSolutionEnum(&solutioncore,femmodel->parameters,solution_type);
 	solutioncore(femmodel);

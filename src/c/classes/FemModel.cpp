@@ -4852,10 +4852,6 @@ void FemModel::EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth
 	xDelete<IssmDouble>(zz);
 }
 /*}}}*/
-
-
-
-
 #endif
 void FemModel::HydrologyEPLupdateDomainx(IssmDouble* pEplcount){ /*{{{*/
 
