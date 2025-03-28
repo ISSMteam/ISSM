@@ -5,7 +5,7 @@ set -eu
 rm -rf install  src 
 
 #Download
-git clone git://github.com/danmar/cppcheck.git src
+git clone https://github.com/danmar/cppcheck.git src
 
 #compile
 cd src
