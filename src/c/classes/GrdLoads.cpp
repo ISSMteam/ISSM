@@ -69,20 +69,20 @@ GrdLoads::~GrdLoads(){ /*{{{*/
 void GrdLoads::BroadcastLoads(void){ /*{{{*/
 
 	/*Initialize barycentre vectors, now that we know their size: */
-	vloads->Assemble();
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	this->vloads->Assemble();
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		vsubloads[i]->Assemble();
 	}
 
 	/*Avoid leaks:*/
-	if(loads)xDelete<IssmDouble>(loads);
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	if(loads) xDelete<IssmDouble>(loads);
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		if(subloads[i])xDelete<IssmDouble>(subloads[i]);
 	}
 
 	/*Serialize:*/
 	loads=vloads->ToMPISerial();
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		subloads[i]=vsubloads[i]->ToMPISerial();
 	}
 
@@ -96,12 +96,12 @@ void GrdLoads::AssembleSealevelLoads(void){ /*{{{*/
 void GrdLoads::BroadcastSealevelLoads(void){ /*{{{*/
 
 	/*Avoid leakds:*/
-	if(sealevelloads)xDelete<IssmDouble>(sealevelloads);
-	if(subsealevelloads)xDelete<IssmDouble>(subsealevelloads);
+	if(sealevelloads)    xDelete<IssmDouble>(sealevelloads);
+	if(subsealevelloads) xDelete<IssmDouble>(subsealevelloads);
 
 	/*Serialize:*/
-	sealevelloads=vsealevelloads->ToMPISerial();
-	subsealevelloads=vsubsealevelloads->ToMPISerial();
+	sealevelloads    = vsealevelloads->ToMPISerial();
+	subsealevelloads = vsubsealevelloads->ToMPISerial();
 
 } /*}}}*/
 void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, SealevelGeometry* slgeom){ /*{{{*/
@@ -113,7 +113,7 @@ void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, 
 
 	femmodel->parameters->FindParam(&re,SolidearthPlanetRadiusEnum);
 
-	for (int c=0;c<5;c++) deg2coeff_local[c]=0;
+	for(int c=0;c<5;c++) deg2coeff_local[c]=0;
 
 	for(Object* & object : femmodel->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);
