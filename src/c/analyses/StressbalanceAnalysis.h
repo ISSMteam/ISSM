@@ -74,9 +74,7 @@ class StressbalanceAnalysis: public Analysis{
 		ElementVector* CreatePVectorHO(Element* element);
 		ElementVector* CreatePVectorHOFront(Element* element);
 		ElementVector* CreatePVectorHODrivingStress(Element* element);
-		void           GetBHO(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss);
 		void           GetBHOFriction(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss);
-		void           GetBHOprime(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss);
 		void           InputUpdateFromSolutionHO(IssmDouble* solution,Element* element);
 		/*FS*/
 		ElementVector* CreateDVectorFS(Element* element);
