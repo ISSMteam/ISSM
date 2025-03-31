@@ -59,7 +59,6 @@ class Parameters{
 		void  FindParamAndMakePassive(IssmPDouble** pvec,int* pM,int enum_type);
 		void  FindControlParam(IssmDouble** pvec,int* pM, int param_enum, const char* data);
 		void  FindControlParamAndMakePassive(IssmPDouble** pvec,int* pM, int param_enum, const char* data);
-		void  FindParamInDataset(IssmDouble** pIssmDoublearray,int* pM,int* pN,int dataset_type,int enum_type);
 		IssmDouble FindParam(int enum_type);
 
 		void  SetParam(bool boolean,int enum_type);

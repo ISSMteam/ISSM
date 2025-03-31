@@ -473,26 +473,6 @@ void Parameters::FindControlParamAndMakePassive(IssmPDouble** pvec,int* pM, int 
 	/*assign output pointers*/
 	if(pM)   *pM   = n;
 }/*}}}*/
-void Parameters::FindParamInDataset(IssmDouble** pIssmDoublearray,int* pM,int* pN,int dataset_type,int enum_type){/*{{{*/
-	_assert_(this);
-
-	int index = EnumToIndex(dataset_type);
-	if(!this->params[index]) _error_("Parameter " << EnumToStringx(dataset_type) <<" not set");
-	if(this->params[index]->ObjectEnum()!=DataSetParamEnum) _error_("Parameter " << EnumToStringx(dataset_type) <<" is not a DataSetParam!");
-
-	DataSetParam* dataset_param = xDynamicCast<DataSetParam*>(this->params[index]);
-	for( vector<Object*>::iterator object=dataset_param->value->objects.begin() ; object < dataset_param->value->objects.end(); object++ ){
-		Param* param = xDynamicCast<Param*>(*object);
-		if(param->InstanceEnum()==enum_type){
-			param->GetParameterValue(pIssmDoublearray,pM,pN);
-			return;
-		}
-	}
-
-	/*Error out if we reached this point*/
-	_error_("Could not find Enum "<<EnumToStringx(enum_type)<<" in dataset param "<<EnumToStringx(dataset_type));
-}
-/*}}}*/
 IssmDouble Parameters::FindParam(int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
