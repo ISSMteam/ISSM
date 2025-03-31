@@ -18,9 +18,6 @@ bool IsNodeInRank(int* nodes_ranks,int* nodes_proc_count,int nid,int rank){/*{{{
 
 	return false;
 }/*}}}*/
-int  NodeMasterRank(int* nodes_ranks,int nid){/*{{{*/
-	return nodes_ranks[MAXCONNECTIVITY*nid+0];
-}/*}}}*/
 void AddNodeToRank(int* nodes_ranks,int* nodes_proc_count,int nid,int rank){/*{{{*/
 
 	/*See if node is already in partition, return if this is the case*/

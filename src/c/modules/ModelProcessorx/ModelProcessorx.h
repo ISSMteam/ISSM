@@ -28,7 +28,6 @@ void CreateNodes(Nodes*nodes, IoModel* iomodel,int analysis,int finite_element,b
 
 /*partitioning: */
 void ElementsAndVerticesPartitioning(IoModel* iomodel);
-void DiscontinuousGalerkinNodesPartitioning(bool** pmy_nodes,bool* my_elements,bool* my_vertices,  IoModel* iomodel);
 void FacesPartitioning(IoModel* iomodel);
 void EdgesPartitioning(IoModel* iomodel);
 

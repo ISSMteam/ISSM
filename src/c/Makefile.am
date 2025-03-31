@@ -200,7 +200,6 @@ issm_sources += \
 	./modules/MmeToInputx/MmeToInputx.cpp\
 	./modules/ModelProcessorx/ModelProcessorx.cpp \
 	./modules/ModelProcessorx/ElementsAndVerticesPartitioning.cpp \
-	./modules/ModelProcessorx/NodesPartitioning.cpp \
 	./modules/ModelProcessorx/EdgesPartitioning.cpp \
 	./modules/ModelProcessorx/FacesPartitioning.cpp \
 	./modules/ModelProcessorx/CreateParameters.cpp \
