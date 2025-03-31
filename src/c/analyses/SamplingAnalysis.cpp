@@ -360,27 +360,6 @@ void           SamplingAnalysis::LumpedKMatrix(Vector<IssmDouble>** pKlff,FemMod
 	/*Assign output pointer*/
 	*pKlff=Klff;
 }/*}}}*/
-void           SamplingAnalysis::KMatrix(Matrix<IssmDouble>** pKff,FemModel* femmodel){/*{{{*/
-
-	/*Initialize K matrix*/
-	Matrix<IssmDouble> *Kff = NULL;
-	AllocateSystemMatricesx(&Kff,NULL,NULL,NULL,femmodel);
-
-	/*Create and assemble matrix*/
-	for(int i=0;i<femmodel->elements->Size();i++){
-		Element*       element = xDynamicCast<Element*>(femmodel->elements->GetObjectByOffset(i));
-		ElementMatrix* Ke     = this->CreateKMatrix(element);
-		if(Ke){
-			Ke->AddToGlobal(Kff);
-		}
-		delete Ke;
-	}
-	Kff->Assemble();
-
-	/*Assign output pointer*/
-	*pKff=Kff;
-
-}/*}}}*/
 void           SamplingAnalysis::LumpedMassMatrix(Vector<IssmDouble>** pMlff,FemModel* femmodel){/*{{{*/
 
 	/*Initialize Lumped mass matrix (actually we just save its diagonal)*/
