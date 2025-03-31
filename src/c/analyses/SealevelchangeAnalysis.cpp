@@ -17,15 +17,6 @@ void SealevelchangeAnalysis::CreateLoads(Loads* loads, IoModel* iomodel){/*{{{*/
 void SealevelchangeAnalysis::CreateNodes(Nodes* nodes,IoModel* iomodel,bool isamr){/*{{{*/
 	::CreateNodes(nodes,iomodel,SealevelchangeAnalysisEnum,P1Enum);
 }/*}}}*/
-void SealevelchangeAnalysis::DeleteBarystaticContributionsParam(FemModel* femmodel){/*{{{*/
-	BarystaticContributions* barycontrib=NULL;
-	GenericParam<BarystaticContributions*>* barycontribparam=NULL;
-
-	barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
-	barycontrib=barycontribparam->GetParameterValue();
-
-	delete barycontrib;
-}/*}}}*/
 int  SealevelchangeAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*{{{*/
 	return 1;
 }/*}}}*/

@@ -15,7 +15,6 @@ class SealevelchangeAnalysis: public Analysis{
 		void CreateConstraints(Constraints* constraints,IoModel* iomodel);
 		void CreateLoads(Loads* loads, IoModel* iomodel);
 		void CreateNodes(Nodes* nodes,IoModel* iomodel,bool isamr=false);
-		static void DeleteBarystaticContributionsParam(FemModel* femmodel);
 		int  DofsPerNode(int** doflist,int domaintype,int approximation);
 		void UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type);
 		void UpdateParameters(Parameters* parameters,IoModel* iomodel,int solution_enum,int analysis_enum);
