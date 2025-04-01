@@ -1,2 +1,0 @@
-#define CallFromC
-#include "./@src@"
