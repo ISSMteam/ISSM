@@ -1,9 +1,0 @@
-For OSX 10.7 (Lion), the instructions here can be followed:  
-http://www.scipy.org/Installing_SciPy/Mac_OS_X
-
-For OSX 10.6 (Snow Leopard), the scipy folks recommend gcc and g++ version 4.0.
-However, ISSM needs the gfortran version recommended in $ISSM_DIR/externalpackages/gfortran.
-On the webpage listed above, make sure the "export CC" and "export CXX" commands point to the 
-binaries associated with this gfortran version (likely in /usr/local/gfortran/bin by default).
-Once this gfortran is installed, the install script in this directory for Snow Leopard should
-work.

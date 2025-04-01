@@ -1,9 +1,0 @@
-At: https://pypi.python.org/pypi/setuptools
-
-Installation Instructions
-
-The recommended way to bootstrap setuptools on any system is to download ez_setup.py and run it using the target Python environment. Different operating systems have different recommended techniques to accomplish this basic routine, so below are some examples to get you started.
-
-Setuptools requires Python 2.6 or later. To install setuptools on Python 2.4 or Python 2.5, use the bootstrap script for Setuptools 1.x.
-
-The link provided to ez_setup.py is a bookmark to bootstrap script for the latest known stable release.
