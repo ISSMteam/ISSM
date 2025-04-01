@@ -229,25 +229,6 @@ if [[ ${OS_NAME} == MINGW* ]]; then
 	path_prepend "${ISSM_DIR}/bin" # Allows dynamic loader to find DLLs
 fi
 
-#########################
-# Command-line utilities
-#########################
-SSH_ROOT_TEMP="${ISSM_EXT_DIR}/ssh"
-if [ -d "${SSH_ROOT_TEMP}" ]; then
-	path_append "${SSH_ROOT_TEMP}"
-fi
-
-SVN_ROOT_TEMP="${ISSM_EXT_DIR}/svn/install"
-if [ -d "${SVN_ROOT_TEMP}" ]; then
-	path_prepend "${SVN_ROOT_TEMP}/bin"
-	ld_library_path_append "${SVN_ROOT_TEMP}/lib"
-fi
-
-GIT_ROOT_TEMP="${ISSM_EXT_DIR}/git/install"
-if [ -d "${GIT_ROOT_TEMP}" ]; then
-	path_prepend "${GIT_ROOT_TEMP}/bin"
-fi
-
 #############################
 # Compilers / runtime / SDKs
 #############################
@@ -269,39 +250,13 @@ if [ -d "${CMAKE_ROOT_TEMP}" ]; then
 	path_prepend "${CMAKE_ROOT_TEMP}/bin"
 fi
 
-GMAKE_ROOT_TEMP="${ISSM_EXT_DIR}/gmake/install"
-if [ -d "${GMAKE_ROOT_TEMP}" ]; then
-	path_prepend "${GMAKE_ROOT_TEMP}/bin"
-fi
-
 #############################
 # Libraries / binaries
 #############################
-MPI_ROOT_TEMP="${ISSM_EXT_DIR}/mpich/install"
-if [ -d "${MPI_ROOT_TEMP}" ]; then
-	export MPI_ROOT=${MPI_ROOT_TEMP}
-	export MPI_DIR=${MPI_ROOT_TEMP}
-	export MPI_HOME=${MPI_ROOT_TEMP} # Used in installation of Dakota
-	export MPI_INC_DIR="${MPI_ROOT_TEMP}/include"
-	path_prepend "${MPI_ROOT_TEMP}/bin"
-	cpath_prepend "${MPI_ROOT_TEMP}/include"
-	ld_library_path_append "${MPI_ROOT_TEMP}/lib"
-fi
 
 # NOTE: The following checks *must* come before PETSc as we prefer packages 
 #		installed via PETSc
 #
-BLAS_ROOT_TEMP="${ISSM_EXT_DIR}/blas/install"
-if [ -d "${BLAS_ROOT_TEMP}" ]; then
-	export BLAS_ROOT="${BLAS_ROOT_TEMP}" # Used in installation of LAPACK, ScaLAPACK, PETSc
-	library_path_append "${BLAS_ROOT_TEMP}/lib"
-	ld_library_path_append "${BLAS_ROOT_TEMP}/lib"
-
-	if [[ ${MINGW} -eq 1 ]]; then
-		path_append "${BLAS_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
-	fi
-fi
-
 HDF5_ROOT_TEMP="${ISSM_EXT_DIR}/hdf5/install"
 if [ -d "${HDF5_ROOT_TEMP}" ]; then
 	export HDF5_ROOT="${HDF5_ROOT_TEMP}" # Used in installation of NetCDF, GDAL
@@ -311,32 +266,6 @@ if [ -d "${HDF5_ROOT_TEMP}" ]; then
 	ld_library_path_prepend "${HDF5_ROOT_TEMP}/lib"
 fi
 
-LAPACK_ROOT_TEMP="${ISSM_EXT_DIR}/lapack/install"
-if [ -d "${LAPACK_ROOT_TEMP}" ]; then
-	export LAPACK_ROOT="${LAPACK_ROOT_TEMP}" # Used in installation of ScaLAPACK, MUMPS, PETSc
-	library_path_append "${LAPACK_ROOT_TEMP}/lib"
-	ld_library_path_append "${LAPACK_ROOT_TEMP}/lib"
-
-	if [[ ${MINGW} -eq 1 ]]; then
-		path_append "${LAPACK_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
-	fi
-
-	if ls ${LAPACK_ROOT_TEMP}/lib/libblas.* 1> /dev/null 2>&1; then
-		export BLAS_ROOT="${LAPACK_ROOT_TEMP}"
-	fi
-fi
-
-METIS_ROOT_TEMP="${ISSM_EXT_DIR}/metis/install"
-if [ -d "${METIS_ROOT_TEMP}" ]; then
-	export METIS_ROOT="${METIS_ROOT_TEMP}" # Used in installation of ParMETIS, Gmsh, PETSc
-	library_path_prepend "${METIS_ROOT_TEMP}/lib"
-	ld_library_path_prepend "${METIS_ROOT_TEMP}/lib"
-
-	if [[ ${MINGW} -eq 1 ]]; then
-		path_append "${METIS_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
-	fi
-fi
-
 MUMPS_ROOT_TEMP="${ISSM_EXT_DIR}/mumps/install"
 if [ -d "${MUMPS_ROOT_TEMP}" ]; then
 	export MUMPS_ROOT="${MUMPS_ROOT_TEMP}" # Used in installation of PETSc
@@ -344,34 +273,6 @@ if [ -d "${MUMPS_ROOT_TEMP}" ]; then
 
 	if [[ ${MINGW} -eq 1 ]]; then
 		path_append "${MUMPS_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
-	fi
-fi
-
-PARMETIS_ROOT_TEMP="${ISSM_EXT_DIR}/parmetis/install"
-if [ -d "${PARMETIS_ROOT_TEMP}" ]; then
-	export PARMETIS_ROOT="${PARMETIS_ROOT_TEMP}" # Used in installation of MUMPS, PETSc
-	library_path_prepend "${PARMETIS_ROOT_TEMP}/lib"
-	ld_library_path_prepend "${PARMETIS_ROOT_TEMP}/lib"
-
-	if [[ ${MINGW} -eq 1 ]]; then
-		path_append "${PARMETIS_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
-	fi
-fi
-
-QD_ROOT_TEMP="${ISSM_EXT_DIR}/qd/install"
-if [ -d "${QD_ROOT_TEMP}" ]; then
-	export QD_ROOT="${QD_ROOT_TEMP}" # Used in installation of MPLAPACK
-	library_path_prepend "${QD_ROOT_TEMP}/lib"
-	ld_library_path_prepend "${QD_ROOT_TEMP}/lib"
-fi
-
-SCALAPACK_ROOT_TEMP="${ISSM_EXT_DIR}/scalapack/install"
-if [ -d "${SCALAPACK_ROOT_TEMP}" ]; then
-	export SCALAPACK_ROOT="${SCALAPACK_ROOT_TEMP}" # Used in installation of MUMPS, PETSc
-	library_path_append "${SCALAPACK_ROOT_TEMP}/lib"
-
-	if [[ ${MINGW} -eq 1 ]]; then
-		path_append "${SCALAPACK_ROOT_TEMP}/lib" # Allows dynamic loader to find DLLs
 	fi
 fi
 
@@ -448,12 +349,6 @@ fi
 SCOTCH_ROOT_TEMP="${ISSM_EXT_DIR}/scotch/install"
 ld_library_path_append "${SCOTCH_ROOT_TEMP}/lib"
 
-SLEPC_ROOT_TEMP="${ISSM_EXT_DIR}/slepc/install"
-ld_library_path_append "${SLEPC_ROOT_TEMP}/lib"
-
-TAO_ROOT_TEMP="${ISSM_EXT_DIR}/tao/install"
-ld_library_path_append "${TAO_ROOT_TEMP}/lib"
-
 BOOST_ROOT_TEMP="${ISSM_EXT_DIR}/boost/install"
 if [ -d "${BOOST_ROOT_TEMP}" ]; then
 	export BOOST_ROOT=${BOOST_ROOT_TEMP} # Used in installation of Dakota
@@ -472,17 +367,8 @@ if [ -d "${DAKOTA_ROOT_TEMP}" ]; then
 	dyld_library_path_prepend "${DAKOTA_ROOT_TEMP}/lib"
 fi
 
-NCO_ROOT_TEMP="${ISSM_EXT_DIR}/nco/install/bin"
-path_prepend "${NCO_ROOT_TEMP}/bin"
-
 CPPCHECK_ROOT_TEMP="${ISSM_EXT_DIR}/cppcheck/install"
 path_append "${CPPCHECK_ROOT_TEMP}/bin"
-
-MERCURIAL_ROOT_TEMP="${ISSM_EXT_DIR}/mercurial/install"
-if [ -d "${MERCURIAL_ROOT_TEMP}" ]; then
-	export PYTHONPATH="${PYTHONPATH}:${MERCURIAL_ROOT_TEMP}/mercurial/pure/"
-	path_append "${MERCURIAL_ROOT_TEMP}"
-fi
 
 GSL_ROOT_TEMP="${ISSM_EXT_DIR}/gsl/install"
 if [ -d "${GSL_ROOT_TEMP}" ]; then
@@ -501,18 +387,6 @@ if [ -d "${NETCDF_ROOT_TEMP}" ]; then
 	dyld_library_path_prepend "${NETCDF_ROOT_TEMP}/lib"
 fi
 
-NETCDF_CXX_ROOT_TEMP="${ISSM_EXT_DIR}/netcdf-cxx/install"
-if [ -d "${NETCDF_CXX_ROOT_TEMP}" ]; then
-	ld_library_path_append "${NETCDF_CXX_ROOT_TEMP}/lib"
-fi
-
-NETCDF_PYTHON_ROOT_TEMP="${ISSM_EXT_DIR}/netcdf-python/install"
-if [ -d "${NETCDF_PYTHON_ROOT_TEMP}" ]; then
-	if [ -d "${NETCDF_PYTHON_ROOT_TEMP}/lib/python2.7/site-packages" ]; then
-		ld_library_path_append "${NETCDF_PYTHON_ROOT_TEMP}/lib/python2.7/site-packages"
-	fi
-fi
-
 CURL_ROOT_TEMP="${ISSM_EXT_DIR}/curl/install"
 if [ -d "${CURL_ROOT_TEMP}" ]; then
 	export CURL_ROOT="${CURL_ROOT_TEMP}" # Used in installation of NetCDF, GDAL, GMT
@@ -529,12 +403,6 @@ if [ -d "${SQLITE_ROOT_TEMP}" ]; then
 	cpath_prepend "${SQLITE_ROOT_TEMP}/include"
 	library_path_prepend "${SQLITE_ROOT_TEMP}/lib"
 	ld_library_path_prepend "${SQLITE_ROOT_TEMP}/lib"
-fi
-
-LIBTIFF_ROOT_TEMP="${ISSM_EXT_DIR}/libtiff/install"
-if [ -d "${LIBTIFF_ROOT_TEMP}" ]; then
-	dyld_library_path_append "${LIBTIFF_ROOT_TEMP}/install/libtiff"
-	ld_library_path_append "${LIBTIFF_ROOT_TEMP}/install/libtiff"
 fi
 
 PROJ_ROOT_TEMP="${ISSM_EXT_DIR}/proj/install"
@@ -584,76 +452,14 @@ if [ -d "${TRIANGLE_ROOT_TEMP}" ]; then
 	fi
 fi
 
-ANGELROOT_TEMP="${ISSM_EXT_DIR}/angel/angel"
-if [ -d "${ANGELROOT_TEMP}" ]; then
-	export ANGELROOT="${ANGELROOT_TEMP}"
-fi
-
-OPENANALYSISROOT_TEMP="${ISSM_EXT_DIR}/openanalysis/install"
-if [ -d "${OPENANALYSISROOT_TEMP}" ]; then
-	export OPENANALYSISROOT="${OPENANALYSISROOT_TEMP}"
-	ld_library_path_append "${OPENANALYSISROOT_TEMP}/lib"
-fi
-
 BBFTP_ROOT_TEMP="${ISSM_EXT_DIR}/bbftp/install"
 if [ -d "${BBFTP_ROOT_TEMP}" ]; then
 	path_append "${BBFTP_ROOT_TEMP}/bin"
 fi
 
-ADIC_ROOT_TEMP="${ISSM_EXT_DIR}/adic/install"
-if [ -d "${ADIC_ROOT_TEMP}" ]; then
-	path_append "${ADIC_ROOT_TEMP}/bin"
-	ld_library_path_append "${ADIC_ROOT_TEMP}/lib"
-fi
-
-COLPACK_ROOT_TEMP="${ISSM_EXT_DIR}/colpack/install"
-if [ -d "${COLPACK_ROOT_TEMP}" ]; then
-	ld_library_path_append "${COLPACK_ROOT_TEMP}/lib"
-fi
-
-APPSCAN_ROOT_TEMP="${ISSM_EXT_DIR}/appscan/install"
-if [ -d "${APPSCAN_ROOT_TEMP}" ]; then
-	path_append "${APPSCAN_ROOT_TEMP}/bin"
-fi
-
-RATS_ROOT_TEMP="${ISSM_EXT_DIR}/rats/install"
-if [ -d "${RATS_ROOT_TEMP}" ]; then
-	path_append "${RATS_ROOT_TEMP}/bin"
-fi
-
-DYSON_ROOT_TEMP="${ISSM_EXT_DIR}/dyson"
-if [ -d "${DYSON_ROOT_TEMP}" ]; then
-	path_append "${DYSON_ROOT_TEMP}"
-fi
-
 SHAPELIB_ROOT_TEMP="${ISSM_EXT_DIR}/shapelib/install"
 if [ -d "${SHAPELIB_ROOT_TEMP}" ]; then
 	path_append "${SHAPELIB_ROOT_TEMP}/exec"
-fi
-
-CCCL_ROOT_TEMP="${ISSM_EXT_DIR}/cccl/install"
-if [ -d "${CCCL_ROOT_TEMP}" ]; then
-	path_append "${CCCL_ROOT_TEMP}/bin"
-fi
-
-MODELE_ROOT_TEMP="${ISSM_EXT_DIR}/modelE/install"
-if [ -d "${MODELE_ROOT_TEMP}" ]; then
-	path_append "${MODELE_ROOT_TEMP}/src/exec"
-fi
-
-NCVIEW_ROOT_TEMP="${ISSM_EXT_DIR}/ncview/install"
-if [ -d "${NCVIEW_ROOT}" ]; then
-	path_append "${NCVIEW_ROOT}"
-fi
-
-TCLX_ROOT_TEMP="${ISSM_EXT_DIR}/tclx/install/lib/tclx8.4"
-if [ -d "${TCLX_ROOT_TEMP}" ]; then
-	ld_library_path_append "${TCLX_ROOT_TEMP}"
-fi
-
-ASPELL_ROOT_TEMP="${ISSM_EXT_DIR}/aspell/install"
-if [ -d "${ASPELL_ROOT_TEMP}" ]; then
-	path_prepend "${ASPELL_ROOT_TEMP}/bin"
 fi
 
 ESMF_ROOT_TEMP="${ISSM_EXT_DIR}/esmf/install"
@@ -662,21 +468,9 @@ if [ -d "${ESMF_ROOT_TEMP}" ]; then
 	ld_library_path_append "${ESMF_ROOT_TEMP}/lib/libO/Linux.gfortran.64.mpich.default"
 fi
 
-CVS_ROOT_TEMP="${ISSM_EXT_DIR}/cvs/install"
-if [ -d "${CVS_ROOT_TEMP}" ]; then
-	path_prepend "${CVS_ROOT_TEMP}/bin"
-fi
-
-APR_ROOT_TEMP="${ISSM_EXT_DIR}/apr/install"
-if [ -d "${APR_ROOT_TEMP}" ]; then
-	path_prepend "${APR_ROOT_TEMP}/bin"
-	ld_library_path_append "${APR_ROOT_TEMP}/lib"
-fi
-
-APR_UTIL_ROOT_TEMP="${ISSM_EXT_DIR}/apr-util/install"
-if [ -d "${APR_UTIL_ROOT_TEMP}" ]; then
-	path_prepend "${APR_UTIL_ROOT_TEMP}/bin"
-	ld_library_path_append "${APR_UTIL_ROOT_TEMP}/lib"
+NEOPZ_ROOT_TEMP="${ISSM_EXT_DIR}/neopz/install"
+if [ -d "${NEOPZ_ROOT_TEMP}" ]; then
+	export REFPATTERNDIR="${NEOPZ_ROOT_TEMP}/include/refpatterns"
 fi
 
 YAMS_ROOT_TEMP="${ISSM_EXT_DIR}/yams/install"
@@ -684,50 +478,9 @@ if [ -d "${YAMS_ROOT_TEMP}" ]; then
 	path_prepend "${YAMS_ROOT_TEMP}"
 fi
 
-SWIG_ROOT_TEMP="${ISSM_EXT_DIR}/swig/install"
-if [ -d "${SWIG_ROOT_TEMP}" ]; then
-	path_prepend "${SWIG_ROOT_TEMP}"
-fi
-
-INISHELL_ROOT_TEMP="${ISSM_EXT_DIR}/inishell/install"
-if [ -d "${INISHELL_ROOT_TEMP}" ]; then
-	path_prepend "${INISHELL_ROOT_TEMP}"
-fi
-
-EXPAT_ROOT_TEMP="${ISSM_EXT_DIR}/expat/install"
-if [ -d "${EXPAT_ROOT_TEMP}" ]; then
-	ld_library_path_prepend "${EXPAT_ROOT_TEMP}"
-	dyld_library_path_prepend "${EXPAT_ROOT_TEMP}"
-fi
-
-NEOPZ_ROOT_TEMP="${ISSM_EXT_DIR}/neopz/install"
-if [ -d "${NEOPZ_ROOT_TEMP}" ]; then
-	export REFPATTERNDIR="${NEOPZ_ROOT_TEMP}/include/refpatterns"
-fi
-
-XERCESROOT_TEMP="${ISSM_EXT_DIR}/xerces/install"
-if [ -d "${XERCESROOT_TEMP}" ]; then
-	export XERCESROOT="${XERCESROOT_TEMP}"
-	export XERCESCROOT="${XERCESROOT_TEMP}/../src"
-fi
-
-XAIFBOOSTERROOT_TEMP="${ISSM_EXT_DIR}/xaifbooster"
-XAIF_ROOT_TEMP="${XAIFBOOSTERROOT_TEMP}/xaifBooster"
-if [ -d "${XAIF_ROOT_TEMP}" ]; then
-	export XAIFBOOSTERROOT="${XAIFBOOSTERROOT_TEMP}"
-	export XAIF_DIR="${XAIF_ROOT_TEMP}"
-	export XAIFBOOSTER_HOME="${XAIF_ROOT_TEMP}"
-	export PLATFORM="x86-Linux"
-fi
-
 VALGRIND_ROOT_TEMP="${ISSM_DIR}/externalpackages/valgrind/install"
 if [ -d "${VALGRIND_ROOT_TEMP}" ]; then
 	path_prepend "${VALGRIND_ROOT_TEMP}/bin"
-fi
-
-DOXYGEN_ROOT_TEMP="${ISSM_EXT_DIR}/doxygen/install"
-if [ -d "${DOXYGEN_ROOT_TEMP}" ]; then
-	path_append "${DOXYGEN_ROOT_TEMP}/bin"
 fi
 
 SHELL2JUNIT_ROOT_TEMP="${ISSM_EXT_DIR}/shell2junit/install"
