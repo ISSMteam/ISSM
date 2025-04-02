@@ -8,7 +8,7 @@
 classdef discover
 	properties (SetAccess=public)
 		% {{{
-		name=oshostname();
+		name='login.nccs.nasa.gov';
 		login='';
 		modules={'comp/intel/20.0.0.166' 'mpi/sgi-mpt/2.17' 'cmake/3.17.0'};
 		numnodes=20;
