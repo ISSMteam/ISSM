@@ -693,7 +693,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 		AC_MSG_RESULT([$PYTHONINCL])
 
-		AC_MSG_CHECKING([for Python library libpython])
+		AC_MSG_CHECKING([for libpython])
 		PYTHONSTDLIB=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))")
 		if ls ${PYTHONSTDLIB}/libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
 			PYTHONLIB="-L${PYTHONSTDLIB} -lpython${PYTHON_VERSION}m"
@@ -717,19 +717,19 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([PYTHONLINK])
 
 		dnl NumPy
-		AC_MSG_CHECKING([for Numpy version])
+		AC_MSG_CHECKING([for NumPy version])
 		NUMPY_VERSION=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.version.version)")
 		AC_MSG_RESULT([$NUMPY_VERSION])
 
-		AC_MSG_CHECKING([for Numpy include directory])
-		NUMPYINCL=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.__path__[[0]])")
+		AC_MSG_CHECKING([for NumPy include directory])
+		NUMPYINCL=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.get_include())")
 		AC_MSG_RESULT([$NUMPYINCL])
 		if ! test -d "${NUMPYINCL}"; then
 		 AC_MSG_ERROR([NumPy directory provided (${NUMPYINCL}) does not exist!]);
 		fi
 
 		dnl NumPy libraries and header files
-		PYTHON_NUMPYINCL="-I${NUMPYINCL} -I${NUMPYINCL}/core/include/numpy -I${NUMPYINCL}/_core/include -I${NUMPYINCL}/_core/include/numpy"
+		PYTHON_NUMPYINCL="-I${NUMPYINCL} -I${NUMPYINCL}/numpy"
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi

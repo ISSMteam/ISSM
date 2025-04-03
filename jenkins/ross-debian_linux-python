@@ -8,9 +8,7 @@ ISSM_CONFIG='\
 	--enable-development \
 	--enable-debugging \
 	--with-numthreads=4 \
-	--with-python-version=3.11 \
-	--with-python-dir=/usr \
-	--with-python-numpy-dir="${HOME}/.venv/issm/lib/python3.11/site-packages/numpy" \
+	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
