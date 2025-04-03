@@ -653,6 +653,92 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl Python{{{
 	AC_MSG_CHECKING([for Python])
 	AC_ARG_WITH(
+		[python],
+		AS_HELP_STRING([--with-python=EXEC], [Python path, e.g., "/usr/bin/python3"]),
+		[PYTHON_PATH=${withval}],
+		[PYTHON_PATH="no"]
+	)
+
+	if test "x${PYTHON_PATH}" == "xno"; then
+		HAVE_PYTHON=no
+	else
+		HAVE_PYTHON=yes
+		if ! test -f "${PYTHON_PATH}"; then
+			AC_MSG_ERROR([Python provided (${PYTHON_PATH}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([${HAVE_PYTHON}])
+	AM_CONDITIONAL([PYTHON], [test "x${HAVE_PYTHON}" == "xyes"])
+
+	dnl Python specifics
+	if test "x${HAVE_PYTHON}" == "xyes"; then
+
+		AC_MSG_CHECKING([for Python version])
+		dnl standard library.
+		PYTHON_VERSION=$(${PYTHON_PATH} -c "import sys; sys.stdout.write(str(sys.version_info.major)+'.'+str(sys.version_info.minor))")
+		AC_MSG_RESULT([${PYTHON_VERSION}])
+		
+		dnl Make sure major version is 3
+		PYTHON_MAJOR=${PYTHON_VERSION%.*}
+		AC_DEFINE_UNQUOTED([_PYTHON_MAJOR_], ${PYTHON_MAJOR}, [Python version major])
+		if test "x${PYTHON_MAJOR}" != "x3"; then
+			AC_MSG_ERROR([Only Python 3 is supported]);
+		fi
+
+		AC_MSG_CHECKING([for Python include directory])
+		#PYTHONINCL=$(${PYTHON_PATH} -c "import sys; from sysconfig import get_paths as gp; sys.stdout.write(gp()[['include']])")
+		PYTHONINCL=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('INCLUDEPY'))")
+		if ! test -f "${PYTHONINCL}/Python.h"; then
+			 AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
+		fi
+		AC_MSG_RESULT([$PYTHONINCL])
+
+		AC_MSG_CHECKING([for Python library libpython])
+		PYTHONSTDLIB=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))")
+		if ls ${PYTHONSTDLIB}/libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONSTDLIB} -lpython${PYTHON_VERSION}m"
+		elif ls ${PYTHONSTDLIB}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONSTDLIB} -lpython${PYTHON_VERSION}"
+		else
+			AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
+		fi
+		AC_MSG_RESULT([$PYTHONLIB])
+
+		case "${host_os}" in
+			*darwin*) PYTHONLINK="-dynamiclib" ;;
+			*linux*)  PYTHONLINK="-shared" ;;
+			*mingw*)  PYTHONLINK="-shared" ;;
+		esac
+		AC_DEFINE([_HAVE_PYTHON_], [1], [with Python in ISSM src])
+		AC_SUBST([PYTHONINCL])
+		AC_SUBST([PYTHONLIB])
+		PYTHONWRAPPEREXT=".so"
+		AC_SUBST([PYTHONWRAPPEREXT])
+		AC_SUBST([PYTHONLINK])
+
+		dnl NumPy
+		AC_MSG_CHECKING([for Numpy version])
+		NUMPY_VERSION=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.version.version)")
+		AC_MSG_RESULT([$NUMPY_VERSION])
+
+		AC_MSG_CHECKING([for Numpy include directory])
+		NUMPYINCL=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.__path__[[0]])")
+		AC_MSG_RESULT([$NUMPYINCL])
+		if ! test -d "${NUMPYINCL}"; then
+		 AC_MSG_ERROR([NumPy directory provided (${NUMPYINCL}) does not exist!]);
+		fi
+
+		dnl NumPy libraries and header files
+		PYTHON_NUMPYINCL="-I${NUMPYINCL} -I${NUMPYINCL}/core/include/numpy -I${NUMPYINCL}/_core/include -I${NUMPYINCL}/_core/include/numpy"
+		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
+		AC_SUBST([PYTHON_NUMPYINCL])
+	fi
+	AM_CONDITIONAL([PYTHON3], [test "xyes" == "xyes"])
+	dnl }}}
+	dnl Python-OLD{{{
+	if test "x${HAVE_PYTHON}" != "xyes"; then
+	AC_MSG_CHECKING([for Python])
+	AC_ARG_WITH(
 		[python-dir],
 		AS_HELP_STRING([--with-python-dir=DIR], [Python root directory]),
 		[PYTHON_ROOT=${withval}],
@@ -795,6 +881,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
+	fi #Starts in pythonb-old
 	dnl }}}
 	dnl Chaco{{{
 	AC_MSG_CHECKING([for Chaco])
