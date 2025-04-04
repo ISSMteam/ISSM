@@ -696,13 +696,20 @@ AC_DEFUN([ISSM_OPTIONS],[
 		PYTHONINCL="-I${PYTHONINCL}"
 
 		AC_MSG_CHECKING([for libpython])
-		PYTHONSTDLIB=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))")
-		if ls ${PYTHONSTDLIB}/libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
-			PYTHONLIB="-L${PYTHONSTDLIB} -lpython${PYTHON_VERSION}m"
-		elif ls ${PYTHONSTDLIB}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
-			PYTHONLIB="-L${PYTHONSTDLIB} -lpython${PYTHON_VERSION}"
+		PYTHONLIBDIR=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))")
+		if ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}m"
+		elif ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
 		else
-			AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
+			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['stdlib']])")
+			if ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
+				PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}m"
+			elif ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+				PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
+			else
+				AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
+			fi
 		fi
 		AC_MSG_RESULT([$PYTHONLIB])
 
