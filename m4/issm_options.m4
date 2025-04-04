@@ -674,7 +674,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	if test "x${HAVE_PYTHON}" == "xyes"; then
 
 		AC_MSG_CHECKING([for Python version])
-		dnl standard library.
 		PYTHON_VERSION=$(${PYTHON_PATH} -c "import sys; sys.stdout.write(str(sys.version_info.major)+'.'+str(sys.version_info.minor))")
 		AC_MSG_RESULT([${PYTHON_VERSION}])
 		
@@ -686,8 +685,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 
 		AC_MSG_CHECKING([for Python include directory])
-		#PYTHONINCL=$(${PYTHON_PATH} -c "import sys; from sysconfig import get_paths as gp; sys.stdout.write(gp()[['include']])")
-		PYTHONINCL=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('INCLUDEPY'))")
+		PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()['include'])")
 		if ! test -f "${PYTHONINCL}/Python.h"; then
 			 AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
@@ -726,7 +724,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		NUMPYINCL=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.get_include())")
 		AC_MSG_RESULT([$NUMPYINCL])
 		if ! test -d "${NUMPYINCL}"; then
-		 AC_MSG_ERROR([NumPy directory provided (${NUMPYINCL}) does not exist!]);
+			AC_MSG_ERROR([NumPy directory provided (${NUMPYINCL}) does not exist!]);
 		fi
 
 		dnl NumPy libraries and header files
