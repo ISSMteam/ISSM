@@ -704,9 +704,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 		else
 			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['stdlib']])")
 			if ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
-				PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}m"
+				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}m"
 			elif ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
-				PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
+				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}"
 			else
 				AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
 			fi
