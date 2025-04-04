@@ -691,6 +691,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		if ! test -f "${PYTHONINCL}/Python.h"; then
 			 AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
+		PYTHONINCL="-I${PYTHONINCL}"
 		AC_MSG_RESULT([$PYTHONINCL])
 
 		AC_MSG_CHECKING([for libpython])
