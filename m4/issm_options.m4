@@ -685,7 +685,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 
 		AC_MSG_CHECKING([for Python include directory])
-		PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()['include'])")
+		#PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['include']])")
+		PYTHONINCL=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('INCLUDEPY'))")
 		if ! test -f "${PYTHONINCL}/Python.h"; then
 			 AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
