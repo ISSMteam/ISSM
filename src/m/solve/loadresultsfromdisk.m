@@ -55,7 +55,7 @@ if ~md.qmu.isdakota,
 	end
 
 	if exist([md.miscellaneous.name '.outlog'],'file'),
-		md.results.(structure(1).SolutionType)(1).outlog=char(textread([md.miscellaneous.name '.outlog'],'%s',1000,'delimiter','\n'));
+		md.results.(structure(1).SolutionType)(1).outlog=char(textread([md.miscellaneous.name '.outlog'],'%c',4000,'delimiter','\n'));
 	else
 		md.results.(structure(1).SolutionType)(1).outlog='';
 	end
