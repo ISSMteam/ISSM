@@ -4,7 +4,7 @@ set -eu
 
 ## Constants
 #
-VER="4.0.0"
+VER="3.3.1"
 
 PREFIX="${ISSM_DIR}/externalpackages/cmake/install" # Set to location where external package should be installed
 
