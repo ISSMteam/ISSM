@@ -3225,6 +3225,11 @@ void FemModel::UpdateConstraintsx(void){ /*{{{*/
 	/*Now, update degrees of freedoms: */
 	NodesDofx(nodes,parameters);
 
+	/*Update FileInputs if need be*/
+	if(femmodel->inputs->IsFileInputUpdate(time)){
+		_error_("not implemented yet");
+	}
+
 }/*}}}*/
 int  FemModel::UpdateVertexPositionsx(void){ /*{{{*/
 

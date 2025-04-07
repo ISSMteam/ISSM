@@ -345,6 +345,7 @@ issm_sources += \
 	./classes/Inputs/DatasetInput.cpp \
 	./classes/Inputs/ControlInput.cpp \
 	./classes/Inputs/TransientInput.cpp \
+	./classes/Inputs/TransientFileInput.cpp \
 	./classes/Inputs/ArrayInput.cpp \
 	./classes/Inputs/IntArrayInput.cpp
 #}}}
