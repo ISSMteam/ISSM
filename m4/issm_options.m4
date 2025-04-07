@@ -1153,40 +1153,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([AMPI], [test "x${HAVE_AMPI}" == "xyes"])
 	dnl }}}
-	dnl Adjoint MPI (CoDiPack){{{
-	AC_MSG_CHECKING([for Adjoint MPI])
-	AC_ARG_WITH(
-		[adjointmpi-dir],
-		AS_HELP_STRING([--with-adjointmpi-dir=DIR], [Adjoint MPI root directory]),
-		[ADJOINTMPI_ROOT=${withval}],
-		[ADJOINTMPI_ROOT="no"]
-	)
-	if test "x${ADJOINTMPI_ROOT}" == "xno"; then
-		HAVE_ADJOINTMPI=no
-	else
-		HAVE_ADJOINTMPI=yes
-		if ! test -d "${ADJOINTMPI_ROOT}"; then
-			AC_MSG_ERROR([Adjoint MPI directory provided (${ADJOINTMPI_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_ADJOINTMPI}])
-
-	dnl Adjoint MPI libraries and header files
-	if test "x${HAVE_ADJOINTMPI}" == "xyes"; then
-		if test "x${CODIPACK_ROOT}" == "xno"; then
-			AC_MSG_ERROR([cannot run Adjoint MPI without CoDiPack]);
-		fi
-		ADJOINTMPIINCL="-I${ADJOINTMPI_ROOT}/include"
-		ADJOINTMPILIB="-L${ADJOINTMPI_ROOT}/lib  -lAMPI"
-		dnl Also set _HAVE_AMPI_, because the interface is (almost) the same as
-		dnl for AMPI
-		AC_DEFINE([_HAVE_AMPI_], [1], [with AMPI in ISSM src])
-		AC_DEFINE([_HAVE_ADJOINTMPI_], [1], [with Adjoint MPI in ISSM src])
-		AC_SUBST([ADJOINTMPIINCL])
-		AC_SUBST([ADJOINTMPILIB])
-	fi
-	AM_CONDITIONAL([ADJOINTMPI], [test "x${HAVE_ADJOINTMPI}" == "xyes"])
-	dnl }}}
 	dnl MeDiPack (CoDiPack, ADOL-C dev){{{
 	AC_MSG_CHECKING([for MeDiPack])
 	AC_ARG_WITH(
@@ -2354,63 +2320,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_RESULT([done])
 	fi
 	AM_CONDITIONAL([HAVE_FORTRANDIR], [test "x${IS_FORTRANDIR_A_DIR}" == "xyes"])
-	dnl }}}
-	dnl MeteoIO{{{
-	AC_MSG_CHECKING([for MeteoIO])
-	AC_ARG_WITH(
-		[meteoio-dir],
-		AS_HELP_STRING([--with-meteoio-dir=DIR], [use MeteoIO in conjunction with SNOWPACK model]),
-		[METEOIO_ROOT=${withval}],
-		[METEOIO_ROOT="no"]
-	)
-	if test "x${METEOIO_ROOT}" == "xno"; then
-		HAVE_METEOIO=no
-	else
-		HAVE_METEOIO=yes
-		if ! test -d "${METEOIO_ROOT}"; then
-			AC_MSG_ERROR([MeteoIO directory provided (${METEOIO_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_METEOIO}])
-
-	dnl MeteoIO libraries and header files
-	if test "x${HAVE_METEOIO}" == "xyes"; then
-		METEOIOINCL="-I${METEOIO_ROOT}/include"
-		METEOIOLIB="-dy -L${METEOIO_ROOT}/lib -lmeteoio"
-
-		AC_DEFINE([_HAVE_METEOIO_], [1], [with MeteoIO])
-		AC_SUBST([METEOIOINCL])
-		AC_SUBST([METEOIOLIB])
-	fi
-	AM_CONDITIONAL([METEOIO], [test "x${HAVE_METEOIO}" == "xyes"])
-	dnl }}}
-	dnl SNOWPACK{{{
-	AC_MSG_CHECKING([for SNOWPACK])
-	AC_ARG_WITH(
-		[snowpack-dir],
-		AS_HELP_STRING([--with-snowpack-dir=DIR], [use SNOWPACK for surface mass balance model]),
-		[SNOWPACK_ROOT=${withval}],
-		[SNOWPACK_ROOT="no"]
-	)
-	if test "x${SNOWPACK_ROOT}" == "xno"; then
-		HAVE_SNOWPACK=no
-	else
-		HAVE_SNOWPACK=yes
-		if ! test -d "${SNOWPACK_ROOT}"; then
-			AC_MSG_ERROR([SNOWPACK directory provided (${SNOWPACK_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_SNOWPACK}])
-
-	dnl SNOWPACK libraries and header files
-	if test "x${HAVE_SNOWPACK}" == "xyes"; then
-		SNOWPACKINCL="-I${SNOWPACK_ROOT}/include"
-		SNOWPACKLIB="-dy -L${SNOWPACK_ROOT}/lib -lsnowpack"
-		AC_DEFINE([_HAVE_SNOWPACK_], [1], [with SNOWPACK for surface mass balance model])
-		AC_SUBST([SNOWPACKINCL])
-		AC_SUBST([SNOWPACKLIB])
-	fi
-	AM_CONDITIONAL([SNOWPACK], [test "x${HAVE_SNOWPACK}" == "xyes"])
 	dnl }}}
 	dnl NeoPZ{{{
 	AC_MSG_CHECKING([for NeoPZ])
