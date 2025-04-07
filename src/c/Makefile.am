@@ -349,10 +349,7 @@ issm_sources += \
 	./classes/Inputs/ArrayInput.cpp \
 	./classes/Inputs/IntArrayInput.cpp
 #}}}
-# ADJOINTMPI/MeDiPack sources {{{
-if ADJOINTMPI
-issm_sources += ./toolkits/codipack/ampi_interface.cpp
-endif
+# CoDiPack/MeDiPack sources {{{
 if MEDIPACK
 issm_sources += ./toolkits/codipack/ampi_interface.cpp
 endif
