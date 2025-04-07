@@ -3720,6 +3720,7 @@ enum definitions{
 	TotalSmbMeltEnum,
 	TransientArrayParamEnum,
 	TransientInputEnum,
+	TransientFileInputEnum,
 	TransientParamEnum,
 	TransientSolutionEnum,
 	TriaEnum,

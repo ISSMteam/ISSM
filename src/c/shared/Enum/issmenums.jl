@@ -3710,6 +3710,7 @@
 	TotalSmbMeltEnum
 	TransientArrayParamEnum
 	TransientInputEnum
+	TransientFileInputEnum
 	TransientParamEnum
 	TransientSolutionEnum
 	TriaEnum
@@ -7454,6 +7455,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==TotalSmbMeltEnum) return "TotalSmbMelt" end
 	if(enum==TransientArrayParamEnum) return "TransientArrayParam" end
 	if(enum==TransientInputEnum) return "TransientInput" end
+	if(enum==TransientFileInputEnum) return "TransientFileInput" end
 	if(enum==TransientParamEnum) return "TransientParam" end
 	if(enum==TransientSolutionEnum) return "TransientSolution" end
 	if(enum==TriaEnum) return "Tria" end
@@ -11198,6 +11200,7 @@ function StringToEnum(name::String)
 	if(name=="TotalSmbMelt") return TotalSmbMeltEnum  end
 	if(name=="TransientArrayParam") return TransientArrayParamEnum  end
 	if(name=="TransientInput") return TransientInputEnum  end
+	if(name=="TransientFileInput") return TransientFileInputEnum  end
 	if(name=="TransientParam") return TransientParamEnum  end
 	if(name=="TransientSolution") return TransientSolutionEnum  end
 	if(name=="Tria") return TriaEnum  end

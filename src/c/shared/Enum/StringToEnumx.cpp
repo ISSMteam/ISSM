@@ -1489,7 +1489,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition122")==0) return Outputdefinition122Enum;
 	      else if (strcmp(name,"Outputdefinition123")==0) return Outputdefinition123Enum;
 	      else if (strcmp(name,"Outputdefinition124")==0) return Outputdefinition124Enum;
-	      else if (strcmp(name,"Outputdefinition125")==0) return Outputdefinition125Enum;
+         else stage=13;
+   }
+   if(stage==13){
+	      if (strcmp(name,"Outputdefinition125")==0) return Outputdefinition125Enum;
 	      else if (strcmp(name,"Outputdefinition126")==0) return Outputdefinition126Enum;
 	      else if (strcmp(name,"Outputdefinition127")==0) return Outputdefinition127Enum;
 	      else if (strcmp(name,"Outputdefinition128")==0) return Outputdefinition128Enum;
@@ -1517,10 +1520,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition148")==0) return Outputdefinition148Enum;
 	      else if (strcmp(name,"Outputdefinition149")==0) return Outputdefinition149Enum;
 	      else if (strcmp(name,"Outputdefinition104")==0) return Outputdefinition104Enum;
-         else stage=13;
-   }
-   if(stage==13){
-	      if (strcmp(name,"Outputdefinition150")==0) return Outputdefinition150Enum;
+	      else if (strcmp(name,"Outputdefinition150")==0) return Outputdefinition150Enum;
 	      else if (strcmp(name,"Outputdefinition151")==0) return Outputdefinition151Enum;
 	      else if (strcmp(name,"Outputdefinition152")==0) return Outputdefinition152Enum;
 	      else if (strcmp(name,"Outputdefinition153")==0) return Outputdefinition153Enum;
@@ -1612,7 +1612,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition240")==0) return Outputdefinition240Enum;
 	      else if (strcmp(name,"Outputdefinition241")==0) return Outputdefinition241Enum;
 	      else if (strcmp(name,"Outputdefinition242")==0) return Outputdefinition242Enum;
-	      else if (strcmp(name,"Outputdefinition243")==0) return Outputdefinition243Enum;
+         else stage=14;
+   }
+   if(stage==14){
+	      if (strcmp(name,"Outputdefinition243")==0) return Outputdefinition243Enum;
 	      else if (strcmp(name,"Outputdefinition244")==0) return Outputdefinition244Enum;
 	      else if (strcmp(name,"Outputdefinition245")==0) return Outputdefinition245Enum;
 	      else if (strcmp(name,"Outputdefinition246")==0) return Outputdefinition246Enum;
@@ -1640,10 +1643,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition266")==0) return Outputdefinition266Enum;
 	      else if (strcmp(name,"Outputdefinition267")==0) return Outputdefinition267Enum;
 	      else if (strcmp(name,"Outputdefinition268")==0) return Outputdefinition268Enum;
-         else stage=14;
-   }
-   if(stage==14){
-	      if (strcmp(name,"Outputdefinition269")==0) return Outputdefinition269Enum;
+	      else if (strcmp(name,"Outputdefinition269")==0) return Outputdefinition269Enum;
 	      else if (strcmp(name,"Outputdefinition206")==0) return Outputdefinition206Enum;
 	      else if (strcmp(name,"Outputdefinition270")==0) return Outputdefinition270Enum;
 	      else if (strcmp(name,"Outputdefinition271")==0) return Outputdefinition271Enum;
@@ -1735,7 +1735,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition359")==0) return Outputdefinition359Enum;
 	      else if (strcmp(name,"Outputdefinition305")==0) return Outputdefinition305Enum;
 	      else if (strcmp(name,"Outputdefinition360")==0) return Outputdefinition360Enum;
-	      else if (strcmp(name,"Outputdefinition361")==0) return Outputdefinition361Enum;
+         else stage=15;
+   }
+   if(stage==15){
+	      if (strcmp(name,"Outputdefinition361")==0) return Outputdefinition361Enum;
 	      else if (strcmp(name,"Outputdefinition362")==0) return Outputdefinition362Enum;
 	      else if (strcmp(name,"Outputdefinition363")==0) return Outputdefinition363Enum;
 	      else if (strcmp(name,"Outputdefinition364")==0) return Outputdefinition364Enum;
@@ -1763,10 +1766,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition384")==0) return Outputdefinition384Enum;
 	      else if (strcmp(name,"Outputdefinition385")==0) return Outputdefinition385Enum;
 	      else if (strcmp(name,"Outputdefinition386")==0) return Outputdefinition386Enum;
-         else stage=15;
-   }
-   if(stage==15){
-	      if (strcmp(name,"Outputdefinition387")==0) return Outputdefinition387Enum;
+	      else if (strcmp(name,"Outputdefinition387")==0) return Outputdefinition387Enum;
 	      else if (strcmp(name,"Outputdefinition388")==0) return Outputdefinition388Enum;
 	      else if (strcmp(name,"Outputdefinition389")==0) return Outputdefinition389Enum;
 	      else if (strcmp(name,"Outputdefinition308")==0) return Outputdefinition308Enum;
@@ -1858,7 +1858,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition477")==0) return Outputdefinition477Enum;
 	      else if (strcmp(name,"Outputdefinition478")==0) return Outputdefinition478Enum;
 	      else if (strcmp(name,"Outputdefinition479")==0) return Outputdefinition479Enum;
-	      else if (strcmp(name,"Outputdefinition407")==0) return Outputdefinition407Enum;
+         else stage=16;
+   }
+   if(stage==16){
+	      if (strcmp(name,"Outputdefinition407")==0) return Outputdefinition407Enum;
 	      else if (strcmp(name,"Outputdefinition480")==0) return Outputdefinition480Enum;
 	      else if (strcmp(name,"Outputdefinition481")==0) return Outputdefinition481Enum;
 	      else if (strcmp(name,"Outputdefinition482")==0) return Outputdefinition482Enum;
@@ -1886,10 +1889,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition510")==0) return Outputdefinition510Enum;
 	      else if (strcmp(name,"Outputdefinition511")==0) return Outputdefinition511Enum;
 	      else if (strcmp(name,"Outputdefinition512")==0) return Outputdefinition512Enum;
-         else stage=16;
-   }
-   if(stage==16){
-	      if (strcmp(name,"Outputdefinition513")==0) return Outputdefinition513Enum;
+	      else if (strcmp(name,"Outputdefinition513")==0) return Outputdefinition513Enum;
 	      else if (strcmp(name,"Outputdefinition514")==0) return Outputdefinition514Enum;
 	      else if (strcmp(name,"Outputdefinition515")==0) return Outputdefinition515Enum;
 	      else if (strcmp(name,"Outputdefinition516")==0) return Outputdefinition516Enum;
@@ -1981,7 +1981,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition595")==0) return Outputdefinition595Enum;
 	      else if (strcmp(name,"Outputdefinition596")==0) return Outputdefinition596Enum;
 	      else if (strcmp(name,"Outputdefinition597")==0) return Outputdefinition597Enum;
-	      else if (strcmp(name,"Outputdefinition598")==0) return Outputdefinition598Enum;
+         else stage=17;
+   }
+   if(stage==17){
+	      if (strcmp(name,"Outputdefinition598")==0) return Outputdefinition598Enum;
 	      else if (strcmp(name,"Outputdefinition599")==0) return Outputdefinition599Enum;
 	      else if (strcmp(name,"Outputdefinition509")==0) return Outputdefinition509Enum;
 	      else if (strcmp(name,"Outputdefinition600")==0) return Outputdefinition600Enum;
@@ -2009,10 +2012,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition602")==0) return Outputdefinition602Enum;
 	      else if (strcmp(name,"Outputdefinition630")==0) return Outputdefinition630Enum;
 	      else if (strcmp(name,"Outputdefinition631")==0) return Outputdefinition631Enum;
-         else stage=17;
-   }
-   if(stage==17){
-	      if (strcmp(name,"Outputdefinition632")==0) return Outputdefinition632Enum;
+	      else if (strcmp(name,"Outputdefinition632")==0) return Outputdefinition632Enum;
 	      else if (strcmp(name,"Outputdefinition633")==0) return Outputdefinition633Enum;
 	      else if (strcmp(name,"Outputdefinition634")==0) return Outputdefinition634Enum;
 	      else if (strcmp(name,"Outputdefinition635")==0) return Outputdefinition635Enum;
@@ -2104,7 +2104,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition722")==0) return Outputdefinition722Enum;
 	      else if (strcmp(name,"Outputdefinition723")==0) return Outputdefinition723Enum;
 	      else if (strcmp(name,"Outputdefinition724")==0) return Outputdefinition724Enum;
-	      else if (strcmp(name,"Outputdefinition725")==0) return Outputdefinition725Enum;
+         else stage=18;
+   }
+   if(stage==18){
+	      if (strcmp(name,"Outputdefinition725")==0) return Outputdefinition725Enum;
 	      else if (strcmp(name,"Outputdefinition726")==0) return Outputdefinition726Enum;
 	      else if (strcmp(name,"Outputdefinition727")==0) return Outputdefinition727Enum;
 	      else if (strcmp(name,"Outputdefinition728")==0) return Outputdefinition728Enum;
@@ -2132,10 +2135,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition748")==0) return Outputdefinition748Enum;
 	      else if (strcmp(name,"Outputdefinition749")==0) return Outputdefinition749Enum;
 	      else if (strcmp(name,"Outputdefinition704")==0) return Outputdefinition704Enum;
-         else stage=18;
-   }
-   if(stage==18){
-	      if (strcmp(name,"Outputdefinition750")==0) return Outputdefinition750Enum;
+	      else if (strcmp(name,"Outputdefinition750")==0) return Outputdefinition750Enum;
 	      else if (strcmp(name,"Outputdefinition751")==0) return Outputdefinition751Enum;
 	      else if (strcmp(name,"Outputdefinition752")==0) return Outputdefinition752Enum;
 	      else if (strcmp(name,"Outputdefinition753")==0) return Outputdefinition753Enum;
@@ -2227,7 +2227,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition840")==0) return Outputdefinition840Enum;
 	      else if (strcmp(name,"Outputdefinition841")==0) return Outputdefinition841Enum;
 	      else if (strcmp(name,"Outputdefinition842")==0) return Outputdefinition842Enum;
-	      else if (strcmp(name,"Outputdefinition843")==0) return Outputdefinition843Enum;
+         else stage=19;
+   }
+   if(stage==19){
+	      if (strcmp(name,"Outputdefinition843")==0) return Outputdefinition843Enum;
 	      else if (strcmp(name,"Outputdefinition844")==0) return Outputdefinition844Enum;
 	      else if (strcmp(name,"Outputdefinition845")==0) return Outputdefinition845Enum;
 	      else if (strcmp(name,"Outputdefinition846")==0) return Outputdefinition846Enum;
@@ -2255,10 +2258,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition866")==0) return Outputdefinition866Enum;
 	      else if (strcmp(name,"Outputdefinition867")==0) return Outputdefinition867Enum;
 	      else if (strcmp(name,"Outputdefinition868")==0) return Outputdefinition868Enum;
-         else stage=19;
-   }
-   if(stage==19){
-	      if (strcmp(name,"Outputdefinition869")==0) return Outputdefinition869Enum;
+	      else if (strcmp(name,"Outputdefinition869")==0) return Outputdefinition869Enum;
 	      else if (strcmp(name,"Outputdefinition806")==0) return Outputdefinition806Enum;
 	      else if (strcmp(name,"Outputdefinition870")==0) return Outputdefinition870Enum;
 	      else if (strcmp(name,"Outputdefinition871")==0) return Outputdefinition871Enum;
@@ -2350,7 +2350,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition959")==0) return Outputdefinition959Enum;
 	      else if (strcmp(name,"Outputdefinition905")==0) return Outputdefinition905Enum;
 	      else if (strcmp(name,"Outputdefinition960")==0) return Outputdefinition960Enum;
-	      else if (strcmp(name,"Outputdefinition961")==0) return Outputdefinition961Enum;
+         else stage=20;
+   }
+   if(stage==20){
+	      if (strcmp(name,"Outputdefinition961")==0) return Outputdefinition961Enum;
 	      else if (strcmp(name,"Outputdefinition962")==0) return Outputdefinition962Enum;
 	      else if (strcmp(name,"Outputdefinition963")==0) return Outputdefinition963Enum;
 	      else if (strcmp(name,"Outputdefinition964")==0) return Outputdefinition964Enum;
@@ -2378,10 +2381,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition984")==0) return Outputdefinition984Enum;
 	      else if (strcmp(name,"Outputdefinition985")==0) return Outputdefinition985Enum;
 	      else if (strcmp(name,"Outputdefinition986")==0) return Outputdefinition986Enum;
-         else stage=20;
-   }
-   if(stage==20){
-	      if (strcmp(name,"Outputdefinition987")==0) return Outputdefinition987Enum;
+	      else if (strcmp(name,"Outputdefinition987")==0) return Outputdefinition987Enum;
 	      else if (strcmp(name,"Outputdefinition988")==0) return Outputdefinition988Enum;
 	      else if (strcmp(name,"Outputdefinition989")==0) return Outputdefinition989Enum;
 	      else if (strcmp(name,"Outputdefinition908")==0) return Outputdefinition908Enum;
@@ -2473,7 +2473,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1077")==0) return Outputdefinition1077Enum;
 	      else if (strcmp(name,"Outputdefinition1078")==0) return Outputdefinition1078Enum;
 	      else if (strcmp(name,"Outputdefinition1079")==0) return Outputdefinition1079Enum;
-	      else if (strcmp(name,"Outputdefinition1007")==0) return Outputdefinition1007Enum;
+         else stage=21;
+   }
+   if(stage==21){
+	      if (strcmp(name,"Outputdefinition1007")==0) return Outputdefinition1007Enum;
 	      else if (strcmp(name,"Outputdefinition1080")==0) return Outputdefinition1080Enum;
 	      else if (strcmp(name,"Outputdefinition1081")==0) return Outputdefinition1081Enum;
 	      else if (strcmp(name,"Outputdefinition1082")==0) return Outputdefinition1082Enum;
@@ -2501,10 +2504,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1110")==0) return Outputdefinition1110Enum;
 	      else if (strcmp(name,"Outputdefinition1111")==0) return Outputdefinition1111Enum;
 	      else if (strcmp(name,"Outputdefinition1112")==0) return Outputdefinition1112Enum;
-         else stage=21;
-   }
-   if(stage==21){
-	      if (strcmp(name,"Outputdefinition1113")==0) return Outputdefinition1113Enum;
+	      else if (strcmp(name,"Outputdefinition1113")==0) return Outputdefinition1113Enum;
 	      else if (strcmp(name,"Outputdefinition1114")==0) return Outputdefinition1114Enum;
 	      else if (strcmp(name,"Outputdefinition1115")==0) return Outputdefinition1115Enum;
 	      else if (strcmp(name,"Outputdefinition1116")==0) return Outputdefinition1116Enum;
@@ -2596,7 +2596,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1195")==0) return Outputdefinition1195Enum;
 	      else if (strcmp(name,"Outputdefinition1196")==0) return Outputdefinition1196Enum;
 	      else if (strcmp(name,"Outputdefinition1197")==0) return Outputdefinition1197Enum;
-	      else if (strcmp(name,"Outputdefinition1198")==0) return Outputdefinition1198Enum;
+         else stage=22;
+   }
+   if(stage==22){
+	      if (strcmp(name,"Outputdefinition1198")==0) return Outputdefinition1198Enum;
 	      else if (strcmp(name,"Outputdefinition1199")==0) return Outputdefinition1199Enum;
 	      else if (strcmp(name,"Outputdefinition1109")==0) return Outputdefinition1109Enum;
 	      else if (strcmp(name,"Outputdefinition1200")==0) return Outputdefinition1200Enum;
@@ -2624,10 +2627,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1202")==0) return Outputdefinition1202Enum;
 	      else if (strcmp(name,"Outputdefinition1230")==0) return Outputdefinition1230Enum;
 	      else if (strcmp(name,"Outputdefinition1231")==0) return Outputdefinition1231Enum;
-         else stage=22;
-   }
-   if(stage==22){
-	      if (strcmp(name,"Outputdefinition1232")==0) return Outputdefinition1232Enum;
+	      else if (strcmp(name,"Outputdefinition1232")==0) return Outputdefinition1232Enum;
 	      else if (strcmp(name,"Outputdefinition1233")==0) return Outputdefinition1233Enum;
 	      else if (strcmp(name,"Outputdefinition1234")==0) return Outputdefinition1234Enum;
 	      else if (strcmp(name,"Outputdefinition1235")==0) return Outputdefinition1235Enum;
@@ -2719,7 +2719,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1322")==0) return Outputdefinition1322Enum;
 	      else if (strcmp(name,"Outputdefinition1323")==0) return Outputdefinition1323Enum;
 	      else if (strcmp(name,"Outputdefinition1324")==0) return Outputdefinition1324Enum;
-	      else if (strcmp(name,"Outputdefinition1325")==0) return Outputdefinition1325Enum;
+         else stage=23;
+   }
+   if(stage==23){
+	      if (strcmp(name,"Outputdefinition1325")==0) return Outputdefinition1325Enum;
 	      else if (strcmp(name,"Outputdefinition1326")==0) return Outputdefinition1326Enum;
 	      else if (strcmp(name,"Outputdefinition1327")==0) return Outputdefinition1327Enum;
 	      else if (strcmp(name,"Outputdefinition1328")==0) return Outputdefinition1328Enum;
@@ -2747,10 +2750,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1348")==0) return Outputdefinition1348Enum;
 	      else if (strcmp(name,"Outputdefinition1349")==0) return Outputdefinition1349Enum;
 	      else if (strcmp(name,"Outputdefinition1304")==0) return Outputdefinition1304Enum;
-         else stage=23;
-   }
-   if(stage==23){
-	      if (strcmp(name,"Outputdefinition1350")==0) return Outputdefinition1350Enum;
+	      else if (strcmp(name,"Outputdefinition1350")==0) return Outputdefinition1350Enum;
 	      else if (strcmp(name,"Outputdefinition1351")==0) return Outputdefinition1351Enum;
 	      else if (strcmp(name,"Outputdefinition1352")==0) return Outputdefinition1352Enum;
 	      else if (strcmp(name,"Outputdefinition1353")==0) return Outputdefinition1353Enum;
@@ -2842,7 +2842,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1440")==0) return Outputdefinition1440Enum;
 	      else if (strcmp(name,"Outputdefinition1441")==0) return Outputdefinition1441Enum;
 	      else if (strcmp(name,"Outputdefinition1442")==0) return Outputdefinition1442Enum;
-	      else if (strcmp(name,"Outputdefinition1443")==0) return Outputdefinition1443Enum;
+         else stage=24;
+   }
+   if(stage==24){
+	      if (strcmp(name,"Outputdefinition1443")==0) return Outputdefinition1443Enum;
 	      else if (strcmp(name,"Outputdefinition1444")==0) return Outputdefinition1444Enum;
 	      else if (strcmp(name,"Outputdefinition1445")==0) return Outputdefinition1445Enum;
 	      else if (strcmp(name,"Outputdefinition1446")==0) return Outputdefinition1446Enum;
@@ -2870,10 +2873,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1466")==0) return Outputdefinition1466Enum;
 	      else if (strcmp(name,"Outputdefinition1467")==0) return Outputdefinition1467Enum;
 	      else if (strcmp(name,"Outputdefinition1468")==0) return Outputdefinition1468Enum;
-         else stage=24;
-   }
-   if(stage==24){
-	      if (strcmp(name,"Outputdefinition1469")==0) return Outputdefinition1469Enum;
+	      else if (strcmp(name,"Outputdefinition1469")==0) return Outputdefinition1469Enum;
 	      else if (strcmp(name,"Outputdefinition1406")==0) return Outputdefinition1406Enum;
 	      else if (strcmp(name,"Outputdefinition1470")==0) return Outputdefinition1470Enum;
 	      else if (strcmp(name,"Outputdefinition1471")==0) return Outputdefinition1471Enum;
@@ -2965,7 +2965,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1559")==0) return Outputdefinition1559Enum;
 	      else if (strcmp(name,"Outputdefinition1505")==0) return Outputdefinition1505Enum;
 	      else if (strcmp(name,"Outputdefinition1560")==0) return Outputdefinition1560Enum;
-	      else if (strcmp(name,"Outputdefinition1561")==0) return Outputdefinition1561Enum;
+         else stage=25;
+   }
+   if(stage==25){
+	      if (strcmp(name,"Outputdefinition1561")==0) return Outputdefinition1561Enum;
 	      else if (strcmp(name,"Outputdefinition1562")==0) return Outputdefinition1562Enum;
 	      else if (strcmp(name,"Outputdefinition1563")==0) return Outputdefinition1563Enum;
 	      else if (strcmp(name,"Outputdefinition1564")==0) return Outputdefinition1564Enum;
@@ -2993,10 +2996,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1584")==0) return Outputdefinition1584Enum;
 	      else if (strcmp(name,"Outputdefinition1585")==0) return Outputdefinition1585Enum;
 	      else if (strcmp(name,"Outputdefinition1586")==0) return Outputdefinition1586Enum;
-         else stage=25;
-   }
-   if(stage==25){
-	      if (strcmp(name,"Outputdefinition1587")==0) return Outputdefinition1587Enum;
+	      else if (strcmp(name,"Outputdefinition1587")==0) return Outputdefinition1587Enum;
 	      else if (strcmp(name,"Outputdefinition1588")==0) return Outputdefinition1588Enum;
 	      else if (strcmp(name,"Outputdefinition1589")==0) return Outputdefinition1589Enum;
 	      else if (strcmp(name,"Outputdefinition1508")==0) return Outputdefinition1508Enum;
@@ -3088,7 +3088,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1677")==0) return Outputdefinition1677Enum;
 	      else if (strcmp(name,"Outputdefinition1678")==0) return Outputdefinition1678Enum;
 	      else if (strcmp(name,"Outputdefinition1679")==0) return Outputdefinition1679Enum;
-	      else if (strcmp(name,"Outputdefinition1607")==0) return Outputdefinition1607Enum;
+         else stage=26;
+   }
+   if(stage==26){
+	      if (strcmp(name,"Outputdefinition1607")==0) return Outputdefinition1607Enum;
 	      else if (strcmp(name,"Outputdefinition1680")==0) return Outputdefinition1680Enum;
 	      else if (strcmp(name,"Outputdefinition1681")==0) return Outputdefinition1681Enum;
 	      else if (strcmp(name,"Outputdefinition1682")==0) return Outputdefinition1682Enum;
@@ -3116,10 +3119,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1710")==0) return Outputdefinition1710Enum;
 	      else if (strcmp(name,"Outputdefinition1711")==0) return Outputdefinition1711Enum;
 	      else if (strcmp(name,"Outputdefinition1712")==0) return Outputdefinition1712Enum;
-         else stage=26;
-   }
-   if(stage==26){
-	      if (strcmp(name,"Outputdefinition1713")==0) return Outputdefinition1713Enum;
+	      else if (strcmp(name,"Outputdefinition1713")==0) return Outputdefinition1713Enum;
 	      else if (strcmp(name,"Outputdefinition1714")==0) return Outputdefinition1714Enum;
 	      else if (strcmp(name,"Outputdefinition1715")==0) return Outputdefinition1715Enum;
 	      else if (strcmp(name,"Outputdefinition1716")==0) return Outputdefinition1716Enum;
@@ -3211,7 +3211,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1795")==0) return Outputdefinition1795Enum;
 	      else if (strcmp(name,"Outputdefinition1796")==0) return Outputdefinition1796Enum;
 	      else if (strcmp(name,"Outputdefinition1797")==0) return Outputdefinition1797Enum;
-	      else if (strcmp(name,"Outputdefinition1798")==0) return Outputdefinition1798Enum;
+         else stage=27;
+   }
+   if(stage==27){
+	      if (strcmp(name,"Outputdefinition1798")==0) return Outputdefinition1798Enum;
 	      else if (strcmp(name,"Outputdefinition1799")==0) return Outputdefinition1799Enum;
 	      else if (strcmp(name,"Outputdefinition1709")==0) return Outputdefinition1709Enum;
 	      else if (strcmp(name,"Outputdefinition1800")==0) return Outputdefinition1800Enum;
@@ -3239,10 +3242,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1802")==0) return Outputdefinition1802Enum;
 	      else if (strcmp(name,"Outputdefinition1830")==0) return Outputdefinition1830Enum;
 	      else if (strcmp(name,"Outputdefinition1831")==0) return Outputdefinition1831Enum;
-         else stage=27;
-   }
-   if(stage==27){
-	      if (strcmp(name,"Outputdefinition1832")==0) return Outputdefinition1832Enum;
+	      else if (strcmp(name,"Outputdefinition1832")==0) return Outputdefinition1832Enum;
 	      else if (strcmp(name,"Outputdefinition1833")==0) return Outputdefinition1833Enum;
 	      else if (strcmp(name,"Outputdefinition1834")==0) return Outputdefinition1834Enum;
 	      else if (strcmp(name,"Outputdefinition1835")==0) return Outputdefinition1835Enum;
@@ -3334,7 +3334,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1922")==0) return Outputdefinition1922Enum;
 	      else if (strcmp(name,"Outputdefinition1923")==0) return Outputdefinition1923Enum;
 	      else if (strcmp(name,"Outputdefinition1924")==0) return Outputdefinition1924Enum;
-	      else if (strcmp(name,"Outputdefinition1925")==0) return Outputdefinition1925Enum;
+         else stage=28;
+   }
+   if(stage==28){
+	      if (strcmp(name,"Outputdefinition1925")==0) return Outputdefinition1925Enum;
 	      else if (strcmp(name,"Outputdefinition1926")==0) return Outputdefinition1926Enum;
 	      else if (strcmp(name,"Outputdefinition1927")==0) return Outputdefinition1927Enum;
 	      else if (strcmp(name,"Outputdefinition1928")==0) return Outputdefinition1928Enum;
@@ -3362,10 +3365,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Outputdefinition1948")==0) return Outputdefinition1948Enum;
 	      else if (strcmp(name,"Outputdefinition1949")==0) return Outputdefinition1949Enum;
 	      else if (strcmp(name,"Outputdefinition1904")==0) return Outputdefinition1904Enum;
-         else stage=28;
-   }
-   if(stage==28){
-	      if (strcmp(name,"Outputdefinition1950")==0) return Outputdefinition1950Enum;
+	      else if (strcmp(name,"Outputdefinition1950")==0) return Outputdefinition1950Enum;
 	      else if (strcmp(name,"Outputdefinition1951")==0) return Outputdefinition1951Enum;
 	      else if (strcmp(name,"Outputdefinition1952")==0) return Outputdefinition1952Enum;
 	      else if (strcmp(name,"Outputdefinition1953")==0) return Outputdefinition1953Enum;
@@ -3437,10 +3437,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Balancethickness2Solution")==0) return Balancethickness2SolutionEnum;
 	      else if (strcmp(name,"BalancethicknessAnalysis")==0) return BalancethicknessAnalysisEnum;
 	      else if (strcmp(name,"BalancethicknessApparentMassbalance")==0) return BalancethicknessApparentMassbalanceEnum;
-         else stage=13;
-   }
-   if(stage==13){
-	      if (strcmp(name,"BalancethicknessSoftAnalysis")==0) return BalancethicknessSoftAnalysisEnum;
+	      else if (strcmp(name,"BalancethicknessSoftAnalysis")==0) return BalancethicknessSoftAnalysisEnum;
 	      else if (strcmp(name,"BalancethicknessSoftSolution")==0) return BalancethicknessSoftSolutionEnum;
 	      else if (strcmp(name,"BalancethicknessSolution")==0) return BalancethicknessSolutionEnum;
 	      else if (strcmp(name,"BalancevelocityAnalysis")==0) return BalancevelocityAnalysisEnum;
@@ -3460,7 +3457,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"CalvingHab")==0) return CalvingHabEnum;
 	      else if (strcmp(name,"CalvingLevermann")==0) return CalvingLevermannEnum;
 	      else if (strcmp(name,"CalvingTest")==0) return CalvingTestEnum;
-	      else if (strcmp(name,"CalvingParameterization")==0) return CalvingParameterizationEnum;
+         else stage=29;
+   }
+   if(stage==29){
+	      if (strcmp(name,"CalvingParameterization")==0) return CalvingParameterizationEnum;
 	      else if (strcmp(name,"CalvingCalvingMIP")==0) return CalvingCalvingMIPEnum;
 	      else if (strcmp(name,"CalvingVonmises")==0) return CalvingVonmisesEnum;
 	      else if (strcmp(name,"CalvingVonmisesAD")==0) return CalvingVonmisesADEnum;
@@ -3488,10 +3488,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"ControlInputMaxs")==0) return ControlInputMaxsEnum;
 	      else if (strcmp(name,"ControlInputMins")==0) return ControlInputMinsEnum;
 	      else if (strcmp(name,"ControlInputValues")==0) return ControlInputValuesEnum;
-         else stage=29;
-   }
-   if(stage==29){
-	      if (strcmp(name,"ControlParam")==0) return ControlParamEnum;
+	      else if (strcmp(name,"ControlParam")==0) return ControlParamEnum;
 	      else if (strcmp(name,"CrouzeixRaviart")==0) return CrouzeixRaviartEnum;
 	      else if (strcmp(name,"Cuffey")==0) return CuffeyEnum;
 	      else if (strcmp(name,"CuffeyTemperate")==0) return CuffeyTemperateEnum;
@@ -3563,10 +3560,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"GroundedArea")==0) return GroundedAreaEnum;
 	      else if (strcmp(name,"GroundedAreaScaled")==0) return GroundedAreaScaledEnum;
 	      else if (strcmp(name,"GroundingOnly")==0) return GroundingOnlyEnum;
-         else stage=14;
-   }
-   if(stage==14){
-	      if (strcmp(name,"GroundinglineMassFlux")==0) return GroundinglineMassFluxEnum;
+	      else if (strcmp(name,"GroundinglineMassFlux")==0) return GroundinglineMassFluxEnum;
 	      else if (strcmp(name,"Gset")==0) return GsetEnum;
 	      else if (strcmp(name,"Gsl")==0) return GslEnum;
 	      else if (strcmp(name,"HOApproximation")==0) return HOApproximationEnum;
@@ -3586,7 +3580,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"HydrologySubTime")==0) return HydrologySubTimeEnum;
 	      else if (strcmp(name,"Hydrologydc")==0) return HydrologydcEnum;
 	      else if (strcmp(name,"Hydrologypism")==0) return HydrologypismEnum;
-	      else if (strcmp(name,"Hydrologyshakti")==0) return HydrologyshaktiEnum;
+         else stage=30;
+   }
+   if(stage==30){
+	      if (strcmp(name,"Hydrologyshakti")==0) return HydrologyshaktiEnum;
 	      else if (strcmp(name,"Hydrologyshreve")==0) return HydrologyshreveEnum;
 	      else if (strcmp(name,"IceMass")==0) return IceMassEnum;
 	      else if (strcmp(name,"IceMassScaled")==0) return IceMassScaledEnum;
@@ -3614,10 +3611,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"L2ProjectionBaseAnalysis")==0) return L2ProjectionBaseAnalysisEnum;
 	      else if (strcmp(name,"L2ProjectionEPLAnalysis")==0) return L2ProjectionEPLAnalysisEnum;
 	      else if (strcmp(name,"LACrouzeixRaviart")==0) return LACrouzeixRaviartEnum;
-         else stage=30;
-   }
-   if(stage==30){
-	      if (strcmp(name,"LATaylorHood")==0) return LATaylorHoodEnum;
+	      else if (strcmp(name,"LATaylorHood")==0) return LATaylorHoodEnum;
 	      else if (strcmp(name,"LambdaS")==0) return LambdaSEnum;
 	      else if (strcmp(name,"LevelsetAnalysis")==0) return LevelsetAnalysisEnum;
 	      else if (strcmp(name,"LevelsetfunctionPicard")==0) return LevelsetfunctionPicardEnum;
@@ -3689,10 +3683,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Mumps")==0) return MumpsEnum;
 	      else if (strcmp(name,"NoFrictionOnPartiallyFloating")==0) return NoFrictionOnPartiallyFloatingEnum;
 	      else if (strcmp(name,"NoMeltOnPartiallyFloating")==0) return NoMeltOnPartiallyFloatingEnum;
-         else stage=15;
-   }
-   if(stage==15){
-	      if (strcmp(name,"Nodal")==0) return NodalEnum;
+	      else if (strcmp(name,"Nodal")==0) return NodalEnum;
 	      else if (strcmp(name,"Nodalvalue")==0) return NodalvalueEnum;
 	      else if (strcmp(name,"NodeSId")==0) return NodeSIdEnum;
 	      else if (strcmp(name,"NoneApproximation")==0) return NoneApproximationEnum;
@@ -3712,7 +3703,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"P0Array")==0) return P0ArrayEnum;
 	      else if (strcmp(name,"P0DG")==0) return P0DGEnum;
 	      else if (strcmp(name,"P1DG")==0) return P1DGEnum;
-	      else if (strcmp(name,"P1P1")==0) return P1P1Enum;
+         else stage=31;
+   }
+   if(stage==31){
+	      if (strcmp(name,"P1P1")==0) return P1P1Enum;
 	      else if (strcmp(name,"P1P1GLS")==0) return P1P1GLSEnum;
 	      else if (strcmp(name,"P1bubble")==0) return P1bubbleEnum;
 	      else if (strcmp(name,"P1bubblecondensed")==0) return P1bubblecondensedEnum;
@@ -3745,10 +3739,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SMBdebrisEvatt")==0) return SMBdebrisEvattEnum;
 	      else if (strcmp(name,"SMBd18opdd")==0) return SMBd18opddEnum;
 	      else if (strcmp(name,"SMBforcing")==0) return SMBforcingEnum;
-         else stage=31;
-   }
-   if(stage==31){
-	      if (strcmp(name,"SMBgcm")==0) return SMBgcmEnum;
+	      else if (strcmp(name,"SMBgcm")==0) return SMBgcmEnum;
 	      else if (strcmp(name,"SMBgemb")==0) return SMBgembEnum;
 	      else if (strcmp(name,"SMBgradients")==0) return SMBgradientsEnum;
 	      else if (strcmp(name,"SMBgradientscomponents")==0) return SMBgradientscomponentsEnum;
@@ -3815,16 +3806,14 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"TotalFloatingBmb")==0) return TotalFloatingBmbEnum;
 	      else if (strcmp(name,"TotalFloatingBmbScaled")==0) return TotalFloatingBmbScaledEnum;
 	      else if (strcmp(name,"TotalGroundedBmb")==0) return TotalGroundedBmbEnum;
-         else stage=16;
-   }
-   if(stage==16){
-	      if (strcmp(name,"TotalGroundedBmbScaled")==0) return TotalGroundedBmbScaledEnum;
+	      else if (strcmp(name,"TotalGroundedBmbScaled")==0) return TotalGroundedBmbScaledEnum;
 	      else if (strcmp(name,"TotalSmb")==0) return TotalSmbEnum;
 	      else if (strcmp(name,"TotalSmbScaled")==0) return TotalSmbScaledEnum;
 	      else if (strcmp(name,"TotalSmbRefreeze")==0) return TotalSmbRefreezeEnum;
 	      else if (strcmp(name,"TotalSmbMelt")==0) return TotalSmbMeltEnum;
 	      else if (strcmp(name,"TransientArrayParam")==0) return TransientArrayParamEnum;
 	      else if (strcmp(name,"TransientInput")==0) return TransientInputEnum;
+	      else if (strcmp(name,"TransientFileInput")==0) return TransientFileInputEnum;
 	      else if (strcmp(name,"TransientParam")==0) return TransientParamEnum;
 	      else if (strcmp(name,"TransientSolution")==0) return TransientSolutionEnum;
 	      else if (strcmp(name,"Tria")==0) return TriaEnum;
@@ -3837,7 +3826,10 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"VertexSId")==0) return VertexSIdEnum;
 	      else if (strcmp(name,"Vertices")==0) return VerticesEnum;
 	      else if (strcmp(name,"ViscousHeating")==0) return ViscousHeatingEnum;
-	      else if (strcmp(name,"Water")==0) return WaterEnum;
+         else stage=32;
+   }
+   if(stage==32){
+	      if (strcmp(name,"Water")==0) return WaterEnum;
 	      else if (strcmp(name,"XTaylorHood")==0) return XTaylorHoodEnum;
 	      else if (strcmp(name,"XY")==0) return XYEnum;
 	      else if (strcmp(name,"XYZ")==0) return XYZEnum;
@@ -3859,7 +3851,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"TimesteppingTimeAdapt")==0) return TimesteppingTimeAdaptEnum;
 	      else if (strcmp(name,"TriangleInterp")==0) return TriangleInterpEnum;
 	      else if (strcmp(name,"MaximumNumberOfDefinitions")==0) return MaximumNumberOfDefinitionsEnum;
-         else stage=32;
+         else stage=33;
    }
 	/*If we reach this point, the string provided has not been found*/
 	if(notfounderror)

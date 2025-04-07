@@ -687,6 +687,19 @@ void Inputs::GetInputValue(IssmDouble* pvalue,int enum_in,int index){/*{{{*/
 	input->GetInput(pvalue,index);
 
 }/*}}}*/
+bool Inputs::IsFileInputUpdate(IssmDouble time){/*{{{*/
+
+	for(int i=0;i<NUMINPUTS;i++){
+		if(this->inputs[i]){
+			if(this->inputs[i]->ObjectEnum()==TransientFileInputEnum){
+				TransientFileInput* input = xDynamicCast<TransientFileInput*>(this->inputs[i]);
+				if(input->IsFileInputUpdate(time)) return true;
+			}
+		}
+	}
+
+	return false;
+}/*}}}*/
 void Inputs::ResultInterpolation(int* pinterpolation,int* pnodesperelement,int* parray_size, int output_enum){/*{{{*/
 
 	/*Get input */

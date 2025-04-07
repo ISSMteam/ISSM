@@ -3723,6 +3723,7 @@ const char* EnumToStringx(int en){
 		case TotalSmbMeltEnum : return "TotalSmbMelt";
 		case TransientArrayParamEnum : return "TransientArrayParam";
 		case TransientInputEnum : return "TransientInput";
+		case TransientFileInputEnum : return "TransientFileInput";
 		case TransientParamEnum : return "TransientParam";
 		case TransientSolutionEnum : return "TransientSolution";
 		case TriaEnum : return "Tria";

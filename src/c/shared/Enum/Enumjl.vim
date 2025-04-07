@@ -3714,6 +3714,7 @@ syn keyword juliaConstC TotalSmbRefreezeEnum
 syn keyword juliaConstC TotalSmbMeltEnum
 syn keyword juliaConstC TransientArrayParamEnum
 syn keyword juliaConstC TransientInputEnum
+syn keyword juliaConstC TransientFileInputEnum
 syn keyword juliaConstC TransientParamEnum
 syn keyword juliaConstC TransientSolutionEnum
 syn keyword juliaConstC TriaEnum
