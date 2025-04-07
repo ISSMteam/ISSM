@@ -203,25 +203,6 @@ void ControlInput::SetGradient(int interp,int numindices,int* indices,IssmDouble
 	_assert_(this->gradient);
 	_error_("S");
 
-	//TransientInput* transient_input = xDynamicCast<TransientInput*>(this->gradient);
-	//TransientInput* values_input    = xDynamicCast<TransientInput*>(this->values);
-	//if(values_input->numtimesteps==transient_input->numtimesteps){
-	//	TransientInput* new_trans_input = new TransientInput(ControlInputGradEnum);
-	//	IssmDouble time = transient_input->GetTimeByOffset(timestep);
-	//	for(int i=0;i<transient_input->numtimesteps;i++){
-	//		if(transient_input->timesteps[i]==time) new_trans_input->AddTimeInput(xDynamicCast<TriaInput*>(gradient_in),time);
-	//		else {
-	//			Input* input = transient_input->GetTimeInput(transient_input->timesteps[i]);
-	//			new_trans_input->AddTimeInput(xDynamicCast<TriaInput*>(input),transient_input->timesteps[i]);
-	//		}
-	//	}
-	//	this->gradient=new_trans_input;
-	//}
-	//else{
-	//	IssmDouble time = values_input->GetTimeByOffset(timestep);
-	//	transient_input->AddTimeInput(gradient_in,time);
-	//}
-
 	//NEW??
 	//this->gradient->SetInput(interp,numindices,indices,values_in);
 }
