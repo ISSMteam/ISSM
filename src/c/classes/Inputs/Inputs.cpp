@@ -20,6 +20,7 @@
 #include "./TriaInput.h"
 #include "./PentaInput.h"
 #include "./TransientInput.h"
+#include "./TransientFileInput.h"
 #include "./ControlInput.h"
 #include "./DatasetInput.h"
 #include "./ArrayInput.h"
