@@ -3226,7 +3226,7 @@ void FemModel::UpdateConstraintsx(void){ /*{{{*/
 	NodesDofx(nodes,parameters);
 
 	/*Update FileInputs if need be*/
-	if(femmodel->inputs->IsFileInputUpdate(time)){
+	if(this->inputs->IsFileInputUpdate(time)){
 		_error_("not implemented yet");
 	}
 
