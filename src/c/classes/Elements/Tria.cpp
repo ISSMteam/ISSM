@@ -1191,7 +1191,18 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 	}
 	/*Add input*/
 	this->AddInput(CalvingCalvingrateEnum,&calvingrate[0],P1DGEnum);
-	this->CalvingRateToVector();
+	switch (experiment) {
+		case 1:
+		case 3:
+			this->CalvingRateToVector(true);
+			break;
+		case 2:
+		case 4:
+			this->CalvingRateToVector(false);
+			break;
+		default:
+			_error_("The experiment is not supported yet!");
+	}
 }
 /*}}}*/
 IssmDouble Tria::CharacteristicLength(void){/*{{{*/
