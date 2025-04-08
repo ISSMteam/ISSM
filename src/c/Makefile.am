@@ -627,42 +627,6 @@ endif
 endif
 #}}}
 # Wrapper sources
-# Kml sources {{{
-kml_sources = \
-	./modules/Exp2Kmlx/Exp2Kmlx.cpp \
-	./modules/Kml2Expx/Kml2Expx.cpp \
-	./modules/Shp2Kmlx/Shp2Kmlx.cpp \
-	./modules/KMLFileReadx/KMLFileReadx.cpp \
-	./modules/KMLMeshWritex/KMLMeshWritex.cpp \
-	./modules/KMLOverlayx/KMLOverlayx.cpp \
-	./kml/KML_Attribute.cpp \
-	./kml/KML_Comment.cpp \
-	./kml/KML_ColorStyle.cpp \
-	./kml/KML_Container.cpp \
-	./kml/KML_Document.cpp \
-	./kml/KML_Feature.cpp \
-	./kml/KML_File.cpp \
-	./kml/KML_Folder.cpp \
-	./kml/KML_Geometry.cpp \
-	./kml/KML_GroundOverlay.cpp \
-	./kml/KML_Icon.cpp \
-	./kml/KML_LatLonBox.cpp \
-	./kml/KML_LinearRing.cpp \
-	./kml/KML_LineString.cpp \
-	./kml/KML_LineStyle.cpp \
-	./kml/KML_MultiGeometry.cpp \
-	./kml/KML_Object.cpp \
-	./kml/KML_Overlay.cpp \
-	./kml/KML_Point.cpp \
-	./kml/KML_Placemark.cpp \
-	./kml/KML_Polygon.cpp \
-	./kml/KML_PolyStyle.cpp \
-	./kml/KML_Style.cpp \
-	./kml/KML_StyleSelector.cpp \
-	./kml/KML_SubStyle.cpp \
-	./kml/KML_Unknown.cpp \
-	./kml/KMLFileReadUtils.cpp
-#}}}
 # NEOPZ sources {{{
 neopz_sources = ./classes/AmrNeopz.cpp
 #}}}
@@ -762,9 +726,6 @@ libISSMModules_la_SOURCES = $(modules_sources)
 libISSMModules_la_SOURCES += $(bamg_sources)
 if KRIGING
 libISSMModules_la_SOURCES += $(kriging_sources)
-endif
-if KML
-libISSMModules_la_SOURCES += $(kml_sources)
 endif
 
 libISSMModules_la_CXXFLAGS = $(ALL_CXXFLAGS)

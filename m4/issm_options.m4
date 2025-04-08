@@ -2433,22 +2433,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AM_CONDITIONAL([OCEAN], [test "x${HAVE_OCEAN}" == "xyes"])
 	AC_MSG_RESULT([${HAVE_OCEAN}])
 	dnl }}}
-	dnl with-kml{{{
-	AC_MSG_CHECKING(for kml capability compilation)
-	AC_ARG_WITH(
-		[kml],
-		AS_HELP_STRING([--with-kml=YES], [compile with kml capabilities (default: no)]),
-		[KML=${withval}],
-		[KML=no]
-	)
-	HAVE_KML=no
-	if test "x${KML}" == "xyes"; then
-		HAVE_KML=yes
-		AC_DEFINE([_HAVE_KML_], [1], [with kml capability])
-	fi
-	AM_CONDITIONAL([KML], [test "x${HAVE_KML}" == "xyes"])
-	AC_MSG_RESULT([${HAVE_KML}])
-	dnl }}}
 	dnl with-kriging{{{
 	AC_MSG_CHECKING(for kriging capability compilation)
 	AC_ARG_WITH(
