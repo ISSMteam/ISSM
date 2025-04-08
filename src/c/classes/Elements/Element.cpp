@@ -271,6 +271,9 @@ void       Element::BasinLinearFloatingiceMeltingRate(IssmDouble* deepwaterel,Is
    this->AddInput(BasalforcingsFloatingiceMeltingRateEnum,&values[0],P1Enum);
 }/*}}}*/
 void       Element::CalvingRateToVector(){/*{{{*/
+	this->CalvingRateToVector(false);
+}/*}}}*/
+void       Element::CalvingRateToVector(bool isvelvector){/*{{{*/
 
 	/*We are provided a calving rate, figure out the x/y components*/
 	int         dim,domaintype;
@@ -312,7 +315,7 @@ void       Element::CalvingRateToVector(){/*{{{*/
 		vel=sqrt(vx*vx + vy*vy) + 1e-14;
 		dphi=sqrt(dphidx*dphidx+dphidy*dphidy)+ 1e-14;
 
-		if(false){
+		if(isvelvector){
 			/*Velocity direction*/
 			calvingratex[iv] = c*vx/vel;
          calvingratey[iv] = c*vy/vel;
