@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <float.h>/*  DBL_EPSILON  */
 #include "../cores/cores.h"
 #include "../shared/io/io.h"
 #include "./classes.h"
