@@ -27,7 +27,6 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/interp/*.m \
 	${ISSM_DIR}/src/m/inversions/*.m \
 	${ISSM_DIR}/src/m/io/*.m \
-	${ISSM_DIR}/src/m/kml/*.m \
 	${ISSM_DIR}/src/m/materials/*.m \
 	${ISSM_DIR}/src/m/mech/*.m \
 	${ISSM_DIR}/src/m/mesh/*.m \
