@@ -7,6 +7,8 @@ function rigidity=paterson(temperature)
 %   Usage:
 %      rigidity=paterson(temperature)
 
+warning('paterson is outdated, please consider using cuffey instead')
+
 if any(temperature<0)
 	error('input temperature should be in Kelvin (positive)');
 end
