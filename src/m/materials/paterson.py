@@ -13,6 +13,8 @@ def paterson(temperature):
         rigidity = paterson(temperature)
     """
 
+    print('paterson is outdated, please consider using cuffey instead')
+
     if np.any(temperature < 0.0):
         raise RuntimeError('input temperature should be in Kelvin (positive)')
 
