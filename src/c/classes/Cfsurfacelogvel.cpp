@@ -10,6 +10,7 @@
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
 
+#include <float.h> /*defines DBL_EPSILON*/
 #include "./classes.h"
 #include "./ExternalResults/ExternalResult.h"
 #include "./ExternalResults/Results.h"
@@ -142,7 +143,7 @@ IssmDouble Cfsurfacelogvel::Cfsurfacelogvel_Calculation(Element* element, int de
 
 	int        domaintype,numcomponents;
 	IssmDouble Jelem=0.;
-	IssmDouble epsvel=2.220446049250313e-16;
+	IssmDouble epsvel=DBL_EPSILON;
 	IssmDouble meanvel=3.170979198376458e-05; /*1000 m/yr*/
 	IssmDouble velocity_mag,obs_velocity_mag;
 	IssmDouble misfit,Jdet;
