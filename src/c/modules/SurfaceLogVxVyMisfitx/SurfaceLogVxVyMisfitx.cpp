@@ -2,8 +2,8 @@
  * \brief: compute misfit between observations and model
  */
 
+#include <float.h> /*defines DBL_EPSILON*/
 #include "./SurfaceLogVxVyMisfitx.h"
-
 #include "../../shared/shared.h"
 #include "../../toolkits/toolkits.h"
 #include "../../classes/Inputs/DatasetInput.h"
@@ -33,7 +33,7 @@ IssmDouble SurfaceLogVxVyMisfit(Element* element){
 
 	int        domaintype,numcomponents;
 	IssmDouble Jelem=0.;
-	IssmDouble epsvel=2.220446049250313e-16;
+	IssmDouble epsvel=DBL_EPSILON;
 	IssmDouble meanvel=3.170979198376458e-05; /*1000 m/yr*/
 	IssmDouble misfit,Jdet;
 	IssmDouble vx,vy,vxobs,vyobs,weight;

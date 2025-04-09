@@ -10,6 +10,7 @@
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
 
+#include <float.h> /*defines DBL_EPSILON*/
 #include "shared/shared.h"
 #include "../classes.h"
 /*}}}*/	
@@ -17,9 +18,7 @@
 /*Macros*/
 #define NUMNODES    2
 #define NUMVERTICES 2
-
 #define C_W         4.22e3   /*specific heat capacity of water (J/kg/K)*/
-#define AEPS        2.2204460492503131E-015
 
 /*Channel constructors and destructor*/
 Channel::Channel(){/*{{{*/
@@ -440,13 +439,13 @@ ElementMatrix* Channel::CreateKMatrixHydrologyGlaDS(void){/*{{{*/
 		dphids  = dphi[0]*tx + dphi[1]*ty;
 		dphimds = rho_water*g*(db[0]*tx + db[1]*ty);
 		Ngrad   = fabs(dphids);
-		if(Ngrad<AEPS) Ngrad = AEPS;
+		if(Ngrad<DBL_EPSILON) Ngrad = DBL_EPSILON;
 
 		/*Compute the effective conductivity Kc = k h^alpha |grad Phi|^{beta-2} (same for sheet) and use transition model if specified*/
 		IssmDouble Kc;
 		IssmDouble Ks;
 		IssmDouble nu = mu_water/rho_water;
-		if(istransition==1 && omega>=AEPS){
+		if(istransition==1 && omega>=DBL_EPSILON){
 			IssmDouble hratio = h/h_r;
 			IssmDouble coarg = 1. + 4.*omega*pow(hratio,3-2*alpha_s)*ks*pow(h,3)*Ngrad/nu;
 			Ks = nu/2./omega*pow(hratio,2*alpha_s-3) * (-1 + pow(coarg, 0.5))/Ngrad;
@@ -599,11 +598,11 @@ ElementVector* Channel::CreatePVectorHydrologyGlaDS(void){/*{{{*/
 		dphids  = dphi[0]*tx + dphi[1]*ty;
 		dphimds = rho_water*g*(db[0]*tx + db[1]*ty);
 		Ngrad   = fabs(dphids);
-		if(Ngrad<AEPS) Ngrad = AEPS;
+		if(Ngrad<DBL_EPSILON) Ngrad = DBL_EPSILON;
 
 		/*Approx. discharge in the sheet flowing folwing in the direction of the channel ofver a width lc, use transition model if specified*/
 		IssmDouble Ks;
-		if (istransition==1 && omega>=AEPS){
+		if (istransition==1 && omega>=DBL_EPSILON){
 		IssmDouble hratio = h/h_r;
 			IssmDouble nu = mu_water/rho_water;
 			IssmDouble coarg = 1. + 4.*omega*pow(hratio,3-2*alpha_s)*ks*pow(h,3)*Ngrad/nu;
@@ -746,14 +745,14 @@ void           Channel::UpdateChannelCrossSection(void){/*{{{*/
 	dphids  = dphi[0]*tx + dphi[1]*ty;
 	dphimds = rho_water*g*(db[0]*tx + db[1]*ty);
 	Ngrad   = fabs(dphids);
-	if(Ngrad<AEPS) Ngrad = AEPS;
+	if(Ngrad<DBL_EPSILON) Ngrad = DBL_EPSILON;
 
 	/*d(phi - phi_m)/ds*/
 	IssmDouble dPw = dphids - dphimds;
 
 	/*Approx. discharge in the sheet flowing folwing in the direction of the channel ofver a width lc, use transition model if necessary*/
 	IssmDouble qc;
-	if (istransition==1 && omega>=AEPS){
+	if (istransition==1 && omega>=DBL_EPSILON){
 	IssmDouble hratio = h/h_r;
 		IssmDouble nu = mu_water/rho_water;
 		IssmDouble coarg = 1. + 4.*omega*pow(hratio,3-2*alpha_s)*ks*pow(h,3)*fabs(Ngrad)/nu;
@@ -806,7 +805,7 @@ void           Channel::UpdateChannelCrossSection(void){/*{{{*/
 
 		count++;
 
-		if(fabs((this->S - Snew)/(Snew+AEPS))<1e-8  || count>=10) converged = true;
+		if(fabs((this->S - Snew)/(Snew+DBL_EPSILON))<1e-8  || count>=10) converged = true;
 	}
 
 	/*Compute new channel discharge for output only*/
