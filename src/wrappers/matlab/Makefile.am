@@ -130,6 +130,9 @@ endif
 
 if !STANDALONE_LIBRARIES
 if MAC
+if BOOST
+AM_LDFLAGS += -Wl,-rpath,$(BOOSTROOT)/lib
+endif
 if PROJ
 AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
 endif
