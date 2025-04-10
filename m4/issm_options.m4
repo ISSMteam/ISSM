@@ -470,6 +470,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		else
 			export CXXFLAGS="${CXXFLAGS} -Wno-deprecated"
 		fi
+		BOOSTROOT="${BOOST_ROOT}"
 		BOOSTINCL="-I${BOOST_ROOT}/include"
 		#BOOSTLIB="-L$BOOST_ROOT/lib -lboost_python"
 		AC_MSG_CHECKING(for Boost version)
@@ -478,6 +479,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		BOOST_VERSION_MINOR=`expr ${BOOST_VERSION} / 100 % 1000`
 		AC_MSG_RESULT([${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}])
 		AC_DEFINE([_HAVE_BOOST_], [1], [with Boost in ISSM src])
+		AC_SUBST([BOOSTROOT])
 		AC_SUBST([BOOSTINCL])
 		AC_SUBST([BOOSTLIB])
 	fi
@@ -1621,6 +1623,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 	fi
 	AC_MSG_RESULT([${HAVE_PROJ}])
+	AM_CONDITIONAL([PROJ], [test "x${HAVE_PROJ}" == "xyes"])
 
 	dnl PROJ libraries and header files
 	if test "x${HAVE_PROJ}" == "xyes"; then
@@ -1632,7 +1635,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([PROJINCL])
 		AC_SUBST([PROJLIB])
 	fi
-	AM_CONDITIONAL([PROJ], [test "x${HAVE_PROJ}" == "xyes"])
 	dnl }}}
 	dnl shapelib{{{
 	AC_MSG_CHECKING([for shapelib])

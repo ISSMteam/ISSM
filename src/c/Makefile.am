@@ -798,6 +798,9 @@ endif
 
 if !STANDALONE_LIBRARIES
 if MAC
+if BOOST
+libISSMCore_la_LDFLAGS += -Wl,-rpath,$(BOOSTROOT)/lib
+endif
 if PROJ
 libISSMCore_la_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
 endif
