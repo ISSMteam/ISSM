@@ -922,7 +922,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 					thickness_input->GetInputValue(&thickness,gauss);
 					surface_input->GetInputValue(&surface,gauss);
 
-					if((surface_crevasse>surface || crevassedepth>crevasse_threshold*thickness) && bed<0.){
+					if((surface_crevasse>surface || crevassedepth>(crevasse_threshold*thickness)-1e-10) && bed<0.){
 						vec_constraint_nodes->SetValue(node->Pid(),1.0,INS_VAL);
 					}
 				}
@@ -972,7 +972,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 						surface_input->GetInputValue(&surface,gauss);
 
                   /*FIXME: not sure about levelset<0. && fabs(levelset)>-mig_max*dt! SHould maybe be distance<mig_max*dt*/
-                  if((surface_crevasse>surface || crevassedepth>crevasse_threshold*thickness) && bed<0. && levelset<0. && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
+                  if((surface_crevasse>surface || crevassedepth>(crevasse_threshold*thickness-1e-10)) && bed<0. && levelset<0. && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
 							local_nflipped++;
 							vec_constraint_nodes->SetValue(node->Pid(),1.0,INS_VAL);
 						}
