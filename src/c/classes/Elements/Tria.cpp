@@ -559,12 +559,17 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 		else if(crevasse_opening_stress==2){
 			/*Coffey 2024, Buttressing based */
 			Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
-			if ((straineffective <= 0.) || (thickness <= 0.) || (n<=0.)) vH = 1e14;
-			else {
+			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
+			n_input->GetInputValue(&n,&gauss);
+			B_input->GetInputValue(&B,&gauss);
+			if((straineffective <= 0.) || (thickness <= 0.) || (n<=0.)){
+				vH = 1e14;
+			}
+			else{
 				vH = 0.5*B/thickness*pow(straineffective, (1./n)-1);
 			}
 			Kmax = 1 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
-			if (Kmax<0.) Kmax = 0.0;
+			if(Kmax<0.) Kmax = 0.0;
 		}
 		else{
 			_error_("not supported");
@@ -572,8 +577,8 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 
 		if(crevasse_opening_stress==2) {
 			/*Coffey 2024, Buttressing based */
-			surface_crevasse[iv] = thickness*(1.0-rho_ice/rho_seawater)*(1.0-sqrt(Kmax));
-			basal_crevasse[iv] = thickness*(rho_ice/rho_seawater)*(1.0-sqrt(Kmax));
+			surface_crevasse[iv] = thickness*(1.0-rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
+			basal_crevasse[iv]   = thickness*(rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
 			//_printf0_(Kmax<<", "<<basal_crevasse[iv]<<", "<<surface_crevasse[iv]<<endl);
 		}
 		else {
@@ -591,10 +596,10 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 			}
 		}
 
-		if (surface_crevasse[iv]<0.) surface_crevasse[iv]=0.;
-		if (basal_crevasse[iv]<0.) basal_crevasse[iv]=0.;
-		/*Total crevasse depth (surface + basal)*/
-		crevasse_depth[iv]   = surface_crevasse[iv] + basal_crevasse[iv];
+		/*crevasse depths (total = surface + basal)*/
+		if(surface_crevasse[iv]<0.) surface_crevasse[iv]=0.;
+		if(basal_crevasse[iv]<0.)   basal_crevasse[iv]=0.;
+		crevasse_depth[iv]  = surface_crevasse[iv] + basal_crevasse[iv];
 	}
 
 	this->AddInput(SurfaceCrevasseEnum,&surface_crevasse[0],P1DGEnum);
