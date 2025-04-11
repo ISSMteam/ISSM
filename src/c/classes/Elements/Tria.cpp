@@ -562,13 +562,13 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
 			n_input->GetInputValue(&n,&gauss);
 			B_input->GetInputValue(&B,&gauss);
-			if((straineffective <= 0.) || (thickness <= 0.) || (n<=0.)){
+			if((straineffective <= 0.) || (thickness <= 0.) ){
 				vH = 1e14;
 			}
 			else{
 				vH = 0.5*B/thickness*pow(straineffective, (1./n)-1);
 			}
-			Kmax = 1 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
+			Kmax = 1.0 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
 			if(Kmax<0.) Kmax = 0.0;
 		}
 		else{
