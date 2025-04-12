@@ -4,7 +4,6 @@ from parseresultsfromdisk import parseresultsfromdisk
 from postqmu import postqmu
 from results import results
 
-
 def loadresultsfromdisk(md, filename):
     """LOADRESULTSFROMDISK - load results of solution sequence from disk file
     "filename"
@@ -21,12 +20,12 @@ def loadresultsfromdisk(md, filename):
 
         # Check that file exists
         if not os.path.exists(filename):
-            err_msg = '============================================================\n'
-            err_msg += '   Binary file {} not found                                 \n'.format(filename)
-            err_msg += '                                                            \n'
-            err_msg += '   This typically happens when the run crashed.             \n'
-            err_msg += '   Please check for error messages above or in the outlog   \n'
-            err_msg += '============================================================\n'
+            err_msg = '==========================================================================\n'
+            err_msg += '   Binary file {} not found                                              \n'.format(filename)
+            err_msg += '                                                                         \n'
+            err_msg += '   This typically results from an error encountered during the simulation\n'
+            err_msg += '   Please check for error messages above or in the outlog                \n'
+            err_msg += '=========================================================================\n'
             print(err_msg)
             return
 
