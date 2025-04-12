@@ -604,7 +604,9 @@ void CreateNodes(Nodes* nodes, IoModel* iomodel,int analysis,int finite_element,
 		int *vertex_pairing = NULL;
 		int  numvertex_pairing;
 		iomodel->FetchData(&vertex_pairing,&numvertex_pairing,NULL,"md.stressbalance.vertex_pairing");
-		_assert_(numvertex_pairing==0 || finite_element==P1Enum);
+		if(numvertex_pairing>0){
+			if(finite_element!=P1Enum) _error_("Periodic boundary conditions only implemented for linear elements");
+		}
 		for(int i=0;i<numvertex_pairing;i++){
 			int nid1 = vertex_pairing[2*i+0]-1;
 			int nid2 = vertex_pairing[2*i+1]-1;
