@@ -754,7 +754,7 @@ template <> inline void GenericExternalResult<IssmComplex*>::WriteData(FILE* fid
 	template <> inline Object* GenericExternalResult<Vector<IssmPDouble>*>::copy(void){ /*{{{*/
 		return new GenericExternalResult<Vector<IssmPDouble>*>(this->id,StringToEnumx(this->result_name),this->value,this->step,this->time);
 	} /*}}}*/
-#if defined(_HAVE_AD_) && !defined(_WRAPPERS_)  //We hook off this specific specialization when not running ADOLC, otherwise we get a redeclaration with the next specialization. 
+#if defined(_HAVE_AD_) && !defined(_WRAPPERS_)  //We hook off this specific specialization when not running ADOLC, otherwise we get a redeclaration with the next specialization.
 	template <> inline void GenericExternalResult<Vector<IssmPDouble>*>::WriteData(FILE* fid,bool io_gather){ /*{{{*/
 
 		char *name   = NULL;

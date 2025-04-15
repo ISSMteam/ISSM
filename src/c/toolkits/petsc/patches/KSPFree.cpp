@@ -11,7 +11,9 @@
 /*Petsc includes: */
 #include <petscksp.h>
 
-void KSPFree(KSP* pksp){
+#include "./petscpatches.h"
+
+void KSPFree(PKSP* pksp){
 
 	#if PETSC_VERSION_LT(3,2,0)
 	if(*pksp)KSPDestroy(*pksp);
