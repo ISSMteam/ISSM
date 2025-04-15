@@ -204,6 +204,9 @@ class IssmMat{
 		void Echo(void){  /*{{{*/
 			matrix->Echo();
 		} /*}}}*/
+		void EchoDebug(std::string message){  /*{{{*/
+			matrix->EchoDebug(message);
+		} /*}}}*/
 		void Assemble(void){  /*{{{*/
 			matrix->Assemble();
 		} /*}}}*/

@@ -71,32 +71,6 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 
 	/*Free resources: */
 	xDelete<char>(options);
-
-	#elif _HAVE_CODIPACK_
-	/*initialize a placeholder to store solver pointers*/
-	/*Solver pointers depend on what type of solver we are implementing: */
-	options=OptionsFromAnalysis(&toolkit,parameters,DefaultAnalysisEnum);
-	ToolkitOptions::Init(toolkit,options);
-	xDelete<char>(toolkit);
-
-	switch(IssmSolverTypeFromToolkitOptions()){
-		case MumpsEnum:{
-								#ifndef _HAVE_MUMPS_
-								_error_("CoDiPack: requesting mumps solver without MUMPS being compiled in!");
-								#endif
-								break;
-							}
-		case GslEnum: {
-							  #ifndef _HAVE_GSL_
-							  _error_("CoDiPack: requesting GSL solver without GSL being compiled in!");
-							  #endif
-							  break;
-						  }
-		default:
-						_error_("solver type not supported yet!");
-	}
-	/*Free resources: */
-	xDelete<char>(options);
 	#endif
 
 	if(isautodiff){

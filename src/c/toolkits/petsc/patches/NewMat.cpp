@@ -16,10 +16,10 @@
 #include "../../mpi/issmmpi.h"
 
 /*NewMat(int M,int N){{{*/
-Mat NewMat(int M,int N,ISSM_MPI_Comm comm){
+PMat NewMat(int M,int N,ISSM_MPI_Comm comm){
 
 	/*output:*/
-	Mat outmatrix=NULL;
+	PMat outmatrix=NULL;
 
 	/*parameters: */
 	double sparsity=0.001; //default
@@ -44,10 +44,10 @@ Mat NewMat(int M,int N,ISSM_MPI_Comm comm){
 }
 /*}}}*/
 /*NewMat(int M,int N,double sparsity,ISSM_MPI_Comm comm){{{*/
-Mat NewMat(int M,int N,double sparsity,ISSM_MPI_Comm comm){
+PMat NewMat(int M,int N,double sparsity,ISSM_MPI_Comm comm){
 
 	/*output:*/
-	Mat outmatrix=NULL;
+	PMat outmatrix=NULL;
 
 	/*parameters: */
 	int    m,n;
@@ -77,10 +77,10 @@ Mat NewMat(int M,int N,double sparsity,ISSM_MPI_Comm comm){
 }
 /*}}}*/
 /*NewMat(int M,int N,int connectivity,int numberofdofspernode){{{*/
-Mat NewMat(int M,int N,int connectivity,int numberofdofspernode,ISSM_MPI_Comm comm){
+PMat NewMat(int M,int N,int connectivity,int numberofdofspernode,ISSM_MPI_Comm comm){
 
 	/*output:*/
-	Mat outmatrix=NULL;
+	PMat outmatrix=NULL;
 
 	/*parameters: */
 	int    m,n;
