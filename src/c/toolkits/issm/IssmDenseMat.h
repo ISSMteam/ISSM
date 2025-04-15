@@ -122,6 +122,9 @@ class IssmDenseMat: public IssmAbsMat<doubletype>{
 			}
 		}
 		/*}}}*/
+		void EchoDebug(std::string message) {
+			std::cout << "Error: not implemented." << std::endl;
+		}
 		void Assemble(void){/*{{{*/
 
 			/*do nothing*/

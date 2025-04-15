@@ -32,6 +32,7 @@ class IssmAbsMat{
 		virtual ~IssmAbsMat(){};
 
 		/*Functionality: */
+		virtual void EchoDebug(std::string message) = 0;
 		virtual void Echo(void)=0;
 		virtual void Assemble(void)=0;
 		virtual doubletype Norm(NormMode mode)=0;

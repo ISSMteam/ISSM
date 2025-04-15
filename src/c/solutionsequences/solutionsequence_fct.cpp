@@ -9,7 +9,7 @@
 #include "../analyses/analyses.h"
 #define USEPENALTYMETHOD false
 
-#ifdef _HAVE_PETSC_
+#if defined(_HAVE_PETSC_) & !defined(_HAVE_CODIPACK_)
 void CreateDMatrix(Mat* pD,Mat K){/*{{{*/
 	/*Create D matrix such that:
 	 *
@@ -425,7 +425,9 @@ void solutionsequence_fct(FemModel* femmodel){/*{{{*/
 	delete danalysis;
 
 	#ifdef _HAVE_PETSC_
-
+	#ifdef _HAVE_CODIPACK_
+		_error_("No CoDiPack handling for PETSc and fct");
+	#else
 	/*Convert matrices to PETSc matrices*/
 	Mat D_petsc  = NULL;
 	Mat LHS      = NULL;
@@ -509,6 +511,7 @@ void solutionsequence_fct(FemModel* femmodel){/*{{{*/
 	InputUpdateFromSolutionx(femmodel,uf);
 	delete uf;
 
+	#endif
 	#else
 	_error_("PETSc needs to be installed");
 	#endif

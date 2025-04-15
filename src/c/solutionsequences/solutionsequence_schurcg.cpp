@@ -11,30 +11,31 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef _HAVE_PETSC_
+#if defined(_HAVE_PETSC_) && !defined(_HAVE_CODIPACK_)
 #include <petscversion.h>
+#include "../toolkits/petsc/patches/petscpatches.h"
 
-void SchurCGSolver(Vector<IssmDouble>** puf,Mat Kff, Vec pf, Vec uf0,IS isv,IS isp,Parameters* parameters){/*{{{*/
+void SchurCGSolver(Vector<IssmDouble>** puf,PMat Kff, PVec pf, PVec uf0,IS isv,IS isp,Parameters* parameters){/*{{{*/
 
-	Mat                  A, B, BT;				/* Saddle point block matrices */
-	Mat						IP;						/* Preconditioner or mass matrix */
+	PMat                  A, B, BT;				/* Saddle point block matrices */
+	PMat						IP;						/* Preconditioner or mass matrix */
 	int                  nu, np;					/* No of. free nodes in velocity / pressure space */
-   Vec                  p,uold,unew;			/* Solution vectors for pressure / vel. */ 
-	Vec						tmpu,tmpu2,resu,resp,tmpp,tmpp2,rhsu,rhsp; /* temp. vectors, arbitrary RHS in vel. / pressure space */
-	Vec						gold,gnew,wold,wnew,chi; /* CG intermediaries */
-	Vec						f1,f2;					/* RHS of the global system */
-	double					rho,gamma,tmpScalar,tmpScalar2; /* Step sizes, arbitrary double */
-	KSP						kspu,kspip;		/* KSP contexts for vel. / pressure systems*/
+  PVec                  p,uold,unew;			/* Solution vectors for pressure / vel. */
+	PVec						tmpu,tmpu2,resu,resp,tmpp,tmpp2,rhsu,rhsp; /* temp. vectors, arbitrary RHS in vel. / pressure space */
+	PVec						gold,gnew,wold,wnew,chi; /* CG intermediaries */
+	PVec						f1,f2;					/* RHS of the global system */
+	IssmDouble			rho,gamma,tmpScalar,tmpScalar2; /* Step sizes, arbitrary double */
+	PKSP						  kspu,kspip;		/* KSP contexts for vel. / pressure systems*/
 	KSPConvergedReason	reason;					/* Convergence reason for troubleshooting */
 	int						its;						/* No. of iterations for troubleshooting */
-	double					initRnorm, rnorm, TOL,ELLTOL; /* residual norms, STOP tolerance */
+	IssmDouble			initRnorm, rnorm, TOL,ELLTOL; /* residual norms, STOP tolerance */
 	PC							pcu,pcp;					/* Preconditioner contexts pertaining the KSP contexts*/
 	PetscViewer				viewer;					/* Viewer for troubleshooting */
-	IssmPDouble				t1,t2;					/* Time measurement for bottleneck analysis */
+	IssmDouble				t1,t2;					/* Time measurement for bottleneck analysis */
 
-	double tmp1,tmp2,tmp3;
+	IssmDouble tmp1,tmp2,tmp3;
 	int tmpi;
-	double tmp4,tmp5,tmp6,tmp7;
+	IssmDouble tmp4,tmp5,tmp6,tmp7;
 
 	int noIt;
 
@@ -475,10 +476,10 @@ void convergence_schurcg(bool* pconverged, Matrix<IssmDouble>* Kff,Vector<IssmDo
 	IssmDouble solver_residue,res;
 	int analysis_type;
 
-	Mat A, B, BT;
-	Vec u,p,uold,pold,f1,f2,tmp,res1,res2;
+	PMat A, B, BT;
+	PVec u,p,uold,pold,f1,f2,tmp,res1,res2;
 	int n_u,n_p;
-	double rnorm1, rnorm2;
+	IssmDouble rnorm1, rnorm2;
 
 	if(VerboseModule()) _printf0_("   checking convergence\n");
 

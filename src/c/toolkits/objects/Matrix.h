@@ -30,7 +30,7 @@ class Matrix{
 
 		int       type;
 		#ifdef _HAVE_PETSC_
-		PetscMat              *pmatrix;
+		PetscMat<doubletype>  *pmatrix;
 		#endif
 		IssmMat<doubletype>   *imatrix;
 
@@ -45,7 +45,7 @@ class Matrix{
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
-				this->pmatrix=new PetscMat(M,N);
+				this->pmatrix=new PetscMat<doubletype>(M,N);
 				#endif
 			}
 			else{
@@ -60,7 +60,7 @@ class Matrix{
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
-				this->pmatrix=new PetscMat(m,n,M,N,d_nnz,o_nnz);
+				this->pmatrix=new PetscMat<doubletype>(m,n,M,N,d_nnz,o_nnz);
 				#endif
 			}
 			else{
@@ -75,7 +75,7 @@ class Matrix{
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
-				this->pmatrix=new PetscMat(M,N,sparsity);
+				this->pmatrix=new PetscMat<doubletype>(M,N,sparsity);
 				#endif
 			}
 			else{
@@ -89,7 +89,7 @@ class Matrix{
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
-				this->pmatrix=new PetscMat(serial_mat,M,N,sparsity);
+				this->pmatrix=new PetscMat<doubletype>(serial_mat,M,N,sparsity);
 				#endif
 			}
 			else{
@@ -104,7 +104,7 @@ class Matrix{
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
-				this->pmatrix=new PetscMat(M,N,connectivity,numberofdofspernode);
+				this->pmatrix=new PetscMat<doubletype>(M,N,connectivity,numberofdofspernode);
 				#endif
 			}
 			else{
@@ -170,6 +170,15 @@ class Matrix{
 
 		}
 		/*}}}*/
+		void EchoDebug(std::string message){_assert_(this);/*{{{*/
+
+			if(type==PetscMatType){
+#ifdef _HAVE_PETSC_
+				this->pmatrix->EchoDebug(message);
+#endif
+			}
+			else this->imatrix->EchoDebug(message);
+		}
 		void AllocationInfo(void){/*{{{*/
 			_assert_(this);
 			if(type==PetscMatType){
