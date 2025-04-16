@@ -11,46 +11,46 @@
 #include "../petscincludes.h"
 #include "../../../shared/shared.h"
 
-template<typename doubletype, typename vectype>
-int VecToMPISerialNew(doubletype** pserial_vector, vectype vector,ISSM_MPI_Comm comm,bool broadcast){
-
-	/*Output*/
-	const doubletype *vec_array     = NULL;
-	doubletype       *serial_vector = NULL;
-
-	/*Sequential Vector*/
-	int        n;
-	vectype    vector_seq = NULL;
-	VecScatter ctx        = NULL;
-
-	if(broadcast){
-		VecScatterCreateToAll(vector, &ctx, &vector_seq);
-	}
-	else{
-		VecScatterCreateToZero(vector, &ctx, &vector_seq);
-	}
-
-  /*scatter as many times as you need*/
-  VecScatterBegin(ctx, vector, vector_seq, INSERT_VALUES, SCATTER_FORWARD);
-  VecScatterEnd(  ctx, vector, vector_seq, INSERT_VALUES, SCATTER_FORWARD);
-
-  /*Get pointer to array and copy*/
-  VecGetArrayRead(vector_seq, &vec_array);
-
-  /* Use memcpy to copy data*/
-  VecGetSize(vector_seq, &n);
-  memcpy(serial_vector, vec_array, n*sizeof(doubletype));
-
-  /* Restore and destroy the PETSc Vec array*/
-  VecRestoreArrayRead(vector_seq, &vec_array);
-
-  /* destroy scatter context and local vector when no longer needed*/
-  VecScatterDestroy(&ctx);
-  VecDestroy(&vector_seq);
-
-  /*Assign output pointer*/
-  *pserial_vector = serial_vector;
-}
+//template<typename doubletype, typename vectype>
+//int VecToMPISerialNew(doubletype** pserial_vector, vectype vector,ISSM_MPI_Comm comm,bool broadcast){
+//
+//	/*Output*/
+//	const doubletype *vec_array     = NULL;
+//	doubletype       *serial_vector = NULL;
+//
+//	/*Sequential Vector*/
+//	int        n;
+//	vectype    vector_seq = NULL;
+//	VecScatter ctx        = NULL;
+//
+//	if(broadcast){
+//		VecScatterCreateToAll(vector, &ctx, &vector_seq);
+//	}
+//	else{
+//		VecScatterCreateToZero(vector, &ctx, &vector_seq);
+//	}
+//
+//  /*scatter as many times as you need*/
+//  VecScatterBegin(ctx, vector, vector_seq, INSERT_VALUES, SCATTER_FORWARD);
+//  VecScatterEnd(  ctx, vector, vector_seq, INSERT_VALUES, SCATTER_FORWARD);
+//
+//  /*Get pointer to array and copy*/
+//  VecGetArrayRead(vector_seq, &vec_array);
+//
+//  /* Use memcpy to copy data*/
+//  VecGetSize(vector_seq, &n);
+//  memcpy(serial_vector, vec_array, n*sizeof(doubletype));
+//
+//  /* Restore and destroy the PETSc Vec array*/
+//  VecRestoreArrayRead(vector_seq, &vec_array);
+//
+//  /* destroy scatter context and local vector when no longer needed*/
+//  VecScatterDestroy(&ctx);
+//  VecDestroy(&vector_seq);
+//
+//  /*Assign output pointer*/
+//  *pserial_vector = serial_vector;
+//}
 
 template<typename doubletype, typename vectype>
 int VecToMPISerial(doubletype** pgathered_vector, vectype vector,ISSM_MPI_Comm comm,bool broadcast){
@@ -143,9 +143,9 @@ int VecToMPISerial(doubletype** pgathered_vector, vectype vector,ISSM_MPI_Comm c
 	return 1;
 }
 
-template int VecToMPISerialNew(IssmDouble** pserial_vector, PVec vector,ISSM_MPI_Comm comm,bool broadcast){
+//template int VecToMPISerialNew(IssmDouble** pserial_vector, PVec vector,ISSM_MPI_Comm comm,bool broadcast);
 template int VecToMPISerial(IssmDouble** pgathered_vector, PVec vector,ISSM_MPI_Comm comm,bool broadcast);
 #if _HAVE_CODIPACK_
-template int VecToMPISerialNew(IssmPDouble** pserial_vector, Vec vector,ISSM_MPI_Comm comm,bool broadcast){
+//template int VecToMPISerialNew(IssmPDouble** pserial_vector, Vec vector,ISSM_MPI_Comm comm,bool broadcast);
 template int VecToMPISerial(IssmPDouble** pgathered_vector, Vec vector,ISSM_MPI_Comm comm,bool broadcast);
 #endif
