@@ -141,6 +141,7 @@ issm_sources += \
 	./classes/Params/VectorParam.cpp \
 	./classes/Params/TransientParam.cpp \
 	./classes/Params/TransientArrayParam.cpp \
+	./classes/Params/TransientGriddedFieldParam.cpp \
 	./classes/Params/DataSetParam.cpp \
 	./classes/Profiler.cpp \
 	./shared/Matrix/MatrixUtils.cpp \

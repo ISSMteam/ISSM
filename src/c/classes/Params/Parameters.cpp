@@ -35,6 +35,7 @@
 #include "./DoubleMatArrayParam.h"
 #include "./TransientParam.h"
 #include "./TransientArrayParam.h"
+#include "./TransientGriddedFieldParam.h"
 
 #include "../../shared/shared.h"
 #include "../../toolkits/toolkits.h"

@@ -3719,6 +3719,7 @@ enum definitions{
 	TotalSmbRefreezeEnum,
 	TotalSmbMeltEnum,
 	TransientArrayParamEnum,
+	TransientGriddedFieldParamEnum,
 	TransientInputEnum,
 	TransientFileInputEnum,
 	TransientParamEnum,
