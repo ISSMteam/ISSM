@@ -544,6 +544,8 @@ syn keyword juliaConstC SmbAlbedoSnowMaxEnum
 syn keyword juliaConstC SmbAlbedoSnowMinEnum
 syn keyword juliaConstC SmbAlbedoIceEnum
 syn keyword juliaConstC SmbAlbedoLandEnum
+syn keyword juliaConstC SmbAllSolidTempEnum
+syn keyword juliaConstC SmbAllLiquidTempEnum
 syn keyword juliaConstC SmbARMATimestepEnum
 syn keyword juliaConstC SmbARMAarOrderEnum
 syn keyword juliaConstC SmbARMAarlagcoefsEnum
@@ -556,6 +558,8 @@ syn keyword juliaConstC SmbCParamEnum
 syn keyword juliaConstC SmbDebrisalbedoEnum
 syn keyword juliaConstC SmbIcealbedoEnum
 syn keyword juliaConstC SmbSnowalbedoEnum
+syn keyword juliaConstC SmbDdfSnowEnum
+syn keyword juliaConstC SmbDdfIceEnum
 syn keyword juliaConstC SmbDebrisIsAndersonEnum
 syn keyword juliaConstC SmbDebrisIsCryokarstEnum
 syn keyword juliaConstC SmbDebrisAndersonD0Enum
@@ -576,6 +580,11 @@ syn keyword juliaConstC SmbDtEnum
 syn keyword juliaConstC SmbEnum
 syn keyword juliaConstC SmbEIdxEnum
 syn keyword juliaConstC SmbFEnum
+syn keyword juliaConstC SmbGCMLatEnum
+syn keyword juliaConstC SmbGCMLonEnum
+syn keyword juliaConstC SmbGCMPrecipitationEnum
+syn keyword juliaConstC SmbGCMTimeEnum
+syn keyword juliaConstC SmbGCMTemperatureEnum
 syn keyword juliaConstC SmbHumiditygradEnum
 syn keyword juliaConstC SmbInitDensityScalingEnum
 syn keyword juliaConstC SmbIsaccumulationEnum
@@ -1142,6 +1151,7 @@ syn keyword juliaConstC SmbECSubstepEnum
 syn keyword juliaConstC SmbECDtEnum
 syn keyword juliaConstC SmbECiniEnum
 syn keyword juliaConstC SmbElaEnum
+syn keyword juliaConstC SmbEnhanceFactorEnum
 syn keyword juliaConstC SmbEvaporationEnum
 syn keyword juliaConstC SmbFACEnum
 syn keyword juliaConstC SmbFACSubstepEnum
@@ -3649,6 +3659,7 @@ syn keyword juliaConstC SMBhenningEnum
 syn keyword juliaConstC SMBmeltcomponentsEnum
 syn keyword juliaConstC SMBpddEnum
 syn keyword juliaConstC SMBpddSicopolisEnum
+syn keyword juliaConstC SMBpddGCMEnum
 syn keyword juliaConstC SMBsemicEnum
 syn keyword juliaConstC SSAApproximationEnum
 syn keyword juliaConstC SSAFSApproximationEnum
@@ -3713,6 +3724,7 @@ syn keyword juliaConstC TotalSmbScaledEnum
 syn keyword juliaConstC TotalSmbRefreezeEnum
 syn keyword juliaConstC TotalSmbMeltEnum
 syn keyword juliaConstC TransientArrayParamEnum
+syn keyword juliaConstC TransientGriddedFieldParamEnum
 syn keyword juliaConstC TransientInputEnum
 syn keyword juliaConstC TransientFileInputEnum
 syn keyword juliaConstC TransientParamEnum
