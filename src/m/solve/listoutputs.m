@@ -424,6 +424,7 @@ SmbECSubstep
 SmbECDt
 SmbECini
 SmbEla
+SmbEnhanceFactor
 SmbEvaporation
 SmbFAC
 SmbFACSubstep

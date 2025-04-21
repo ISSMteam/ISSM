@@ -551,6 +551,8 @@ syn keyword cConstant SmbAlbedoSnowMaxEnum
 syn keyword cConstant SmbAlbedoSnowMinEnum
 syn keyword cConstant SmbAlbedoIceEnum
 syn keyword cConstant SmbAlbedoLandEnum
+syn keyword cConstant SmbAllSolidTempEnum
+syn keyword cConstant SmbAllLiquidTempEnum
 syn keyword cConstant SmbARMATimestepEnum
 syn keyword cConstant SmbARMAarOrderEnum
 syn keyword cConstant SmbARMAarlagcoefsEnum
@@ -563,6 +565,8 @@ syn keyword cConstant SmbCParamEnum
 syn keyword cConstant SmbDebrisalbedoEnum
 syn keyword cConstant SmbIcealbedoEnum
 syn keyword cConstant SmbSnowalbedoEnum
+syn keyword cConstant SmbDdfSnowEnum
+syn keyword cConstant SmbDdfIceEnum
 syn keyword cConstant SmbDebrisIsAndersonEnum
 syn keyword cConstant SmbDebrisIsCryokarstEnum
 syn keyword cConstant SmbDebrisAndersonD0Enum
@@ -583,6 +587,11 @@ syn keyword cConstant SmbDtEnum
 syn keyword cConstant SmbEnum
 syn keyword cConstant SmbEIdxEnum
 syn keyword cConstant SmbFEnum
+syn keyword cConstant SmbGCMLatEnum
+syn keyword cConstant SmbGCMLonEnum
+syn keyword cConstant SmbGCMPrecipitationEnum
+syn keyword cConstant SmbGCMTimeEnum
+syn keyword cConstant SmbGCMTemperatureEnum
 syn keyword cConstant SmbHumiditygradEnum
 syn keyword cConstant SmbInitDensityScalingEnum
 syn keyword cConstant SmbIsaccumulationEnum
@@ -1149,6 +1158,7 @@ syn keyword cConstant SmbECSubstepEnum
 syn keyword cConstant SmbECDtEnum
 syn keyword cConstant SmbECiniEnum
 syn keyword cConstant SmbElaEnum
+syn keyword cConstant SmbEnhanceFactorEnum
 syn keyword cConstant SmbEvaporationEnum
 syn keyword cConstant SmbFACEnum
 syn keyword cConstant SmbFACSubstepEnum
@@ -3656,6 +3666,7 @@ syn keyword cConstant SMBhenningEnum
 syn keyword cConstant SMBmeltcomponentsEnum
 syn keyword cConstant SMBpddEnum
 syn keyword cConstant SMBpddSicopolisEnum
+syn keyword cConstant SMBpddGCMEnum
 syn keyword cConstant SMBsemicEnum
 syn keyword cConstant SSAApproximationEnum
 syn keyword cConstant SSAFSApproximationEnum
@@ -3720,6 +3731,7 @@ syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum
 syn keyword cConstant TotalSmbMeltEnum
 syn keyword cConstant TransientArrayParamEnum
+syn keyword cConstant TransientGriddedFieldParamEnum
 syn keyword cConstant TransientInputEnum
 syn keyword cConstant TransientFileInputEnum
 syn keyword cConstant TransientParamEnum
@@ -3774,6 +3786,7 @@ syn keyword cType Cfsurfacelogvel
 syn keyword cType Cfsurfacesquare
 syn keyword cType Cfsurfacesquaretransient
 syn keyword cType Channel
+syn keyword cType classes
 syn keyword cType Constraint
 syn keyword cType Constraints
 syn keyword cType Contour
@@ -3781,8 +3794,8 @@ syn keyword cType Contours
 syn keyword cType ControlInput
 syn keyword cType ControlParam
 syn keyword cType Covertree
-syn keyword cType DataSetParam
 syn keyword cType DatasetInput
+syn keyword cType DataSetParam
 syn keyword cType Definition
 syn keyword cType DependentObject
 syn keyword cType DoubleInput
@@ -3795,19 +3808,20 @@ syn keyword cType Element
 syn keyword cType ElementHook
 syn keyword cType ElementInput
 syn keyword cType ElementMatrix
-syn keyword cType ElementVector
 syn keyword cType Elements
+syn keyword cType ElementVector
 syn keyword cType ExponentialVariogram
 syn keyword cType ExternalResult
 syn keyword cType FemModel
 syn keyword cType FileParam
 syn keyword cType Friction
 syn keyword cType Gauss
+syn keyword cType GaussianVariogram
+syn keyword cType gaussobjects
 syn keyword cType GaussPenta
 syn keyword cType GaussSeg
 syn keyword cType GaussTetra
 syn keyword cType GaussTria
-syn keyword cType GaussianVariogram
 syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
@@ -3824,6 +3838,7 @@ syn keyword cType IntVecParam
 syn keyword cType IoModel
 syn keyword cType IssmDirectApplicInterface
 syn keyword cType IssmParallelDirectApplicInterface
+syn keyword cType krigingobjects
 syn keyword cType Load
 syn keyword cType Loads
 syn keyword cType Masscon
@@ -3834,6 +3849,7 @@ syn keyword cType Materials
 syn keyword cType Matestar
 syn keyword cType Matice
 syn keyword cType Matlitho
+syn keyword cType matrixobjects
 syn keyword cType MatrixParam
 syn keyword cType Misfit
 syn keyword cType Moulin
@@ -3860,13 +3876,13 @@ syn keyword cType Quadtree
 syn keyword cType Radar
 syn keyword cType Regionaloutput
 syn keyword cType Results
-syn keyword cType RiftStruct
 syn keyword cType Riftfront
+syn keyword cType RiftStruct
 syn keyword cType SealevelGeometry
 syn keyword cType Seg
 syn keyword cType SegInput
-syn keyword cType SegRef
 syn keyword cType Segment
+syn keyword cType SegRef
 syn keyword cType SpcDynamic
 syn keyword cType SpcStatic
 syn keyword cType SpcTransient
@@ -3877,6 +3893,7 @@ syn keyword cType Tetra
 syn keyword cType TetraRef
 syn keyword cType TransientArrayParam
 syn keyword cType TransientFileInput
+syn keyword cType TransientGriddedFieldParam
 syn keyword cType TransientInput
 syn keyword cType TransientParam
 syn keyword cType Tria
@@ -3886,10 +3903,6 @@ syn keyword cType Variogram
 syn keyword cType VectorParam
 syn keyword cType Vertex
 syn keyword cType Vertices
-syn keyword cType classes
-syn keyword cType gaussobjects
-syn keyword cType krigingobjects
-syn keyword cType matrixobjects
 syn keyword cType AdjointBalancethickness2Analysis
 syn keyword cType AdjointBalancethicknessAnalysis
 syn keyword cType AdjointHorizAnalysis

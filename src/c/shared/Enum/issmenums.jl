@@ -540,6 +540,8 @@
 	SmbAlbedoSnowMinEnum
 	SmbAlbedoIceEnum
 	SmbAlbedoLandEnum
+	SmbAllSolidTempEnum
+	SmbAllLiquidTempEnum
 	SmbARMATimestepEnum
 	SmbARMAarOrderEnum
 	SmbARMAarlagcoefsEnum
@@ -552,6 +554,8 @@
 	SmbDebrisalbedoEnum
 	SmbIcealbedoEnum
 	SmbSnowalbedoEnum
+	SmbDdfSnowEnum
+	SmbDdfIceEnum
 	SmbDebrisIsAndersonEnum
 	SmbDebrisIsCryokarstEnum
 	SmbDebrisAndersonD0Enum
@@ -572,6 +576,11 @@
 	SmbEnum
 	SmbEIdxEnum
 	SmbFEnum
+	SmbGCMLatEnum
+	SmbGCMLonEnum
+	SmbGCMPrecipitationEnum
+	SmbGCMTimeEnum
+	SmbGCMTemperatureEnum
 	SmbHumiditygradEnum
 	SmbInitDensityScalingEnum
 	SmbIsaccumulationEnum
@@ -1138,6 +1147,7 @@
 	SmbECDtEnum
 	SmbECiniEnum
 	SmbElaEnum
+	SmbEnhanceFactorEnum
 	SmbEvaporationEnum
 	SmbFACEnum
 	SmbFACSubstepEnum
@@ -3645,6 +3655,7 @@
 	SMBmeltcomponentsEnum
 	SMBpddEnum
 	SMBpddSicopolisEnum
+	SMBpddGCMEnum
 	SMBsemicEnum
 	SSAApproximationEnum
 	SSAFSApproximationEnum
@@ -3709,6 +3720,7 @@
 	TotalSmbRefreezeEnum
 	TotalSmbMeltEnum
 	TransientArrayParamEnum
+	TransientGriddedFieldParamEnum
 	TransientInputEnum
 	TransientFileInputEnum
 	TransientParamEnum
@@ -4285,6 +4297,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbAlbedoSnowMinEnum) return "SmbAlbedoSnowMin" end
 	if(enum==SmbAlbedoIceEnum) return "SmbAlbedoIce" end
 	if(enum==SmbAlbedoLandEnum) return "SmbAlbedoLand" end
+	if(enum==SmbAllSolidTempEnum) return "SmbAllSolidTemp" end
+	if(enum==SmbAllLiquidTempEnum) return "SmbAllLiquidTemp" end
 	if(enum==SmbARMATimestepEnum) return "SmbARMATimestep" end
 	if(enum==SmbARMAarOrderEnum) return "SmbARMAarOrder" end
 	if(enum==SmbARMAarlagcoefsEnum) return "SmbARMAarlagcoefs" end
@@ -4297,6 +4311,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbDebrisalbedoEnum) return "SmbDebrisalbedo" end
 	if(enum==SmbIcealbedoEnum) return "SmbIcealbedo" end
 	if(enum==SmbSnowalbedoEnum) return "SmbSnowalbedo" end
+	if(enum==SmbDdfSnowEnum) return "SmbDdfSnow" end
+	if(enum==SmbDdfIceEnum) return "SmbDdfIce" end
 	if(enum==SmbDebrisIsAndersonEnum) return "SmbDebrisIsAnderson" end
 	if(enum==SmbDebrisIsCryokarstEnum) return "SmbDebrisIsCryokarst" end
 	if(enum==SmbDebrisAndersonD0Enum) return "SmbDebrisAndersonD0" end
@@ -4317,6 +4333,11 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbEnum) return "Smb" end
 	if(enum==SmbEIdxEnum) return "SmbEIdx" end
 	if(enum==SmbFEnum) return "SmbF" end
+	if(enum==SmbGCMLatEnum) return "SmbGCMLat" end
+	if(enum==SmbGCMLonEnum) return "SmbGCMLon" end
+	if(enum==SmbGCMPrecipitationEnum) return "SmbGCMPrecipitation" end
+	if(enum==SmbGCMTimeEnum) return "SmbGCMTime" end
+	if(enum==SmbGCMTemperatureEnum) return "SmbGCMTemperature" end
 	if(enum==SmbHumiditygradEnum) return "SmbHumiditygrad" end
 	if(enum==SmbInitDensityScalingEnum) return "SmbInitDensityScaling" end
 	if(enum==SmbIsaccumulationEnum) return "SmbIsaccumulation" end
@@ -4883,6 +4904,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbECDtEnum) return "SmbECDt" end
 	if(enum==SmbECiniEnum) return "SmbECini" end
 	if(enum==SmbElaEnum) return "SmbEla" end
+	if(enum==SmbEnhanceFactorEnum) return "SmbEnhanceFactor" end
 	if(enum==SmbEvaporationEnum) return "SmbEvaporation" end
 	if(enum==SmbFACEnum) return "SmbFAC" end
 	if(enum==SmbFACSubstepEnum) return "SmbFACSubstep" end
@@ -7390,6 +7412,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SMBmeltcomponentsEnum) return "SMBmeltcomponents" end
 	if(enum==SMBpddEnum) return "SMBpdd" end
 	if(enum==SMBpddSicopolisEnum) return "SMBpddSicopolis" end
+	if(enum==SMBpddGCMEnum) return "SMBpddGCM" end
 	if(enum==SMBsemicEnum) return "SMBsemic" end
 	if(enum==SSAApproximationEnum) return "SSAApproximation" end
 	if(enum==SSAFSApproximationEnum) return "SSAFSApproximation" end
@@ -7454,6 +7477,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==TotalSmbRefreezeEnum) return "TotalSmbRefreeze" end
 	if(enum==TotalSmbMeltEnum) return "TotalSmbMelt" end
 	if(enum==TransientArrayParamEnum) return "TransientArrayParam" end
+	if(enum==TransientGriddedFieldParamEnum) return "TransientGriddedFieldParam" end
 	if(enum==TransientInputEnum) return "TransientInput" end
 	if(enum==TransientFileInputEnum) return "TransientFileInput" end
 	if(enum==TransientParamEnum) return "TransientParam" end
@@ -8030,6 +8054,8 @@ function StringToEnum(name::String)
 	if(name=="SmbAlbedoSnowMin") return SmbAlbedoSnowMinEnum  end
 	if(name=="SmbAlbedoIce") return SmbAlbedoIceEnum  end
 	if(name=="SmbAlbedoLand") return SmbAlbedoLandEnum  end
+	if(name=="SmbAllSolidTemp") return SmbAllSolidTempEnum  end
+	if(name=="SmbAllLiquidTemp") return SmbAllLiquidTempEnum  end
 	if(name=="SmbARMATimestep") return SmbARMATimestepEnum  end
 	if(name=="SmbARMAarOrder") return SmbARMAarOrderEnum  end
 	if(name=="SmbARMAarlagcoefs") return SmbARMAarlagcoefsEnum  end
@@ -8042,6 +8068,8 @@ function StringToEnum(name::String)
 	if(name=="SmbDebrisalbedo") return SmbDebrisalbedoEnum  end
 	if(name=="SmbIcealbedo") return SmbIcealbedoEnum  end
 	if(name=="SmbSnowalbedo") return SmbSnowalbedoEnum  end
+	if(name=="SmbDdfSnow") return SmbDdfSnowEnum  end
+	if(name=="SmbDdfIce") return SmbDdfIceEnum  end
 	if(name=="SmbDebrisIsAnderson") return SmbDebrisIsAndersonEnum  end
 	if(name=="SmbDebrisIsCryokarst") return SmbDebrisIsCryokarstEnum  end
 	if(name=="SmbDebrisAndersonD0") return SmbDebrisAndersonD0Enum  end
@@ -8062,6 +8090,11 @@ function StringToEnum(name::String)
 	if(name=="Smb") return SmbEnum  end
 	if(name=="SmbEIdx") return SmbEIdxEnum  end
 	if(name=="SmbF") return SmbFEnum  end
+	if(name=="SmbGCMLat") return SmbGCMLatEnum  end
+	if(name=="SmbGCMLon") return SmbGCMLonEnum  end
+	if(name=="SmbGCMPrecipitation") return SmbGCMPrecipitationEnum  end
+	if(name=="SmbGCMTime") return SmbGCMTimeEnum  end
+	if(name=="SmbGCMTemperature") return SmbGCMTemperatureEnum  end
 	if(name=="SmbHumiditygrad") return SmbHumiditygradEnum  end
 	if(name=="SmbInitDensityScaling") return SmbInitDensityScalingEnum  end
 	if(name=="SmbIsaccumulation") return SmbIsaccumulationEnum  end
@@ -8628,6 +8661,7 @@ function StringToEnum(name::String)
 	if(name=="SmbECDt") return SmbECDtEnum  end
 	if(name=="SmbECini") return SmbECiniEnum  end
 	if(name=="SmbEla") return SmbElaEnum  end
+	if(name=="SmbEnhanceFactor") return SmbEnhanceFactorEnum  end
 	if(name=="SmbEvaporation") return SmbEvaporationEnum  end
 	if(name=="SmbFAC") return SmbFACEnum  end
 	if(name=="SmbFACSubstep") return SmbFACSubstepEnum  end
@@ -11135,6 +11169,7 @@ function StringToEnum(name::String)
 	if(name=="SMBmeltcomponents") return SMBmeltcomponentsEnum  end
 	if(name=="SMBpdd") return SMBpddEnum  end
 	if(name=="SMBpddSicopolis") return SMBpddSicopolisEnum  end
+	if(name=="SMBpddGCM") return SMBpddGCMEnum  end
 	if(name=="SMBsemic") return SMBsemicEnum  end
 	if(name=="SSAApproximation") return SSAApproximationEnum  end
 	if(name=="SSAFSApproximation") return SSAFSApproximationEnum  end
@@ -11199,6 +11234,7 @@ function StringToEnum(name::String)
 	if(name=="TotalSmbRefreeze") return TotalSmbRefreezeEnum  end
 	if(name=="TotalSmbMelt") return TotalSmbMeltEnum  end
 	if(name=="TransientArrayParam") return TransientArrayParamEnum  end
+	if(name=="TransientGriddedFieldParam") return TransientGriddedFieldParamEnum  end
 	if(name=="TransientInput") return TransientInputEnum  end
 	if(name=="TransientFileInput") return TransientFileInputEnum  end
 	if(name=="TransientParam") return TransientParamEnum  end
