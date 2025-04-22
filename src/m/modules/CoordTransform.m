@@ -37,6 +37,8 @@ end
 whatproj=what('share/proj');
 if ~isempty(whatproj) && isdir(whatproj.path)
 	setenv('PROJ_LIB', whatproj.path);
+elseif exist([issmdir() 'externalpackages/proj/install/share/proj/'], 'dir')
+	setenv('PROJ_LIB', [issmdir() 'externalpackages/proj/install/share/proj/']);
 end
 setenv('DYLD_LIBRARY_PATH',[issmdir() '/externalpackages/proj/install/lib']);
 
