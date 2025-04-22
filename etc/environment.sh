@@ -408,7 +408,8 @@ fi
 PROJ_ROOT_TEMP="${ISSM_EXT_DIR}/proj/install"
 if [ -d "${PROJ_ROOT_TEMP}" ]; then
 	export PROJ_ROOT="${PROJ_ROOT_TEMP}" # Used in installation of GDAL
-	export PROJ_DATA="${PROJ_ROOT_TEMP}/share/proj" # In order to find proj.db
+	export PROJ_DATA="${PROJ_ROOT_TEMP}/share/proj" # In order to find proj.db (After PROJ 9.1)
+	export PROJ_LIB="${PROJ_ROOT_TEMP}/share/proj"  # In order to find proj.db (Prior to PROJ 9.1)
 	path_prepend "${PROJ_ROOT_TEMP}/bin"
 	ld_library_path_prepend "${PROJ_ROOT_TEMP}/lib"
 	dyld_library_path_prepend "${PROJ_ROOT_TEMP}/lib"
