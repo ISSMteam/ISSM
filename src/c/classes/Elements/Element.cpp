@@ -3843,6 +3843,28 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	xDelete<IssmDouble>(melt_star);
 }
 /*}}}*/
+void       Element::PositiveDegreeDayGCM(){/*{{{*/
+
+	/* General FIXMEs: get Tmelting point, pddicefactor, pddsnowfactor, sigma from parameters/user input */
+
+	const int NUM_VERTICES 		= this->GetNumberOfVertices();
+	const int NUM_VERTICES_MONTHS_PER_YEAR	= NUM_VERTICES * 12;
+
+	int        	i,vertexlids[MAXVERTICES];;
+	//IssmDouble rho_water,rho_ice;
+	IssmDouble rho_water,rho_ice,desfac,rlaps;
+	/*Allocate all arrays*/
+	IssmDouble* smb         = xNew<IssmDouble>(NUM_VERTICES);
+
+	// loop over all vertices
+	for(int v=0;v<NUM_VERTICES;v++) smb[v]=0;
+
+	/*Add input to element and Free memory*/
+	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
+	xDelete<IssmDouble>(smb);
+
+}
+/*}}}*/
 void       Element::SmbDebrisEvatt(){/*{{{*/
 
         const int NUM_VERTICES          = this->GetNumberOfVertices();

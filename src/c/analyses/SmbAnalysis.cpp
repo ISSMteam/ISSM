@@ -125,7 +125,6 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		case SMBpddGCMEnum:
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.enhance_factor",SmbEnhanceFactorEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lapserates",SmbLapseRatesEnum);
 			break;
 		case SMBd18opddEnum:
 			iomodel->FindConstant(&istemperaturescaled,"md.smb.istemperaturescaled");
@@ -425,6 +424,9 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			iomodel->FetchData(&temp,&M,&N,"md.smb.temperature"); _assert_(N==Nt && M==Nlat*Nlon);
 			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMTemperatureEnum,temp,&temp[N*(M-1)],interp,cycle,Nlon,Nlat,Nt));
 			iomodel->DeleteData(temp,"md.smb.temperature");
+         iomodel->FetchData(&temp,&M,&N,"md.smb.lapserates"); _assert_(N==1);
+         parameters->AddObject(new DoubleVecParam(SmbLapseRatesEnum,&temp[0],M));
+         xDelete<IssmDouble>(temp);
 
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allsolidtemperature",SmbAllSolidTempEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allliquidtemperature",SmbAllLiquidTempEnum));
@@ -624,7 +626,7 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			break;
 		case SMBpddGCMEnum:
 			if(VerboseSolution()) _printf0_("   call positive degree day module based on downsacling GCM data\n");
-			PositiveDegreeDaySicopolisx(femmodel);
+			PositiveDegreeDayGCMx(femmodel);
 			break;
 		case SMBd18opddEnum:
 			bool isd18opd;

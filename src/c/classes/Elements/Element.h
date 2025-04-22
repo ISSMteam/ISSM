@@ -178,6 +178,7 @@ class Element: public Object{
 		void               PicoComputeBasalMelt();
 		void               PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDouble signorm,bool ismungsm,bool issetpddfac);
 		void               PositiveDegreeDaySicopolis(bool isfirnwarming);
+		void               PositiveDegreeDayGCM();
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();
 		void               ResultInterpolation(int* pinterpolation,int*nodesperelement,int* parray_size, int output_enum);
