@@ -104,6 +104,7 @@ classdef SMBpddGCM
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
+			yts=md.constants.yts;
 			Nlat = numel(self.lat);
 			Nlon = numel(self.lon);
 
@@ -111,8 +112,8 @@ classdef SMBpddGCM
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lat','format','DoubleMat','mattype',3);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lon','format','DoubleMat','mattype',3);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','time','format','DoubleMat','mattype',3);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon, 'scale',1./yts, 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon, 'scale',1./yts, 'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','enhance_factor','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapserates','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','allsolidtemperature','format','Double');
@@ -120,6 +121,8 @@ classdef SMBpddGCM
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_snow','format','Double');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_ice','format','Double');
 
+			WriteData(fid, prefix, 'object', self, 'fieldname', 'steps_per_step', 'format', 'Integer');
+         WriteData(fid, prefix, 'object', self, 'fieldname', 'averaging', 'format', 'Integer')
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));

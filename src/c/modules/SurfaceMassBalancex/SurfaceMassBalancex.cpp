@@ -356,6 +356,20 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
+void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
+	IssmDouble* lat = NULL;
+	IssmDouble* lon = NULL;
+	IssmDouble* temperature = NULL;
+	IssmDouble* precepitation = NULL;
+//	femmodel->parameters->FindParam(&datebreaks,&M,&N,SmbARMAdatebreaksEnum);             _assert_(M==numbasins); _assert_(N==max(numbreaks,1));
+
+
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->PositiveDegreeDayGCM();
+	}
+
+}/*}}}*/
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 
 	/*Intermediaries*/

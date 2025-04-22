@@ -18,6 +18,7 @@ void MungsmtpParameterizationx(FemModel* femmodel);
 void Delta18opdParameterizationx(FemModel* femmodel);
 void PositiveDegreeDayx(FemModel* femmodel);
 void PositiveDegreeDaySicopolisx(FemModel* femmodel);
+void PositiveDegreeDayGCMx(FemModel* femmodel);
 void SmbHenningx(FemModel* femmodel);
 void SmbComponentsx(FemModel* femmodel);
 void SmbMeltComponentsx(FemModel* femmodel);
