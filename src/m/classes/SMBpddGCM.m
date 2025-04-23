@@ -8,7 +8,6 @@ classdef SMBpddGCM
 
 		lat                   = NaN;
 		lon                   = NaN;
-		time                  = NaN;
 		precipitation         = NaN;
 		temperature           = NaN;
 		enhance_factor        = NaN;
@@ -62,12 +61,10 @@ classdef SMBpddGCM
 			if ismember('MasstransportAnalysis',analyses),
 				md = checkfield(md,'fieldname','smb.lat','NaN',1,'Inf',1,'size',[NaN 1]);
 				md = checkfield(md,'fieldname','smb.lon','NaN',1,'Inf',1,'size',[NaN 1]);
-				md = checkfield(md,'fieldname','smb.time','NaN',1,'Inf',1,'size',[NaN 1]);
 				Nlat = numel(self.lat);
 				Nlon = numel(self.lon);
-				Ntime = numel(self.time);
-				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[Nlon*Nlat, Ntime]);
-				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[Nlon*Nlat, Ntime]);
+				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[Nlon*Nlat+1, NaN]);
+				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[Nlon*Nlat+1, NaN]);
 				md = checkfield(md,'fieldname','smb.lapserates','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.enhance_factor','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.allsolidtemperature','NaN',1,'Inf',1);
@@ -86,9 +83,8 @@ classdef SMBpddGCM
 			disp(sprintf('\n   PDD Model based on downscaling of GCM climate data :'));
 			fielddisplay(self,'lat','latitudes of the GCM climate data vector');
 			fielddisplay(self,'lon','longitude of the GCM climate data vector');
-			fielddisplay(self,'time','time steps of the GCM climate data vector [yr]');
-			fielddisplay(self,'precipitation', 'monthly surface precipitation (nxmxt) [m/yr water eq]');
-			fielddisplay(self,'temperature', 'surface temperature (nxmxt) [K]');
+			fielddisplay(self,'precipitation', 'monthly surface precipitation ((nxm+1)xt) [m/yr water eq]');
+			fielddisplay(self,'temperature', 'surface temperature ((nxm+1)xt) [K]');
 			fielddisplay(self,'enhance_factor', 'melting enhance factor of degree-day factor for debris');
 			fielddisplay(self,'lapserates', 'lapse rate [K/m]');
 			fielddisplay(self,'allsolidtemperature', 'temperature where all precipitation is solid [K]');
@@ -111,9 +107,8 @@ classdef SMBpddGCM
 			WriteData(fid,prefix,'name','md.smb.model','data',15,'format','Integer');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lat','format','DoubleMat','mattype',3);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lon','format','DoubleMat','mattype',3);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','time','format','DoubleMat','mattype',3);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon, 'scale',1./yts, 'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon, 'scale',1./yts, 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon+1, 'scale',1./yts, 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon+1, 'scale',1., 'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','enhance_factor','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapserates','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','allsolidtemperature','format','Double');
