@@ -584,7 +584,6 @@ enum definitions{
 	SmbGCMLatEnum,
 	SmbGCMLonEnum,
 	SmbGCMPrecipitationEnum,
-	SmbGCMTimeEnum,
 	SmbGCMTemperatureEnum,
 	SmbHumiditygradEnum,
 	SmbInitDensityScalingEnum,

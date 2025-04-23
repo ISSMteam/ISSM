@@ -367,6 +367,15 @@ void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int param_enum
 
 }
 /*}}}*/
+void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int* pN, IssmDouble time, int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pIssmDoublearray,pM,pN,time);
+
+}
+/*}}}*/
 void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int* pN,int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);

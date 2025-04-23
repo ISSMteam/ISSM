@@ -583,7 +583,6 @@ syn keyword juliaConstC SmbFEnum
 syn keyword juliaConstC SmbGCMLatEnum
 syn keyword juliaConstC SmbGCMLonEnum
 syn keyword juliaConstC SmbGCMPrecipitationEnum
-syn keyword juliaConstC SmbGCMTimeEnum
 syn keyword juliaConstC SmbGCMTemperatureEnum
 syn keyword juliaConstC SmbHumiditygradEnum
 syn keyword juliaConstC SmbInitDensityScalingEnum

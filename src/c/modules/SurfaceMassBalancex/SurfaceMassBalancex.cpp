@@ -359,10 +359,10 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	IssmDouble* lat = NULL;
 	IssmDouble* lon = NULL;
-	IssmDouble temperature;
+	IssmDouble* temperature = NULL;
 	IssmDouble* precepitation = NULL;
 	IssmDouble time;
-	int N,Nlat,Nlon,Ntime;
+	int N,M,Nlat,Nlon,Ntime;
 
 	//	femmodel->parameters->FindParam(&datebreaks,&M,&N,SmbARMAdatebreaksEnum);             _assert_(M==numbasins); _assert_(N==max(numbreaks,1));
 
@@ -372,13 +372,16 @@ void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 
 	femmodel->parameters->FindParam(&time,TimeEnum);
 
+	femmodel->parameters->FindParam(&temperature, &M, &N, time, SmbGCMTemperatureEnum);
+	femmodel->parameters->FindParam(&precepitation, &M, &N, time, SmbGCMPrecipitationEnum);
+
+	_printf0_(M<<" x "<<N<<endl);
 	for (int i=0;i<Nlat;i++) {
 		for (int j=0;j<Nlon;j++) {
-			femmodel->parameters->FindParam(&temperature, i, j, time, SmbGCMTemperatureEnum);
-			_printf0_(i<<","<<j<<","<<time<<":"<<temperature<<endl);
+	//		femmodel->parameters->FindParam(&temperature, i, j, time, SmbGCMTemperatureEnum);
+			_printf0_(i<<","<<j<<","<<time<<":"<<temperature[i*N+j]<<endl);
 		}
 	}
-
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
 		element->PositiveDegreeDayGCM();
