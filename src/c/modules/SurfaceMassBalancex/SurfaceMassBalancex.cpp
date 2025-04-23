@@ -359,16 +359,32 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	IssmDouble* lat = NULL;
 	IssmDouble* lon = NULL;
-	IssmDouble* temperature = NULL;
+	IssmDouble temperature;
 	IssmDouble* precepitation = NULL;
-//	femmodel->parameters->FindParam(&datebreaks,&M,&N,SmbARMAdatebreaksEnum);             _assert_(M==numbasins); _assert_(N==max(numbreaks,1));
+	IssmDouble time;
+	int N,Nlat,Nlon,Ntime;
 
+	//	femmodel->parameters->FindParam(&datebreaks,&M,&N,SmbARMAdatebreaksEnum);             _assert_(M==numbasins); _assert_(N==max(numbreaks,1));
+
+	/*load lat lon temp and precepitation*/
+	femmodel->parameters->FindParam(&lat,&Nlat,&N,SmbGCMLatEnum); _assert_(N==1);
+	femmodel->parameters->FindParam(&lon,&Nlon,&N,SmbGCMLonEnum); _assert_(N==1);
+
+	femmodel->parameters->FindParam(&time,TimeEnum);
+
+	for (int i=0;i<Nlat;i++) {
+		for (int j=0;j<Nlon;j++) {
+			femmodel->parameters->FindParam(&temperature, i, j, time, SmbGCMTemperatureEnum);
+			_printf0_(i<<","<<j<<","<<time<<":"<<temperature<<endl);
+		}
+	}
 
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
 		element->PositiveDegreeDayGCM();
 	}
-
+	xDelete<IssmDouble>(lat);
+	xDelete<IssmDouble>(lon);
 }/*}}}*/
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 

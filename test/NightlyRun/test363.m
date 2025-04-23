@@ -14,15 +14,16 @@ md.smb=SMBpddGCM();
 md.smb = md.smb.initialize(md);
 md.smb.lat = [1,2,3]';
 md.smb.lon = [1,2,3]';
-md.smb.time = [2,4,5]';
+smbtime = [2,4,5];
 Nlat = numel(md.smb.lat);
 Nlon = numel(md.smb.lon);
-Ntime = numel(md.smb.time);
+Ntime = numel(smbtime);
 
-md.smb.precipitation = ones(Nlat*Nlon,Ntime)*0.1;
-md.smb.temperature = ones(Nlat*Nlon,Ntime)*3.6;
+md.smb.precipitation = [ones(Nlat*Nlon,Ntime)*0.1; smbtime];
+md.smb.temperature = [reshape([1:Nlat*Nlon*Ntime], Nlat*Nlat, Ntime); smbtime];
+%md.smb.temperature = [ones(Nlat*Nlon,Ntime)*3.6; smbtime];
 
 md.transient.isthermal=0;
-md.timestepping.cycle_forcing=1;
+md.timestepping.cycle_forcing=0;
 md=solve(md,'Transient');
 

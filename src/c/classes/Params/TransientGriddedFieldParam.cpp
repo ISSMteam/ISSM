@@ -26,16 +26,16 @@ TransientGriddedFieldParam::TransientGriddedFieldParam(int in_enum_type,IssmDoub
 	this->enum_type=in_enum_type;
 	this->M=in_M; //Number of rows (LAT)
 	this->N=in_N; //Number of columns (LON)
-	this->MN=this->M*this->N;; //Number of data per time step
+	this->MN=in_M*in_N;; //Number of data per time step
 	this->T=in_T; //Number of time steps
 	this->interpolation=interpolation_on;
 	this->cycle=cycle_in;
 
-	this->values=xNew<IssmDouble>(M*N*T);
-	xMemCpy<IssmDouble>(this->values,in_values,M*N*T);
+	this->values=xNew<IssmDouble>(in_M*in_N*in_T);
+	xMemCpy<IssmDouble>(this->values,in_values,in_M*in_N*in_T);
 
-	this->timesteps=xNew<IssmDouble>(T);
-	xMemCpy<IssmDouble>(this->timesteps,in_time,T);
+	this->timesteps=xNew<IssmDouble>(in_T);
+	xMemCpy<IssmDouble>(this->timesteps,in_time,in_T);
 }
 /*}}}*/
 TransientGriddedFieldParam::~TransientGriddedFieldParam(){/*{{{*/
@@ -118,12 +118,12 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 	 *fall within. Then interpolate the values on this interval: */
 	if(time<this->timesteps[0]){
 		/*get values for the first time: */
-		output=this->values[row*this->N+column];
+		output=this->values[(row*this->N+column)*this->T];
 		found=true;
 	}
 	else if(time>this->timesteps[this->T-1]){
 		/*get values for the last time: */
-		output=this->values[row*this->N+column+(this->T-1)*this->MN];
+		output=this->values[(row*this->N+column)*this->T+(this->T-1)];
 		found=true;
 	}
 	else{
@@ -131,7 +131,7 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 		for(int i=0;i<this->T;i++){
 			if(time==this->timesteps[i]){
 				/*We are right on one step time: */
-				output = this->values[i*this->MN+row*this->N+column];
+				output = this->values[(row*this->N+column)*this->T+i];
 				found=true;
 				break; //we are done with the time interpolation.
 			}
@@ -140,8 +140,8 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 					/*ok, we have the interval [i:i+1]. Interpolate linearly for now: */
 					IssmDouble deltat = this->timesteps[i+1]-this->timesteps[i];
 					IssmDouble alpha  = (time-this->timesteps[i])/deltat;
-					if(this->interpolation==true) output=(1.0-alpha)*this->values[i*this->MN+row*this->N+column] + alpha*this->values[(i+1)*this->MN+row*this->N+column];
-					else output=this->values[i*this->MN+row*this->N+column];
+					if(this->interpolation==true) output=(1.0-alpha)*this->values[(row*this->N+column)*this->T+i] + alpha*this->values[(row*this->N+column)*this->T+i+1];
+					else output=this->values[(row*this->N+column)*this->T+i];
 					found=true;
 					break;
 				}

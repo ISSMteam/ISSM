@@ -415,14 +415,11 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			iomodel->FetchData(&temp,&M,&N,"md.smb.lon"); _assert_(N==1); Nlon = M;
 			parameters->AddObject(new DoubleVecParam(SmbGCMLonEnum,&temp[0],M));
 			iomodel->DeleteData(temp,"md.smb.lon");
-			iomodel->FetchData(&temp,&M,&N,"md.smb.time"); _assert_(N==1);
-			parameters->AddObject(new DoubleVecParam(SmbGCMTimeEnum,&temp[0],M)); Nt = M;
-			iomodel->DeleteData(temp,"md.smb.time");
-			iomodel->FetchData(&temp,&M,&N,"md.smb.precipitation"); _assert_(N==Nt && M==Nlat*Nlon);
-			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMPrecipitationEnum,temp,&temp[N*(M-1)],interp,cycle,Nlon,Nlat,Nt));
+			iomodel->FetchData(&temp,&M,&N,"md.smb.precipitation"); _assert_(N>=1 && M==Nlat*Nlon+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMPrecipitationEnum,temp,&temp[N*(M-1)],interp,cycle,Nlon,Nlat,N));
 			iomodel->DeleteData(temp,"md.smb.precipitation");
-			iomodel->FetchData(&temp,&M,&N,"md.smb.temperature"); _assert_(N==Nt && M==Nlat*Nlon);
-			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMTemperatureEnum,temp,&temp[N*(M-1)],interp,cycle,Nlon,Nlat,Nt));
+			iomodel->FetchData(&temp,&M,&N,"md.smb.temperature"); _assert_(N>=1 && M==Nlat*Nlon+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMTemperatureEnum,temp,&temp[N*(M-1)],interp,cycle,Nlon,Nlat,N));
 			iomodel->DeleteData(temp,"md.smb.temperature");
          iomodel->FetchData(&temp,&M,&N,"md.smb.lapserates"); _assert_(N==1);
          parameters->AddObject(new DoubleVecParam(SmbLapseRatesEnum,&temp[0],M));

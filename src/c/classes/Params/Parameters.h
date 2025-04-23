@@ -43,6 +43,7 @@ class Parameters{
 		void  FindParam(IssmDouble* pscalar, int enum_type, IssmDouble time);
 		void  FindParam(IssmDouble* pscalar, int enum_type, IssmDouble time, int timestepping, IssmDouble dt);
 		void  FindParam(IssmDouble* pscalar, int row, IssmDouble time, int enum_type);
+		void  FindParam(IssmDouble* pscalar, int row, int column, IssmDouble time, int enum_type);
 		void  FindParam(IssmDouble* pscalar, int row, IssmDouble time, int timestepping, IssmDouble dt, int enum_type);
 		void  FindParam(char** pstring,int enum_type);
 		void  FindParam(char*** pstringarray,int* pM,int enum_type);
