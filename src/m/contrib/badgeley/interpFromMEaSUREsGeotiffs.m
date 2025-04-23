@@ -52,6 +52,7 @@ for p = product
    else
    	error(['The velocity data for ', product, ' is not available, either download it first or double check the ID number.']);
    end
+
    % get the time info from file names
    if ismember(p,[725,727,731,766,478])
 		templist = dir([foldername,'*_vv_v05.0.tif']);
@@ -75,7 +76,7 @@ for p = product
 			dataVers(ii) = join(dataVers_temp(1:2),'.');
       elseif p == 646
 			dataPrefix(ii) = join(tempConv(1:3), '_');
-			startdatenum = datenum(tempConv{3});
+			startdatenum = datenum(tempConv{3},'yyyy-mm');
 			startdatetime = datetime(tempConv{3},'InputFormat','yyyy-MM');
 			enddatenum = datenum(year(startdatetime),month(startdatetime)+1,1) - 1;
 			dataTstart(ii) = date2decyear(startdatenum);
@@ -94,14 +95,14 @@ for p = product
 			dataTend(ii) = decyear(datetime('31-10-2015','InputFormat','dd-MM-yyyy')); 
    	end
    end
-   disp(['  Found ', num2str(Ndata), ' records in ', foldername]);
-   disp(['    from ', datestr(decyear2date(min(dataTstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date(max(dataTend)),'yyyy-mm-dd') ]);
+	fprintf(['   == Found ', num2str(Ndata), ' records in ', foldername(numel(src_dir)+1:end)]);
+   fprintf([' (from ', datestr(decyear2date(min(dataTstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date(max(dataTend)),'yyyy-mm-dd'), ')\n']);
    
 	%Tstart = Tstarts(p_ind);
 	%Tend = Tends(p_ind);
 
    dataInd = find((dataTend>=Tstarts(p_ind)) & (dataTstart<=Tends(p_ind)));
-   disp([' For the selected period: ', datestr(decyear2date((Tstarts(p_ind))),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tends(p_ind))),'yyyy-mm-dd'), ', there are ', num2str(length(dataInd)), ' records' ]);
+   disp(['      For the selected period: ', datestr(decyear2date((Tstarts(p_ind))),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tends(p_ind))),'yyyy-mm-dd'), ', there are ', num2str(length(dataInd)), ' records' ]);
   
    dataToLoad = dataPrefix(dataInd);
    TstartToload = dataTstart(dataInd);
@@ -109,38 +110,39 @@ for p = product
 	VersToload = dataVers(dataInd);
 
 	jj = 1;
+	skip = 0;
    for ii = 1:length(dataToLoad)
-     	try
-			if contains('vx',output) || (p==646 && TendToload(ii) <= 2016) || (p==670)
-   		   vx(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_vx_', VersToload{ii}, '.tif'], X, Y, -99999);
+		if contains('vx',output) || (p==646 && TendToload(ii) <= 2016) || (p==670)
+			temp = interpFromGeotiff([foldername, dataToLoad{ii}, '_vx_', VersToload{ii}, '.tif'], X, Y, -99999);
+			if all(isnan(temp), 'all')
+				skip=skip+1;
+				continue;
 			end
-			if contains('vy',output) || (p==646 && TendToload(ii) <= 2016) || (p==670)
-   	   	vy(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_vy_', VersToload{ii}, '.tif'], X, Y, -99999);
-		   end
-			if ((p==646) && (TendToload(ii) <= 2016)) || (p==670)
-				vx_temp = vx(jj,:);
-				vy_temp = vy(jj,:);
-				vx_temp(vx_temp==-99999)=nan;
-				vy_temp(vy_temp==-99999)=nan;
-				vel(jj,:) = (vx(jj,:).^2 + vy(jj,:).^2).^(1/2);
-			else
-   		   vel(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_vv_', VersToload{ii}, '.tif'], X, Y, -99999);
-			end
-			if contains('ex',output)
-   	   	ex(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_ex_', VersToload{ii}, '.tif'], X, Y, -99999);
-			end
-			if contains('ey',output)
-   		   ey(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_ey_', VersToload{ii}, '.tif'], X, Y, -99999);
-			end
-   	   Tstart(jj) = TstartToload(ii);
-   	   Tend(jj) = TendToload(ii);
-   		jj = jj + 1;
-   	catch
-		%	disp('error - continuing onto next observation');
-         continue
-   	end
+			vx(jj,:) = temp;
+		end
+		if contains('vy',output) || (p==646 && TendToload(ii) <= 2016) || (p==670)
+			vy(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_vy_', VersToload{ii}, '.tif'], X, Y, -99999);
+		end
+		if ((p==646) && (TendToload(ii) <= 2016)) || (p==670)
+			vx_temp = vx(jj,:);
+			vy_temp = vy(jj,:);
+			vx_temp(vx_temp==-99999)=NaN;
+			vy_temp(vy_temp==-99999)=NaN;
+			vel(jj,:) = (vx(jj,:).^2 + vy(jj,:).^2).^(1/2);
+		else
+			vel(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_vv_', VersToload{ii}, '.tif'], X, Y, -99999);
+		end
+		if contains('ex',output)
+			ex(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_ex_', VersToload{ii}, '.tif'], X, Y, -99999);
+		end
+		if contains('ey',output)
+			ey(jj,:) = interpFromGeotiff([foldername, dataToLoad{ii}, '_ey_', VersToload{ii}, '.tif'], X, Y, -99999);
+		end
+		Tstart(jj) = TstartToload(ii);
+		Tend(jj) = TendToload(ii);
+		jj = jj + 1;
    end
-   disp([' For the given domain and product ' num2str(p) ', there are ', num2str(jj-1), ' records' ]);
+   disp(['      For the given domain and product (' num2str(p) '), there are ', num2str(jj-1), ' records (skipped ' num2str(skip) ')']);
 
    if jj > 1
       % find unique and sort by the mean time
@@ -149,12 +151,12 @@ for p = product
       %Tend = Tend(ia);
 
       % average
-      disp(['  Before averaging: ', num2str(length(ic)), ' sets']);
+      disp(['      Before averaging: ', num2str(length(ic)), ' sets']);
 	   kk = 0;
       for ii = 1:length(ic)
         	ids = find(ic == ii);
          vels = vel(ids,:);
-	   	vels(vels<0) = nan;
+	   	vels(vels<0) = NaN;
          vel_mean = mean(double(vels), 1, 'omitnan');
 	   	if all(isnan(vel_mean))
 	   		continue
@@ -163,22 +165,22 @@ for p = product
 	      dataout(d_ind+kk-1).vel = vel_mean;
 	      if contains('vx',output)
 	   		vxs = vx(ids,:);
-	   		vxs(vxs==-99999) = nan;
+	   		vxs(vxs==-99999) = NaN;
             dataout(d_ind+kk-1).vx = mean(double(vxs), 1, 'omitnan');
 	   	end
 	   	if contains('vy',output)
 	   		vys = vy(ids,:);
-	   		vys(vys==-99999) = nan;
+	   		vys(vys==-99999) = NaN;
             dataout(d_ind+kk-1).vy = mean(double(vys), 1, 'omitnan');
 	   	end
 	   	if contains('ex',output)
 	   		exs = ex(ids,:);
-	   		exs(exs==-99999) = nan;
+	   		exs(exs==-99999) = NaN;
             dataout(d_ind+kk-1).ex = mean(double(exs), 1, 'omitnan');
 	   	end
 	   	if contains('ey',output)
 	   		eys = ey(ids,:);
-	   		eys(eys==-99999) = nan;
+	   		eys(eys==-99999) = NaN;
             dataout(d_ind+kk-1).ey = mean(double(eys), 1, 'omitnan');
 	   	end
 	   	dataout(d_ind+kk-1).Tstart = mean(Tstart(ids));
@@ -186,7 +188,7 @@ for p = product
 	   	dataout(d_ind+kk-1).Tmean = mean(Tstart(ids) + Tend(ids))./2;
 	   	dataout(d_ind+kk-1).product = p;
       end
-      disp(['  After averaging: ', num2str(kk), ' sets']);	
+      disp(['      After averaging: ', num2str(kk), ' sets']);	
 	else
 		kk = 0;
    end
@@ -214,8 +216,8 @@ for ii = 1:length(pos)
    if contains('ey',output)
       vel_obs(ii).ey = reshape(dataout(pos(ii)).ey,[],1);
    end
-   vel_obs(ii).Tstart = dataout(pos(ii)).Tstart;
-   vel_obs(ii).Tend = dataout(pos(ii)).Tend;
-   vel_obs(ii).Tmean = dataout(pos(ii)).Tmean;
-	vel_obs(ii).product = dataout(pos(ii)).product;
+   vel_obs(ii).Tstart  = dataout(pos(ii)).Tstart;
+   vel_obs(ii).Tend    = dataout(pos(ii)).Tend;
+   vel_obs(ii).Tmean   = dataout(pos(ii)).Tmean;
+   vel_obs(ii).product = dataout(pos(ii)).product;
 end
