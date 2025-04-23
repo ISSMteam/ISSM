@@ -25,5 +25,7 @@ md.smb.temperature = [reshape([1:Nx*Ny*Ntime], Nx*Ny, Ntime); smbtime];
 
 md.transient.isthermal=0;
 md.timestepping.cycle_forcing=0;
+
+md.transient.requested_outputs={'default','SmbTemperature', 'SmbPrecipitation'};
 md=solve(md,'Transient');
 

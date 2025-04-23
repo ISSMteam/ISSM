@@ -1225,6 +1225,7 @@ syn keyword juliaConstC SmbTEnum
 syn keyword juliaConstC SmbTaEnum
 syn keyword juliaConstC SmbTampEnum
 syn keyword juliaConstC SmbTeValueEnum
+syn keyword juliaConstC SmbTemperatureEnum
 syn keyword juliaConstC SmbTemperaturesAnomalyEnum
 syn keyword juliaConstC SmbTemperaturesLgmEnum
 syn keyword juliaConstC SmbTemperaturesPresentdayEnum

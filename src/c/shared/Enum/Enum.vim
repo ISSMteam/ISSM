@@ -1232,6 +1232,7 @@ syn keyword cConstant SmbTEnum
 syn keyword cConstant SmbTaEnum
 syn keyword cConstant SmbTampEnum
 syn keyword cConstant SmbTeValueEnum
+syn keyword cConstant SmbTemperatureEnum
 syn keyword cConstant SmbTemperaturesAnomalyEnum
 syn keyword cConstant SmbTemperaturesLgmEnum
 syn keyword cConstant SmbTemperaturesPresentdayEnum

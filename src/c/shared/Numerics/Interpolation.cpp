@@ -6,6 +6,17 @@
 
 /*findindices {{{*/
 bool findindices(int* pn,int* pm,double* x,int x_rows, double* y,int y_rows, double xgrid,double ygrid){
+	/*Find indices m and n into y_grid and x_grid, for which  y_grid(m)<=y<=y_grid(m+1) and x_grid(n)<=x<=x_grid(n+1)
+	 *    Q12             Q22
+	 * y2 x---------+-----x
+	 *    |         |     |
+	 *    |         |P    |
+	 *    |---------+-----|
+	 *    |         |     |
+	 *    |         |     |
+	 * y1 x---------+-----x Q21
+	 *    x1                 x2
+	 */
 
 	bool foundx=false,foundy=false;
 	int m=-1,n=-1;
@@ -105,6 +116,18 @@ double bilinearinterp(double x1,double x2,double y1,double y2,double Q11,double 
 	  +Q21*(x-x1)*(y2-y)/((x2-x1)*(y2-y1))
 	  +Q12*(x2-x)*(y-y1)/((x2-x1)*(y2-y1))
 	  +Q22*(x-x1)*(y-y1)/((x2-x1)*(y2-y1));
+}
+double bilinearinterp(IssmDouble* x_grid,IssmDouble* y_grid,IssmDouble* data,IssmDouble x,IssmDouble y,int m,int n,int Nx){
+	IssmDouble x1, x2, y1, y2;
+	IssmDouble Q11, Q12, Q21, Q22;
+	x1=x_grid[n]; x2=x_grid[n+1];
+	y1=y_grid[m]; y2=y_grid[m+1];
+
+	Q11=data[m*Nx+n];
+	Q12=data[(m+1)*Nx+n];
+	Q21=data[m*Nx+n+1];
+	Q22=data[(m+1)*Nx+n+1];
+	return bilinearinterp(x1, x2, y1, y2, Q11, Q12, Q21, Q22, x, y);
 }
 /*}}}*/
 /*nearestinterp{{{*/

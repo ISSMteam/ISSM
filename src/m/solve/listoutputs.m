@@ -499,6 +499,7 @@ SmbT
 SmbTa
 SmbTamp
 SmbTeValue
+SmbTemperature
 SmbTemperaturesAnomaly
 SmbTemperaturesLgm
 SmbTemperaturesPresentday
