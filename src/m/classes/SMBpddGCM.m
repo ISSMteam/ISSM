@@ -6,8 +6,8 @@
 classdef SMBpddGCM
 	properties (SetAccess=public)
 
-		lat                   = NaN;
-		lon                   = NaN;
+		x_grid                = NaN;
+		y_grid                = NaN;
 		precipitation         = NaN;
 		temperature           = NaN;
 		enhance_factor        = NaN;
@@ -59,12 +59,12 @@ classdef SMBpddGCM
 			if (strcmp(solution,'TransientSolution') & md.transient.issmb == 0), return; end
 
 			if ismember('MasstransportAnalysis',analyses),
-				md = checkfield(md,'fieldname','smb.lat','NaN',1,'Inf',1,'size',[NaN 1]);
-				md = checkfield(md,'fieldname','smb.lon','NaN',1,'Inf',1,'size',[NaN 1]);
-				Nlat = numel(self.lat);
-				Nlon = numel(self.lon);
-				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[Nlon*Nlat+1, NaN]);
-				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[Nlon*Nlat+1, NaN]);
+				md = checkfield(md,'fieldname','smb.x_grid','NaN',1,'Inf',1,'size',[NaN 1]);
+				md = checkfield(md,'fieldname','smb.y_grid','NaN',1,'Inf',1,'size',[NaN 1]);
+				Nx = numel(self.x_grid);
+				Ny = numel(self.y_grid);
+				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[Nx*Ny+1, NaN]);
+				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[Nx*Ny+1, NaN]);
 				md = checkfield(md,'fieldname','smb.lapserates','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.enhance_factor','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.allsolidtemperature','NaN',1,'Inf',1);
@@ -81,10 +81,10 @@ classdef SMBpddGCM
 			disp(sprintf('   surface forcings parameters:'));
 
 			disp(sprintf('\n   PDD Model based on downscaling of GCM climate data :'));
-			fielddisplay(self,'lat','latitudes of the GCM climate data vector');
-			fielddisplay(self,'lon','longitude of the GCM climate data vector');
-			fielddisplay(self,'precipitation', 'monthly surface precipitation ((nxm+1)xt) [m/yr water eq]');
-			fielddisplay(self,'temperature', 'surface temperature ((nxm+1)xt) [K]');
+			fielddisplay(self,'x_grid','x coordinates of the GCM climate grid data');
+			fielddisplay(self,'y_grid','y coordinates of the GCM climate grid data');
+			fielddisplay(self,'precipitation', 'monthly surface precipitation ((nx*ny+1)*t) [m/yr water eq]');
+			fielddisplay(self,'temperature', 'surface temperature ((nx*ny+1)*t) [K]');
 			fielddisplay(self,'enhance_factor', 'melting enhance factor of degree-day factor for debris');
 			fielddisplay(self,'lapserates', 'lapse rate [K/m]');
 			fielddisplay(self,'allsolidtemperature', 'temperature where all precipitation is solid [K]');
@@ -101,14 +101,14 @@ classdef SMBpddGCM
 		function marshall(self,prefix,md,fid) % {{{
 
 			yts=md.constants.yts;
-			Nlat = numel(self.lat);
-			Nlon = numel(self.lon);
+			Nx = numel(self.x_grid);
+			Ny = numel(self.y_grid);
 
 			WriteData(fid,prefix,'name','md.smb.model','data',15,'format','Integer');
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lat','format','DoubleMat','mattype',3);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lon','format','DoubleMat','mattype',3);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon+1, 'scale',1./yts, 'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nlat*Nlon+1, 'scale',1., 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','x_grid','format','DoubleMat','mattype',3);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','y_grid','format','DoubleMat','mattype',3);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','precipitation','format','DoubleMat','mattype',3,'timeserieslength', Nx*Ny+1, 'scale',1./yts, 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','temperature','format','DoubleMat','mattype',3,'timeserieslength', Nx*Ny+1, 'scale',1., 'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','enhance_factor','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapserates','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','allsolidtemperature','format','Double');

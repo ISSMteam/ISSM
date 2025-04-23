@@ -3843,7 +3843,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	xDelete<IssmDouble>(melt_star);
 }
 /*}}}*/
-void       Element::PositiveDegreeDayGCM(){/*{{{*/
+void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* precepitation,IssmDouble* x,IssmDouble* y,int Nx,int Ny){/*{{{*/
 
 	/* General FIXMEs: get Tmelting point, pddicefactor, pddsnowfactor, sigma from parameters/user input */
 

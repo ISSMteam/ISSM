@@ -357,37 +357,32 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 
 }/*}}}*/
 void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
-	IssmDouble* lat = NULL;
-	IssmDouble* lon = NULL;
+	IssmDouble* x = NULL;
+	IssmDouble* y = NULL;
 	IssmDouble* temperature = NULL;
 	IssmDouble* precepitation = NULL;
 	IssmDouble time;
-	int N,M,Nlat,Nlon,Ntime;
-
-	//	femmodel->parameters->FindParam(&datebreaks,&M,&N,SmbARMAdatebreaksEnum);             _assert_(M==numbasins); _assert_(N==max(numbreaks,1));
+	int N,M,Nx,Ny;
 
 	/*load lat lon temp and precepitation*/
-	femmodel->parameters->FindParam(&lat,&Nlat,&N,SmbGCMLatEnum); _assert_(N==1);
-	femmodel->parameters->FindParam(&lon,&Nlon,&N,SmbGCMLonEnum); _assert_(N==1);
+	femmodel->parameters->FindParam(&x,&Nx,&N,SmbGCMXgridEnum); _assert_(N==1);
+	femmodel->parameters->FindParam(&y,&Ny,&N,SmbGCMYgridEnum); _assert_(N==1);
 
 	femmodel->parameters->FindParam(&time,TimeEnum);
 
-	femmodel->parameters->FindParam(&temperature, &M, &N, time, SmbGCMTemperatureEnum);
-	femmodel->parameters->FindParam(&precepitation, &M, &N, time, SmbGCMPrecipitationEnum);
+	femmodel->parameters->FindParam(&temperature, &M, &N, time, SmbGCMTemperatureEnum); _assert_(M==Ny && N==Nx);
+	femmodel->parameters->FindParam(&precepitation, &M, &N, time, SmbGCMPrecipitationEnum); _assert_(M==Ny && N==Nx);
 
-	_printf0_(M<<" x "<<N<<endl);
-	for (int i=0;i<Nlat;i++) {
-		for (int j=0;j<Nlon;j++) {
-	//		femmodel->parameters->FindParam(&temperature, i, j, time, SmbGCMTemperatureEnum);
-			_printf0_(i<<","<<j<<","<<time<<":"<<temperature[i*N+j]<<endl);
-		}
-	}
+
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
-		element->PositiveDegreeDayGCM();
+		element->PositiveDegreeDayGCM(temperature, precepitation,x,y,Nx,Ny);
 	}
-	xDelete<IssmDouble>(lat);
-	xDelete<IssmDouble>(lon);
+
+	xDelete<IssmDouble>(x);
+	xDelete<IssmDouble>(y);
+	xDelete<IssmDouble>(temperature);
+	xDelete<IssmDouble>(precepitation);
 }/*}}}*/
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 

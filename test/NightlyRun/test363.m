@@ -12,15 +12,15 @@ md.timestepping.final_time=6.;
 %Set up SMB
 md.smb=SMBpddGCM();
 md.smb = md.smb.initialize(md);
-md.smb.lat = [1,2,3]';
-md.smb.lon = [1,2,3]';
+md.smb.x_grid = linspace(0,1e6,3)';
+md.smb.y_grid = linspace(0,1e6,4)';
 smbtime = [2,4,5];
-Nlat = numel(md.smb.lat);
-Nlon = numel(md.smb.lon);
+Nx = numel(md.smb.x_grid);
+Ny = numel(md.smb.y_grid);
 Ntime = numel(smbtime);
 
-md.smb.precipitation = [ones(Nlat*Nlon,Ntime)*0.1; smbtime];
-md.smb.temperature = [reshape([1:Nlat*Nlon*Ntime], Nlat*Nlat, Ntime); smbtime];
+md.smb.precipitation = [ones(Nx*Ny,Ntime)*0.1; smbtime];
+md.smb.temperature = [reshape([1:Nx*Ny*Ntime], Nx*Ny, Ntime); smbtime];
 %md.smb.temperature = [ones(Nlat*Nlon,Ntime)*3.6; smbtime];
 
 md.transient.isthermal=0;
