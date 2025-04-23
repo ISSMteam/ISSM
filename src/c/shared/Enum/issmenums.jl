@@ -579,7 +579,6 @@
 	SmbGCMLatEnum
 	SmbGCMLonEnum
 	SmbGCMPrecipitationEnum
-	SmbGCMTimeEnum
 	SmbGCMTemperatureEnum
 	SmbHumiditygradEnum
 	SmbInitDensityScalingEnum
@@ -4336,7 +4335,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbGCMLatEnum) return "SmbGCMLat" end
 	if(enum==SmbGCMLonEnum) return "SmbGCMLon" end
 	if(enum==SmbGCMPrecipitationEnum) return "SmbGCMPrecipitation" end
-	if(enum==SmbGCMTimeEnum) return "SmbGCMTime" end
 	if(enum==SmbGCMTemperatureEnum) return "SmbGCMTemperature" end
 	if(enum==SmbHumiditygradEnum) return "SmbHumiditygrad" end
 	if(enum==SmbInitDensityScalingEnum) return "SmbInitDensityScaling" end
@@ -8093,7 +8091,6 @@ function StringToEnum(name::String)
 	if(name=="SmbGCMLat") return SmbGCMLatEnum  end
 	if(name=="SmbGCMLon") return SmbGCMLonEnum  end
 	if(name=="SmbGCMPrecipitation") return SmbGCMPrecipitationEnum  end
-	if(name=="SmbGCMTime") return SmbGCMTimeEnum  end
 	if(name=="SmbGCMTemperature") return SmbGCMTemperatureEnum  end
 	if(name=="SmbHumiditygrad") return SmbHumiditygradEnum  end
 	if(name=="SmbInitDensityScaling") return SmbInitDensityScalingEnum  end

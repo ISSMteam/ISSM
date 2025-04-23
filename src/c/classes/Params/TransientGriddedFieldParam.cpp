@@ -153,6 +153,21 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 	*pdouble=output;
 }
 /*}}}*/
+void  TransientGriddedFieldParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time){/*{{{*/
+
+	IssmDouble* output = xNew<IssmDouble>(M*N);
+
+	for (int i=0;i<N;i++) {
+		for (int j=0;j<M;j++) {
+			this->GetParameterValue(&output[j*N+i],j,i,time);
+		}
+	}
+	/*Assign output pointers:*/
+	if(pM) *pM=M;
+	if(pN) *pN=N;
+	*pIssmDoublearray=output;
+}
+/*}}}*/
 void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time, int timestepping, IssmDouble dt){/*{{{*/
 
 	bool cycle = this->cycle;

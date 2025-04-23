@@ -590,7 +590,6 @@ syn keyword cConstant SmbFEnum
 syn keyword cConstant SmbGCMLatEnum
 syn keyword cConstant SmbGCMLonEnum
 syn keyword cConstant SmbGCMPrecipitationEnum
-syn keyword cConstant SmbGCMTimeEnum
 syn keyword cConstant SmbGCMTemperatureEnum
 syn keyword cConstant SmbHumiditygradEnum
 syn keyword cConstant SmbInitDensityScalingEnum
