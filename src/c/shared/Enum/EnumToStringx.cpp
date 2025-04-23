@@ -589,8 +589,8 @@ const char* EnumToStringx(int en){
 		case SmbEnum : return "Smb";
 		case SmbEIdxEnum : return "SmbEIdx";
 		case SmbFEnum : return "SmbF";
-		case SmbGCMLatEnum : return "SmbGCMLat";
-		case SmbGCMLonEnum : return "SmbGCMLon";
+		case SmbGCMXgridEnum : return "SmbGCMXgrid";
+		case SmbGCMYgridEnum : return "SmbGCMYgrid";
 		case SmbGCMPrecipitationEnum : return "SmbGCMPrecipitation";
 		case SmbGCMTemperatureEnum : return "SmbGCMTemperature";
 		case SmbHumiditygradEnum : return "SmbHumiditygrad";

@@ -587,8 +587,8 @@ syn keyword cConstant SmbDtEnum
 syn keyword cConstant SmbEnum
 syn keyword cConstant SmbEIdxEnum
 syn keyword cConstant SmbFEnum
-syn keyword cConstant SmbGCMLatEnum
-syn keyword cConstant SmbGCMLonEnum
+syn keyword cConstant SmbGCMXgridEnum
+syn keyword cConstant SmbGCMYgridEnum
 syn keyword cConstant SmbGCMPrecipitationEnum
 syn keyword cConstant SmbGCMTemperatureEnum
 syn keyword cConstant SmbHumiditygradEnum

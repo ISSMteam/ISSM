@@ -576,8 +576,8 @@
 	SmbEnum
 	SmbEIdxEnum
 	SmbFEnum
-	SmbGCMLatEnum
-	SmbGCMLonEnum
+	SmbGCMXgridEnum
+	SmbGCMYgridEnum
 	SmbGCMPrecipitationEnum
 	SmbGCMTemperatureEnum
 	SmbHumiditygradEnum
@@ -4332,8 +4332,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbEnum) return "Smb" end
 	if(enum==SmbEIdxEnum) return "SmbEIdx" end
 	if(enum==SmbFEnum) return "SmbF" end
-	if(enum==SmbGCMLatEnum) return "SmbGCMLat" end
-	if(enum==SmbGCMLonEnum) return "SmbGCMLon" end
+	if(enum==SmbGCMXgridEnum) return "SmbGCMXgrid" end
+	if(enum==SmbGCMYgridEnum) return "SmbGCMYgrid" end
 	if(enum==SmbGCMPrecipitationEnum) return "SmbGCMPrecipitation" end
 	if(enum==SmbGCMTemperatureEnum) return "SmbGCMTemperature" end
 	if(enum==SmbHumiditygradEnum) return "SmbHumiditygrad" end
@@ -8088,8 +8088,8 @@ function StringToEnum(name::String)
 	if(name=="Smb") return SmbEnum  end
 	if(name=="SmbEIdx") return SmbEIdxEnum  end
 	if(name=="SmbF") return SmbFEnum  end
-	if(name=="SmbGCMLat") return SmbGCMLatEnum  end
-	if(name=="SmbGCMLon") return SmbGCMLonEnum  end
+	if(name=="SmbGCMXgrid") return SmbGCMXgridEnum  end
+	if(name=="SmbGCMYgrid") return SmbGCMYgridEnum  end
 	if(name=="SmbGCMPrecipitation") return SmbGCMPrecipitationEnum  end
 	if(name=="SmbGCMTemperature") return SmbGCMTemperatureEnum  end
 	if(name=="SmbHumiditygrad") return SmbHumiditygradEnum  end

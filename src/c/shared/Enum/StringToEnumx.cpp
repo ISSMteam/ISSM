@@ -601,8 +601,8 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Smb")==0) return SmbEnum;
 	      else if (strcmp(name,"SmbEIdx")==0) return SmbEIdxEnum;
 	      else if (strcmp(name,"SmbF")==0) return SmbFEnum;
-	      else if (strcmp(name,"SmbGCMLat")==0) return SmbGCMLatEnum;
-	      else if (strcmp(name,"SmbGCMLon")==0) return SmbGCMLonEnum;
+	      else if (strcmp(name,"SmbGCMXgrid")==0) return SmbGCMXgridEnum;
+	      else if (strcmp(name,"SmbGCMYgrid")==0) return SmbGCMYgridEnum;
 	      else if (strcmp(name,"SmbGCMPrecipitation")==0) return SmbGCMPrecipitationEnum;
 	      else if (strcmp(name,"SmbGCMTemperature")==0) return SmbGCMTemperatureEnum;
 	      else if (strcmp(name,"SmbHumiditygrad")==0) return SmbHumiditygradEnum;
