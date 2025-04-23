@@ -3843,7 +3843,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	xDelete<IssmDouble>(melt_star);
 }
 /*}}}*/
-void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* precepitation,IssmDouble* x,IssmDouble* y,int Nx,int Ny){/*{{{*/
+void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* precepitation,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny){/*{{{*/
 
 	/* General FIXMEs: get Tmelting point, pddicefactor, pddsnowfactor, sigma from parameters/user input */
 
@@ -3855,14 +3855,23 @@ void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* pre
 	IssmDouble rho_water,rho_ice,desfac,rlaps;
 	/*Allocate all arrays*/
 	IssmDouble* smb         = xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* xyz_list = NULL;
+	IssmDouble x, y; 
+	int m,n;
 
+	this->GetVerticesCoordinates(&xyz_list);
 	// loop over all vertices
-	for(int v=0;v<NUM_VERTICES;v++) smb[v]=0;
-
+	for(int v=0;v<NUM_VERTICES;v++) {
+		x = xyz_list[v*3+0];
+		y = xyz_list[v*3+1];
+		findindices(&n,&m,x_grid,Nx,y_grid,Ny,x,y);
+		_printf0_(n<<","<<m<<","<<x<<","<<y<<endl);
+		smb[v]=0;
+	}
 	/*Add input to element and Free memory*/
 	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
 	xDelete<IssmDouble>(smb);
-
+	xDelete<IssmDouble>(xyz_list);
 }
 /*}}}*/
 void       Element::SmbDebrisEvatt(){/*{{{*/
