@@ -1221,6 +1221,7 @@
 	SmbTaEnum
 	SmbTampEnum
 	SmbTeValueEnum
+	SmbTemperatureEnum
 	SmbTemperaturesAnomalyEnum
 	SmbTemperaturesLgmEnum
 	SmbTemperaturesPresentdayEnum
@@ -4977,6 +4978,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbTaEnum) return "SmbTa" end
 	if(enum==SmbTampEnum) return "SmbTamp" end
 	if(enum==SmbTeValueEnum) return "SmbTeValue" end
+	if(enum==SmbTemperatureEnum) return "SmbTemperature" end
 	if(enum==SmbTemperaturesAnomalyEnum) return "SmbTemperaturesAnomaly" end
 	if(enum==SmbTemperaturesLgmEnum) return "SmbTemperaturesLgm" end
 	if(enum==SmbTemperaturesPresentdayEnum) return "SmbTemperaturesPresentday" end
@@ -8733,6 +8735,7 @@ function StringToEnum(name::String)
 	if(name=="SmbTa") return SmbTaEnum  end
 	if(name=="SmbTamp") return SmbTampEnum  end
 	if(name=="SmbTeValue") return SmbTeValueEnum  end
+	if(name=="SmbTemperature") return SmbTemperatureEnum  end
 	if(name=="SmbTemperaturesAnomaly") return SmbTemperaturesAnomalyEnum  end
 	if(name=="SmbTemperaturesLgm") return SmbTemperaturesLgmEnum  end
 	if(name=="SmbTemperaturesPresentday") return SmbTemperaturesPresentdayEnum  end

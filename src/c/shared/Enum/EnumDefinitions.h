@@ -1229,6 +1229,7 @@ enum definitions{
 	SmbTaEnum,
 	SmbTampEnum,
 	SmbTeValueEnum,
+	SmbTemperatureEnum,
 	SmbTemperaturesAnomalyEnum,
 	SmbTemperaturesLgmEnum,
 	SmbTemperaturesPresentdayEnum,

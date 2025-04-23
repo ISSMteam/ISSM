@@ -1234,6 +1234,7 @@ const char* EnumToStringx(int en){
 		case SmbTaEnum : return "SmbTa";
 		case SmbTampEnum : return "SmbTamp";
 		case SmbTeValueEnum : return "SmbTeValue";
+		case SmbTemperatureEnum : return "SmbTemperature";
 		case SmbTemperaturesAnomalyEnum : return "SmbTemperaturesAnomaly";
 		case SmbTemperaturesLgmEnum : return "SmbTemperaturesLgm";
 		case SmbTemperaturesPresentdayEnum : return "SmbTemperaturesPresentday";
