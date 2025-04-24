@@ -1172,6 +1172,7 @@
 	SmbMeanLHFEnum
 	SmbMeanSHFEnum
 	SmbMeanULWEnum
+	SmbMeanTemperatureEnum
 	SmbMeltEnum
 	SmbMeltSubstepEnum
 	SmbMonthlytemperaturesEnum
@@ -4930,6 +4931,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbMeanLHFEnum) return "SmbMeanLHF" end
 	if(enum==SmbMeanSHFEnum) return "SmbMeanSHF" end
 	if(enum==SmbMeanULWEnum) return "SmbMeanULW" end
+	if(enum==SmbMeanTemperatureEnum) return "SmbMeanTemperature" end
 	if(enum==SmbMeltEnum) return "SmbMelt" end
 	if(enum==SmbMeltSubstepEnum) return "SmbMeltSubstep" end
 	if(enum==SmbMonthlytemperaturesEnum) return "SmbMonthlytemperatures" end
@@ -8688,6 +8690,7 @@ function StringToEnum(name::String)
 	if(name=="SmbMeanLHF") return SmbMeanLHFEnum  end
 	if(name=="SmbMeanSHF") return SmbMeanSHFEnum  end
 	if(name=="SmbMeanULW") return SmbMeanULWEnum  end
+	if(name=="SmbMeanTemperature") return SmbMeanTemperatureEnum  end
 	if(name=="SmbMelt") return SmbMeltEnum  end
 	if(name=="SmbMeltSubstep") return SmbMeltSubstepEnum  end
 	if(name=="SmbMonthlytemperatures") return SmbMonthlytemperaturesEnum  end

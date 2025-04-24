@@ -450,6 +450,7 @@ SmbMask
 SmbMeanLHF
 SmbMeanSHF
 SmbMeanULW
+SmbMeanTemperature
 SmbMelt
 SmbMeltSubstep
 SmbMonthlytemperatures

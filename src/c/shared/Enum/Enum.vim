@@ -1183,6 +1183,7 @@ syn keyword cConstant SmbMaskEnum
 syn keyword cConstant SmbMeanLHFEnum
 syn keyword cConstant SmbMeanSHFEnum
 syn keyword cConstant SmbMeanULWEnum
+syn keyword cConstant SmbMeanTemperatureEnum
 syn keyword cConstant SmbMeltEnum
 syn keyword cConstant SmbMeltSubstepEnum
 syn keyword cConstant SmbMonthlytemperaturesEnum

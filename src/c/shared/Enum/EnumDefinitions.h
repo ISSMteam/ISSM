@@ -1179,6 +1179,7 @@ enum definitions{
 	SmbMeanLHFEnum,
 	SmbMeanSHFEnum,
 	SmbMeanULWEnum,
+	SmbMeanTemperatureEnum,
 	SmbMeltEnum,
 	SmbMeltSubstepEnum,
 	SmbMInitnum,

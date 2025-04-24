@@ -3845,37 +3845,62 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 /*}}}*/
 void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* precepitation,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny){/*{{{*/
 
-	/* General FIXMEs: get Tmelting point, pddicefactor, pddsnowfactor, sigma from parameters/user input */
-
-	const int NUM_VERTICES 		= this->GetNumberOfVertices();
-	const int NUM_VERTICES_MONTHS_PER_YEAR	= NUM_VERTICES * 12;
-
-	int        	i,vertexlids[MAXVERTICES];;
+	const int NUM_VERTICES 	= this->GetNumberOfVertices();
 	//IssmDouble rho_water,rho_ice;
-	IssmDouble rho_water,rho_ice,desfac,rlaps;
+	IssmDouble rho_water,rho_ice,rlaps;
 	/*Allocate all arrays*/
 	IssmDouble* smb         = xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* accumulation= xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* ablation    = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* temp        = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* prec        = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* xyz_list = NULL;
-	IssmDouble x, y; 
+	IssmDouble x, y, temp_all_solid,temp_all_liquid,solid_fration; 
 	int m,n;
 
+	/*Load parameters*/
+	this->parameters->FindParam(&temp_all_solid, SmbAllSolidTempEnum);
+	this->parameters->FindParam(&temp_all_liquid, SmbAllLiquidTempEnum);
+
 	this->GetVerticesCoordinates(&xyz_list);
-	// loop over all vertices
 	for(int iv=0;iv<NUM_VERTICES;iv++) {
+		/*Step 1: loop over all vertices, interpolate GCM temperature and precepitation to the mesh */
 		x = xyz_list[iv*3+0];
 		y = xyz_list[iv*3+1];
 		/*Find indices m and n into y_grid and x_grid, for which  y_grid(m)<=y<=y_grid(m+1) and x_grid(n)<=x<=x_grid(n+1)*/
 		findindices(&n,&m,x_grid,Nx,y_grid,Ny,x,y);
 		temp[iv] = bilinearinterp(x_grid,y_grid,temperature,x,y,m,n,Nx);
 		prec[iv] = bilinearinterp(x_grid,y_grid,precepitation,x,y,m,n,Nx);
+
+		/*Step 2: downsampling temp with elevation and lapse rate*/
+		//TODO
+
+		/*Step 3: Accumulation*/
+		if (temp[iv] <= temp_all_solid){
+			solid_fration = 1.;
+		}
+		else if (temp[iv] >= temp_all_liquid){
+			solid_fration = 0.;
+		}
+		else {
+			solid_fration = (temp_all_liquid - temp[iv]) /(temp_all_liquid - temp_all_solid);
+		}
+		accumulation[iv] = solid_fration * prec[iv]; 
+
+		/*Step 3: Ablation*/
+//		ablation[iv] = (ddf_snow+ddf_firn+ddf_ice+ddf_debris)*(max(0. temp[iv]))*30/rho_ice; //TODO: why *30 not /30?
+
+		/*Step 4: Refreezing*/
 		smb[iv]=0;
 	}
 	/*Add input to element and Free memory*/
 	this->AddInput(SmbTemperatureEnum,temp,P1Enum);
 	this->AddInput(SmbPrecipitationEnum,prec,P1Enum);
+	this->AddInput(SmbAccumulationEnum,accumulation,P1Enum);
+	this->AddInput(SmbAblationEnum,ablation,P1Enum);
 	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
+	xDelete<IssmDouble>(accumulation);
+	xDelete<IssmDouble>(ablation);
 	xDelete<IssmDouble>(smb);
 	xDelete<IssmDouble>(temp);
 	xDelete<IssmDouble>(prec);

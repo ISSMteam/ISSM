@@ -159,8 +159,8 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int* ind
 		}
 	}
 	if(!found)_error_("did not find time interval on which to interpolate values");
-	*pdouble=output;
-	*index=output_id;
+	if (pdouble != NULL) *pdouble=output;
+	if (index !=NULL) *index=output_id;
 }
 /*}}}*/
 void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble timestart,IssmDouble timeend){/*{{{*/

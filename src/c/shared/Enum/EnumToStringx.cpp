@@ -1185,6 +1185,7 @@ const char* EnumToStringx(int en){
 		case SmbMeanLHFEnum : return "SmbMeanLHF";
 		case SmbMeanSHFEnum : return "SmbMeanSHF";
 		case SmbMeanULWEnum : return "SmbMeanULW";
+		case SmbMeanTemperatureEnum : return "SmbMeanTemperature";
 		case SmbMeltEnum : return "SmbMelt";
 		case SmbMeltSubstepEnum : return "SmbMeltSubstep";
 		case SmbMonthlytemperaturesEnum : return "SmbMonthlytemperatures";
