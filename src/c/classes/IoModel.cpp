@@ -482,27 +482,14 @@ void  IoModel::DeclareIndependents(bool trace,IssmPDouble* X){/*{{{*/
 		this->FetchData(&num_independent_objects,"md.autodiff.num_independent_objects");
 		if(num_independent_objects){
 			this->FetchMultipleData(&names,&temp,"md.autodiff.independent_name"); _assert_(temp==num_independent_objects);
-			this->FetchMultipleData(&types,NULL,"md.autodiff.independent_type");
 
 			/*create independent objects, and at the same time, fetch the corresponding independent variables,
 			 *and declare them as such in ADOLC: */
 			for(int i=0;i<num_independent_objects;i++){
-
-				if(types[i]==0){
-					/*Scalar*/
-					this->FetchIndependentConstant(&Xcount,X,names[i]);
-				}
-				else if(types[i]==1){
-					/* vector:*/
-					this->FetchIndependentData(&Xcount,X,names[i]);
-				}
-				else{
-					_error_("Independent cannot be of size " << types[i]);
-				}
+				this->FetchIndependentData(&Xcount,X,names[i]);
 			}
 			for(int i=0;i<num_independent_objects;i++) xDelete<char>(names[i]);
 			xDelete<char*>(names);
-			xDelete<int>(types);
 		}
 		#else
 		/*if we asked for AD computations, we have a problem!: */
