@@ -1090,6 +1090,7 @@ syn keyword juliaConstC SedimentHeadResidualEnum
 syn keyword juliaConstC SedimentHeadStackedEnum
 syn keyword juliaConstC SigmaNNEnum
 syn keyword juliaConstC SigmaVMEnum
+syn keyword juliaConstC SmbAblationEnum
 syn keyword juliaConstC SmbAccumulatedECEnum
 syn keyword juliaConstC SmbAccumulatedMassBalanceEnum
 syn keyword juliaConstC SmbAccumulatedMeltEnum

@@ -53,6 +53,8 @@ class TransientGriddedFieldParam: public Param{
 		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time) {_error_("Parameter " <<EnumToStringx(enum_type) << " needs row and column to be specified");}
 		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time, int timestepping, IssmDouble dt){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row and column to be specified");}
 		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time);
+		void  GetParameterValue(IssmDouble* pdouble,int* index,int row,int column,IssmDouble time);
+		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble timestart,IssmDouble timeend);
 		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time, int timestepping, IssmDouble dt);
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping, IssmDouble dt){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}

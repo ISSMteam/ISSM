@@ -1097,6 +1097,7 @@ syn keyword cConstant SedimentHeadResidualEnum
 syn keyword cConstant SedimentHeadStackedEnum
 syn keyword cConstant SigmaNNEnum
 syn keyword cConstant SigmaVMEnum
+syn keyword cConstant SmbAblationEnum
 syn keyword cConstant SmbAccumulatedECEnum
 syn keyword cConstant SmbAccumulatedMassBalanceEnum
 syn keyword cConstant SmbAccumulatedMeltEnum

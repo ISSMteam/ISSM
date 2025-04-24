@@ -1086,6 +1086,7 @@
 	SedimentHeadStackedEnum
 	SigmaNNEnum
 	SigmaVMEnum
+	SmbAblationEnum
 	SmbAccumulatedECEnum
 	SmbAccumulatedMassBalanceEnum
 	SmbAccumulatedMeltEnum
@@ -4843,6 +4844,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SedimentHeadStackedEnum) return "SedimentHeadStacked" end
 	if(enum==SigmaNNEnum) return "SigmaNN" end
 	if(enum==SigmaVMEnum) return "SigmaVM" end
+	if(enum==SmbAblationEnum) return "SmbAblation" end
 	if(enum==SmbAccumulatedECEnum) return "SmbAccumulatedEC" end
 	if(enum==SmbAccumulatedMassBalanceEnum) return "SmbAccumulatedMassBalance" end
 	if(enum==SmbAccumulatedMeltEnum) return "SmbAccumulatedMelt" end
@@ -8600,6 +8602,7 @@ function StringToEnum(name::String)
 	if(name=="SedimentHeadStacked") return SedimentHeadStackedEnum  end
 	if(name=="SigmaNN") return SigmaNNEnum  end
 	if(name=="SigmaVM") return SigmaVMEnum  end
+	if(name=="SmbAblation") return SmbAblationEnum  end
 	if(name=="SmbAccumulatedEC") return SmbAccumulatedECEnum  end
 	if(name=="SmbAccumulatedMassBalance") return SmbAccumulatedMassBalanceEnum  end
 	if(name=="SmbAccumulatedMelt") return SmbAccumulatedMeltEnum  end

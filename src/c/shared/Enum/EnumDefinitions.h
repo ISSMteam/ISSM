@@ -1093,6 +1093,7 @@ enum definitions{
 	SedimentHeadStackedEnum,
 	SigmaNNEnum,
 	SigmaVMEnum,
+	SmbAblationEnum,
 	SmbAccumulatedECEnum,
 	SmbAccumulatedMassBalanceEnum,
 	SmbAccumulatedMeltEnum,
