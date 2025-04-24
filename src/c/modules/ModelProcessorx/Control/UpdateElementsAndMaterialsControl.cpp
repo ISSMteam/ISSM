@@ -227,7 +227,6 @@ void UpdateElementsAndMaterialsControlAD(Elements* elements,Parameters* paramete
 	/*Step1: create controls (independents)*/
 	iomodel->FetchData(&num_independent_objects,"md.autodiff.num_independent_objects"); _assert_(num_independent_objects>0); 
 	iomodel->FetchMultipleData(&names,&M,"md.autodiff.independent_name"); _assert_(M==num_independent_objects);
-	iomodel->FetchMultipleData(&types,&M,"md.autodiff.independent_type"); _assert_(M==num_independent_objects);
 
 	int* M_all = NULL;
 	int* N_all = NULL;
@@ -241,67 +240,60 @@ void UpdateElementsAndMaterialsControlAD(Elements* elements,Parameters* paramete
 
 	for(int i=0;i<num_independent_objects;i++){
 
-		if(types[i]==1){ /* vector:*/
+		/*Get field name and input Enum from independent name*/
+		char* iofieldname  = NULL;
+		int   input_enum;
+		IssmDouble* independents_min = NULL;
+		IssmDouble*	independents_max = NULL;
 
-			/*Get field name and input Enum from independent name*/
-			char* iofieldname  = NULL;
-			int   input_enum;
-			IssmDouble* independents_min = NULL;
-			IssmDouble*	independents_max = NULL;
+		/*Fetch required data*/
+		FieldAndEnumFromCode(&input_enum,&iofieldname,names[i]);
+		iomodel->FetchData(&independent,&M,&N,iofieldname);
+		_assert_(independent && N==control_sizes[i]);
+		xDelete<char>(iofieldname);
 
-			/*Fetch required data*/
-			FieldAndEnumFromCode(&input_enum,&iofieldname,names[i]);
-			iomodel->FetchData(&independent,&M,&N,iofieldname);
-			_assert_(independent && N==control_sizes[i]);
-			xDelete<char>(iofieldname);
-
-			independents_min = NULL; independents_min = xNew<IssmDouble>(M*N);
-			independents_max = NULL; independents_max = xNew<IssmDouble>(M*N);
-			for(int m=0;m<M;m++){
-				for(int n=0;n<N;n++){
-					independents_min[N*m+n]=independents_fullmin[i][N*m+n];
-					independents_max[N*m+n]=independents_fullmax[i][N*m+n];
-				}
+		independents_min = NULL; independents_min = xNew<IssmDouble>(M*N);
+		independents_max = NULL; independents_max = xNew<IssmDouble>(M*N);
+		for(int m=0;m<M;m++){
+			for(int n=0;n<N;n++){
+				independents_min[N*m+n]=independents_fullmin[i][N*m+n];
+				independents_max[N*m+n]=independents_fullmax[i][N*m+n];
 			}
-
-			if(IsInputEnum(input_enum)){
-
-				/*remove last row if time series*/
-				if(N!=1) M_all[i]=M-1;
-
-				if(M_all[i]==iomodel->numberofvertices){
-					Interp_all[i] = P1Enum;
-				}
-				else if(M_all[i]==iomodel->numberofelements){
-					Interp_all[i] = P0Enum;
-				}
-				else{
-					_error_("Control size not supported");
-				}
-
-				for(Object* & object : elements->objects){
-					Element* element=xDynamicCast<Element*>(object);
-					element->ControlInputCreate(independent,independents_min,independents_max,inputs,iomodel,M,N,1.,input_enum,i+1);
-				}
-			}
-			else if(IsParamEnum(input_enum)){
-				//_error_("not supported yet");
-				Interp_all[i] = DummyEnum; //Placeholder
-				parameters->AddObject(new ControlParam(independent,independents_min,independents_max,input_enum,M_all[i],N_all[i]));
-
-				if(M!=1){
-					_assert_(M==2); //TransientParam
-					M_all[i]=M-1;
-				}
-			}
-			xDelete<IssmDouble>(independent);
-			xDelete<IssmDouble>(independents_min);
-			xDelete<IssmDouble>(independents_max);
-
 		}
-		else{
-			_error_("Independent cannot be of size " << types[i]);
+
+		if(IsInputEnum(input_enum)){
+
+			/*remove last row if time series*/
+			if(N!=1) M_all[i]=M-1;
+
+			if(M_all[i]==iomodel->numberofvertices){
+				Interp_all[i] = P1Enum;
+			}
+			else if(M_all[i]==iomodel->numberofelements){
+				Interp_all[i] = P0Enum;
+			}
+			else{
+				_error_("Control size not supported");
+			}
+
+			for(Object* & object : elements->objects){
+				Element* element=xDynamicCast<Element*>(object);
+				element->ControlInputCreate(independent,independents_min,independents_max,inputs,iomodel,M,N,1.,input_enum,i+1);
+			}
 		}
+		else if(IsParamEnum(input_enum)){
+			//_error_("not supported yet");
+			Interp_all[i] = DummyEnum; //Placeholder
+			parameters->AddObject(new ControlParam(independent,independents_min,independents_max,input_enum,M_all[i],N_all[i]));
+
+			if(M!=1){
+				_assert_(M==2); //TransientParam
+				M_all[i]=M-1;
+			}
+		}
+		xDelete<IssmDouble>(independent);
+		xDelete<IssmDouble>(independents_min);
+		xDelete<IssmDouble>(independents_max);
 	}
 	parameters->AddObject(new IntVecParam(ControlInputSizeNEnum,N_all,num_independent_objects));
 	parameters->AddObject(new IntVecParam(ControlInputSizeMEnum,M_all,num_independent_objects));

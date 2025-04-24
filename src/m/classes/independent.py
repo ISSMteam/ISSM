@@ -75,16 +75,3 @@ class independent(object):
 
         return md
     # }}}
-
-    def typetoscalar(self):  # {{{
-        if strcmpi(self.type, 'scalar'):
-            scalartype = 0
-        elif strcmpi(self.type, 'vertex'):
-            scalartype = 1
-        elif strcmpi(self.type, 'matrix'):
-            scalartype = 1
-        else:
-            raise TypeError('{} not supported yet!'.format(self.type))
-
-        return scalartype
-    # }}}

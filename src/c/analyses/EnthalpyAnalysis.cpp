@@ -1361,13 +1361,12 @@ int            EnthalpyAnalysis::GetThermalBasalCondition(Element* element, Issm
 	/* Only update Constraints at the base of grounded ice*/
 	if(!(element->IsOnBase())) return -1;
 
-	/*Intermediary*/
-	int state=-1;
-	IssmDouble	dt;
 
 	/*Get parameters and inputs: */
-	element->FindParam(&dt,TimesteppingTimeStepEnum);
+	IssmDouble  dt = element->FindParam(TimesteppingTimeStepEnum);
 
+	/*Determine basal state*/
+	int state=-1;
 	if(enthalpy<PureIceEnthalpy(element,pressure)){
 		if(watercolumn<=0.) state=0; // cold, dry base
 		else state=1; // cold, wet base (refreezing)

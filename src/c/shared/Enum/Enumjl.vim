@@ -1275,6 +1275,7 @@ syn keyword juliaConstC SurfaceRelVelMisfitEnum
 syn keyword juliaConstC SurfaceSlopeXEnum
 syn keyword juliaConstC SurfaceSlopeYEnum
 syn keyword juliaConstC TemperatureEnum
+syn keyword juliaConstC TemperatureObsEnum
 syn keyword juliaConstC TemperaturePDDEnum
 syn keyword juliaConstC TemperaturePicardEnum
 syn keyword juliaConstC TemperatureSEMICEnum
