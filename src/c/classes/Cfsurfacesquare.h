@@ -14,6 +14,7 @@ class Cfsurfacesquare: public Object, public Definition{
 	public: 
 
 		int         definitionenum;
+		int         surfaceid;
 		int         model_enum;
 		char       *name;
 		IssmDouble  datatime;
@@ -22,8 +23,8 @@ class Cfsurfacesquare: public Object, public Definition{
 
 		/*Cfsurfacesquare constructors, destructors :*/
 		Cfsurfacesquare();
-		Cfsurfacesquare(char* in_name, int in_definitionenum, int in_model_enum, IssmDouble in_datatime);
-		Cfsurfacesquare(char* in_name, int in_definitionenum, int in_model_enum, IssmDouble in_datatime, bool timepassedflag, IssmDouble in_J);
+		Cfsurfacesquare(char* in_name, int in_definitionenum, int in_model_enum, IssmDouble in_datatime, int in_surfaceid);
+		Cfsurfacesquare(char* in_name, int in_definitionenum, int in_model_enum, IssmDouble in_datatime, bool timepassedflag, IssmDouble in_J,int in_surfaceid);
 		~Cfsurfacesquare();
 
 		/*Object virtual function resolutoin: */
