@@ -1176,6 +1176,7 @@ syn keyword juliaConstC SmbMaskEnum
 syn keyword juliaConstC SmbMeanLHFEnum
 syn keyword juliaConstC SmbMeanSHFEnum
 syn keyword juliaConstC SmbMeanULWEnum
+syn keyword juliaConstC SmbMeanTemperatureEnum
 syn keyword juliaConstC SmbMeltEnum
 syn keyword juliaConstC SmbMeltSubstepEnum
 syn keyword juliaConstC SmbMonthlytemperaturesEnum

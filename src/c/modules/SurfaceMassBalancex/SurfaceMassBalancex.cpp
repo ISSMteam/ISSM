@@ -373,6 +373,7 @@ void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&temperature, &M, &N, time, SmbGCMTemperatureEnum); _assert_(M==Ny && N==Nx);
 	femmodel->parameters->FindParam(&precepitation, &M, &N, time, SmbGCMPrecipitationEnum); _assert_(M==Ny && N==Nx);
 
+	/*if this is the first time step of the year, compute the mean annual temperature*/
 
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
