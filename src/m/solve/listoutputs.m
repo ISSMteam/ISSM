@@ -364,6 +364,7 @@ SedimentHeadResidual
 SedimentHeadStacked
 SigmaNN
 SigmaVM
+SmbAblation
 SmbAccumulatedEC
 SmbAccumulatedMassBalance
 SmbAccumulatedMelt

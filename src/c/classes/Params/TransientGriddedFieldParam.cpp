@@ -106,8 +106,13 @@ int  TransientGriddedFieldParam::ObjectEnum(void){/*{{{*/
 
 /*TransientGriddedFieldParam virtual functions definitions: */
 void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time){/*{{{*/
+	this->GetParameterValue(pdouble,NULL,row,column,time);
+}
+/*}}}*/
+void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int* index,int row,int column,IssmDouble time){/*{{{*/
 
 	IssmDouble output;
+	int output_id;
 	bool       found;
 	_assert_(row>=0 && row<this->M); 
 	_assert_(column>=0 && column<this->N); 
@@ -119,19 +124,22 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 	if(time<this->timesteps[0]){
 		/*get values for the first time: */
 		output=this->values[(row*this->N+column)*this->T];
+		output_id = -1;
 		found=true;
 	}
 	else if(time>this->timesteps[this->T-1]){
 		/*get values for the last time: */
 		output=this->values[(row*this->N+column)*this->T+(this->T-1)];
+		output_id = this->T-1;
 		found=true;
 	}
 	else{
 		/*Find which interval we fall within: */
-		for(int i=0;i<this->T;i++){
+		for(int i=0;i<this->T-1;i++){
 			if(time==this->timesteps[i]){
 				/*We are right on one step time: */
 				output = this->values[(row*this->N+column)*this->T+i];
+				output_id = i;
 				found=true;
 				break; //we are done with the time interpolation.
 			}
@@ -143,12 +151,59 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 					if(this->interpolation==true) output=(1.0-alpha)*this->values[(row*this->N+column)*this->T+i] + alpha*this->values[(row*this->N+column)*this->T+i+1];
 					else output=this->values[(row*this->N+column)*this->T+i];
 					found=true;
+					output_id = i;
 					break;
 				}
 				else continue; //keep looking on the next interval
 			}
 		}
 	}
+	if(!found)_error_("did not find time interval on which to interpolate values");
+	*pdouble=output;
+	*index=output_id;
+}
+/*}}}*/
+void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble timestart,IssmDouble timeend){/*{{{*/
+	/*compute average field between the given time period*/
+
+	IssmDouble  output;
+	IssmDouble  datastart, dataend;
+	int         startid, endid;
+	bool        found;
+	_assert_(row>=0 && row<this->M);
+	_assert_(column>=0 && column<this->N);
+	_assert_(timestart<timeend);
+
+	if(this->cycle) _error_("not implemented yet");
+
+	/*Ok, we have the time and row, go through the timesteps, and figure out which interval we
+	 *fall within. Then use trapzoidal rule to integrate over time and average: */
+	if(timeend<this->timesteps[0]){
+		/*get values for the first time: */
+		output=this->values[(row*this->N+column)*this->T];
+		found=true;
+	}
+	else if(timestart>this->timesteps[this->T-1]){
+		/*get values for the last time: */
+		output=this->values[(row*this->N+column)*this->T+(this->T-1)];
+		found=true;
+	}
+	else{
+		/*Find which interval we fall within: */
+		this->GetParameterValue(&datastart,&startid,row,column,timestart);
+		this->GetParameterValue(&dataend,&endid,row,column,timeend);
+		/*include start*/
+		output = 0.5*(datastart+this->values[(row*this->N+column)*this->T+startid+1])*(this->timesteps[startid+1]-timestart);
+		/*include end*/
+		output += 0.5*(this->values[(row*this->N+column)*this->T+endid]+dataend)*(timeend-this->timesteps[endid]);
+		/*integrate in betweem*/
+		for (int i=startid+1;i<endid;i++) {
+			output += 0.5*(this->values[(row*this->N+column)*this->T+i]+this->values[(row*this->N+column)*this->T+i+1])*(this->timesteps[i+1]-this->timesteps[i]);
+		}
+		output = output / (timeend-timestart);
+		found = true;
+	}
+
 	if(!found)_error_("did not find time interval on which to interpolate values");
 	*pdouble=output;
 }

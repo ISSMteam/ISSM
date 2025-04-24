@@ -1099,6 +1099,7 @@ const char* EnumToStringx(int en){
 		case SedimentHeadStackedEnum : return "SedimentHeadStacked";
 		case SigmaNNEnum : return "SigmaNN";
 		case SigmaVMEnum : return "SigmaVM";
+		case SmbAblationEnum : return "SmbAblation";
 		case SmbAccumulatedECEnum : return "SmbAccumulatedEC";
 		case SmbAccumulatedMassBalanceEnum : return "SmbAccumulatedMassBalance";
 		case SmbAccumulatedMeltEnum : return "SmbAccumulatedMelt";
