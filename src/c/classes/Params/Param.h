@@ -42,6 +42,7 @@ class Param: public Object{
 		virtual void  GetParameterValue(char*** pstringarray,int* pM)=0;
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM)=0;
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time){_error_("not implemented yet");};
+		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime){_error_("not implemented yet");};
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN)=0;
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, const char* data)=0;
 		virtual void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims)=0;

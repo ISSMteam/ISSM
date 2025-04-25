@@ -127,7 +127,7 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int* ind
 		output_id = -1;
 		found=true;
 	}
-	else if(time>this->timesteps[this->T-1]){
+	else if(time>=this->timesteps[this->T-1]){
 		/*get values for the last time: */
 		output=this->values[(row*this->N+column)*this->T+(this->T-1)];
 		output_id = this->T-1;
@@ -163,44 +163,45 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int* ind
 	if (index !=NULL) *index=output_id;
 }
 /*}}}*/
-void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble timestart,IssmDouble timeend){/*{{{*/
+void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble starttime,IssmDouble endtime){/*{{{*/
 	/*compute average field between the given time period*/
 
 	IssmDouble  output;
 	IssmDouble  datastart, dataend;
 	int         startid, endid;
 	bool        found;
+	IssmDouble yts=3600*24*365;
 	_assert_(row>=0 && row<this->M);
 	_assert_(column>=0 && column<this->N);
-	_assert_(timestart<timeend);
+	_assert_(starttime<endtime);
 
 	if(this->cycle) _error_("not implemented yet");
 
 	/*Ok, we have the time and row, go through the timesteps, and figure out which interval we
 	 *fall within. Then use trapzoidal rule to integrate over time and average: */
-	if(timeend<this->timesteps[0]){
+	if(endtime<=this->timesteps[0]){
 		/*get values for the first time: */
 		output=this->values[(row*this->N+column)*this->T];
 		found=true;
 	}
-	else if(timestart>this->timesteps[this->T-1]){
+	else if(starttime>=this->timesteps[this->T-1]){
 		/*get values for the last time: */
 		output=this->values[(row*this->N+column)*this->T+(this->T-1)];
 		found=true;
 	}
 	else{
 		/*Find which interval we fall within: */
-		this->GetParameterValue(&datastart,&startid,row,column,timestart);
-		this->GetParameterValue(&dataend,&endid,row,column,timeend);
-		/*include start*/
-		output = 0.5*(datastart+this->values[(row*this->N+column)*this->T+startid+1])*(this->timesteps[startid+1]-timestart);
+		this->GetParameterValue(&datastart,&startid,row,column,starttime);
+		this->GetParameterValue(&dataend,&endid,row,column,endtime);
+		/*include start, but the negative*/
+		output = 0.5*(datastart+this->values[(row*this->N+column)*this->T+startid])*(this->timesteps[startid]-starttime);
 		/*include end*/
-		output += 0.5*(this->values[(row*this->N+column)*this->T+endid]+dataend)*(timeend-this->timesteps[endid]);
+		output += 0.5*(this->values[(row*this->N+column)*this->T+endid]+dataend)*(endtime-this->timesteps[endid]);
 		/*integrate in betweem*/
-		for (int i=startid+1;i<endid;i++) {
+		for (int i=startid;i<endid;i++) {
 			output += 0.5*(this->values[(row*this->N+column)*this->T+i]+this->values[(row*this->N+column)*this->T+i+1])*(this->timesteps[i+1]-this->timesteps[i]);
 		}
-		output = output / (timeend-timestart);
+		output = output / (endtime-starttime);
 		found = true;
 	}
 
@@ -215,6 +216,21 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble** pIssmDoublearra
 	for (int i=0;i<N;i++) {
 		for (int j=0;j<M;j++) {
 			this->GetParameterValue(&output[j*N+i],j,i,time);
+		}
+	}
+	/*Assign output pointers:*/
+	if(pM) *pM=M;
+	if(pN) *pN=N;
+	*pIssmDoublearray=output;
+}
+/*}}}*/
+void  TransientGriddedFieldParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime){/*{{{*/
+
+	IssmDouble* output = xNew<IssmDouble>(M*N);
+
+	for (int i=0;i<N;i++) {
+		for (int j=0;j<M;j++) {
+			this->GetParameterValue(&output[j*N+i],j,i,starttime,endtime);
 		}
 	}
 	/*Assign output pointers:*/

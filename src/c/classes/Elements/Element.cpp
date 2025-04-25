@@ -3843,24 +3843,85 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	xDelete<IssmDouble>(melt_star);
 }
 /*}}}*/
-void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* precepitation,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny){/*{{{*/
+void       Element::PositiveDegreeDayGCM(){/*{{{*/
 
 	const int NUM_VERTICES 	= this->GetNumberOfVertices();
-	//IssmDouble rho_water,rho_ice;
-	IssmDouble rho_water,rho_ice,rlaps;
 	/*Allocate all arrays*/
 	IssmDouble* smb         = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* accumulation= xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* ablation    = xNew<IssmDouble>(NUM_VERTICES);
-	IssmDouble* temp        = xNew<IssmDouble>(NUM_VERTICES);
-	IssmDouble* prec        = xNew<IssmDouble>(NUM_VERTICES);
-	IssmDouble* xyz_list = NULL;
-	IssmDouble x, y, temp_all_solid,temp_all_liquid,solid_fration; 
-	int m,n;
-
+	IssmDouble* refreezing	= xNew<IssmDouble>(NUM_VERTICES);
+	/*variables*/
+	IssmDouble rho_water,rho_ice,rlaps;
+	IssmDouble temp_all_solid,temp_all_liquid,solid_fraction; 
+	IssmDouble temperature, precepitation, annual_temperature;
+	IssmDouble ddf_snow, ddf_ice, ddf_firn, ddf_debris, efactor;
 	/*Load parameters*/
 	this->parameters->FindParam(&temp_all_solid, SmbAllSolidTempEnum);
 	this->parameters->FindParam(&temp_all_liquid, SmbAllLiquidTempEnum);
+	this->parameters->FindParam(&ddf_snow, SmbDdfSnowEnum);
+	this->parameters->FindParam(&ddf_ice, SmbDdfIceEnum);
+	ddf_firn = (ddf_snow+ddf_ice)*0.5;
+	/*Load inputs*/
+	Input *T_input			= this->GetInput(SmbTemperatureEnum);			_assert_(T_input);
+	Input *P_input			= this->GetInput(SmbPrecipitationEnum);		_assert_(P_input);
+	Input *meanT_input	= this->GetInput(SmbMeanTemperatureEnum);		_assert_(meanT_input);
+	Input *efactor_input	= this->GetInput(SmbEnhanceFactorEnum);		_assert_(efactor_input);
+
+	Gauss* gauss=this->NewGauss();
+
+	for(int iv=0;iv<NUM_VERTICES;iv++) {
+		gauss->GaussVertex(iv);
+		/*Step 1: get GCM data from Input*/
+		T_input->GetInputValue(&temperature,gauss);
+		P_input->GetInputValue(&precepitation,gauss);
+		meanT_input->GetInputValue(&annual_temperature,gauss);
+		efactor_input->GetInputValue(&efactor,gauss);
+
+		/*Step 2: downsampling temp with elevation and lapse rate*/
+		//TODO
+
+		/*Step 3: Accumulation*/
+		if (temperature <= temp_all_solid){
+			solid_fraction = 1.;
+		}
+		else if (temperature >= temp_all_liquid){
+			solid_fraction = 0.;
+		}
+		else {
+			solid_fraction = (temp_all_liquid - temperature) /(temp_all_liquid - temp_all_solid);
+		}
+		accumulation[iv] = solid_fraction * precepitation; 
+
+		/*Step 3: Ablation*/
+		ddf_debris = ddf_ice*efactor;
+		ablation[iv] = (ddf_snow+ddf_firn+ddf_ice+ddf_debris)*(max(0., temperature+273.15));
+
+		/*Step 4: Refreezing*/
+		refreezing[iv] = min(ablation[iv], max(0., -0.69*(annual_temperature+273.15)+0.0096)*12/(365*3600*24));
+
+		/*Step 5: TODO: add firn=previous years accumulation-ablation*/
+		smb[iv] = accumulation[iv]-ablation[iv]+refreezing[iv];
+	}
+	/*Add input to element and Free memory*/
+	this->AddInput(SmbAccumulationEnum,accumulation,P1Enum);
+	this->AddInput(SmbAblationEnum,ablation,P1Enum);
+	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
+	xDelete<IssmDouble>(accumulation);
+	xDelete<IssmDouble>(ablation);
+	xDelete<IssmDouble>(refreezing);
+	xDelete<IssmDouble>(smb);
+	delete gauss;
+}
+/*}}}*/
+void       Element::ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum){/*{{{*/
+
+	const int NUM_VERTICES 	= this->GetNumberOfVertices();
+	/*Allocate all arrays*/
+	IssmDouble* temp        = xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* xyz_list = NULL;
+	IssmDouble x, y;
+	int m,n;
 
 	this->GetVerticesCoordinates(&xyz_list);
 	for(int iv=0;iv<NUM_VERTICES;iv++) {
@@ -3869,41 +3930,11 @@ void       Element::PositiveDegreeDayGCM(IssmDouble* temperature,IssmDouble* pre
 		y = xyz_list[iv*3+1];
 		/*Find indices m and n into y_grid and x_grid, for which  y_grid(m)<=y<=y_grid(m+1) and x_grid(n)<=x<=x_grid(n+1)*/
 		findindices(&n,&m,x_grid,Nx,y_grid,Ny,x,y);
-		temp[iv] = bilinearinterp(x_grid,y_grid,temperature,x,y,m,n,Nx);
-		prec[iv] = bilinearinterp(x_grid,y_grid,precepitation,x,y,m,n,Nx);
-
-		/*Step 2: downsampling temp with elevation and lapse rate*/
-		//TODO
-
-		/*Step 3: Accumulation*/
-		if (temp[iv] <= temp_all_solid){
-			solid_fration = 1.;
-		}
-		else if (temp[iv] >= temp_all_liquid){
-			solid_fration = 0.;
-		}
-		else {
-			solid_fration = (temp_all_liquid - temp[iv]) /(temp_all_liquid - temp_all_solid);
-		}
-		accumulation[iv] = solid_fration * prec[iv]; 
-
-		/*Step 3: Ablation*/
-//		ablation[iv] = (ddf_snow+ddf_firn+ddf_ice+ddf_debris)*(max(0. temp[iv]))*30/rho_ice; //TODO: why *30 not /30?
-
-		/*Step 4: Refreezing*/
-		smb[iv]=0;
+		temp[iv] = bilinearinterp(x_grid,y_grid,griddata,x,y,m,n,Nx);
 	}
 	/*Add input to element and Free memory*/
-	this->AddInput(SmbTemperatureEnum,temp,P1Enum);
-	this->AddInput(SmbPrecipitationEnum,prec,P1Enum);
-	this->AddInput(SmbAccumulationEnum,accumulation,P1Enum);
-	this->AddInput(SmbAblationEnum,ablation,P1Enum);
-	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
-	xDelete<IssmDouble>(accumulation);
-	xDelete<IssmDouble>(ablation);
-	xDelete<IssmDouble>(smb);
+	this->AddInput(input_enum,temp,P1Enum);
 	xDelete<IssmDouble>(temp);
-	xDelete<IssmDouble>(prec);
 	xDelete<IssmDouble>(xyz_list);
 }
 /*}}}*/

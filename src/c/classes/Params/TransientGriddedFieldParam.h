@@ -62,6 +62,7 @@ class TransientGriddedFieldParam: public Param{
 		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a string array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time);
+		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime);
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, const char* data){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
 		void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a matrix array");}
