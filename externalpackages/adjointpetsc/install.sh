@@ -2,7 +2,7 @@
 set -eu
 
 #Some cleanup
-rm -rf install
+rm -rf install src build
 
 #Download development version
 git clone https://github.com/SciCompKL/adjoint-PETSc.git src
@@ -18,6 +18,7 @@ cmake src \
     -DCMAKE_INSTALL_PREFIX=$ISSM_DIR/externalpackages/adjointpetsc/install \
     -DCoDiPack_DIR=$ISSM_DIR/externalpackages/codipack/install/cmake \
     -DPETSc_DIR=$ISSM_DIR/externalpackages/petsc/install
+
 if [ $# -eq 0 ]; then
   cmake --build build
 else
