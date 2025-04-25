@@ -346,6 +346,12 @@ if [ -d "${MPLAPACK_ROOT_TEMP}" ]; then
 	ld_library_path_prepend "${MPLAPACK_ROOT_TEMP}/lib"
 fi
 
+ADJOINTPETSC_TEMP="${ISSM_EXT_DIR}/adjointpetsc/install"
+if [ -d "${ADJOINTPETSC_TEMP}" ]; then
+	export ADJOINTPETSC="${ADJOINTPETSC_TEMP}"
+	ld_library_path_append "${ADJOINTPETSC_TEMP}/lib"
+fi
+
 SCOTCH_ROOT_TEMP="${ISSM_EXT_DIR}/scotch/install"
 ld_library_path_append "${SCOTCH_ROOT_TEMP}/lib"
 
