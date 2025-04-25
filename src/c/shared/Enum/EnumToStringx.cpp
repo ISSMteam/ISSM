@@ -1164,6 +1164,8 @@ const char* EnumToStringx(int en){
 		case SmbEvaporationEnum : return "SmbEvaporation";
 		case SmbFACEnum : return "SmbFAC";
 		case SmbFACSubstepEnum : return "SmbFACSubstep";
+		case SmbGCMLapseratesEnum : return "SmbGCMLapserates";
+		case SmbGCMRefSurfaceEnum : return "SmbGCMRefSurface";
 		case SmbGdnEnum : return "SmbGdn";
 		case SmbGdniniEnum : return "SmbGdnini";
 		case SmbGspEnum : return "SmbGsp";

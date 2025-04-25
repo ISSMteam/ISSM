@@ -429,6 +429,8 @@ SmbEnhanceFactor
 SmbEvaporation
 SmbFAC
 SmbFACSubstep
+SmbGCMLapserates
+SmbGCMRefSurface
 SmbGdn
 SmbGdnini
 SmbGsp

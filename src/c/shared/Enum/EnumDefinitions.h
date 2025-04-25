@@ -1158,6 +1158,8 @@ enum definitions{
 	SmbEvaporationEnum,
 	SmbFACEnum,
 	SmbFACSubstepEnum,
+	SmbGCMLapseratesEnum,
+	SmbGCMRefSurfaceEnum,
 	SmbGdnEnum,
 	SmbGdniniEnum,
 	SmbGspEnum,

@@ -19,6 +19,7 @@ classdef SMBpddGCM
       steps_per_step        = 1;
       averaging             = 0;
 		requested_outputs     = {};
+		ref_surf					 = NaN;
 	end
 	methods
 		function self = SMBpddGCM(varargin) % {{{
@@ -47,7 +48,6 @@ classdef SMBpddGCM
 				self.lapserates=0.0065*ones(md.mesh.numberofvertices,1);
 				disp('      no SMBpddGCM.lapserates specified: values set as 0.0065 °C/m');
 			end
-
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
@@ -105,6 +105,11 @@ classdef SMBpddGCM
 			Ny = numel(self.y_grid);
 
 			% everything in the bin is in SI
+			if isnan(self.ref_surf),
+				% prepare ref surface for the GCM grid, using the initial md.geometry.surface
+				grid_surf = InterpFromMeshToGrid(md.mesh.elements,md.mesh.x,md.mesh.y,md.geometry.surface,self.x_grid,self.y_grid,NaN);
+				self.ref_surf = InterpFromGridToMesh(self.x_grid,self.y_grid,grid_surf,md.mesh.x,md.mesh.y,0);
+			end
 
 			WriteData(fid,prefix,'name','md.smb.model','data',15,'format','Integer');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','x_grid','format','DoubleMat','mattype',3);
@@ -129,6 +134,7 @@ classdef SMBpddGCM
 			end
 			WriteData(fid,prefix,'data',outputs,'name','md.smb.requested_outputs','format','StringArray');
 
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ref_surf','format','DoubleMat','mattype',1);
 		end % }}}
 	end
 end
