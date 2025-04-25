@@ -50,6 +50,7 @@ class Parameters{
 		void  FindParam(int** pintarray,int* pM,int enum_type);
 		void  FindParam(int** pintarray,int* pM,int* PN,int enum_type);
 		void  FindParam(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time,int enum_type);
+		void  FindParam(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime,int enum_type);
 		void  FindParam(IssmDouble** pIssmDoublearray,int* pM,int enum_type);
 		void  FindParam(IssmDouble** pIssmDoublearray,int* pM,int* pN,int enum_type);
 		void  FindParam(IssmDouble*** parray,int* pM, int** pmdims_array,int** pndims_array,int enum_type);

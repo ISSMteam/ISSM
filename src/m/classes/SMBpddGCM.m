@@ -14,8 +14,8 @@ classdef SMBpddGCM
 		lapserates            = NaN;
 		allsolidtemperature   = 0+273.15;
 		allliquidtemperature  = 2+273.15;
-		ddf_snow              = 4.5/1000*30; 
-		ddf_ice               = 6.5/1000*30;
+		ddf_snow              = 4.5/1000*365; 
+		ddf_ice               = 6.5/1000*365;
       steps_per_step        = 1;
       averaging             = 0;
 		requested_outputs     = {};
@@ -89,8 +89,8 @@ classdef SMBpddGCM
 			fielddisplay(self,'lapserates', 'lapse rate [K/m]');
 			fielddisplay(self,'allsolidtemperature', 'temperature where all precipitation is solid [K]');
 			fielddisplay(self,'allliquidtemperature', 'temperature where all precipitation is liquid [K]');
-			fielddisplay(self,'ddf_snow', 'DDF for snow (m w.e./month/K), Litrature: 4.1 ± 1.5 mm/d/K');
-			fielddisplay(self,'ddf_ice', 'DDF for ice (m w.e./month/K), Litrature: 8.0 ± 3.4 mm/d/K');
+			fielddisplay(self,'ddf_snow', 'DDF for snow (m w.e./year/K), Litrature: 4.1 ± 1.5 mm/d/K');
+			fielddisplay(self,'ddf_ice', 'DDF for ice (m w.e./year/K), Litrature: 8.0 ± 3.4 mm/d/K');
          fielddisplay(self, 'steps_per_step', 'number of smb steps per time step');
          fielddisplay(self, 'averaging', 'averaging methods from short to long steps');
          disp(sprintf('%51s  0: Arithmetic (default)',' '));
@@ -113,8 +113,8 @@ classdef SMBpddGCM
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapserates','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','allsolidtemperature','format','Double');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','allliquidtemperature','format','Double');
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_snow','format','Double');
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_ice','format','Double');
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_snow','format','Double', 'scale',1./yts, 'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','ddf_ice','format','Double','scale',1./yts, 'yts',md.constants.yts);
 
 			WriteData(fid, prefix, 'object', self, 'fieldname', 'steps_per_step', 'format', 'Integer');
          WriteData(fid, prefix, 'object', self, 'fieldname', 'averaging', 'format', 'Integer')
