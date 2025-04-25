@@ -71,6 +71,7 @@ void CreateParametersAutodiff(Parameters* parameters,IoModel* iomodel){
 
 	/*Free resources: */
 	xDelete<char>(options);
+	#endif
 
 	if(isautodiff){
 		#if defined(_HAVE_ADOLC_)
