@@ -61,19 +61,22 @@ else
 
 		%Get pixels we are interested in
 		offset=2;
+
 		xmin=min(X(:)); xmax=max(X(:));
-		posx=find(xdata<=xmax);
-		id1x=max(1,find(xdata>=xmin,1)-offset);
-		id2x=min(numel(xdata),posx(end)+offset);
+		xflags = (xdata>xmin & xdata<xmax);
+		if ~any(xflags); dataout = NaN(size(X)); return; end
+		id1x=find(xflags, 1, 'first'); id1x = max(1,id1x -offset);
+		id2x=find(xflags, 1, 'last' ); id2x = min(numel(xdata),id2x+offset);
 
 		ymin=min(Y(:)); ymax=max(Y(:));
-		posy=find(ydata>=ymin);
-		id1y=max(1,find(ydata<=ymax,1)-offset);
-		id2y=min(numel(ydata),posy(end)+offset);
+		yflags = (ydata>ymin & ydata<ymax);
+		if ~any(yflags); dataout = NaN(size(X)); return; end
+		id1y=find(yflags, 1, 'first'); id1y = max(1,id1y -offset);
+		id2y=find(yflags, 1, 'last' ); id2y = min(numel(ydata),id2y+offset);
 
 		data  = double(imread(geotiffname,'PixelRegion',{[id1y,id2y],[id1x,id2x]}));
-		xdata=xdata(id1x:id2x);
-		ydata=ydata(id1y:id2y);
+		xdata = xdata(id1x:id2x);
+		ydata = ydata(id1y:id2y);
 	else
 		data=double(flipud(imread(geotiffname)));
 	end

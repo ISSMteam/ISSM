@@ -9,7 +9,7 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 
-#if defined (_HAVE_TAO_)
+#if defined (_HAVE_TAO_) & !defined(_HAVE_CODIPACK_) // TODO: Handle for CoDiPack
 #if defined _HAVE_PETSC_
 #include <petscversion.h>
 #if PETSC_VERSION_LT(3,5,0)

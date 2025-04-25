@@ -30,6 +30,7 @@ class IssmAbsVec{
 
 		/*IssmAbsVec specific routines*/
 		virtual void Echo(void)=0;
+		virtual void EchoDebug(std::string message)=0;
 		virtual void Assemble(void)=0;
 		virtual void SetValues(int ssize, int* list, doubletype* values, InsMode mode)=0;
 		virtual void SetValue(int dof, doubletype value, InsMode mode)=0;

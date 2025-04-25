@@ -1187,6 +1187,43 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([MEDIPACK], [test "x${HAVE_MEDIPACK}" == "xyes"])
 	dnl }}}
+	dnl AdjointPETSc{{{
+	AC_MSG_CHECKING([for AdjointPETSc])
+	AC_ARG_WITH(
+		[adjointpetsc-dir],
+		AS_HELP_STRING([--with-adjointpetsc-dir=DIR], [AdjointPETSc root directory]),
+		[ADJOINTPETSC_ROOT=${withval}],
+		[ADJOINTPETSC_ROOT="no"]
+	)
+	if test "x${ADJOINTPETSC_ROOT}" == "xno"; then
+		HAVE_ADJOINTPETSC=no
+	else
+		HAVE_ADJOINTPETSC=yes
+		if ! test -d "${ADJOINTPETSC_ROOT}"; then
+			AC_MSG_ERROR([AdjointPETSc directory provided (${ADJOINTPETSC_ROOT}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([${HAVE_ADJOINTPETSC}])
+
+	dnl AdjointPETSc libraries and header files
+	if test "x${HAVE_ADJOINTPETSC}" == "xyes"; then
+		if test "x${CODIPACK_ROOT}" == "xno"; then
+			AC_MSG_ERROR([cannot run AdjointPETSc without CoDiPack]);
+		fi
+		if test "x${PETSC_ROOT}" == "xno"; then
+			AC_MSG_ERROR([cannot run AdjointPETSc without PETSc]);
+		fi
+		ADJOINTPETSCINCL="-I${ADJOINTPETSC_ROOT}/include"
+		ADJOINTPETSCLIB="-L${ADJOINTPETSC_ROOT}/lib -ladjoint_petsc"
+		dnl Also set _HAVE_AMPI_, because the interface is (almost) the same as
+		dnl for AMPI
+		AC_DEFINE([_HAVE_AMPI_], [1], [with AMPI in ISSM src])
+		AC_DEFINE([_HAVE_ADJOINTPETSC_], [1], [with AdjointPETSc in ISSM src])
+		AC_SUBST([ADJOINTPETSCINCL])
+		AC_SUBST([ADJOINTPETSCLIB])
+	fi
+	AM_CONDITIONAL([ADJOINTPETSC], [test "x${HAVE_ADJOINTPETSC}" == "xyes"])
+	dnl }}}
 	dnl HDF5 {{{
 	AC_MSG_CHECKING(for HDF5 libraries)
 	AC_ARG_WITH(
@@ -2545,9 +2582,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl Check that if we run ADOL-C, we don't use PETSc for now
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_PETSC}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C]);
-	fi
-	  if test "x${HAVE_PETSC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both PETSc and CoDiPack, you probably forgot to remove --with-petsc-dir]);
 	fi
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack]);

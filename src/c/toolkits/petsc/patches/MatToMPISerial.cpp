@@ -8,10 +8,11 @@
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
 
+#include "petscpatches.h"
 #include "../petscincludes.h"
 #include "../../../shared/shared.h"
 
-void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broadcast){
+void MatToMPISerial(IssmDouble** poutmatrix,PMat matrix,ISSM_MPI_Comm comm,bool broadcast){
 
 	int i;
 	int my_rank;
@@ -24,7 +25,7 @@ void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broad
 	ISSM_MPI_Status status;
 	int* idxm=NULL;
 	int* idxn=NULL; 
-	double* local_matrix=NULL; /*matrix local to each node used for temporary holding matrix values*/
+	IssmDouble* local_matrix=NULL; /*matrix local to each node used for temporary holding matrix values*/
 	int buffer[3];
 
 	/*recover my_rank and num_procs:*/
@@ -32,7 +33,7 @@ void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broad
 	ISSM_MPI_Comm_rank(comm,&my_rank);
 
 	/*Output*/
-	double* outmatrix=NULL;
+	IssmDouble* outmatrix=NULL;
 
 	/*get matrix size: */
 	MatGetSize(matrix,&M,&N);
@@ -44,11 +45,11 @@ void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broad
 
 	/*Local and global allocation*/
 	if(broadcast || my_rank==0){ 
-		outmatrix=xNew<double>(M*N);
+		outmatrix=xNew<IssmDouble>(M*N);
 	}
 
 	if (range){
-		local_matrix=xNew<double>(N*range);
+		local_matrix=xNew<IssmDouble>(N*range);
 		idxm=xNew<int>(range);  
 		idxn=xNew<int>(N);  
 
@@ -80,7 +81,7 @@ void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broad
 	} 
 	if (my_rank==0){ 
 		//Still have the local_matrix on node 0 to take care of.
-		if (range) memcpy(outmatrix,local_matrix,N*range*sizeof(double));
+		if (range) memcpy(outmatrix,local_matrix,N*range*sizeof(IssmDouble));
 	} 
 
 	if(broadcast){
@@ -91,6 +92,6 @@ void MatToMPISerial(double** poutmatrix,Mat matrix,ISSM_MPI_Comm comm,bool broad
 	/*Assign output pointer: */
 	xDelete<int>(idxm);
 	xDelete<int>(idxn);
-	xDelete<double>(local_matrix);
+	xDelete<IssmDouble>(local_matrix);
 	*poutmatrix=outmatrix;
 }

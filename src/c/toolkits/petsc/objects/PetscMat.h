@@ -19,38 +19,43 @@
 #include "../../../shared/Numerics/types.h"
 
 /*}}}*/
+template<typename doubletype>
 class PetscVec;
 
+template<typename doubletype>
 class PetscMat{
 
 	public:
-		Mat matrix;
+#if _HAVE_CODIPACK_
+		using PMat = typename std::conditional<std::is_same<doubletype, IssmDouble>::value, adjoint_petsc::ADMat, Mat>::type;
+#else
+		using PMat = Mat;
+#endif
 
-		#ifdef _HAVE_AD_
-		IssmDouble* amatrix;
-		#endif
+		PMat matrix;
 
 		/*PetscMat constructors, destructors*/
 		PetscMat();
 		PetscMat(int M,int N);
-		PetscMat(int M,int N,IssmDouble sparsity);
+		PetscMat(int M,int N,IssmPDouble sparsity);
 		PetscMat(int m,int n,int M,int N,int* d_nnz,int* o_nnz);
-		PetscMat(IssmDouble* serial_mat,int M,int N,IssmDouble sparsity);
+		PetscMat(doubletype* serial_mat,int M,int N,IssmPDouble sparsity);
 		PetscMat(int M,int N,int connectivity,int numberofdofspernode);
 		~PetscMat();
 
 		/*PetscMat specific routines*/
 		void AllocationInfo(void);
 		void Echo(void);
+		void EchoDebug(std::string message);
 		void Assemble(void);
-		IssmDouble Norm(NormMode norm_type);
+		doubletype Norm(NormMode norm_type);
 		void GetSize(int* pM,int* pN);
 		void GetLocalSize(int* pM,int* pN);
-		void MatMult(PetscVec* X,PetscVec* AX);
+		void MatMult(PetscVec<doubletype>* X,PetscVec<doubletype>* AX);
 		PetscMat* Duplicate(void);
-		IssmDouble* ToMPISerial(void);
-		IssmDouble* ToMPISerial0(void);
-		void SetValues(int m,int* idxm,int n,int* idxn,IssmDouble* values,InsMode mode);
+		doubletype* ToMPISerial(void);
+		doubletype* ToMPISerial0(void);
+		void SetValues(int m,int* idxm,int n,int* idxn,doubletype* values,InsMode mode);
 		void Convert(MatrixType type);
 		void SetZero(void);
 };

@@ -17,8 +17,8 @@ class Parameters;
 
 /*}}}*/
 
-void	PetscSolve(PetscVec** puf, PetscMat* Kff, PetscVec* pf, PetscVec* uf0,PetscVec* df, Parameters* parameters);
-void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* parameters);
-void    DofTypesToIndexSet(IS* pisv, IS* pisp, Vec df,int typeenum);
+void	PetscSolve(PetscVec<IssmDouble>** puf, PetscMat<IssmDouble>* Kff, PetscVec<IssmDouble>* pf, PetscVec<IssmDouble>* uf0,PetscVec<IssmDouble>* df, Parameters* parameters);
+void	SolverxPetsc(PVec* puf, PMat Kff, PVec pf, PVec uf0,PVec df, Parameters* parameters);
+void  DofTypesToIndexSet(IS* pisv, IS* pisp, PVec df,int typeenum);
 
 #endif //#ifndef _PETSCSOLVER_H_

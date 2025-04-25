@@ -59,7 +59,7 @@ classdef cfrheologybbarabsgrad
 		end % }}}
 		function md = disp(self) % {{{
 		
-			disp(sprintf('   TimeMisfit:\n'));
+			disp(sprintf('   cfrheologybbarabsgrad:\n'));
 
 			fielddisplay(self,'name','identifier for this cfrheologybbarabsgrad response');
 			fielddisplay(self,'definitionstring','string that identifies this output definition uniquely, from ''Outputdefinition[1-10]''');

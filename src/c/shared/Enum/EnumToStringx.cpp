@@ -1298,6 +1298,7 @@ const char* EnumToStringx(int en){
 		case SurfaceSlopeXEnum : return "SurfaceSlopeX";
 		case SurfaceSlopeYEnum : return "SurfaceSlopeY";
 		case TemperatureEnum : return "Temperature";
+		case TemperatureObsEnum : return "TemperatureObs";
 		case TemperaturePDDEnum : return "TemperaturePDD";
 		case TemperaturePicardEnum : return "TemperaturePicard";
 		case TemperatureSEMICEnum : return "TemperatureSEMIC";

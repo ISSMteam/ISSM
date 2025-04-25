@@ -1296,6 +1296,7 @@ syn keyword cConstant SurfaceRelVelMisfitEnum
 syn keyword cConstant SurfaceSlopeXEnum
 syn keyword cConstant SurfaceSlopeYEnum
 syn keyword cConstant TemperatureEnum
+syn keyword cConstant TemperatureObsEnum
 syn keyword cConstant TemperaturePDDEnum
 syn keyword cConstant TemperaturePicardEnum
 syn keyword cConstant TemperatureSEMICEnum

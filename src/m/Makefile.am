@@ -46,7 +46,6 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/qmu/examples/*.m \
 	${ISSM_DIR}/src/m/qmu/plot/*.m \
 	${ISSM_DIR}/src/m/qmu/setupdesign/*.m \
-	${ISSM_DIR}/src/m/regional/*.m \
 	${ISSM_DIR}/src/m/shp/*.m \
 	${ISSM_DIR}/src/m/solve/*.m \
 	${ISSM_DIR}/src/m/solvers/*.m \

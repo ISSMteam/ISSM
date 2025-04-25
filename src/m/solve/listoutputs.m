@@ -563,6 +563,7 @@ SurfaceRelVelMisfit
 SurfaceSlopeX
 SurfaceSlopeY
 Temperature
+TemperatureObs
 TemperaturePDD
 TemperaturePicard
 TemperatureSEMIC
