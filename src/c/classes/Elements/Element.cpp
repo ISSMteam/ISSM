@@ -3852,7 +3852,7 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 	IssmDouble* ablation    = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* refreezing	= xNew<IssmDouble>(NUM_VERTICES);
 	/*variables*/
-	IssmDouble rho_water,rho_ice,rlaps;
+	IssmDouble rlaps, ref_surf, surface;
 	IssmDouble temp_all_solid,temp_all_liquid,solid_fraction; 
 	IssmDouble temperature, precepitation, annual_temperature;
 	IssmDouble ddf_snow, ddf_ice, ddf_firn, ddf_debris, efactor;
@@ -3867,6 +3867,9 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 	Input *P_input			= this->GetInput(SmbPrecipitationEnum);		_assert_(P_input);
 	Input *meanT_input	= this->GetInput(SmbMeanTemperatureEnum);		_assert_(meanT_input);
 	Input *efactor_input	= this->GetInput(SmbEnhanceFactorEnum);		_assert_(efactor_input);
+	Input *ref_s_input	= this->GetInput(SmbGCMRefSurfaceEnum);		_assert_(ref_s_input);
+	Input *surface_input = this->GetInput(SurfaceEnum);					_assert_(surface_input);
+	Input *lapserate_input	= this->GetInput(SmbGCMLapseratesEnum);		_assert_(lapserate_input);
 
 	Gauss* gauss=this->NewGauss();
 
@@ -3877,9 +3880,12 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 		P_input->GetInputValue(&precepitation,gauss);
 		meanT_input->GetInputValue(&annual_temperature,gauss);
 		efactor_input->GetInputValue(&efactor,gauss);
+		lapserate_input->GetInputValue(&rlaps,gauss);
+		ref_s_input->GetInputValue(&ref_surf,gauss);
+		surface_input->GetInputValue(&surface,gauss);
 
 		/*Step 2: downsampling temp with elevation and lapse rate*/
-		//TODO
+		temperature = temperature + rlaps*(ref_surf - surface);
 
 		/*Step 3: Accumulation*/
 		if (temperature <= temp_all_solid){

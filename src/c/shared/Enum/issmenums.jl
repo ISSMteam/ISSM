@@ -1151,6 +1151,8 @@
 	SmbEvaporationEnum
 	SmbFACEnum
 	SmbFACSubstepEnum
+	SmbGCMLapseratesEnum
+	SmbGCMRefSurfaceEnum
 	SmbGdnEnum
 	SmbGdniniEnum
 	SmbGspEnum
@@ -4910,6 +4912,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbEvaporationEnum) return "SmbEvaporation" end
 	if(enum==SmbFACEnum) return "SmbFAC" end
 	if(enum==SmbFACSubstepEnum) return "SmbFACSubstep" end
+	if(enum==SmbGCMLapseratesEnum) return "SmbGCMLapserates" end
+	if(enum==SmbGCMRefSurfaceEnum) return "SmbGCMRefSurface" end
 	if(enum==SmbGdnEnum) return "SmbGdn" end
 	if(enum==SmbGdniniEnum) return "SmbGdnini" end
 	if(enum==SmbGspEnum) return "SmbGsp" end
@@ -8669,6 +8673,8 @@ function StringToEnum(name::String)
 	if(name=="SmbEvaporation") return SmbEvaporationEnum  end
 	if(name=="SmbFAC") return SmbFACEnum  end
 	if(name=="SmbFACSubstep") return SmbFACSubstepEnum  end
+	if(name=="SmbGCMLapserates") return SmbGCMLapseratesEnum  end
+	if(name=="SmbGCMRefSurface") return SmbGCMRefSurfaceEnum  end
 	if(name=="SmbGdn") return SmbGdnEnum  end
 	if(name=="SmbGdnini") return SmbGdniniEnum  end
 	if(name=="SmbGsp") return SmbGspEnum  end

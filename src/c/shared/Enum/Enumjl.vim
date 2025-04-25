@@ -1155,6 +1155,8 @@ syn keyword juliaConstC SmbEnhanceFactorEnum
 syn keyword juliaConstC SmbEvaporationEnum
 syn keyword juliaConstC SmbFACEnum
 syn keyword juliaConstC SmbFACSubstepEnum
+syn keyword juliaConstC SmbGCMLapseratesEnum
+syn keyword juliaConstC SmbGCMRefSurfaceEnum
 syn keyword juliaConstC SmbGdnEnum
 syn keyword juliaConstC SmbGdniniEnum
 syn keyword juliaConstC SmbGspEnum
