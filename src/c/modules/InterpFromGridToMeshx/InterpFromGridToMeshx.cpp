@@ -136,7 +136,7 @@ void* InterpFromGridToMeshxt(void* vpthread_handle){
 		y_grid=*(y_mesh+i);
 
 		/*Find indices m and n into y and x, for which  y(m)<=y_grids<=y(m+1) and x(n)<=x_grid<=x(n+1)*/
-		if(findindices(&n,&m,x,x_rows, y,y_rows, x_grid,y_grid)){
+		if(findindices<double>(&n,&m,x,x_rows, y,y_rows, x_grid,y_grid)){
 
 			/*    Q12             Q22
 			 * y2 x---------+-----x
@@ -160,7 +160,7 @@ void* InterpFromGridToMeshxt(void* vpthread_handle){
 				data_value=triangleinterp(x1,x2,y1,y2,Q11,Q12,Q21,Q22,x_grid,y_grid);
 			}
 			else if(strcmp(interptype,"bilinear")==0){
-				data_value=bilinearinterp(x1,x2,y1,y2,Q11,Q12,Q21,Q22,x_grid,y_grid);
+				data_value=bilinearinterp<double>(x1,x2,y1,y2,Q11,Q12,Q21,Q22,x_grid,y_grid);
 			}
 			else if(strcmp(interptype,"nearest")==0){
 				data_value=nearestinterp(x1,x2,y1,y2, Q11,Q12,Q21,Q22,x_grid,y_grid);
