@@ -14,12 +14,13 @@
 #include "./petscpatches.h"
 #include "../../mpi/issmmpi.h"
 
-Vec NewVec(int size,ISSM_MPI_Comm comm,bool fromlocalsize){
+template<typename vectype>
+vectype NewVec(int size,ISSM_MPI_Comm comm,bool fromlocalsize){
 
 	int local_size;
 
 	/*output: */
-	Vec vector=NULL;
+	vectype vector=NULL;
 
 	/*determine local size of vector: */
 	if(fromlocalsize){
@@ -36,3 +37,8 @@ Vec NewVec(int size,ISSM_MPI_Comm comm,bool fromlocalsize){
 
 	return vector;
 }
+
+template PVec NewVec<PVec>(int, ISSM_MPI_Comm, bool);
+#if _HAVE_CODIPACK_
+template Vec NewVec<Vec>(int, ISSM_MPI_Comm, bool);
+#endif

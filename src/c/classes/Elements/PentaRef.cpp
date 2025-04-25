@@ -306,7 +306,6 @@ void PentaRef::GetNodalFunctions(IssmDouble* basis,Gauss* gauss_in,int finiteele
 			basis[5]=gauss->coord3*(1.+zeta)/2.;
 			basis[6]=27.*gauss->coord1*gauss->coord2*gauss->coord3*(1.+zeta)*(1.-zeta);
 			return;
-			#ifndef _HAVE_AD_
 		case P2xP1Enum:
 			/*Corner nodes*/
 			basis[ 0]=gauss->coord1*(2.*gauss->coord1-1.)*(1.-zeta)/2.;
@@ -459,7 +458,6 @@ void PentaRef::GetNodalFunctions(IssmDouble* basis,Gauss* gauss_in,int finiteele
 			basis[13]=gauss->coord2*(-8./3.)*(zeta-1.0)*zeta*(zeta+0.5)*(zeta+1.);
 			basis[14]=gauss->coord3*(-8./3.)*(zeta-1.0)*zeta*(zeta+0.5)*(zeta+1.);
 			return;
-			#endif
 		default:
 			_error_("Element type "<<EnumToStringx(finiteelement)<<" not supported yet");
 	}
@@ -572,7 +570,7 @@ void PentaRef::GetNodalFunctionsDerivativesReference(IssmDouble* dbasis,Gauss* g
 			dbasis[NUMNODESP1b*1+6] = 27.*(1.+zeta)*(1.-zeta)*SQRT3*(-1./6.*gauss->coord2*gauss->coord3 - 1./6.*gauss->coord1*gauss->coord3 +1./3.*gauss->coord1*gauss->coord2);
 			dbasis[NUMNODESP1b*2+6] = -54*gauss->coord1*gauss->coord2*gauss->coord3*zeta;
 			return;
-			#ifndef _HAVE_AD_
+		#ifndef _HAVE_AD_ /*speed up CoDiPack Compilation by hiding higher order elements*/
 		case P2xP1Enum:
 			/*Nodal function 1*/
 			dbasis[NUMNODESP2xP1*0+0 ] = .5*(1.-zeta)*(-2.*gauss->coord1 + 0.5);
@@ -624,6 +622,7 @@ void PentaRef::GetNodalFunctionsDerivativesReference(IssmDouble* dbasis,Gauss* g
 			dbasis[NUMNODESP2xP1*1+11] = .5*(1.+zeta)*(-2.*SQRT3/3.*(gauss->coord1+gauss->coord2));
 			dbasis[NUMNODESP2xP1*2+11] = 2.*gauss->coord1*gauss->coord2;
 			return;
+		#endif
 		case P1xP2Enum:
 			/*Nodal function 1*/
 			dbasis[NUMNODESP1xP2*0+0]   = -zeta*(zeta-1.)/4.;
@@ -663,6 +662,7 @@ void PentaRef::GetNodalFunctionsDerivativesReference(IssmDouble* dbasis,Gauss* g
 			dbasis[NUMNODESP1xP2*1+8 ] = SQRT3/3.*(1.-zeta*zeta);
 			dbasis[NUMNODESP1xP2*2+8 ] = -2.*zeta*gauss->coord3;
 			return;
+		#ifndef _HAVE_AD_ /*speed up CoDiPack Compilation by hiding higher order elements*/
 		case P2Enum:
 			/*Nodal function 1*/
 			dbasis[NUMNODESP2*0+0 ] = .5*zeta*(zeta-1.)*(-2.*gauss->coord1 + 0.5);
@@ -1059,7 +1059,7 @@ void PentaRef::GetNodalFunctionsDerivativesReference(IssmDouble* dbasis,Gauss* g
 			dbasis[NUMNODESP1xP4*2+14] = gauss->coord3* (-8./3.)*((2. *zeta -1. )*(zeta+0.5)*(zeta +1.) +  zeta*(zeta -1.)*( 2.*zeta + 3./2.));
 
 			return;
-			#endif
+		#endif
 		default:
 			_error_("Element type "<<EnumToStringx(finiteelement)<<" not supported yet");
 	}

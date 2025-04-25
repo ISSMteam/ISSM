@@ -1285,6 +1285,7 @@
 	SurfaceSlopeXEnum
 	SurfaceSlopeYEnum
 	TemperatureEnum
+	TemperatureObsEnum
 	TemperaturePDDEnum
 	TemperaturePicardEnum
 	TemperatureSEMICEnum
@@ -5046,6 +5047,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SurfaceSlopeXEnum) return "SurfaceSlopeX" end
 	if(enum==SurfaceSlopeYEnum) return "SurfaceSlopeY" end
 	if(enum==TemperatureEnum) return "Temperature" end
+	if(enum==TemperatureObsEnum) return "TemperatureObs" end
 	if(enum==TemperaturePDDEnum) return "TemperaturePDD" end
 	if(enum==TemperaturePicardEnum) return "TemperaturePicard" end
 	if(enum==TemperatureSEMICEnum) return "TemperatureSEMIC" end
@@ -8807,6 +8809,7 @@ function StringToEnum(name::String)
 	if(name=="SurfaceSlopeX") return SurfaceSlopeXEnum  end
 	if(name=="SurfaceSlopeY") return SurfaceSlopeYEnum  end
 	if(name=="Temperature") return TemperatureEnum  end
+	if(name=="TemperatureObs") return TemperatureObsEnum  end
 	if(name=="TemperaturePDD") return TemperaturePDDEnum  end
 	if(name=="TemperaturePicard") return TemperaturePicardEnum  end
 	if(name=="TemperatureSEMIC") return TemperatureSEMICEnum  end

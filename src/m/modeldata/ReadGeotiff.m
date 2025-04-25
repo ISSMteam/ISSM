@@ -18,17 +18,27 @@ end
 Tinfo = imfinfo(geotiffname);
 N     = Tinfo(1).Width;
 M     = Tinfo(1).Height;
-dx    = Tinfo(1).ModelPixelScaleTag(1);
-dy    = Tinfo(1).ModelPixelScaleTag(2);
-minx  = Tinfo(1).ModelTiepointTag(4);
-maxy  = Tinfo(1).ModelTiepointTag(5);
+if isfield(Tinfo(1),'ModelPixelScaleTag')
+	dx    = Tinfo(1).ModelPixelScaleTag(1);
+	dy    = Tinfo(1).ModelPixelScaleTag(2);
+	minx  = Tinfo(1).ModelTiepointTag(4);
+	maxy  = Tinfo(1).ModelTiepointTag(5);
+	assert(dx>0); assert(dy>0);
+elseif isfield(Tinfo(1),'ModelTransformationTag')
+	dx   = Tinfo(1).ModelTransformationTag(1);
+	dy   = -Tinfo(1).ModelTransformationTag(6);
+	minx = Tinfo(1).ModelTransformationTag(4);
+	maxy = Tinfo(1).ModelTransformationTag(8);
+	assert(dx>0); assert(dy<0);
+else
+   error('image info cannot be retrieved for this geotiff');
+end
 
 %Generate vectors
 xm = minx + dx/2 + ((0:N-1).*dx);
 ym = maxy - dy/2 - ((M  -1:-1:0).*dy);
 
 %Read image
-assert(dx>0); assert(dy>0);
 ym = fliplr(ym);
 
 data  = double(imread(geotiffname));

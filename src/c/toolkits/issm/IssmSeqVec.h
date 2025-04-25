@@ -89,6 +89,9 @@ class IssmSeqVec: public IssmAbsVec<doubletype>{
 			}
 		}
 		/*}}}*/
+		void EchoDebug(std::string message){/*{{{*/
+			_printf_("Error: EchoeReverse SeqVec\n");
+		}
 		void Assemble(void){/*{{{*/
 
 			/*do nothing*/

@@ -1293,6 +1293,7 @@ enum definitions{
 	SurfaceSlopeXEnum,
 	SurfaceSlopeYEnum,
 	TemperatureEnum,
+	TemperatureObsEnum,
 	TemperaturePDDEnum,
 	TemperaturePicardEnum,
 	TemperatureSEMICEnum,

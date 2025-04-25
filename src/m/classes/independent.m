@@ -77,17 +77,5 @@ classdef independent
 				fielddisplay(self,'fov_forward_indices','indices for fov_foward driver of ADOLC');
 			end
 		end % }}}
-		function scalartype=typetoscalar(self) % {{{
-			if strcmpi(self.type,'scalar'),
-				scalartype=0;
-			elseif strcmpi(self.type,'vertex'),
-				scalartype=1;
-			elseif strcmpi(self.type,'element'),
-				scalartype=1;
-			elseif strcmpi(self.type,'matrix'),
-				scalartype=1;
-			else error([self.type ' not supported yet!']);
-			end
-		end % }}}
 	end
 end

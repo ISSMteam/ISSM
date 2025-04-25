@@ -116,11 +116,9 @@ function autodiff (){
 				dep=this.dependents[i];
 
 				names.push(dep.name);
-				types[i]=dep.typetoscalar();
 				indices[i]=dep.index;
 			}
 			WriteData(fid,prefix,'data',names,'name','md.autodiff.dependent_object_names','format','StringArray');
-			WriteData(fid,prefix,'data',types,'name','md.autodiff.dependent_object_types','format','IntMat','mattype',3);
 			WriteData(fid,prefix,'data',indices,'name','md.autodiff.dependent_object_indices','format','IntMat','mattype',3);
 		}
 		//}}}

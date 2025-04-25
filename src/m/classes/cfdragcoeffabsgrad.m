@@ -58,7 +58,7 @@ classdef cfdragcoeffabsgrad
 		end % }}}
 		function md = disp(self) % {{{
 		
-			disp(sprintf('   TimeMisfit:\n'));
+			disp(sprintf('   cfdragcoeffabsgrad:\n'));
 
 			fielddisplay(self,'name','identifier for this cfdragcoeffabsgrad response');
 			fielddisplay(self,'definitionstring','string that identifies this output definition uniquely, from ''Outputdefinition[1-10]''');
