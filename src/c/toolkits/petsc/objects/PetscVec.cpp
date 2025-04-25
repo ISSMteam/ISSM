@@ -15,36 +15,40 @@
 #include "../petscincludes.h"
 #include "../../../shared/shared.h"
 
+#ifdef _HAVE_CODIPACK_
+#include "../../codipack/CoDiPackDebug.h"
+#endif
+
+#include "PetscVec.h"
 /*}}}*/
 
 /*PetscVec constructors and destructor*/
-PetscVec::PetscVec(){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::PetscVec(){/*{{{*/
 	this->vector=NULL;
-	#ifdef _HAVE_AD_
-	this->avector=NULL;
-	#endif
 }
 /*}}}*/
-PetscVec::PetscVec(int M,bool fromlocalsize){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::PetscVec(int M,bool fromlocalsize){/*{{{*/
 
-	this->vector=NewVec(M,IssmComm::GetComm(),fromlocalsize);
-
+	this->vector=NewVec<PVec>(M,IssmComm::GetComm(),fromlocalsize);
 }
 /*}}}*/
-PetscVec::PetscVec(int m,int M){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::PetscVec(int m,int M){/*{{{*/
 
 	VecCreate(IssmComm::GetComm(),&this->vector);
 	VecSetSizes(this->vector,m,M);
 	VecSetFromOptions(this->vector);
 	VecSetOption(this->vector,VEC_IGNORE_NEGATIVE_INDICES,PETSC_TRUE);
 	VecSet(this->vector,0.0);
-
 }
 /*}}}*/
-PetscVec::PetscVec(Vec petsc_vec){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::PetscVec(PVec petsc_vec){/*{{{*/
 
 	if(petsc_vec==NULL){
-		this->vector=NewVec(0,IssmComm::GetComm());
+		this->vector=NewVec<PVec>(0,IssmComm::GetComm());
 	}
 	else{
 		/*copy vector*/
@@ -54,13 +58,14 @@ PetscVec::PetscVec(Vec petsc_vec){/*{{{*/
 
 }
 /*}}}*/
-PetscVec::PetscVec(IssmDouble* serial_vec,int M){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::PetscVec(doubletype* serial_vec,int M){/*{{{*/
 
 	int* idxm=NULL;
 	if(M)idxm=xNew<int>(M);
 	for(int i=0;i<M;i++) idxm[i]=i;
 
-	this->vector=NewVec(M,IssmComm::GetComm());
+	this->vector=NewVec<PVec>(M,IssmComm::GetComm());
 	VecSetValues(this->vector,M,idxm,serial_vec,INSERT_VALUES);
 	VecAssemblyBegin(this->vector);
 	VecAssemblyEnd(this->vector);
@@ -68,60 +73,76 @@ PetscVec::PetscVec(IssmDouble* serial_vec,int M){/*{{{*/
 	xDelete<int>(idxm);
 }
 /*}}}*/
-PetscVec::~PetscVec(){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>::~PetscVec(){/*{{{*/
     VecFree(&this->vector);
 }
 /*}}}*/
 
 /*PetscVec specific routines: */
-void PetscVec::Echo(void){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Echo(void){/*{{{*/
 
 	_assert_(this->vector);
 	VecView(this->vector,PETSC_VIEWER_STDOUT_WORLD);
 }
 /*}}}*/
-void PetscVec::Assemble(void){/*{{{*/
+
+template<typename doubletype>
+void PetscVec<doubletype>::EchoDebug(std::string message){/*{{{*/
+#if defined(_HAVE_CODIPACK_) & defined(_HAVE_ADJOINTPETSC_)
+	if (std::is_same<doubletype, IssmDouble>::value && CoDiIsDebugOutput()) {
+		adjoint_petsc::ADVecDebugOutput(this->vector, message, CoDiGetUniqueID());
+	}
+#endif
+}
+/*}}}*/
+
+template<typename doubletype>
+void PetscVec<doubletype>::Assemble(void){/*{{{*/
 
 	_assert_(this->vector);
 	VecAssemblyBegin(this->vector);
 	VecAssemblyEnd(this->vector);
-
 }
 /*}}}*/
-void PetscVec::SetValues(int ssize, int* list, IssmDouble* values, InsMode mode){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::SetValues(int ssize, int* list, doubletype* values, InsMode mode){/*{{{*/
 
 	_assert_(this->vector);
 	VecSetValues(this->vector,ssize,list,values,ISSMToPetscInsertMode(mode));
 
 }
 /*}}}*/
-void PetscVec::SetValue(int dof, IssmDouble value, InsMode mode){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::SetValue(int dof, doubletype value, InsMode mode){/*{{{*/
 
-	_assert_(this->vector);
-	VecSetValues(this->vector,1,&dof,&value,ISSMToPetscInsertMode(mode));
-
+	SetValues(1, &dof, &value, mode);
 }
 /*}}}*/
-void PetscVec::GetValue(IssmDouble* pvalue,int dof){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::GetValue(doubletype* pvalue,int dof){/*{{{*/
 
 	_assert_(this->vector);
 	VecGetValues(this->vector,1,&dof,pvalue);
-
 }
 /*}}}*/
-void PetscVec::GetSize(int* pM){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::GetSize(int* pM){/*{{{*/
 
 	_assert_(this->vector);
 	VecGetSize(this->vector,pM);
 }
 /*}}}*/
-void PetscVec::GetLocalSize(int* pm){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::GetLocalSize(int* pm){/*{{{*/
 
 	_assert_(this->vector);
 	VecGetLocalSize(this->vector,pm);
 }
 /*}}}*/
-void PetscVec::GetLocalVector(IssmDouble** pvector,int** pindices){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::GetLocalVector(doubletype** pvector,int** pindices){/*{{{*/
 
 	_assert_(this->vector);
 
@@ -150,13 +171,14 @@ void PetscVec::GetLocalVector(IssmDouble** pvector,int** pindices){/*{{{*/
 	int* indices=xNew<int>(range);
 	for(int i=0;i<range;i++) indices[i]=lower_row+i;
 	/*Get vector*/
-	IssmDouble* values =xNew<IssmDouble>(range);
+	doubletype* values =xNew<doubletype>(range);
 	VecGetValues(this->vector,range,indices,values);
 
 	*pvector  = values;
 	*pindices = indices;
 } /*}}}*/
-PetscVec* PetscVec::Duplicate(void){/*{{{*/
+template<typename doubletype>
+PetscVec<doubletype>* PetscVec<doubletype>::Duplicate(void){/*{{{*/
 
 	_assert_(this->vector);
 
@@ -170,115 +192,136 @@ PetscVec* PetscVec::Duplicate(void){/*{{{*/
 	return output;
 }
 /*}}}*/
-void PetscVec::Set(IssmDouble value){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Set(doubletype value){/*{{{*/
 
 	_assert_(this->vector);
 	VecSet(this->vector,value);
 
 }
 /*}}}*/
-void PetscVec::AXPY(PetscVec* X, IssmDouble a){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::AXPY(PetscVec* X, doubletype a){/*{{{*/
 
 	_assert_(this->vector);
 	VecAXPY(this->vector,a,X->vector);
 
 }
 /*}}}*/
-void PetscVec::AYPX(PetscVec* X, IssmDouble a){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::AYPX(PetscVec* X, doubletype a){/*{{{*/
 
 	_assert_(this->vector);
 	VecAYPX(this->vector,a,X->vector);
 
 }
 /*}}}*/
-IssmDouble* PetscVec::ToMPISerial(void){/*{{{*/
+template<typename doubletype>
+doubletype* PetscVec<doubletype>::ToMPISerial(void){/*{{{*/
 
-	IssmDouble* vec_serial=NULL;
+	doubletype* vec_serial=NULL;
 	VecToMPISerial(&vec_serial, this->vector,IssmComm::GetComm(),true);
 	return vec_serial;
 
 }
 /*}}}*/
-IssmDouble* PetscVec::ToMPISerial0(void){/*{{{*/
+template<typename doubletype>
+doubletype* PetscVec<doubletype>::ToMPISerial0(void){/*{{{*/
 
-	IssmDouble* vec_serial=NULL;
+	doubletype* vec_serial=NULL;
 	VecToMPISerial(&vec_serial, this->vector,IssmComm::GetComm(),false);
 	return vec_serial;
 
 }
 /*}}}*/
-void PetscVec::Shift(IssmDouble shift){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Shift(doubletype shift){/*{{{*/
 
 	if(this->vector) VecShift(this->vector,shift);
 
 }
 /*}}}*/
-void PetscVec::Copy(PetscVec* to){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Copy(PetscVec* to){/*{{{*/
 
 	if(this->vector) VecCopy(this->vector,to->vector);
 
 }
 /*}}}*/
-IssmDouble PetscVec::Max(void){/*{{{*/
+template<typename doubletype>
+doubletype PetscVec<doubletype>::Max(void){/*{{{*/
 
 	_assert_(this->vector);
 
-	IssmDouble max;
+	doubletype max;
 	VecMax(this->vector,NULL,&max);
 	return max;
 
 }
 /*}}}*/
-IssmDouble PetscVec::Norm(NormMode mode){/*{{{*/
+template<typename doubletype>
+doubletype PetscVec<doubletype>::Norm(NormMode mode){/*{{{*/
 
-	IssmDouble norm=0;
+	doubletype norm=0;
 	_assert_(this->vector);
 	VecNorm(this->vector,ISSMToPetscNormMode(mode),&norm);
 	return norm;
 
 }
 /*}}}*/
-void PetscVec::Scale(IssmDouble scale_factor){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Scale(doubletype scale_factor){/*{{{*/
 
 	_assert_(this->vector);
 	VecScale(this->vector,scale_factor);
 
 }
 /*}}}*/
-void PetscVec::Pow(IssmDouble scale_factor){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Pow(doubletype scale_factor){/*{{{*/
 
 	_assert_(this->vector);
 	VecPow(this->vector,scale_factor);
 
 }
 /*}}}*/
-void PetscVec::Sum(IssmDouble* pvalue){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::Sum(doubletype* pvalue){/*{{{*/
 
 	_assert_(this->vector);
 	VecSum(this->vector,pvalue);
 
 }
 /*}}}*/
-IssmDouble PetscVec::Dot(PetscVec* input){/*{{{*/
+template<typename doubletype>
+doubletype PetscVec<doubletype>::Dot(PetscVec* input){/*{{{*/
 
-	IssmDouble dot;
+	doubletype dot;
 	_assert_(this->vector);
 	VecDot(this->vector,input->vector,&dot);
 	return dot;
 
 }
 /*}}}*/
-void PetscVec::PointwiseDivide(PetscVec* x,PetscVec* y){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::PointwiseDivide(PetscVec* x,PetscVec* y){/*{{{*/
 
 	_assert_(this->vector);
 	VecPointwiseDivide(this->vector,x->vector,y->vector);
 
 }
 /*}}}*/
-void PetscVec::PointwiseMult(PetscVec* x,PetscVec* y){/*{{{*/
+template<typename doubletype>
+void PetscVec<doubletype>::PointwiseMult(PetscVec* x,PetscVec* y){/*{{{*/
 
 	_assert_(this->vector);
 	VecPointwiseMult(this->vector,x->vector,y->vector);
 
 }
 /*}}}*/
+
+// Explicit instantiations.
+template class PetscVec<IssmDouble>;
+#if _HAVE_CODIPACK_
+template class PetscVec<IssmPDouble>;
+#endif
