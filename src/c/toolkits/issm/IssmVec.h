@@ -127,6 +127,9 @@ class IssmVec{
 		void Echo(void){/*{{{*/
 			vector->Echo();
 		}
+		void EchoDebug(std::string message){/*{{{*/
+			vector->EchoDebug(message);
+		}
 		/*}}}*/
 		void Assemble(void){/*{{{*/
 			vector->Assemble();

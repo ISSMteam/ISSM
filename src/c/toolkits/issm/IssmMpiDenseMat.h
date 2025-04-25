@@ -148,6 +148,10 @@ class IssmMpiDenseMat:public IssmAbsMat<doubletype>{
 
 		}
 		/*}}}*/
+		void EchoDebug(std::string message) {
+			_printf_("Error: not implemented.\n");
+		}
+
 		void Assemble(){/*{{{*/
 
 			int           i,j;
