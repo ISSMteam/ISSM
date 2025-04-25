@@ -3895,10 +3895,10 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 
 		/*Step 3: Ablation*/
 		ddf_debris = ddf_ice*efactor;
-		ablation[iv] = (ddf_snow+ddf_firn+ddf_ice+ddf_debris)*(max(0., temperature+273.15));
+		ablation[iv] = (ddf_snow+ddf_firn+ddf_ice+ddf_debris)*(max(0., temperature-273.15));
 
 		/*Step 4: Refreezing*/
-		refreezing[iv] = min(ablation[iv], max(0., -0.69*(annual_temperature+273.15)+0.0096)*12/(365*3600*24));
+		refreezing[iv] = min(ablation[iv], max(0., -0.69*(annual_temperature-273.15)+0.0096)*12/(365*3600*24));
 
 		/*Step 5: TODO: add firn=previous years accumulation-ablation*/
 		smb[iv] = accumulation[iv]-ablation[iv]+refreezing[iv];
