@@ -18,6 +18,7 @@
 #include "./types.h"
 #include "./constants.h"
 #include "./OptPars.h"
+#include "./interpolation.h"
 
 #if !defined(_HAVE_CODIPACK_)
 // already defined in codipack headers
@@ -46,10 +47,9 @@ void LineSectionNormal(IssmDouble* result, IssmDouble* xyz_section);
 void TriangleFacetNormal(IssmDouble* normal, IssmDouble* xyz_facet);
 
 /*Interpolation*/
-bool findindices(int* pn,int* pm,double* x,int x_rows, double* y,int y_rows, double xgrid,double ygrid);
+IssmDouble bilinearinterp(IssmDouble* x_grid,IssmDouble* y_grid,IssmDouble* data,IssmDouble x,IssmDouble y,int m,int n,int Nx);
+/*templates*/
 double triangleinterp(double x1,double x2,double y1,double y2,double Q11,double Q12,double Q21,double Q22,double x,double y);
-double bilinearinterp(double x1,double x2,double y1,double y2,double Q11,double Q12,double Q21,double Q22,double x,double y);
-double bilinearinterp(IssmDouble* x_grid,IssmDouble* y_grid,IssmDouble* data,IssmDouble x,IssmDouble y,int m,int n,int Nx);
 double nearestinterp(double x1,double x2,double y1,double y2,double Q11,double Q12,double Q21,double Q22,double x,double y);
 
 #endif //ifndef _NUMERICS_H_

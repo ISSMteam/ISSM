@@ -3935,7 +3935,7 @@ void       Element::ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_gri
 		x = xyz_list[iv*3+0];
 		y = xyz_list[iv*3+1];
 		/*Find indices m and n into y_grid and x_grid, for which  y_grid(m)<=y<=y_grid(m+1) and x_grid(n)<=x<=x_grid(n+1)*/
-		findindices(&n,&m,x_grid,Nx,y_grid,Ny,x,y);
+		findindices<IssmDouble>(&n,&m,x_grid,Nx,y_grid,Ny,x,y);
 		temp[iv] = bilinearinterp(x_grid,y_grid,griddata,x,y,m,n,Nx);
 	}
 	/*Add input to element and Free memory*/
