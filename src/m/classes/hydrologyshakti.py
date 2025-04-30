@@ -14,6 +14,8 @@ class hydrologyshakti(object):
     def __init__(self):  # {{{
         self.head = np.nan
         self.gap_height = np.nan
+        self.gap_height_min  = 1e-3;
+        self.gap_height_max  = 1.;
         self.bump_spacing = np.nan
         self.bump_height = np.nan
         self.englacial_input = np.nan
@@ -33,6 +35,8 @@ class hydrologyshakti(object):
         s = '   hydrologyshakti solution parameters:'
         s += '{}\n'.format(fielddisplay(self, 'head', 'subglacial hydrology water head (m)'))
         s += '{}\n'.format(fielddisplay(self, 'gap_height', 'height of gap separating ice to bed (m)'))
+        s += '{}\n'.format(fielddisplay(self, 'gap_height_min', 'minimum allowed gap height (m)'))
+        s += '{}\n'.format(fielddisplay(self, 'gap_height_max', 'minimum allowed gap height (m)'))
         s += '{}\n'.format(fielddisplay(self, 'bump_spacing', 'characteristic bedrock bump spacing (m)'))
         s += '{}\n'.format(fielddisplay(self, 'bump_height', 'characteristic bedrock bump height (m)'))
         s += '{}\n'.format(fielddisplay(self, 'englacial_input', 'liquid water input from englacial to subglacial system (m / yr)'))
@@ -52,6 +56,8 @@ class hydrologyshakti(object):
 
     def setdefaultparameters(self):  # {{{
         # Set under-relaxation parameter to be 1 (no under-relaxation of nonlinear iteration)
+        self.gap_height_min  = 1e-3;
+        self.gap_height_max  = 1.;
         self.relaxation = 1
         self.storage = 0
         self.requested_outputs = ['default']
@@ -70,6 +76,8 @@ class hydrologyshakti(object):
 
         md = checkfield(md, 'fieldname', 'hydrology.head', 'size', [md.mesh.numberofvertices], 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.gap_height', '>=', 0, 'size', [md.mesh.numberofelements], 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.gap_height_min', '>=', 0, 'numel', 1, 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.gap_height_max', '>=', 0, 'numel', 1, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.bump_spacing', '>', 0, 'size', [md.mesh.numberofelements], 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.bump_height', '>=', 0, 'size', [md.mesh.numberofelements], 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.englacial_input', '>=', 0, 'NaN', 1, 'Inf', 1, 'timeseries', 1)
@@ -89,6 +97,8 @@ class hydrologyshakti(object):
         WriteData(fid, prefix, 'name', 'md.hydrology.model', 'data', 3, 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'head', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'gap_height', 'format', 'DoubleMat', 'mattype', 2)
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'gap_height_min', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'gap_height_max', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'bump_spacing', 'format', 'DoubleMat', 'mattype', 2)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'bump_height', 'format', 'DoubleMat', 'mattype', 2)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'englacial_input', 'format', 'DoubleMat', 'mattype', 1, 'scale', 1. / yts, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts)
