@@ -258,6 +258,8 @@
 	HydrologyChannelBetaEnum
 	HydrologyCavitySpacingEnum
 	HydrologyChannelSheetWidthEnum
+	HydrologyGapHeightMinEnum
+	HydrologyGapHeightMaxEnum
 	HydrologyEnglacialVoidRatioEnum
 	HydrologyIschannelsEnum
 	HydrologyIsIncludeSheetThicknessEnum
@@ -4020,6 +4022,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyChannelBetaEnum) return "HydrologyChannelBeta" end
 	if(enum==HydrologyCavitySpacingEnum) return "HydrologyCavitySpacing" end
 	if(enum==HydrologyChannelSheetWidthEnum) return "HydrologyChannelSheetWidth" end
+	if(enum==HydrologyGapHeightMinEnum) return "HydrologyGapHeightMin" end
+	if(enum==HydrologyGapHeightMaxEnum) return "HydrologyGapHeightMax" end
 	if(enum==HydrologyEnglacialVoidRatioEnum) return "HydrologyEnglacialVoidRatio" end
 	if(enum==HydrologyIschannelsEnum) return "HydrologyIschannels" end
 	if(enum==HydrologyIsIncludeSheetThicknessEnum) return "HydrologyIsIncludeSheetThickness" end
@@ -7782,6 +7786,8 @@ function StringToEnum(name::String)
 	if(name=="HydrologyChannelBeta") return HydrologyChannelBetaEnum  end
 	if(name=="HydrologyCavitySpacing") return HydrologyCavitySpacingEnum  end
 	if(name=="HydrologyChannelSheetWidth") return HydrologyChannelSheetWidthEnum  end
+	if(name=="HydrologyGapHeightMin") return HydrologyGapHeightMinEnum  end
+	if(name=="HydrologyGapHeightMax") return HydrologyGapHeightMaxEnum  end
 	if(name=="HydrologyEnglacialVoidRatio") return HydrologyEnglacialVoidRatioEnum  end
 	if(name=="HydrologyIschannels") return HydrologyIschannelsEnum  end
 	if(name=="HydrologyIsIncludeSheetThickness") return HydrologyIsIncludeSheetThicknessEnum  end

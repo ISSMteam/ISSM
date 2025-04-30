@@ -271,6 +271,8 @@ const char* EnumToStringx(int en){
 		case HydrologyChannelBetaEnum : return "HydrologyChannelBeta";
 		case HydrologyCavitySpacingEnum : return "HydrologyCavitySpacing";
 		case HydrologyChannelSheetWidthEnum : return "HydrologyChannelSheetWidth";
+		case HydrologyGapHeightMinEnum : return "HydrologyGapHeightMin";
+		case HydrologyGapHeightMaxEnum : return "HydrologyGapHeightMax";
 		case HydrologyEnglacialVoidRatioEnum : return "HydrologyEnglacialVoidRatio";
 		case HydrologyIschannelsEnum : return "HydrologyIschannels";
 		case HydrologyIsIncludeSheetThicknessEnum : return "HydrologyIsIncludeSheetThickness";

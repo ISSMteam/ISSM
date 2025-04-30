@@ -263,6 +263,8 @@ enum definitions{
 	HydrologyChannelBetaEnum,
 	HydrologyCavitySpacingEnum,	
 	HydrologyChannelSheetWidthEnum,
+	HydrologyGapHeightMinEnum,
+	HydrologyGapHeightMaxEnum,
 	HydrologyEnglacialVoidRatioEnum,
 	HydrologyIschannelsEnum,
 	HydrologyIsIncludeSheetThicknessEnum,

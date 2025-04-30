@@ -269,6 +269,8 @@ syn keyword cConstant HydrologyChannelAlphaEnum
 syn keyword cConstant HydrologyChannelBetaEnum
 syn keyword cConstant HydrologyCavitySpacingEnum
 syn keyword cConstant HydrologyChannelSheetWidthEnum
+syn keyword cConstant HydrologyGapHeightMinEnum
+syn keyword cConstant HydrologyGapHeightMaxEnum
 syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyIschannelsEnum
 syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
