@@ -262,6 +262,8 @@ syn keyword juliaConstC HydrologyChannelAlphaEnum
 syn keyword juliaConstC HydrologyChannelBetaEnum
 syn keyword juliaConstC HydrologyCavitySpacingEnum
 syn keyword juliaConstC HydrologyChannelSheetWidthEnum
+syn keyword juliaConstC HydrologyGapHeightMinEnum
+syn keyword juliaConstC HydrologyGapHeightMaxEnum
 syn keyword juliaConstC HydrologyEnglacialVoidRatioEnum
 syn keyword juliaConstC HydrologyIschannelsEnum
 syn keyword juliaConstC HydrologyIsIncludeSheetThicknessEnum
