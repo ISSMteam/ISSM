@@ -17,30 +17,32 @@ using namespace std;
 
 /*Object constructors and destructor*/
 SealevelGeometry::SealevelGeometry(int localnelin,int localnodsin){ /*{{{*/
+
 	localnel=localnelin;
+
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		for (int j=0;j<SLMAXVERTICES;j++){
-			LoadWeigths[i][j]=xNewZeroInit<IssmDouble>(localnel);
+			LoadWeigths[i][j] = xNewZeroInit<IssmDouble>(localnel);
 		}
-		vlatbarycentre[i]=NULL; //we don't know yet 
-		vlongbarycentre[i]=NULL;
-		vareae_subel[i]=NULL;
-		latbarycentre[i]=NULL; //we don't know yet 
-		longbarycentre[i]=NULL;
-		area_subel[i]=NULL;
+		vlatbarycentre[i]  = NULL; //we don't know yet
+		vlongbarycentre[i] = NULL;
+		vareae_subel[i]    = NULL;
+		latbarycentre[i]   = NULL; //we don't know yet
+		longbarycentre[i]  = NULL;
+		area_subel[i]      = NULL;
 
-		LoadArea[i]=xNewZeroInit<IssmDouble>(localnel);
-		issubelement[i]=xNewZeroInit<bool>(localnel);
-		subelementmapping[i]=NULL;
-		nsubel[i]=0;
-		nbar[i]=0;
-		Ylm_subel[i]= xNewZeroInit<IssmDouble>(localnel*9);
+		LoadArea[i]      = xNewZeroInit<IssmDouble>(localnel);
+		issubelement[i]  = xNewZeroInit<bool>(localnel);
+      Ylm_subel[i]     = xNewZeroInit<IssmDouble>(localnel*9);
+		subelementmapping[i] = NULL;
+		nsubel[i] = 0;
+		nbar[i]   = 0;
 	}
-	late=xNew<IssmDouble>(localnel);
-	longe=xNew<IssmDouble>(localnel);
-	isoceanin=xNew<bool>(localnel);
-	lids=xNew<int>(localnodsin);
-	Ylm=xNewZeroInit<IssmDouble>(localnel*9); // (degmax+1)^2 terms, degmax=2 
+	late      = xNew<IssmDouble>(localnel);
+	longe     = xNew<IssmDouble>(localnel);
+	isoceanin = xNew<bool>(localnel);
+	lids      = xNew<int>(localnodsin);
+	Ylm       = xNewZeroInit<IssmDouble>(localnel*9); // (degmax+1)^2 terms, degmax = 2
 
 }; /*}}}*/
 SealevelGeometry::~SealevelGeometry(){ /*{{{*/
@@ -150,21 +152,20 @@ void SealevelGeometry::BuildSphericalHarmonics(){ /*{{{*/
 	//YlmNormalization: N^2=(2*l+1)/4/pi * factorial(l-m)/factorial(l+m) if m==0
 	//             : 2*N^2 if m>0
 	// such that integral(Ylm * Ylm *YlmNorm dS) = 1 on the unit sphere.
-	YlmNorm[0]=(0.25/M_PI); //Y00
-	YlmNorm[1]=(0.75/M_PI); //Y10
-	YlmNorm[2]=(0.75/M_PI); //Y11c
-	YlmNorm[3]=YlmNorm[2];	 //Y11s
-	YlmNorm[4]=(1.25/M_PI); //Y20
-	YlmNorm[5]=(1.25/3./M_PI); //Y21c
-	YlmNorm[6]=YlmNorm[5]; //Y21s
-	YlmNorm[7]=(1.25/12./M_PI); //Y22c
-	YlmNorm[8]=YlmNorm[7]; //Y22s
+	YlmNorm[0] = (0.25/M_PI);     // Y00
+	YlmNorm[1] = (0.75/M_PI);     // Y10
+	YlmNorm[2] = (0.75/M_PI);     // Y11c
+	YlmNorm[3] = YlmNorm[2];      // Y11s
+	YlmNorm[4] = (1.25/M_PI);     // Y20
+	YlmNorm[5] = (1.25/3./M_PI);  // Y21c
+	YlmNorm[6] = YlmNorm[5];      // Y21s
+	YlmNorm[7] = (1.25/12./M_PI); // Y22c
+	YlmNorm[8] = YlmNorm[7];      // Y22s
 
 	for (int e=0;e<localnel;e++){
-		IssmDouble lat=late[e]*M_PI/180.;
-		IssmDouble lon=longe[e]*M_PI/180.;
+		IssmDouble lat = late[e]*M_PI/180.;
+		IssmDouble lon = longe[e]*M_PI/180.;
 		Ylm[0*localnel+e] = 1.0 *YlmNorm[0]; //Y00
-
 		Ylm[1*localnel+e] = sin(lat)*YlmNorm[1]; //Y10
 		Ylm[2*localnel+e] = cos(lat)*cos(lon)*YlmNorm[2]; //Y11cos
 		Ylm[3*localnel+e] = cos(lat)*sin(lon)*YlmNorm[3]; //Y11sin

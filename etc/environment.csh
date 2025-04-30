@@ -17,14 +17,6 @@ setenv PATH "{$PATH}:{$ISSM_DIR}/scripts"
 
 set ISSM_EXT_DIR="{$ISSM_DIR}/externalpackages" # Redefine this constant if externalpackages are installed to a different directory
 
-#########################
-# Command-line utilities
-#########################
-set SSH_ROOT="{$ISSM_EXT_DIR}/ssh"
-if ( -d {$SSH_ROOT} ) then
-	setenv PATH "{$PATH}:{$SSH_ROOT}"
-endif
-
 #############################
 # Build systems
 #############################
@@ -111,27 +103,11 @@ if ( -d {$SCOTCH_ROOT} ) then
 	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$SCOTCH_ROOT}/lib
 endif
 
-set SLEPC_ROOT="{$ISSM_EXT_DIR}/slepc/install"
-if ( -d {$SLEPC_ROOT} ) then
-	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$SLEPC_ROOT}/lib
-endif
-
-set TAO_ROOT="{$ISSM_EXT_DIR}/tao/install"
-if ( -d {$TAO_ROOT} ) then
-	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$TAO_ROOT}/lib
-endif
-
 set DAKOTA_ROOT="{$ISSM_EXT_DIR}/dakota/install"
 if ( -d {$DAKOTA_ROOT} ) then
 	setenv PATH {$PATH}:{$DAKOTA_ROOT}/bin
 	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$DAKOTA_ROOT}/lib
 	setenv DYLD_LIBRARY_PATH {$DAKOTA_ROOT}/lib:{$DYLD_LIBRARY_PATH}
-endif
-
-set MERCURIAL_ROOT="{$ISSM_EXT_DIR}/mercurial/install"
-if ( -d {$MERCURIAL_ROOT} ) then
-	setenv PYTHONPATH {$PYTHONPATH}:{$MERCURIAL_ROOT}/mercurial/pure
-	setenv PATH {$PATH}:{$MERCURIAL_ROOT}
 endif
 
 set BOOST_ROOT="{$ISSM_EXT_DIR}/boost/install"
@@ -234,11 +210,6 @@ endif
 set VALGRIND_ROOT="{$ISSM_EXT_DIR}/valgrind/install"
 if ( -d {$VALGRIND_ROOT} ) then
 	setenv PATH {$VALGRIND_ROOT}/bin:{$PATH}
-endif
-
-set DOXYGEN_ROOT="{$ISSM_EXT_DIR}/doxygen/install"
-if ( -d {$DOXYGEN_ROOT} ) then
-	setenv PATH {$DOXYGEN_ROOT}/bin:{$PATH}
 endif
 
 set SHELL2JUNIT_ROOT="{$ISSM_EXT_DIR}/shell2junit/install"

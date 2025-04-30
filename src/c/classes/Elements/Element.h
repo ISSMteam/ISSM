@@ -71,7 +71,8 @@ class Element: public Object{
       void               ArmaProcess(bool isstepforarma,int arorder,int maorder,int numparams,int numbreaks,IssmDouble tstep_arma,IssmDouble* polyparams,IssmDouble* arlagcoefs,IssmDouble* malagcoefs,IssmDouble* datebreaks,bool isfieldstochastic,int enum_type);
 		void               BasinLinearFloatingiceMeltingRate(IssmDouble* deepwaterel,IssmDouble* upperwatermelt,IssmDouble* upperwaterel,IssmDouble* perturbation);
 		void               CalvingSetZeroRate(void);
-		void               CalvingRateToVector(void);
+		void               CalvingRateToVector();
+		void               CalvingRateToVector(bool isvelvector);
 		void               ComputeLambdaS(void);
 		void               ComputeNewDamage();
 		void               ComputeStrainRate();
@@ -177,6 +178,8 @@ class Element: public Object{
 		void               PicoComputeBasalMelt();
 		void               PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDouble signorm,bool ismungsm,bool issetpddfac);
 		void               PositiveDegreeDaySicopolis(bool isfirnwarming);
+		void               PositiveDegreeDayGCM();
+		void               ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum);
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();
 		void               ResultInterpolation(int* pinterpolation,int*nodesperelement,int* parray_size, int output_enum);

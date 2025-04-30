@@ -123,7 +123,7 @@ classdef basin
 			for i=1:length(self.boundaries),
 				boundary=self.boundaries{i};
 				contour=boundary.edges();
-				[contour.x,contour.y]=gdaltransform(contour.x,contour.y,boundary.proj,self.proj);
+				[contour.x,contour.y]=CoordTransform(contour.x,contour.y,boundary.proj,self.proj);
 				x=[x;contour.x];
 				y=[y;contour.y];
 			end
@@ -199,7 +199,7 @@ classdef basin
 			%project onto reference frame:
 			for i=1:length(contours),
 				h=contours(i);
-				[h.x,h.y]=gdaltransform(h.x,h.y,projshapefile,self.proj);
+				[h.x,h.y]=CoordTransform(h.x,h.y,projshapefile,self.proj);
 				contours(i).x=h.x;
 				contours(i).y=h.y;
 			end

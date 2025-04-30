@@ -76,6 +76,7 @@ class Inputs{
 		void  GetInputValue(bool* pvalue,int enum_in,int index);
 		void  GetInputValue(int*  pvalue,int enum_in,int index);
 		void  GetInputValue(IssmDouble*  pvalue,int enum_in,int index);
+		bool  IsFileInputUpdate(IssmDouble time);
 		void  ResultInterpolation(int* pinterpolation,int*nodesperelement,int* parray_size, int output_enum);
 		void  SetInput(int enum_in,int index,bool value);
 		void  SetInput(int enum_in,int index,int value);

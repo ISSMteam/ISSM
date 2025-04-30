@@ -488,7 +488,7 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 	IssmDouble  water_height, bed,Hab,thickness,surface;
 	IssmDouble  surface_crevasse[NUMVERTICES], basal_crevasse[NUMVERTICES], crevasse_depth[NUMVERTICES], H_surf, H_surfbasal;
 	IssmDouble  strainparallel, straineffective,B,n;
-	IssmDouble  s_xx,s_xy,s_yy,s1,s2,stmp;
+	IssmDouble  s_xx,s_xy,s_yy,s1,s2,stmp,vH,Kmax;
 	int         crevasse_opening_stress;
 
 	/*reset if no ice in element*/
@@ -542,44 +542,64 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 		s_xy_input->GetInputValue(&s_xy,&gauss);
 		s_yy_input->GetInputValue(&s_yy,&gauss);
 
-      /*Get longitudinal or maximum Eigen stress*/
+		/*Get longitudinal or maximum Eigen stress*/
 		if(crevasse_opening_stress==0){
-         /*Otero2010: balance between the tensile deviatoric stress and ice overburden pressure*/
+			/*Otero2010: balance between the tensile deviatoric stress and ice overburden pressure*/
 			strainrateparallel_input->GetInputValue(&strainparallel,&gauss);
 			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
 			B_input->GetInputValue(&B,&gauss);
 			n_input->GetInputValue(&n,&gauss);
-         s1 =  B * strainparallel * pow(straineffective, (1./n)-1);
+			s1 =  B * strainparallel * pow(straineffective, (1./n)-1);
 		}
 		else if(crevasse_opening_stress==1){
-         /*Benn2017,Todd2018: maximum principal stress */
+			/*Benn2017,Todd2018: maximum principal stress */
 			Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
 			s1 = max(0.,max(s1,s2));
 		}
-      else{
-         _error_("not supported");
-      }
-
-      /*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
-      surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
-		if(surface_crevasse[iv]<0.){
-			surface_crevasse[iv]=0.;
-			water_height = 0.;
+		else if(crevasse_opening_stress==2){
+			/*Coffey 2024, Buttressing based */
+			Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
+			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
+			n_input->GetInputValue(&n,&gauss);
+			B_input->GetInputValue(&B,&gauss);
+			if((straineffective <= 0.) || (thickness <= 0.) ){
+				vH = 1e14;
+			}
+			else{
+				vH = 0.5*B/thickness*pow(straineffective, (1./n)-1);
+			}
+			Kmax = 1.0 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
+			if(Kmax<0.) Kmax = 0.0;
+		}
+		else{
+			_error_("not supported");
 		}
 
-      /*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
-      if(bed>0.){
-         basal_crevasse[iv] = 0.;
-      }
-      else{
-         Hab = thickness - (rho_seawater/rho_ice) * (-bed);
-         if(Hab<0.)  Hab=0.;
-         basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* (2*s1/ (rho_ice*constant_g)-Hab);
-         if(basal_crevasse[iv]<0.) basal_crevasse[iv]=0.;
-      }
+		if(crevasse_opening_stress==2) {
+			/*Coffey 2024, Buttressing based */
+			surface_crevasse[iv] = thickness*(1.0-rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
+			basal_crevasse[iv]   = thickness*(rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
+			//_printf0_(Kmax<<", "<<basal_crevasse[iv]<<", "<<surface_crevasse[iv]<<endl);
+		}
+		else {
+			/*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
+			surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
 
-      /*Total crevasse depth (surface + basal)*/
-		crevasse_depth[iv]   = surface_crevasse[iv] + basal_crevasse[iv];
+			/*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
+			if(bed>0.){
+				basal_crevasse[iv] = 0.;
+			}
+			else{
+				Hab = thickness - (rho_seawater/rho_ice) * (-bed);
+				if(Hab<0.)  Hab=0.;
+				basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* (2*s1/ (rho_ice*constant_g)-Hab);
+			}
+		}
+
+		/*crevasse depths (total = surface + basal)*/
+		if(surface_crevasse[iv]<0.) surface_crevasse[iv]=0.;
+		if(basal_crevasse[iv]<0.)   basal_crevasse[iv]=0.;
+		crevasse_depth[iv]  = surface_crevasse[iv] + basal_crevasse[iv];
 	}
 
 	this->AddInput(SurfaceCrevasseEnum,&surface_crevasse[0],P1DGEnum);
@@ -1191,7 +1211,18 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 	}
 	/*Add input*/
 	this->AddInput(CalvingCalvingrateEnum,&calvingrate[0],P1DGEnum);
-	this->CalvingRateToVector();
+	switch (experiment) {
+		case 1:
+		case 3:
+			this->CalvingRateToVector(true);
+			break;
+		case 2:
+		case 4:
+			this->CalvingRateToVector(false);
+			break;
+		default:
+			_error_("The experiment is not supported yet!");
+	}
 }
 /*}}}*/
 IssmDouble Tria::CharacteristicLength(void){/*{{{*/

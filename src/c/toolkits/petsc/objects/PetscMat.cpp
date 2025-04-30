@@ -13,26 +13,30 @@
 #include "../petscincludes.h"
 #include "../../../shared/shared.h"
 
-/*PetscMat constructors and destructor*/
-PetscMat::PetscMat(){/*{{{*/
-	this->matrix=NULL;
-	#ifdef _HAVE_AD_
-	this->amatrix=NULL;
-	#endif
+#ifdef _HAVE_CODIPACK_
+#include "../../codipack/CoDiPackDebug.h"
+#endif
 
+/*PetscMat constructors and destructor*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(){/*{{{*/
+	this->matrix=NULL;
 }
 /*}}}*/
-PetscMat::PetscMat(int M,int N){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(int M,int N){/*{{{*/
 
 	this->matrix=NewMat(M,N,IssmComm::GetComm());
 }
 /*}}}*/
-PetscMat::PetscMat(int M,int N, IssmDouble sparsity){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(int M,int N, IssmPDouble sparsity){/*{{{*/
 
 	this->matrix=NewMat(M,N,sparsity,IssmComm::GetComm());
 }
 /*}}}*/
-PetscMat::PetscMat(int m,int n,int M,int N,int* d_nnz,int* o_nnz){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(int m,int n,int M,int N,int* d_nnz,int* o_nnz){/*{{{*/
 
 	MatCreate(IssmComm::GetComm(),&this->matrix);
 	MatSetSizes(this->matrix,m,n,M,N);
@@ -64,7 +68,8 @@ PetscMat::PetscMat(int m,int n,int M,int N,int* d_nnz,int* o_nnz){/*{{{*/
 
 }
 /*}}}*/
-PetscMat::PetscMat(IssmDouble* serial_mat,int M,int N,IssmDouble sparsity){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(doubletype* serial_mat,int M,int N,IssmPDouble sparsity){/*{{{*/
 
 	int     i;
 	int* idxm=NULL;
@@ -86,19 +91,22 @@ PetscMat::PetscMat(IssmDouble* serial_mat,int M,int N,IssmDouble sparsity){/*{{{
 
 }
 /*}}}*/
-PetscMat::PetscMat(int M,int N, int connectivity,int numberofdofspernode){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::PetscMat(int M,int N, int connectivity,int numberofdofspernode){/*{{{*/
 
 	this->matrix=NewMat(M,N,connectivity,numberofdofspernode,IssmComm::GetComm());
 
 }
 /*}}}*/
-PetscMat::~PetscMat(){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>::~PetscMat(){/*{{{*/
 	MatFree(&this->matrix);
 }
 /*}}}*/
 
 /*PetscMat specific routines: */
-void PetscMat::AllocationInfo(void){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::AllocationInfo(void){/*{{{*/
 
 	MatInfo info;
 	MatGetInfo(this->matrix,MAT_GLOBAL_SUM,&info);
@@ -112,12 +120,23 @@ void PetscMat::AllocationInfo(void){/*{{{*/
 	_printf0_("========================================================================================\n");
 }
 /*}}}*/
-void PetscMat::Echo(void){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::Echo(void){/*{{{*/
 
 	MatView(this->matrix,PETSC_VIEWER_STDOUT_WORLD);
 }
 /*}}}*/
-void PetscMat::Assemble(void){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::EchoDebug(std::string message){/*{{{*/
+#if defined(_HAVE_CODIPACK_) & defined(_HAVE_ADJOINTPETSC_)
+	if (std::is_same<doubletype, IssmDouble>::value && CoDiIsDebugOutput()) {
+		adjoint_petsc::ADMatDebugOutput(this->matrix, message, CoDiGetUniqueID());
+	}
+#endif
+}
+/*}}}*/
+template<typename doubletype>
+void PetscMat<doubletype>::Assemble(void){/*{{{*/
 
 	_assert_(this->matrix);
 	MatAssemblyBegin(this->matrix,MAT_FINAL_ASSEMBLY);
@@ -125,9 +144,10 @@ void PetscMat::Assemble(void){/*{{{*/
 
 }
 /*}}}*/
-IssmDouble PetscMat::Norm(NormMode mode){/*{{{*/
+template<typename doubletype>
+doubletype PetscMat<doubletype>::Norm(NormMode mode){/*{{{*/
 
-	IssmDouble norm=0;
+	doubletype norm=0;
 	_assert_(this->matrix);
 	MatNorm(this->matrix,ISSMToPetscNormMode(mode),&norm);
 
@@ -135,27 +155,36 @@ IssmDouble PetscMat::Norm(NormMode mode){/*{{{*/
 
 }
 /*}}}*/
-void PetscMat::GetSize(int* pM,int* pN){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::GetSize(int* pM,int* pN){/*{{{*/
 
 	_assert_(this->matrix);
 	MatGetSize(this->matrix,pM,pN);
 }
 /*}}}*/
-void PetscMat::GetLocalSize(int* pM,int* pN){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::GetLocalSize(int* pM,int* pN){/*{{{*/
 
 	_assert_(this->matrix);
 	MatGetLocalSize(this->matrix,pM,pN);
 
 }
 /*}}}*/
-void PetscMat::MatMult(PetscVec* X,PetscVec* AX){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::MatMult(PetscVec<doubletype>* X,PetscVec<doubletype>* AX){/*{{{*/
 
 	_assert_(this->matrix);
 	_assert_(X->vector);
 
-	::MatMult(this->matrix, X->vector, AX->vector);
+  using ::MatMult;
+#if _HAVE_CODIPACK_
+  using ::adjoint_petsc::MatMult;
+#endif
+
+	MatMult(this->matrix, X->vector, AX->vector);
 }/*}}}*/
-PetscMat* PetscMat::Duplicate(void){/*{{{*/
+template<typename doubletype>
+PetscMat<doubletype>* PetscMat<doubletype>::Duplicate(void){/*{{{*/
 
 	_assert_(this->matrix);
 
@@ -169,36 +198,44 @@ PetscMat* PetscMat::Duplicate(void){/*{{{*/
 	return output;
 }
 /*}}}*/
-IssmDouble* PetscMat::ToMPISerial(void){/*{{{*/
+template<typename doubletype>
+doubletype* PetscMat<doubletype>::ToMPISerial(void){/*{{{*/
 
-	 IssmDouble* output=NULL;
+	 doubletype* output=NULL;
 	 MatToMPISerial(&output,this->matrix,IssmComm::GetComm(),true);
 	 return output;
 
 }
 /*}}}*/
-IssmDouble* PetscMat::ToMPISerial0(void){/*{{{*/
+template<typename doubletype>
+doubletype* PetscMat<doubletype>::ToMPISerial0(void){/*{{{*/
 
-	 IssmDouble* output=NULL;
+	 doubletype* output=NULL;
 	 MatToMPISerial(&output,this->matrix,IssmComm::GetComm(),false);
 	 return output;
 
 }
 /*}}}*/
-void PetscMat::SetValues(int m,int* idxm,int n,int* idxn,IssmDouble* values,InsMode mode){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::SetValues(int m,int* idxm,int n,int* idxn,doubletype* values,InsMode mode){/*{{{*/
 
 	PetscErrorCode ierr = MatSetValues(this->matrix,m,idxm,n,idxn,values,ISSMToPetscInsertMode(mode));
 	if(ierr) _error_("PETSc's MatSetValues reported an error");
 
 }
 /*}}}*/
-void PetscMat::Convert(MatrixType type){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::Convert(MatrixType type){/*{{{*/
 
 	MatConvert(this->matrix,ISSMToPetscMatrixType(type),MAT_REUSE_MATRIX,&this->matrix);
 
 }
 /*}}}*/
-void PetscMat::SetZero(void){/*{{{*/
+template<typename doubletype>
+void PetscMat<doubletype>::SetZero(void){/*{{{*/
 	MatZeroEntries(this->matrix);
 }
 /*}}}*/
+
+// Explicit instantiations.
+template class PetscMat<IssmDouble>;

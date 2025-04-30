@@ -40,7 +40,7 @@ cd ${PETSC_DIR}
 	--with-pic=1 \
 	--download-fblaslapack=1 \
 	--download-metis=1 \
-	--download-mpich=https://www.mpich.org/static/downloads/4.3.0/mpich-4.3.0.tar.gz \
+	--download-mpich=1 \
 	--download-mumps=1 \
 	--download-parmetis=1 \
 	--download-scalapack=1 \

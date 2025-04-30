@@ -158,28 +158,30 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 				/*cfsurfacesquare variables: */
 				int          num_cfsurfacesquares;
-				char**       cfsurfacesquare_name_s						= NULL;    
-				char**		 cfsurfacesquare_definitionstring_s		= NULL;    
-				char**       cfsurfacesquare_model_string_s			= NULL;
-				IssmDouble** cfsurfacesquare_observation_s			= NULL;
-				char**		 cfsurfacesquare_observation_string_s	= NULL;
-				int*         cfsurfacesquare_observation_M_s			= NULL;
-				int*         cfsurfacesquare_observation_N_s			= NULL;
-				IssmDouble** cfsurfacesquare_weights_s					= NULL;
-				int*         cfsurfacesquare_weights_M_s				= NULL;
-				int*         cfsurfacesquare_weights_N_s				= NULL;
-				char**       cfsurfacesquare_weights_string_s		= NULL;
-				IssmDouble*	 cfsurfacesquare_datatime_s				= NULL;
+				char       **cfsurfacesquare_name_s               = NULL;
+				char       **cfsurfacesquare_definitionstring_s   = NULL;
+				int         *cfsurfacesquare_surfaceid_s          = NULL;
+				char       **cfsurfacesquare_model_string_s       = NULL;
+				IssmDouble **cfsurfacesquare_observation_s        = NULL;
+				char       **cfsurfacesquare_observation_string_s = NULL;
+				int         *cfsurfacesquare_observation_M_s      = NULL;
+				int         *cfsurfacesquare_observation_N_s      = NULL;
+				IssmDouble **cfsurfacesquare_weights_s            = NULL;
+				int         *cfsurfacesquare_weights_M_s          = NULL;
+				int         *cfsurfacesquare_weights_N_s          = NULL;
+				char       **cfsurfacesquare_weights_string_s     = NULL;
+				IssmDouble  *cfsurfacesquare_datatime_s           = NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cfsurfacesquare.m): */
-				iomodel->FetchMultipleData(&cfsurfacesquare_name_s,&num_cfsurfacesquares,                                                        "md.cfsurfacesquare.name");
-				iomodel->FetchMultipleData(&cfsurfacesquare_definitionstring_s,&num_cfsurfacesquares,                                            "md.cfsurfacesquare.definitionstring");
-				iomodel->FetchMultipleData(&cfsurfacesquare_model_string_s,&num_cfsurfacesquares,                                                "md.cfsurfacesquare.model_string");
+				iomodel->FetchMultipleData(&cfsurfacesquare_name_s,&num_cfsurfacesquares,             "md.cfsurfacesquare.name");
+				iomodel->FetchMultipleData(&cfsurfacesquare_definitionstring_s,&num_cfsurfacesquares, "md.cfsurfacesquare.definitionstring");
+				iomodel->FetchMultipleData(&cfsurfacesquare_surfaceid_s,&num_cfsurfacesquares,        "md.cfsurfacesquare.surfaceid");
+				iomodel->FetchMultipleData(&cfsurfacesquare_model_string_s,&num_cfsurfacesquares,     "md.cfsurfacesquare.model_string");
 				iomodel->FetchMultipleData(&cfsurfacesquare_observation_s,&cfsurfacesquare_observation_M_s,&cfsurfacesquare_observation_N_s,&num_cfsurfacesquares, "md.cfsurfacesquare.observation");
-				iomodel->FetchMultipleData(&cfsurfacesquare_observation_string_s,&num_cfsurfacesquares,                                          "md.cfsurfacesquare.observation_string");
-				iomodel->FetchMultipleData(&cfsurfacesquare_weights_s,&cfsurfacesquare_weights_M_s,&cfsurfacesquare_weights_N_s,&num_cfsurfacesquares,             "md.cfsurfacesquare.weights");
-				iomodel->FetchMultipleData(&cfsurfacesquare_weights_string_s,&num_cfsurfacesquares,                                              "md.cfsurfacesquare.weights_string");
-				iomodel->FetchMultipleData(&cfsurfacesquare_datatime_s,&num_cfsurfacesquares,																	 "md.cfsurfacesquare.datatime");
+				iomodel->FetchMultipleData(&cfsurfacesquare_observation_string_s,&num_cfsurfacesquares,"md.cfsurfacesquare.observation_string");
+				iomodel->FetchMultipleData(&cfsurfacesquare_weights_s,&cfsurfacesquare_weights_M_s,&cfsurfacesquare_weights_N_s,&num_cfsurfacesquares,"md.cfsurfacesquare.weights");
+				iomodel->FetchMultipleData(&cfsurfacesquare_weights_string_s,&num_cfsurfacesquares,    "md.cfsurfacesquare.weights_string");
+				iomodel->FetchMultipleData(&cfsurfacesquare_datatime_s,&num_cfsurfacesquares,				"md.cfsurfacesquare.datatime");
 
 				for(j=0;j<num_cfsurfacesquares;j++){
 
@@ -204,7 +206,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					 _error_("cfsurfacesquare weight size not supported yet");
 
 					/*First create a cfsurfacesquare object for that specific string (cfsurfacesquare_model_string_s[j]):*/
-					output_definitions->AddObject(new Cfsurfacesquare(cfsurfacesquare_name_s[j],StringToEnumx(cfsurfacesquare_definitionstring_s[j]),StringToEnumx(cfsurfacesquare_model_string_s[j]),cfsurfacesquare_datatime_s[j]));
+					output_definitions->AddObject(new Cfsurfacesquare(cfsurfacesquare_name_s[j],StringToEnumx(cfsurfacesquare_definitionstring_s[j]),StringToEnumx(cfsurfacesquare_model_string_s[j]),cfsurfacesquare_datatime_s[j], cfsurfacesquare_surfaceid_s[j]));
 
 					/*Now, for this particular cfsurfacesquare object, make sure we plug into the elements: the observation, and the weights.*/
 					for(Object* & object : elements->objects){
@@ -230,6 +232,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					matrix = cfsurfacesquare_weights_s[j]; xDelete<IssmDouble>(matrix);
 				}
 				xDelete<char*>(cfsurfacesquare_name_s);
+				xDelete<int>(cfsurfacesquare_surfaceid_s);
 				xDelete<char*>(cfsurfacesquare_model_string_s);
 				xDelete<char*>(cfsurfacesquare_definitionstring_s);
 				xDelete<IssmDouble*>(cfsurfacesquare_observation_s);

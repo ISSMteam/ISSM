@@ -3,7 +3,6 @@ function issmstscpin(host, login,path, packages)
 %
 %   usage: issmstscpin(host,long, path, packages)
 %
-%
 
 %get initial warning mode
 state=warning('query', 'all');

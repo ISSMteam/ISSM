@@ -18,33 +18,33 @@ using namespace std;
 /*Object constructors and destructor*/
 GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 
-	/*allocate:*/
-	nactiveloads=0;
+	_assert_(slgeom);
 
-	vloads=new Vector<IssmDouble>(nel);
+	/*allocate:*/
+	this->nactiveloads=0;
+	this->vloads=new Vector<IssmDouble>(nel);
 	for (int i=0;i<SLGEOM_NUMLOADS;i++) {
-		vsubloads[i]=new Vector<IssmDouble>(slgeom->nbar[i]);
-		combined_subloads[i]=xNewZeroInit<IssmDouble>(slgeom->nbar[i]);
+		this->vsubloads[i] = new Vector<IssmDouble>(slgeom->nbar[i]);
 	}
 
-	vsealevelloads=new Vector<IssmDouble>(nel);
-	vsealevelloads->Set(0);vsealevelloads->Assemble();
+	this->vsealevelloads=new Vector<IssmDouble>(nel);
+	this->vsealevelloads->Set(0);vsealevelloads->Assemble();
 
-	vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
 
-	combined_loads=NULL;
-	combined_loads_index=NULL;
+	this->combined_loads=NULL;
+	this->combined_loads_index=NULL;
 	for (int i=0;i<SLGEOM_NUMLOADS;i++) {
-		nactivesubloads[i]=0;
-		combined_subloads[i]=NULL;
-		combined_subloads_index[i]=NULL;
+		this->nactivesubloads[i]=0;
+		this->combined_subloads[i]=NULL;
+		this->combined_subloads_index[i]=NULL;
 	}
 
 	/*make sure all pointers that are not allocated are NULL:*/
-	loads=NULL;
-	for (int i=0;i<SLGEOM_NUMLOADS;i++)subloads[i]=NULL;
-	sealevelloads=NULL;
-	subsealevelloads=NULL;
+	this->loads=NULL;
+	for(int i=0;i<SLGEOM_NUMLOADS;i++) this->subloads[i]=NULL;
+	this->sealevelloads=NULL;
+	this->subsealevelloads=NULL;
 
 }; /*}}}*/
 GrdLoads::~GrdLoads(){ /*{{{*/
@@ -69,20 +69,20 @@ GrdLoads::~GrdLoads(){ /*{{{*/
 void GrdLoads::BroadcastLoads(void){ /*{{{*/
 
 	/*Initialize barycentre vectors, now that we know their size: */
-	vloads->Assemble();
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	this->vloads->Assemble();
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		vsubloads[i]->Assemble();
 	}
 
 	/*Avoid leaks:*/
-	if(loads)xDelete<IssmDouble>(loads);
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	if(loads) xDelete<IssmDouble>(loads);
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		if(subloads[i])xDelete<IssmDouble>(subloads[i]);
 	}
 
 	/*Serialize:*/
 	loads=vloads->ToMPISerial();
-	for (int i=0;i<SLGEOM_NUMLOADS;i++){
+	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		subloads[i]=vsubloads[i]->ToMPISerial();
 	}
 
@@ -96,12 +96,12 @@ void GrdLoads::AssembleSealevelLoads(void){ /*{{{*/
 void GrdLoads::BroadcastSealevelLoads(void){ /*{{{*/
 
 	/*Avoid leakds:*/
-	if(sealevelloads)xDelete<IssmDouble>(sealevelloads);
-	if(subsealevelloads)xDelete<IssmDouble>(subsealevelloads);
+	if(sealevelloads)    xDelete<IssmDouble>(sealevelloads);
+	if(subsealevelloads) xDelete<IssmDouble>(subsealevelloads);
 
 	/*Serialize:*/
-	sealevelloads=vsealevelloads->ToMPISerial();
-	subsealevelloads=vsubsealevelloads->ToMPISerial();
+	sealevelloads    = vsealevelloads->ToMPISerial();
+	subsealevelloads = vsubsealevelloads->ToMPISerial();
 
 } /*}}}*/
 void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, SealevelGeometry* slgeom){ /*{{{*/
@@ -113,7 +113,7 @@ void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, 
 
 	femmodel->parameters->FindParam(&re,SolidearthPlanetRadiusEnum);
 
-	for (int c=0;c<5;c++) deg2coeff_local[c]=0;
+	for(int c=0;c<5;c++) deg2coeff_local[c]=0;
 
 	for(Object* & object : femmodel->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);

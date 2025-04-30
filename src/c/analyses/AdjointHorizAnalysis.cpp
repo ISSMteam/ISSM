@@ -1,3 +1,4 @@
+#include <float.h>
 #include "./AdjointHorizAnalysis.h"
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
@@ -668,7 +669,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorFS(Element* element){/*{{{*/
 		vy_input      = element->GetInput(VyEnum);             _assert_(vy_input);
 		vyobs_input   = element->GetInput(InversionVyObsEnum); _assert_(vyobs_input);
 	}
-	IssmDouble epsvel  = 2.220446049250313e-16;
+	IssmDouble epsvel  = DBL_EPSILON;
 	IssmDouble meanvel = 3.170979198376458e-05; /*1000 m/yr*/
 
 	/*Get Surface if required by one response*/
@@ -906,7 +907,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorHO(Element* element){/*{{{*/
 		vy_input      = element->GetInput(VyEnum);                                 _assert_(vy_input);
 		vyobs_input   = element->GetInput(InversionVyObsEnum);                     _assert_(vyobs_input);
 	}
-	IssmDouble epsvel  = 2.220446049250313e-16;
+	IssmDouble epsvel  = DBL_EPSILON;
 	IssmDouble meanvel = 3.170979198376458e-05; /*1000 m/yr*/
 
 	/*Get Surface if required by one response*/
@@ -1160,7 +1161,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorMOLHO(Element* element){/*{{{*
 		vy_input      = basalelement->GetInput(VySurfaceEnum);       _assert_(vy_input);
 		vyobs_input   = basalelement->GetInput(InversionVyObsEnum);  _assert_(vyobs_input);
 	}
-	IssmDouble epsvel  = 2.220446049250313e-16;
+	IssmDouble epsvel  = DBL_EPSILON;
 	IssmDouble meanvel = 3.170979198376458e-05; /*1000 m/yr*/
 
 	/*Get Surface if required by one response*/
@@ -1413,7 +1414,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorSSA(Element* element){/*{{{*/
 		vy_input      = basalelement->GetInput(VyEnum);              _assert_(vy_input);
 		vyobs_input   = basalelement->GetInput(InversionVyObsEnum);  _assert_(vyobs_input);
 	}
-	IssmDouble epsvel  = 2.220446049250313e-16;
+	IssmDouble epsvel  = DBL_EPSILON;
 	IssmDouble meanvel = 3.170979198376458e-05; /*1000 m/yr*/
 
 	/*Get Surface if required by one response*/

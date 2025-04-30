@@ -9,7 +9,7 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 
-#if defined (_HAVE_TAO_)
+#if defined (_HAVE_TAO_) & !defined(_HAVE_CODIPACK_) // TODO: Handle for CoDiPack
 #if defined _HAVE_PETSC_
 #include <petscversion.h>
 #if PETSC_VERSION_LT(3,5,0)
@@ -30,7 +30,7 @@ int IssmMonitor(Tao,void*);
 typedef struct {
 	FemModel* femmodel;
 	double*   J;
-} AppCtx;
+} AppCtx2;
 
 void controltao_core(FemModel* femmodel){
 
@@ -39,7 +39,7 @@ void controltao_core(FemModel* femmodel){
 	int                 num_controls,solution_type;
 	int                 maxsteps,maxiter;
 	IssmDouble          gatol,grtol,gttol;
-	AppCtx              user;
+	AppCtx2              user;
 	#if PETSC_VERSION_LT(3,5,0)
 	TaoSolver           tao = 0;
 	#else
@@ -165,7 +165,7 @@ int FormFunctionGradient(Tao tao, Vec Xpetsc, IssmDouble *fcn,Vec G,void *uservo
 
 	/*Retreive arguments*/
 	int                  solution_type;
-	AppCtx              *user            = (AppCtx *)uservoid;
+	AppCtx2              *user            = (AppCtx2 *)uservoid;
 	FemModel            *femmodel        = user->femmodel;
 	Vector<IssmDouble>  *gradient        = NULL;
 	Vector<IssmDouble>  *X               = NULL;
@@ -208,7 +208,7 @@ int IssmMonitor(Tao tao, void *userCtx){
 
 	int         its,num_responses;
 	IssmDouble  f,gnorm,cnorm,xdiff;
-	AppCtx     *user      = (AppCtx *)userCtx;
+	AppCtx2     *user      = (AppCtx2 *)userCtx;
 	FemModel   *femmodel  = user->femmodel;
 	int        *responses = NULL;
 

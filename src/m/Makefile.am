@@ -27,7 +27,6 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/interp/*.m \
 	${ISSM_DIR}/src/m/inversions/*.m \
 	${ISSM_DIR}/src/m/io/*.m \
-	${ISSM_DIR}/src/m/kml/*.m \
 	${ISSM_DIR}/src/m/materials/*.m \
 	${ISSM_DIR}/src/m/mech/*.m \
 	${ISSM_DIR}/src/m/mesh/*.m \
@@ -36,6 +35,7 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/miscellaneous/*.m \
 	${ISSM_DIR}/src/m/modules/*.m \
 	${ISSM_DIR}/src/m/modeldata/*.m \
+	${ISSM_DIR}/src/m/netcdf/*.m \
 	${ISSM_DIR}/src/m/os/*.m \
 	${ISSM_DIR}/src/m/parameterization/*.m \
 	${ISSM_DIR}/src/m/partition/*.m \
@@ -46,7 +46,6 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/qmu/examples/*.m \
 	${ISSM_DIR}/src/m/qmu/plot/*.m \
 	${ISSM_DIR}/src/m/qmu/setupdesign/*.m \
-	${ISSM_DIR}/src/m/regional/*.m \
 	${ISSM_DIR}/src/m/shp/*.m \
 	${ISSM_DIR}/src/m/solve/*.m \
 	${ISSM_DIR}/src/m/solvers/*.m \
@@ -83,6 +82,7 @@ bin_SCRIPTS += \
 	${ISSM_DIR}/src/m/mesh/rifts/*.py \
 	${ISSM_DIR}/src/m/miscellaneous/*.py \
 	${ISSM_DIR}/src/m/modules/*.py \
+	${ISSM_DIR}/src/m/netcdf/*.py \
 	${ISSM_DIR}/src/m/os/*.py \
 	${ISSM_DIR}/src/m/parameterization/*.py \
 	${ISSM_DIR}/src/m/partition/*.py \

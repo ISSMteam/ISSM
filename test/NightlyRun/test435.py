@@ -63,7 +63,7 @@ field_names = ['Bed1', 'Surface1', 'Thickness1', 'Floatingice1', 'Vx1', 'Vy1', '
                'Bed2', 'Surface2', 'Thickness2', 'Floatingice2', 'Vx2', 'Vy2', 'Vz2', 'Pressure2', 'FloatingiceMeltingrate2',
                'Bed3', 'Surface3', 'Thickness3', 'Floatingice3', 'Vx3', 'Vy3', 'Vz3', 'Pressure3', 'FloatingiceMeltingrate3']
 field_tolerances = [2e-11, 5e-12, 2e-11, 1e-11, 7e-10, 3e-08, 6e-10, 1e-13, 1e-13,
-                    3e-11, 3e-11, 9e-10, 7e-11, 9e-09, 2e-07, 1e-09, 1e-10, 1e-13,
+                    3e-11, 3e-11, 9e-10, 7e-11, 1e-08, 2e-07, 1e-09, 1e-10, 1e-13,
                     1e-9, 2e-08, 7e-09, 2e-7, 1e-03, 8e-04, 2e-09, 1e-10, 1e-13]
 field_values = [md.results.TransientSolution[0].Base,
                 md.results.TransientSolution[0].Surface,

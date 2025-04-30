@@ -3807,54 +3807,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHOFront(Element* element){/*{
 	delete gauss;
 	return pe;
 }/*}}}*/
-void           StressbalanceAnalysis::GetBHO(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
-	/*Compute B  matrix. B=[B1 B2 B3 B4 B5 B6] where Bi is of size 5*2.
-	 * For node i, Bi can be expressed in the actual coordinate system
-	 * by:
-	 *                   3D                        2D
-	 *
-	 *       Bi=[ dh/dx          0      ]  Bi=[ dh/dx]
-	 *          [   0           dh/dy   ]     [ dh/dy]
-	 *          [ 1/2*dh/dy  1/2*dh/dx  ]
-	 *          [ 1/2*dh/dz      0      ]
-	 *          [  0         1/2*dh/dz  ]
-	 * where h is the interpolation function for node i.
-	 *
-	 * We assume B has been allocated already, of size: 5x(2*numnodes)
-	 */
-
-	/*Fetch number of nodes for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-
-	/*Get nodal functions derivatives*/
-	IssmDouble* dbasis=xNew<IssmDouble>(dim*numnodes);
-	element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
-
-	/*Build B: */
-	if(dim==2){
-		for(int i=0;i<numnodes;i++){
-			B[numnodes*0+i] = dbasis[0*numnodes+i];
-			B[numnodes*1+i] = .5*dbasis[1*numnodes+i];
-		}
-	}
-	else{
-		for(int i=0;i<numnodes;i++){
-			B[2*numnodes*0+2*i+0] = dbasis[0*numnodes+i];
-			B[2*numnodes*0+2*i+1] = 0.;
-			B[2*numnodes*1+2*i+0] = 0.;
-			B[2*numnodes*1+2*i+1] = dbasis[1*numnodes+i];
-			B[2*numnodes*2+2*i+0] = .5*dbasis[1*numnodes+i];
-			B[2*numnodes*2+2*i+1] = .5*dbasis[0*numnodes+i];
-			B[2*numnodes*3+2*i+0] = .5*dbasis[2*numnodes+i];
-			B[2*numnodes*3+2*i+1] = 0.;
-			B[2*numnodes*4+2*i+0] = 0.;
-			B[2*numnodes*4+2*i+1] = .5*dbasis[2*numnodes+i];
-		}
-	}
-
-	/*Clean-up*/
-	xDelete<IssmDouble>(dbasis);
-}/*}}}*/
 void           StressbalanceAnalysis::GetBHOFriction(IssmDouble* B,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
 	/*Compute B  matrix. B=[B1 B2 B3] where Bi is square and of size 2.
 	 * For node i, Bi can be expressed in the actual coordinate system
@@ -3891,51 +3843,6 @@ void           StressbalanceAnalysis::GetBHOFriction(IssmDouble* B,Element* elem
 
 	/*Clean-up*/
 	xDelete<IssmDouble>(basis);
-}/*}}}*/
-void           StressbalanceAnalysis::GetBHOprime(IssmDouble* Bprime,Element* element,int dim,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
-	/*Compute B'  matrix. B'=[B1' B2' B3'] where Bi' is of size 3*2.
-	 * For node i, Bi' can be expressed in the actual coordinate system
-	 * by:
-	 *                          3D                      2D
-	 *       Bi_prime=[ 2*dN/dx    dN/dy ] Bi_prime=[ 2*dN/dx ]
-	 *                [   dN/dx  2*dN/dy ]          [   dN/dy ]
-	 *                [   dN/dy    dN/dx ]
-	 * where hNis the finiteelement function for node i.
-	 *
-	 * We assume B' has been allocated already, of size: 3x(2*numnodes)
-	 */
-
-	/*Fetch number of nodes for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-
-	/*Get nodal functions derivatives*/
-	IssmDouble* dbasis=xNew<IssmDouble>(dim*numnodes);
-	element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
-
-	/*Build B': */
-	if(dim==3){
-		for(int i=0;i<numnodes;i++){
-			Bprime[2*numnodes*0+2*i+0] = 2.*dbasis[0*numnodes+i];
-			Bprime[2*numnodes*0+2*i+1] = dbasis[1*numnodes+i];
-			Bprime[2*numnodes*1+2*i+0] = dbasis[0*numnodes+i];
-			Bprime[2*numnodes*1+2*i+1] = 2.*dbasis[1*numnodes+i];
-			Bprime[2*numnodes*2+2*i+0] = dbasis[1*numnodes+i];
-			Bprime[2*numnodes*2+2*i+1] = dbasis[0*numnodes+i];
-			Bprime[2*numnodes*3+2*i+0] = dbasis[2*numnodes+i];
-			Bprime[2*numnodes*3+2*i+1] = 0.;
-			Bprime[2*numnodes*4+2*i+0] = 0.;
-			Bprime[2*numnodes*4+2*i+1] = dbasis[2*numnodes+i];
-		}
-	}
-	else{
-		for(int i=0;i<numnodes;i++){
-			Bprime[numnodes*0+i] = 2.*dbasis[0*numnodes+i];
-			Bprime[numnodes*1+i] = dbasis[1*numnodes+i];
-		}
-	}
-
-	/*Clean-up*/
-	xDelete<IssmDouble>(dbasis);
 }/*}}}*/
 void           StressbalanceAnalysis::InputUpdateFromSolutionHO(IssmDouble* solution,Element* element){/*{{{*/
 

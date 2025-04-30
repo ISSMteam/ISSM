@@ -88,24 +88,12 @@ ElementMatrix* UzawaPressureAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	int numvertices = element->GetNumberOfVertices();
 
-	//Gauss* gauss = element->NewGauss(5);
-	//while(gauss->next()){
-	//	element->JacobianDeterminant(&Jdet,xyz_list,gauss);
-	//	this->GetM(M,element,gauss);
-	//	D_scalar=gauss->weight*Jdet;
-	//	//TripleMultiply(M,1,numnodes,1,
-	//	//			&D_scalar,1,1,0,
-	//	//			M,1,numnodes,0,
-	//	//			&Ke->values[0],1);
-
-	//}
 	for(int iv=0;iv<numvertices;iv++){
 		connectivity=(IssmDouble)element->VertexConnectivity(iv);
 		Ke->values[iv*numvertices+iv]=1./connectivity;
 	}
 
 	/*Clean up and return*/
-	//delete gauss;
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(M);
 	return Ke;
@@ -159,24 +147,6 @@ ElementVector* UzawaPressureAnalysis::CreatePVector(Element* element){/*{{{*/
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(basis);
 	return pe;
-}/*}}}*/
-void           UzawaPressureAnalysis::GetM(IssmDouble* M,Element* element,Gauss* gauss){/*{{{*/
-	/*Compute B  matrix. M=[M1 M2 M3] */
-
-	/*Fetch number of nodes for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-
-	/*Get nodal functions*/
-	IssmDouble* basis=xNew<IssmDouble>(numnodes);
-	element->NodalFunctions(basis,gauss);
-
-	/*Build B: */
-	for(int i=0;i<numnodes;i++){
-		M[i] = basis[i];
-	}
-
-	/*Clean-up*/
-	xDelete<IssmDouble>(basis);
 }/*}}}*/
 void           UzawaPressureAnalysis::GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element){/*{{{*/
 	_error_("not implemented yet");

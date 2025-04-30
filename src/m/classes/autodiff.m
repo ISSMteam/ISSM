@@ -148,7 +148,6 @@ classdef autodiff
 			for i=1:num_independent_objects
 				indep=self.independents{i};
 				WriteData(fid,prefix,'data',indep.name,'name','md.autodiff.independent_name','format','String');
-				WriteData(fid,prefix,'data',indep.typetoscalar(),'name','md.autodiff.independent_type','format','Integer');
 				WriteData(fid,prefix,'data',indep.min_parameters,'name','md.autodiff.independent_min_parameters','format','DoubleMat','mattype',3);
 				WriteData(fid,prefix,'data',indep.max_parameters,'name','md.autodiff.independent_max_parameters','format','DoubleMat','mattype',3);
 				WriteData(fid,prefix,'data',indep.control_scaling_factor,'name','md.autodiff.independent_scaling_factor','format','Double');

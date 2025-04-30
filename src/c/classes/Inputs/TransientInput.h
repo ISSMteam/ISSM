@@ -30,7 +30,6 @@ class TransientInput: public Input{
 		TransientInput();
 		TransientInput(int in_enum_type,int nbe,int nbv,IssmDouble* times,int N);
 		~TransientInput();
-		void AddTimeInput(Input* input,IssmDouble time); /*FIXME: remove!*/
 		void AddTriaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddPentaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddTriaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in);

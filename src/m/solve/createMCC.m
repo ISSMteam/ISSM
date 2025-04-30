@@ -1,28 +1,28 @@
 function createMCC(filename)
-%CREATEMCC takes an existing matlab script and compiles it to an executable file.
-% A number of files are produced, including 'run_MCCexecutable.sh' and 'MCCexecutable,'
-% and are saved into a directory './mccfiles' which is cleared if it already exists and is
-% created if it does not.
+%CREATEMCC - create mcc file from MATLAB file
 %
-%USEAGE
-%   $ matlab 
-%   >> createMCC(filename);
-%   >> exit
-%   $ ./mccfiles/run_MCCexecutable.sh /nasa/matlab/2022b/
+%   takes an existing matlab script and compiles it to an executable file.
+%   A number of files are produced, including 'run_MCCexecutable.sh' and 'MCCexecutable,'
+%   and are saved into a directory './mccfiles' which is cleared if it already exists and is
+%   created if it does not.
 %
-%INPUT
-%   filename   .m file to be turned into an executable
+%   USAGE:
+%      $ matlab 
+%      >> createMCC(filename);
+%      >> exit
+%      $ ./mccfiles/run_MCCexecutable.sh /nasa/matlab/2022b/
 %
-%OUTPUT
-%   no direct output is produced, however CREATEMCC creates a number of files in ./mccfiles
+%   INPUT
+%      filename .m file to be turned into an executable
 %
-%10.25.2023
+%   OUTPUT
+%      no direct output is produced, however CREATEMCC creates a number of files in ./mccfiles
 
 % check if mccfiles directory exists in current directory
 if exist('./mccfiles','dir')
-	!rm ./mccfiles/* 
+	system('rm ./mccfiles/* ');
 else
-	mkdir ./mccfiles
+	mkdir('./mccfiles');
 end
 
 %Get dependencies
@@ -43,7 +43,7 @@ for i=1:numel(files)
 end
 
 %Create command
-command = ['mcc -m ' filename deps ' -o MCCexecutable'];
+command = ['mcc -m ' deps ' -o MCCexecutable'];
 
 %Create executable
 cd ./mccfiles
