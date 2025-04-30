@@ -67,8 +67,8 @@ classdef hydrologyshakti
 			md = checkfield(md,'fieldname','hydrology.gap_height_max','>=',0,'numel',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.bump_spacing','>',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.bump_height','>=',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
-			md = checkfield(md,'fieldname','hydrology.englacial_input','>=',0,'NaN',1,'Inf',1,'timeseries',1);
-			md = checkfield(md,'fieldname','hydrology.moulin_input','>=',0,'NaN',1,'Inf',1,'timeseries',1);
+			md = checkfield(md,'fieldname','hydrology.englacial_input','NaN',1,'Inf',1,'timeseries',1);
+			md = checkfield(md,'fieldname','hydrology.moulin_input','NaN',1,'Inf',1,'timeseries',1);
 			md = checkfield(md,'fieldname','hydrology.reynolds','>',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.neumannflux','timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.spchead','Inf',1,'timeseries',1);
