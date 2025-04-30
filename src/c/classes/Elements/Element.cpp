@@ -5486,20 +5486,26 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
 
 		//Variables for downscaling
-		IssmDouble taparam, dlwrfparam; 
+		IssmDouble taparam, dlwrfparam, rhparam, eaparam;
 		parameters->FindParam(&taparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbTaParamEnum);
 		parameters->FindParam(&dlwrfparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbDlwrfParamEnum);
+		parameters->FindParam(&eaparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
 
 		//Variables not downscaled
 		parameters->FindParam(&V, Mappedpoint-1, timeinputs, timestepping, dt, SmbVParamEnum);
 		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
 		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
 		parameters->FindParam(&P, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
-		parameters->FindParam(&eAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
 		parameters->FindParam(&pAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
 		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
 		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
+
+		//Hold reltive humidity constant and calculte new saturation vapor pressure with the new temperature
+		//ea = 100.*10.^(-7.90298 .* (373.16 ./ ta - 1) + 5.02808 .* log10(373.16 ./ ta) - 1.3816E-7 .* (10.^(11.344 .* (1 - ta ./ 373.16))-1) 
+		//        + 8.1328E-3*(10.^(-3.49149.*(373.16./ta-1))-1) + log10(1013.246)).*(rh/100);
+	   rhparam = fmin( fmax( 100 * eaparam / ( 100*pow(10,(-7.90298 * (373.16 / taparam - 1) + 5.02808 * log10(373.16 / taparam) - 1.3816E-7 * (pow(10,(11.344 * (1 - taparam / 373.16)))-1) + 8.1328E-3*(pow(10,(-3.49149*(373.16/taparam-1)))-1) + log10(1013.246))) ), 0.0), 100.0);
+	   eAir = ( 100*pow(10,(-7.90298 * (373.16 / Ta - 1) + 5.02808 * log10(373.16 / Ta) - 1.3816E-7 * (pow(10,(11.344 * (1 - Ta / 373.16)))-1) + 8.1328E-3*(pow(10,(-3.49149*(373.16/Ta-1)))-1) + log10(1013.246))) ) * (rhparam/100);
 
 		xDelete<IssmDouble>(elevation);
 	}
