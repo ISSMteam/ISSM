@@ -9890,7 +9890,7 @@ if strcmpi(class(mesh),'mesh2d'),
 	%project: 
 	xl=getfieldvalue(options,'xlim',xlim);
 	yl=getfieldvalue(options,'ylim',ylim);
-	[x,y]=gdaltransform(coastlon,coastlat,'EPSG:4326',mesh.proj);
+	[x,y]=CoordTransform(coastlon,coastlat,'EPSG:4326',mesh.proj);
 	hold on, p=plot(x,y,'k-');
 	xlim(xl); ylim(yl); 
 	set(p,'Color',getfieldvalue(options,'coast_color','k'));

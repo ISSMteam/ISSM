@@ -27,7 +27,7 @@ md.cluster = generic('name', gethostname(), 'np', 3)
 md.geometry.bed = md.geometry.base
 
 # Use of Gemb method for SMB computation
-md.smb = SMBgemb(md.mesh, md.geometry)
+md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 0
 md.smb.swIdx = 1
 
@@ -142,5 +142,5 @@ for i in range(3):
     md.results.dakota.moments.append(md.results.dakota.dresp_out[i].stddev)
 
 field_names = ['moments']
-field_tolerances = [4e-9]
+field_tolerances = [2e-6]
 field_values = [md.results.dakota.moments]

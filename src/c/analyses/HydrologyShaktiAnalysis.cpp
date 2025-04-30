@@ -150,6 +150,8 @@ void HydrologyShaktiAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 
 	parameters->AddObject(new IntParam(HydrologyModelEnum,hydrology_model));
    parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.relaxation",HydrologyRelaxationEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.gap_height_min",HydrologyGapHeightMinEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.gap_height_max",HydrologyGapHeightMaxEnum));
 
   /*Requested outputs*/
   iomodel->FindConstant(&requestedoutputs,&numoutputs,"md.hydrology.requested_outputs");
@@ -560,6 +562,8 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	IssmDouble  g               = basalelement->FindParam(ConstantsGEnum);
 	IssmDouble  rho_ice         = basalelement->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  rho_water       = basalelement->FindParam(MaterialsRhoFreshwaterEnum);
+	IssmDouble  gap_height_min  = basalelement->FindParam(HydrologyGapHeightMinEnum);
+	IssmDouble  gap_height_max  = basalelement->FindParam(HydrologyGapHeightMaxEnum);
 	Input* geothermalflux_input = basalelement->GetInput(BasalforcingsGeothermalfluxEnum);_assert_(geothermalflux_input);
 	Input* head_input           = basalelement->GetInput(HydrologyHeadEnum);              _assert_(head_input);
 	Input* gap_input            = basalelement->GetInput(HydrologyGapHeightEnum);         _assert_(gap_input);
@@ -643,14 +647,10 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 		channelization += gauss->weight*Jdet*(meltrate/rho_ice/(meltrate/rho_ice+beta*sqrt(vx*vx+vy*vy)));
 	}
 
-	/*Divide by connectivity*/
+	/*Divide by connectivity and constrain gap height*/
 	newgap = newgap/totalweights;
-	IssmDouble mingap = 1e-3;
-	if(newgap<mingap) newgap=mingap;
-
-	/*Limit gap height*/
-	if(newgap>1)
-	 newgap = 1;
+	if(newgap<gap_height_min) newgap=gap_height_min;
+	if(newgap>gap_height_max) newgap=gap_height_max;
 
 	/*Add new gap as an input*/
 	element->AddBasalInput(HydrologyGapHeightEnum,&newgap,P0Enum);

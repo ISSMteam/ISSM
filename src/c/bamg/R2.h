@@ -60,8 +60,6 @@ namespace bamg {
 				  return P2xP2<R,RR>((R)( y.y /d) ,(R)(-x.y/d),(R)( -y.x/d) ,(R)( x.x/d) );
 			  };
 			  P2xP2<R,RR> t()  {return P2xP2<R,RR>(x.x,y.x,x.y,y.y);} //transposer 
-			  P2<R,RR>    tx() {return P2<R,RR>(x.x,y.x);} 
-			  P2<R,RR>    ty() {return P2<R,RR>(x.y,y.y);} 
 			  //Operators
 			  P2<R,RR>     operator*(const P2<R,RR>& c) const {return P2<R,RR>(x.x*c.x + x.y*c.y, y.x*c.x + y.y*c.y);}
 			  P2xP2<R,RR>  operator*(P2xP2<R,RR> c) const{

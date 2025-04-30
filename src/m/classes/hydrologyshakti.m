@@ -7,6 +7,8 @@ classdef hydrologyshakti
 	properties (SetAccess=public) 
 		head            = NaN;
 		gap_height      = NaN;
+		gap_height_min  = 1e-3;
+		gap_height_max  = 1.;
 		bump_spacing    = NaN;
 		bump_height     = NaN;
 		englacial_input = NaN;
@@ -46,6 +48,8 @@ classdef hydrologyshakti
 
 		function self = setdefaultparameters(self) % {{{
 			% Set under-relaxation parameter to be 1 (no under-relaxation of nonlinear iteration)	
+			self.gap_height_min  = 1e-3;
+			self.gap_height_max  = 1.;
 			self.relaxation=1;
 			self.storage=0;
 			self.requested_outputs={'default'};
@@ -59,6 +63,8 @@ classdef hydrologyshakti
 
 			md = checkfield(md,'fieldname','hydrology.head','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.gap_height','>=',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','hydrology.gap_height_min','>=',0,'numel',1,'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','hydrology.gap_height_max','>=',0,'numel',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.bump_spacing','>',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.bump_height','>=',0,'size',[md.mesh.numberofelements 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.englacial_input','>=',0,'NaN',1,'Inf',1,'timeseries',1);
@@ -74,6 +80,8 @@ classdef hydrologyshakti
 			disp(sprintf('   hydrologyshakti solution parameters:'));
 			fielddisplay(self,'head','subglacial hydrology water head (m)');
 			fielddisplay(self,'gap_height','height of gap separating ice to bed (m)');
+			fielddisplay(self,'gap_height_min','minimum allowed gap height (m)');
+			fielddisplay(self,'gap_height_max','maximum allowed gap height (m)');
 			fielddisplay(self,'bump_spacing','characteristic bedrock bump spacing (m)');
 			fielddisplay(self,'bump_height','characteristic bedrock bump height (m)');
 			fielddisplay(self,'englacial_input','liquid water input from englacial to subglacial system (m/yr)');
@@ -92,6 +100,8 @@ classdef hydrologyshakti
 			WriteData(fid,prefix,'name','md.hydrology.model','data',3,'format','Integer');
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','head','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','gap_height','format','DoubleMat','mattype',2);
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','gap_height_min','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','gap_height_max','format','Double');
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','bump_spacing','format','DoubleMat','mattype',2);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','bump_height','format','DoubleMat','mattype',2);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','englacial_input','format','DoubleMat','mattype',1,'scale',1./yts,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);

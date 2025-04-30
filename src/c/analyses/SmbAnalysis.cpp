@@ -123,6 +123,11 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.monthlytemperatures",SmbMonthlytemperaturesEnum);
 			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
 			break;
+		case SMBpddGCMEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.enhance_factor",SmbEnhanceFactorEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lapserates",SmbGCMLapseratesEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.ref_surf",SmbGCMRefSurfaceEnum);
+			break;
 		case SMBd18opddEnum:
 			iomodel->FindConstant(&istemperaturescaled,"md.smb.istemperaturescaled");
 			iomodel->FindConstant(&isprecipscaled,"md.smb.isprecipscaled");
@@ -276,7 +281,7 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 	bool    isdelta18o,ismungsm,isd18opd,issetpddfac,interp,cycle,isfirnwarming,ismappedforcing;
 	int     smb_model, smbslices, averaging;
 	IssmDouble *temp = NULL;
-	int         N,M;
+	int         N,M,Nt,Nx,Ny;
 
 	parameters->AddObject(iomodel->CopyConstantObject("md.smb.model",SmbEnum));
 
@@ -404,6 +409,26 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			break;
 		case SMBpddSicopolisEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
+			break;
+		case SMBpddGCMEnum:
+			iomodel->FetchData(&temp,&M,&N,"md.smb.x_grid"); _assert_(N==1); Nx = M;
+			parameters->AddObject(new DoubleVecParam(SmbGCMXgridEnum,&temp[0],M));
+			iomodel->DeleteData(temp,"md.smb.lat");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.y_grid"); _assert_(N==1); Ny = M;
+			parameters->AddObject(new DoubleVecParam(SmbGCMYgridEnum,&temp[0],M));
+			iomodel->DeleteData(temp,"md.smb.lon");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.precipitation"); _assert_(N>=1 && M==Nx*Ny+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMPrecipitationEnum,temp,&temp[N*(M-1)],interp,cycle,Nx,Ny,N));
+			iomodel->DeleteData(temp,"md.smb.precipitation");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.temperature"); _assert_(N>=1 && M==Nx*Ny+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMTemperatureEnum,temp,&temp[N*(M-1)],interp,cycle,Nx,Ny,N));
+			iomodel->DeleteData(temp,"md.smb.temperature");
+
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allsolidtemperature",SmbAllSolidTempEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allliquidtemperature",SmbAllLiquidTempEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ddf_snow",SmbDdfSnowEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ddf_ice",SmbDdfIceEnum));
+
 			break;
 		case SMBd18opddEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismungsm",SmbIsmungsmEnum));
@@ -594,6 +619,10 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 		case SMBpddSicopolisEnum:
 			if(VerboseSolution()) _printf0_("   call SICOPOLIS positive degree day module\n");
 			PositiveDegreeDaySicopolisx(femmodel);
+			break;
+		case SMBpddGCMEnum:
+			if(VerboseSolution()) _printf0_("   call positive degree day module based on downsacling GCM data\n");
+			PositiveDegreeDayGCMx(femmodel);
 			break;
 		case SMBd18opddEnum:
 			bool isd18opd;

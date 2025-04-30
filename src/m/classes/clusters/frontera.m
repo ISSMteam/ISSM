@@ -60,9 +60,9 @@ classdef frontera
 		function md = checkconsistency(cluster,md,solution,analyses) % {{{
 
 			%https://frontera-portal.tacc.utexas.edu/user-guide/running/
-			available_queues={'flex','normal','development'};
-			queue_requirements_time=[48 48 2];
-			queue_requirements_np=[128*56 512*56 40*56];
+			available_queues={'flex','normal','development', 'small'};
+			queue_requirements_time=[48 48 2 48];
+			queue_requirements_np=[128*56 512*56 40*56 2*56];
 
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.nprocs(),cluster.time)
 

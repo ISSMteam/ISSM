@@ -18,6 +18,8 @@ classdef discovery
 		time          = 10; %in hours
 		memory        = 2;  %in Gb
 		email         = 'END,FAIL';
+		deleteckptdata= 0;
+		preemptable   = 0;
 	end
 	%}}}
 	methods
@@ -43,6 +45,7 @@ classdef discovery
 			disp(sprintf('    codepath:      %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    interactive: %i',cluster.interactive));
+			disp(sprintf('    preemptable: %i',cluster.preemptable));
 		end
 		%}}}
 		function numprocs=nprocs(cluster) % {{{
@@ -107,13 +110,20 @@ classdef discovery
 			if ~isempty(cluster.email)
 				fprintf(fid,'#SBATCH --mail-type=%s\n',cluster.email);
 			end
-			fprintf(fid,'\n');
+			if (cluster.preemptable)
+				fprintf(fid,'#SBATCH --partition preemptable\n');
+			end
+         fprintf(fid,'\n');
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath);
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');
 			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
 			fprintf(fid,'mpirun -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
+			end
+		
+			if (cluster.deleteckptdata)
+				fprintf(fid,'rm -rf *.rst *.ckpt\n');
 			end
 			fclose(fid);
 

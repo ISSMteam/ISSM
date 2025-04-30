@@ -18,8 +18,8 @@
 /*TransientInput constructors and destructor*/
 TransientInput::TransientInput(){/*{{{*/
 
-	enum_type=UNDEF;
-	inputs=NULL;
+	this->enum_type=UNDEF;
+	this->inputs=NULL;
 	this->numtimesteps=0;
 	this->parameters=NULL;
 	this->timesteps=NULL;

@@ -19,9 +19,7 @@ ISSM_CONFIG='\
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
 	--disable-dependency-tracking \
-	--with-python-version=3.9 \
-	--with-python-dir=/System/Volumes/Data/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9 \
-	--with-python-numpy-dir=${HOME}/.venv/issm/lib/python3.9/site-packages/numpy \
+	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="${LIBGFORTRAN_PATH}/libgfortran.a ${LIBGFORTRAN_PATH}/libquadmath.a ${LIBGCC_PATH}/libgcc.a" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \

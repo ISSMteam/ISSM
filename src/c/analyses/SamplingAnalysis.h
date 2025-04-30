@@ -35,7 +35,6 @@ class SamplingAnalysis: public Analysis{
 		void           UpdateConstraints(FemModel* femmodel);
 
 		void           LumpedKMatrix(Vector<IssmDouble>** pKLff,FemModel* femmodel);
-		void           KMatrix(Matrix<IssmDouble>** pKff,FemModel* femmodel);
 		void           LumpedMassMatrix(Vector<IssmDouble>** pMLff,FemModel* femmodel);
 		void           MassMatrix(Matrix<IssmDouble>** pMff,FemModel* femmodel);
 

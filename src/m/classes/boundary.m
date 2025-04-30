@@ -118,7 +118,7 @@ classdef boundary
 			%convert boundary to another reference frame: {{{
 			for i=1:length(domain),
 				try, 
-					[x,y] = gdaltransform(domain(i).x,domain(i).y,self.proj,proj);
+					[x,y] = CoordTransform(domain(i).x,domain(i).y,self.proj,proj);
 				catch me
 					disp(me.message());
 					self.disp();
@@ -206,7 +206,7 @@ classdef boundary
 
 			for i=1:length(domain),
 				try, 
-					[lat,long] = gdaltransform(domain(i).x,domain(i).y,self.proj,'EPSG:4326');
+					[lat,long] = CoordTransform(domain(i).x,domain(i).y,self.proj,'EPSG:4326');
 				catch me
 					disp(me.message());
 					self.disp();

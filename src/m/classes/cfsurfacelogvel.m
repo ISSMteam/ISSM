@@ -64,7 +64,7 @@ classdef cfsurfacelogvel
 				error('cfsurfacelogvel error message: ''name'' field should be a string!');
 			end
 			OutputdefinitionStringArray={};
-			for i=1:100
+			for i=1:2000
 				OutputdefinitionStringArray{i}=strcat('Outputdefinition',num2str(i));
 			end
 			md = checkfield(md,'fieldname','self.definitionstring','field',self.definitionstring,'values',OutputdefinitionStringArray);
@@ -76,7 +76,7 @@ classdef cfsurfacelogvel
 		end % }}}
 		function md = disp(self) % {{{
 		
-			disp(sprintf('   TimeMisfit:\n'));
+			disp(sprintf('   cfsurfacelogvel:\n'));
 
 			fielddisplay(self,'name','identifier for this cfsurfacelogvel response');
 			fielddisplay(self,'definitionstring','string that identifies this output definition uniquely, from ''Outputdefinition[1-10]''');

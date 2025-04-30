@@ -105,14 +105,18 @@ template<typename Tape, typename Data, typename Adjoint>
 inline void updateVectorAdjoint(Tape& tape, const Data* dataVec, const Adjoint* adjVec, int n) {
   for(int i = 0; i < n; ++i) {
     Data index = dataVec[i];
-    tape.gradient(index) += adjVec[i];
+    if(0 != index) {
+      tape.gradient(index) += adjVec[i];
+    }
   }
 }
 
 template<typename Tape, typename Data, typename Adjoint>
 inline void updateAdjoint(Tape& tape, const Data& data, const Adjoint& adj) {
   Data index = data;
-  tape.gradient(index) += adj;
+  if(0 != index) {
+    tape.gradient(index) += adj;
+  }
 }
 
 #endif

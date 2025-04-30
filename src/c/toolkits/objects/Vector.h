@@ -28,7 +28,7 @@ class Vector{
 
 		int  type;
 		#ifdef _HAVE_PETSC_
-		PetscVec* pvector;
+		PetscVec<doubletype>* pvector;
 		#endif
 		IssmVec<doubletype>* ivector;
 
@@ -44,7 +44,7 @@ class Vector{
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
-				this->pvector=new PetscVec(M,fromlocalsize);
+				this->pvector=new PetscVec<doubletype>(M,fromlocalsize);
 				#endif
 			}
 			else this->ivector=new IssmVec<doubletype>(M,fromlocalsize);
@@ -57,7 +57,7 @@ class Vector{
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
-					this->pvector=new PetscVec(m,M);
+					this->pvector=new PetscVec<doubletype>(m,M);
 				 #endif
 			}
 			else this->ivector=new IssmVec<doubletype>(m,M);
@@ -69,7 +69,7 @@ class Vector{
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
-				this->pvector=new PetscVec(serial_vec,M);
+				this->pvector=new PetscVec<doubletype>(serial_vec,M);
 				#endif
 			}
 			else this->ivector=new IssmVec<doubletype>(serial_vec,M);
@@ -86,11 +86,11 @@ class Vector{
 		}
 		/*}}}*/
 		#ifdef _HAVE_PETSC_
-		Vector(Vec petsc_vector){ /*{{{*/
+		Vector(PVec petsc_vector){ /*{{{*/
 
 			this->type=PetscVecType;
 			this->ivector=NULL;
-			this->pvector=new PetscVec(petsc_vector);
+			this->pvector=new PetscVec<doubletype>(petsc_vector);
 
 		}
 		/*}}}*/
@@ -137,6 +137,16 @@ class Vector{
 			}
 			else this->ivector->Echo();
 
+		}
+		/*}}}*/
+		void EchoDebug(std::string message){_assert_(this);/*{{{*/
+
+			if(type==PetscVecType){
+#ifdef _HAVE_PETSC_
+				this->pvector->EchoDebug(message);
+#endif
+			}
+			else this->ivector->EchoDebug(message);
 		}
 		/*}}}*/
 		void Assemble(void){_assert_(this);/*{{{*/

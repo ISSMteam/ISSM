@@ -36,14 +36,12 @@ class ub_ccr(object):
         self.partition = 'general-compute'
         self.qos = 'general-compute'
         self.time = 1 * 60 * 60
-        self.nodes = 1
         self.ntasks = 1
-        self.ntaskspernode = 1
         self.cpuspertask = 1
         self.exclusive = False
         self.mem = '10000'
         self.jobname = ''
-        self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0', 'openmpi/4.1.1']
+        self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0']
         self.srcpath = '/projects/grid/ghub/ISSM/repos/ISSM'
         self.codepath = '/projects/grid/ghub/ISSM/repos/ISSM/bin'
         self.executionpath = '$HOME/ISSM/execution'
@@ -81,9 +79,7 @@ class ub_ccr(object):
         s += '    partition: {}\n'.format(self.partition)
         s += '    qos: {}\n'.format(self.qos)
         s += '    time: {}\n'.format(self.time)
-        s += '    nodes: {}\n'.format(self.nodes)
         s += '    ntasks: {}\n'.format(self.ntasks)
-        s += '    ntaskspernode: {}\n'.format(self.ntaskspernode)
         s += '    cpuspertask: {}\n'.format(self.cpuspertask)
         s += '    exclusive: {}\n'.format(self.exclusive)
         s += '    mem: {}\n'.format(self.mem)
@@ -100,7 +96,7 @@ class ub_ccr(object):
     # }}}
 
     def nprocs(self):  # {{{
-        return self.ntasks
+        return self.ntasks * self.cpuspertask
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
@@ -151,16 +147,11 @@ class ub_ccr(object):
 
         fid.write('#!/bin/bash -l\n')
         fid.write('#SBATCH --time {:02d}:{:02d}:00\n'.format(int(floor(self.time / 3600)), int(floor(self.time % 3600) / 60)))
-        if self.nodes != 1:
-            fid.write('#SBATCH --nodes={}\n'.format(self.nodes))
-        if self.ntasks != 1:
-            fid.write('#SBATCH --ntasks={}\n'.format(self.ntasks))
-        if self.ntaskspernode != 1:
-            fid.write('#SBATCH --ntasks-per-node={}\n'.format(self.ntaskspernode))
-        if self.cpuspertask != 1:
-            fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
+        fid.write('#SBATCH --ntasks={}\n'.format(self.ntasks))
+        fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
         if self.exclusive:
             fid.write('#SBATCH --exclusive\n')
+        fid.write('#SBATCH --constraint="[SAPPHIRE-RAPIDS-IB|ICE-LAKE-IB|CASCADE-LAKE-IB|EMERALD-RAPIDS-IB]"\n')
         fid.write('#SBATCH --mem={}\n'.format(self.mem))
         fid.write('#SBATCH --job-name={}\n'.format(self.jobname))
         fid.write('#SBATCH --output={}.outlog\n'.format(modelname))
@@ -175,12 +166,12 @@ class ub_ccr(object):
         #fid.write('. /usr/share/modules/init/bash\n\n')
         for i in range(len(self.modules)):
             fid.write('module load {}\n'.format(self.modules[i]))
-        fid.write('export MPI_GROUP_MAX=64\n\n')
-        fid.write('export MPI_UNBUFFERED_STDIO=true\n\n')
         fid.write('export PATH="$PATH:."\n\n')
         fid.write('export ISSM_DIR="{}"\n'.format(self.srcpath))
         fid.write('source $ISSM_DIR/etc/environment.sh\n')
         fid.write('cd {}/{}\n\n'.format(self.executionpath, dirname))
+
+        fid.write('which mpiexec\n\n')
 
         fid.write('mpiexec -np {} {}/{} {} {}/{} {}\n'.format(self.nprocs(), self.codepath, executable, solution, self.executionpath, dirname, modelname))
 

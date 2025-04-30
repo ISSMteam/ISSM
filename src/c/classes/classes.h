@@ -109,6 +109,7 @@
 #include "./Params/StringParam.h"
 #include "./Params/TransientParam.h"
 #include "./Params/TransientArrayParam.h"
+#include "./Params/TransientGriddedFieldParam.h"
 #include "./Params/DataSetParam.h"
 
 /*matrix: */

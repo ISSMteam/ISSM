@@ -23,6 +23,10 @@
 #include "./IssmMpiVec.h"
 #include "./SparseRow.h"
 #include <math.h>
+
+#ifdef _HAVE_CODIPACK_
+#include "../codipack/CoDiPackDebug.h"
+#endif
 /*}}}*/
 
 /*We need to template this class, in case we want to create Matrices that hold
@@ -141,8 +145,23 @@ class IssmMpiSparseMat:public IssmAbsMat<doubletype>{
 				ISSM_MPI_Barrier(IssmComm::GetComm());
 			}
 
-		}
-		/*}}}*/
+		}/*}}}*/
+		void EchoDebug(std::string message) {/*{{{*/
+#if defined(_HAVE_CODIPACK_)
+			if (std::is_same<doubletype, IssmDouble>::value) {
+				void* h = MatDebugOutputStart(message, M, N);
+
+				if(NULL != matrix) {
+					for(int local_row = 0; local_row < m; local_row += 1) {
+						SparseRow<doubletype>* cur_row = matrix[local_row];
+						MatDebugOutputAddRow(h, local_row /*TODO: get global row*/, cur_row->ncols, cur_row->indices, cur_row->values);
+
+					}
+				}
+				MatDebugOutputFinish(h);
+			}
+#endif
+		}/*}}}*/
 		void Assemble(){/*{{{*/
 
 			int         *RowRank = NULL;

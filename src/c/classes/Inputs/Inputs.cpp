@@ -20,6 +20,7 @@
 #include "./TriaInput.h"
 #include "./PentaInput.h"
 #include "./TransientInput.h"
+#include "./TransientFileInput.h"
 #include "./ControlInput.h"
 #include "./DatasetInput.h"
 #include "./ArrayInput.h"
@@ -686,6 +687,19 @@ void Inputs::GetInputValue(IssmDouble* pvalue,int enum_in,int index){/*{{{*/
 	DoubleInput* input = xDynamicCast<DoubleInput*>(this->inputs[id]);
 	input->GetInput(pvalue,index);
 
+}/*}}}*/
+bool Inputs::IsFileInputUpdate(IssmDouble time){/*{{{*/
+
+	for(int i=0;i<NUMINPUTS;i++){
+		if(this->inputs[i]){
+			if(this->inputs[i]->ObjectEnum()==TransientFileInputEnum){
+				TransientFileInput* input = xDynamicCast<TransientFileInput*>(this->inputs[i]);
+				if(input->IsFileInputUpdate(time)) return true;
+			}
+		}
+	}
+
+	return false;
 }/*}}}*/
 void Inputs::ResultInterpolation(int* pinterpolation,int* pnodesperelement,int* parray_size, int output_enum){/*{{{*/
 

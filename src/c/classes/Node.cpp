@@ -22,6 +22,7 @@ Node::Node(){/*{{{*/
 	this->clone          = false;
 	this->active         = true;
 	this->freeze         = false;
+	this->isrotated      = false;
 	this->f_set          = NULL;
 	this->s_set          = NULL;
 	this->svalues        = NULL;
@@ -198,21 +199,22 @@ Object* Node::copy(void){/*{{{*/
 	/*initalize output: */
 	output=new Node();
 
-	/*id: */
+	output->approximation = this->approximation;
+	output->clone  = this->clone;
 	output->id  = this->id;
 	output->sid = this->sid;
 	output->lid = this->lid;
 	output->pid = this->pid;
-	output->analysis_enum = this->analysis_enum;
-	output->approximation = this->approximation;
+
+	output->analysis_enum  = this->analysis_enum;
+	output->indexingupdate = this->indexingupdate;
+	output->isrotated      = this->isrotated;
 
 	/*Initialize coord_system: */
 	for(int k=0;k<3;k++) for(int l=0;l<3;l++) output->coord_system[k][l]=this->coord_system[k][l];
 
 	/*indexing:*/
-	output->indexingupdate = this->indexingupdate;
 	output->gsize  = this->gsize;
-	output->clone  = this->clone;
 	output->active = this->active;
 	output->freeze = this->freeze;
 	if(output->gsize>0){

@@ -8,7 +8,6 @@ import numpy as np
 from boundary import boundary
 from epsg2proj import epsg2proj
 from fielddisplay import fielddisplay
-from gdaltransform import gdaltransform
 from helpers import fileparts
 from inpolygon import inpolygon
 from laea import laea
@@ -18,7 +17,7 @@ from shpread import shpread
 
 
 class basin(object):  # {{{
-    """BASIN class definition
+    """basin class definition
 
     Usage:
         basin = basin()
@@ -142,7 +141,7 @@ class basin(object):  # {{{
             boundary = self.boundaries[i]
             contours = boundary.edges() # NOTE: Differs from MATLAB in that shpread returns a list
             for j in range(len(contours)):
-                contours[j]['x'], contours[j]['y'] = gdaltransform(contours[j]['x'], contours[j]['y'], boundary.proj, self.proj)
+                contours[j]['x'], contours[j]['y'] = CoordTransform(contours[j]['x'], contours[j]['y'], boundary.proj, self.proj)
                 if x == []:
                     x = np.array(contours[j]['x'])
                     y = np.array(contours[j]['y'])
@@ -222,7 +221,7 @@ class basin(object):  # {{{
         #project onto reference frame
         for i in range(len(contours)):
             h = contours[i]
-            h['x'], h['y'] = gdaltransform(h['x'], h['y'], projshapefile, self.proj)
+            h['x'], h['y'] = CoordTransform(h['x'], h['y'], projshapefile, self.proj)
             contours[i]['x'] = h['x']
             contours[i]['y'] = h['y']
 
