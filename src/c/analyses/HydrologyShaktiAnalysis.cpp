@@ -563,7 +563,7 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	IssmDouble  rho_ice         = basalelement->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  rho_water       = basalelement->FindParam(MaterialsRhoFreshwaterEnum);
 	IssmDouble  gap_height_min  = basalelement->FindParam(HydrologyGapHeightMinEnum);
-	IssmDouble  gap_height_max  = basalelement->FindParam(HydrologyGapHeightMinEnum);
+	IssmDouble  gap_height_max  = basalelement->FindParam(HydrologyGapHeightMaxEnum);
 	Input* geothermalflux_input = basalelement->GetInput(BasalforcingsGeothermalfluxEnum);_assert_(geothermalflux_input);
 	Input* head_input           = basalelement->GetInput(HydrologyHeadEnum);              _assert_(head_input);
 	Input* gap_input            = basalelement->GetInput(HydrologyGapHeightEnum);         _assert_(gap_input);
