@@ -129,6 +129,7 @@ class Element: public Object{
 		IssmDouble         GetZcoord(IssmDouble* xyz_list,Gauss* gauss);
 		void               GradientIndexing(int* indexing,int control_index);
 		IssmDouble         GroundedArea(IssmDouble* mask, bool scaled);
+		IssmDouble         GroundinglineMassFlux(IssmDouble* mask, bool scaled);
 		bool               HasNodeOnBase();
 		bool               HasNodeOnSurface();
 		IssmDouble         IceMass(bool scaled);
