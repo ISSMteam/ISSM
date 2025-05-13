@@ -44,8 +44,8 @@ void MatDebugOutputFinish(void* h);
 void VecDebugOutput(std::string message, int M, int m, CoDiReal* values);
 void VecDebugOutput(std::string message, int M, int m, double* values);
 
-void ArrayDebugOutput(std::string message, int m, CoDiReal* values);
-void ArrayDebugOutput(std::string message, int m, double* values);
+void ArrayDebugOutput(std::string message, int m, CoDiReal* values, bool synchronize);
+void ArrayDebugOutput(std::string message, int m, double* values, bool synchronize);
 
 #endif /* _HAVE_CODIPACK_ */
 #endif /* SRC_C_TOOLKITS_CODIPACK_CODIPACKDEBUG_H_ */

@@ -379,8 +379,9 @@ struct Data_VecDebugOutputReverse {
 		int id;
 
 		bool is_array;
+		bool synchronize;
 
-		Data_VecDebugOutputReverse(int M, int size, std::string message, int id, bool is_array) : M(M), vec_i(size), message(message), id(id), is_array(is_array) {}
+		Data_VecDebugOutputReverse(int M, int size, std::string message, int id, bool is_array, bool synchronize) : M(M), vec_i(size), message(message), id(id), is_array(is_array), synchronize(synchronize) {}
 
 		void getIdentifiers(CoDiReal* values) {
 			for(size_t i = 0; i < vec_i.size(); i += 1) {
@@ -400,7 +401,7 @@ struct Data_VecDebugOutputReverse {
 			out.precision(debugSettings.precission);
 
 			int my_rank=IssmComm::GetRank();
-			if(my_rank == 0) {
+			if(!data->synchronize || my_rank == 0) {
 				if(data->is_array) {
 					out << data->message << " reverse array id: " << data->id << std::endl;
 					out << "Array of size " << data->M << std::endl;
@@ -422,7 +423,7 @@ struct Data_VecDebugOutputReverse {
 						}
 					}
 					out.flush();
-					ISSM_MPI_Barrier(IssmComm::GetComm());
+					if(data->synchronize) { ISSM_MPI_Barrier(IssmComm::GetComm()); }
 				}
 			}
 		}
@@ -438,7 +439,7 @@ struct Data_VecDebugOutputReverse {
 		}
 };
 
-void VecDebugOutputImpl(std::string message, int M, int m, CoDiReal* values, bool is_array) {
+void VecDebugOutputImpl(std::string message, int M, int m, CoDiReal* values, bool is_array, bool synchronize) {
 	if(!CoDiIsDebugOutput()) { return; }
 	if(!(debugSettings.outputPrimal || debugSettings.outputReverse)) {
 		return;
@@ -452,7 +453,7 @@ void VecDebugOutputImpl(std::string message, int M, int m, CoDiReal* values, boo
 		out.setf(std::ios::scientific);
 		out.setf(std::ios::showpos);
 		out.precision(debugSettings.precission);
-		if(0 == IssmComm::GetRank()) {
+		if(!synchronize || 0 == IssmComm::GetRank()) {
 			if(is_array) {
 				out << message << " forward array id: " << id << std::endl;
 				out << "Array of size " << M << std::endl;
@@ -460,38 +461,38 @@ void VecDebugOutputImpl(std::string message, int M, int m, CoDiReal* values, boo
 				out << message << " forward vector id: " << id << std::endl;
 				out << "Vector of global size M=" << M << std::endl;
 			}
+    }
 
-			for(int cur_rank = 0; cur_rank < IssmComm::GetSize(); cur_rank += 1) {
-				if(cur_rank == IssmComm::GetRank()) {
-					out << "Rank: " << cur_rank << "\n";
-					for(size_t i = 0; i < m; i += 1) {
-						out << values[i].getValue();
-            writeId(values[i].getIdentifier());
-						out << "\n";
-					}
-					out.flush();
+		for(int cur_rank = 0; cur_rank < IssmComm::GetSize(); cur_rank += 1) {
+			if(cur_rank == IssmComm::GetRank()) {
+				out << "Rank: " << cur_rank << "\n";
+				for(size_t i = 0; i < m; i += 1) {
+					out << values[i].getValue();
+          writeId(values[i].getIdentifier());
+					out << "\n";
 				}
-				ISSM_MPI_Barrier(IssmComm::GetComm());
+				out.flush();
 			}
+			if(synchronize) { ISSM_MPI_Barrier(IssmComm::GetComm()); }
 		}
-		ISSM_MPI_Barrier(IssmComm::GetComm());
+    if(synchronize) { ISSM_MPI_Barrier(IssmComm::GetComm()); }
 	}
 
 	if(debugSettings.outputReverse) {
-		Data_VecDebugOutputReverse* data = new Data_VecDebugOutputReverse(M, m, message, id, is_array);
+		Data_VecDebugOutputReverse* data = new Data_VecDebugOutputReverse(M, m, message, id, is_array, synchronize);
 		data->getIdentifiers(values);
 		data->push();
 	}
 }
 
 void VecDebugOutput(std::string message, int M, int m, CoDiReal* values) {
-	VecDebugOutputImpl(message, m, m, values, false);
+	VecDebugOutputImpl(message, m, m, values, false, false);
 }
 void VecDebugOutput(std::string, int, int, double*) {}
 
-void ArrayDebugOutput(std::string message, int m, CoDiReal* values) {
-	VecDebugOutputImpl(message, m, m, values, true);
+void ArrayDebugOutput(std::string message, int m, CoDiReal* values, bool synchronize) {
+	VecDebugOutputImpl(message, m, m, values, true, synchronize);
 }
-void ArrayDebugOutput(std::string, int, double*) {}
+void ArrayDebugOutput(std::string, int, double*, bool) {}
 
 #endif /* _HAVE_CODIPACK_ */
