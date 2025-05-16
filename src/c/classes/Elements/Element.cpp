@@ -5590,20 +5590,22 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
 
 		//Variables for downscaling
-		IssmDouble taparam, dlwrfparam, rhparam, eaparam;
+		IssmDouble taparam, dlwrfparam, rhparam, eaparam, pparam;
+		IssmDouble pscale = -8400;
 		parameters->FindParam(&taparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbTaParamEnum);
 		parameters->FindParam(&dlwrfparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbDlwrfParamEnum);
 		parameters->FindParam(&eaparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
+		parameters->FindParam(&pparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
 		//Variables not downscaled
 		parameters->FindParam(&V, Mappedpoint-1, timeinputs, timestepping, dt, SmbVParamEnum);
 		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
 		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
 		parameters->FindParam(&P, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
-		parameters->FindParam(&pAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
 		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
 		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
+		if (dlwlapse!=0 || tlapse!=0) pAir=pparam*exp((currentsurface - elevation[Mappedpoint-1])/pscale);
 
 		//Hold reltive humidity constant and calculte new saturation vapor pressure with the new temperature
 		//ea = 100.*10.^(-7.90298 .* (373.16 ./ ta - 1) + 5.02808 .* log10(373.16 ./ ta) - 1.3816E-7 .* (10.^(11.344 .* (1 - ta ./ 373.16))-1) 
