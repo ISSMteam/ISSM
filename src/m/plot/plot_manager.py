@@ -16,6 +16,7 @@ from plot_unit import plot_unit
 from plot_vertexnumbering import plot_vertexnumbering
 from processdata import processdata
 from processmesh import processmesh
+from plot_gridded import plot_gridded
 
 
 def plot_manager(md, options, fig, axgrid, gridindex):
@@ -82,6 +83,9 @@ def plot_manager(md, options, fig, axgrid, gridindex):
             print(("WARNING: '%s' is not implemented or is not a valid string for option 'data'" % data))
     # }}}
     # {{{ Gridded plot TODO
+    if options.exist('gridded'):
+        plot_gridded(md,data,options,fig,axgrid,gridindex)
+        return
     # }}}
     # {{{ Section plot TODO
     # }}}
