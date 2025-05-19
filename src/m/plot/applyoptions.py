@@ -177,6 +177,9 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # {{{ colormap
     if options.exist('colornorm'):
         norm = options.getfieldvalue('colornorm')
+    else:
+        caxis = options.getfieldvalue('caxis')
+        norm = mpl.colors.Normalize(vmin=caxis[0],vmax=caxis[1])
     if options.exist('colormap'):
         cmap = getcolormap(options)
     cbar_extend = 0
