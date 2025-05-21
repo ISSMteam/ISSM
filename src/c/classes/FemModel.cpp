@@ -2761,6 +2761,7 @@ void FemModel::Responsex(IssmDouble* responses,int response_descriptor_enum){/*{
 		case MaterialsRheologyBbarEnum:          this->ElementResponsex(responses,MaterialsRheologyBbarEnum); break;
 		case VelEnum:                            this->ElementResponsex(responses,VelEnum); break;
 		case FrictionCoefficientEnum:            NodalValuex(responses, FrictionCoefficientEnum,elements,nodes, vertices, loads, materials, parameters); break;
+		case GroundinglineMassFluxEnum:          this->GroundinglineMassFluxx(responses, false);    break;
 		default:
 			if(response_descriptor_enum>=Outputdefinition1Enum && response_descriptor_enum <=Outputdefinition2000Enum){
 				int ierr = OutputDefinitionsResponsex(responses, this,response_descriptor_enum);
