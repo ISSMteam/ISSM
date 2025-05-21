@@ -5590,26 +5590,30 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
 
 		//Variables for downscaling
-		IssmDouble taparam, dlwrfparam, rhparam, eaparam;
+		IssmDouble taparam, dlwrfparam, rhparam, eaparam, pparam;
+		IssmDouble pscale = -8400;
 		parameters->FindParam(&taparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbTaParamEnum);
 		parameters->FindParam(&dlwrfparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbDlwrfParamEnum);
 		parameters->FindParam(&eaparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
+		parameters->FindParam(&pparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
 		//Variables not downscaled
 		parameters->FindParam(&V, Mappedpoint-1, timeinputs, timestepping, dt, SmbVParamEnum);
 		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
 		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
 		parameters->FindParam(&P, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
-		parameters->FindParam(&pAir, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
 
 		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
 		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
+		if (dlwlapse!=0 || tlapse!=0) pAir=pparam*exp((currentsurface - elevation[Mappedpoint-1])/pscale);
 
-		//Hold reltive humidity constant and calculte new saturation vapor pressure with the new temperature
-		//ea = 100.*10.^(-7.90298 .* (373.16 ./ ta - 1) + 5.02808 .* log10(373.16 ./ ta) - 1.3816E-7 .* (10.^(11.344 .* (1 - ta ./ 373.16))-1) 
-		//        + 8.1328E-3*(10.^(-3.49149.*(373.16./ta-1))-1) + log10(1013.246)).*(rh/100);
-	   rhparam = fmin( fmax( 100 * eaparam / ( 100*pow(10,(-7.90298 * (373.16 / taparam - 1) + 5.02808 * log10(373.16 / taparam) - 1.3816E-7 * (pow(10,(11.344 * (1 - taparam / 373.16)))-1) + 8.1328E-3*(pow(10,(-3.49149*(373.16/taparam-1)))-1) + log10(1013.246))) ), 0.0), 100.0);
-	   eAir = ( 100*pow(10,(-7.90298 * (373.16 / Ta - 1) + 5.02808 * log10(373.16 / Ta) - 1.3816E-7 * (pow(10,(11.344 * (1 - Ta / 373.16)))-1) + 8.1328E-3*(pow(10,(-3.49149*(373.16/Ta-1)))-1) + log10(1013.246))) ) * (rhparam/100);
+		//Hold reltive humidity constant and calculte new saturation vapor pressure
+		//https://cran.r-project.org/web/packages/humidity/vignettes/humidity-measures.html
+		//es over ice calculation
+		//Ding et al., 2019 after Bolton, 1980
+		//ea37 = rh37*100*6.112.*exp((17.67*(t237-273.15))./(t237-29.65));
+		rhparam=eaparam/6.112/exp((17.67*(taparam-273.15))/(taparam-29.65));
+		eAir=rhparam*6.112*exp((17.67*(Ta-273.15))/(Ta-29.65));
 
 		xDelete<IssmDouble>(elevation);
 	}
