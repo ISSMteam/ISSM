@@ -6,7 +6,7 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	%		 [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin)
 	%
 	%	X, Y are the coordinates of the mesh 
-	%	Tstart and Tend decimal year of the start and end time
+	%	Tstart and Tend decimal year of the start and end time, if Tstart=Tend=0, then load the 120m composite
 	%  vx_out and vy_out is (size(X), nt) tensor, depending on the dimension of X 
 	%
 	%   Example:
@@ -42,7 +42,11 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	end
 	% find all the data files with Tstart<=t<=Tend
 	dataInd = (dataTime>=Tstart) & (dataTime<=Tend);
-	disp([' For the selected period: ', datestr(decyear2date((Tstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tend)),'yyyy-mm-dd'), ', there are ', num2str(sum(dataInd)), ' records' ]);
+	if ((Tstart ==0) & (Tend==0))
+		disp(' Use ITS_LIVE composite 120 m velocity map ');
+	else
+		disp([' For the selected period: ', datestr(decyear2date((Tstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tend)),'yyyy-mm-dd'), ', there are ', num2str(sum(dataInd)), ' records' ]);
+	end
 
 	dataToLoad = {templist(dataInd).name};
 	time_out = dataTime(dataInd);
