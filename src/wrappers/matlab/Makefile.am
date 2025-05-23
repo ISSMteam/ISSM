@@ -54,7 +54,6 @@ lib_LTLIBRARIES += \
 	InterpFromMeshToMesh2d_matlab.la \
 	InterpFromMeshToMesh3d_matlab.la \
 	IssmConfig_matlab.la \
-	M1qn3_matlab.la \
 	MeshPartition_matlab.la \
 	MeshProfileIntersection_matlab.la \
 	NodeConnectivity_matlab.la \
@@ -261,10 +260,6 @@ IssmConfig_matlab_la_LIBADD = ${deps}
 Kriging_matlab_la_SOURCES = ../Kriging/Kriging.cpp
 Kriging_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Kriging_matlab_la_LIBADD = ${deps}
-
-M1qn3_matlab_la_SOURCES = ../M1qn3/M1qn3.cpp
-M1qn3_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-M1qn3_matlab_la_LIBADD = ${deps}
 
 MeshPartition_matlab_la_SOURCES = ../MeshPartition/MeshPartition.cpp
 MeshPartition_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
