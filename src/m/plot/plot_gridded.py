@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
 import matplotlib.colors
+import warnings
 import numpy as np
 from InterpFromMeshToGrid import InterpFromMeshToGrid
 from processmesh import processmesh
@@ -20,19 +21,19 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     '''
 
     #process mesh and data
-    x, y, z, elements, is2d, isplanet=processmesh(md,[],options);
-    data, datatype=processdata(md,data,options);
+    x, y, z, elements, is2d, isplanet=processmesh(md,[],options)
+    data, datatype=processdata(md,data,options)
 
     ax = axgrid[gridindex]
     #fig.delaxes(axgrid.cbar_axes[gridindex])
 
-    islevelset = options.exist('levelset');
+    islevelset = options.exist('levelset')
     if islevelset:
-        levelset = option.getfieldvalue('levelset');
+        levelset = options.getfieldvalue('levelset')
         options2 = copy.deepcopy(options)
-        options2.removefield('caxis',False);
-        options2.removefield('log',False);
-        levelset, datatype=processdata(md,levelset,options2);
+        options2.removefield('caxis',False)
+        options2.removefield('log',False)
+        levelset, datatype=processdata(md,levelset,options2)
 
     #check is2d
     if not is2d:
@@ -59,7 +60,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     y_m = np.linspace(ylim[0],ylim[1],ny)
     #NOTE: Tricky part for elements in interpolation.
     data_grid=InterpFromMeshToGrid(elements+1,x,y,data,x_m,y_m,np.nan)
-    data_grid_save = data_grid
+    data_grid_save = copy.deepcopy(data_grid)
     if (np.shape(data_grid)[0]<3) | (np.shape(data_grid)[1]<3):
         raise Exception('data_grid size too small in plot_gridded, check posting and units');
 
@@ -85,10 +86,11 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     #subplotmodel(plotlines,plotcols,i,options);
 
     #shading interp;
-    cmap = getcolormap(options)
+    options.addfielddefault('colormap',plt.cm.viridis)
+    cmap = getcolormap(copy.deepcopy(options))
     #TODO: Matlab version
     #image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(map)/(data_max-data_min))),cmap);
-    #Python version
+    #NOTE: Python version
     if isinstance(cmap,matplotlib.colors.ListedColormap):
         data_norm = (data_grid-data_min)/(data_max-data_min)
         image_rgb = cmap(data_norm)
@@ -96,33 +98,38 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
         #TODO: Other colormaps...
         image_rgb = cmap((data_grid-data_min)/(data_max-data_min))
 
-    #TODO:
-    #if options.exist('shaded'):
+    #TODO: shaded...
+    if options.exist('shaded'):
+        warnings.warn('WARNING: shaded is not supported in Python.')
 
-    #    if exist(options,'dem'),
-    #        dem_grid=InterpFromMeshToGrid(elements,x,y,getfieldvalue(options,'dem'),x_m,y_m,NaN);
-    #    else
-    #        dem_grid=data_grid_save;
-    #    end
+    #    if options.exist('dem'):
+    #        dem, _=processdata(md,options.getfieldvalue('dem'),options)
+    #        dem_grid=InterpFromMeshToGrid(elements+1,x,y,dem,x_m,y_m,np.nan);
+    #    else:
+    #        dem_grid=data_grid_save
     #    a    = -45;
     #    scut = 0.2;
     #    c    = 1;
     #    # computes lighting from elevation gradient
-    #    [fx,fy] = gradient(dem_grid,x_m,y_m);
-    #    fxy = -fx*sind(a) - fy*cosd(a);
-    #    clear fx fy # free some memory...
-    #    fxy(isnan(fxy)) = 0;
+    #    fx, fy = np.gradient(dem_grid,np.gradient(x_m),np.gradient(y_m))
+    #    fxy = -fx*np.sin(a*np.pi/180) - fy*np.cos(a*np.pi/180)
+    #    # free some memory...
+    #    del fx
+    #    del fy
+    #    fxy[np.isnan(fxy)] = 0
 
     #    # computes maximum absolute gradient (median-style), normalizes, saturates and duplicates in 3-D matrix
-    #    r = repmat(max(min(fxy/nmedian(abs(fxy),1 - scut/100),1),-1),[1,1,3]);
+    #    r = np.tile(np.maximum(np.minimum(fxy/nmedian(abs(fxy),1 - scut/100),1),-1),[4,1,1])
+    #    print(np.shape(r))
+    #    r = np.transpose(r,[2,1,0])
 
     #    # applies contrast using exponent
-    #    rp = (1 - abs(r)).^c;
-    #    image_rgb = image_rgb.*rp;
+    #    rp = (1 - abs(r))**c
+    #    image_rgb = image_rgb*rp
 
     #    # lighter for positive gradient
-    #    k = find(r > 0);
-    #    image_rgb(k) = image_rgb(k) + (1 - rp(k));
+    #    k = np.where(r > 0)
+    #    image_rgb[k] = image_rgb[k] + (1 - rp[k])
 
     # set novalues / NaN to black color
     #if not np.isempty(data_nani):
@@ -131,13 +138,15 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
 
     #plot grid
     h=ax.imshow(image_rgb,extent=[xlim[0], xlim[1], ylim[0], ylim[1]],origin='lower')
-    #ax.pcolormesh(image_rgb)
-    #ax.invert_yaxis() # Reverse y-axis
 
     #last step: mesh gridded?
-    #if options.exist('edgecolor'):
-    #    A=elements(:,1); B=elements(:,2); C=elements(:,3); 
-    #    patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
+    if options.exist('edgecolor'):
+        #A=elements[:,0]; B=elements[:,1]; C=elements[:,2]
+        #patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
+        ax.triplot(x,y,triangles=elements,
+                   color=options.getfieldvalue('edgecolor'),
+                   linewdith=options.getfieldvalue('linewidth',1),
+                   )
 
     #Apply options
     if (not np.isnan(data_min)) & (not np.isinf(data_min)):
@@ -155,10 +164,14 @@ def nmedian(x,n=0.5):
          N = 1 is maximum value
     '''
 
+    from scipy.interpolate import interp1d
+
     #if nargin < 2:
     #    n = 0.5;
 
     y = np.sort(x[:])
-    y = np.interp1(np.sort(y),n*(len(y)-1) + 1)
+    xp = np.arange(0,len(y))
+    f = interp1d(xp, np.sort(y), axis=0, kind='linear')
+    y = f(n*(len(y)-1)+1)
 
     return y
