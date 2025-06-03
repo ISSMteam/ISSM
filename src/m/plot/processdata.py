@@ -1,5 +1,6 @@
 import numpy as np
-
+from project2d import project2d
+from DepthAverage import DepthAverage
 
 def processdata(md, data, options):
     """PROCESSDATA - process data to be plotted
@@ -150,6 +151,14 @@ def processdata(md, data, options):
         procdata = procdata / repeat
 
         # }}}
+
+    # layer procesiong? {{{
+    if options.getfieldvalue('layer',0)>=1:
+        procdata=project2d(md,data,options.getfieldvalue('layer'))
+
+    if options.getfieldvalue('depthaverage',0):
+        raise Exception('Error: "depthaverage" option is not supported in Python.')
+        procdata=DepthAverage(md,data) #project onto 2d mesh
     # }}}
 
     # spc time series {{{
