@@ -61,7 +61,7 @@ jobs:
         id: setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
-          release: R2025a
+          release: latest
           cache: true
 
       - name: Prepare Python
