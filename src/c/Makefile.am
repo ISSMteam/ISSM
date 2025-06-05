@@ -776,6 +776,12 @@ if MAC
 if HAVE_FORTRANDIR
 AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
+if BOOST
+AM_LDFLAGS += -Wl,-rpath,$(BOOSTROOT)/lib
+endif
+if PROJ
+AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
+endif
 endif
 endif
 

@@ -1,5 +1,5 @@
 MATLAB_PATH="/Applications/MATLAB_R2023b.app"
-LIBGFORTRAN_PATH="/usr/local/Cellar/gcc/13.2.0/lib/gcc/current"
+LIBGFORTRAN_PATH="/usr/local/Cellar/gcc@13/13.3.0/lib/gcc/13"
 LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/x86_64-apple-darwin21/13"
 
 #--------------------#
