@@ -1159,6 +1159,7 @@ syn keyword juliaConstC SmbFACEnum
 syn keyword juliaConstC SmbFACSubstepEnum
 syn keyword juliaConstC SmbGCMLapseratesEnum
 syn keyword juliaConstC SmbGCMRefSurfaceEnum
+syn keyword juliaConstC SmbDownscaleTemperatureEnum
 syn keyword juliaConstC SmbGdnEnum
 syn keyword juliaConstC SmbGdniniEnum
 syn keyword juliaConstC SmbGspEnum

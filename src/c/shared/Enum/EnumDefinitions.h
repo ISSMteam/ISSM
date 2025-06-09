@@ -1162,6 +1162,7 @@ enum definitions{
 	SmbFACSubstepEnum,
 	SmbGCMLapseratesEnum,
 	SmbGCMRefSurfaceEnum,
+	SmbDownscaleTemperatureEnum,
 	SmbGdnEnum,
 	SmbGdniniEnum,
 	SmbGspEnum,

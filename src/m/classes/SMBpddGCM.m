@@ -18,8 +18,8 @@ classdef SMBpddGCM
 		ddf_ice               = 6.5/1000/24/3600;
       steps_per_step        = 1;
       averaging             = 0;
-		requested_outputs     = {};
 		ref_surf					 = NaN;
+		requested_outputs     = {};
 	end
 	methods
 		function self = SMBpddGCM(varargin) % {{{
@@ -48,6 +48,10 @@ classdef SMBpddGCM
 				self.lapserates=0.0065*ones(md.mesh.numberofvertices,1);
 				disp('      no SMBpddGCM.lapserates specified: values set as 0.0065 °C/m');
 			end
+			if isnan(self.ref_surf),
+				self.ref_surf = 0*ones(md.mesh.numberofvertices,1);
+				disp('      no SMBpddGCM.ref_surf specified: values set as sea-level 0 m');
+			end
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
@@ -67,6 +71,7 @@ classdef SMBpddGCM
 				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[Nx*Ny+1, NaN]);
 				md = checkfield(md,'fieldname','smb.lapserates','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.enhance_factor','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+				md = checkfield(md,'fieldname','smb.ref_surf','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.allsolidtemperature','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.allliquidtemperature','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.ddf_snow','>=',0,'NaN',1,'Inf',1);
@@ -93,6 +98,7 @@ classdef SMBpddGCM
 			fielddisplay(self,'ddf_ice', 'DDF for ice (m w.e./s/K), Litrature: 8.0 ± 3.4 mm/d/K');
          fielddisplay(self, 'steps_per_step', 'number of smb steps per time step');
          fielddisplay(self, 'averaging', 'averaging methods from short to long steps');
+         fielddisplay(self, 'ref_surf', 'reference surface elevation for downsampling the GCM temperature');
          disp(sprintf('%51s  0: Arithmetic (default)',' '));
          disp(sprintf('%51s  1: Geometric',' '));
          disp(sprintf('%51s  2: Harmonic',' '));
