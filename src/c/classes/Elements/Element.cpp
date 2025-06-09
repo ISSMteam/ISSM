@@ -3850,6 +3850,7 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 	IssmDouble* smb         = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* accumulation= xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* ablation    = xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* downscaleT  = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* refreezing	= xNew<IssmDouble>(NUM_VERTICES);
 	/*variables*/
 	IssmDouble rlaps, ref_surf, surface;
@@ -3884,8 +3885,9 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 		ref_s_input->GetInputValue(&ref_surf,gauss);
 		surface_input->GetInputValue(&surface,gauss);
 
-		/*Step 2: downsampling temp with elevation and lapse rate*/
+		/*Step 2: downscaling temp with elevation and lapse rate*/
 		temperature = temperature + rlaps*(ref_surf - surface);
+		downscaleT[iv] = temperature;
 
 		/*Step 3: Accumulation*/
 		if (temperature <= temp_all_solid){
@@ -3912,9 +3914,11 @@ void       Element::PositiveDegreeDayGCM(){/*{{{*/
 	/*Add input to element and Free memory*/
 	this->AddInput(SmbAccumulationEnum,accumulation,P1Enum);
 	this->AddInput(SmbAblationEnum,ablation,P1Enum);
+	this->AddInput(SmbDownscaleTemperatureEnum,downscaleT,P1Enum);
 	this->AddInput(SmbMassBalanceEnum,smb,P1Enum);
 	xDelete<IssmDouble>(accumulation);
 	xDelete<IssmDouble>(ablation);
+	xDelete<IssmDouble>(downscaleT);
 	xDelete<IssmDouble>(refreezing);
 	xDelete<IssmDouble>(smb);
 	delete gauss;

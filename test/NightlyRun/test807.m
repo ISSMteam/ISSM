@@ -1,9 +1,9 @@
 %Test Name: SquareShelfLevelsetMeltingSSA2d
-md=triangle(model(),'../Exp/Square.exp',50000.);
+md=triangle(model(),'../Exp/Square.exp',200000.);
 md=setmask(md,'all','');
 md=parameterize(md,'../Par/SquareShelf.par');
 md=setflowequation(md,'SSA','all');
-md.cluster=generic('name',oshostname(),'np',3);
+md.cluster=generic('name',oshostname(),'np',1);
 
 x = md.mesh.x;
 xmin = min(x);
@@ -29,7 +29,11 @@ md.transient.ismovingfront=1;
 md.calving.calvingrate=zeros(md.mesh.numberofvertices,1);
 md.frontalforcings.meltingrate=10000*ones(md.mesh.numberofvertices,1);
 md.levelset.spclevelset=NaN(md.mesh.numberofvertices,1);
+pos = find(md.mesh.vertexonboundary);
+md.levelset.spclevelset(pos) = md.mask.ice_levelset(pos);
 
+%md.verbose = verbose('all');
+md.verbose = verbose('convergence',1);
 md=solve(md,'Transient');
 
 %Fields and tolerances to track changes

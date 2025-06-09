@@ -431,6 +431,7 @@ SmbFAC
 SmbFACSubstep
 SmbGCMLapserates
 SmbGCMRefSurface
+SmbDownscaleTemperature
 SmbGdn
 SmbGdnini
 SmbGsp
@@ -673,3 +674,4 @@ TotalSmbScaled
 MaterialsRheologyBbar
 Vel
 FrictionCoefficient
+GroundinglineMassFlux

@@ -1,4 +1,4 @@
-function distance = ExpToLevelSet(x,y,contourname);
+function distance = ExpToLevelSet(x,y,contourname,dateformat);
 %EXPTOLEVELSET - Determine levelset distance between a contour and a cloud of points
 %
 %   Usage:
@@ -6,15 +6,19 @@ function distance = ExpToLevelSet(x,y,contourname);
 %
 %   x,y:	cloud point
 %   contourname:	name of .exp file containing the contours
+%	 dateformat: not in use, by default
 %   distance:	distance vector representing a levelset where the 0 level is one of the contour segments
 %
 %   Example:
 %      distance=ExpToLevelSet(md.mesh.x,md.mesh.y,'Contour.exp');
 
 % Check usage
-if nargin~=3
+if nargin~=3 & nargin~=4
 	help ExpToLevelSet
 	error('Wrong usage (see above)');
+end
+if nargin < 4
+	dateformat = '';
 end
 
 multipleShp = 0;
@@ -40,7 +44,11 @@ if multipleShp>0
 		if isfield(contourname(i),'NAME')
 			distance(end, i) = contourname(i).NAME;
 		elseif isfield(contourname(i),'Date')
-			distance(end, i) = date2decyear(datenum(contourname(i).Date));
+			if strcmp(dateformat, '')
+				distance(end, i) = date2decyear(datenum(contourname(i).Date));
+			else
+				distance(end, i) = date2decyear(datenum(contourname(i).Date, dateformat));
+			end
 			% to deal with 
 		else
 			distance(end, i) = i;
