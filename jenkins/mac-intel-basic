@@ -11,7 +11,7 @@ ISSM_CONFIG='\
 	--enable-debugging \
 	--with-numthreads=4 \
 	--with-matlab-dir=${MATLAB_PATH} \
-	--with-fortran-lib="-L/usr/local/Cellar/gcc/13.2.0/lib/gcc/current -lgfortran" \
+	--with-fortran-lib="-L/usr/local/gfortran/lib -lgfortran" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
 	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \

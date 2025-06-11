@@ -15,7 +15,7 @@ function [contours edges_tria]=isoline(md,field,varargin)
 %
 %   Example:
 %      contours=isoline(md, md.results.TransientSolution(end).MaskOceanLevelset,'value',0);
-%      contours=isoline(md, md.results.TransientSolution(end).MaskOceanLevelset,'output','vector');
+%      contours=isoline(md, md.results.TransientSolution(end).MaskOceanLevelset,'output','matrix');
 %      contours=isoline(md, md.results.TransientSolution(end).MaskIceLevelset,'output','Icefront.exp');
 
 %Process options

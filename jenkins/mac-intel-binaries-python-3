@@ -1,6 +1,6 @@
 MATLAB_PATH="/Applications/MATLAB_R2023b.app"
-LIBGFORTRAN_PATH="/usr/local/Cellar/gcc/13.2.0/lib/gcc/current"
-LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/x86_64-apple-darwin21/13"
+LIBGFORTRAN_PATH="/usr/local/gfortran/lib"
+LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/x86_64-apple-darwin21/12.1.0"
 
 #--------------------#
 # ISSM Configuration #

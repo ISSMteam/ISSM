@@ -1,3 +1,9 @@
+%Function that plots buttressing at the grounding line based on Hilmar
+%Gudmundsson's definition thetaN = N/N0
+% N is the sigma_nn
+% N0 would be the stress exerted by the ocean
+% theta = 1 means no buttressing
+% theta close to 0 is a lot of buttressing
 
 %Find Elements that are crossed by the GL
 index = md.mesh.elements;

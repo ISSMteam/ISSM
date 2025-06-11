@@ -419,15 +419,15 @@ if [ -d "${PROJ_ROOT_TEMP}" ]; then
 	path_prepend "${PROJ_ROOT_TEMP}/bin"
 	ld_library_path_prepend "${PROJ_ROOT_TEMP}/lib"
 	dyld_library_path_prepend "${PROJ_ROOT_TEMP}/lib"
-	ld_library_path_prepend "${PROJ_ROOT_TEMP}/lib"
 fi
 
 GDAL_ROOT_TEMP="${ISSM_EXT_DIR}/gdal/install"
 if [ -d "${GDAL_ROOT_TEMP}" ]; then
 	export GDAL_ROOT="${GDAL_ROOT_TEMP}" # Used in installation of GMT
 	path_prepend "${GDAL_ROOT_TEMP}/bin"
-	ld_library_path_append "${GDAL_ROOT_TEMP}/lib"
-	dyld_library_path_append "${GDAL_ROOT_TEMP}/lib"
+	library_path_prepend "${GDAL_ROOT_TEMP}/lib"
+	ld_library_path_prepend "${GDAL_ROOT_TEMP}/lib"
+	dyld_library_path_prepend "${GDAL_ROOT_TEMP}/lib"
 fi
 
 GSHHG_ROOT_TEMP="${ISSM_EXT_DIR}/gshhg/install"
