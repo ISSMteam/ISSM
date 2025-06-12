@@ -139,7 +139,12 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # }}}
     # {{{ box
     if options.exist('box'):
-        eval(options.getfieldvalue('box'))
+        isbox=options.getfieldvalue('box')
+        if (isbox == 'off') | (isbox == 0) | (isbox == False):
+            ax.axis('off')
+        elif (isbox == 'on') | (isbox == 1) | (isbox == True):
+            ax.axis('on')
+        #eval(options.getfieldvalue('box'))
     # }}}
     # {{{ xlim, ylim, zlim
     if options.exist('xlim'):
