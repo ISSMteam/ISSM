@@ -61,8 +61,10 @@ def processdata(md, data, options):
 
     # log {{{
     if options.exist('log'):
-        cutoff = options.getfieldvalue('log', 1)
-        procdata[np.where(procdata < cutoff)] = cutoff
+        #cutoff = options.getfieldvalue('log', 1)
+        #procdata[np.where(procdata < cutoff)] = cutoff
+        #NOTE: Nothing to be done
+        pass
     # }}}
 
     # quiver plot {{{
