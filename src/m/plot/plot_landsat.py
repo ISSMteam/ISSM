@@ -25,6 +25,15 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
     x2d, y2d, z2d, elements2d, is2d, isplanet=processmesh(md,[],options)
     data, datatype=processdata(md,data,options)
 
+    ismask = options.exist('mask')
+    if ismask:
+        mask = options.getfieldvalue('mask')
+        options2 = copy.deepcopy(options)
+        options2.removefield('caxis',False)
+        options2.removefield('log',False)
+        mask, datatype=processdata(md,mask,options2)
+        data[~mask] = np.nan
+
     #check is2d
     if not is2d:
        raise Exception('buildgridded error message: gridded not supported for 3d meshes, project on a layer')
