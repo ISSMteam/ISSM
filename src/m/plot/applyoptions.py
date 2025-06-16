@@ -139,7 +139,12 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # }}}
     # {{{ box
     if options.exist('box'):
-        eval(options.getfieldvalue('box'))
+        isbox=options.getfieldvalue('box')
+        if (isbox == 'off') | (isbox == 0) | (isbox == False):
+            ax.axis('off')
+        elif (isbox == 'on') | (isbox == 1) | (isbox == True):
+            ax.axis('on')
+        #eval(options.getfieldvalue('box'))
     # }}}
     # {{{ xlim, ylim, zlim
     if options.exist('xlim'):
@@ -179,7 +184,11 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
         norm = options.getfieldvalue('colornorm')
     else:
         caxis = options.getfieldvalue('caxis')
-        norm = mpl.colors.Normalize(vmin=caxis[0],vmax=caxis[1])
+        if options.exist('log'):
+            #NOTE: Use LogNorn rather than processing log dataset in "processdata".
+            norm=mpl.colors.LogNorm(vmin=caxis[0],vmax=caxis[1],clip=False)
+        else:
+            norm = mpl.colors.Normalize(vmin=caxis[0],vmax=caxis[1])
     if options.exist('colormap'):
         cmap = getcolormap(options)
     cbar_extend = 0
@@ -216,13 +225,21 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # }}}
     # {{{ colorbar
     if options.getfieldvalue('colorbar', 1) == 1:
-        cb = mpl.colorbar.ColorbarBase(ax.cax, cmap=cmap, norm=norm, extend=extend)
+        formatter = mpl.ticker.ScalarFormatter(useMathText=1)
+        if options.exist('log'):
+            formatter = mpl.ticker.LogFormatterSciNotation(base=options.getfieldvalue('log'))
+
+        cb = mpl.colorbar.ColorbarBase(ax.cax, cmap=cmap, norm=norm, extend=extend,
+                                       format=formatter)
         if options.exist('alpha'):
             cb.set_alpha(options.getfieldvalue('alpha'))
         if options.exist('colorbarnumticks'):
             cb.locator = MaxNLocator(nbins=options.getfieldvalue('colorbarnumticks', 5))
         else:
-            cb.locator = MaxNLocator(nbins=5)  # default 5 ticks
+            if options.exist('log'):
+                cb.locator = mpl.ticker.LogLocator(options.getfieldvalue('log'))
+            else:
+                cb.locator = MaxNLocator(nbins=5)  # default 5 ticks
         if options.exist('colorbartickspacing'):
             locs = np.arange(lims[0], lims[1] + 1, options.getfieldvalue('colorbartickspacing'))
             cb.set_ticks(locs)

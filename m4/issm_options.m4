@@ -2616,3 +2616,50 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_SUBST([CXXFLAGS])
 	AC_SUBST([OSLIBS])
 ])
+
+dnl =====================================================================
+dnl  ISSM_ENABLE_AD – Automatic-Differentiation (CoDiPack + MediPack)
+dnl =====================================================================
+AC_DEFUN([ISSM_ENABLE_AD], [
+  # --- command-line switches ------------------------------------------
+  AC_ARG_ENABLE([ad],
+    AS_HELP_STRING([--enable-ad],
+      [Build ISSM with CoDiPack+MediPack automatic differentiation (disables PETSc)]),
+    [enable_ad=$enableval],
+    [enable_ad=no])
+
+  AC_ARG_WITH([codipack-dir],
+    AS_HELP_STRING([--with-codipack-dir=DIR],
+      [Prefix of CoDiPack install]),
+    [CODIPACK_ROOT=$withval], [CODIPACK_ROOT=])
+
+  AC_ARG_WITH([medipack-dir],
+    AS_HELP_STRING([--with-medipack-dir=DIR],
+      [Prefix of MediPack install]),
+    [MEDIPACK_ROOT=$withval], [MEDIPACK_ROOT=])
+
+  # --- validation & flag injection ------------------------------------
+  if test "x$enable_ad" = "xyes"; then
+    if test -z "$CODIPACK_ROOT" || test -z "$MEDIPACK_ROOT"; then
+      AC_MSG_ERROR([--enable-ad needs BOTH --with-codipack-dir and --with-medipack-dir])
+    fi
+
+    AC_DEFINE([ISSM_USE_AD], [1],
+              [Define to 1 if building with automatic differentiation])
+
+    ENABLE_PETSC=no
+    AM_CONDITIONAL([USE_AD], [true])
+
+    AM_CPPFLAGS="$AM_CPPFLAGS -I$CODIPACK_ROOT/include -I$MEDIPACK_ROOT/include -DCODI_ForcedInlines"
+    AM_LDFLAGS="$AM_LDFLAGS -L$CODIPACK_ROOT/lib -L$MEDIPACK_ROOT/lib"
+    LIBS="$LIBS -lcodi -lmedi"
+  else
+    ENABLE_PETSC=yes
+    AM_CONDITIONAL([USE_AD], [false])
+  fi
+
+  dnl Export augmented vars once
+  AC_SUBST([AM_CPPFLAGS])
+  AC_SUBST([AM_LDFLAGS])
+  AC_SUBST([LIBS])
+])
