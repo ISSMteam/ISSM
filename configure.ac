@@ -81,6 +81,7 @@ AC_SUBST([LIBS])
 #  Run ISSM’s usual option-detection macro collection
 # ---------------------------------------------------------------------
 ISSM_OPTIONS
+ISSM_ENABLE_AD
 
 # ---------------------------------------------------------------------
 #  Output files
