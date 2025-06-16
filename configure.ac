@@ -31,6 +31,7 @@ LT_INIT([win32-dll])
 
 #Run issm_options.m4
 ISSM_OPTIONS
+ISSM_ENABLE_AD
 
 #List all Makefiles
 AC_CONFIG_FILES([
