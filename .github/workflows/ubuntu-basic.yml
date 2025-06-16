@@ -3,8 +3,29 @@ name: Ubuntu Basic
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - ".github/workflows/common-workflow.yml"
+      - ".github/workflows/ubuntu-basic.yml"
+      - "etc/**"
+      - "externalpackages/**"
+      - "m4/**"
+      - "src/**"
+      - "test/**"
+      - "Makefile.am"
+      - "configure.ac"
   pull_request:
     branches: [ "main" ]
+    paths:
+      - ".github/workflows/common-workflow.yml"
+      - ".github/workflows/ubuntu-basic.yml"
+      - "etc/**"
+      - "externalpackages/**"
+      - "m4/**"
+      - "src/**"
+      - "test/**"
+      - "Makefile.am"
+      - "configure.ac"
+
 env:
   ISSM_DIR: ${{ github.workspace }}
 

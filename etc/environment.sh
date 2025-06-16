@@ -2,22 +2,20 @@
 # have been installed.
 #
 # ISSM_DIR and ISSM_ARCH should have been defined already in your shell
-# settings file (i.e. .bashrc, .cshrc).
+# settings file (i.e., .bashrc, .zshrc, .cshrc).
 #
 # NOTE:
 # - We use <PKG>_ROOT_TEMP variables because all variables are exported to 
 #	environment when this script is source'd. In some cases, this may cause 
 #	conflicts (e.g. on Pleiades, we use the module copy of PETSc, which 
 #	defines PETSC_ROOT).
-#
 
+# Silence `zsh: no matches found: <file>`
 if [[ -n "$ZSH_VERSION" ]]; then
-	# Silence `zsh: no matches found: <file>`
 	setopt +o nomatch 1> /dev/null 2>&1
 fi
 
 ## Functions
-#
 c_include_path_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${C_INCLUDE_PATH}" ]; then
@@ -36,7 +34,6 @@ c_include_path_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 cpath_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${CPATH}" ]; then
@@ -55,7 +52,6 @@ cpath_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 cplus_include_path_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${CPLUS_INCLUDE_PATH}" ]; then
@@ -74,7 +70,6 @@ cplus_include_path_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 dyld_library_path_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${DYLD_LIBRARY_PATH}" ]; then
@@ -89,7 +84,6 @@ dyld_library_path_append(){ #{{{
 		fi
 	fi
 } #}}}
-
 dyld_library_path_prepend(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${DYLD_LIBRARY_PATH}" ]; then
@@ -104,7 +98,6 @@ dyld_library_path_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 ld_library_path_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${LD_LIBRARY_PATH}" ]; then
@@ -119,7 +112,6 @@ ld_library_path_append(){ #{{{
 		fi
 	fi
 } #}}}
-
 ld_library_path_prepend(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${LD_LIBRARY_PATH}" ]; then
@@ -134,7 +126,6 @@ ld_library_path_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 library_path_append(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${LIBRARY_PATH}" ]; then
@@ -144,7 +135,6 @@ library_path_append(){ #{{{
 		fi
 	fi
 } #}}}
-
 library_path_prepend(){ #{{{
 	if [ -d "${1}" ]; then
 		if [ -z "${LIBRARY_PATH}" ]; then
@@ -154,7 +144,6 @@ library_path_prepend(){ #{{{
 		fi
 	fi
 } #}}}
-
 path_append(){ #{{{
 	if [ -d "${1}" ] && [[ ":${PATH}:" != *":${1}:"* ]]; then
 		PATH_IN="${1}"
@@ -164,7 +153,6 @@ path_append(){ #{{{
 		export PATH="${PATH}:${PATH_IN}"
 	fi
 } #}}}
-
 path_prepend(){ #{{{
 	if [ -d "${1}" ] && [[ ":${PATH}:" != *":${1}:"* ]]; then
 		PATH_IN="${1}"
@@ -178,11 +166,10 @@ path_prepend(){ #{{{
 path_append "${ISSM_DIR}/aux-config"
 path_append "${ISSM_DIR}/scripts"
 
-# Default path to external packages. Redefine this constant if they are 
-# installed to a different directory. Alternatively, export it on the command 
-# line or in a profile initialization file (that is why we check here if it is 
+# Default path to external packages. Redefine this constant if they are
+# installed to a different directory. Alternatively, export it on the command
+# line or in a profile initialization file (that is why we check here if it is
 # set already).
-#
 if [ -z "${ISSM_EXT_DIR+x}" ]; then
 	export ISSM_EXT_DIR="${ISSM_DIR}/externalpackages"
 fi
