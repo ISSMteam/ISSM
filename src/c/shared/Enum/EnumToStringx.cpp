@@ -609,6 +609,7 @@ const char* EnumToStringx(int en){
 		case SmbIsmappedforcingEnum : return "SmbIsmappedforcing";
 		case SmbIsmeltEnum : return "SmbIsmelt";
 		case SmbIsmungsmEnum : return "SmbIsmungsm";
+		case SmbIsprecipforcingremappedEnum : return "SmbIsprecipforcingremapped";
 		case SmbIsprecipscaledEnum : return "SmbIsprecipscaled";
 		case SmbIssetpddfacEnum : return "SmbIssetpddfac";
 		case SmbIsshortwaveEnum : return "SmbIsshortwave";
