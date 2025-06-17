@@ -596,6 +596,7 @@
 	SmbIsmappedforcingEnum
 	SmbIsmeltEnum
 	SmbIsmungsmEnum
+	SmbIsprecipforcingremappedEnum
 	SmbIsprecipscaledEnum
 	SmbIssetpddfacEnum
 	SmbIsshortwaveEnum
@@ -4361,6 +4362,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsmappedforcingEnum) return "SmbIsmappedforcing" end
 	if(enum==SmbIsmeltEnum) return "SmbIsmelt" end
 	if(enum==SmbIsmungsmEnum) return "SmbIsmungsm" end
+	if(enum==SmbIsprecipforcingremappedEnum) return "SmbIsprecipforcingremapped" end
 	if(enum==SmbIsprecipscaledEnum) return "SmbIsprecipscaled" end
 	if(enum==SmbIssetpddfacEnum) return "SmbIssetpddfac" end
 	if(enum==SmbIsshortwaveEnum) return "SmbIsshortwave" end
@@ -8126,6 +8128,7 @@ function StringToEnum(name::String)
 	if(name=="SmbIsmappedforcing") return SmbIsmappedforcingEnum  end
 	if(name=="SmbIsmelt") return SmbIsmeltEnum  end
 	if(name=="SmbIsmungsm") return SmbIsmungsmEnum  end
+	if(name=="SmbIsprecipforcingremapped") return SmbIsprecipforcingremappedEnum  end
 	if(name=="SmbIsprecipscaled") return SmbIsprecipscaledEnum  end
 	if(name=="SmbIssetpddfac") return SmbIssetpddfacEnum  end
 	if(name=="SmbIsshortwave") return SmbIsshortwaveEnum  end

@@ -56,7 +56,8 @@ ye2=np.mean(md2.mesh.y[md2.mesh.elements-1],axis=1)
 mpoints=np.arange(1,md2.mesh.numberofelements+1)
 
 md.smb.ismappedforcing=1
-md.smb.isprecipforcingremapped=1
+md.smb.isprecipforcingremapped=0
+md.smb.lapsedlwrfValue=0
 interpp = NearestNDInterpolator((xe2, ye2), mpoints)
 md.smb.mappedforcingpoint=interpp(xe,ye)
 md.smb.mappedforcingelevation=np.mean(md2.geometry.surface[md2.mesh.elements-1],axis=1)

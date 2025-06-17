@@ -39,7 +39,8 @@ ye2=mean(md2.mesh.y(md2.mesh.elements),2);
 mpoints=1:md2.mesh.numberofelements;
 
 md.smb.ismappedforcing=1;
-md.smb.isprecipforcingremapped=1;
+md.smb.isprecipforcingremapped=0;
+md.smb.lapsedlwrfValue=0;
 md.smb.mappedforcingpoint=griddata(xe2,ye2,mpoints,xe,ye,'nearest');
 md.smb.mappedforcingelevation=mean(md2.geometry.surface(md2.mesh.elements),2);
 

@@ -5578,6 +5578,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		pAir_input->GetInputValue(&pAir,gauss);  // screen level air pressure [Pa]
 		//_printf_("Time: " << t << " Ta: " << Ta << " V: " << V << " dlw: " << dlw << " dsw: " << dsw << " P: " << P << " eAir: " << eAir << " pAir: " << pAir << "\n");
 	} else {
+		IssmDouble Dtol = 1e-11;
+		IssmDouble gravity;
+		parameters->FindParam(&gravity,ConstantsGEnum);
 
 		int timestepping;
 		IssmDouble dt;
@@ -5587,6 +5590,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		Input *currentsurface_input = this->GetInput(SurfaceEnum);  _assert_(currentsurface_input);
 		currentsurface_input->GetInputAverage(&currentsurface);
 
+		bool isprecipmap=true;
+		parameters->FindParam(&isprecipmap,SmbIsprecipforcingremappedEnum);
+
 		parameters->FindParam(&tlapse,SmbLapseTaValueEnum);
 		parameters->FindParam(&dlwlapse,SmbLapsedlwrfValueEnum);
 
@@ -5594,30 +5600,50 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
 
 		//Variables for downscaling
-		IssmDouble taparam, dlwrfparam, rhparam, eaparam, pparam;
-		IssmDouble pscale = -8400;
+		IssmDouble taparam, dlwrfparam, rhparam, eaparam, pparam, prparam;
 		parameters->FindParam(&taparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbTaParamEnum);
 		parameters->FindParam(&dlwrfparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbDlwrfParamEnum);
 		parameters->FindParam(&eaparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbEAirParamEnum);
 		parameters->FindParam(&pparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbPAirParamEnum);
+		parameters->FindParam(&prparam, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
 
 		//Variables not downscaled
 		parameters->FindParam(&V, Mappedpoint-1, timeinputs, timestepping, dt, SmbVParamEnum);
 		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
 		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
-		parameters->FindParam(&P, Mappedpoint-1, timeinputs, timestepping, dt, SmbPParamEnum);
 
 		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
-		dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
-		if (dlwlapse!=0 || tlapse!=0) pAir=pparam*exp((currentsurface - elevation[Mappedpoint-1])/pscale);
+		if (fabs(dlwlapse) > Dtol) dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
+		else{
+			//adjust downward longwave, holding emissivity equal (Glover et al, 1999)
+			IssmDouble SB = 5.67e-8; // Stefan-Boltzmann constant (W m-2 K-4)
+			IssmDouble effe = 1.;
+			effe = dlwrfparam/(SB * pow(taparam,4.0));
+			dlw = fmax(effe*SB*pow(Ta,4.0),0.0);
+		}
 
-		//Hold reltive humidity constant and calculte new saturation vapor pressure
+		if ( (fabs(dlwlapse) > Dtol) || (fabs(tlapse) > Dtol)){
+			IssmDouble Rg = 8.314; // gas constant (J mol-1 K-1)
+			IssmDouble dAir = 0.0;
+			// calculated air density [kg/m3]
+			//    dAir = 0.029 * pAir /(R * Ta);
+			dAir=0.029 * pparam /(Rg * Ta);
+			pAir=pparam-gravity*dAir*(currentsurface - elevation[Mappedpoint-1]);
+		}
+		else pAir=pparam;
+
+		//Hold relative humidity constant and calculte new saturation vapor pressure
 		//https://cran.r-project.org/web/packages/humidity/vignettes/humidity-measures.html
 		//es over ice calculation
 		//Ding et al., 2019 after Bolton, 1980
 		//ea37 = rh37*100*6.112.*exp((17.67*(t237-273.15))./(t237-29.65));
 		rhparam=eaparam/6.112/exp((17.67*(taparam-273.15))/(taparam-29.65));
 		eAir=rhparam*6.112*exp((17.67*(Ta-273.15))/(Ta-29.65));
+
+		if (isprecipmap && (eaparam>0)){
+			P=prparam*eAir/eaparam;
+		}
+		else P=prparam;
 
 		xDelete<IssmDouble>(elevation);
 	}
