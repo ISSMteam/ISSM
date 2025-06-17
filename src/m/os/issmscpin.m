@@ -13,32 +13,32 @@ if strcmpi(hostname,host)
 		system(['cp ' path '/' packages{i} ' .']);
 	end
 else
-	if numel(packages)==1,
+	if numel(packages)==1
 		fileliststr=packages{1};
 	else
 		fileliststr='\{';
-		for i=1:numel(packages)-1,
+		for i=1:numel(packages)-1
 			fileliststr=[fileliststr packages{i} ','];
 		end
 		fileliststr=[fileliststr packages{end} '\}'];
 	end
 
-	if port,
-		[status,cmdout]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
-		if status ~= 0,
+	if port
+		[status]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		if status ~= 0
 			%List expansion is a bash'ism. Try again with -OT.
 			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
 		end
 	else
-		[status,cmdout]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
-		if status ~= 0,
+		[status]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
+		if status ~= 0
 			%List expansion is a bash'ism. Try again with -OT.
 			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
 		end
 	end
 
 	%check scp worked
-	if status ~= 0,
+	if status ~= 0
 		error(['issmscpin error message: ' cmdout])
 	end
 	for i=1:numel(packages),
