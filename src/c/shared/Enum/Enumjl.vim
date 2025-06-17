@@ -600,6 +600,7 @@ syn keyword juliaConstC SmbIsgraingrowthEnum
 syn keyword juliaConstC SmbIsmappedforcingEnum
 syn keyword juliaConstC SmbIsmeltEnum
 syn keyword juliaConstC SmbIsmungsmEnum
+syn keyword juliaConstC SmbIsprecipforcingremappedEnum
 syn keyword juliaConstC SmbIsprecipscaledEnum
 syn keyword juliaConstC SmbIssetpddfacEnum
 syn keyword juliaConstC SmbIsshortwaveEnum
