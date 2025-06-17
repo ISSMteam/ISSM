@@ -42,13 +42,13 @@ else
 	end
 	if port
 		disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])
-		[status,cmdout]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
+		[status]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
 		if status~=0
 			%List expansion is a bash'ism. Try again with -OT.
 			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
 		end
 	else
-		[status,cmdout]=system(['scp ' fileliststr ' ' login '@' host ':' path]);
+		[status]=system(['scp ' fileliststr ' ' login '@' host ':' path]);
 		if status~=0
 			%List expansion is a bash'ism. Try again with -OT.
 			[status,cmdout]=system(['scp -OT ' fileliststr ' ' login '@' host ':' path]);
