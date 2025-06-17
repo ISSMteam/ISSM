@@ -54,7 +54,7 @@ classdef SMBgemb
 		lapseTaValue = NaN; %Temperature lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true.
 		                    % (Default value is -0.006 K m-1.)
 		lapsedlwrfValue = NaN; %Longwave down lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true.
-		                    % (Default value is -0.032 W m-2 m-1.)
+		                    % If set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1.)
 
 		% Initialization of snow properties
 		Dzini = NaN; %cell depth (m)
@@ -225,7 +225,7 @@ classdef SMBgemb
 			fielddisplay(self,'mappedforcingpoint','Mapping of which forcing point will map to each mesh element for ismappedforcing option (integer). Size number of elements.');
 			fielddisplay(self,'mappedforcingelevation','The elevation of each mapped forcing location (m above sea level) for ismappedforcing option. Size number of forcing points.');
 			fielddisplay(self,'lapseTaValue','Temperature lapse rate if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.006 K m-1.)');
-			fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.032 W m-2 m-1.)');
+			fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate if forcing has different grid and should be remapped for ismappedforcing option. If set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1.)');
 
 			%snow properties init
 			fielddisplay(self,'Dzini','Initial cell depth when restart [m]');
