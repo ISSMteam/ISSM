@@ -7,7 +7,7 @@
 ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-element software dedicated to ice sheet and sea-level modeling.
 
 ## Documentation
-https://issmteam.github.io/ISSM-Documentation/
+<a href="https://issmteam.github.io/ISSM-Documentation" target="_blank">Just The Docs</a>
 
 ## Contact
  - Forum:	https://issm.ess.uci.edu/forum
