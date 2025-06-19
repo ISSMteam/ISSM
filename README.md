@@ -1,4 +1,5 @@
 # Ice-sheet and Sea-level System Model - ISSM
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Ubuntu Basic](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-basic.yml/badge.svg)](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-basic.yml)
 [![Ubuntu CodiPack](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-codipack.yml/badge.svg)](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-codipack.yml)
 [![Ubuntu Python](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-python.yml/badge.svg)](https://github.com/ISSMteam/ISSM/actions/workflows/ubuntu-python.yml)
@@ -12,7 +13,7 @@ ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-
 ## Contact
  - Forum:	https://issm.ess.uci.edu/forum
  - GitHub:	https://github.com/ISSMteam/ISSM
- - Website:	https://issm.jpl.nasa.gov
+ - Website:	https://issm.jpl.nasa.gov (will be decomissioned soon)
 
 ## Checking Out a Copy of the Repository
 Navigate to the parent directory where you want the ISSM repository to be located. If you plan to make contributions to the code base, we recommend that you check out a copy via SSH with,
@@ -31,31 +32,25 @@ Note that checkout via HTTPS does not require credentials, but does not allow co
 ## Committing Changes to the Repository
 A good basic workflow for committing changes to the repository is,
 
-1. Stash your local changes
 ```
+#1. Stash your local changes
 git stash
-```
 
-2. Update your local branch
-```
+#2. Update your local branch
 git pull
-```
 
-3. Merge your local changes
-```
+#3. Merge your local changes
 git stash apply
-```
 
-4. Add, commit, and push your changes
-```
+#4. Add, commit, and push your changes
 git add [file]
 git commit [-m "descriptive commit message"]
 git push
 ```
 
-5. If you have forked the ISSM repository, consider making sure that your commit passes CI workflows before submitting a pull request.
+If you have forked the ISSM repository, consider making sure that your commit passes CI workflows before submitting a pull request.
 
-6. Submit a pull request via GitHub so that project admins can review your changes and merge them into the main branch.
+Submit a pull request via GitHub so that project admins can review your changes and merge them into the main branch.
 
 If you find yourself making a lot of commits and pull requests, consider asking us to add you to the 'ISSM Contributors' group, which will allow you to make commits directly to the repository.
 
