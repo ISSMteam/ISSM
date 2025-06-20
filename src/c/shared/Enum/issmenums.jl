@@ -3358,6 +3358,7 @@
 	AmrNeopzEnum
 	ArrheniusEnum
 	AutodiffJacobianEnum
+	AverageButtressingEnum
 	Balancethickness2AnalysisEnum
 	Balancethickness2SolutionEnum
 	BalancethicknessAnalysisEnum
@@ -7124,6 +7125,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==AmrNeopzEnum) return "AmrNeopz" end
 	if(enum==ArrheniusEnum) return "Arrhenius" end
 	if(enum==AutodiffJacobianEnum) return "AutodiffJacobian" end
+	if(enum==AverageButtressingEnum) return "AverageButtressing" end
 	if(enum==Balancethickness2AnalysisEnum) return "Balancethickness2Analysis" end
 	if(enum==Balancethickness2SolutionEnum) return "Balancethickness2Solution" end
 	if(enum==BalancethicknessAnalysisEnum) return "BalancethicknessAnalysis" end
@@ -10890,6 +10892,7 @@ function StringToEnum(name::String)
 	if(name=="AmrNeopz") return AmrNeopzEnum  end
 	if(name=="Arrhenius") return ArrheniusEnum  end
 	if(name=="AutodiffJacobian") return AutodiffJacobianEnum  end
+	if(name=="AverageButtressing") return AverageButtressingEnum  end
 	if(name=="Balancethickness2Analysis") return Balancethickness2AnalysisEnum  end
 	if(name=="Balancethickness2Solution") return Balancethickness2SolutionEnum  end
 	if(name=="BalancethicknessAnalysis") return BalancethicknessAnalysisEnum  end

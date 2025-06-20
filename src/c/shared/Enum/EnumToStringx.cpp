@@ -3371,6 +3371,7 @@ const char* EnumToStringx(int en){
 		case AmrNeopzEnum : return "AmrNeopz";
 		case ArrheniusEnum : return "Arrhenius";
 		case AutodiffJacobianEnum : return "AutodiffJacobian";
+		case AverageButtressingEnum : return "AverageButtressing";
 		case Balancethickness2AnalysisEnum : return "Balancethickness2Analysis";
 		case Balancethickness2SolutionEnum : return "Balancethickness2Solution";
 		case BalancethicknessAnalysisEnum : return "BalancethicknessAnalysis";

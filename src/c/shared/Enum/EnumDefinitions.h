@@ -3368,6 +3368,7 @@ enum definitions{
 	AmrNeopzEnum,
 	ArrheniusEnum,
 	AutodiffJacobianEnum,
+	AverageButtressingEnum,
 	Balancethickness2AnalysisEnum,
 	Balancethickness2SolutionEnum,
 	BalancethicknessAnalysisEnum,

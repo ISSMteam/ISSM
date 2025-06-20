@@ -3362,6 +3362,7 @@ syn keyword juliaConstC AmrBamgEnum
 syn keyword juliaConstC AmrNeopzEnum
 syn keyword juliaConstC ArrheniusEnum
 syn keyword juliaConstC AutodiffJacobianEnum
+syn keyword juliaConstC AverageButtressingEnum
 syn keyword juliaConstC Balancethickness2AnalysisEnum
 syn keyword juliaConstC Balancethickness2SolutionEnum
 syn keyword juliaConstC BalancethicknessAnalysisEnum
