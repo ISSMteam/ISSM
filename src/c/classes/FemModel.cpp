@@ -1053,6 +1053,29 @@ void FemModel::Solve(void){/*{{{*/
 /*}}}*/
 
 /*Modules:*/
+void FemModel::AverageButtressingx(IssmDouble* pTheta){/*{{{*/
+
+	IssmDouble local_theta  = 0.;
+	IssmDouble local_length = 0.;
+	IssmDouble total_theta,total_length,element_theta,element_length;
+
+	for(Object* & object : this->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		if(element->Buttressing(&element_theta, &element_length)){
+			local_theta  += element_theta;
+			local_length += element_length;
+		}
+	}
+	ISSM_MPI_Reduce(&local_theta,&total_theta,1,ISSM_MPI_DOUBLE,ISSM_MPI_SUM,0,IssmComm::GetComm() );
+	ISSM_MPI_Bcast(&total_theta,1,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
+	ISSM_MPI_Reduce(&local_length,&total_length,1,ISSM_MPI_DOUBLE,ISSM_MPI_SUM,0,IssmComm::GetComm() );
+	ISSM_MPI_Bcast(&total_length,1,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
+	_assert_(total_length>0.);
+
+	/*Assign output pointers: */
+	*pTheta=total_theta/total_length;
+
+}/*}}}*/
 void FemModel::BalancethicknessMisfitx(IssmDouble* presponse){/*{{{*/
 
 	/*output: */
@@ -2447,11 +2470,12 @@ void FemModel::RequestedOutputsx(Results **presults,char** requested_outputs, in
 				switch(output_enum){
 
 					/*Scalar output*/
+					case AverageButtressingEnum:             this->AverageButtressingx(&double_result);             break;
 					case DivergenceEnum:                     this->Divergencex(&double_result);                     break;
 					case MaxDivergenceEnum:                  this->MaxDivergencex(&double_result);                  break;
 					case IceMassEnum:                        this->IceMassx(&double_result,false);                  break;
 					case IcefrontMassFluxEnum:               this->IcefrontMassFluxx(&double_result,false);         break;
-					case IcefrontMassFluxLevelsetEnum:       this->IcefrontMassFluxLevelsetx(&double_result,false);         break;
+					case IcefrontMassFluxLevelsetEnum:       this->IcefrontMassFluxLevelsetx(&double_result,false); break;
 					case IceMassScaledEnum:                  this->IceMassx(&double_result,true);                   break;
 					case IceVolumeEnum:                      this->IceVolumex(&double_result,false);                break;
 					case IceVolumeScaledEnum:                this->IceVolumex(&double_result,true);                 break;

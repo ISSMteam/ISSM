@@ -53,6 +53,8 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		/*}}}*/
 		/*Element virtual functions definitions: {{{*/
 		void        AverageOntoPartition(Vector<IssmDouble>* partition_contributions,Vector<IssmDouble>* partition_areas,IssmDouble* vertex_response,IssmDouble* qmu_part);
+
+		bool        Buttressing(IssmDouble* ptheta, IssmDouble* plength);
 		void			CalvingRateVonmises();
 		void			CalvingRateVonmisesAD();
 		void			CalvingRateTest();

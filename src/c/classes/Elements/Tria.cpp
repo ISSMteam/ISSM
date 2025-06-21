@@ -310,6 +310,156 @@ void       Tria::AverageOntoPartition(Vector<IssmDouble>* partition_contribution
 	}
 }
 /*}}}*/
+bool       Tria::Buttressing(IssmDouble* ptheta, IssmDouble* plength){/*{{{*/
+
+	/*Make sure there is a grounding line here*/
+	if(!IsIceInElement()) return false;
+	if(!IsZeroLevelset(MaskOceanLevelsetEnum)) return true;
+
+	int               domaintype,index1,index2;
+	const IssmPDouble epsilon = 1.e-15;
+	IssmDouble        s1,s2,s_xx,s_yy,s_xy;
+	IssmDouble        gl[NUMVERTICES];
+	IssmDouble        xyz_front[2][3];
+
+	IssmDouble  xyz_list[NUMVERTICES][3];
+	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+
+	/*Recover parameters and values*/
+	parameters->FindParam(&domaintype,DomainTypeEnum);
+	Element::GetInputListOnVertices(&gl[0],MaskOceanLevelsetEnum);
+
+	/*Be sure that values are not zero*/
+	if(gl[0]==0.) gl[0]=gl[0]+epsilon;
+	if(gl[1]==0.) gl[1]=gl[1]+epsilon;
+	if(gl[2]==0.) gl[2]=gl[2]+epsilon;
+
+	if(domaintype==Domain2DverticalEnum){
+		_error_("not implemented");
+	}
+	else if(domaintype==Domain2DhorizontalEnum || domaintype==Domain3DEnum || domaintype==Domain3DsurfaceEnum){
+		int pt1 = 0;
+		int pt2 = 1;
+		if(gl[0]*gl[1]>0){ //Nodes 0 and 1 are similar, so points must be found on segment 0-2 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[2]/(gl[2]-gl[1]);
+			s2=gl[2]/(gl[2]-gl[0]);
+			if(gl[2]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+			xyz_front[pt2][0]=xyz_list[2][0]+s1*(xyz_list[1][0]-xyz_list[2][0]);
+			xyz_front[pt2][1]=xyz_list[2][1]+s1*(xyz_list[1][1]-xyz_list[2][1]);
+			xyz_front[pt2][2]=xyz_list[2][2]+s1*(xyz_list[1][2]-xyz_list[2][2]);
+			xyz_front[pt1][0]=xyz_list[2][0]+s2*(xyz_list[0][0]-xyz_list[2][0]);
+			xyz_front[pt1][1]=xyz_list[2][1]+s2*(xyz_list[0][1]-xyz_list[2][1]);
+			xyz_front[pt1][2]=xyz_list[2][2]+s2*(xyz_list[0][2]-xyz_list[2][2]);
+		}
+		else if(gl[1]*gl[2]>0){ //Nodes 1 and 2 are similar, so points must be found on segment 0-1 and 0-2
+
+			/*Portion of the segments*/
+			s1=gl[0]/(gl[0]-gl[1]);
+			s2=gl[0]/(gl[0]-gl[2]);
+			if(gl[0]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt1][0]=xyz_list[0][0]+s1*(xyz_list[1][0]-xyz_list[0][0]);
+			xyz_front[pt1][1]=xyz_list[0][1]+s1*(xyz_list[1][1]-xyz_list[0][1]);
+			xyz_front[pt1][2]=xyz_list[0][2]+s1*(xyz_list[1][2]-xyz_list[0][2]);
+			xyz_front[pt2][0]=xyz_list[0][0]+s2*(xyz_list[2][0]-xyz_list[0][0]);
+			xyz_front[pt2][1]=xyz_list[0][1]+s2*(xyz_list[2][1]-xyz_list[0][1]);
+			xyz_front[pt2][2]=xyz_list[0][2]+s2*(xyz_list[2][2]-xyz_list[0][2]);
+		}
+		else if(gl[0]*gl[2]>0){ //Nodes 0 and 2 are similar, so points must be found on segment 1-0 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[1]/(gl[1]-gl[0]);
+			s2=gl[1]/(gl[1]-gl[2]);
+			if(gl[1]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt2][0]=xyz_list[1][0]+s1*(xyz_list[0][0]-xyz_list[1][0]);
+			xyz_front[pt2][1]=xyz_list[1][1]+s1*(xyz_list[0][1]-xyz_list[1][1]);
+			xyz_front[pt2][2]=xyz_list[1][2]+s1*(xyz_list[0][2]-xyz_list[1][2]);
+			xyz_front[pt1][0]=xyz_list[1][0]+s2*(xyz_list[2][0]-xyz_list[1][0]);
+			xyz_front[pt1][1]=xyz_list[1][1]+s2*(xyz_list[2][1]-xyz_list[1][1]);
+			xyz_front[pt1][2]=xyz_list[1][2]+s2*(xyz_list[2][2]-xyz_list[1][2]);
+		}
+		else{
+			_error_("case not possible");
+		}
+
+	}
+	else _error_("mesh type "<<EnumToStringx(domaintype)<<"not supported yet ");
+
+	/*Some checks in debugging mode*/
+	_assert_(s1>=0 && s1<=1.);
+	_assert_(s2>=0 && s2<=1.);
+
+	/*Get normal vector*/
+	IssmDouble normal[3];
+	this->NormalSection(&normal[0],&xyz_front[0][0]);
+
+	/*Get deviatoric stress tensor*/
+	this->ComputeDeviatoricStressTensor();
+
+	/*Get inputs*/
+	IssmDouble flux = 0.;
+	IssmDouble vx,vy,thickness,Jdet;
+	IssmDouble rho_ice        = this->FindParam(MaterialsRhoIceEnum);
+	IssmDouble rho_seawater   = this->FindParam(MaterialsRhoSeawaterEnum);
+	IssmDouble constant_g     = this->FindParam(ConstantsGEnum);
+	Input* vx_input=NULL;
+	Input* vy_input=NULL;
+	if(domaintype==Domain2DhorizontalEnum){
+		vx_input=this->GetInput(VxEnum); _assert_(vx_input);
+		vy_input=this->GetInput(VyEnum); _assert_(vy_input);
+	}
+	else{
+		vx_input=this->GetInput(VxAverageEnum); _assert_(vx_input);
+		vy_input=this->GetInput(VyAverageEnum); _assert_(vy_input);
+	}
+	Input *s_xx_input      = this->GetInput(DeviatoricStressxxEnum); _assert_(s_xx_input);
+	Input *s_xy_input      = this->GetInput(DeviatoricStressxyEnum); _assert_(s_xy_input);
+	Input *s_yy_input      = this->GetInput(DeviatoricStressyyEnum); _assert_(s_yy_input);
+	Input *thickness_input = this->GetInput(ThicknessEnum);          _assert_(thickness_input);
+
+   IssmDouble theta  = 0.;
+   IssmDouble length = 0.;
+	Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
+	while(gauss->next()){
+		thickness_input->GetInputValue(&thickness,gauss);
+		vx_input->GetInputValue(&vx,gauss);
+		vy_input->GetInputValue(&vy,gauss);
+		s_xx_input->GetInputValue(&s_xx,gauss);
+		s_xy_input->GetInputValue(&s_xy,gauss);
+		s_yy_input->GetInputValue(&s_yy,gauss);
+      this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
+
+      IssmDouble R[2][2];
+      R[0][0] = 2*s_xx+s_yy;
+      R[1][0] = s_xy;
+      R[0][1] = s_xy;
+      R[1][1] = 2*s_yy+s_xx;
+
+      IssmDouble N  = normal[0]*(R[0][0]*normal[0]+R[0][1]*normal[1]) + normal[1]*(R[1][0]*normal[0]+R[1][1]*normal[1]);
+      IssmDouble N0 = 0.5*constant_g*rho_ice*(1-rho_ice/rho_seawater)*thickness;
+
+		theta  += Jdet*gauss->weight*N/N0;
+      length += Jdet*gauss->weight;
+	}
+
+	/*Cleanup and return*/
+   delete gauss;
+	_assert_(theta>0.);
+	_assert_(length>0.);
+	*ptheta  = theta;
+	*plength = length;
+	return true;
+}
+/*}}}*/
 void       Tria::CalvingRateVonmises(){/*{{{*/
 
 	/*First, compute Von Mises Stress*/

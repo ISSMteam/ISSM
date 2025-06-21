@@ -91,6 +91,7 @@ class FemModel {
 		void Solve(void);
 
 		/*Modules*/
+		void AverageButtressingx(IssmDouble* ptheta);
 		void BalancethicknessMisfitx(IssmDouble* pV);
 		void CalvingRateVonmisesx();
 		void CalvingRateLevermannx();

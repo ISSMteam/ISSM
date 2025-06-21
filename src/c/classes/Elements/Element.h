@@ -241,6 +241,7 @@ class Element: public Object{
 		virtual void       AddBasalInput(int input_enum, IssmDouble* values, int interpolation_enum){_error_("not implemented");};
 		virtual void       AddInput(int input_enum, IssmDouble* values, int interpolation_enum){_error_("not implemented");};
 		virtual void       AddControlInput(int input_enum,Inputs* inputs,IoModel* iomodel,IssmDouble* values,IssmDouble* values_min,IssmDouble* values_max, int interpolation_enum,int id){_error_("not supported yet");};
+		virtual bool       Buttressing(IssmDouble* ptheta, IssmDouble* plength){_error_("not implemented");};
 		virtual void       DatasetInputCreate(IssmDouble* array,int M,int N,int* individual_enums,int num_inputs,Inputs* inputs,IoModel* iomodel,int input_enum){_error_("not supported");};
 		virtual void       AverageOntoPartition(Vector<IssmDouble>* partition_contributions,Vector<IssmDouble>* partition_areas,IssmDouble* vertex_response,IssmDouble* qmu_part)=0;
 		virtual void		 BasalNodeIndices(int* pnumindices,int** pindices,int finiteelement){_error_("not implemented yet");};
