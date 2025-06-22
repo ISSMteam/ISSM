@@ -145,7 +145,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
         #patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
         ax.triplot(x,y,triangles=elements,
                    color=options.getfieldvalue('edgecolor'),
-                   linewdith=options.getfieldvalue('linewidth',1),
+                   linewidth=options.getfieldvalue('linewidth',1),
                    )
 
     #Apply options
