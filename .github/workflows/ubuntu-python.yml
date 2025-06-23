@@ -36,13 +36,14 @@ jobs:
       os: ubuntu-latest
       build_type: basic-python
       interface: python
-      python_version: 3.13
+      python_version: 3.12
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf
         ls ${ISSM_DIR}/externalpackages/petsc/install/bin/
         which mpicxx
-        ./configure --prefix=${ISSM_DIR} \
+        ./configure \
+        --prefix=${ISSM_DIR} \
         --disable-static \
         --enable-development \
         --enable-debugging \
