@@ -75,10 +75,11 @@ jobs:
       - name: Install Python dependencies
         if: contains(inputs.interface, 'python')
         run: |
+          sudo apt update
           sudo apt install libpython${{ inputs.python_version }}-dev
           sudo apt install python3-dev
           python -m pip install --upgrade pip
-          sudo apt update && sudo apt install -y python3-tk
+          sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose
 
       - name: Build ISSM
