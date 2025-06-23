@@ -13,7 +13,7 @@ ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-
 ## Contact
  - Forum:	https://issm.ess.uci.edu/forum
  - GitHub:	https://github.com/ISSMteam/ISSM
- - Website:	https://issm.jpl.nasa.gov (will be decomissioned soon)
+ - Website:	https://issm.jpl.nasa.gov (will be decommissioned soon)
 
 ## Checking Out a Copy of the Repository
 Navigate to the parent directory where you want the ISSM repository to be located. If you plan to make contributions to the code base, we recommend that you check out a copy via SSH with,
