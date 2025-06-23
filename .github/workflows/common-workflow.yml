@@ -81,6 +81,7 @@ jobs:
           python -m pip install --upgrade pip
           sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose
+          find /usr -name arrayobject.h
 
       - name: Build ISSM
         run: |
