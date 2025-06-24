@@ -81,8 +81,7 @@ jobs:
           python -m pip install --upgrade pip
           sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose
-          echo $(find /usr -name arrayobject.h)
-          echo $(find /opt -name arrayobject.h)
+          echo $(python -c "import numpy; import sys; sys.stdout.write(numpy.get_include())")
 
       - name: Build ISSM
         run: |
