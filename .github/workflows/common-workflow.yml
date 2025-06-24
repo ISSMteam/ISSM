@@ -81,7 +81,6 @@ jobs:
           python -m pip install --upgrade pip
           sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose
-          echo $(python -c "import numpy; import sys; sys.stdout.write(numpy.get_include())")
 
       - name: Build ISSM
         run: |
@@ -92,6 +91,7 @@ jobs:
           export F90=$FC
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
+          export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python${{ inputs.python_version }}/site-packages/numpy
           ${{ inputs.build_command }}
 
       - name: Compile ISSM
