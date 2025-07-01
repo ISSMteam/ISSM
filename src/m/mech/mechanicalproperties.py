@@ -71,37 +71,37 @@ def mechanicalproperties(md, vx, vy, *args):
     #clear vxlist vylist
 
     #compute viscosity
-    nu = np.zeros((numberofelements, ))
+    mu = np.zeros((numberofelements, ))
     B_bar = np.dot(md.materials.rheology_B[index - 1], summation / 3.).reshape(-1, )
     power = ((md.materials.rheology_n - 1.) / (2. * md.materials.rheology_n)).reshape(-1, )
     second_inv = (ux**2. + vy**2. + ((uy + vx)**2.) / 4. + ux * vy).reshape(-1, )
 
     #some corrections
     location = np.nonzero(np.logical_and(second_inv == 0, power != 0))
-    nu[location] = pow(10, 18) #arbitrary maximum viscosity to apply where there is no effective shear
+    mu[location] = pow(10, 18) #arbitrary maximum viscosity to apply where there is no effective shear
 
     if 'matice' in md.materials.__module__:
         location = np.nonzero(second_inv)
-        nu[location] = B_bar[location] / (second_inv[location]**power[location])
+        mu[location] = B_bar[location] / (second_inv[location]**power[location])
         location = np.nonzero(np.logical_and(second_inv == 0, power == 0))
-        nu[location] = B_bar[location]
+        mu[location] = B_bar[location]
         location = np.nonzero(np.logical_and(second_inv == 0, power != 0))
-        nu[location] = pow(10, 18)
+        mu[location] = pow(10, 18)
     elif 'matdamageice' in md.materials.__module__:
         print('computing damage-dependent properties!')
         Zinv = np.dot(1 - damage[index - 1], summation / 3.).reshape(-1, )
         location = np.nonzero(second_inv)
-        nu[location] = Zinv[location] * B_bar[location] / np.power(second_inv[location], power[location])
+        mu[location] = Zinv[location] * B_bar[location] / np.power(second_inv[location], power[location])
         location = np.nonzero(np.logical_and(second_inv == 0, power == 0))
-        nu[location] = Zinv[location] * B_bar[location]
+        mu[location] = Zinv[location] * B_bar[location]
     #clear Zinv
     else:
         raise Exception('class of md.materials (' + md.materials.__module__ + ') not recognized or not supported')
 
     #compute stress
-    tau_xx = nu * ux
-    tau_yy = nu * vy
-    tau_xy = nu * uyvx
+    tau_xx = mu * ux
+    tau_yy = mu * vy
+    tau_xy = mu * uyvx
 
     #compute principal properties of stress
     for i in np.arange(numberofelements):

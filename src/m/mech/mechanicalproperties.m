@@ -50,26 +50,26 @@ uyvx=(vx+uy)./2;
 clear vxlist vylist
 
 %compute viscosity
-nu=zeros(numberofelements,1);
+mu=zeros(numberofelements,1);
 B_bar=md.materials.rheology_B(index)*summation/3;
 power=(md.materials.rheology_n-1)./(2*md.materials.rheology_n);
 second_inv=(ux.^2+vy.^2+((uy+vx).^2)/4+ux.*vy);
 
 %some corrections
 location=find(second_inv==0 & power~=0);
-nu(location)=10^18; 	%arbitrary maximum viscosity to apply where there is no effective shear
+mu(location)=10^18; 	%arbitrary maximum viscosity to apply where there is no effective shear
 
 if isa(md.materials,'matice')
 	location=find(second_inv~=0);
-	nu(location)=B_bar(location)./(second_inv(location).^power(location));
+	mu(location)=B_bar(location)./(second_inv(location).^power(location));
 	location=find(second_inv==0 & power==0);
-	nu(location)=B_bar(location);
+	mu(location)=B_bar(location);
 elseif isa(md.materials,'matdamageice')
 	Zinv=1-damage(index)*summation/3;
 	location=find(second_inv~=0);
-	nu(location)=Zinv(location).*B_bar(location)./(second_inv(location).^power(location));
+	mu(location)=Zinv(location).*B_bar(location)./(second_inv(location).^power(location));
 	location=find(second_inv==0 & power==0);
-	nu(location)=Zinv(location).*B_bar(location);
+	mu(location)=Zinv(location).*B_bar(location);
 	clear Zinv
 else
 	error(['class of md.materials (' class(md.materials) ') not recognized or not supported']);
@@ -77,9 +77,9 @@ end
 clear B_bar location second_inv power
 
 %compute stress
-tau_xx=nu.*ux;
-tau_yy=nu.*vy;
-tau_xy=nu.*uyvx;
+tau_xx=mu.*ux;
+tau_yy=mu.*vy;
+tau_xy=mu.*uyvx;
 
 %compute principal properties of stress
 for i=1:numberofelements,
@@ -133,6 +133,4 @@ deviatoricstress.principalaxis2=directionsstress(:,3:4);
 deviatoricstress.effectivevalue=1/sqrt(2)*sqrt(deviatoricstress.xx.^2+deviatoricstress.yy.^2+2*deviatoricstress.xy.^2);
 md.results.deviatoricstress=deviatoricstress;
 
-viscosity=struct('nu',[]);
-viscosity.nu=nu;
-md.results.viscosity=viscosity;
+md.results.viscosity=mu;
