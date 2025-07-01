@@ -6522,12 +6522,9 @@ void       Element::ViscousHeatingCreateInput(void){/*{{{*/
 
 	/*loop over vertices: */
 	Gauss* gauss=this->NewGauss();
-	for (int iv=0;iv<NUM_VERTICES;iv++){
+	for(int iv=0;iv<NUM_VERTICES;iv++){
 		gauss->GaussVertex(iv);
-
-		this->ViscousHeating(&phi,xyz_list,gauss,vx_input,vy_input,vz_input);
-
-		viscousheating[iv]=phi;
+		this->ViscousHeating(&viscousheating[iv],xyz_list,gauss,vx_input,vy_input,vz_input);
 	}
 
 	/*Create PentaVertex input, which will hold the basal friction:*/
