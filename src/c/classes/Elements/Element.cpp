@@ -6506,8 +6506,6 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,Node** nodes
 void       Element::ViscousHeatingCreateInput(void){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble phi;
-	IssmDouble thickness;
 	IssmDouble *xyz_list = NULL;
 
 	/*Fetch number vertices and allocate memory*/
