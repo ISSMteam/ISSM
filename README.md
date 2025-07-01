@@ -32,7 +32,7 @@ Note that checkout via HTTPS does not require credentials, but does not allow co
 ## Committing Changes to the Repository
 A good basic workflow for committing changes to the repository is,
 
-```
+```bash
 #1. Stash your local changes
 git stash
 

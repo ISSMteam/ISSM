@@ -40,6 +40,8 @@ LIBPSL="${ISSM_DIR}/externalpackages/gmt/install/lib/libpostscriptlight.so.6.5.0
 LIBPSL_DIST="${ISSM_DIR}/lib/libpostscriptlight.so.6" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 LIBQUADMATH="/usr/lib/x86_64-linux-gnu/libquadmath.so.0.0.0" # Important that this is the library itself
 LIBQUADMATH_DIST="${ISSM_DIR}/lib/libquadmath.so.0" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
+LIBSTDCXX="/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30" # Important that this is the library itself
+LIBSTDCXX_DIST="${ISSM_DIR}/lib/libstdc++.so.6.0.30" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 
 ## Environment
 #
@@ -85,6 +87,7 @@ cp ${LIBGFORTRAN} ${LIBGFORTRAN_DIST} 2>/dev/null
 cp ${LIBQUADMATH} ${LIBQUADMATH_DIST} 2>/dev/null
 cp ${LIBGMT} ${LIBGMT_DIST} 2>/dev/null
 cp ${LIBPSL} ${LIBPSL_DIST} 2>/dev/null
+cp ${LIBSTDCXX} ${LIBSTDCXX_DIST} 2>/dev/null
 
 echo "Moving MPICH binaries to bin/"
 if [ -f ${ISSM_DIR}/externalpackages/petsc/install/bin/mpiexec ]; then
