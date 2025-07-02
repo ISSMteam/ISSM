@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 import warnings
 import numpy as np
+from numpy import ma
 from InterpFromMeshToGrid import InterpFromMeshToGrid
 from processmesh import processmesh
 from processdata import processdata
@@ -58,6 +59,11 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     ny = int(np.diff(ylim)[0]/posty)+1
     x_m = np.linspace(xlim[0],xlim[1],nx)
     y_m = np.linspace(ylim[0],ylim[1],ny)
+
+    #Tricky part in treating masked value.
+    if isinstance(data,np.ma.core.MaskedArray):
+        data[data.mask] = np.nan
+
     #NOTE: Tricky part for elements in interpolation.
     data_grid=InterpFromMeshToGrid(elements+1,x,y,data,x_m,y_m,np.nan)
     data_grid_save = copy.deepcopy(data_grid)
@@ -145,7 +151,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
         #patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
         ax.triplot(x,y,triangles=elements,
                    color=options.getfieldvalue('edgecolor'),
-                   linewdith=options.getfieldvalue('linewidth',1),
+                   linewidth=options.getfieldvalue('linewidth',1),
                    )
 
     #Apply options

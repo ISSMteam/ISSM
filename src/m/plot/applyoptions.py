@@ -6,6 +6,7 @@ try:
 except ImportError:
     print("could not import pyplot, matplotlib has not been installed, no plotting capabilities enabled")
 import numpy as np
+import warnings
 
 from expdisp import expdisp
 from plot_contour import plot_contour
@@ -293,7 +294,15 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # }}}
     # {{{ north arrow TODO
     # }}}
-    # {{{ scale ruler TODO
+    # {{{ scale ruler 
+    #TODO: The current version for scaleruler relies on "matplotlib-scalebar"; however, should this section be moved to a standalone "scaleruler" module, similar to the MATLAB version?
+    if options.getfieldvalue('scaleruler','off')=='on':
+        try:
+            from matplotlib_scalebar.scalebar import ScaleBar
+            scalebar = ScaleBar(1,'m',location=options.getfieldvalue('scalerulerlocation','lower right'))
+            ax.add_artist(scalebar)
+        except:
+            warnings.warn('We cannot draw scalebar. Install "matplotlib-scalebar" using "pip install matplotlib-scalebar".')
     # }}}
     # {{{ streamlines TOFIX
     if options.exist('streamlines'):
