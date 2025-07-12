@@ -1,0 +1,276 @@
+# In order to install ISSM, the Ice Sheet System Model,
+# download  from the svn repository:
+svn co https://issm.ess.uci.edu/svn/issm/issm/trunk-jpl
+
+# If you have an already existing trunk-jpl installation,
+# you can symlink to it: 
+ln -s PATH_TO_TRUNK_JPL ./trunk-jpl
+
+# Then follow instructions in:
+# http://issm.jpl.nasa.gov/download/unix/
+
+
+# =========
+# Installation instructions on macOS Mojave 10.14.4
+
+* create an ISSM_DIR in you bashrc and source it
+export ISSM_DIR="/Users/XXX/issm/trunk-jpl/"
+source "$ISSM_DIR"/etc/environment.sh
+
+* checkout empty issm directory:
+svn co --username=username --depth=empty http://issm.ess.uci.edu/svn/issm/issm issm
+* get jpl trunk (development branch) in issm directory:
+svn update trunk-jpl
+
+* get xcode
+* install command line xcode
+xcode-select --install
+
+* install gfortran binaries: on https://gcc.gnu.org/wiki/GFortranBinaries#MacOS
+* use the first one on git (https://github.com/fxcoudert/gfortran-for-macOS/releases)
+
+* Install Matlab
+* In ~/matlab/startup.m add:
+% ISSM paths
+ISSM_DIR=getenv('ISSM_DIR');
+if length(ISSM_DIR)>0
+    addpath([ISSM_DIR '/bin/']);
+    addpath([ISSM_DIR '/lib/'],[ISSM_DIR '/scripts']);
+    addpath([ISSM_DIR '/src/m/dev']);
+    devpath;
+end
+
+* in ISSM, install the following external packages (so in trunk-jpl/externalpackages) in this order:
+- autotools
+- mpich (version 3.2 macosx64)
+- cmake
+- petsc (version 3.9 macosx64)
+- m1qn3
+- triangle
+between each package installed you should source the environment
+source $ISSM_DIR/etc/environment.sh
+
+* Reconfigure ISSM:
+cd $ISSM_DIR 
+autoreconf -ivf 
+* Create a configure.sh file in $ISSM_DIR with the following lines (adjust the paths if need be):
+#!/bin/bash
+
+./configure \
+   --prefix=$ISSM_DIR \
+   --with-matlab-dir="/Applications/MATLAB_R2018b.app/" \
+   --with-triangle-dir="$ISSM_DIR/externalpackages/triangle/install" \
+   --with-mpi-include="$ISSM_DIR/externalpackages/mpich/install/include" \
+   --with-mpi-libflags="-L$ISSM_DIR/externalpackages/mpich/install/lib/ -lmpich" \
+   --with-petsc-dir="$ISSM_DIR/externalpackages/petsc/install" \
+   --with-metis-dir="$ISSM_DIR/externalpackages/petsc/install" \
+   --with-scalapack-dir="$ISSM_DIR/externalpackages/petsc/install/" \
+   --with-mumps-dir="$ISSM_DIR/externalpackages/petsc/install/" \
+   --with-m1qn3-dir="$ISSM_DIR/externalpackages/m1qn3/install" \
+	--with-ocean="yes" \
+   --with-numthreads=4 \
+	--enable-development \
+	--enable-debugging
+
+* Configure ISSM in $ISSM_DIR:
+./configure.sh
+
+* Compile ISSM in $ISSM_DIR:
+make -j8
+make install 
+
+
+# =========
+# Installation instructions on macOS High Sierra 10.13.6
+
+# Install Xcode from Mac App Store then
+xcode-select --install
+
+# Install gfrotran 5.2
+# https://gcc.gnu.org/wiki/GFortranBinaries
+# http://coudert.name/software/gfortran-5.2-Yosemite.dmg
+
+# Install cmake-3.4.0
+# https://cmake.org/download/
+# https://cmake.org/files/v3.4/cmake-3.4.0-Darwin-x86_64.dmg
+cd /usr/local/bin
+sudo ln -sf /Applications/Utilities/CMake.app/Contents/bin/cmake .
+
+# In .bashrc add:
+# export ISSM_DIR='/PUT_FULL_ISSM_PATHNAME_HERE/trunk-jpl'
+# source $ISSM_DIR/etc/environment.sh 
+
+cd $ISSM_DIR
+svn up
+source $ISSM_DIR/etc/environment.sh
+
+cd externalpackages
+mkdir matlab
+cd matlab
+ln -sf /Applications/MATLAB_R2016b.app install
+
+# add 10.13 lines similar to 10.10 lines in
+# /Applications/MATLAB_R2015b.app/bin/maci64/mexopts/*.xml
+
+# http://issm.jpl.nasa.gov/documentation/faq/matlab/
+cp /Applications/MATLAB_R2016b.app/bin/.matlab7rc.sh ~
+# under mac|maci|maci64)
+# change: # LDPATH_PREFIX='$MATLAB/sys/opengl/lib/$ARCH'
+#     to: LDPATH_PREFIX='/usr/local/gfortran/lib'
+
+# In ~/matlab/startup.m add:
+# % ISSM paths
+# ISSM_DIR=getenv('ISSM_DIR');
+# if length(ISSM_DIR)>0
+#     addpath([ISSM_DIR '/bin/']);
+#     addpath([ISSM_DIR '/lib/'],[ISSM_DIR '/scripts']);
+#     addpath([ISSM_DIR '/src/m/dev']);
+#     devpath;
+# end
+
+cd ../autotools/
+./install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../mpich
+install-3.2-macosx64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../petsc
+install-3.9-macosx64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../triangle
+install-macosx64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../m1qn3
+install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd $ISSM_DIR
+autoreconf -ivf
+../config-macosx64-nodakota.sh
+make -j 8 install
+
+
+# =========
+# Installation instructions on Mac OS X El Capitan 10.11.1
+
+# Install gfrotran 5.2
+# https://gcc.gnu.org/wiki/GFortranBinaries
+# http://coudert.name/software/gfortran-5.2-Yosemite.dmg
+
+# Install cmake-3.4.0
+# https://cmake.org/download/
+# https://cmake.org/files/v3.4/cmake-3.4.0-Darwin-x86_64.dmg
+cd /usr/local/bin
+sudo ln -sf /Applications/Utilities/CMake.app/Contents/bin/cmake .
+
+# In .bashrc add:
+# export ISSM_DIR='/PUT_FULL_ISSM_PATHNAME_HERE/trunk-jpl'
+# source $ISSM_DIR/etc/environment.sh 
+
+cd $ISSM_DIR
+svn up
+source $ISSM_DIR/etc/environment.sh 
+
+cd externalpackages/matlab
+ln -sf /Applications/MATLAB_R2015b.app install
+
+# replace 10.10 with 10.11 in
+# /Applications/MATLAB_R2015b.app/bin/maci64/mexopts/*.xml
+
+# http://issm.jpl.nasa.gov/documentation/faq/matlab/
+cp /Applications/MATLAB_R2015b.app/bin/.matlab7rc.sh ~
+# under mac|maci|maci64)
+# change: # LDPATH_PREFIX='$MATLAB/sys/opengl/lib/$ARCH'
+#     to: LDPATH_PREFIX='/usr/local/gfortran/lib'
+
+# In ~/matlab/startup.m add:
+# % ISSM paths
+# ISSM_DIR=getenv('ISSM_DIR');
+# if length(ISSM_DIR)>0
+#     addpath([ISSM_DIR '/bin/'],[ISSM_DIR '/lib/']);
+#     addpath([ISSM_DIR '/scripts'],[ISSM_DIR '/src/m/dev']);
+#     devpath;
+# end
+
+cd ../autotools/
+./install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../mpich
+install-3.0-macosx64-elcapitan.sh 8
+source $ISSM_DIR/etc/environment.sh
+
+cd ../petsc
+install-3.6-macosx64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../triangle
+install-macosx64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../m1qn3
+install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd $ISSM_DIR
+./scripts/automakererun.sh
+../config-macosx64-nodakota.sh
+make -j 8 install
+
+
+#=========
+Installation instructions on skylla
+
+# In .bashrc add:
+# export ISSM_DIR=$SLR_DIR/components/issm/trunk-jpl
+# source $ISSM_DIR/etc/environment.sh 
+# export ISSM_ARCH="linux-gnu-amd64"
+
+# make sure you are in the bash shell
+
+bash
+
+cd $ISSM_DIR
+#svn up -r 17578
+source $ISSM_DIR/etc/environment.sh 
+
+cd externalpackages/matlab
+ln -sf /usr/local/matlab.2010b install
+
+cd ../autotools/
+./install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../cmake
+./install.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../mpich
+./install-3.0-linux64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../petsc
+./install-3.4-linux64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../tao
+svn up
+./install-2.2.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd ../triangle
+./install-linux64.sh
+source $ISSM_DIR/etc/environment.sh
+
+cd $ISSM_DIR
+./scripts/automakererun.sh
+./configs/config-linux64-skylla.sh
+make -j 8 install
+
+# In ~/matlab/startup.m add:
+# ISSM_DIR=getenv('ISSM_DIR');
+# addpath([ISSM_DIR '/bin/'],[ISSM_DIR '/lib/'],[ISSM_DIR '/scripts']);
