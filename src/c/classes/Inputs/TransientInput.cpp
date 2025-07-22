@@ -63,15 +63,11 @@ Input* TransientInput::copy() {/*{{{*/
 	_assert_(this->timesteps.size()==this->numtimesteps);
 	_assert_(this->inputs.size()==this->numtimesteps);
 
-	TransientInput* output=NULL;
-
-	output = new TransientInput();
+	TransientInput* output = new TransientInput();
 	output->enum_type    = this->enum_type;
-	output->numtimesteps = this->enum_type;
-
-	output->timesteps    = this->timesteps; /* performs a Deep copy*/
-
+	output->numtimesteps = this->numtimesteps;
 	for(int i=0;i<this->numtimesteps;i++){
+		output->timesteps.push_back(this->timesteps[i]);
 		if(this->inputs[i]){
 			output->inputs.push_back(this->inputs[i]->copy());
 		}
@@ -80,6 +76,9 @@ Input* TransientInput::copy() {/*{{{*/
 		}
 	}
 	output->parameters=this->parameters;
+
+	_assert_(output->timesteps.size()==output->numtimesteps);
+	_assert_(output->inputs.size()==output->numtimesteps);
 
 	return output;
 }/*}}}*/
