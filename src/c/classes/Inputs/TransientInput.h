@@ -6,6 +6,7 @@
 #define _TRANSIENTINPUT_H_
 
 /*Headers:*/
+#include <vector>
 #include "./Input.h"
 class Gauss;
 class Parameters;
