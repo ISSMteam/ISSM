@@ -20,6 +20,7 @@ TransientInput::TransientInput(){/*{{{*/
 
 	this->enum_type=UNDEF;
 	this->parameters=NULL;
+	this->numtimesteps=0;
 
 	this->current_input=NULL;
 	this->current_step=-1;
@@ -115,15 +116,11 @@ int  TransientInput::Id(void){ return -1; }/*{{{*/
 /*}}}*/
 void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
-	_assert_(this->timesteps.size()==this->numtimesteps);
-	_assert_(this->inputs.size()==this->numtimesteps);
-
 	bool       isnull;
 	IssmDouble time;
 
 	int object_enum = TransientInputEnum;
    marshallhandle->call(object_enum);
-
 	marshallhandle->call(this->numberofelements_local);
 	marshallhandle->call(this->numberofvertices_local);
 	marshallhandle->call(this->enum_type);
@@ -131,6 +128,10 @@ void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	/*Marshall!*/
 	if(marshallhandle->OperationNumber()!=MARSHALLING_LOAD){
+
+		_assert_(this->timesteps.size()==this->numtimesteps);
+		_assert_(this->inputs.size()==this->numtimesteps);
+
 		for(int i=0;i<this->numtimesteps;i++){
 
 			/*Write time for slice i*/
@@ -182,7 +183,6 @@ void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	_assert_(this->timesteps.size()==this->numtimesteps);
 	_assert_(this->inputs.size()==this->numtimesteps);
-
 }
 /*}}}*/
 int  TransientInput::ObjectEnum(void){/*{{{*/
