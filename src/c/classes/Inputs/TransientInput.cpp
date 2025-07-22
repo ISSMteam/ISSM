@@ -36,7 +36,10 @@ TransientInput::TransientInput(int in_enum_type,int nbe,int nbv,IssmDouble* time
 	/*Allocate values and timesteps, and copy: */
 	_assert_(N>=0 && N<1e6);
 	this->numtimesteps = N;
-	for(int i=0;i<N;i++) this->timesteps.push_back(timesin[i]);
+	for(int i=0;i<N;i++){
+		this->timesteps.push_back(timesin[i]);
+		this->inputs.push_back(NULL);
+	}
 	this->parameters = NULL;
 	this->current_input=NULL;
 	this->current_step=-1;
@@ -234,6 +237,8 @@ void TransientInput::AddPentaTimeInput(IssmDouble time,int numindices,int* indic
 void TransientInput::AddTriaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in){/*{{{*/
 
 	_assert_(step>=0 && step<this->numtimesteps);
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
 
 	/*Create it if necessary*/
 	if(this->inputs[step]){
@@ -381,6 +386,9 @@ PentaInput* TransientInput::GetPentaInput(IssmDouble start_time, IssmDouble end_
 /*}}}*/
 
 void TransientInput::SetCurrentTimeInput(IssmDouble time){/*{{{*/
+
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
 
 	/*First, recover current time from parameters: */
 	bool linear_interp,average,cycle;
