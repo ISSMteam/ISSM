@@ -66,7 +66,7 @@ classdef generic
 			disp(sprintf('    valgrind: %s',cluster.valgrind));
 			disp(sprintf('    valgrindlib: %s',cluster.valgrindlib));
 			disp(sprintf('    valgrindsup: %s',cluster.valgrindsup));
-			disp(sprintf('    verbose: %s',cluster.verbose));
+			disp(sprintf('    verbose: %i',cluster.verbose));
 			disp(sprintf('    shell: %s',cluster.shell));
 		end
 		%}}}
