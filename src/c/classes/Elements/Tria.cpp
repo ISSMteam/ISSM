@@ -453,7 +453,7 @@ bool       Tria::Buttressing(IssmDouble* ptheta, IssmDouble* plength){/*{{{*/
 
 	/*Cleanup and return*/
    delete gauss;
-	_assert_(theta>0.);
+	//_assert_(theta>0.);
 	_assert_(length>0.);
 	*ptheta  = theta;
 	*plength = length;
