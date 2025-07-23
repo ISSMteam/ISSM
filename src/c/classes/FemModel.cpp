@@ -2734,6 +2734,7 @@ void FemModel::Responsex(IssmDouble* responses,int response_descriptor_enum){/*{
 
 	switch (response_descriptor_enum){
 
+		case AverageButtressingEnum:             this->AverageButtressingx(responses); break;
 		case DivergenceEnum:                     this->Divergencex(responses); break;
 		case MaxDivergenceEnum:                  this->MaxDivergencex(responses); break;
 		case IceMassEnum:                        this->IceMassx(responses, false); break;
