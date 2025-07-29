@@ -29,7 +29,7 @@ EXTERNALPACKAGES="
 	cmake		install.sh
 	emscripten	install.sh
 	gsl			install-javascript.sh
-	triangle	install-linux-javascript.sh
+	triangle	install-javascript.sh
 	shell2junit	install.sh
 "
 
