@@ -386,7 +386,6 @@ if [ -d "${CURL_ROOT_TEMP}" ]; then
 	cpath_prepend "${CURL_ROOT_TEMP}/include"
 	ld_library_path_prepend "${CURL_ROOT_TEMP}/lib"
 	dyld_library_path_prepend "${CURL_ROOT_TEMP}/lib"
-	path_prepend "${CURL_ROOT_TEMP}/bin"
 fi
 
 SQLITE_ROOT_TEMP="${ISSM_EXT_DIR}/sqlite/install"
