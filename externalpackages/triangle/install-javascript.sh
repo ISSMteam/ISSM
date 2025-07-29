@@ -4,7 +4,7 @@ set -eu
 
 # Constants
 #
-export PREFIX="${ISSM_DIR}/externalpackages/triangle/install" # Set to location where external package should be installed
+export PREFIX="${ISSM_EXT_DIR}/javascript/triangle/install" # Set to location where external package should be installed
 
 # Environment
 #

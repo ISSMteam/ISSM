@@ -2,6 +2,7 @@
 #==================
 *.a
 *.al
+*.js
 *.la
 *.lo
 *.mexa64
@@ -10,6 +11,7 @@
 *.pyo
 *.so
 *.so.[0-9]*
+*.wasm
 __pycache__
 bin/
 lib/
