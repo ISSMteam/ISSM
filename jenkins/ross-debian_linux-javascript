@@ -14,7 +14,6 @@ ISSM_CONFIG='\
 	--without-fortran \
 	--without-Sealevelchange \
 	--without-Love \
-	--without-kml \
 	--without-kriging \
 	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
