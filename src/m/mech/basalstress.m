@@ -9,7 +9,7 @@ function [bx by b]=basalstress(md)
 %   See also: plot_basaldrag
 
 %Check md.friction class
-if ~isa(md.friction,friction)
+if ~isa(md.friction,'friction')
 	error('Error: md.friction only supports "friction.m" class.');
 end
 
