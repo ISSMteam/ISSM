@@ -223,8 +223,8 @@ if [ $JAVASCRIPT_TEST -eq 1 ]; then
 	export AR=emar
 	export RANLIB=emranlib
 	#export EMCC_DEBUG=1 # Uncomment to enable debugging
-	export EMCC_CFLAGS="-s ERROR_ON_UNDEFINED_SYMBOLS=0" # Required after v1.38.14 to avoid undefined symbol warnings from our Fortran object files being treated as errors
-	source ${ISSM_DIR}/externalpackages/emscripten/install/emsdk_env.sh
+	export EMCC_CFLAGS="-sERROR_ON_UNDEFINED_SYMBOLS=0" # Required after v1.38.14 to avoid undefined symbol warnings from our Fortran object files being treated as errors
+	source ${EMSCRIPTEN_ROOT}/emsdk_env.sh
 fi
 
 # }}}

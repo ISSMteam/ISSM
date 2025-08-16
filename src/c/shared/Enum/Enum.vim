@@ -607,6 +607,7 @@ syn keyword cConstant SmbIsgraingrowthEnum
 syn keyword cConstant SmbIsmappedforcingEnum
 syn keyword cConstant SmbIsmeltEnum
 syn keyword cConstant SmbIsmungsmEnum
+syn keyword cConstant SmbIsprecipforcingremappedEnum
 syn keyword cConstant SmbIsprecipscaledEnum
 syn keyword cConstant SmbIssetpddfacEnum
 syn keyword cConstant SmbIsshortwaveEnum
@@ -3368,6 +3369,7 @@ syn keyword cConstant AmrBamgEnum
 syn keyword cConstant AmrNeopzEnum
 syn keyword cConstant ArrheniusEnum
 syn keyword cConstant AutodiffJacobianEnum
+syn keyword cConstant AverageButtressingEnum
 syn keyword cConstant Balancethickness2AnalysisEnum
 syn keyword cConstant Balancethickness2SolutionEnum
 syn keyword cConstant BalancethicknessAnalysisEnum

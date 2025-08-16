@@ -995,7 +995,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([CODIPACKINCL])
 	fi
 	AM_CONDITIONAL([CODIPACK], [test "x${HAVE_CODIPACK}" == "xyes"])
-	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++11"])
+	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++17"])
 	dnl }}}
 	dnl Tape Allocation {{{
 	AC_MSG_CHECKING(for tape allocation)
@@ -2404,7 +2404,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/SubStruct"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Topology"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Util"
-		CXXFLAGS+=" -std=c++11"
 		AC_DEFINE([_HAVE_NEOPZ_], [1], [with NeoPZ in ISSM src])
 		AC_SUBST([NEOPZINCL])
 		AC_SUBST([NEOPZLIB])

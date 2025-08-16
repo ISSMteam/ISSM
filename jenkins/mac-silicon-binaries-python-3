@@ -1,5 +1,5 @@
 LIBGFORTRAN_PATH="/opt/homebrew/lib/gcc/current"
-LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/aarch64-apple-darwin23/13"
+LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/aarch64-apple-darwin24/15"
 
 #--------------------#
 # ISSM Configuration #

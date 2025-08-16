@@ -484,7 +484,7 @@ int fos_reverse_mumpsSolveEDF(int iArrLength, int* iArr, int m, IssmPDouble *dp_
 #endif
 
 #ifdef _HAVE_CODIPACK_
-#if _CODIPACK_MAJOR_==2
+#if _CODIPACK_MAJOR_>=2
 using Tape = typename IssmDouble::Tape;
 using AccessInterface = codi::VectorAccessInterface<typename Tape::Real, typename Tape::Identifier>;
 void MumpsSolve_codi_b(Tape* tape, void* data_in, AccessInterface* ra) {/*{{{*/

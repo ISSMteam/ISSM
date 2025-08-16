@@ -609,6 +609,7 @@ const char* EnumToStringx(int en){
 		case SmbIsmappedforcingEnum : return "SmbIsmappedforcing";
 		case SmbIsmeltEnum : return "SmbIsmelt";
 		case SmbIsmungsmEnum : return "SmbIsmungsm";
+		case SmbIsprecipforcingremappedEnum : return "SmbIsprecipforcingremapped";
 		case SmbIsprecipscaledEnum : return "SmbIsprecipscaled";
 		case SmbIssetpddfacEnum : return "SmbIssetpddfac";
 		case SmbIsshortwaveEnum : return "SmbIsshortwave";
@@ -3370,6 +3371,7 @@ const char* EnumToStringx(int en){
 		case AmrNeopzEnum : return "AmrNeopz";
 		case ArrheniusEnum : return "Arrhenius";
 		case AutodiffJacobianEnum : return "AutodiffJacobian";
+		case AverageButtressingEnum : return "AverageButtressing";
 		case Balancethickness2AnalysisEnum : return "Balancethickness2Analysis";
 		case Balancethickness2SolutionEnum : return "Balancethickness2Solution";
 		case BalancethicknessAnalysisEnum : return "BalancethicknessAnalysis";

@@ -21,7 +21,7 @@ LIBGFORTRAN_ROOT=${LIBGFORTRAN%/*}
 #
 export CC=mpicc
 export CFLAGS="${CFLAGS} -w"
-export LDFLAGS="-Wl,-rpath,${NETCDF_ROOT}/lib"
+export LDFLAGS="-Wl,-rpath,'${GDAL_ROOT}/lib' -Wl,-rpath,'${NETCDF_ROOT}/lib'"
 
 # Download source
 $ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/GenericMappingTools/gmt/archive/refs/tags/${VER}.tar.gz" "gmt-${VER}.tar.gz"

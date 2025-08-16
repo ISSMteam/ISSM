@@ -42,14 +42,13 @@ jobs:
         autoreconf -ivf
         ls ${ISSM_DIR}/externalpackages/petsc/install/bin/
         which mpicxx
-        ./configure --prefix=${ISSM_DIR} \
+        ./configure \
+        --prefix=${ISSM_DIR} \
         --disable-static \
         --enable-development \
         --enable-debugging \
         --with-numthreads=4 \
-        --with-python-version=3.12 \
-        --with-python-dir=$PYTHON_ROOT \
-        --with-python-numpy-dir=$NUMPY_ROOT \
+        --with-python=${PYTHON_ROOT}/bin/python3 \
         --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
         --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
         --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \

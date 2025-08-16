@@ -39,7 +39,7 @@ if nargin<3, string = 'bed'; end
 
 basename = 'BedMachineGreenland';
 
-if nargin==5
+if nargin==5 && exist(ncdate, 'file')
 	ncfile = ncdate;
 else
 	%List of common paths to try

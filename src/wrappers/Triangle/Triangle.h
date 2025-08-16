@@ -16,9 +16,11 @@
 #define PY_ARRAY_UNIQUE_SYMBOL PythonIOSymbol
 #endif
 
+#if _IS_MAC_ == 0
 #ifdef _HAVE_JAVASCRIPT_MODULES_
 #undef _DO_NOT_LOAD_GLOBALS_ /*only module where this needs to be undefined, so as to 
 							   not include IssmComm several times in the JavaScript module construct.*/
+#endif
 #endif
 
 /*Header files: */

@@ -596,6 +596,7 @@
 	SmbIsmappedforcingEnum
 	SmbIsmeltEnum
 	SmbIsmungsmEnum
+	SmbIsprecipforcingremappedEnum
 	SmbIsprecipscaledEnum
 	SmbIssetpddfacEnum
 	SmbIsshortwaveEnum
@@ -3357,6 +3358,7 @@
 	AmrNeopzEnum
 	ArrheniusEnum
 	AutodiffJacobianEnum
+	AverageButtressingEnum
 	Balancethickness2AnalysisEnum
 	Balancethickness2SolutionEnum
 	BalancethicknessAnalysisEnum
@@ -4361,6 +4363,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsmappedforcingEnum) return "SmbIsmappedforcing" end
 	if(enum==SmbIsmeltEnum) return "SmbIsmelt" end
 	if(enum==SmbIsmungsmEnum) return "SmbIsmungsm" end
+	if(enum==SmbIsprecipforcingremappedEnum) return "SmbIsprecipforcingremapped" end
 	if(enum==SmbIsprecipscaledEnum) return "SmbIsprecipscaled" end
 	if(enum==SmbIssetpddfacEnum) return "SmbIssetpddfac" end
 	if(enum==SmbIsshortwaveEnum) return "SmbIsshortwave" end
@@ -7122,6 +7125,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==AmrNeopzEnum) return "AmrNeopz" end
 	if(enum==ArrheniusEnum) return "Arrhenius" end
 	if(enum==AutodiffJacobianEnum) return "AutodiffJacobian" end
+	if(enum==AverageButtressingEnum) return "AverageButtressing" end
 	if(enum==Balancethickness2AnalysisEnum) return "Balancethickness2Analysis" end
 	if(enum==Balancethickness2SolutionEnum) return "Balancethickness2Solution" end
 	if(enum==BalancethicknessAnalysisEnum) return "BalancethicknessAnalysis" end
@@ -8126,6 +8130,7 @@ function StringToEnum(name::String)
 	if(name=="SmbIsmappedforcing") return SmbIsmappedforcingEnum  end
 	if(name=="SmbIsmelt") return SmbIsmeltEnum  end
 	if(name=="SmbIsmungsm") return SmbIsmungsmEnum  end
+	if(name=="SmbIsprecipforcingremapped") return SmbIsprecipforcingremappedEnum  end
 	if(name=="SmbIsprecipscaled") return SmbIsprecipscaledEnum  end
 	if(name=="SmbIssetpddfac") return SmbIssetpddfacEnum  end
 	if(name=="SmbIsshortwave") return SmbIsshortwaveEnum  end
@@ -10887,6 +10892,7 @@ function StringToEnum(name::String)
 	if(name=="AmrNeopz") return AmrNeopzEnum  end
 	if(name=="Arrhenius") return ArrheniusEnum  end
 	if(name=="AutodiffJacobian") return AutodiffJacobianEnum  end
+	if(name=="AverageButtressing") return AverageButtressingEnum  end
 	if(name=="Balancethickness2Analysis") return Balancethickness2AnalysisEnum  end
 	if(name=="Balancethickness2Solution") return Balancethickness2SolutionEnum  end
 	if(name=="BalancethicknessAnalysis") return BalancethicknessAnalysisEnum  end
