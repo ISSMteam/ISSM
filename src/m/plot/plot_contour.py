@@ -36,4 +36,10 @@ def plot_contour(md, datain, options, ax):
     linestyles = options.getfieldvalue('contourlinestyles', '-')
     linewidths = options.getfieldvalue('contourlinewidths', 1)
 
-    ax.tricontour(x, y, elements, data, levels, colors=colors, norm=norm, linestyles=linestyles, linewidths=linewidths)
+    contour=ax.tricontour(x, y, elements, data, levels, colors=colors, norm=norm, linestyles=linestyles, linewidths=linewidths)
+
+    #labels?
+    if options.getfieldvalue('contourticks','off') == 'on':
+        print("Catch contour ticks")
+        ax.clabel(contour,fmt=options.getfieldvalue('contourclabelfmt','%.2f'),
+                  fontsize=options.getfieldvalue('contourclabelsize',10))

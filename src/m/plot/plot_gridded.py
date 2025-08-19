@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 import warnings
 import numpy as np
+from numpy import ma
 from InterpFromMeshToGrid import InterpFromMeshToGrid
 from processmesh import processmesh
 from processdata import processdata
@@ -58,6 +59,11 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     ny = int(np.diff(ylim)[0]/posty)+1
     x_m = np.linspace(xlim[0],xlim[1],nx)
     y_m = np.linspace(ylim[0],ylim[1],ny)
+
+    #Tricky part in treating masked value.
+    if isinstance(data,np.ma.core.MaskedArray):
+        data[data.mask] = np.nan
+
     #NOTE: Tricky part for elements in interpolation.
     data_grid=InterpFromMeshToGrid(elements+1,x,y,data,x_m,y_m,np.nan)
     data_grid_save = copy.deepcopy(data_grid)
@@ -81,16 +87,24 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     else:
         data_min=np.nanmin(data_grid[:])
         data_max=np.nanmax(data_grid[:])
+        caxis_opt=[data_min, data_max] # Back-up caxis for "applyoptions".
 
     #TODO: Select plot area 
     #subplotmodel(plotlines,plotcols,i,options);
 
     #shading interp;
-    options.addfielddefault('colormap',plt.cm.viridis)
+    options.addfielddefault('colormap',plt.cm.turbo)
+    #options.addfielddefault('colormap',plt.cm.viridis)
     cmap = getcolormap(copy.deepcopy(options))
     #TODO: Matlab version
     #image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(map)/(data_max-data_min))),cmap);
     #NOTE: Python version
+    if options.exist('log'):
+        #NOTE: Tricky part for log scale figure. "log" scale option does not rely on "processdata.py" function.
+        data_grid=np.log(data_grid)/np.log(options.getfieldvalue('log'))
+        data_min =np.log(data_min)/np.log(options.getfieldvalue('log'))
+        data_max =np.log(data_max)/np.log(options.getfieldvalue('log'))
+
     if isinstance(cmap,matplotlib.colors.ListedColormap):
         data_norm = (data_grid-data_min)/(data_max-data_min)
         image_rgb = cmap(data_norm)
@@ -145,12 +159,12 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
         #patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
         ax.triplot(x,y,triangles=elements,
                    color=options.getfieldvalue('edgecolor'),
-                   linewdith=options.getfieldvalue('linewidth',1),
+                   linewidth=options.getfieldvalue('linewidth',1),
                    )
 
     #Apply options
     if (not np.isnan(data_min)) & (not np.isinf(data_min)):
-        options.changefieldvalue('caxis',[data_min, data_max]) # force caxis so that the colorbar is ready
+        options.changefieldvalue('caxis',caxis_opt) # force caxis so that the colorbar is ready
     options.addfielddefault('axis','xy equal'); # default axis
     applyoptions(md,data,options,fig,axgrid,gridindex)
 
