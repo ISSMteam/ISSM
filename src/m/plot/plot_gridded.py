@@ -87,7 +87,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     else:
         data_min=np.nanmin(data_grid[:])
         data_max=np.nanmax(data_grid[:])
-        caxis_opt=[data_min, data_max]
+        caxis_opt=[data_min, data_max] # Back-up caxis for "applyoptions".
 
     #TODO: Select plot area 
     #subplotmodel(plotlines,plotcols,i,options);
