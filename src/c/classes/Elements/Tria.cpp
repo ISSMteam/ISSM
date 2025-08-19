@@ -453,7 +453,7 @@ bool       Tria::Buttressing(IssmDouble* ptheta, IssmDouble* plength){/*{{{*/
 
 	/*Cleanup and return*/
    delete gauss;
-	_assert_(theta>0.);
+	//_assert_(theta>0.);
 	_assert_(length>0.);
 	*ptheta  = theta;
 	*plength = length;
@@ -5369,6 +5369,27 @@ void       Tria::SetControlInputsFromVector(IssmDouble* vector,int control_enum,
 		}
 	}
 	else _error_("Type not supported");
+
+	/*Special handling of some inputs*/
+	if(control_enum==BedEnum){
+		IssmDouble bedlist[NUMVERTICES];
+		IssmDouble thicknesslist[NUMVERTICES];
+		IssmDouble surfacelist[NUMVERTICES];
+		IssmDouble phi[NUMVERTICES];
+		Element::GetInputListOnVertices(&bedlist[0], BedEnum);
+		Element::GetInputListOnVertices(&thicknesslist[0], ThicknessEnum);
+		Element::GetInputListOnVertices(&surfacelist[0], SurfaceEnum);
+		Element::GetInputListOnVertices(&phi[0],MaskOceanLevelsetEnum);
+
+		for(int i=0;i<NUMVERTICES;i++) {
+			if(phi[i]>0.){
+				thicknesslist[i] = surfacelist[i]-bedlist[i]; //surface = oldbase + newthickness
+			}
+		}
+
+		/*Add input to the element: */
+		this->AddBasalInput(ThicknessEnum,thicknesslist,P1Enum);
+	}
 
 	/*Clean up*/
 	xDelete<int>(idlist);

@@ -1,0 +1,16 @@
+./configure \
+	--prefix=${ISSM_DIR} \
+	--with-numthreads=2 \
+	--with-matlab-dir="/Applications/MATLAB_R2025a.app" \
+	--with-fortran-lib="-L/opt/homebrew/Cellar/gcc/15.1.0/lib/gcc/current -lgfortran" \
+	--with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
+	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
+	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
+        --with-ocean="yes"

@@ -87,16 +87,24 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     else:
         data_min=np.nanmin(data_grid[:])
         data_max=np.nanmax(data_grid[:])
+        caxis_opt=[data_min, data_max]
 
     #TODO: Select plot area 
     #subplotmodel(plotlines,plotcols,i,options);
 
     #shading interp;
-    options.addfielddefault('colormap',plt.cm.viridis)
+    options.addfielddefault('colormap',plt.cm.turbo)
+    #options.addfielddefault('colormap',plt.cm.viridis)
     cmap = getcolormap(copy.deepcopy(options))
     #TODO: Matlab version
     #image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(map)/(data_max-data_min))),cmap);
     #NOTE: Python version
+    if options.exist('log'):
+        #NOTE: Tricky part for log scale figure. "log" scale option does not rely on "processdata.py" function.
+        data_grid=np.log(data_grid)/np.log(options.getfieldvalue('log'))
+        data_min =np.log(data_min)/np.log(options.getfieldvalue('log'))
+        data_max =np.log(data_max)/np.log(options.getfieldvalue('log'))
+
     if isinstance(cmap,matplotlib.colors.ListedColormap):
         data_norm = (data_grid-data_min)/(data_max-data_min)
         image_rgb = cmap(data_norm)
@@ -156,7 +164,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
 
     #Apply options
     if (not np.isnan(data_min)) & (not np.isinf(data_min)):
-        options.changefieldvalue('caxis',[data_min, data_max]) # force caxis so that the colorbar is ready
+        options.changefieldvalue('caxis',caxis_opt) # force caxis so that the colorbar is ready
     options.addfielddefault('axis','xy equal'); # default axis
     applyoptions(md,data,options,fig,axgrid,gridindex)
 

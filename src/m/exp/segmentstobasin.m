@@ -13,7 +13,7 @@ function segmentstobasin(basin,varargin)
 %   See also EXPREAD
 
 	%some checks
-	if exist(basin),
+	if exist(basin)
 		%choice=input(['A file ' basin ' already exists, do you want to modify it? (y/n)'],'s');
 		%if ~strcmpi(choice,'y'),
 		%	disp('no modification done ... exiting');
@@ -22,15 +22,16 @@ function segmentstobasin(basin,varargin)
 	end
 	
 	%go through the list of basins 
-	if mod(length(varargin),2)~=0,
+	if mod(length(varargin),2)~=0
 		error('an even number of arguments should be provided after the basin name');
 	end
 
 	domain.x=[]; domain.y=[]; domain.nods=1;
-	for i=1:nargin/2,
+	for i=1:nargin/2
 		expfile=varargin{(i-1)*2+1};
 		invert=varargin{(i-1)*2+2};
-		if isexp(expfile),
+		[path,name,ext]=fileparts(expfile); 
+		if strcmpi(ext,'.exp'),
 			expstruct=expread(expfile,'invert',invert);
 		else
 			expstruct=shpread(expfile,'invert',invert);
@@ -45,7 +46,8 @@ function segmentstobasin(basin,varargin)
 	domain.y=[domain.y;domain.y(1)];
 	domain.Geometry='Polygon';
 		
-	if isexp(basin),
+	[path,name,ext]=fileparts(basin); 
+	if strcmpi(ext,'.exp')
 		expwrite(domain,basin);
 	else
 		shpwrite(domain,basin);

@@ -1,0 +1,348 @@
+https://issm.ess.uci.edu/svn/slr
+
+#################
+12/08/21
+# testing coupled code using test4003
+
+cd $ISSM_DIR
+svn up
+
+# for complete recompilation if there are new code files
+autoreconf -ivf
+./configure.sh
+make -j 8
+make install
+
+# recompilation for changes to existing code files
+make install
+
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+test4003
+quit
+
+cd $ISSM_DIR/test/NightlyRun/run
+rm mitgcmuv 
+ln -sf $ISSM_DIR/test/MITgcm/build/mitgcmuv .
+
+# coupling rules live in:
+emacs $ISSM_DIR/test/MITgcm/coupling_rules.txt
+
+cd $ISSM_DIR/test/MITgcm/code_4003
+emacs cpl_issm.F &
+
+cd $ISSM_DIR/test/MITgcm/build
+make
+
+cd $ISSM_DIR/src/c/main
+emacs issm_ocean.cpp
+
+cd $ISSM_DIR/src/c/cores
+emacs transient_core.cpp
+
+cd $ISSM_DIR/src/c/modules/OceanExchangeDatax
+emacs OceanExchangeDatax.cpp
+
+cd $ISSM_DIR
+make -j 8 install
+
+cd $ISSM_DIR/test/NightlyRun/run
+rm STD* test4003.errlog test4003.out* [A-Z]*.??ta [a-o]*.??ta [q-z]*.??ta run.log
+mpiexec -np 2 $ISSM_DIR/bin/issm_ocean.exe TransientSolution . test4003 : -np 8 ./mitgcmuv > run.log
+
+
+#################
+08/17/21
+# upgrade svn
+brew install svn
+
+# updated issm
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl
+#svn upgrade
+svn up
+
+# followed instructions here:
+# https://issm.jpl.nasa.gov/download/unix/
+# install Xcode from App Store
+ xcode-select --install
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/autotools
+ ./install-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/mpich
+ ./install-3.2-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/cmake
+ ./install.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/petsc
+ ./install-3.14-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/m1qn3
+ ./install.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/triangle
+ ./install-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+
+#cd /Applications/MATLAB_R2016b.app/bin/maci64/mexopts
+#sudo chmod u+w clang++_maci64.xml
+#sudo emacs clang++_maci64.xml
+## add lines for MacOSX10.13.sdk, similar to lines for MacOSX10.12.sdk
+## as per instructions here: https://issm.jpl.nasa.gov/documentation/faq/issm/
+
+cd $ISSM_DIR
+autoreconf -ivf
+# create configure.sh as per instructions
+ln -sf ../config-macosx64-devel.sh configure.sh
+chmod u+x configure.sh
+./configure.sh
+make -j 8
+make install
+
+
+#################
+04/30/18
+# testing coupled code
+# 4003 is the new set-up for Dan
+
+cd $ISSM_DIR
+svn up
+
+# for complete recompilation if there are new code files
+autoreconf -ivf
+./configure.sh
+make -j 8
+make install
+
+# recompilation for changes to existing code files
+make install
+
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+test4003
+quit
+
+cd $ISSM_DIR/test/MITgcm/code_4003
+emacs cpl_issm.F &
+
+# coupling rules live in:
+emacs $ISSM_DIR/test/MITgcm/coupling_rules.txt
+
+
+#################
+04/30/18
+# testing coupled code
+# 4002 is the old square configuration
+
+cd $ISSM_DIR
+svn up
+
+# for complete recompilation if there are new code files
+autoreconf -ivf
+./configure.sh
+make -j 8
+make install
+
+# recompilation for changes to existing code files
+make install
+
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+runme('id',4002,'benchmark','all')
+% to update results: runme('id',4002,'benchmark','all','procedure','update')
+quit
+
+
+#################
+02/21/18
+# coupling instructions in:
+cd $ISSM_DIR/test/MITgcm
+svn up
+emacs coupling_rules.txt
+svn commit
+
+# ignoring files in svn
+# https://stackoverflow.com/questions/122313/how-do-you-include-exclude-a-certain-type-of-files-under-subversion
+svn propedit svn:ignore .
+
+
+#################
+01/29/18
+# testing coupled code
+
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+test4002
+quit
+
+cd $ISSM_DIR/test/NightlyRun/run
+rm mitgcmuv 
+ln -sf $ISSM_DIR/test/MITgcm/build/mitgcmuv .
+
+cd $ISSM_DIR/test/MITgcm/code
+emacs cpl_issm.F &
+
+cd $ISSM_DIR/test/MITgcm/build
+make
+
+cd $ISSM_DIR/src/c/main
+emacs issm_ocean.cpp
+
+cd $ISSM_DIR/src/c/cores
+emacs transient_core.cpp
+
+cd $ISSM_DIR
+make -j 8 install
+
+cd $ISSM_DIR/test/NightlyRun/run
+rm STD* test4002.errlog test4002.out* [A-Z]*.??ta [a-o]*.??ta [q-z]*.??ta run.log
+mpiexec -np 2 $ISSM_DIR/bin/issm_ocean.exe TransientSolution . test4002 : -np 8 ./mitgcmuv > run.log
+
+
+#################
+01/20/18
+# Eric's example
+cd ~dmenemen/mitgcm/slr/IceOceanCoupling
+rm -rf *.exe
+mpif77 mitgcm.f -o mitgcm.exe
+mpicc issm.cpp -o issm.exe
+mpirun -np 4 ./issm.exe : -np 4 ./mitgcm.exe #watch out ice first, ocean second
+
+
+#################
+12/18/17
+
+# the following:
+cd $ISSM_DIR/test/NightlyRun/run
+rm STD* test4002.errlog test4002.out*
+mpiexec -np 2 $ISSM_DIR/bin/issm.exe TransientSolution pwd test4002 : -np 8 ./mitgcmuv
+
+# gets stuck in:
+# $ISSM_DIR/test/MITgcm/build/eeboot_minimal.F
+# OPEN(standardMessageUnit,FILE=fNam,STATUS='unknown')
+
+
+#################
+11/20/17
+# after running test4002, the following lines will start coupled code
+cd $ISSM_DIR/test/NightlyRun/run
+rm STD*
+rm test4002.errlog
+rm test4002.out*
+mpiexec -np 2 $ISSM_DIR/bin/issm.exe TransientSolution pwd test4002 : -np 8 ./mitgcmuv
+
+# to edit issm_ocean
+cd $ISSM_DIR/src/c/main
+emacs issm_ocean.cpp
+
+# to compile coupled code (issm_ocean.exe),
+# need to add --with-ocean="yes" to configure.sh
+cd $ISSM_DIR
+svn up
+./configure.sh
+make -j 8
+make install
+
+# to compile mitgcmuv
+cd $ISSM_DIR/test/MITgcm/build
+rm *
+../install/tools/genmake2 -mpi -mo ../code -rd ../install
+make depend
+make -j 8
+
+# running with issm_ocean.exe
+cd $ISSM_DIR/test/NightlyRun/run
+cp $ISSM_DIR/test/MITgcm/build/mitgcmuv .
+rm STD*
+mpirun -np 2 $ISSM_DIR/bin/issm_ocean.exe TransientSolution pwd test4002 : -np 8 ./mitgcmuv
+
+
+#################
+11/14/17
+# test4002 added by Helene
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+test4002
+
+
+#################
+11/13/17
+# to update code
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl
+svn up
+make install
+
+# need to add hostname as per instructions here:
+# https://stackoverflow.com/questions/6484275/java-net-unknownhostexception-invalid-hostname-for-server-local
+sudo emacs -nw /etc/hosts
+# add LMC-051773 after localhost
+127.0.0.1       localhost LMC-051773
+
+# to test that it compile correctly
+export CVSROOT=':pserver:cvsanon@mitgcm.org:/u/gcmpack'
+cvs login         # enter password: cvsanon
+ml
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/test/NightlyRun
+test101
+runme('id',101)
+# this is the coupled code
+test4001
+runme('id',4001,'benchmark','all')
+
+# to run outside of matlab
+cd $ISSM_DIR/test/NightlyRun/run
+cp $ISSM_DIR/execution/test4001-11-13-2017-14-32-57-52473/* .
+mpiexec -np 2 $ISSM_DIR/bin/issm.exe TransientSolution $ISSM_DIR/test/NightlyRun/run test4001 : -np 8 ./mitgcmuv
+
+# the coupling code lives in
+# /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl/src/c/main
+# issm_ocean.cpp as opposed to issm.cpp
+
+
+#################
+10/30/17
+# upgrade svn (see mac.txt for details)
+
+# updated issm
+cd /Users/dmenemen/mitgcm/slr/components/issm/trunk-jpl
+#svn upgrade
+svn up
+
+# followed instructions here:
+# https://issm.jpl.nasa.gov/download/unix/
+# install Xcode from App Store
+ xcode-select --install
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/autotools
+ ./install.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/mpich
+ ./install-3.2-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/cmake
+ ./install.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/petsc
+ ./install-3.8-macosx64.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/m1qn3
+ ./install.sh
+ source $ISSM_DIR/etc/environment.sh
+ cd $ISSM_DIR/externalpackages/triangle
+ ./install-mac.sh
+ source $ISSM_DIR/etc/environment.sh
+
+#cd /Applications/MATLAB_R2016b.app/bin/maci64/mexopts
+#sudo chmod u+w clang++_maci64.xml
+#sudo emacs clang++_maci64.xml
+## add lines for MacOSX10.13.sdk, similar to lines for MacOSX10.12.sdk
+## as per instructions here: https://issm.jpl.nasa.gov/documentation/faq/issm/
+
+cd $ISSM_DIR
+autoreconf -ivf
+# create configure.sh as per instructions
+chmod u+x configure.sh
+./configure.sh
+make -j 8
+make install

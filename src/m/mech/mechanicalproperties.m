@@ -13,13 +13,13 @@ function md=mechanicalproperties(md,vx,vy,varargin)
 %      md=mechanicalproperties(md,md.inversion.vx_obs,md.inversion.vy_obs);
 
 %some checks
-if length(vx)~=md.mesh.numberofvertices | length(vy)~=md.mesh.numberofvertices,
+if length(vx)~=md.mesh.numberofvertices | length(vy)~=md.mesh.numberofvertices
 	%error(['the input velocity should be of size ' num2str(md.mesh.numberofvertices) '!'])
 end
 if dimension(md.mesh)~=2
 	error('only 2d model supported yet');
 end
-if any(md.flowequation.element_equation~=2),
+if any(md.flowequation.element_equation~=2)
 	disp('Warning: the model has some non SSA elements. These will be treated like SSA''s elements');
 end
 
@@ -82,7 +82,7 @@ tau_yy=mu.*vy;
 tau_xy=mu.*uyvx;
 
 %compute principal properties of stress
-for i=1:numberofelements,
+for i=1:numberofelements
 
 	%compute stress and strainrate matrices
 	stress=[tau_xx(i) tau_xy(i)

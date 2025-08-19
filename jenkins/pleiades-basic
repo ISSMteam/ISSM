@@ -2,8 +2,8 @@
 # Environment #
 #-------------#
 
-export CFLAGS="-O3"
-export CXXFLAGS="-O3 -std=c++11"
+export CFLAGS="-g -Ofast"
+export CXXFLAGS="-g -Ofast -xCORE-AVX512,CORE-AVX2 -xAVX -std=c++11"
 
 #--------------------#
 # ISSM Configuration #
@@ -14,11 +14,10 @@ ISSM_CONFIG='\
 	--enable-development \
 	--enable-standalone-libraries \
 	--with-wrappers=no \
-	--with-graphics-lib="/usr/lib64/libX11.so" \
 	--with-fortran-lib="-L${COMP_INTEL_ROOT}/compiler/lib/intel64_lin -lifcore -lifport -lgfortran" \
 	--with-mkl-libflags="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm" \
-	--with-mpi-include="/nasa/hpe/mpt/2.30_rhel810/include" \
-	--with-mpi-libflags="-L/nasa/hpe/mpt/2.30_rhel810/lib -lmpi" \
+	--with-mpi-include="${MPI_ROOT}/include" \
+	--with-mpi-libflags="-L${MPI_ROOT}/lib -lmpi" \
 	--with-blas-lapack-lib="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_blas95_lp64 -lmkl_lapack95_lp64" \
 	--with-metis-dir="${PETSC_DIR}" \
 	--with-parmetis-dir="${PETSC_DIR}" \
@@ -35,6 +34,7 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
+	autotools	install-linux.sh
 	triangle	install-linux.sh
 	m1qn3		install-linux.sh
 	semic		install.sh
@@ -55,7 +55,7 @@ EXAMPLES_TEST=0
 # NOTE: One is usually safer as some packages are very sensitive to parallel
 # 		compilation.
 #
-NUMCPUS_INSTALL=8
+NUMCPUS_INSTALL=4
 
 # Number of CPUs used in the nightly runs
 NUMCPUS_RUN=1

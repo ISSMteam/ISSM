@@ -253,7 +253,7 @@ void SolverxSeq(IssmDouble *X,IssmDouble *A,IssmDouble *B,int n, Parameters* par
 #endif
 
 #ifdef _HAVE_CODIPACK_
-#if _CODIPACK_MAJOR_==2
+#if _CODIPACK_MAJOR_>=2
 using Tape = typename IssmDouble::Tape;
 using AccessInterface = codi::VectorAccessInterface<typename Tape::Real, typename Tape::Identifier>;
 void SolverxSeq_codi_b(Tape* tape,void* data_in, AccessInterface* ra) {/*{{{*/
