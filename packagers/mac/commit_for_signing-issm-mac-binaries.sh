@@ -52,7 +52,7 @@ alias grep=$(which grep)
 
 ## Constants
 #
-MAX_SIGNING_CHECK_ATTEMPTS=30
+MAX_SIGNING_CHECK_ATTEMPTS=45
 NOTARIZATION_LOGFILE="notarization.log"
 RETRIGGER_SIGNING_FILE="retrigger.txt"
 SIGNING_CHECK_PERIOD=60 # in seconds
