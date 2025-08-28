@@ -11,8 +11,8 @@ ISSM is a large-scale thermo-mechanical 2D/3D parallelized multi-purpose finite-
 <a href="https://issmteam.github.io/ISSM-Documentation" target="_blank">Just The Docs</a>
 
 ## Contact
- - Forum:	https://issm.ess.uci.edu/forum (will be decommissioned Aug 27)
- - GitHub:	https://github.com/ISSMteam/ISSM
+ - Bug Reporting: Please direct compile and run time bug reports to the 'Issues' page.
+ - Questions: Please direct questions about the use of ISSM (e.g. model setup, compute cluster configuration) to the 'Discussions' page.
  - Website:	https://issm.jpl.nasa.gov (will be decommissioned soon)
 
 ## Checking Out a Copy of the Repository
