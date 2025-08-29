@@ -1,6 +1,6 @@
 
 #Initializing configure
-AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[4.24],[https://issm.ess.uci.edu/forum/],[issm],[http://issm.jpl.nasa.gov])
+AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[4.24],[https://github.com/ISSMteam/ISSM/],[issm],[https://issmteam.github.io/ISSM-Documentation/])
 AC_CONFIG_AUX_DIR([./aux-config])	# Put config files in aux-config
 AC_CONFIG_MACRO_DIR([m4])			# m4 macros are located in m4
 m4_include([m4/issm_options.m4])
