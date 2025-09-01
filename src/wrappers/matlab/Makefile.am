@@ -152,6 +152,7 @@ endif
 
 if FORTRAN
 deps += $(FLIBS) $(FORTRANLIB)
+MEXLIB += $(FLIBS) $(FORTRANLIB)
 endif
 
 deps += ${LIBADD_FOR_MEX}
