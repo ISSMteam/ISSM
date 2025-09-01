@@ -4514,7 +4514,7 @@ void       Element::RignotMeltParameterization(){/*{{{*/
 	this->FindParam(&yts, ConstantsYtsEnum);
 	this->parameters->FindParam(&numbasins,FrontalForcingsNumberofBasinsEnum);
 	this->parameters->FindParam(&basin_icefront_area,&numbasins,FrontalForcingsBasinIcefrontAreaEnum);
-	IssmDouble meltrates[numvertices];  
+	IssmDouble meltrates[MAXVERTICES];  
 
 	/* Start looping on the number of vertices: */
 	Gauss* gauss=this->NewGauss();
@@ -5880,13 +5880,12 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 /*}}}*/
 void       Element::SubglacialWaterPressure(int output_enum){/*{{{*/
 
-	bool ispwHydroArma;
-   int M;
-   int numvertices = this->GetNumberOfVertices();
-   IssmDouble p_water[numvertices];
-   IssmDouble* perturbationvalues = xNew<IssmDouble>(numvertices);
-   Gauss* gauss=this->NewGauss();
-   Friction* friction = new Friction(this);
+	bool        ispwHydroArma;
+	int         numvertices = this->GetNumberOfVertices();
+	IssmDouble  p_water[MAXVERTICES];
+	IssmDouble *perturbationvalues   = xNew<IssmDouble>(numvertices);
+	Gauss      *gauss     = this->NewGauss();
+	Friction   *friction  = new Friction(this);
    /*Calculate subglacial water pressure*/
    for(int i=0;i<numvertices;i++){
          gauss->GaussVertex(i);

@@ -139,7 +139,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
                   Element* element = xDynamicCast<Element*>(object);
                   int numvertices  = element->GetNumberOfVertices();
                   IssmDouble baselinedeepwatermelt;
-                  IssmDouble deepwatermelt_tot[numvertices];
+                  IssmDouble deepwatermelt_tot[10]; _assert_(numvertices<10);
                   Input* baselinedeepwatermelt_input  = NULL;
                   baselinedeepwatermelt_input = element->GetInput(BaselineBasalforcingsSpatialDeepwaterMeltingRateEnum); _assert_(baselinedeepwatermelt_input);
                   element->GetInputValue(&dimensionid,StochasticForcingDefaultIdEnum);
@@ -160,7 +160,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
 						Element* element = xDynamicCast<Element*>(object);
 						int numvertices  = element->GetNumberOfVertices();
 						IssmDouble baselinecalvingrate;
-						IssmDouble calvingrate_tot[numvertices];
+						IssmDouble calvingrate_tot[10]; _assert_(numvertices<10);
 						Input* baselinecalvingrate_input  = NULL;
 						baselinecalvingrate_input = element->GetInput(BaselineCalvingCalvingrateEnum); _assert_(baselinecalvingrate_input);
 						element->GetInputValue(&dimensionid,StochasticForcingDefaultIdEnum);
@@ -181,7 +181,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
 						Element* element = xDynamicCast<Element*>(object);
 						int numvertices  = element->GetNumberOfVertices();
 						IssmDouble baselinefloatingicemeltrate;
-						IssmDouble floatingicemeltrate_tot[numvertices];
+						IssmDouble floatingicemeltrate_tot[10]; _assert_(numvertices<10);
 						Input* baselinefloatingicemeltrate_input  = NULL;
 						baselinefloatingicemeltrate_input = element->GetInput(BaselineBasalforcingsFloatingiceMeltingRateEnum); _assert_(baselinefloatingicemeltrate_input);
 						element->GetInputValue(&dimensionid,StochasticForcingDefaultIdEnum);
@@ -203,7 +203,7 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
 						Element* element = xDynamicCast<Element*>(object);
 						int numvertices  = element->GetNumberOfVertices();
 						IssmDouble baselinesmb;
-						IssmDouble smb_tot[numvertices];
+						IssmDouble smb_tot[10]; _assert_(numvertices<10);
 						Input* baselinesmb_input  = NULL;
 						baselinesmb_input = element->GetInput(BaselineSmbMassBalanceEnum); _assert_(baselinesmb_input);
 						element->GetInputValue(&dimensionid,StochasticForcingDefaultIdEnum);
@@ -223,8 +223,8 @@ void StochasticForcingx(FemModel* femmodel){/*{{{*/
 					for(Object* &object:femmodel->elements->objects){
                   Element* element = xDynamicCast<Element*>(object);
                   int numvertices  = element->GetNumberOfVertices();
-                  IssmDouble p_water_deterministic[numvertices];
-                  IssmDouble p_water[numvertices];
+                  IssmDouble p_water_deterministic[10]; _assert_(numvertices<10);
+                  IssmDouble p_water[10];
 						element->GetInputValue(&dimensionid,StochasticForcingDefaultIdEnum);
 						element->SubglacialWaterPressure(FrictionWaterPressureEnum);
                   element->GetInputListOnVertices(&p_water_deterministic[0],FrictionWaterPressureEnum);
