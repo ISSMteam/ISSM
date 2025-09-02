@@ -45,7 +45,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.22-mac.sh
+	petsc		install-3.23-mac.sh
 	boost		install-1.7-mac.sh
 	dakota		install-6.2-mac.sh
 	chaco		install-mac.sh

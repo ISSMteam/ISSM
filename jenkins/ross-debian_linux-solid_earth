@@ -38,7 +38,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools		install-linux.sh
 	cmake			install.sh
-	petsc			install-3.22-linux.sh
+	petsc			install-3.23-linux.sh
 	boost			install-1.7-linux.sh
 	dakota			install-6.2-linux.sh
 	chaco			install-linux.sh
