@@ -62,8 +62,12 @@ switch datatype,
 			patch( 'Faces',[B C D],'Vertices', [x y z],'FaceVertexCData',data(:),'FaceColor','interp','EdgeColor',edgecolor);
 			patch( 'Faces',[C A D],'Vertices', [x y z],'FaceVertexCData',data(:),'FaceColor','interp','EdgeColor',edgecolor);
 		else
-			A=elements(:,1); B=elements(:,2); C=elements(:,3); 
-			patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceVertexCData', data(:),'FaceColor','interp','EdgeColor',edgecolor);
+                        A=elements(:,1); B=elements(:,2); C=elements(:,3); 
+                        p = patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceVertexCData', data(:), 'FaceColor','interp','EdgeColor',edgecolor);
+                        tip = datatip(p,x(1),y(1),'Visible','off');
+                        p.UserData = 1:length(x);
+                        row = dataTipTextRow('Vertex', 'UserData');
+                        p.DataTipTemplate.DataTipRows(3) = row;
 		end
 
 	%quiver plot
