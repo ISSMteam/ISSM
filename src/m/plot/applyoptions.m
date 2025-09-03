@@ -439,7 +439,7 @@ if exist(options,'axispos'),
 	set(gca,'pos',Axis);
 end
 
-if exist(options,'datatip')
+if exist(options,'datatip'),
     datatip = getfieldvalue(options, 'datatip')
     p = findobj(gcf, 'Type', 'patch');
     dcm = datacursormode(gcf);
@@ -629,6 +629,3 @@ end
 
 %clipping off always: 
 set(gca,'Clipping',getfieldvalue(options,'clipping','on'));
-
-end
-
