@@ -325,6 +325,13 @@ if [ -d "${PETSC_ROOT_TEMP}" ]; then
 	fi
 fi
 
+# Set BLAS/LAPACK_ROOT if macOS and not installed via PETSc
+if [[ ${OS_NAME} == "Darwin" ] && [ -z "${BLAS_ROOT+x}" ]]; then
+	BLASLAPACK_ROOT=$(find /Library -name libblas* 2>/dev/null | sed "s/[0-9]*://g" | head -1)
+	export BLAS_ROOT=${BLASLAPACK_ROOT%/*}
+	export LAPACK_ROOT=${BLAS_ROOT}
+fi
+
 MPLAPACK_ROOT_TEMP="${ISSM_EXT_DIR}/mplapack/install"
 if [ -d "${MPLAPACK_ROOT_TEMP}" ]; then
 	cplus_include_path_prepend "${MPLAPACK_ROOT_TEMP}/include"

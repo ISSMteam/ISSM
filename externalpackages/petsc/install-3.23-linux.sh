@@ -28,7 +28,6 @@ cd ${PETSC_DIR}
 ./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
-	--LDFLAGS="${LDFLAGS}" \
 	--with-debugging=0 \
 	--with-valgrind=0 \
 	--with-x=0 \
