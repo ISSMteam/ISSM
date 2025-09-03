@@ -9,11 +9,6 @@ VER="3.23.6"
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed
 
-# Environment
-if [ -z ${LDFLAGS+x} ]; then
-	LDFLAGS=""
-fi
-
 # Download source
 ${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-${VER}.tar.gz" "petsc-${VER}.tar.gz"
 
