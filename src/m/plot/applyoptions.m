@@ -440,7 +440,7 @@ if exist(options,'axispos'),
 end
 
 if exist(options,'datatip'),
-    datatip = getfieldvalue(options, 'datatip')
+    datatip = getfieldvalue(options, 'datatip');
     p = findobj(gcf, 'Type', 'patch');
     dcm = datacursormode(gcf);
     set(dcm, 'Enable', 'on');
