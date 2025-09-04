@@ -440,11 +440,10 @@ if exist(options,'axispos'),
 end
 
 if exist(options,'datatip'),
-    datatip = getfieldvalue(options, 'datatip');
-    p = findobj(gcf, 'Type', 'patch');
-    dcm = datacursormode(gcf);
-    set(dcm, 'Enable', 'on');
-    set(dcm, 'UpdateFcn', {@plot_datatip, p.Vertices(:, 1), p.Vertices(:, 2), p.FaceVertexCData, datatip});
+     datatip = getfieldvalue(options, 'datatip');
+     dcm = datacursormode(gcf);
+     set(dcm, 'Enable', 'on');
+     set(dcm, 'UpdateFcn', {@plot_datatip, datatip});
 end
 
 %showregion
