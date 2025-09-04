@@ -66,6 +66,7 @@ disp('       ''contourlevels'': N or {value1,valu2,value3,...} add the contours 
 disp('       ''contourticks'': ''on'' or ''off'' to display the ticks of the contours');
 disp('       ''contouronly'': ''on'' or ''off'' to display the contours on a white background');
 disp('       ''contourcolor'': ticks and contour color');
+disp('       ''datatip'': an additional datatip entry (''vertex-field'' for vertex number and field value, or any md.mesh.numberofvertices length array');
 disp('       ''density'': density of quivers (one arrow every N nodes, N integer)');
 disp('       ''inset'': add an inset (zoom) of the current figure if 1 (use ''insetx'', ''insety'' and ''insetpos'' to determine the inset position and content)');
 disp('       ''insetx'': [min(x) max(x)] where min(x) and max(x) are values determining the inset content');
