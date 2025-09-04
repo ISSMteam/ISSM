@@ -44,7 +44,6 @@ cd ${PETSC_DIR}
 	--with-valgrind=0 \
 	--with-x=0 \
 	--with-ssl=0 \
-	--download-fblaslapack=1 \
 	--download-metis=1 \
 	--download-mpich=1 \
 	--download-mumps=1 \
