@@ -19,12 +19,12 @@ LIBGFORTRAN_ROOT=${LIBGFORTRAN%/*}
 
 ## Environment
 #
-export BLAS_LIBS="-L${BLAS_ROOT}/lib -lfblas" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export BLAS_LIBS="-lblas" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
 export FLIBS="-L${LIBGFORTRAN_ROOT} -lgfortran"
-export LAPACK_LIBS="-L${LAPACK_ROOT}/lib -lflapack" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export LAPACK_LIBS="-llapack" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export LDFLAGS="-framework CoreFoundation"
 
 # Cleanup
