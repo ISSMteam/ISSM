@@ -34,7 +34,7 @@ rm -rf ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 mkdir -p ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 # Unpack source
 tar -zxvf dakota-${VER}-public-src.tar.gz
