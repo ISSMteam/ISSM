@@ -22,11 +22,11 @@ LIBGCC=$(find ${LIBGFORTRAN_ROOT} -name libgcc* 2>/dev/null | egrep -n libgcc.a 
 
 ## Environment
 #
-export BLAS_LIBS="libblas.a ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export BLAS_LIBS="-lblas ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
-export LAPACK_LIBS="liblapack.a ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export LAPACK_LIBS="-llapack ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export LDFLAGS="-framework CoreFoundation"
 
 # Cleanup
