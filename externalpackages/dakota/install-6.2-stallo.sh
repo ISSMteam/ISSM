@@ -14,7 +14,7 @@ rm -rf install
 mkdir src build install 
 
 #Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 #Untar 
 tar -zxvf dakota-${VER}-public-src.tar.gz
