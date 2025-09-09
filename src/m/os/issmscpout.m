@@ -1,17 +1,21 @@
-function issmscpout(host,path,login,port,packages,varargin)
+function issmscpout(host, path, login, port, packages, no_symlinks, bracketstyle)
 %ISSMSCPOUT send files to host
 %
 %   usage: issmscpout(host,path,login,port,packages)
 %
+%   bracketstyle: 1 - default, \{\}
+%                 2 - no backslash {}
 
 %get hostname
 hostname=oshostname();
 
 %are we disallowing symbolic links? 
-if nargin==6
-	no_symlinks=1;
-else
+if nargin<6
 	no_symlinks=0;
+end
+%which curly brackets does the machine support?
+if nargin<7
+	bracketstyle = 1;
 end
 
 %if hostname and host are the same, do a simple copy or symlinks
@@ -39,6 +43,11 @@ else
 			fileliststr=[fileliststr packages{i} ','];
 		end
 		fileliststr=[fileliststr packages{end} '\}'];
+
+		%remove \ if bracketstyle is 2
+		if bracketstyle==2
+			fileliststr = [fileliststr(2:end-2) '}'];
+		end
 	end
 	if port
 		disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])

@@ -110,7 +110,7 @@ classdef computecanada
 			 system(compressstring);
 
 			 disp('uploading input file and queuing script');
-			 issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
+			 issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']}, 0, 2);
 
 		 end %}}}
 		 function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
@@ -128,7 +128,7 @@ classdef computecanada
 
 			 %copy files from cluster to current directory
 			 directory=[cluster.executionpath '/' dirname '/'];
-			 issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
+			 issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist, 2);
 
 		 end %}}}
 	end

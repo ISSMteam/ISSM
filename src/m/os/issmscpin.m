@@ -1,8 +1,15 @@
-function issmscpin(host, login,port,path, packages)
+function issmscpin(host, login, port, path, packages, bracketstyle)
 %ISSMSCPIN get packages from host
 %
-%   usage: issmscpin(host,packages,path)
+%   usage: issmscpin(host,packages,path,bracketstyle)
 %
+%   bracketstyle: 1 - default, \{\}
+%                 2 - no backslash {}
+
+%which curly brackets does the machine support?
+if nargin==5
+	bracketstyle = 1;
+end
 
 %first get hostname
 hostname=oshostname();
@@ -21,6 +28,11 @@ else
 			fileliststr=[fileliststr packages{i} ','];
 		end
 		fileliststr=[fileliststr packages{end} '\}'];
+
+		%remove \ if bracketstyle is 2
+		if bracketstyle==2
+			fileliststr = [fileliststr(2:end-2) '}'];
+		end
 	end
 
 	if port
