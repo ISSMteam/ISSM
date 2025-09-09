@@ -139,6 +139,9 @@ endif
 
 if FORTRAN
 deps += $(FLIBS) $(FORTRANLIB)
+if !STANDALONE_LIBRARIES
+PYTHONLIB += $(FLIBS) $(FORTRANLIB)
+endif
 endif
 
 deps += $(PYTHONLIB)

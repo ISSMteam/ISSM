@@ -152,7 +152,9 @@ endif
 
 if FORTRAN
 deps += $(FLIBS) $(FORTRANLIB)
+if !STANDALONE_LIBRARIES
 MEXLIB += $(FLIBS) $(FORTRANLIB)
+endif
 endif
 
 deps += ${LIBADD_FOR_MEX}
