@@ -1,7 +1,7 @@
 function maxtime=cfl_step(md,vx,vy)
 %CFL_STEP - return the maximum time step for the model in years
 %
-%   Dt < 0.5 / ( u/Dx +v/Dy )
+%   Dt < 0.5 / (u/Dx + v/Dy)
 %
 %   Usage:
 %      maxtime=cfl_step(md,vx,vy);

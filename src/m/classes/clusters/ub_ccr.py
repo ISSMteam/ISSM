@@ -35,6 +35,7 @@ class ub_ccr(object):
         self.cluster = 'ub-hpc'
         self.partition = 'general-compute'
         self.qos = 'general-compute'
+        self.account = ''
         self.time = 1 * 60 * 60
         self.ntasks = 1
         self.cpuspertask = 1
@@ -78,6 +79,7 @@ class ub_ccr(object):
         s += '    cluster: {}\n'.format(self.cluster)
         s += '    partition: {}\n'.format(self.partition)
         s += '    qos: {}\n'.format(self.qos)
+        s += '    account: {}\n'.format(self.account)
         s += '    time: {}\n'.format(self.time)
         s += '    ntasks: {}\n'.format(self.ntasks)
         s += '    cpuspertask: {}\n'.format(self.cpuspertask)
@@ -106,15 +108,19 @@ class ub_ccr(object):
                     md = md.checkmessage('Value of \'qos\' should either match value of \'partition\' or be set to one of [\'supporters\', \'mri\', \'nih\']')
             queuedict = {
                 'debug': [1 * 60 * 60, 64],
-                'general-compute': [6 * 60 * 60, 64],
+                'general-compute': [72 * 60 * 60, 64],
                 'industry': [6 * 60 * 60, 56],
                 'scavenger': [6 * 60 * 60, 64],
                 'viz': [24 * 60 * 60, 64],
+                'faculty': [72 * 60 * 60, 64],
             }
             QueueRequirements(queuedict, self.partition, self.nprocs(), self.time)
         elif self.cluster == 'faculty':
             # TODO: Add checks for max values based on particular partition
-            md = md.checkmessage('"faculty" cluster not currently supported')
+            if self.account == '':
+                md = md.checkmessage('please supply valid \'account\' when using \'faculty\' cluster')
+            if self.partition != 'sophien' and self.qos != 'sophien' and self.account != 'sophien':
+                md = md.checkmessage('combination of \'partition\' and \'qos\' and \'account\' invalid')
         else:
             md = md.checkmessage('invalid value for \'cluster\'')
 
@@ -151,7 +157,8 @@ class ub_ccr(object):
         fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
         if self.exclusive:
             fid.write('#SBATCH --exclusive\n')
-        fid.write('#SBATCH --constraint="[SAPPHIRE-RAPIDS-IB|ICE-LAKE-IB|CASCADE-LAKE-IB|EMERALD-RAPIDS-IB]"\n')
+        if (self.cluster != 'faculty'):
+            fid.write('#SBATCH --constraint="[SAPPHIRE-RAPIDS-IB|ICE-LAKE-IB|CASCADE-LAKE-IB|EMERALD-RAPIDS-IB]"\n')
         fid.write('#SBATCH --mem={}\n'.format(self.mem))
         fid.write('#SBATCH --job-name={}\n'.format(self.jobname))
         fid.write('#SBATCH --output={}.outlog\n'.format(modelname))
@@ -161,6 +168,8 @@ class ub_ccr(object):
             fid.write('#SBATCH --mail-type=end\n')
         fid.write('#SBATCH --partition={}\n'.format(self.partition))
         fid.write('#SBATCH --qos={}\n'.format(self.qos))
+        if (self.account != ''):
+            fid.write('#SBATCH --account={}\n'.format(self.account))
         fid.write('#SBATCH --cluster={}\n'.format(self.cluster))
 
         #fid.write('. /usr/share/modules/init/bash\n\n')
