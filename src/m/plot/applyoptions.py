@@ -30,6 +30,8 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     #fig = p.gcf()
     ax = axgrid[gridindex]
 
+    print('...')
+
     # {{{ font
     fontsize = options.getfieldvalue('fontsize', 8)
     fontweight = options.getfieldvalue('fontweight', 'normal')
@@ -171,6 +173,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
             lims = [data.min(), data.max()]
         else:
             lims = [0, 1]
+        options.addfielddefault('caxis',lims)
     # }}}
     # {{{ shading TODO
     #if options.exist('shading'):
@@ -200,6 +203,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
 
     # }}}
     # {{{ colorbar extension
+    print('colorbar extension')
     if options.exist('cbar_extend'):
         extend = options.getfieldvalue('cbar_extend', 'neither')
     else:
@@ -225,6 +229,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     # {{{ wrapping TODO
     # }}}
     # {{{ colorbar
+    print('colorbar')
     if options.getfieldvalue('colorbar', 1) == 1:
         formatter = mpl.ticker.ScalarFormatter(useMathText=1)
         if options.exist('log'):
