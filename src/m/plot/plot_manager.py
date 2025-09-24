@@ -67,7 +67,7 @@ def plot_manager(md, options, fig, axgrid, gridindex):
             plot_mesh(md, options, fig, axgrid, gridindex)
             #fig.delaxes(fig.axes[1])  # hack to remove colorbar after the fact
             return
-        elif data == 'BC':
+        elif data.upper() == 'BC': #Allow "bc" and "BC".
             plot_BC(md, options, fig, axgrid, gridindex)
             return
         elif data == 'elementnumbering':

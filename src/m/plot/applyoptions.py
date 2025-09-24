@@ -171,6 +171,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
             lims = [data.min(), data.max()]
         else:
             lims = [0, 1]
+        options.addfielddefault('caxis',lims)
     # }}}
     # {{{ shading TODO
     #if options.exist('shading'):
