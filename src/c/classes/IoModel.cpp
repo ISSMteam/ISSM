@@ -1344,7 +1344,7 @@ void  IoModel::FetchData(IssmDouble** pmatrix,int* pM,int* pN,const char* data_n
 		else{
 			/*Read matrix on node 0, then broadcast: */
 			matrix=xNew<IssmPDouble>(M*N);
-			if(my_rank==0) if(fread(matrix,M*N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix \""<<data_name<<"\"");
+			if(my_rank==0) if(fread(matrix,M*N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix \""<<data_name<<"\" (you may not have enough memory, size is "<<M<<"x"<<N<<")");
 			ISSM_MPI_Bcast(matrix,M*N,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
 			*pmatrix=xNew<IssmDouble>(M*N);
