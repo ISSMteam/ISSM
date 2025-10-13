@@ -98,27 +98,27 @@ static void handleStatementEvaluate(Tape& tape, Identifier const& lhsIdentifier,
 }
 
 void CoDiStartDumpTape() {
-	if(!CoDiIsDebugOutput()) { return; }
+    if(!CoDiIsDebugOutput()) { return; }
 
   debugSettings.dumpTape = true;
   debugSettings.dumpEventHandle = codi::EventSystem<Tape>::registerStatementStoreOnTapeListener(handleStatementRecord, nullptr);
 }
 void CoDiStopDumpTape() {
-	if(!CoDiIsDebugOutput()) { return; }
+    if(!CoDiIsDebugOutput()) { return; }
 
   codi::EventSystemBase<Tape>::deregisterListener(debugSettings.dumpEventHandle);
   debugSettings.dumpTape = false;
 }
 
 void CoDiStartDumpEval() {
-	if(!CoDiIsDebugOutput()) { return; }
+    if(!CoDiIsDebugOutput()) { return; }
 
   debugSettings.dumpTape = true;
   debugSettings.dumpEventHandle = codi::EventSystem<Tape>::registerStatementEvaluateListener(handleStatementEvaluate, nullptr);
 }
 
 void CoDiStopDumpEval() {
-	if(!CoDiIsDebugOutput()) { return; }
+    if(!CoDiIsDebugOutput()) { return; }
 
   codi::EventSystemBase<Tape>::deregisterListener(debugSettings.dumpEventHandle);
   debugSettings.dumpTape = false;
@@ -486,7 +486,7 @@ void VecDebugOutputImpl(std::string message, int M, int m, CoDiReal* values, boo
 }
 
 void VecDebugOutput(std::string message, int M, int m, CoDiReal* values) {
-	VecDebugOutputImpl(message, m, m, values, false, false);
+    VecDebugOutputImpl(message, m, m, values, false, true);
 }
 void VecDebugOutput(std::string, int, int, double*) {}
 
