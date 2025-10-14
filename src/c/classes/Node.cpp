@@ -470,7 +470,7 @@ void Node::ApplyConstraint(int dof,IssmDouble value){/*{{{*/
 /*}}}*/
 void Node::CreateNodalConstraints(Vector<IssmDouble>* ys){/*{{{*/
 
-	if(this->SSize()){
+	if(this->SSize() && !this->clone){
 		/*Add values into constraint vector: */
 		ys->SetValues(this->gsize,this->sdoflist,this->svalues,INS_VAL);
 	}
