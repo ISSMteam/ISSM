@@ -20,12 +20,14 @@ void CoDiStopDumpEval();
 void CoDiPauseDumpTape();
 void CoDiResumeDumpTape();
 
+bool          CoDiDebugGetIdFormatLong();
 bool          CoDiDebugGetOutputPrimal();
 bool          CoDiDebugGetOutputReverse();
 bool          CoDiDebugGetOutputIdentifiers();
 int           CoDiDebugGetOutputPrecission();
 std::ostream& CoDiDebugGetOutputStream();
 
+void CoDiDebugSetIdFormatLong(bool value);
 void CoDiDebugSetOutputPrimal(bool value);
 void CoDiDebugSetOutputReverse(bool value);
 void CoDiDebugSetOutputIdentifiers(bool value);
