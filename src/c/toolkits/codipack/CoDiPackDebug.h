@@ -21,6 +21,7 @@ void CoDiPauseDumpTape();
 void CoDiResumeDumpTape();
 
 bool          CoDiDebugGetIdFormatLong();
+bool          CoDiDebugGetOutputObjInfoOnAllRanks();
 bool          CoDiDebugGetOutputPrimal();
 bool          CoDiDebugGetOutputReverse();
 bool          CoDiDebugGetOutputIdentifiers();
@@ -28,6 +29,7 @@ int           CoDiDebugGetOutputPrecission();
 std::ostream& CoDiDebugGetOutputStream();
 
 void CoDiDebugSetIdFormatLong(bool value);
+void CoDiDebugGetOutputObjInfoOnAllRanks(bool value);
 void CoDiDebugSetOutputPrimal(bool value);
 void CoDiDebugSetOutputReverse(bool value);
 void CoDiDebugSetOutputIdentifiers(bool value);
