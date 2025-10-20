@@ -1,38 +1,44 @@
-function [vxout vyout] = interpJoughinCompositeGreenland(X,Y,ncpath),
+function [vxout vyout] = interpJoughinCompositeGreenland(X,Y,path)
+% INTERPJOUGHINCOMPOSITEGREENLAND - interpolate Joughin's mosaic nsidc-0670
+%
+%   Usage:
+%      [vx vy] = interpJoughinCompositeGreenland(X,Y)
+%      [vx vy] = interpJoughinCompositeGreenland(X,Y,path)
+%      vel     = interpJoughinCompositeGreenland(X,Y)
+%
+%   Example:
+%      [vx vy] = interpJoughinCompositeGreenland(md.mesh.x, md.mesh.y)
+%      [vx vy] = interpJoughinCompositeGreenland(md.mesh.x, md.mesh.y, '../Data')
 
-%   - optional input argument: path to dataset IanGreenVel.mat
-
-if nargin<3
-	%data=load(['/u/astrid-r1b/morlighe/issmjpl/proj-morlighem/DatasetGreenland/Data/VelJoughin/IanGreenVel.mat']);
-	filename = '/totten_1/ModelData/Greenland/VelJoughin/IanGreenVel.mat';
-else
-	filename = [ncpath '/IanGreenVel.mat']; 
+%possible paths of dataset
+paths = {...
+	['/totten_1/ModelData/Greenland/VelMEaSUREs/Greenland_1995_2015_decadal_average_mosaic_v1/',],...
+	['/home/ModelData/Antarctica/VelMEaSUREs/Greenland_1995_2015_decadal_average_mosaic_v1/',],...
+	[issmdir() 'examples/Data/'],...
+	['./',],...
+	};
+if nargin>2
+	paths{end+1} = path;
 end
 
-%Figure out what subset of the matrix should be read
-load(filename,'x_m','y_m');
-velfile = matfile(filename);
+%Check if we can find it
+found = 0;
+for i=1:numel(paths)
+	if exist([paths{i} '/greenland_vel_mosaic250_vx_v1.tif'],'file')
+		datadir = paths{i};
+		found = 1;
+		break;
+	end
+end
+if ~found
+	error(['Could not find greenland_vel_mosaic250_vx_v1.tif, you can add the path to the list or provide its path as a 3rd argument']);
+end
 
-offset=2;
+%Now go ahead and interpolate
+vxout = interpFromGeotiff([datadir '/greenland_vel_mosaic250_vx_v1.tif'], X, Y,-2e9);
+vyout = interpFromGeotiff([datadir '/greenland_vel_mosaic250_vy_v1.tif'], X, Y,-2e9);
 
-xmin=min(X(:)); xmax=max(X(:));
-posx=find(x_m<=xmax);
-id1x=max(1,find(x_m>=xmin,1)-offset);
-id2x=min(numel(x_m),posx(end)+offset);
-
-ymin=min(Y(:)); ymax=max(Y(:));
-posy=find(y_m>=ymin);
-id1y=max(1,find(y_m<=ymax,1)-offset);
-id2y=min(numel(y_m),posy(end)+offset);
-
-vx = velfile.vx(id1y:id2y,id1x:id2x);
-vy = velfile.vy(id1y:id2y,id1x:id2x);
-x = x_m(id1x:id2x);
-y = y_m(id1y:id2y);
-
-vxout = InterpFromGrid(x,y,double(vx),X,Y);
-vyout = InterpFromGrid(x,y,double(vy),X,Y);
-
-if nargout==1,
+%return vel if nargount ==1
+if nargout==1
 	vxout = sqrt(vxout.^2+vyout.^2);
 end
