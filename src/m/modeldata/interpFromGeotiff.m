@@ -84,9 +84,9 @@ end
 
 %Deal with NaNs
 if nanValue > 0
-	data(find(abs(data)>=nanValue))=NaN;
+	data(abs(data)>=nanValue)=NaN;
 else 
-	data(find(data<=nanValue))=NaN;
+	data(data<=nanValue)=NaN;
 end
 
 %Fill holes using inpaint_nans
