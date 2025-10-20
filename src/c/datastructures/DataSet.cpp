@@ -295,6 +295,21 @@ void  DataSet::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 				massfluxgate->Marshall(marshallhandle);
 				this->AddObject(massfluxgate);
 			}
+			else if(obj_enum==ChannelEnum){
+				Channel* channel=new Channel();
+				channel->Marshall(marshallhandle);
+				this->AddObject(channel);
+			}
+			else if(obj_enum==MoulinEnum){
+				Moulin* moulin=new Moulin();
+				moulin->Marshall(marshallhandle);
+				this->AddObject(moulin);
+			}
+			else if(obj_enum==NeumannfluxEnum){
+				Neumannflux* neumannflux=new Neumannflux();
+				neumannflux->Marshall(marshallhandle);
+				this->AddObject(neumannflux);
+			}
 			else _error_("could not recognize enum type: " << obj_enum << ": " << EnumToStringx(obj_enum) ); 
 		}
 	}
