@@ -304,10 +304,9 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts,time;
-	int       isoceancoupling;
-	int       step,timestepping;
-	int       checkpoint_frequency,num_responses;
-	int		 *M = NULL;
+	int        isoceancoupling;
+	int        step,timestepping;
+	int        checkpoint_frequency,num_responses;
 	int		 *control_enum;
 
 	/*Get rank*/
@@ -322,7 +321,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&checkpoint_frequency,SettingsCheckpointFrequencyEnum); _assert_(checkpoint_frequency>0);
 	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
-	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 
 	std::vector<IssmDouble> time_all;
 	std::vector<IssmDouble> dt_all;
