@@ -1,13 +1,20 @@
 function md=loadresultsfromdisk(md,filename)
-%LOADRESULTSFROMDISK - load results of solution sequence from disk file "filename"            
+%LOADRESULTSFROMDISK - load results of solution sequence from disk file "filename"
 %
 %   Usage:
 %      md=loadresultsfromdisk(md,filename);
+%
+%	 Input: 
+%      md         the initialized model() object which matches the results to be loaded
+%      filename	complete path to the .outbin file (typically [md.miscellaneous.name '.outbin'] in the execution directory)
+%
+%   Output:
+%      md         the returned model() object with the results loaded into md.results
 
 %check number of inputs/outputs
 if ((nargin~=2) | (nargout~=1)),
 	help loadresultsfromdisk;
-	error('loadresultsfromdisk: error message.');
+	error('loadresultsfromdisk: nargin and nargout strictly enforced. See ''Useage'' above.');
 end
 
 if ~md.qmu.isdakota
