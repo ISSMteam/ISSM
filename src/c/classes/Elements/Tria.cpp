@@ -5385,6 +5385,9 @@ void       Tria::SetControlInputsFromVector(IssmDouble* vector,int control_enum,
 			if(phi[i]>0.){
 				thicknesslist[i] = surfacelist[i]-bedlist[i]; //surface = oldbase + newthickness
 			}
+			if(thicknesslist[i]<1.){
+				thicknesslist[i]=1.;
+			}
 		}
 
 		/*Add input to the element: */
