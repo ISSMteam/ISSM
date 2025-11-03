@@ -95,7 +95,7 @@ class Element: public Object{
 		IssmDouble         FindParam(int paramenum);
 		void               FindParam(int** pvalues,int* psize,int paramenum);
 		IssmDouble         FloatingArea(IssmDouble* mask, bool scaled);
-		void	             GetDofList(int** pdoflist,int approximation_enum,int setenum);
+		void	             GetDofList(int** pdoflist,int approximation_enum,int setenum, bool hideclones=0);
 		void	             GetDofListPressure(int** pdoflist,int setenum);
 		void	             GetDofListVelocity(int** pdoflist,int setenum);
 		void	             GetDofListLocal(int** pdoflist,int approximation_enum,int setenum);

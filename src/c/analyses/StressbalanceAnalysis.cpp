@@ -1137,7 +1137,7 @@ void           StressbalanceAnalysis::GetSolutionFromInputsHoriz(Vector<IssmDoub
 	element->GetInputValue(&approximation,ApproximationEnum);
 
 	/*Fetch dof list and allocate solution vector*/
-	element->GetDofList(&doflist,approximation,GsetEnum);
+	element->GetDofList(&doflist,approximation,GsetEnum, true);
 	IssmDouble* values = xNew<IssmDouble>(numdof);
 
 	/*Get inputs*/
