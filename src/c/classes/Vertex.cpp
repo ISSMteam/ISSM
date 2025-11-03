@@ -171,8 +171,6 @@ int        Vertex::Sid(void){ return sid; }/*{{{*/
 /*}}}*/
 void       Vertex::UpdatePosition(Vector<IssmDouble>* vx,Vector<IssmDouble>* vy,Vector<IssmDouble>* vz,Parameters* parameters,IssmDouble* surface,IssmDouble* bed){/*{{{*/
 
-	if(this->clone==true) return;
-
 	IssmDouble oldy,newy,vely;
 	IssmDouble oldz,newz,velz;
 	IssmDouble dt;
