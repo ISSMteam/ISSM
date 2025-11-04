@@ -406,7 +406,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	Input* vz_input = NULL;
 	Input* vx_input = NULL;
 	Input* vy_input = NULL;
-	Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
+	//Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
 	Input* intrusiondist_input = basalelement->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
 	
 	switch(dim){
@@ -472,6 +472,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 			else mb=gmb;
 		}
 		else if(melt_style==IntrusionMeltEnum){
+			Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
 
 			if(intrusiondist_avg==0){

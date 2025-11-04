@@ -674,7 +674,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* thickness_input  = element->GetInput(ThicknessEnum);                            	_assert_(thickness_input);
 	Input* vxaverage_input  = element->GetInput(VxAverageEnum);								_assert_(vxaverage_input);
 	Input* vyaverage_input  = element->GetInput(VyAverageEnum);								_assert_(vyaverage_input);
-	Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
+	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
 
 	h=element->CharacteristicLength();
@@ -727,14 +727,8 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 			else mb=gmb;
 		}
 		else if(melt_style==IntrusionMeltEnum){
+			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			
-			/* Helene's idea: here you may want to calculate gz from analytical formula based on observations and bed slope / difference from floatation.
-			//if(gldistance == -1 && gldistance < 6000) {
-				//retreve modeled gz
-				//retrieve slope
-			//} */
-
 			if(intrusiondist_avg==0){
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
@@ -820,7 +814,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                      _assert_(ms_input);
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);             _assert_(gllevelset_input);
 	Input* thickness_input  = element->GetInput(ThicknessEnum);                           _assert_(thickness_input);
-	Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
+	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
 	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
 
    /*Recover portion of element that is grounded*/
@@ -869,6 +863,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
          else mb=gmb;
       	}
 	  	else if(melt_style==IntrusionMeltEnum){
+			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
 			if (intrusiondist_avg==0)
 				if(gllevelset>0.) mb=gmb;
