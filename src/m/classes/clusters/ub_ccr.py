@@ -35,13 +35,14 @@ class ub_ccr(object):
         self.cluster = 'ub-hpc'
         self.partition = 'general-compute'
         self.qos = 'general-compute'
+        self.account = ''
         self.time = 1 * 60 * 60
-        self.nodes = 1
-        self.ntaskspernode = 1
+        self.ntasks = 1
         self.cpuspertask = 1
+        self.exclusive = False
         self.mem = '10000'
         self.jobname = ''
-        self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0', 'openmpi/4.1.1']
+        self.modules = ['ccrsoft/2023.01', 'gcc/11.2.0']
         self.srcpath = '/projects/grid/ghub/ISSM/repos/ISSM'
         self.codepath = '/projects/grid/ghub/ISSM/repos/ISSM/bin'
         self.executionpath = '$HOME/ISSM/execution'
@@ -78,10 +79,11 @@ class ub_ccr(object):
         s += '    cluster: {}\n'.format(self.cluster)
         s += '    partition: {}\n'.format(self.partition)
         s += '    qos: {}\n'.format(self.qos)
+        s += '    account: {}\n'.format(self.account)
         s += '    time: {}\n'.format(self.time)
-        s += '    nodes: {}\n'.format(self.nodes)
-        s += '    ntaskspernode: {}\n'.format(self.ntaskspernode)
+        s += '    ntasks: {}\n'.format(self.ntasks)
         s += '    cpuspertask: {}\n'.format(self.cpuspertask)
+        s += '    exclusive: {}\n'.format(self.exclusive)
         s += '    mem: {}\n'.format(self.mem)
         s += '    jobname: {}\n'.format(self.jobname)
         s += '    modules: {}\n'.format(strjoin(self.modules, ', '))
@@ -96,7 +98,7 @@ class ub_ccr(object):
     # }}}
 
     def nprocs(self):  # {{{
-        return self.ntaskspernode * self.nodes
+        return self.ntasks * self.cpuspertask
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
@@ -106,15 +108,19 @@ class ub_ccr(object):
                     md = md.checkmessage('Value of \'qos\' should either match value of \'partition\' or be set to one of [\'supporters\', \'mri\', \'nih\']')
             queuedict = {
                 'debug': [1 * 60 * 60, 64],
-                'general-compute': [6 * 60 * 60, 64],
+                'general-compute': [72 * 60 * 60, 64],
                 'industry': [6 * 60 * 60, 56],
                 'scavenger': [6 * 60 * 60, 64],
                 'viz': [24 * 60 * 60, 64],
+                'faculty': [72 * 60 * 60, 64],
             }
             QueueRequirements(queuedict, self.partition, self.nprocs(), self.time)
         elif self.cluster == 'faculty':
             # TODO: Add checks for max values based on particular partition
-            md = md.checkmessage('"faculty" cluster not currently supported')
+            if self.account == '':
+                md = md.checkmessage('please supply valid \'account\' when using \'faculty\' cluster')
+            if self.partition != 'sophien' and self.qos != 'sophien' and self.account != 'sophien':
+                md = md.checkmessage('combination of \'partition\' and \'qos\' and \'account\' invalid')
         else:
             md = md.checkmessage('invalid value for \'cluster\'')
 
@@ -147,10 +153,12 @@ class ub_ccr(object):
 
         fid.write('#!/bin/bash -l\n')
         fid.write('#SBATCH --time {:02d}:{:02d}:00\n'.format(int(floor(self.time / 3600)), int(floor(self.time % 3600) / 60)))
-        fid.write('#SBATCH --nodes={}\n'.format(self.nodes))
-        fid.write('#SBATCH --ntasks-per-node={}\n'.format(self.ntaskspernode))
-        if self.cpuspertask != 1:
-            fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
+        fid.write('#SBATCH --ntasks={}\n'.format(self.ntasks))
+        fid.write('#SBATCH --cpus-per-task={}\n'.format(self.cpuspertask))
+        if self.exclusive:
+            fid.write('#SBATCH --exclusive\n')
+        if (self.cluster != 'faculty'):
+            fid.write('#SBATCH --constraint="[SAPPHIRE-RAPIDS-IB|ICE-LAKE-IB|CASCADE-LAKE-IB|EMERALD-RAPIDS-IB]"\n')
         fid.write('#SBATCH --mem={}\n'.format(self.mem))
         fid.write('#SBATCH --job-name={}\n'.format(self.jobname))
         fid.write('#SBATCH --output={}.outlog\n'.format(modelname))
@@ -160,17 +168,19 @@ class ub_ccr(object):
             fid.write('#SBATCH --mail-type=end\n')
         fid.write('#SBATCH --partition={}\n'.format(self.partition))
         fid.write('#SBATCH --qos={}\n'.format(self.qos))
+        if (self.account != ''):
+            fid.write('#SBATCH --account={}\n'.format(self.account))
         fid.write('#SBATCH --cluster={}\n'.format(self.cluster))
 
         #fid.write('. /usr/share/modules/init/bash\n\n')
         for i in range(len(self.modules)):
             fid.write('module load {}\n'.format(self.modules[i]))
-        fid.write('export MPI_GROUP_MAX=64\n\n')
-        fid.write('export MPI_UNBUFFERED_STDIO=true\n\n')
         fid.write('export PATH="$PATH:."\n\n')
         fid.write('export ISSM_DIR="{}"\n'.format(self.srcpath))
         fid.write('source $ISSM_DIR/etc/environment.sh\n')
         fid.write('cd {}/{}\n\n'.format(self.executionpath, dirname))
+
+        fid.write('which mpiexec\n\n')
 
         fid.write('mpiexec -np {} {}/{} {} {}/{} {}\n'.format(self.nprocs(), self.codepath, executable, solution, self.executionpath, dirname, modelname))
 

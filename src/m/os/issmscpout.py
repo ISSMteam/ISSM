@@ -3,55 +3,63 @@ import subprocess
 from MatlabFuncs import *
 
 
-def issmscpout(host, path, login, port, packages):
-    """ISSMSCPOUT send packages to a host, using scp on unix, and pscp on windows
+def issmscpout(host, path, login, port, packages, no_symlinks=0, bracketstyle=1):
+    """issmscpout send files to host
 
     Usage:
-        issmscpout(host, path, packages)
+        issmscpout(host, path, login, port, packages, no_symlinks, bracketstyle)
+
+        bracketstyle:   1 - \{\}    (escaped; default)
+                        2 - {}      (not escaped)
     """
 
-    #get hostname
+    # Get hostname
     hostname = oshostname()
 
-    #if hostname and host are the same, do a simple copy
-
-    if strcmpi(host, hostname):  #host == hostname:
+    # If hostname and host are the same, do a simple copy or symlinks
+    if strcmpi(host, hostname):
+        here = os.getcwd()
         for package in packages:
-            here = os.getcwd()
-            os.chdir(path)
             try:
-                os.remove(package)
+                os.remove(os.path.join(path, package))
             except OSError:
                 pass
-            subprocess.call('ln -s %s %s' % (os.path.join(here, package), path), shell=True)
-            os.chdir(here)
+            if no_symlinks:
+                subprocess.call('cp {} {}'.format(package, path), shell=True)
+            else:
+                subprocess.call('ln -s {} {}'.format(os.path.join(here, package), path), shell=True)
+
+    # General case: this is not a local machine
     else:
-        if ispc():
-            #use the putty project pscp.exe: it should be in the path.
-            #get ISSM_DIR variable
-            if 'ISSM_DIR_WIN' in os.environ:
-                ISSM_DIR = os.environ['ISSM_DIR_WIN'][1:-2]
-            else:
-                raise OSError("issmscpout error message: could not find ISSM_DIR_WIN environment variable.")
-
-            username = eval(input('Username: (quoted string) '))
-            key = eval(input('Key: (quoted string) '))
-
-            for package in packages:
-                try:
-                    subprocess.check_call('%s/externalpackages/ssh/pscp.exe -l "%s" -pw "%s" %s %s:%s' % (ISSM_DIR, username, key, package, host, path), shell=True)
-                except CalledProcessError as e:
-                    raise CalledProcessError("issmscpout error message: could not call putty pscp.")
-
+        if len(packages) == 1:
+            fileliststr = packages[0]
         else:
-            #just use standard unix scp
-            #create string of packages being sent
-            string = ''
-            for package in packages:
-                string += ' ' + package
-            string += ' '
+            fileliststr = '\{'
+            fileliststr += ','.join([package for package in packages])
+            fileliststr += '\}'
 
-            if port:
-                subprocess.call('scp -P %d %s %s@localhost:%s' % (port, string, login, path), shell=True)
-            else:
-                subprocess.call('scp %s %s@%s:%s' % (string, login, host, path), shell=True)
+            # Remove backslashes if bracketstyle is 2
+            if bracketstyle == 2:
+                fileliststr = fileliststr[1:-2] + fileliststr[-1]
+        if port:
+            subproc_cmd = 'scp -P {} {} {}@localhost:{}'.format(port, fileliststr, login, path)
+            subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            outs, errs = subproc.communicate()
+            if errs != '':
+                # List expansion is a bashism. Try again with '-OT'.
+                subproc_cmd = 'scp -OT -P {} {} {}@localhost:{}'.format(port, fileliststr, login, path)
+                subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                outs, errs = subproc.communicate()
+        else:
+            subproc_cmd = 'scp {} {}@{}:{}'.format(fileliststr, login, host, path)
+            subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+            outs, errs = subproc.communicate()
+            if errs != '':
+                # List expansion is a bashism. Try again with '-OT'.
+                subproc_cmd = 'scp -OT {} {}@{}:{}'.format(fileliststr, login, host, path)
+                subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+                outs, errs = subproc.communicate()
+
+        # Check scp worked
+        if errs != '':
+            raise OSError('issmscpin error message: {}'.format(errs))

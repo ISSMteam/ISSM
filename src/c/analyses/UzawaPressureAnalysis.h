@@ -26,7 +26,6 @@ class UzawaPressureAnalysis: public Analysis{
 		ElementMatrix* CreateJacobianMatrix(Element* element);
 		ElementMatrix* CreateKMatrix(Element* element);
 		ElementVector* CreatePVector(Element* element);
-		void           GetM(IssmDouble* M,Element* element,Gauss* gauss);
 		void           GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element);
 		void           GradientJ(Vector<IssmDouble>* gradient,Element*  element,int control_type,int control_interp,int control_index);
 		void           InputUpdateFromSolution(IssmDouble* solution,Element* element);

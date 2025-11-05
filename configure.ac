@@ -1,6 +1,6 @@
 
 #Initializing configure
-AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[4.24],[https://issm.ess.uci.edu/forum/],[issm],[http://issm.jpl.nasa.gov])
+AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[4.24],[https://github.com/ISSMteam/ISSM/],[issm],[https://issmteam.github.io/ISSM-Documentation/])
 AC_CONFIG_AUX_DIR([./aux-config])	# Put config files in aux-config
 AC_CONFIG_MACRO_DIR([m4])			# m4 macros are located in m4
 m4_include([m4/issm_options.m4])
@@ -14,11 +14,11 @@ AC_MSG_NOTICE(==================================================================
 AC_CANONICAL_TARGET
 
 #Compilers
-AC_PROG_CC([icc cl icl gcc])
-AC_PROG_CPP
-AC_PROG_CXX([icpc cl icl g++])
-AC_PROG_F77([ifort g77 gfortran])
-AC_PROG_FC([ifort gfortran])
+AC_PROG_CC( [mpicc icc cl icl gcc])             # C compiler
+AC_PROG_CPP                                     # C preprocessor (after CC)
+AC_PROG_CXX([mpicxx mpic++ icpc cl icl g++])    # C++ compiler
+AC_PROG_F77([mpifort ifort g77 gfortran])       # Fortran 77 compiler
+AC_PROG_FC( [mpifort ifort gfortran])           # Fortran compiler
 
 #AUTOMAKE
 AM_INIT_AUTOMAKE([foreign])     # Initialize automake and declare foreign (don't need a ChangeLog, INSTALL, etc)
@@ -29,20 +29,23 @@ AM_PROG_AR
 #Libtool
 LT_INIT([win32-dll])
 
-#Run issm_options.m4
+# ---------------------------------------------------------------------
+#  Run ISSM’s usual option-detection macro collection
+# ---------------------------------------------------------------------
 ISSM_OPTIONS
 
-#List all Makefiles
+# ---------------------------------------------------------------------
+#  Output files
+# ---------------------------------------------------------------------
 AC_CONFIG_FILES([
-	Makefile
-	src/Makefile
-	src/c/Makefile
-	src/wrappers/Makefile
-	src/wrappers/python/Makefile
-	src/wrappers/matlab/Makefile
-	src/wrappers/javascript/Makefile
-	src/m/Makefile
+        Makefile
+        src/Makefile
+        src/c/Makefile
+        src/m/Makefile
+        src/wrappers/Makefile
+        src/wrappers/python/Makefile
+        src/wrappers/matlab/Makefile
+        src/wrappers/javascript/Makefile
 ])
 
-#End of configure.ac
 AC_OUTPUT

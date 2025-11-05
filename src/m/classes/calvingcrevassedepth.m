@@ -40,13 +40,13 @@ classdef calvingcrevassedepth
 			%Early return
 			if (~strcmp(solution,'TransientSolution') | md.transient.ismovingfront==0), return; end
 
-			md = checkfield(md,'fieldname','calving.crevasse_opening_stress','numel',[1],'values',[0,1]);
+			md = checkfield(md,'fieldname','calving.crevasse_opening_stress','numel',[1],'values',[0,1,2]);
          md = checkfield(md,'fieldname','calving.crevasse_threshold','numel',[1],'>',0,'<=',1);
 			md = checkfield(md,'fieldname','calving.water_height','NaN',1,'Inf',1,'timeseries',1,'>=',0);
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   Calving Pi parameters:'));
-			fielddisplay(self,'crevasse_opening_stress','0: stress only in the ice-flow direction, 1: max principal');
+			fielddisplay(self,'crevasse_opening_stress','0: stress only in the ice-flow direction, 1: max principal, 2: buttressing based');
 			fielddisplay(self,'crevasse_threshold','ratio of full thickness to calve (e.g. 0.75 is for 75% of the total ice thickness)');
 			fielddisplay(self,'water_height','water height in the crevasse [m]');
 

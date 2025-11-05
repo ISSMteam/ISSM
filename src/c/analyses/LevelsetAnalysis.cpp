@@ -819,9 +819,26 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 	IssmDouble mig_max = femmodel->parameters->FindParam(MigrationMaxEnum);
 	IssmDouble dt      = femmodel->parameters->FindParam(TimesteppingTimeStepEnum);
 
-   /*Get current distance to terminus*/
-   InputDuplicatex(femmodel,MaskIceLevelsetEnum,DistanceToCalvingfrontEnum);
-   femmodel->DistanceToFieldValue(MaskIceLevelsetEnum,0,DistanceToCalvingfrontEnum);
+   /* Get current distance to terminus
+	 * Only do this if necessary, PostProcess is already doing it for a few calving law
+	 * Do not repeat the process is this function is particularly slow*/
+	bool computedistance = true;
+	if(
+				calvinglaw==CalvingMinthicknessEnum ||
+				calvinglaw==CalvingVonmisesEnum ||
+				calvinglaw==CalvingParameterizationEnum ||
+				calvinglaw==CalvingVonmisesADEnum ||
+				calvinglaw==CalvingCalvingMIPEnum){
+		int step;
+		femmodel->parameters->FindParam(&step,StepEnum);
+		if(step>1){
+			computedistance = false;
+		}
+	}
+	if(computedistance){
+		InputDuplicatex(femmodel,MaskIceLevelsetEnum,DistanceToCalvingfrontEnum);
+		femmodel->DistanceToFieldValue(MaskIceLevelsetEnum,0,DistanceToCalvingfrontEnum);
+	}
 
    if(calvinglaw==CalvingHabEnum){
 
@@ -905,7 +922,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 					thickness_input->GetInputValue(&thickness,gauss);
 					surface_input->GetInputValue(&surface,gauss);
 
-					if((surface_crevasse>surface || crevassedepth>crevasse_threshold*thickness) && bed<0.){
+					if((surface_crevasse>surface || crevassedepth>(crevasse_threshold*thickness)-1e-10) && bed<0.){
 						vec_constraint_nodes->SetValue(node->Pid(),1.0,INS_VAL);
 					}
 				}
@@ -955,7 +972,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 						surface_input->GetInputValue(&surface,gauss);
 
                   /*FIXME: not sure about levelset<0. && fabs(levelset)>-mig_max*dt! SHould maybe be distance<mig_max*dt*/
-                  if((surface_crevasse>surface || crevassedepth>crevasse_threshold*thickness) && bed<0. && levelset<0. && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
+                  if((surface_crevasse>surface || crevassedepth>(crevasse_threshold*thickness-1e-10)) && bed<0. && levelset<0. && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
 							local_nflipped++;
 							vec_constraint_nodes->SetValue(node->Pid(),1.0,INS_VAL);
 						}

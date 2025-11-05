@@ -1,3 +1,13 @@
+" =================
+" ISSM vim settings
+" =================
+" Many files in ISSM rely on vim's folds. The option below
+" make ISSM development easier by highlighting ISSM classes
+" and Enums.
+" For dark  background select colorscheme issm_black
+" For light background select colorscheme issm_white
+" Report problems to:
+"    Mathieu Morlighem mathieu.morlighem@dartmouth.edu
 
 " General setup{{{
 " ----------------------------------------------------------------------
@@ -79,7 +89,6 @@ set su=.h,.bak,~,.o,.info,.swp,.obj
 " Colors and theme {{{
 " ----------------------------------------------------------------------
 " use 256 colors
-"set t_Co=8
 set t_Co=256
 " backgrounb color
 "set background=light

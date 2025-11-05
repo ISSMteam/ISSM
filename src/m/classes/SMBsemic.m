@@ -60,6 +60,9 @@ classdef SMBsemic
 
 		% method
 		ismethod  = 0;
+
+		isdesertification = 0; % for precipitation-desertifcation effect
+		isLWDcorrect = 0;
 	end
 	methods
 		function self = SMBsemic(varargin) % {{{
@@ -159,11 +162,13 @@ classdef SMBsemic
 			self.rcrit = 0.85; % from Krapp et al. (2017)
 		
 			self.desfac		      = -log(2.0)/1000;
-			self.desfacElevation  = 2000;
+			self.desfacElevation = 2000;
 			self.rlaps		      = 7.4;
-			self.rdl			  = 29; % from  Marty et al. (2002)
+			self.rdl			      = 29; % from  Marty et al. (2002)
 
-			self.ismethod        = 0;
+			self.ismethod          = 0;
+			self.isdesertification = 1;
+			self.isLWDcorrect      = 1;
 			self.requested_outputs={'default'};
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -186,6 +191,9 @@ classdef SMBsemic
 				% TODO: transient model should be merged with SEMIC developed by Ruckamp et al. (2018)
 
 				md = checkfield(md,'fieldname','smb.ismethod','numel',1,'values',[0,1]);
+                md = checkfield(md,'fieldname','smb.isdesertification','NaN',1,'Inf',1,'numel',1,'values',[0, 1]);
+			    md = checkfield(md,'fieldname','smb.isLWDcorrect','NaN',1,'Inf',1,'numel',1,'values',[0, 1]);
+			
 				if self.ismethod == 1 % transient mode
 					md = checkfield(md,'fieldname','smb.desfacElevation','>=',0,'numel',1);
 
@@ -205,7 +213,7 @@ classdef SMBsemic
 					md = checkfield(md,'fieldname','smb.qmr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices, 1]);
 				end
 			end
-			md = checkfield(md,'fieldname','smb.steps_per_step','>=',1,'numel',[1]);
+            md = checkfield(md,'fieldname','smb.steps_per_step','>=',1,'numel',[1]);
 			md = checkfield(md,'fieldname','smb.averaging','numel',[1],'values',[0 1 2]);
 			md = checkfield(md,'fieldname','smb.requested_outputs','stringrow',1);
 			% check requested_outputs
@@ -234,7 +242,7 @@ classdef SMBsemic
 			fielddisplay(self,'dailyairhumidity','daily air specific humidity [kg/kg]');
 			fielddisplay(self,'dailytemperature','daily surface air temperature [K]');
 			fielddisplay(self,'rlaps','present day lapse rate (default is 7.4 [degree/km]; Erokhina et al. 2017)');
-			fielddisplay(self,'desfac','desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)');
+			fielddisplay(self,'desfac','desertification elevation factor (default is -log(2.0)/1000 [1/m]; Vizcaino et al. 2010)');
 			fielddisplay(self,'rdl','longwave downward radiation decrease (default is 29 [W/m^2/km]; Marty et al. 2002)');
 			fielddisplay(self,'s0gcm','GCM reference elevation; (default is 0) [m]');
 
@@ -257,6 +265,9 @@ classdef SMBsemic
 				fielddisplay(self,'alb_smin','minimum snow albedo (default: 0.6)');
 				fielddisplay(self,'albi','background albedo for bare ice (default: 0.41)');
 				fielddisplay(self,'albl','background albedo for bare land (default: 0.07)');
+
+                fielddisplay(self,'isdesertification','enable or disable desertification of Vizcaino et al. (2010). 0: off, 1: on (default: 1)')
+                fielddisplay(self,'isLWDcorrect','enable or disable downward longwave correction of Marty et al. (2002). 0: off, 1: on (default: 1)')
 			end
 			% albedo_scheme - 0: none, 1: slater, 2: isba, 3: denby, 4: alex.
          if self.albedo_scheme == 0
@@ -352,7 +363,10 @@ classdef SMBsemic
 				%for alex
 				WriteData(fid,prefix,'object',self,'class','smb','fieldname','tmid','format','Double');
 				WriteData(fid,prefix,'object',self,'class','smb','fieldname','afac','format','Double');
-			end
+            end
+            %specific parameterization
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isdesertification','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isLWDcorrect','format','Integer');
 
 			WriteData(fid,prefix,'object',self,'fieldname','steps_per_step','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','averaging','format','Integer');

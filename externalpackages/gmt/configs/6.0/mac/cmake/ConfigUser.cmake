@@ -166,8 +166,8 @@ set (ZLIB_ROOT "$ENV{ZLIB_ROOT}")
 #set (GLIB_LIBRARIES c:/path/to/glib-dev/lib/glib-2.0.lib)
 
 # Set LAPACK location. Use this when want to link with LAPACK and it's not found automatically
-set (LAPACK_LIBRARY "-L$ENV{LAPACK_ROOT} -lflapack")
-set (BLAS_LIBRARY "-L$ENV{BLAS_ROOT} -lfblas")
+set (LAPACK_LIBRARY "-llapack")
+set (BLAS_LIBRARY "-lblas")
 
 ##
 ## Section 3: GMT features

@@ -58,8 +58,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 		switch(timestepping){
 			case AdaptiveTimesteppingEnum:
 				femmodel->TimeAdaptx(&dt);
-				if(time+dt>finaltime) dt=finaltime-time;
-				femmodel->parameters->SetParam(dt,TimesteppingTimeStepEnum);
+
 				break;
 			case FixedTimesteppingEnum:
 				femmodel->parameters->FindParam(&dt,TimesteppingTimeStepEnum);
@@ -67,6 +66,12 @@ void transient_core(FemModel* femmodel){/*{{{*/
 			default:
 				_error_("Time stepping \""<<EnumToStringx(timestepping)<<"\" not supported yet");
 		}
+
+		/*Do not exceed final time*/
+		if(time+dt>finaltime) dt=finaltime-time;
+		femmodel->parameters->SetParam(dt,TimesteppingTimeStepEnum);
+
+		/*Set new step number and time step size*/
 		step+=1;
 		time+=dt;
 		femmodel->parameters->SetParam(time,TimeEnum);
@@ -125,7 +130,6 @@ void transient_core(FemModel* femmodel){/*{{{*/
 
 	/*finalize:*/
 	transient_postcore(femmodel);
-
 
 }/*}}}*/
 void transient_step(FemModel* femmodel){/*{{{*/
@@ -300,10 +304,9 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts,time;
-	int       isoceancoupling;
-	int       step,timestepping;
-	int       checkpoint_frequency,num_responses;
-	int		 *M = NULL;
+	int        isoceancoupling;
+	int        step,timestepping;
+	int        checkpoint_frequency,num_responses;
 	int		 *control_enum;
 
 	/*Get rank*/
@@ -318,7 +321,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&checkpoint_frequency,SettingsCheckpointFrequencyEnum); _assert_(checkpoint_frequency>0);
 	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
-	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 
 	std::vector<IssmDouble> time_all;
 	std::vector<IssmDouble> dt_all;

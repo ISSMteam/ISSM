@@ -1,6 +1,7 @@
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 from WriteData import WriteData
+from project3d import project3d
 
 
 class frictionweertman(object):
@@ -29,6 +30,13 @@ class frictionweertman(object):
         string = "%s\n%s" % (string, fielddisplay(self, "linearize", "0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)"))
         return string
     # }}}
+
+    def extrude(self,md): # {{{
+        print('-------------- file: frictionweertman.m line: 35')
+        self.C=project3d(md,'vector',self.C,'type','node','layer',1)
+        self.m=project3d(md,'vector',self.m,'type','element')
+        return self
+        # }}}
 
     def setdefaultparameters(self):  # {{{
         self.linearize = 0

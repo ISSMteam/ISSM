@@ -1,5 +1,5 @@
 LIBGFORTRAN_PATH="/opt/homebrew/lib/gcc/current"
-LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/aarch64-apple-darwin23/13"
+LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/aarch64-apple-darwin24/15"
 
 #--------------------#
 # ISSM Configuration #
@@ -19,9 +19,7 @@ ISSM_CONFIG='\
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
 	--disable-dependency-tracking \
-	--with-python-version=3.9 \
-	--with-python-dir=/System/Volumes/Data/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9 \
-	--with-python-numpy-dir=${HOME}/.venv/issm/lib/python3.9/site-packages/numpy \
+	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="${LIBGFORTRAN_PATH}/libgfortran.a ${LIBGFORTRAN_PATH}/libquadmath.a ${LIBGCC_PATH}/libgcc.a" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
@@ -32,7 +30,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-hdf5-dir=${ISSM_DIR}/externalpackages/hdf5/install \
 	--with-petsc-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-boost-dir=${ISSM_DIR}/externalpackages/boost/install \
 	--with-dakota-dir=${ISSM_DIR}/externalpackages/dakota/install \
 	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
@@ -50,7 +47,6 @@ EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
 	petsc		install-3.22-mac-static.sh
-	gsl			install-static.sh
 	boost		install-1.7-mac-static.sh
 	dakota		install-6.2-mac-static.sh
 	chaco		install-mac.sh

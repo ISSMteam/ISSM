@@ -18,9 +18,6 @@ bool IsVertexInRank(int* vertices_ranks,int* vertices_proc_count,int vid,int ran
 
 	return false;
 }/*}}}*/
-int  VertexMasterRank(int* vertices_ranks,int vid){/*{{{*/
-	return vertices_ranks[MAXCONNECTIVITY*vid+0];
-}/*}}}*/
 void AddVertexToRank(int* vertices_ranks,int* vertices_proc_count,int vid,int rank){/*{{{*/
 
 	/*See if node is already in partition, return if this is the case*/

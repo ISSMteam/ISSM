@@ -482,27 +482,14 @@ void  IoModel::DeclareIndependents(bool trace,IssmPDouble* X){/*{{{*/
 		this->FetchData(&num_independent_objects,"md.autodiff.num_independent_objects");
 		if(num_independent_objects){
 			this->FetchMultipleData(&names,&temp,"md.autodiff.independent_name"); _assert_(temp==num_independent_objects);
-			this->FetchMultipleData(&types,NULL,"md.autodiff.independent_type");
 
 			/*create independent objects, and at the same time, fetch the corresponding independent variables,
 			 *and declare them as such in ADOLC: */
 			for(int i=0;i<num_independent_objects;i++){
-
-				if(types[i]==0){
-					/*Scalar*/
-					this->FetchIndependentConstant(&Xcount,X,names[i]);
-				}
-				else if(types[i]==1){
-					/* vector:*/
-					this->FetchIndependentData(&Xcount,X,names[i]);
-				}
-				else{
-					_error_("Independent cannot be of size " << types[i]);
-				}
+				this->FetchIndependentData(&Xcount,X,names[i]);
 			}
 			for(int i=0;i<num_independent_objects;i++) xDelete<char>(names[i]);
 			xDelete<char*>(names);
-			xDelete<int>(types);
 		}
 		#else
 		/*if we asked for AD computations, we have a problem!: */
@@ -1347,7 +1334,7 @@ void  IoModel::FetchData(IssmDouble** pmatrix,int* pM,int* pN,const char* data_n
 
 			/*read time now*/
 			IssmPDouble* timematrix=xNew<IssmPDouble>(N);
-			if(my_rank==0) if(fread(timematrix,N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read time in compressed matrix");
+			if(my_rank==0) if(fread(timematrix,N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read time in compressed matrix \""<<data_name<<"\"");
 			ISSM_MPI_Bcast(timematrix,N,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
 			for(int i=0;i<N;++i) (*pmatrix)[(M-1)*N+i]=timematrix[i];
@@ -1357,7 +1344,7 @@ void  IoModel::FetchData(IssmDouble** pmatrix,int* pM,int* pN,const char* data_n
 		else{
 			/*Read matrix on node 0, then broadcast: */
 			matrix=xNew<IssmPDouble>(M*N);
-			if(my_rank==0) if(fread(matrix,M*N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix ");
+			if(my_rank==0) if(fread(matrix,M*N*sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix \""<<data_name<<"\" (you may not have enough memory, size is "<<M<<"x"<<N<<")");
 			ISSM_MPI_Bcast(matrix,M*N,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
 			*pmatrix=xNew<IssmDouble>(M*N);

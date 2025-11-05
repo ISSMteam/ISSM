@@ -35,6 +35,7 @@
 #include "./DoubleMatArrayParam.h"
 #include "./TransientParam.h"
 #include "./TransientArrayParam.h"
+#include "./TransientGriddedFieldParam.h"
 
 #include "../../shared/shared.h"
 #include "../../toolkits/toolkits.h"
@@ -232,6 +233,12 @@ void Parameters::Marshall(MarshallHandle* marshallhandle){/*{{{*/
 				transarrayparam->Marshall(marshallhandle);
 				this->AddObject(transarrayparam);
 			}
+			else if(obj_enum==TransientGriddedFieldParamEnum){
+				TransientGriddedFieldParam* transgridparam=NULL;
+				transgridparam=new TransientGriddedFieldParam();
+				transgridparam->Marshall(marshallhandle);
+				this->AddObject(transgridparam);
+			}
 			else if(obj_enum==ControlParamEnum){
 				ControlParam* controlparam=NULL;
 				controlparam=new ControlParam();
@@ -286,18 +293,38 @@ void Parameters::FindParam(IssmDouble* pscalar,int param_enum){ _assert_(this);/
 	this->params[index]->GetParameterValue(pscalar);
 }
 /*}}}*/
-void Parameters::FindParam(IssmDouble* pscalar, int param_enum,IssmDouble time){ _assert_(this);/*{{{*/
+void Parameters::FindParam(IssmDouble* pscalar,int param_enum,IssmDouble time){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pscalar,time);
 }
 /*}}}*/
-void Parameters::FindParam(IssmDouble* pscalar,int row,IssmDouble time, int param_enum){ _assert_(this);/*{{{*/
+void Parameters::FindParam(IssmDouble* pscalar,int param_enum,IssmDouble time,int timestepping,IssmDouble dt){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pscalar,time,timestepping,dt);
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble* pscalar,int row,IssmDouble time,int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pscalar,row,time);
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble* pscalar,int row,int column,IssmDouble time,int param_enum){ _assert_(this);/*{{{*/
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pscalar,row,column,time);
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble* pscalar,int row,IssmDouble time,int timestepping,IssmDouble dt, int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pscalar,row,time,timestepping,dt);
 }
 /*}}}*/
 void Parameters::FindParam(char** pstring,int param_enum){ _assert_(this);/*{{{*/
@@ -337,6 +364,24 @@ void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int param_enum
 
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pIssmDoublearray,pM);
+
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int* pN, IssmDouble time, int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pIssmDoublearray,pM,pN,time);
+
+}
+/*}}}*/
+void Parameters::FindParam(IssmDouble** pIssmDoublearray,int* pM, int* pN, IssmDouble starttime, IssmDouble endtime, int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(pIssmDoublearray,pM,pN,starttime,endtime);
 
 }
 /*}}}*/
@@ -459,26 +504,6 @@ void Parameters::FindControlParamAndMakePassive(IssmPDouble** pvec,int* pM, int 
 	/*assign output pointers*/
 	if(pM)   *pM   = n;
 }/*}}}*/
-void Parameters::FindParamInDataset(IssmDouble** pIssmDoublearray,int* pM,int* pN,int dataset_type,int enum_type){/*{{{*/
-	_assert_(this);
-
-	int index = EnumToIndex(dataset_type);
-	if(!this->params[index]) _error_("Parameter " << EnumToStringx(dataset_type) <<" not set");
-	if(this->params[index]->ObjectEnum()!=DataSetParamEnum) _error_("Parameter " << EnumToStringx(dataset_type) <<" is not a DataSetParam!");
-
-	DataSetParam* dataset_param = xDynamicCast<DataSetParam*>(this->params[index]);
-	for( vector<Object*>::iterator object=dataset_param->value->objects.begin() ; object < dataset_param->value->objects.end(); object++ ){
-		Param* param = xDynamicCast<Param*>(*object);
-		if(param->InstanceEnum()==enum_type){
-			param->GetParameterValue(pIssmDoublearray,pM,pN);
-			return;
-		}
-	}
-
-	/*Error out if we reached this point*/
-	_error_("Could not find Enum "<<EnumToStringx(enum_type)<<" in dataset param "<<EnumToStringx(dataset_type));
-}
-/*}}}*/
 IssmDouble Parameters::FindParam(int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);

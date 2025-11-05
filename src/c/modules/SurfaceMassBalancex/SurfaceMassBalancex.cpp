@@ -356,6 +356,54 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
+void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
+	IssmDouble* x = NULL;
+	IssmDouble* y = NULL;
+	IssmDouble* temperature = NULL;
+	IssmDouble* precepitation = NULL;
+	IssmDouble* annualtemp = NULL;
+	IssmDouble time, dt, yts;
+	int N,M,Nx,Ny;
+
+	/*load lat lon temp and precepitation*/
+	femmodel->parameters->FindParam(&x,&Nx,&N,SmbGCMXgridEnum); _assert_(N==1);
+	femmodel->parameters->FindParam(&y,&Ny,&N,SmbGCMYgridEnum); _assert_(N==1);
+
+	femmodel->parameters->FindParam(&time,TimeEnum);
+	femmodel->parameters->FindParam(&dt,TimesteppingTimeStepEnum);
+	femmodel->parameters->FindParam(&yts,ConstantsYtsEnum);
+
+	femmodel->parameters->FindParam(&temperature, &M, &N, time, SmbGCMTemperatureEnum); _assert_(M==Ny && N==Nx);
+	femmodel->parameters->FindParam(&precepitation, &M, &N, time, SmbGCMPrecipitationEnum); _assert_(M==Ny && N==Nx);
+
+	/*if this is the first time step of the year, compute the mean annual temperature*/
+	/*	TODO: only do this once per year,if (floor((time-dt)/yts)<floor(time/yts)) {
+	_printf0_(floor(time/yts) << ": "<<endl); */
+	femmodel->parameters->FindParam(&annualtemp, &M, &N, floor(time/yts)*yts, (floor(time/yts)+1)*yts, SmbGCMTemperatureEnum); _assert_(M==Ny && N==Nx);
+	/*for (int i=0;i<M;i++) {
+		for (int j=0;j<N;j++){
+			_printf0_(annualtemp[i*N+j] << ", ");
+		}
+	}*/
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->ProjectGridDataToMesh(annualtemp,x,y,Nx,Ny,SmbMeanTemperatureEnum);
+		element->ProjectGridDataToMesh(temperature,x,y,Nx,Ny,SmbTemperatureEnum);
+		element->ProjectGridDataToMesh(precepitation,x,y,Nx,Ny,SmbPrecipitationEnum);
+	}
+	//	}
+
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->PositiveDegreeDayGCM();
+	}
+
+	xDelete<IssmDouble>(x);
+	xDelete<IssmDouble>(y);
+	xDelete<IssmDouble>(temperature);
+	xDelete<IssmDouble>(annualtemp);
+	xDelete<IssmDouble>(precepitation);
+}/*}}}*/
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 
 	/*Intermediaries*/

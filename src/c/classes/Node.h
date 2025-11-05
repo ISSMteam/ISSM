@@ -88,7 +88,7 @@ class Node: public Object{
 		int   GetApproximation();
 		void  GetCoordinateSystem(IssmDouble* coord_system_out);
 		int   GetDof(int dofindex,int setenum);
-		void  GetDofList(int* poutdoflist,int approximation_enum,int setenum);
+		void  GetDofList(int* poutdoflist,int approximation_enum,int setenum,bool hideclones=0);
 		void  GetDofListLocal(int* poutdoflist,int approximation_enum,int setenum);
 		int   GetNumberOfDofs(int approximation_enum,int setenum);
 		void  HardDeactivate(void);

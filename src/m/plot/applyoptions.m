@@ -439,6 +439,13 @@ if exist(options,'axispos'),
 	set(gca,'pos',Axis);
 end
 
+if exist(options,'datatip'),
+     datatip = getfieldvalue(options, 'datatip');
+     dcm = datacursormode(gcf);
+     set(dcm, 'Enable', 'on');
+     set(dcm, 'UpdateFcn', {@plot_datatip, datatip});
+end
+
 %showregion
 if strcmpi(getfieldvalue(options,'showregion','off'),'on'),
 	%Keep pointer of main axis

@@ -258,6 +258,31 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_WARN([If you want to use the optimization flags provided by CXXOPTFLAGS (${CXXOPTFLAGS}), please pass them via CXXFLAGS])
 	fi
 	dnl }}}
+	dnl Xlib (graphics library){{{
+	AC_MSG_CHECKING([for Xlib (graphics library)])
+	AC_ARG_WITH(
+		[graphics-lib],
+		AS_HELP_STRING([--with-graphics-lib=options], [Xlib (graphics library) to use]),
+		[GRAPHICS_LIB=${withval}],
+		[GRAPHICS_LIB=""]
+	)
+	if test -n "${GRAPHICS_LIB}"; then
+		GRAPHICS_DIR=$(echo ${GRAPHICS_LIB} | sed -e "s/-L//g" | awk '{print $[1]}')
+		if test -d "${GRAPHICS_DIR}" || test -f "${GRAPHICS_DIR}"; then
+			HAVE_GRAPHICS=yes
+			GRAPHICSLIB="${GRAPHICS_LIB}"
+			AC_DEFINE([_HAVE_GRAPHICS_], [1], [with Xlib (graphics library) in ISSM src])
+			AC_SUBST([GRAPHICSLIB])
+		else
+			if test -f "${PETSC_ROOT}/conf/petscvariables"; then
+				PETSC_REC_GRAPHICS_LIB=$(cat ${PETSC_ROOT}/conf/petscvariables | grep X_LIB)
+				AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist! PETSc suggests the following library: ${PETSC_REC_GRAPHICS_LIB}]);
+			fi
+			AC_MSG_ERROR([Xlib (graphics library) provided (${GRAPHICS_LIB}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([done])
+	dnl }}}
 	dnl MATLAB{{{
 	dnl See if MATLAB has been provided
 	AC_MSG_CHECKING([for MATLAB])
@@ -445,6 +470,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		else
 			export CXXFLAGS="${CXXFLAGS} -Wno-deprecated"
 		fi
+		BOOSTROOT="${BOOST_ROOT}"
 		BOOSTINCL="-I${BOOST_ROOT}/include"
 		#BOOSTLIB="-L$BOOST_ROOT/lib -lboost_python"
 		AC_MSG_CHECKING(for Boost version)
@@ -453,6 +479,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		BOOST_VERSION_MINOR=`expr ${BOOST_VERSION} / 100 % 1000`
 		AC_MSG_RESULT([${BOOST_VERSION_MAJOR}.${BOOST_VERSION_MINOR}])
 		AC_DEFINE([_HAVE_BOOST_], [1], [with Boost in ISSM src])
+		AC_SUBST([BOOSTROOT])
 		AC_SUBST([BOOSTINCL])
 		AC_SUBST([BOOSTLIB])
 	fi
@@ -536,7 +563,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				elif test "${DAKOTA_VERSION}" == "6.1" || test "${DAKOTA_VERSION}" == "6.2"; then
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
-						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lqueso -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
+						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
 						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
 						DAKOTALIB+=" ${BLASLAPACKLIB}"
 					fi
@@ -569,7 +596,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				elif test "${DAKOTA_VERSION}" == "6.1" || test "${DAKOTA_VERSION}" == "6.2"; then
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
-						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lqueso -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
+						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
 						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
 						DAKOTALIB+=" ${BLASLAPACKLIB}"
 					fi
@@ -626,6 +653,101 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AM_CONDITIONAL([ISSM_DAKOTA], [test "x${DAKOTA_MAJOR}" == "x6"])
 	dnl }}}
 	dnl Python{{{
+	AC_MSG_CHECKING([for Python])
+	AC_ARG_WITH(
+		[python],
+		AS_HELP_STRING([--with-python=EXEC], [Python path, e.g., "/usr/bin/python3"]),
+		[PYTHON_PATH=${withval}],
+		[PYTHON_PATH="no"]
+	)
+
+	if test "x${PYTHON_PATH}" == "xno"; then
+		HAVE_PYTHON=no
+	else
+		HAVE_PYTHON=yes
+		if ! test -f "${PYTHON_PATH}"; then
+			AC_MSG_ERROR([Python provided (${PYTHON_PATH}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([${HAVE_PYTHON}])
+	AM_CONDITIONAL([PYTHON], [test "x${HAVE_PYTHON}" == "xyes"])
+
+	dnl Python specifics
+	if test "x${HAVE_PYTHON}" == "xyes"; then
+
+		AC_MSG_CHECKING([for Python version])
+		PYTHON_VERSION=$(${PYTHON_PATH} -c "import sys; sys.stdout.write(str(sys.version_info.major)+'.'+str(sys.version_info.minor))")
+		AC_MSG_RESULT([${PYTHON_VERSION}])
+		
+		dnl Make sure major version is 3
+		PYTHON_MAJOR=${PYTHON_VERSION%.*}
+		AC_DEFINE_UNQUOTED([_PYTHON_MAJOR_], ${PYTHON_MAJOR}, [Python version major])
+		if test "x${PYTHON_MAJOR}" != "x3"; then
+			AC_MSG_ERROR([Only Python 3 is supported]);
+		fi
+
+		AC_MSG_CHECKING([for Python include directory])
+		PYTHONINCL=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('INCLUDEPY'))")
+		if ! test -f "${PYTHONINCL}/Python.h"; then
+			PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['include']])")
+			if ! test -f "${PYTHONINCL}/Python.h"; then
+				AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
+			fi
+		fi
+		AC_MSG_RESULT([$PYTHONINCL])
+		PYTHONINCL="-I${PYTHONINCL}"
+
+		AC_MSG_CHECKING([for libpython])
+		PYTHONLIBDIR=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('LIBDIR'))")
+		if ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}m"
+		elif ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
+		else
+			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['stdlib']])")
+			if ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
+				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}m"
+			elif ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}"
+			else
+				AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
+			fi
+		fi
+		AC_MSG_RESULT([$PYTHONLIB])
+
+		case "${host_os}" in
+			*darwin*) PYTHONLINK="-dynamiclib" ;;
+			*linux*)  PYTHONLINK="-shared" ;;
+			*mingw*)  PYTHONLINK="-shared" ;;
+		esac
+		AC_DEFINE([_HAVE_PYTHON_], [1], [with Python in ISSM src])
+		AC_SUBST([PYTHONINCL])
+		AC_SUBST([PYTHONLIB])
+		PYTHONWRAPPEREXT=".so"
+		AC_SUBST([PYTHONWRAPPEREXT])
+		AC_SUBST([PYTHONLINK])
+
+		dnl NumPy
+		AC_MSG_CHECKING([for NumPy version])
+		NUMPY_VERSION=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.version.version)")
+		AC_MSG_RESULT([$NUMPY_VERSION])
+
+		AC_MSG_CHECKING([for NumPy include directory])
+		NUMPYINCL=$(${PYTHON_PATH} -c "import numpy; import sys; sys.stdout.write(numpy.get_include())")
+		AC_MSG_RESULT([$NUMPYINCL])
+		if ! test -d "${NUMPYINCL}"; then
+			AC_MSG_ERROR([NumPy directory provided (${NUMPYINCL}) does not exist!]);
+		fi
+
+		dnl NumPy libraries and header files
+		PYTHON_NUMPYINCL="-I${NUMPYINCL} -I${NUMPYINCL}/numpy"
+		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
+		AC_SUBST([PYTHON_NUMPYINCL])
+	fi
+	AM_CONDITIONAL([PYTHON3], [test "xyes" == "xyes"])
+	dnl }}}
+	dnl Python-OLD{{{
+	if test "x${HAVE_PYTHON}" != "xyes"; then
 	AC_MSG_CHECKING([for Python])
 	AC_ARG_WITH(
 		[python-dir],
@@ -689,6 +811,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
 		elif test -f "${PYTHON_ROOT}/Headers/Python.h"; then
 			PYTHONINCL=-I${PYTHON_ROOT}/include/python${PYTHON_VERSION}m
+		elif test -f "${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/include/python${PYTHON_VERSION}/Python.h"; then
+			PYTHONINCL=-I${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/include/python${PYTHON_VERSION}
 		else
 			AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
@@ -707,6 +831,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 			PYTHONLIB="-L${PYTHON_ROOT}/lib64 -lpython${PYTHON_VERSION}m"
 		elif ls ${PYTHON_ROOT}/lib64/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
 			PYTHONLIB="-L${PYTHON_ROOT}/lib64 -lpython${PYTHON_VERSION}"
+		elif ls ${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
+			PYTHONLIB="-L${PYTHON_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib -lpython${PYTHON_VERSION}"
 		else
 			AC_MSG_ERROR([libpython not found! Please locate this file and contact ISSM developers via forum or email.]);
 		fi
@@ -766,6 +892,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
+	fi #Starts in pythonb-old
 	dnl }}}
 	dnl Chaco{{{
 	AC_MSG_CHECKING([for Chaco])
@@ -868,7 +995,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([CODIPACKINCL])
 	fi
 	AM_CONDITIONAL([CODIPACK], [test "x${HAVE_CODIPACK}" == "xyes"])
-	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++11"])
+	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++17"])
 	dnl }}}
 	dnl Tape Allocation {{{
 	AC_MSG_CHECKING(for tape allocation)
@@ -1028,40 +1155,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([AMPI], [test "x${HAVE_AMPI}" == "xyes"])
 	dnl }}}
-	dnl Adjoint MPI (CoDiPack){{{
-	AC_MSG_CHECKING([for Adjoint MPI])
-	AC_ARG_WITH(
-		[adjointmpi-dir],
-		AS_HELP_STRING([--with-adjointmpi-dir=DIR], [Adjoint MPI root directory]),
-		[ADJOINTMPI_ROOT=${withval}],
-		[ADJOINTMPI_ROOT="no"]
-	)
-	if test "x${ADJOINTMPI_ROOT}" == "xno"; then
-		HAVE_ADJOINTMPI=no
-	else
-		HAVE_ADJOINTMPI=yes
-		if ! test -d "${ADJOINTMPI_ROOT}"; then
-			AC_MSG_ERROR([Adjoint MPI directory provided (${ADJOINTMPI_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_ADJOINTMPI}])
-
-	dnl Adjoint MPI libraries and header files
-	if test "x${HAVE_ADJOINTMPI}" == "xyes"; then
-		if test "x${CODIPACK_ROOT}" == "xno"; then
-			AC_MSG_ERROR([cannot run Adjoint MPI without CoDiPack]);
-		fi
-		ADJOINTMPIINCL="-I${ADJOINTMPI_ROOT}/include"
-		ADJOINTMPILIB="-L${ADJOINTMPI_ROOT}/lib  -lAMPI"
-		dnl Also set _HAVE_AMPI_, because the interface is (almost) the same as
-		dnl for AMPI
-		AC_DEFINE([_HAVE_AMPI_], [1], [with AMPI in ISSM src])
-		AC_DEFINE([_HAVE_ADJOINTMPI_], [1], [with Adjoint MPI in ISSM src])
-		AC_SUBST([ADJOINTMPIINCL])
-		AC_SUBST([ADJOINTMPILIB])
-	fi
-	AM_CONDITIONAL([ADJOINTMPI], [test "x${HAVE_ADJOINTMPI}" == "xyes"])
-	dnl }}}
 	dnl MeDiPack (CoDiPack, ADOL-C dev){{{
 	AC_MSG_CHECKING([for MeDiPack])
 	AC_ARG_WITH(
@@ -1093,6 +1186,43 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([MEDIPACKINCL])
 	fi
 	AM_CONDITIONAL([MEDIPACK], [test "x${HAVE_MEDIPACK}" == "xyes"])
+	dnl }}}
+	dnl AdjointPETSc{{{
+	AC_MSG_CHECKING([for AdjointPETSc])
+	AC_ARG_WITH(
+		[adjointpetsc-dir],
+		AS_HELP_STRING([--with-adjointpetsc-dir=DIR], [AdjointPETSc root directory]),
+		[ADJOINTPETSC_ROOT=${withval}],
+		[ADJOINTPETSC_ROOT="no"]
+	)
+	if test "x${ADJOINTPETSC_ROOT}" == "xno"; then
+		HAVE_ADJOINTPETSC=no
+	else
+		HAVE_ADJOINTPETSC=yes
+		if ! test -d "${ADJOINTPETSC_ROOT}"; then
+			AC_MSG_ERROR([AdjointPETSc directory provided (${ADJOINTPETSC_ROOT}) does not exist!]);
+		fi
+	fi
+	AC_MSG_RESULT([${HAVE_ADJOINTPETSC}])
+
+	dnl AdjointPETSc libraries and header files
+	if test "x${HAVE_ADJOINTPETSC}" == "xyes"; then
+		if test "x${CODIPACK_ROOT}" == "xno"; then
+			AC_MSG_ERROR([cannot run AdjointPETSc without CoDiPack]);
+		fi
+		if test "x${PETSC_ROOT}" == "xno"; then
+			AC_MSG_ERROR([cannot run AdjointPETSc without PETSc]);
+		fi
+		ADJOINTPETSCINCL="-I${ADJOINTPETSC_ROOT}/include"
+		ADJOINTPETSCLIB="-L${ADJOINTPETSC_ROOT}/lib -ladjoint_petsc"
+		dnl Also set _HAVE_AMPI_, because the interface is (almost) the same as
+		dnl for AMPI
+		AC_DEFINE([_HAVE_AMPI_], [1], [with AMPI in ISSM src])
+		AC_DEFINE([_HAVE_ADJOINTPETSC_], [1], [with AdjointPETSc in ISSM src])
+		AC_SUBST([ADJOINTPETSCINCL])
+		AC_SUBST([ADJOINTPETSCLIB])
+	fi
+	AM_CONDITIONAL([ADJOINTPETSC], [test "x${HAVE_ADJOINTPETSC}" == "xyes"])
 	dnl }}}
 	dnl HDF5 {{{
 	AC_MSG_CHECKING(for HDF5 libraries)
@@ -1530,6 +1660,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 	fi
 	AC_MSG_RESULT([${HAVE_PROJ}])
+	AM_CONDITIONAL([PROJ], [test "x${HAVE_PROJ}" == "xyes"])
 
 	dnl PROJ libraries and header files
 	if test "x${HAVE_PROJ}" == "xyes"; then
@@ -1541,7 +1672,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([PROJINCL])
 		AC_SUBST([PROJLIB])
 	fi
-	AM_CONDITIONAL([PROJ], [test "x${HAVE_PROJ}" == "xyes"])
 	dnl }}}
 	dnl shapelib{{{
 	AC_MSG_CHECKING([for shapelib])
@@ -1642,13 +1772,21 @@ AC_DEFUN([ISSM_OPTIONS],[
 		[BLASLAPACK_ROOT=$withval],
 		[BLASLAPACK_ROOT="no"]
 	)
-	if (test "x${BLAS_ROOT}" = "xno" || test "x${LAPACK_ROOT}" = "xno") && test "x${BLASLAPACK_ROOT}" = "xno"; then
+	AC_ARG_WITH(
+		[blas-lapack-lib],
+		AS_HELP_STRING([--with-blas-lapack-lib=LIBFLAGS], [BLAS/LAPACK libflags]),
+		[BLASLAPACK_LIB=$withval],
+		[BLASLAPACK_LIB="no"]
+	)
+	if (test "x${BLAS_ROOT}" = "xno" || test "x${LAPACK_ROOT}" = "xno") && test "x${BLASLAPACK_ROOT}" = "xno" && test "x${BLASLAPACK_LIB}" = "xno"; then
 		HAVE_BLASLAPACK=no
 	else
 		HAVE_BLASLAPACK=yes
-		if ! test -d "${BLAS_ROOT}" || ! test -d "${LAPACK_ROOT}"; then
-			if ! test -d "${BLASLAPACK_ROOT}"; then
-				AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir]);
+		if test -z "${BLASLAPACK_LIB}"; then
+			if ! test -d "${BLAS_ROOT}" || ! test -d "${LAPACK_ROOT}"; then
+				if ! test -d "${BLASLAPACK_ROOT}"; then
+					AC_MSG_ERROR([Use either --with-blas-dir and --with-lapack-dir *or* --with-blaslapack-dir *or* --with-blaslapack-lib and supply libflags]);
+				fi
 			fi
 		fi
 	fi
@@ -1656,48 +1794,52 @@ AC_DEFUN([ISSM_OPTIONS],[
 
 	dnl BLAS/LAPACK libraries and header files
 	if test "x${HAVE_BLASLAPACK}" == "xyes"; then
-		case "${host_os}" in
-			*darwin*)
-				BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
-				if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lopenblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lflapack -lfblas"
-				else
-					BLASLAPACKLIB+=" -llapack -lblas"
-				fi
-			;;
-			*linux*)
-				BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
-				if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lopenblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
-				elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-					BLASLAPACKLIB+=" -lflapack -lfblas"
-				else
-					BLASLAPACKLIB+=" -llapack -lblas"
-				fi
-			;;
-			*mingw*)
-				if test -d "${BLASLAPACK_ROOT}"; then
-					BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib"
+		if test "x${BLASLAPACK_LIB}" != "xno"; then
+			BLASLAPACKLIB="${BLASLAPACK_LIB}"
+		else
+			case "${host_os}" in
+				*darwin*)
+					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
 					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
 						BLASLAPACKLIB+=" -lopenblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
 						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib -Wl,-lflapack -Wl,-lfblas"
+						BLASLAPACKLIB+=" -lflapack -lfblas"
 					else
-						BLASLAPACKLIB+=" -Wl,-llapack -Wl,-lblas"
+						BLASLAPACKLIB+=" -llapack -lblas"
 					fi
-				else
-					BLASLAPACKLIB="${LAPACK_ROOT}/lib/liblapack.a ${BLAS_ROOT}/lib/libblas.a"
-				fi
-			;;
-		esac
+				;;
+				*linux*)
+					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
+					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lopenblas"
+					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
+						BLASLAPACKLIB+=" -lflapack -lfblas"
+					else
+						BLASLAPACKLIB+=" -llapack -lblas"
+					fi
+				;;
+				*mingw*)
+					if test -d "${BLASLAPACK_ROOT}"; then
+						BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib"
+						if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB+=" -lopenblas"
+						elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+						elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
+							BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib -Wl,-lflapack -Wl,-lfblas"
+						else
+							BLASLAPACKLIB+=" -Wl,-llapack -Wl,-lblas"
+						fi
+					else
+						BLASLAPACKLIB="${LAPACK_ROOT}/lib/liblapack.a ${BLAS_ROOT}/lib/libblas.a"
+					fi
+				;;
+			esac
+		fi
 		AC_DEFINE([_HAVE_BLASLAPACK_], [1], [with BLAS/LAPACK in ISSM src])
 		AC_SUBST([BLASLAPACKLIB])
 	fi
@@ -2218,63 +2360,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([HAVE_FORTRANDIR], [test "x${IS_FORTRANDIR_A_DIR}" == "xyes"])
 	dnl }}}
-	dnl MeteoIO{{{
-	AC_MSG_CHECKING([for MeteoIO])
-	AC_ARG_WITH(
-		[meteoio-dir],
-		AS_HELP_STRING([--with-meteoio-dir=DIR], [use MeteoIO in conjunction with SNOWPACK model]),
-		[METEOIO_ROOT=${withval}],
-		[METEOIO_ROOT="no"]
-	)
-	if test "x${METEOIO_ROOT}" == "xno"; then
-		HAVE_METEOIO=no
-	else
-		HAVE_METEOIO=yes
-		if ! test -d "${METEOIO_ROOT}"; then
-			AC_MSG_ERROR([MeteoIO directory provided (${METEOIO_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_METEOIO}])
-
-	dnl MeteoIO libraries and header files
-	if test "x${HAVE_METEOIO}" == "xyes"; then
-		METEOIOINCL="-I${METEOIO_ROOT}/include"
-		METEOIOLIB="-dy -L${METEOIO_ROOT}/lib -lmeteoio"
-
-		AC_DEFINE([_HAVE_METEOIO_], [1], [with MeteoIO])
-		AC_SUBST([METEOIOINCL])
-		AC_SUBST([METEOIOLIB])
-	fi
-	AM_CONDITIONAL([METEOIO], [test "x${HAVE_METEOIO}" == "xyes"])
-	dnl }}}
-	dnl SNOWPACK{{{
-	AC_MSG_CHECKING([for SNOWPACK])
-	AC_ARG_WITH(
-		[snowpack-dir],
-		AS_HELP_STRING([--with-snowpack-dir=DIR], [use SNOWPACK for surface mass balance model]),
-		[SNOWPACK_ROOT=${withval}],
-		[SNOWPACK_ROOT="no"]
-	)
-	if test "x${SNOWPACK_ROOT}" == "xno"; then
-		HAVE_SNOWPACK=no
-	else
-		HAVE_SNOWPACK=yes
-		if ! test -d "${SNOWPACK_ROOT}"; then
-			AC_MSG_ERROR([SNOWPACK directory provided (${SNOWPACK_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_SNOWPACK}])
-
-	dnl SNOWPACK libraries and header files
-	if test "x${HAVE_SNOWPACK}" == "xyes"; then
-		SNOWPACKINCL="-I${SNOWPACK_ROOT}/include"
-		SNOWPACKLIB="-dy -L${SNOWPACK_ROOT}/lib -lsnowpack"
-		AC_DEFINE([_HAVE_SNOWPACK_], [1], [with SNOWPACK for surface mass balance model])
-		AC_SUBST([SNOWPACKINCL])
-		AC_SUBST([SNOWPACKLIB])
-	fi
-	AM_CONDITIONAL([SNOWPACK], [test "x${HAVE_SNOWPACK}" == "xyes"])
-	dnl }}}
 	dnl NeoPZ{{{
 	AC_MSG_CHECKING([for NeoPZ])
 	AC_ARG_WITH(
@@ -2319,7 +2404,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/SubStruct"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Topology"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Util"
-		CXXFLAGS+=" -std=c++11"
 		AC_DEFINE([_HAVE_NEOPZ_], [1], [with NeoPZ in ISSM src])
 		AC_SUBST([NEOPZINCL])
 		AC_SUBST([NEOPZLIB])
@@ -2386,22 +2470,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([OCEAN], [test "x${HAVE_OCEAN}" == "xyes"])
 	AC_MSG_RESULT([${HAVE_OCEAN}])
-	dnl }}}
-	dnl with-kml{{{
-	AC_MSG_CHECKING(for kml capability compilation)
-	AC_ARG_WITH(
-		[kml],
-		AS_HELP_STRING([--with-kml=YES], [compile with kml capabilities (default: no)]),
-		[KML=${withval}],
-		[KML=no]
-	)
-	HAVE_KML=no
-	if test "x${KML}" == "xyes"; then
-		HAVE_KML=yes
-		AC_DEFINE([_HAVE_KML_], [1], [with kml capability])
-	fi
-	AM_CONDITIONAL([KML], [test "x${HAVE_KML}" == "xyes"])
-	AC_MSG_RESULT([${HAVE_KML}])
 	dnl }}}
 	dnl with-kriging{{{
 	AC_MSG_CHECKING(for kriging capability compilation)
@@ -2514,22 +2582,14 @@ AC_DEFUN([ISSM_OPTIONS],[
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_PETSC}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile ISSM with both PETSc and ADOL-C]);
 	fi
-	  if test "x${HAVE_PETSC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile ISSM with both PETSc and CoDiPack, you probably forgot to remove --with-petsc-dir]);
-	fi
 	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_CODIPACK}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile ISSM with both ADOL-C and CoDiPack]);
 	fi
 	if test "x${HAVE_ADJOINTMPI}" == "xyes" && test "x${HAVE_MEDIPACK}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile ISSM with both MeDiPack and AdjointMPI]);
 	fi
-	dnl Check that if we run MeteoIO, we have SNOWPACK also
-	if test "x${HAVE_METEOIO}" == "xyes" && test "x${HAVE_SNOWPACK}" == "xno"; then
-		AC_MSG_ERROR([cannot compile MeteoIO package without SNOWPACK]);
-	fi
-	dnl Check that if we run SNOWPACK, we have MeteoIO also
-	if test "${HAVE_METEOIO}" == "xno" && test "${HAVE_SNOWPACK}" == "xyes"; then
-		AC_MSG_ERROR([cannot compile SNOWPACK package without MeteoIO]);
+	if test "x${HAVE_CODIPACK}" == "xyes" && test "x${HAVE_PETSC}" == "xyes" && test "x${HAVE_ADJOINTPETSC}" == "xno" ; then
+		AC_MSG_ERROR([cannot compile ISSM with both CoDiPack and PETSc without adjointpetsc]);
 	fi
 
 	AC_MSG_RESULT([done])
@@ -2554,4 +2614,51 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_SUBST([CFLAGS])
 	AC_SUBST([CXXFLAGS])
 	AC_SUBST([OSLIBS])
+])
+
+dnl =====================================================================
+dnl  ISSM_ENABLE_AD – Automatic-Differentiation (CoDiPack + MediPack)
+dnl =====================================================================
+AC_DEFUN([ISSM_ENABLE_AD], [
+  # --- command-line switches ------------------------------------------
+  AC_ARG_ENABLE([ad],
+    AS_HELP_STRING([--enable-ad],
+      [Build ISSM with CoDiPack+MediPack automatic differentiation (disables PETSc)]),
+    [enable_ad=$enableval],
+    [enable_ad=no])
+
+  AC_ARG_WITH([codipack-dir],
+    AS_HELP_STRING([--with-codipack-dir=DIR],
+      [Prefix of CoDiPack install]),
+    [CODIPACK_ROOT=$withval], [CODIPACK_ROOT=])
+
+  AC_ARG_WITH([medipack-dir],
+    AS_HELP_STRING([--with-medipack-dir=DIR],
+      [Prefix of MediPack install]),
+    [MEDIPACK_ROOT=$withval], [MEDIPACK_ROOT=])
+
+  # --- validation & flag injection ------------------------------------
+  if test "x$enable_ad" = "xyes"; then
+    if test -z "$CODIPACK_ROOT" || test -z "$MEDIPACK_ROOT"; then
+      AC_MSG_ERROR([--enable-ad needs BOTH --with-codipack-dir and --with-medipack-dir])
+    fi
+
+    AC_DEFINE([ISSM_USE_AD], [1],
+              [Define to 1 if building with automatic differentiation])
+
+    ENABLE_PETSC=no
+    AM_CONDITIONAL([USE_AD], [true])
+
+    AM_CPPFLAGS="$AM_CPPFLAGS -I$CODIPACK_ROOT/include -I$MEDIPACK_ROOT/include -DCODI_ForcedInlines"
+    AM_LDFLAGS="$AM_LDFLAGS -L$CODIPACK_ROOT/lib -L$MEDIPACK_ROOT/lib"
+    LIBS="$LIBS -lcodi -lmedi"
+  else
+    ENABLE_PETSC=yes
+    AM_CONDITIONAL([USE_AD], [false])
+  fi
+
+  dnl Export augmented vars once
+  AC_SUBST([AM_CPPFLAGS])
+  AC_SUBST([AM_LDFLAGS])
+  AC_SUBST([LIBS])
 ])

@@ -32,7 +32,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.22-mac.sh
+	petsc		install-3.23-mac.sh
 	triangle	install-mac.sh
 	m1qn3		install-mac.sh
 	semic		install.sh

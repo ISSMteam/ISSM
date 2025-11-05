@@ -22,6 +22,7 @@ Node::Node(){/*{{{*/
 	this->clone          = false;
 	this->active         = true;
 	this->freeze         = false;
+	this->isrotated      = false;
 	this->f_set          = NULL;
 	this->s_set          = NULL;
 	this->svalues        = NULL;
@@ -198,21 +199,22 @@ Object* Node::copy(void){/*{{{*/
 	/*initalize output: */
 	output=new Node();
 
-	/*id: */
+	output->approximation = this->approximation;
+	output->clone  = this->clone;
 	output->id  = this->id;
 	output->sid = this->sid;
 	output->lid = this->lid;
 	output->pid = this->pid;
-	output->analysis_enum = this->analysis_enum;
-	output->approximation = this->approximation;
+
+	output->analysis_enum  = this->analysis_enum;
+	output->indexingupdate = this->indexingupdate;
+	output->isrotated      = this->isrotated;
 
 	/*Initialize coord_system: */
 	for(int k=0;k<3;k++) for(int l=0;l<3;l++) output->coord_system[k][l]=this->coord_system[k][l];
 
 	/*indexing:*/
-	output->indexingupdate = this->indexingupdate;
 	output->gsize  = this->gsize;
-	output->clone  = this->clone;
 	output->active = this->active;
 	output->freeze = this->freeze;
 	if(output->gsize>0){
@@ -382,7 +384,7 @@ int  Node::GetDof(int dofindex,int setenum){/*{{{*/
 	else _error_("set of enum type " << EnumToStringx(setenum) << " not supported yet!");
 
 } /*}}}*/
-void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum){/*{{{*/
+void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum,bool hideclones){/*{{{*/
 	_assert_(!this->indexingupdate);
 	int i;
 
@@ -393,16 +395,34 @@ void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum){/*{{{*
 	else _error_("not supported");
 
 	if(approximation_enum==NoneApproximationEnum){
-		for(i=0;i<this->gsize;i++) outdoflist[i]=doflistpointer[i];
+		for(i=0;i<this->gsize;i++){
+			if(hideclones && this->IsClone()){
+				outdoflist[i]=-1;
+			}
+			else{
+				outdoflist[i]=doflistpointer[i];
+			}
+		}
 	}
 	else{
 		if(doftype){
 			int count = 0;
 			for(i=0;i<this->gsize;i++){
-				if(doftype[i]==approximation_enum) outdoflist[count++]=doflistpointer[i];
+				if(doftype[i]==approximation_enum){
+					outdoflist[count++]=doflistpointer[i];
+				}
 			}
 		}
-		else for(i=0;i<this->gsize;i++) outdoflist[i]=doflistpointer[i];
+		else{
+			for(i=0;i<this->gsize;i++){
+				if(hideclones && this->IsClone()){
+					outdoflist[i]=-1;
+				}
+				else{
+					outdoflist[i]=doflistpointer[i];
+				}
+			}
+		}
 	}
 }/*}}}*/
 void Node::GetDofListLocal(int* outdoflist,int approximation_enum,int setenum){/*{{{*/
@@ -468,7 +488,7 @@ void Node::ApplyConstraint(int dof,IssmDouble value){/*{{{*/
 /*}}}*/
 void Node::CreateNodalConstraints(Vector<IssmDouble>* ys){/*{{{*/
 
-	if(this->SSize()){
+	if(this->SSize() && !this->clone){
 		/*Add values into constraint vector: */
 		ys->SetValues(this->gsize,this->sdoflist,this->svalues,INS_VAL);
 	}

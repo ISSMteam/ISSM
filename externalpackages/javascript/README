@@ -1,3 +1,0 @@
-This directory contains, at the time of this writing, JavaScript modules used
-on the VESL Web site. Arguably, they should just be kept in that project's SVN
-repository if no one is pulling them from here.

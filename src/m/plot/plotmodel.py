@@ -97,7 +97,7 @@ def plotmodel(md, *args):
         elif colorbar == 'one':
             colorbar = 'single'
         elif colorbar == 'off':
-            colorbar = 'None'
+            colorbar = None
         else:
             raise RuntimeError('plotmodel error: colorbar mode \'{}\' is not a valid option'.format(colorbar))
 

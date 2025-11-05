@@ -23,7 +23,7 @@ int  SmbAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*
 void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	int    smb_model;
-	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic;
+	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic,ismappedforcing;
 
 	/*Update elements: */
 	int counter=0;
@@ -48,25 +48,31 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			}
 			break;
 		case SMBgembEnum:
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.dswrf",SmbDswrfEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.dswdiffrf",SmbDswdiffrfEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.dlwrf",SmbDlwrfEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.P",SmbPEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.eAir",SmbEAirEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.pAir",SmbPAirEnum);
+			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
+			if (!ismappedforcing){
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.dswrf",SmbDswrfEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.dswdiffrf",SmbDswdiffrfEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.dlwrf",SmbDlwrfEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.P",SmbPEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.eAir",SmbEAirEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.pAir",SmbPAirEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.Tmean",SmbTmeanEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vmean",SmbVmeanEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.C",SmbCEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.Tz",SmbTzEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
+			} else {
+				iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingpoint",SmbMappedforcingpointEnum);
+			}
+
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zTop",SmbZTopEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.dzTop",SmbDzTopEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.dzMin",SmbDzMinEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zY",SmbZYEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zMax",SmbZMaxEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zMin",SmbZMinEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.Tmean",SmbTmeanEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.Vmean",SmbVmeanEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.C",SmbCEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.Tz",SmbTzEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.Dzini",SmbDziniEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.Dini",SmbDiniEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.Reini",SmbReiniEnum);
@@ -116,6 +122,11 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.temperature_anomaly",SmbTemperaturesAnomalyEnum);
 			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.monthlytemperatures",SmbMonthlytemperaturesEnum);
 			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
+			break;
+		case SMBpddGCMEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.enhance_factor",SmbEnhanceFactorEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lapserates",SmbGCMLapseratesEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.ref_surf",SmbGCMRefSurfaceEnum);
 			break;
 		case SMBd18opddEnum:
 			iomodel->FindConstant(&istemperaturescaled,"md.smb.istemperaturescaled");
@@ -185,8 +196,8 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.b_min",SmbBMinEnum);
 			break;
 		case SMBarmaEnum:
-         iomodel->FetchDataToInput(inputs,elements,"md.smb.basin_id",SmbBasinsIdEnum);
-         break;
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.basin_id",SmbBasinsIdEnum);
+			break;
 		case SMBhenningEnum:
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.smbref",SmbSmbrefEnum,0.);
 			break;
@@ -242,22 +253,22 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			}
 			break;
 		case SMBdebrisEvattEnum:
-                        iomodel->FetchDataToInput(inputs,elements,"md.initialization.debris",DebrisThicknessEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.snowheight",SmbSnowheightEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.temperature",SmbMonthlytemperaturesEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.dsradiation",SmbMonthlydsradiationEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.dlradiation",SmbMonthlydlradiationEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.windspeed",SmbMonthlywindspeedEnum);
-                        iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.airhumidity",SmbMonthlyairhumidityEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.precipitation_anomaly",SmbPrecipitationsAnomalyEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.temperature_anomaly",SmbTemperaturesAnomalyEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.dsradiation_anomaly",SmbDsradiationAnomalyEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.dlradiation_anomaly",SmbDlradiationAnomalyEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.windspeed_anomaly",SmbWindspeedAnomalyEnum);
-                        iomodel->FetchDataToInput(inputs,elements,"md.smb.airhumidity_anomaly",SmbAirhumidityAnomalyEnum);
-                        break;
+			iomodel->FetchDataToInput(inputs,elements,"md.initialization.debris",DebrisThicknessEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.snowheight",SmbSnowheightEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.temperature",SmbMonthlytemperaturesEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.dsradiation",SmbMonthlydsradiationEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.dlradiation",SmbMonthlydlradiationEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.windspeed",SmbMonthlywindspeedEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.airhumidity",SmbMonthlyairhumidityEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.precipitation_anomaly",SmbPrecipitationsAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.temperature_anomaly",SmbTemperaturesAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.dsradiation_anomaly",SmbDsradiationAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.dlradiation_anomaly",SmbDlradiationAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.windspeed_anomaly",SmbWindspeedAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.airhumidity_anomaly",SmbAirhumidityAnomalyEnum);
+			break;
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
@@ -267,10 +278,10 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 
 	int     numoutputs;
 	char**  requestedoutputs = NULL;
-	bool    isdelta18o,ismungsm,isd18opd,issetpddfac,interp,cycle,isfirnwarming;
+	bool    isdelta18o,ismungsm,isd18opd,issetpddfac,interp,cycle,isfirnwarming,ismappedforcing;
 	int     smb_model, smbslices, averaging;
 	IssmDouble *temp = NULL;
-	int         N,M;
+	int         N,M,Nt,Nx,Ny;
 
 	parameters->AddObject(iomodel->CopyConstantObject("md.smb.model",SmbEnum));
 
@@ -285,8 +296,115 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 
 	switch(smb_model){
 		case SMBforcingEnum:
+		case SMBgradientsEnum:
+		case SMBgradientselaEnum:
+		case SMBhenningEnum:
+		case SMBcomponentsEnum:
+		case SMBmeltcomponentsEnum:
+			break;
+			//case SMBarmaEnum:
+		case SMBarmaEnum:
+			/*Add parameters that are not in standard nbvertices format*/
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.num_basins",SmbNumBasinsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.num_params",SmbNumParamsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.num_breaks",SmbNumBreaksEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ar_order",SmbARMAarOrderEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ma_order",SmbARMAmaOrderEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.arma_timestep",SmbARMATimestepEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.num_bins",SmbNumElevationBinsEnum));
+			iomodel->FetchData(&temp,&M,&N,"md.smb.datebreaks");
+			parameters->AddObject(new DoubleMatParam(SmbARMAdatebreaksEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.polynomialparams");
+			parameters->AddObject(new DoubleMatParam(SmbARMApolyparamsEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.arlag_coefs");
+			parameters->AddObject(new DoubleMatParam(SmbARMAarlagcoefsEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.malag_coefs");
+			parameters->AddObject(new DoubleMatParam(SmbARMAmalagcoefsEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.lapserates");
+			parameters->AddObject(new DoubleMatParam(SmbLapseRatesEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.elevationbins");
+			parameters->AddObject(new DoubleMatParam(SmbElevationBinsEnum,temp,M,N));
+			xDelete<IssmDouble>(temp);
+			iomodel->FetchData(&temp,&M,&N,"md.smb.refelevation");
+			parameters->AddObject(new DoubleVecParam(SmbRefElevationEnum,temp,N));
+			xDelete<IssmDouble>(temp);
+			break;
+		case SMBpddSicopolisEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			break;
+		case SMBdebrisEvattEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.qlaps",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.dsgrad",SmbSWgradEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.dlgrad",SmbLWgradEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.windspeedgrad",SmbWindspeedgradEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.humiditygrad",SmbHumiditygradEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.icealbedo",SmbIcealbedoEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.snowalbedo",SmbSnowalbedoEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.debrisalbedo",SmbDebrisalbedoEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isAnderson",SmbDebrisIsAndersonEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.iscryokarst",SmbDebrisIsCryokarstEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.AndersonD0",SmbDebrisAndersonD0Enum));
 			break;
 		case SMBgembEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.aIce",SmbAIceEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.aSnow",SmbASnowEnum));
+			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
+			if (ismappedforcing){
+				iomodel->FetchData(&temp,&M,&N,"md.smb.Ta"); _assert_(M>=1 && N>=1); 
+				parameters->AddObject(new TransientArrayParam(SmbTaParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.Ta");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.V"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbVParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.V");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.dswrf"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbDswrfParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.dswrf");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.dswdiffrf"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbDswdiffrfParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.dswdiffrf");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.dlwrf"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbDlwrfParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.dlwrf");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.P"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbPParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.P");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.eAir"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbEAirParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.eAir");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.pAir"); _assert_(M>=1 && N>=1);
+				parameters->AddObject(new TransientArrayParam(SmbPAirParamEnum,temp,&temp[N*(M-1)],interp,cycle,N,M));
+				iomodel->DeleteData(temp,"md.smb.pAir");
+
+				iomodel->FetchData(&temp,&M,&N,"md.smb.Tmean"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbTmeanParamEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.Tmean");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.Vmean"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbVmeanParamEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.Vmean");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.C"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbCParamEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.C");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.Tz"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbTzParamEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.Tz");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.Vz"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbVzParamEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.Vz");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.mappedforcingelevation"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbMappedforcingelevationEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.mappedforcingelevation");
+
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapseTaValue",SmbLapseTaValueEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapsedlwrfValue",SmbLapsedlwrfValueEnum));
+			}
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.aIdx",SmbAIdxEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.eIdx",SmbEIdxEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.tcIdx",SmbTcIdxEnum));
@@ -310,12 +428,17 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isturbulentflux",SmbIsturbulentfluxEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isconstrainsurfaceT",SmbIsconstrainsurfaceTEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isdeltaLWup",SmbIsdeltaLWupEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismappedforcing",SmbIsmappedforcingEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isprecipforcingremapped",SmbIsprecipforcingremappedEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.InitDensityScaling",SmbInitDensityScalingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ThermoDeltaTScaling",SmbThermoDeltaTScalingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.adThresh",SmbAdThreshEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.teThresh",SmbTeThreshEnum));
 			break;
 		case SMBpddEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlapslgm",SmbRlapslgmEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isdelta18o",SmbIsdelta18oEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismungsm",SmbIsmungsmEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.issetpddfac",SmbIssetpddfacEnum));
@@ -323,17 +446,17 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			iomodel->FindConstant(&ismungsm,"md.smb.ismungsm");
 
 			if(ismungsm){
-			  iomodel->FetchData(&temp,&N,&M,"md.smb.Pfac"); _assert_(N==2);
-			  parameters->AddObject(new TransientParam(SmbPfacEnum,&temp[0],&temp[M],interp,cycle,M));
-			  iomodel->DeleteData(temp,"md.smb.Pfac");
+				iomodel->FetchData(&temp,&N,&M,"md.smb.Pfac"); _assert_(N==2);
+				parameters->AddObject(new TransientParam(SmbPfacEnum,&temp[0],&temp[M],interp,cycle,M));
+				iomodel->DeleteData(temp,"md.smb.Pfac");
 
-			  iomodel->FetchData(&temp,&N,&M,"md.smb.Tdiff"); _assert_(N==2);
-			  parameters->AddObject(new TransientParam(SmbTdiffEnum,&temp[0],&temp[M],interp,cycle,M));
-			  iomodel->DeleteData(temp,"md.smb.Tdiff");
+				iomodel->FetchData(&temp,&N,&M,"md.smb.Tdiff"); _assert_(N==2);
+				parameters->AddObject(new TransientParam(SmbTdiffEnum,&temp[0],&temp[M],interp,cycle,M));
+				iomodel->DeleteData(temp,"md.smb.Tdiff");
 
-			  iomodel->FetchData(&temp,&N,&M,"md.smb.sealev"); _assert_(N==2);
-			  parameters->AddObject(new TransientParam(SmbSealevEnum,&temp[0],&temp[M],interp,cycle,M));
-			  iomodel->DeleteData(temp,"md.smb.sealev");
+				iomodel->FetchData(&temp,&N,&M,"md.smb.sealev"); _assert_(N==2);
+				parameters->AddObject(new TransientParam(SmbSealevEnum,&temp[0],&temp[M],interp,cycle,M));
+				iomodel->DeleteData(temp,"md.smb.sealev");
 			}
 			if(isdelta18o){
 				iomodel->FetchData(&temp,&N,&M,"md.smb.delta18o"); _assert_(N==2);
@@ -346,10 +469,31 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			}
 
 			break;
-		case SMBpddSicopolisEnum:
-			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
+		case SMBpddGCMEnum:
+			iomodel->FetchData(&temp,&M,&N,"md.smb.x_grid"); _assert_(N==1); Nx = M;
+			parameters->AddObject(new DoubleVecParam(SmbGCMXgridEnum,&temp[0],M));
+			iomodel->DeleteData(temp,"md.smb.lat");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.y_grid"); _assert_(N==1); Ny = M;
+			parameters->AddObject(new DoubleVecParam(SmbGCMYgridEnum,&temp[0],M));
+			iomodel->DeleteData(temp,"md.smb.lon");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.precipitation"); _assert_(N>=1 && M==Nx*Ny+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMPrecipitationEnum,temp,&temp[N*(M-1)],interp,cycle,Nx,Ny,N));
+			iomodel->DeleteData(temp,"md.smb.precipitation");
+			iomodel->FetchData(&temp,&M,&N,"md.smb.temperature"); _assert_(N>=1 && M==Nx*Ny+1);
+			parameters->AddObject(new TransientGriddedFieldParam(SmbGCMTemperatureEnum,temp,&temp[N*(M-1)],interp,cycle,Nx,Ny,N));
+			iomodel->DeleteData(temp,"md.smb.temperature");
+
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allsolidtemperature",SmbAllSolidTempEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.allliquidtemperature",SmbAllLiquidTempEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ddf_snow",SmbDdfSnowEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ddf_ice",SmbDdfIceEnum));
+
 			break;
 		case SMBd18opddEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlapslgm",SmbRlapslgmEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.dpermil",SmbDpermilEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismungsm",SmbIsmungsmEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isd18opd",SmbIsd18opdEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.issetpddfac",SmbIssetpddfacEnum));
@@ -422,41 +566,29 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			}
 
 			break;
-		case SMBgradientsEnum:
-			/*Nothing to add to parameters*/
-			break;
-		case SMBgradientselaEnum:
-			/*Nothing to add to parameters*/
-			break;
-		case SMBarmaEnum:
-         /*Nothing to add to parameters*/
-         break;
-		case SMBhenningEnum:
-			/*Nothing to add to parameters*/
-			break;
-		case SMBcomponentsEnum:
-			break;
-		case SMBmeltcomponentsEnum:
-			break;
 		case SMBgradientscomponentsEnum:
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.accualti",SmbAccualtiEnum));
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.runoffalti",SmbRunoffaltiEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.accualti",SmbAccualtiEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.runoffalti",SmbRunoffaltiEnum));
 
-				iomodel->FetchData(&temp,&N,&M,"md.smb.accugrad"); _assert_(N==2);
-				parameters->AddObject(new TransientParam(SmbAccugradEnum,&temp[0],&temp[M],interp,cycle,M));
-				iomodel->DeleteData(temp,"md.smb.accugrad");
-				iomodel->FetchData(&temp,&N,&M,"md.smb.runoffgrad"); _assert_(N==2);
-				parameters->AddObject(new TransientParam(SmbRunoffgradEnum,&temp[0],&temp[M],interp,cycle,M));
-				iomodel->DeleteData(temp,"md.smb.runoffgrad");
+			iomodel->FetchData(&temp,&N,&M,"md.smb.accugrad"); _assert_(N==2);
+			parameters->AddObject(new TransientParam(SmbAccugradEnum,&temp[0],&temp[M],interp,cycle,M));
+			iomodel->DeleteData(temp,"md.smb.accugrad");
+			iomodel->FetchData(&temp,&N,&M,"md.smb.runoffgrad"); _assert_(N==2);
+			parameters->AddObject(new TransientParam(SmbRunoffgradEnum,&temp[0],&temp[M],interp,cycle,M));
+			iomodel->DeleteData(temp,"md.smb.runoffgrad");
 
-				iomodel->FetchData(&temp,&N,&M,"md.smb.accuref"); _assert_(N==2);
-				parameters->AddObject(new TransientParam(SmbAccurefEnum,&temp[0],&temp[M],interp,cycle,M));
-				iomodel->DeleteData(temp,"md.smb.accuref");
-				iomodel->FetchData(&temp,&N,&M,"md.smb.runoffref"); _assert_(N==2);
-				parameters->AddObject(new TransientParam(SmbRunoffrefEnum,&temp[0],&temp[M],interp,cycle,M));
-				iomodel->DeleteData(temp,"md.smb.runoffref");
+			iomodel->FetchData(&temp,&N,&M,"md.smb.accuref"); _assert_(N==2);
+			parameters->AddObject(new TransientParam(SmbAccurefEnum,&temp[0],&temp[M],interp,cycle,M));
+			iomodel->DeleteData(temp,"md.smb.accuref");
+			iomodel->FetchData(&temp,&N,&M,"md.smb.runoffref"); _assert_(N==2);
+			parameters->AddObject(new TransientParam(SmbRunoffrefEnum,&temp[0],&temp[M],interp,cycle,M));
+			iomodel->DeleteData(temp,"md.smb.runoffref");
 			break;
 		case SMBsemicEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rdl",SmbRdlEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismethod",SmbSemicMethodEnum));
 			int ismethod;
 			parameters->FindParam(&ismethod,SmbSemicMethodEnum);
 			if (ismethod == 1){
@@ -483,10 +615,11 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				//albedo parameter - alex
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.tmid",SmbSemicTmidEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.smb.afac",SmbSemicAfacEnum));
+
+				/* Set specific options*/
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.isdesertification",SmbSemicIsDesertificationEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.smb.isLWDcorrect",SmbSemicIsLWDcorrectEnum));
 			}
-			/*Nothing to add to parameters*/
-			break;
-		case SMBdebrisEvattEnum:
 			/*Nothing to add to parameters*/
 			break;
 		default:
@@ -534,6 +667,10 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 		case SMBpddSicopolisEnum:
 			if(VerboseSolution()) _printf0_("   call SICOPOLIS positive degree day module\n");
 			PositiveDegreeDaySicopolisx(femmodel);
+			break;
+		case SMBpddGCMEnum:
+			if(VerboseSolution()) _printf0_("   call positive degree day module based on downsacling GCM data\n");
+			PositiveDegreeDayGCMx(femmodel);
 			break;
 		case SMBd18opddEnum:
 			bool isd18opd;
@@ -587,9 +724,9 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			#endif //_HAVE_SEMIC_
 			break;
 		case SMBdebrisEvattEnum:
-                        if(VerboseSolution())_printf0_("        call smb Evatt debris module\n");
-                        SmbDebrisEvattx(femmodel);
-                        break;
+			if(VerboseSolution())_printf0_("        call smb Evatt debris module\n");
+			SmbDebrisEvattx(femmodel);
+			break;
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}

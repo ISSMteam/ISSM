@@ -6,6 +6,7 @@
 #include "../classes/Inputs/TransientInput.h"
 
 #define FINITEELEMENT P1Enum
+//#define MELTPERTURBATION
 
 /*Model processing*/
 void MasstransportAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
@@ -666,16 +667,16 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,MasstransportStabilizationEnum);
 
-	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum);	_assert_(gmb_input);
-	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum);  	_assert_(fmb_input);
-	//Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
-	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);              		_assert_(gllevelset_input);
-	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                       	_assert_(ms_input);
-	Input* thickness_input  = element->GetInput(ThicknessEnum);                            	_assert_(thickness_input);
-	Input* vxaverage_input  = element->GetInput(VxAverageEnum);								_assert_(vxaverage_input);
-	Input* vyaverage_input  = element->GetInput(VyAverageEnum);								_assert_(vyaverage_input);
-	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
-	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
+	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(gmb_input);
+	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum);  _assert_(fmb_input);
+	#ifdef MELTPERTURBATION
+	Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
+	#endif
+	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);              _assert_(gllevelset_input);
+	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                       _assert_(ms_input);
+	Input* thickness_input  = element->GetInput(ThicknessEnum);                            _assert_(thickness_input);
+	Input* vxaverage_input  = element->GetInput(VxAverageEnum);										_assert_(vxaverage_input);
+	Input* vyaverage_input  = element->GetInput(VyAverageEnum);										_assert_(vyaverage_input);
 
 	h=element->CharacteristicLength();
 
@@ -704,7 +705,9 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		ms_input->GetInputValue(&ms,gauss);
 		gmb_input->GetInputValue(&gmb,gauss);
 		fmb_input->GetInputValue(&fmb,gauss);
-		//fmb_pert_input->GetInputValue(&fmb_pert,gauss);
+		#ifdef MELTPERTURBATION
+		fmb_pert_input->GetInputValue(&fmb_pert,gauss);
+		#endif
 		gllevelset_input->GetInputValue(&gllevelset,gauss);
 		thickness_input->GetInputValue(&thickness,gauss);
 
@@ -718,7 +721,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		}
 		else if(melt_style==NoMeltOnPartiallyFloatingEnum){
 			if (phi<0.00000001){
-				mb=fmb;//+fmb_pert;
+				mb=fmb;
+				#ifdef MELTPERTURBATION
+				mb += +fmb_pert;
+				#endif
 			}
 			else mb=gmb;
 		}

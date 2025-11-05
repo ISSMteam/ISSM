@@ -6,7 +6,7 @@ set -eu
 rm -rf install src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
+$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/adjoinablempi.tar.gz' 'adjoinablempi.tar.gz'
 
 # Unpack source
 tar -zxvf adjoinablempi.tar.gz

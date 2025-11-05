@@ -11,6 +11,10 @@ set -e
 # - configs/4/static/CMakeLists.txt
 # - http://gmsh.info/doc/texinfo/gmsh.html#Compiling-the-source-code
 #
+# NOTE: Currently downloading master development branch to overcome the issue 
+# described here: https://gitlab.onelab.info/gmsh/gmsh/-/issues/3158. Revert 
+# changes once version 4.13.2 has been released.
+#
 
 ## Constants
 #
@@ -36,14 +40,19 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gmsh.info/src/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
+#$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gmsh.info/src/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
+# Download source
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gitlab.onelab.info/gmsh/gmsh/-/archive/master/gmsh-master.tar.gz" "gmsh-master.tar.gz"
 
 # Unpack source
-tar -xvzf gmsh-${VER}-source.tgz
+#tar -xvzf gmsh-${VER}-source.tgz
+tar -xvzf gmsh-master.tar.gz
 
 # Move source to 'src' directory
-mv gmsh-${VER}-source/* src
-rm -rf gmsh-${VER}-source
+#mv gmsh-${VER}-source/* src
+#rm -rf gmsh-${VER}-source
+mv gmsh-master/* src
+rm -rf gmsh-master
 
 # Apply patches
 patch src/CMakeLists.txt < configs/${VER}/mac/CMakeLists.txt.patch
@@ -68,7 +77,7 @@ cmake \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DENABLE_BUILD_DYNAMIC=1 \
 	-DENABLE_BUILD_SHARED=1 \
-	-DBLAS_LAPACK_LIBRARIES="-L${LAPACK_ROOT}/lib -lflapack -L${BLAS_ROOT}/lib -lfblas -L${LIBGFORTRAN_ROOT} -lgfortran" \
+	-DBLAS_LAPACK_LIBRARIES="-llapack -lblas -L${LIBGFORTRAN_ROOT} -lgfortran" \
 	-DLIBGFORTRAN_ROOT="${LIBGFORTRAN_ROOT}" \
 	-DENABLE_BLAS_LAPACK=1 \
 	-DENABLE_EIGEN=0 \

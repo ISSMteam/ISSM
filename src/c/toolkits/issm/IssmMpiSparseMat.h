@@ -23,6 +23,10 @@
 #include "./IssmMpiVec.h"
 #include "./SparseRow.h"
 #include <math.h>
+
+#ifdef _HAVE_CODIPACK_
+#include "../codipack/CoDiPackDebug.h"
+#endif
 /*}}}*/
 
 /*We need to template this class, in case we want to create Matrices that hold
@@ -141,8 +145,36 @@ class IssmMpiSparseMat:public IssmAbsMat<doubletype>{
 				ISSM_MPI_Barrier(IssmComm::GetComm());
 			}
 
-		}
-		/*}}}*/
+		}/*}}}*/
+		void EchoDebug(std::string message) {/*{{{*/
+#if defined(_HAVE_CODIPACK_)
+			if (std::is_same<doubletype, IssmDouble>::value) {
+                void* h = MatDebugOutputStart(message, M, N);
+
+                int my_rank=IssmComm::GetRank();
+                int full_size=IssmComm::GetSize();
+                int offset = 0;
+                if (my_rank != 0) {
+                    ISSM_MPI_Recv(&offset,1,ISSM_MPI_INT,my_rank - 1,1337,IssmComm::GetComm(),ISSM_MPI_STATUS_IGNORE);
+                }
+
+				if(NULL != matrix) {
+					for(int local_row = 0; local_row < m; local_row += 1) {
+						SparseRow<doubletype>* cur_row = matrix[local_row];
+                        MatDebugOutputAddRow(h, local_row + offset, cur_row->ncols, cur_row->indices, cur_row->values);
+
+					}
+				}
+
+                offset += m;
+                if (my_rank + 1 != full_size) {
+                    ISSM_MPI_Send(&offset,1,ISSM_MPI_INT,my_rank + 1,1337,IssmComm::GetComm());
+                }
+
+				MatDebugOutputFinish(h);
+			}
+#endif
+		}/*}}}*/
 		void Assemble(){/*{{{*/
 
 			int         *RowRank = NULL;

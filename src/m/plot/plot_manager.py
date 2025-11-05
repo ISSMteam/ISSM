@@ -16,6 +16,8 @@ from plot_unit import plot_unit
 from plot_vertexnumbering import plot_vertexnumbering
 from processdata import processdata
 from processmesh import processmesh
+from plot_gridded import plot_gridded
+from plot_landsat import plot_landsat
 
 
 def plot_manager(md, options, fig, axgrid, gridindex):
@@ -65,7 +67,7 @@ def plot_manager(md, options, fig, axgrid, gridindex):
             plot_mesh(md, options, fig, axgrid, gridindex)
             #fig.delaxes(fig.axes[1])  # hack to remove colorbar after the fact
             return
-        elif data == 'BC':
+        elif data.upper() == 'BC': #Allow "bc" and "BC".
             plot_BC(md, options, fig, axgrid, gridindex)
             return
         elif data == 'elementnumbering':
@@ -81,7 +83,15 @@ def plot_manager(md, options, fig, axgrid, gridindex):
         else:
             print(("WARNING: '%s' is not implemented or is not a valid string for option 'data'" % data))
     # }}}
+    # {{{ Landsat plot
+    if options.getfieldvalue('landsat',0):
+        plot_landsat(md,data,options,fig,axgrid,gridindex)
+        return
+    # }}}
     # {{{ Gridded plot TODO
+    if options.exist('gridded'):
+        plot_gridded(md,data,options,fig,axgrid,gridindex)
+        return
     # }}}
     # {{{ Section plot TODO
     # }}}

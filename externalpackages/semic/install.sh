@@ -4,15 +4,25 @@ set -eu
 
 ## Constants
 #
+VER="1.2"
+
 PREFIX="${ISSM_DIR}/externalpackages/semic/install" # Set to location where external package should be installed
 
 # Cleanup
 rm -rf ${PREFIX} src
-mkdir -p ${PREFIX}/lib
+mkdir -p ${PREFIX} ${PREFIX}/lib src
 
 # Download source
-git clone https://github.com/mkrapp/semic.git src
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/mkrapp/semic/archive/refs/tags/v${VER}.tar.gz" "semic-${VER}.tar.gz"
 
+# Unpack source
+tar -xvzf semic-${VER}.tar.gz
+
+# Move source to 'src' directory
+mv semic-${VER}/* src
+rm -rf semic-${VER}
+
+# Compile and install semic module utils.f90
 if which ifort >/dev/null; then
 	FC="ifort"
 	FFLAGS="-traceback -check all" # -O2 is default 
@@ -25,7 +35,6 @@ else
 	fi
 fi
 
-# Compile and install semic module utils.f90
 cd src/
 (
 cat << EOF

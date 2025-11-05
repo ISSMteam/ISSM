@@ -32,7 +32,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
-	petsc		install-3.22-linux.sh
+	petsc		install-3.23-linux.sh
 	triangle	install-linux.sh
 	m1qn3		install-linux.sh
 	semic		install.sh

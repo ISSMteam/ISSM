@@ -14,14 +14,14 @@ rm -rf install
 mkdir src build install 
 
 #Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/dakota-6.2-public.src.tar.gz' 'dakota-6.2-public-src.tar.gz'
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 #Untar 
-tar -zxvf dakota-6.2-public-src.tar.gz
+tar -zxvf dakota-${VER}-public-src.tar.gz
 
 #Move Dakota to src directory
-mv dakota-6.2.0.src/* src
-rm -rf dakota-6.2.0.src
+mv dakota-${VER}.0.src/* src
+rm -rf dakota-${VER}.0.src
 
 #Set up Dakota cmake variables and config
 export DAK_SRC=$ISSM_DIR/externalpackages/dakota/src
@@ -30,7 +30,6 @@ export MPIHOME=$ISSM_DIR/externalpackages/mpich/install
 
 # Copy customized source and configuration files to 'src' directory
 cp configs/${VER}/packages/DDACE/src/Analyzer/MainEffectsExcelOutput.cpp ${DAK_SRC}/packages/DDACE/src/Analyzer
-cp configs/${VER}/packages/queso/src/misc/src/1DQuadrature.C ${DAK_SRC}/packages/queso/src/misc/src
 cp configs/${VER}/packages/surfpack/src/surfaces/nkm/NKM_KrigingModel.cpp ${DAK_SRC}/packages/surfpack/src/surfaces/nkm
 cp configs/${VER}/packages/VPISparseGrid/src/sandia_rules.cpp ${DAK_SRC}/packages/VPISparseGrid/src
 cp configs/${VER}/src/DakotaInterface.cpp ${DAK_SRC}/src
@@ -58,8 +57,6 @@ cmake -D CMAKE_C_COMPILER=mpicc \
 	-DBoost_NO_BOOST_CMAKE=TRUE \
 	-DHAVE_ACRO=OFF \
 	-DHAVE_JEGA=OFF \
-	-DHAVE_QUESO=ON \
-	-DDAKOTA_HAVE_GSL=ON \
 	-C $DAK_SRC/cmake/BuildDakotaCustom.cmake \
 	-C $DAK_SRC/cmake/DakotaDev.cmake \
 	$DAK_SRC

@@ -15,13 +15,14 @@
 #include "../../../shared/io/Comm/IssmComm.h"
 #include "../../../shared/Enum/Enum.h"
 #include "../../../shared/io/Print/Print.h"
+#include "../../../shared/Numerics/recast.h"
 
-void	PetscSolve(PetscVec** puf, PetscMat* Kff, PetscVec* pf, PetscVec* uf0,PetscVec* df, Parameters* parameters){ /*{{{*/
+void	PetscSolve(PetscVec<IssmDouble>** puf, PetscMat<IssmDouble>* Kff, PetscVec<IssmDouble>* pf, PetscVec<IssmDouble>* uf0,PetscVec<IssmDouble>* df, Parameters* parameters) { /*{{{*/
 
-	PetscVec* uf=new PetscVec();
+	PetscVec<IssmDouble>* uf=new PetscVec<IssmDouble>();
 
-	Vec uf0_vector = NULL;
-	Vec df_vector  = NULL;
+	PVec uf0_vector = NULL;
+	PVec df_vector  = NULL;
 
 	if(uf0) uf0_vector = uf0->vector;
 	if(df)  df_vector  = df->vector;
@@ -32,16 +33,16 @@ void	PetscSolve(PetscVec** puf, PetscMat* Kff, PetscVec* pf, PetscVec* uf0,Petsc
 
 }
 /*}}}*/
-void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* parameters){ /*{{{*/
+void	SolverxPetsc(PVec* puf, PMat Kff, PVec pf, PVec uf0,PVec df, Parameters* parameters){ /*{{{*/
 
 	/*Output: */
-	Vec        uf = NULL;
+	PVec        uf = NULL;
 
 	/*Intermediary: */
 	int        local_m,local_n,global_m,global_n;
 
 	/*Solver */
-	KSP        ksp              = NULL;
+	PKSP        ksp              = NULL;
 	PC         pc               = NULL;
 	int        iteration_number;
 	int        solver_type;
@@ -72,7 +73,7 @@ void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* paramet
 	_assert_(Kff);
 	MatGetSize(Kff,&global_m,&global_n); _assert_(global_m==global_n);
 	if(!global_n){
-		*puf=NewVec(0,IssmComm::GetComm()); return;
+		*puf=NewVec<PVec>(0,IssmComm::GetComm()); return;
 	}
 
 	/*Initial guess */
@@ -93,7 +94,7 @@ void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* paramet
 		VecDuplicate(uf0,&uf); VecCopy(uf0,uf);
 	}
 	else{
-		MatGetLocalSize(Kff,&local_m,&local_n);uf=NewVec(local_n,IssmComm::GetComm(),fromlocalsize);
+		MatGetLocalSize(Kff,&local_m,&local_n);uf=NewVec<PVec>(local_n,IssmComm::GetComm(),fromlocalsize);
 	}
 
 	/*Process petsc options to see if we are using special types of external solvers*/
@@ -172,14 +173,14 @@ void	SolverxPetsc(Vec* puf, Mat Kff, Vec pf, Vec uf0,Vec df, Parameters* paramet
 	*puf=uf;
 } 
 /*}}}*/
-void DofTypesToIndexSet(IS* pisv, IS* pisp, Vec df,int typeenum){ /*{{{*/
+void DofTypesToIndexSet(IS* pisv, IS* pisp, PVec df,int typeenum){ /*{{{*/
 
 	/*output: */
 	IS          isv=NULL;
 	IS          isp=NULL;
 
 	int         start,end;
-	IssmDouble*     df_local=NULL;
+	PArray			df_local;
 	int         df_local_size;
 
 	int*     pressure_indices=NULL;
@@ -199,7 +200,7 @@ void DofTypesToIndexSet(IS* pisv, IS* pisp, Vec df,int typeenum){ /*{{{*/
 		pressure_num=0;
 		velocity_num=0;
 		for(int i=0;i<df_local_size;i++){
-			if (df_local[i]==PressureEnum)pressure_num++;
+			if (reCast<int, IssmDouble>(df_local[i])==PressureEnum)pressure_num++;
 			else velocity_num++;
 		}
 
@@ -210,11 +211,11 @@ void DofTypesToIndexSet(IS* pisv, IS* pisp, Vec df,int typeenum){ /*{{{*/
 		pressure_count=0;
 		velocity_count=0;
 		for(int i=0;i<df_local_size;i++){
-			if (df_local[i]==PressureEnum){
+			if(reCast<int, IssmDouble>(df_local[i])==PressureEnum){
 				pressure_indices[pressure_count]=start+i;
 				pressure_count++;
 			}
-			if (df_local[i]==VelocityEnum){
+			if(reCast<int, IssmDouble>(df_local[i])==VelocityEnum){
 				velocity_indices[velocity_count]=start+i;
 				velocity_count++;
 			}

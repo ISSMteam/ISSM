@@ -33,10 +33,16 @@ class Param: public Object{
 		virtual void  GetParameterValue(int** pintarray,int* pM,int* pN)=0;
 		virtual void  GetParameterValue(IssmDouble* pIssmDouble)=0;
 		virtual void  GetParameterValue(IssmDouble* pdouble,IssmDouble time)=0;
+		virtual void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping,IssmDouble dt)=0;
 		virtual void  GetParameterValue(IssmDouble* pdouble,int row, IssmDouble time){_error_("not implemented yet");};
+		virtual void  GetParameterValue(IssmDouble* pdouble,int row, int column, IssmDouble time){_error_("not implemented yet");};
+		virtual void  GetParameterValue(IssmDouble* pdouble,int row, IssmDouble time, int timestepping, IssmDouble dt){_error_("not implemented yet");};
+		virtual void  GetParameterValue(IssmDouble* pdouble,int row, int column, IssmDouble time, int timestepping, IssmDouble dt){_error_("not implemented yet");};
 		virtual void  GetParameterValue(char** pstring)=0;
 		virtual void  GetParameterValue(char*** pstringarray,int* pM)=0;
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM)=0;
+		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time){_error_("not implemented yet");};
+		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime){_error_("not implemented yet");};
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN)=0;
 		virtual void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, const char* data)=0;
 		virtual void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims)=0;

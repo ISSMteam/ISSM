@@ -73,17 +73,22 @@ void ModelProcessorx(Elements** pelements, Nodes*** pnodes, Vertices** pvertices
 		loads[i]->Finalize();
 	}
 
-	/*Solution specific updates*/
-	if(VerboseMProcessor()) _printf0_("   updating elements and materials for control parameters" << "\n");
-	UpdateElementsAndMaterialsControl(elements,parameters,inputs,materials,iomodel);
-	#ifdef _HAVE_DAKOTA_
-	if(VerboseMProcessor()) _printf0_("   updating elements and materials for uncertainty quantification" << "\n");
-	UpdateElementsAndMaterialsDakota(elements,inputs,materials,iomodel);
-	#endif
+	/*Transient specific updates*/
 	if(solution_enum==TransientSolutionEnum){
 		UpdateParametersTransient(parameters,iomodel);
 		UpdateElementsTransient(elements,parameters,inputs,iomodel);
 	}
+
+	/*Control specific updates*/
+	if(VerboseMProcessor()) _printf0_("   updating elements and materials for control parameters" << "\n");
+	UpdateElementsAndMaterialsControl(elements,parameters,inputs,materials,iomodel);
+
+	/*Dakota specific updates*/
+	#ifdef _HAVE_DAKOTA_
+	if(VerboseMProcessor()) _printf0_("   updating elements and materials for uncertainty quantification" << "\n");
+	UpdateElementsAndMaterialsDakota(elements,inputs,materials,iomodel);
+	#endif
+
 	/*Output definitions dataset: */
 	if(VerboseMProcessor()) _printf0_("   creating output definitions" << "\n");
 	CreateOutputDefinitions(elements,parameters,inputs,iomodel);

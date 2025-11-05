@@ -12,8 +12,6 @@ void GaussLegendreLinear(IssmPDouble** pxgaus, IssmPDouble** pxwgt, int ngaus);
 void GaussLegendreTria(int* pngaus, IssmDouble** pl1, IssmDouble** pl2, IssmDouble** pl3, IssmDouble** pwgt, int iord);
 #define MAX_TETRA_SYM_ORD    6
 void GaussLegendreTetra(int* pngaus, IssmDouble** pl1, IssmDouble** pl2, IssmDouble** pl3, IssmDouble** pl4, IssmDouble** pwgt, int iord);
-#define MAX_LINE_GLOB_PTS    5
-void GaussLobatto(IssmPDouble** pxgaus, IssmPDouble** pxwgt, int ngaus);
 #define MAX_GAUS_ITER   30
 void GaussRecur(IssmPDouble* zero, IssmPDouble* weight, int n, IssmPDouble* alpha, IssmPDouble* beta);
 

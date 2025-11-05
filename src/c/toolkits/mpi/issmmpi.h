@@ -33,7 +33,7 @@
 			//#include <codi/externals/codiMpiTypes.hpp>
 			//using MpiTypes = CoDiMpiTypes<IssmDouble>;
 			/*New implementation*/
-			#if _CODIPACK_MAJOR_==2
+			#if _CODIPACK_MAJOR_>=2
 			#include <codi/tools/mpi/codiMpiTypes.hpp>
 			using MpiTypes = codi::CoDiMpiTypes<IssmDouble>;
 

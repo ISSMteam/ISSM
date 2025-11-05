@@ -23,6 +23,10 @@
 #include "../mpi/issmmpi.h"
 #include <math.h>
 
+#ifdef _HAVE_CODIPACK_
+#include "../codipack/CoDiPackDebug.h"
+#endif
+
 /*}}}*/
 
 /*We need to template this class, in case we want to create vectors that hold IssmDouble* vector or IssmPDouble* vector.
@@ -159,6 +163,15 @@ class IssmMpiVec:public IssmAbsVec<doubletype>{
 			}
 		}
 		/*}}}*/
+
+		void EchoDebug(std::string message){/*{{{*/
+#if defined(_HAVE_CODIPACK_)
+			if (std::is_same<doubletype, IssmDouble>::value) {
+				VecDebugOutput(message, this->M, this->m, this->vector);
+			}
+
+#endif
+		}/*}}}*/
 		void Assemble(){/*{{{*/
 
 			int           i,j;

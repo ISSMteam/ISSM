@@ -21,7 +21,7 @@ LIBGFORTRAN_ROOT=${LIBGFORTRAN%/*}
 #
 export CC=mpicc
 export CFLAGS="${CFLAGS} -w"
-export LDFLAGS="-Wl,-rpath,${NETCDF_ROOT}/lib"
+export LDFLAGS="-Wl,-rpath,'${GDAL_ROOT}/lib' -Wl,-rpath,'${NETCDF_ROOT}/lib'"
 
 # Download source
 $ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/GenericMappingTools/gmt/archive/refs/tags/${VER}.tar.gz" "gmt-${VER}.tar.gz"
@@ -58,10 +58,10 @@ cd build
 #
 cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DBLAS_LIBRARIES="-L${BLAS_ROOT}/lib;-lfblas;-L${LIBGFORTRAN_ROOT};-lgfortran" \
+	-DBLAS_LIBRARIES="-lblas;-L${LIBGFORTRAN_ROOT};-lgfortran" \
 	-DCURL_INCLUDE_DIR="${CURL_ROOT}/include" \
 	-DCURL_LIBRARY="-L${CURL_ROOT}/lib;-lcurl" \
-	-DLAPACK_LIBRARIES="-L${LAPACK_ROOT}/lib;-lflapack;-L${LIBGFORTRAN_ROOT};-lgfortran" \
+	-DLAPACK_LIBRARIES="-llapack;-L${LIBGFORTRAN_ROOT};-lgfortran" \
 	-DLIBGFORTRAN_ROOT="${LIBGFORTRAN_ROOT}" \
 	..
 

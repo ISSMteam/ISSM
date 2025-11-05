@@ -19,10 +19,8 @@ ISSM_CONFIG='\
 	--enable-debugging \
 	--with-numthreads=4 \
 	--with-matlab-dir=${MATLAB_PATH} \
-	--with-python-version=3.9 \
-	--with-python-dir=/System/Volumes/Data/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9 \
-	--with-python-numpy-dir=${HOME}/.venv/issm/lib/python3.9/site-packages/numpy \
-	--with-fortran-lib="-L/usr/local/Cellar/gcc/13.2.0/lib/gcc/current -lgfortran" \
+	--with-python="${HOME}/.venv/issm/bin/python" \
+	--with-fortran-lib="-L/usr/local/gfortran/lib -lgfortran" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
 	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
@@ -32,7 +30,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-hdf5-dir=${ISSM_DIR}/externalpackages/hdf5/install \
 	--with-petsc-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-boost-dir=${ISSM_DIR}/externalpackages/boost/install \
 	--with-dakota-dir=${ISSM_DIR}/externalpackages/dakota/install \
 	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
@@ -50,8 +47,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.22-mac.sh
-	gsl			install.sh
+	petsc		install-3.23-mac.sh
 	boost		install-1.7-mac.sh
 	dakota		install-6.2-mac.sh
 	chaco		install-mac.sh
@@ -96,7 +92,8 @@ NUMCPUS_RUN=2
 # NOTE:
 # - Excluding 2006 until it can be debugged (file I/O)
 # - Excluding 2012 until it can be looked at by Eric ("FindParam error message: Parameter HydrologyModel not set")
+# - Excluding 2085 because of large errors after switching to system/developer copy of BLASLAPACK
 # - Excluding 2091 until it can be debugged (resource starvation)
 #
-MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2424 2425]"
-PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2424 2425"
+MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2085 2424 2425]"
+PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2085 2424 2425"

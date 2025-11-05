@@ -18,7 +18,8 @@ if nargin < 4
 	includedRockMask = 1;
 end
 if nargin < 5
-	ncdata = '/totten_1/ModelData/Greenland/IceFrontsGreene/greenland_ice_masks_1972-2022_v1.nc';
+%	ncdata = '/totten_1/ModelData/Greenland/IceFrontsGreene/greenland_ice_masks_1972-2022_v1.nc';
+	ncdata = '/totten_1/ModelData/Greenland/IceFrontsGreene/NSIDC-0793_19720915-20220215_V01.0.nc';
 end
 
 x = ncread(ncdata, 'x');
@@ -49,8 +50,8 @@ idt_max = min([find(t>=time(end), 1, 'first'), length(t)]);
 t = t(idt_min:idt_max);
 
 % load icemask and rockmask from netCDF
-ice = ncread(ncdata, 'ice', [idx_min, idy_min, idt_min], [idx_max-idx_min+1, idy_max-idy_min+1, idt_max-idt_min+1], [1,1,1]);
-rock = ncread(ncdata, 'rock', [idx_min, idy_min], [idx_max-idx_min+1, idy_max-idy_min+1], [1,1]);
+ice = ncread(ncdata, 'ice_mask', [idx_min, idy_min, idt_min], [idx_max-idx_min+1, idy_max-idy_min+1, idt_max-idt_min+1], [1,1,1]);
+rock = ncread(ncdata, 'rock_mask', [idx_min, idy_min], [idx_max-idx_min+1, idy_max-idy_min+1], [1,1]);
 
 % merge ice and rock
 if includedRockMask

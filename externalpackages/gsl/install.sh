@@ -13,7 +13,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://ftp.gnu.org/gnu/gsl/gsl-${VER}.tar.gz" "gsl-${VER}.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://mirrors.ocf.berkeley.edu/gnu/gsl/gsl-${VER}.tar.gz" "gsl-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gsl-${VER}.tar.gz

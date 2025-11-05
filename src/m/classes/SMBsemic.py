@@ -69,6 +69,8 @@ class SMBsemic(object):
 
         # method
         self.ismethod = 0
+        self.isdesertification = 0
+        self.isLWDcorrect = 0
 
         if len(args) == 0:
             self.setdefaultparameters()
@@ -91,7 +93,7 @@ class SMBsemic(object):
         s += '{}\n'.format(fielddisplay(self, 'dailyairdensity', 'daily air density [kg/m3]'))
         s += '{}\n'.format(fielddisplay(self, 'dailyairhumidity', 'daily air specific humidity [kg/kg]'))
         s += '{}\n'.format(fielddisplay(self, 'rlaps', 'present day lapse rate (default is 7.4 [degree/km]; Erokhina et al. 2017)'))
-        s += '{}\n'.format(fielddisplay(self, 'desfac', 'desertification elevation factor (default is -log(2.0)/1000 [1/km]; Vizcaino et al. 2010)'))
+        s += '{}\n'.format(fielddisplay(self, 'desfac', 'desertification elevation factor (default is -log(2.0)/1000 [1/m]; Vizcaino et al. 2010)'))
         s += '{}\n'.format(fielddisplay(self, 'rdl', 'longwave downward radiation decrease (default is 29 [W/m^2/km]; Marty et al. 2002)'))
         s += '{}\n'.format(fielddisplay(self, 's0gcm', 'GCM reference elevation; (default is 0) [m]'))
         s += '{}\n'.format(fielddisplay(self, 'ismethod','method for calculating SMB with SEMIC. Default version of SEMIC is really slow. 0: steady, 1: transient (default: 0)'))
@@ -112,6 +114,9 @@ class SMBsemic(object):
             s += '{}\n'.format(fielddisplay(self,'alb_smin','minimum snow albedo (default: 0.6)'))
             s += '{}\n'.format(fielddisplay(self,'albi','background albedo for bare ice (default: 0.41)'))
             s += '{}\n'.format(fielddisplay(self,'albl','background albedo for bare land (default: 0.07)'))
+            
+            s += '{}\n'.format(fielddisplay(self,'isdesertification','enable or disable desertification of Vizcaino et al. (2010). 0: off, 1: on (default: 1)'))
+            s += '{}\n'.format(fielddisplay(self,'isLWDcorrect','enable or disable downward longwave correction of Marty et al. (2002). 0: off, 1: on (default: 1)'))
         # albedo_scheme - 0: none, 1: slater, 2: isba, 3: denby, 4: alex.
         if self.albedo_scheme == 0:
             s += '\n\tSEMIC snow albedo parameter of None.\n'
@@ -231,6 +236,8 @@ class SMBsemic(object):
         self.rdl   = 29 # from Marty et al. (2002)
 
         self.ismethod = 0
+        self.isdesertification = 1
+        self.isLWDcorrect      = 1
         self.requested_outputs = ['default']
         return self
     # }}}
@@ -253,6 +260,8 @@ class SMBsemic(object):
 
             # TODO: transient model should be merged with SEMIC developed by Ruckamp et al. (2018)
             md = checkfield(md, 'fieldname', 'smb.ismethod', 'numel', 1, 'values', [0, 1])
+            md = checkfield(md, 'fieldname', 'smb.isdesertification', 'Nan',1, 'Inf', 1, 'numel', 1, 'values', [0, 1])
+            md = checkfield(md, 'fieldname', 'smb.isLWDcorrect', 'Nan',1, 'Inf',1, 'numel', 1, 'values', [0, 1])
             if self.ismethod: # transient mode
                 md = checkfield(md, 'fieldname', 'smb.desfacElevation', '>=', 0, 'numel', 1)
                 md = checkfield(md, 'fieldname', 'smb.albedo_scheme', 'NaN', 1, 'Inf', 1, 'numel', 1, 'values', [0, 1, 2, 3, 4])
@@ -325,6 +334,10 @@ class SMBsemic(object):
             # for alex
             WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'tmid', 'format', 'Double')
             WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'afac', 'format', 'Double')
+        #specific parameterization
+        WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname','isdesertification', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname','isLWDcorrect', 'format', 'Integer')
+
         WriteData(fid, prefix, 'object', self, 'fieldname', 'steps_per_step', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'fieldname', 'averaging', 'format', 'Integer')
 

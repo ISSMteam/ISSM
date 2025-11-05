@@ -237,6 +237,11 @@ void FieldAndEnumFromCode(int* out_enum,char** pfield,const char* string_in){/*{
 		input_enum        = BasalforcingsDeepwaterMeltingRateEnum;
 		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
 	}
+	else if(strcmp(string_in,"Bed")==0){
+		const char* field = "md.geometry.bed";
+		input_enum        = BedEnum;
+		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
+	}
 	else{
 		_error_("Field \""<<string_in<<"\" not supported yet");
 	}
@@ -262,6 +267,7 @@ int IoCodeToEnumSMB(int enum_in){/*{{{*/
 		case 12: return SMBsemicEnum;	 
 		case 13: return SMBarmaEnum;
 		case 14: return SMBdebrisEvattEnum;
+		case 15: return SMBpddGCMEnum;
 		default: _error_("Marshalled SMB code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/

@@ -19,48 +19,57 @@
 
 /*}}}*/
 
-class PetscVec{
+#if _HAVE_CODIPACK_
+#include <adjoint_petsc/vec.h>
+#endif
+
+template<typename doubletype>
+class PetscVec {
 
 	public:
-		Vec vector;
+#if _HAVE_CODIPACK_
+		using PVec = typename std::conditional<std::is_same<doubletype, IssmDouble>::value, adjoint_petsc::ADVec, Vec>::type;
+#else
+		using PVec = Vec;
+#endif
 
-		#ifdef _HAVE_AD_
-		IssmDouble* avector;
-		#endif
+		PVec vector;
 
 		/*PetscVec constructors, destructors*/
 		PetscVec();
 		PetscVec(int M,bool fromlocalsize=false);
 		PetscVec(int m,int M);
-		PetscVec(IssmDouble* buffer, int M);
-		PetscVec(Vec petsc_vec);
+		PetscVec(doubletype* buffer, int M);
+		PetscVec(PVec petsc_vec);
 		~PetscVec();
 
 		/*PetscVec specific routines*/
 		void        Echo(void);
+		void        EchoDebug(std::string message);
 		void        Assemble(void);
-		void        SetValues(int ssize, int* list, IssmDouble* values, InsMode mode);
-		void        SetValue(int dof, IssmDouble value, InsMode  mode);
-		void        GetValue(IssmDouble* pvalue, int dof);
+		void        SetValues(int ssize, int* list, doubletype* values, InsMode mode);
+		void        SetValue(int dof, doubletype value, InsMode  mode);
+		void        GetValue(doubletype* pvalue, int dof);
 		void        GetSize(int* pM);
 		void        GetLocalSize(int* pM);
-		void        GetLocalVector(IssmDouble** pvector,int** pindices);
+		void        GetLocalVector(doubletype** pvector,int** pindices);
 		PetscVec*   Duplicate(void);
-		void        Set(IssmDouble value);
-		void        AXPY(PetscVec* X, IssmDouble a);
-		void        AYPX(PetscVec* X, IssmDouble a);
-		IssmDouble* ToMPISerial(void);
-		IssmDouble* ToMPISerial0(void);
-		void        Shift(IssmDouble shift);
+		void        Set(doubletype value);
+		void        AXPY(PetscVec* X, doubletype a);
+		void        AYPX(PetscVec* X, doubletype a);
+		doubletype* ToMPISerial(void);
+		doubletype* ToMPISerial0(void);
+		void        Shift(doubletype shift);
 		void        Copy(PetscVec* to);
-		IssmDouble  Norm(NormMode norm_type);
-		IssmDouble  Max(void);
-		void        Scale(IssmDouble scale_factor);
-		void        Pow(IssmDouble scale_factor);
-		void        Sum(IssmDouble* pvalue);
+		doubletype  Norm(NormMode norm_type);
+		doubletype  Max(void);
+		void        Scale(doubletype scale_factor);
+		void        Pow(doubletype scale_factor);
+		void        Sum(doubletype* pvalue);
 		void        PointwiseDivide(PetscVec* x,PetscVec* y);
 		void        PointwiseMult(PetscVec* x,PetscVec* y);
-		IssmDouble  Dot(PetscVec* vector);
+		doubletype  Dot(PetscVec* vector);
+
 };
 
 #endif //#ifndef _PETSCVEC_H_

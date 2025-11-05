@@ -1,7 +1,6 @@
 import struct
 import numpy as np
 
-
 def loadresultfromdisk(filename, step, name, *args):  # {{{
     """LOADRESULTFROMDISK - load specific result of solution sequence from disk
     file "filename"

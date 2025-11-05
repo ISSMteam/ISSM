@@ -310,6 +310,156 @@ void       Tria::AverageOntoPartition(Vector<IssmDouble>* partition_contribution
 	}
 }
 /*}}}*/
+bool       Tria::Buttressing(IssmDouble* ptheta, IssmDouble* plength){/*{{{*/
+
+	/*Make sure there is a grounding line here*/
+	if(!IsIceInElement()) return false;
+	if(!IsZeroLevelset(MaskOceanLevelsetEnum)) return true;
+
+	int               domaintype,index1,index2;
+	const IssmPDouble epsilon = 1.e-15;
+	IssmDouble        s1,s2,s_xx,s_yy,s_xy;
+	IssmDouble        gl[NUMVERTICES];
+	IssmDouble        xyz_front[2][3];
+
+	IssmDouble  xyz_list[NUMVERTICES][3];
+	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+
+	/*Recover parameters and values*/
+	parameters->FindParam(&domaintype,DomainTypeEnum);
+	Element::GetInputListOnVertices(&gl[0],MaskOceanLevelsetEnum);
+
+	/*Be sure that values are not zero*/
+	if(gl[0]==0.) gl[0]=gl[0]+epsilon;
+	if(gl[1]==0.) gl[1]=gl[1]+epsilon;
+	if(gl[2]==0.) gl[2]=gl[2]+epsilon;
+
+	if(domaintype==Domain2DverticalEnum){
+		_error_("not implemented");
+	}
+	else if(domaintype==Domain2DhorizontalEnum || domaintype==Domain3DEnum || domaintype==Domain3DsurfaceEnum){
+		int pt1 = 0;
+		int pt2 = 1;
+		if(gl[0]*gl[1]>0){ //Nodes 0 and 1 are similar, so points must be found on segment 0-2 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[2]/(gl[2]-gl[1]);
+			s2=gl[2]/(gl[2]-gl[0]);
+			if(gl[2]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+			xyz_front[pt2][0]=xyz_list[2][0]+s1*(xyz_list[1][0]-xyz_list[2][0]);
+			xyz_front[pt2][1]=xyz_list[2][1]+s1*(xyz_list[1][1]-xyz_list[2][1]);
+			xyz_front[pt2][2]=xyz_list[2][2]+s1*(xyz_list[1][2]-xyz_list[2][2]);
+			xyz_front[pt1][0]=xyz_list[2][0]+s2*(xyz_list[0][0]-xyz_list[2][0]);
+			xyz_front[pt1][1]=xyz_list[2][1]+s2*(xyz_list[0][1]-xyz_list[2][1]);
+			xyz_front[pt1][2]=xyz_list[2][2]+s2*(xyz_list[0][2]-xyz_list[2][2]);
+		}
+		else if(gl[1]*gl[2]>0){ //Nodes 1 and 2 are similar, so points must be found on segment 0-1 and 0-2
+
+			/*Portion of the segments*/
+			s1=gl[0]/(gl[0]-gl[1]);
+			s2=gl[0]/(gl[0]-gl[2]);
+			if(gl[0]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt1][0]=xyz_list[0][0]+s1*(xyz_list[1][0]-xyz_list[0][0]);
+			xyz_front[pt1][1]=xyz_list[0][1]+s1*(xyz_list[1][1]-xyz_list[0][1]);
+			xyz_front[pt1][2]=xyz_list[0][2]+s1*(xyz_list[1][2]-xyz_list[0][2]);
+			xyz_front[pt2][0]=xyz_list[0][0]+s2*(xyz_list[2][0]-xyz_list[0][0]);
+			xyz_front[pt2][1]=xyz_list[0][1]+s2*(xyz_list[2][1]-xyz_list[0][1]);
+			xyz_front[pt2][2]=xyz_list[0][2]+s2*(xyz_list[2][2]-xyz_list[0][2]);
+		}
+		else if(gl[0]*gl[2]>0){ //Nodes 0 and 2 are similar, so points must be found on segment 1-0 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[1]/(gl[1]-gl[0]);
+			s2=gl[1]/(gl[1]-gl[2]);
+			if(gl[1]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt2][0]=xyz_list[1][0]+s1*(xyz_list[0][0]-xyz_list[1][0]);
+			xyz_front[pt2][1]=xyz_list[1][1]+s1*(xyz_list[0][1]-xyz_list[1][1]);
+			xyz_front[pt2][2]=xyz_list[1][2]+s1*(xyz_list[0][2]-xyz_list[1][2]);
+			xyz_front[pt1][0]=xyz_list[1][0]+s2*(xyz_list[2][0]-xyz_list[1][0]);
+			xyz_front[pt1][1]=xyz_list[1][1]+s2*(xyz_list[2][1]-xyz_list[1][1]);
+			xyz_front[pt1][2]=xyz_list[1][2]+s2*(xyz_list[2][2]-xyz_list[1][2]);
+		}
+		else{
+			_error_("case not possible");
+		}
+
+	}
+	else _error_("mesh type "<<EnumToStringx(domaintype)<<"not supported yet ");
+
+	/*Some checks in debugging mode*/
+	_assert_(s1>=0 && s1<=1.);
+	_assert_(s2>=0 && s2<=1.);
+
+	/*Get normal vector*/
+	IssmDouble normal[3];
+	this->NormalSection(&normal[0],&xyz_front[0][0]);
+
+	/*Get deviatoric stress tensor*/
+	this->ComputeDeviatoricStressTensor();
+
+	/*Get inputs*/
+	IssmDouble flux = 0.;
+	IssmDouble vx,vy,thickness,Jdet;
+	IssmDouble rho_ice        = this->FindParam(MaterialsRhoIceEnum);
+	IssmDouble rho_seawater   = this->FindParam(MaterialsRhoSeawaterEnum);
+	IssmDouble constant_g     = this->FindParam(ConstantsGEnum);
+	Input* vx_input=NULL;
+	Input* vy_input=NULL;
+	if(domaintype==Domain2DhorizontalEnum){
+		vx_input=this->GetInput(VxEnum); _assert_(vx_input);
+		vy_input=this->GetInput(VyEnum); _assert_(vy_input);
+	}
+	else{
+		vx_input=this->GetInput(VxAverageEnum); _assert_(vx_input);
+		vy_input=this->GetInput(VyAverageEnum); _assert_(vy_input);
+	}
+	Input *s_xx_input      = this->GetInput(DeviatoricStressxxEnum); _assert_(s_xx_input);
+	Input *s_xy_input      = this->GetInput(DeviatoricStressxyEnum); _assert_(s_xy_input);
+	Input *s_yy_input      = this->GetInput(DeviatoricStressyyEnum); _assert_(s_yy_input);
+	Input *thickness_input = this->GetInput(ThicknessEnum);          _assert_(thickness_input);
+
+   IssmDouble theta  = 0.;
+   IssmDouble length = 0.;
+	Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
+	while(gauss->next()){
+		thickness_input->GetInputValue(&thickness,gauss);
+		vx_input->GetInputValue(&vx,gauss);
+		vy_input->GetInputValue(&vy,gauss);
+		s_xx_input->GetInputValue(&s_xx,gauss);
+		s_xy_input->GetInputValue(&s_xy,gauss);
+		s_yy_input->GetInputValue(&s_yy,gauss);
+      this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
+
+      IssmDouble R[2][2];
+      R[0][0] = 2*s_xx+s_yy;
+      R[1][0] = s_xy;
+      R[0][1] = s_xy;
+      R[1][1] = 2*s_yy+s_xx;
+
+      IssmDouble N  = normal[0]*(R[0][0]*normal[0]+R[0][1]*normal[1]) + normal[1]*(R[1][0]*normal[0]+R[1][1]*normal[1]);
+      IssmDouble N0 = 0.5*constant_g*rho_ice*(1-rho_ice/rho_seawater)*thickness;
+
+		theta  += Jdet*gauss->weight*N/N0;
+      length += Jdet*gauss->weight;
+	}
+
+	/*Cleanup and return*/
+   delete gauss;
+	//_assert_(theta>0.);
+	_assert_(length>0.);
+	*ptheta  = theta;
+	*plength = length;
+	return true;
+}
+/*}}}*/
 void       Tria::CalvingRateVonmises(){/*{{{*/
 
 	/*First, compute Von Mises Stress*/
@@ -488,7 +638,7 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 	IssmDouble  water_height, bed,Hab,thickness,surface;
 	IssmDouble  surface_crevasse[NUMVERTICES], basal_crevasse[NUMVERTICES], crevasse_depth[NUMVERTICES], H_surf, H_surfbasal;
 	IssmDouble  strainparallel, straineffective,B,n;
-	IssmDouble  s_xx,s_xy,s_yy,s1,s2,stmp;
+	IssmDouble  s_xx,s_xy,s_yy,s1,s2,stmp,vH,Kmax;
 	int         crevasse_opening_stress;
 
 	/*reset if no ice in element*/
@@ -542,44 +692,64 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 		s_xy_input->GetInputValue(&s_xy,&gauss);
 		s_yy_input->GetInputValue(&s_yy,&gauss);
 
-      /*Get longitudinal or maximum Eigen stress*/
+		/*Get longitudinal or maximum Eigen stress*/
 		if(crevasse_opening_stress==0){
-         /*Otero2010: balance between the tensile deviatoric stress and ice overburden pressure*/
+			/*Otero2010: balance between the tensile deviatoric stress and ice overburden pressure*/
 			strainrateparallel_input->GetInputValue(&strainparallel,&gauss);
 			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
 			B_input->GetInputValue(&B,&gauss);
 			n_input->GetInputValue(&n,&gauss);
-         s1 =  B * strainparallel * pow(straineffective, (1./n)-1);
+			s1 =  B * strainparallel * pow(straineffective, (1./n)-1);
 		}
 		else if(crevasse_opening_stress==1){
-         /*Benn2017,Todd2018: maximum principal stress */
+			/*Benn2017,Todd2018: maximum principal stress */
 			Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
 			s1 = max(0.,max(s1,s2));
 		}
-      else{
-         _error_("not supported");
-      }
-
-      /*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
-      surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
-		if(surface_crevasse[iv]<0.){
-			surface_crevasse[iv]=0.;
-			water_height = 0.;
+		else if(crevasse_opening_stress==2){
+			/*Coffey 2024, Buttressing based */
+			Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
+			strainrateeffective_input->GetInputValue(&straineffective,&gauss);
+			n_input->GetInputValue(&n,&gauss);
+			B_input->GetInputValue(&B,&gauss);
+			if((straineffective <= 0.) || (thickness <= 0.) ){
+				vH = 1e14;
+			}
+			else{
+				vH = 0.5*B/thickness*pow(straineffective, (1./n)-1);
+			}
+			Kmax = 1.0 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
+			if(Kmax<0.) Kmax = 0.0;
+		}
+		else{
+			_error_("not supported");
 		}
 
-      /*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
-      if(bed>0.){
-         basal_crevasse[iv] = 0.;
-      }
-      else{
-         Hab = thickness - (rho_seawater/rho_ice) * (-bed);
-         if(Hab<0.)  Hab=0.;
-         basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* (2*s1/ (rho_ice*constant_g)-Hab);
-         if(basal_crevasse[iv]<0.) basal_crevasse[iv]=0.;
-      }
+		if(crevasse_opening_stress==2) {
+			/*Coffey 2024, Buttressing based */
+			surface_crevasse[iv] = thickness*(1.0-rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
+			basal_crevasse[iv]   = thickness*(rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
+			//_printf0_(Kmax<<", "<<basal_crevasse[iv]<<", "<<surface_crevasse[iv]<<endl);
+		}
+		else {
+			/*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
+			surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
 
-      /*Total crevasse depth (surface + basal)*/
-		crevasse_depth[iv]   = surface_crevasse[iv] + basal_crevasse[iv];
+			/*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
+			if(bed>0.){
+				basal_crevasse[iv] = 0.;
+			}
+			else{
+				Hab = thickness - (rho_seawater/rho_ice) * (-bed);
+				if(Hab<0.)  Hab=0.;
+				basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* (2*s1/ (rho_ice*constant_g)-Hab);
+			}
+		}
+
+		/*crevasse depths (total = surface + basal)*/
+		if(surface_crevasse[iv]<0.) surface_crevasse[iv]=0.;
+		if(basal_crevasse[iv]<0.)   basal_crevasse[iv]=0.;
+		crevasse_depth[iv]  = surface_crevasse[iv] + basal_crevasse[iv];
 	}
 
 	this->AddInput(SurfaceCrevasseEnum,&surface_crevasse[0],P1DGEnum);
@@ -1191,7 +1361,18 @@ void       Tria::CalvingRateCalvingMIP(){/*{{{*/
 	}
 	/*Add input*/
 	this->AddInput(CalvingCalvingrateEnum,&calvingrate[0],P1DGEnum);
-	this->CalvingRateToVector();
+	switch (experiment) {
+		case 1:
+		case 3:
+			this->CalvingRateToVector(true);
+			break;
+		case 2:
+		case 4:
+			this->CalvingRateToVector(false);
+			break;
+		default:
+			_error_("The experiment is not supported yet!");
+	}
 }
 /*}}}*/
 IssmDouble Tria::CharacteristicLength(void){/*{{{*/
@@ -5187,6 +5368,30 @@ void       Tria::SetControlInputsFromVector(IssmDouble* vector,int control_enum,
 		}
 	}
 	else _error_("Type not supported");
+
+	/*Special handling of some inputs*/
+	if(control_enum==BedEnum){
+		IssmDouble bedlist[NUMVERTICES];
+		IssmDouble thicknesslist[NUMVERTICES];
+		IssmDouble surfacelist[NUMVERTICES];
+		IssmDouble phi[NUMVERTICES];
+		Element::GetInputListOnVertices(&bedlist[0], BedEnum);
+		Element::GetInputListOnVertices(&thicknesslist[0], ThicknessEnum);
+		Element::GetInputListOnVertices(&surfacelist[0], SurfaceEnum);
+		Element::GetInputListOnVertices(&phi[0],MaskOceanLevelsetEnum);
+
+		for(int i=0;i<NUMVERTICES;i++) {
+			if(phi[i]>0.){
+				thicknesslist[i] = surfacelist[i]-bedlist[i]; //surface = oldbase + newthickness
+			}
+			if(thicknesslist[i]<1.){
+				thicknesslist[i]=1.;
+			}
+		}
+
+		/*Add input to the element: */
+		this->AddBasalInput(ThicknessEnum,thicknesslist,P1Enum);
+	}
 
 	/*Clean up*/
 	xDelete<int>(idlist);

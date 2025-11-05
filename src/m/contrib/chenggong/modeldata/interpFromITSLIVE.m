@@ -6,7 +6,7 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	%		 [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin)
 	%
 	%	X, Y are the coordinates of the mesh 
-	%	Tstart and Tend decimal year of the start and end time
+	%	Tstart and Tend decimal year of the start and end time, if Tstart=Tend=0, then load the 120m composite
 	%  vx_out and vy_out is (size(X), nt) tensor, depending on the dimension of X 
 	%
 	%   Example:
@@ -17,10 +17,20 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	% get the version of ITS_LIVE, v02 is the latest version (by 2024-07)
 	% however, this version is in h5 format, can only be read by `h5read`, NOT `ncread`
 	data_version = getfieldvalue(options,'version', 2);
+
+	% Greenland (default) or Antarctica
+	hem = getfieldvalue(options,'hemisphere', 'n');
+	 
+	if strcmp(hem,'n')
+		icesheet = 'Greenland';
+	else
+		icesheet = 'Antarctica';
+	end
+
 	if data_version == 1
-		foldername = '/totten_1/ModelData/Greenland/ITS_LIVE/v01/';
+		foldername = ['/totten_1/ModelData/', icesheet, '/ITS_LIVE/v01/'];
 	elseif data_version == 2
-		foldername = '/totten_1/ModelData/Greenland/ITS_LIVE/';
+		foldername = ['/totten_1/ModelData/', icesheet, '/ITS_LIVE/'];
 	else
 		error(['ITS_LIVE version ', data_version, ' is not supported!'])
 	end
@@ -42,7 +52,11 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	end
 	% find all the data files with Tstart<=t<=Tend
 	dataInd = (dataTime>=Tstart) & (dataTime<=Tend);
-	disp([' For the selected period: ', datestr(decyear2date((Tstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tend)),'yyyy-mm-dd'), ', there are ', num2str(sum(dataInd)), ' records' ]);
+	if ((Tstart ==0) & (Tend==0))
+		disp([' Use ITS_LIVE composite 120 m velocity map for ', icesheet]);
+	else
+		disp([' For the selected period: ', datestr(decyear2date((Tstart)),'yyyy-mm-dd'), ' to ', datestr(decyear2date((Tend)),'yyyy-mm-dd'), ', there are ', num2str(sum(dataInd)), ' records for ', icesheet ]);
+	end
 
 	dataToLoad = {templist(dataInd).name};
 	time_out = dataTime(dataInd);

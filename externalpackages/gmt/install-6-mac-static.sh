@@ -87,13 +87,13 @@ cd build
 #
 cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DBLAS_LIBRARIES="${BLAS_ROOT}/lib/libfblas.a;${LIBGFORTRAN_ROOT}/libgfortran.a;${LIBGFORTRAN_ROOT}/libquadmath.a;${LIBGCC}" \
+	-DBLAS_LIBRARIES="-lblas;${LIBGFORTRAN_ROOT}/libgfortran.a;${LIBGFORTRAN_ROOT}/libquadmath.a;${LIBGCC}" \
 	-DCURL_INCLUDE_DIR="${CURL_ROOT}/include" \
 	-DCURL_LIBRARY="${CURL_ROOT}/lib/libcurl.a" \
 	-DGDAL_EXTRA_LIBS="${GDAL_EXTRA_LIBS}" \
 	-DGLIB_INCLUDE_DIRS="${GLIB_H_DIR};${GLIBCONFIG_H_DIR}" \
 	-DGLIB_LIBRARY="${LIBGLIB} ${LIBGLIB_ROOT}/libgthread-2.0.a ${LIBINTL} -liconv ${LIBPCRE} -framework Foundation" \
-	-DLAPACK_LIBRARIES="${LAPACK_ROOT}/lib/libflapack.a;${LIBGFORTRAN_ROOT}/libgfortran.a;${LIBGFORTRAN_ROOT}/libquadmath.a;${LIBGCC}" \
+	-DLAPACK_LIBRARIES="-llapack;${LIBGFORTRAN_ROOT}/libgfortran.a;${LIBGFORTRAN_ROOT}/libquadmath.a;${LIBGCC}" \
 	-DNETCDF_EXTRA_LIBS="${NETCDF_EXTRA_LIBS}" \
 	..
 

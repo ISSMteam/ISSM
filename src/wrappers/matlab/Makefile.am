@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @AMPIINCL@ @ADJOINTMPIINCL@ @MEDIPACKINCL@ @CODIPACKINCL@ @PROJINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@
 AUTOMAKE_OPTIONS = subdir-objects
 
 EXEEXT=$(MATLABWRAPPEREXT)
@@ -48,12 +48,12 @@ lib_LTLIBRARIES += \
 	ExpSimplify_matlab.la \
 	ExpToLevelSet_matlab.la \
 	InterpFromGridToMesh_matlab.la \
+	InterpFromGrid.la \
 	InterpFromMesh2d_matlab.la \
 	InterpFromMeshToGrid_matlab.la \
 	InterpFromMeshToMesh2d_matlab.la \
 	InterpFromMeshToMesh3d_matlab.la \
 	IssmConfig_matlab.la \
-	M1qn3_matlab.la \
 	MeshPartition_matlab.la \
 	MeshProfileIntersection_matlab.la \
 	NodeConnectivity_matlab.la \
@@ -124,7 +124,15 @@ if MAC
 if HAVE_FORTRANDIR
 AM_LDFLAGS += -Wl,-rpath,$(FORTRANDIR)
 endif
+endif
+endif
+
+if !STANDALONE_LIBRARIES
 if MAC
+if BOOST
+AM_LDFLAGS += -Wl,-rpath,$(BOOSTROOT)/lib
+endif
+if PROJ
 AM_LDFLAGS += -Wl,-rpath,$(PROJROOT)/lib
 endif
 endif
@@ -144,6 +152,9 @@ endif
 
 if FORTRAN
 deps += $(FLIBS) $(FORTRANLIB)
+if !STANDALONE_LIBRARIES
+MEXLIB += $(FLIBS) $(FORTRANLIB)
+endif
 endif
 
 deps += ${LIBADD_FOR_MEX}
@@ -167,7 +178,7 @@ if !MSYS2
 libISSMMatlab_la_LDFLAGS += -static
 libISSMApi_matlab_la_LDFLAGS += -static
 endif
-deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(METEOIOLIB) $(SNOWPACKLIB) $(OSLIBS) ${LIBADD_FOR_MEX}
+deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(OSLIBS) ${LIBADD_FOR_MEX}
 endif
 
 libISSMApi_matlab_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
@@ -220,6 +231,11 @@ ExpSimplify_matlab_la_SOURCES = ../ExpSimplify/ExpSimplify.cpp
 ExpSimplify_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ExpSimplify_matlab_la_LIBADD = ${deps}
 
+#Very specific case for this mex: do not compile like other modules
+InterpFromGrid_la_SOURCES = ../InterpFromGrid/InterpFromGrid.cpp
+InterpFromGrid_la_CXXFLAGS = ${MEXLIB}
+InterpFromGrid_la_LIBADD = 
+
 InterpFromGridToMesh_matlab_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
 InterpFromGridToMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 InterpFromGridToMesh_matlab_la_LIBADD = ${deps}
@@ -247,10 +263,6 @@ IssmConfig_matlab_la_LIBADD = ${deps}
 Kriging_matlab_la_SOURCES = ../Kriging/Kriging.cpp
 Kriging_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 Kriging_matlab_la_LIBADD = ${deps}
-
-M1qn3_matlab_la_SOURCES = ../M1qn3/M1qn3.cpp
-M1qn3_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-M1qn3_matlab_la_LIBADD = ${deps}
 
 MeshPartition_matlab_la_SOURCES = ../MeshPartition/MeshPartition.cpp
 MeshPartition_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}

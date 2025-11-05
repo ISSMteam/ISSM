@@ -2,10 +2,11 @@
  *  \brief: header file for transientinput object
  */
 
-#ifndef _TRANSIENTINPUT2_H_
-#define _TRANSIENTINPUT2_H_
+#ifndef _TRANSIENTINPUT_H_
+#define _TRANSIENTINPUT_H_
 
 /*Headers:*/
+#include <vector>
 #include "./Input.h"
 class Gauss;
 class Parameters;
@@ -13,16 +14,16 @@ class Parameters;
 class TransientInput: public Input{
 
 	private:
-		int     numberofelements_local;
-		int     numberofvertices_local;
+		int numberofelements_local;
+		int numberofvertices_local;
 
 	public:
-		int          enum_type;
-		int          numtimesteps;
-		Input      **inputs;
-		IssmDouble  *timesteps;
-		Parameters  *parameters;      //to find current time.
+		int                     enum_type;
+		int                     numtimesteps; /*Should always have the same size as inputs/timesteps*/
+		std::vector<Input*>     inputs;
+		std::vector<IssmDouble> timesteps;
 
+		Parameters  *parameters;               /*Needed to find current time*/
 		IssmDouble   current_step;
 		Input       *current_input;
 
@@ -30,7 +31,6 @@ class TransientInput: public Input{
 		TransientInput();
 		TransientInput(int in_enum_type,int nbe,int nbv,IssmDouble* times,int N);
 		~TransientInput();
-		void AddTimeInput(Input* input,IssmDouble time); /*FIXME: remove!*/
 		void AddTriaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddPentaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddTriaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in);

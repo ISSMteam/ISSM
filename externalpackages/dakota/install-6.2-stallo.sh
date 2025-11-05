@@ -14,14 +14,14 @@ rm -rf install
 mkdir src build install 
 
 #Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/dakota-6.2-public.src.tar.gz' 'dakota-6.2-public-src.tar.gz'
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 #Untar 
-tar -zxvf dakota-6.2-public-src.tar.gz
+tar -zxvf dakota-${VER}-public-src.tar.gz
 
 #Move Dakota to src directory
-mv dakota-6.2.0.src/* src
-rm -rf dakota-6.2.0.src
+mv dakota-${VER}.0.src/* src
+rm -rf dakota-${VER}.0.src
 
 #Set up Dakota cmake variables and config
 #export PATH="/usr/bin":$PATH
@@ -49,14 +49,15 @@ sed -i'' -e 's|SET(PythonInterp_FIND_VERSION|#SET(PythonInterp_FIND_VERSION|' ${
 #Configure dakota
 cd $DAK_BUILD
 
-cmake -D CMAKE_C_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicc \
-	   -D CMAKE_CXX_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicxx \
-	   -D CMAKE_Fortran_COMPILER=gfortran \
-		-DHAVE_ACRO=off \
-		-DHAVE_JEGA=off \
-		-C $DAK_SRC/cmake/BuildDakotaCustom.cmake \
-		-C $DAK_SRC/cmake/DakotaDev.cmake \
-		$DAK_SRC
+cmake \
+	-DCMAKE_C_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicc \
+	-DCMAKE_CXX_COMPILER=/global/hds/software/cpu/eb3/impi/5.0.3.048-iccifort-2015.3.187-GNU-4.9.3-2.25/bin64/mpicxx \
+	-DCMAKE_Fortran_COMPILER=gfortran \
+	-DHAVE_ACRO=off \
+	-DHAVE_JEGA=off \
+	-C $DAK_SRC/cmake/BuildDakotaCustom.cmake \
+	-C $DAK_SRC/cmake/DakotaDev.cmake \
+	$DAK_SRC
 cd ..
 
 #Compile and install dakota

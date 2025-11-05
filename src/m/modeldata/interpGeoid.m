@@ -1,8 +1,6 @@
 function [geoid] = interpGeoid(X,Y,varargin),
 
 switch oshostname(),
-	case {'murdo','thwaites','astrid'}
-		rootname=[jplsvn() '/proj-morlighem/DatasetGreenland/Data/Geoid/eigen-6c4-1970.mat'];
 	case {'ronne'}
 		rootname='/home/ModelData/Global/Geoid/eigen-6c4-1970.mat';
 	case {'totten'}

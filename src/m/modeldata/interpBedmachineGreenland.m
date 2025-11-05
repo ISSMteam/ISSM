@@ -17,14 +17,6 @@ function output = interpBedmachineGreenland(X,Y,string,method,ncdate)
 %
 % Version 11/30/2018 Mathieu Morlighem mmorligh@uci.edu
 
-if nargin<3, string = 'bed'; end
-if nargin<4
-	if strcmp(string,'mask') | strcmp(string,'source')
-		method='nearest'; % default method
-	else
-		method='cubic'; % default method
-	end
-end
 if nargin<5
 	%ncdate='2015-04-27'; %BedMachine v2
 	ncdate='2017-09-25'; %BedMachine v3
@@ -35,10 +27,20 @@ if nargin<5
 	ncdate='2022-07-28';
 	ncdate='v6.0';
 	ncdate='v6.1';
+	ncdate='v6.6';
 end
+if nargin<4
+	if strcmp(string,'mask') | strcmp(string,'source')
+		method='nearest'; % default method
+	else
+		method='cubic'; % default method
+	end
+end
+if nargin<3, string = 'bed'; end
+
 basename = 'BedMachineGreenland';
 
-if nargin==5
+if nargin==5 && exist(ncdate, 'file')
 	ncfile = ncdate;
 else
 	%List of common paths to try

@@ -1,10 +1,9 @@
+#include <float.h> /* defines DBL_EPSILON*/
 #include "./HydrologyGlaDSAnalysis.h"
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
 #include "../shared/shared.h"
 #include "../modules/modules.h"
-
-#define AEPS 2.2204460492503131E-015
 
 /*Model processing*/
 void HydrologyGlaDSAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
@@ -285,12 +284,12 @@ ElementMatrix* HydrologyGlaDSAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 		/*Get norm of gradient of hydraulic potential and make sure it is >0*/
 		IssmDouble normgradphi = sqrt(dphi[0]*dphi[0] + dphi[1]*dphi[1]);
-		if(normgradphi < AEPS) normgradphi = AEPS;
+		if(normgradphi < DBL_EPSILON) normgradphi = DBL_EPSILON;
 
 		/*Use transition model if specified*/
 		IssmDouble nu = mu_water/rho_water;
 		IssmDouble coeff;
-		if(istransition==1 && omega>=AEPS){
+		if(istransition==1 && omega>=DBL_EPSILON){
 			IssmDouble hratio = fabs(h/h_r);
 			IssmDouble coarg = 1. + 4.*pow(hratio,3-2*alpha)*omega*k*pow(h,3)*normgradphi/nu;
 			coeff = nu/2./omega*pow(hratio,2*alpha-3) * (-1 + pow(coarg, 0.5))/normgradphi;
@@ -549,12 +548,12 @@ void           HydrologyGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* solut
 
          /*Get norm of gradient of hydraulic potential and make sure it is >0*/
          IssmDouble normgradphi = sqrt(dphi[0]*dphi[0] + dphi[1]*dphi[1]);
-         if(normgradphi < AEPS) normgradphi = AEPS;
+         if(normgradphi < DBL_EPSILON) normgradphi = DBL_EPSILON;
 
          /*If omega is zero, use standard model, otherwise transition model*/
          IssmDouble nu = mu_water/rho_water;
 			IssmDouble coeff;
-			if(istransition==1 && omega>=AEPS){
+			if(istransition==1 && omega>=DBL_EPSILON){
 				IssmDouble hratio = fabs(h/h_r);
 				IssmDouble coarg = 1. + 4.*pow(hratio,3-2*alpha)*omega*k*pow(h,3)*normgradphi/nu;
 				coeff = nu/2./omega*pow(hratio,2*alpha-3) * (-1 + pow(coarg, 0.5))/normgradphi;  // coeff gives discharge; divide by h to get speed instead of discharge
@@ -563,8 +562,8 @@ void           HydrologyGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* solut
 			coeff = k*pow(h,alpha)*pow(normgradphi,beta-2.);  // coeff gives discharge; divide by h to get speed instead of discharge
 			}
 
-			vx[iv] = -coeff/max(AEPS,h)*dphi[0];
-			vy[iv] = -coeff/max(AEPS,h)*dphi[1];
+			vx[iv] = -coeff/max(DBL_EPSILON,h)*dphi[0];
+			vy[iv] = -coeff/max(DBL_EPSILON,h)*dphi[1];
 
 			d[iv] = coeff*normgradphi;
 		}
@@ -754,7 +753,7 @@ void HydrologyGlaDSAnalysis::UpdateSheetThickness(Element* element){/*{{{*/
 		h_new[iv] = ODE1(alpha,beta,h_old,dt,1);
 
 		/*Make sure it is positive*/
-		if(h_new[iv]<AEPS) h_new[iv] = AEPS;
+		if(h_new[iv]<DBL_EPSILON) h_new[iv] = DBL_EPSILON;
 		
 		}
 

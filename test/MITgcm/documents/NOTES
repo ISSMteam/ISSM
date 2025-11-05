@@ -1,0 +1,54 @@
+The notes below and files in this directory initially originate from the slr svn repo:
+svn --username ????? co http://issm.ess.uci.edu/svn/slr
+
+
+
+
+{{{ Meeting with Tony Lee.
+Leverage model we have: mass ocean + ice. Atmopheric constraints. 
+
+CMIP: projection RCP scenarios. 2D forcings for atmosphere. Ask Peter Gallagher for help.
+Decadal Prediction:  no point of contact/website that has all the decadal prediction archives.  UK Met
+Depresys Doug Smith, NCAR runs (Danabasoglu Gokhan) - includes GFDL among them (Tony Rosatti).
+
+Issue: do we stop there to figure out the enveloppe of regional sl under decadal or CMIP forcings. 
+Or do we do an extra step: implication for inundations. Storm surge wave statistics to give you a bigger enveloppe. 
+We don't have expertise in storm surge or extreme events.
+
+NCAR wave forecast, lead is  Hendrick Tolman NOAA operational forecast system, RFTOOS.
+
+Issue of timeframe? 10 year, 50 years.  Max and minimum number? 
+
+Forcing comes from a coupled system: if the coupled system does not have GRACE errors, ice shelves -> does it make sense to use that forcing?  Mindful about potential limitations: 
+- CMIP6 will cointinuously improve these constraoints, so that's ok. 
+- ongoing effort to modify, alleviate these concerns by MITgcm and CMIP5 constraints (ask Dimitris about this)
+ask Dimitris more about it. 
+
+GMAO uses Poseidon, thinking about changing to MOM3. Since MOM4 got released, nothing has happened.
+
+}}}
+
+
+
+
+From J. Wahr: 
+- wanted to know whether we want to match altimetry or whether we want 
+- spatial resolution issue. Ocean function is 1degx1deb -> need to increase that. 
+- same thing for spherical harmonics that are currently runnning at 1deg. 
+- other issue is that code relies on ocean funcion that does not change in
+  time. This is ok if we are sticking to 10-100 yr projections, but it's not
+  ok if we are targetting 1000 yrs projections where this would become an
+  issue. There is currently no solution to this matter.
+
+Here is the email referring to some of theses points: 
+Isabella, Eric:  I've now modified the sea level code to include rotational
+feedback.  Before sending it to Isabella to be archived at Irvine, I have a
+question.  I'm not sure exactly what JPL wants to do with the code, but right
+now it's set up to output changes in sea level as would be seen by a tide
+gauge.  That is, it outputs: (change in geocentric sea surface height) minus
+(change in geocentric sea floor height).  An altimeter sees, instead, just the
+geocentric sea surface height.  For the JPL applications you have in mind,
+would you rather have the program output the latter (i.e. geocentric sea
+surface height)?
+ 
+-  John

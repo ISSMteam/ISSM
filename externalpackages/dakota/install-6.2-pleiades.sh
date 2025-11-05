@@ -10,19 +10,19 @@ PREFIX="${ISSM_DIR}/externalpackages/dakota/install" # Set to location where ext
 
 ## Environment
 #
-export BLAS_LIBS="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it; should upate to /nasa/intel/Compiler/2021.4.0/mkl/2021.4.0/lib/intel64
-export CXXFLAGS='-std=c++11'
+export BLAS_LIBS="-L${COMP_INTEL_ROOT}/mkl/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export CXXFLAGS='-std=c++98'
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
-export LAPACK_LIBS="-L/nasa/intel/Compiler/2018.3.222/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64/lib/intel64/ -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it; should upate to /nasa/intel/Compiler/2021.4.0/mkl/2021.4.0/lib/intel64
+export LAPACK_LIBS="-L${COMP_INTEL_ROOT}/mkl/lib/intel64/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 
 # Cleanup
 rm -rf ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 mkdir -p ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 # Unpack source
 tar -zxvf dakota-${VER}-public-src.tar.gz
@@ -33,7 +33,6 @@ rm -rf dakota-${VER}.0.src
 
 # Copy customized source and configuration files to 'src' directory
 cp configs/${VER}/packages/DDACE/src/Analyzer/MainEffectsExcelOutput.cpp ${DAK_SRC}/packages/DDACE/src/Analyzer
-cp configs/${VER}/packages/queso/src/misc/src/1DQuadrature.C ${DAK_SRC}/packages/queso/src/misc/src
 cp configs/${VER}/packages/surfpack/src/surfaces/nkm/NKM_KrigingModel.cpp ${DAK_SRC}/packages/surfpack/src/surfaces/nkm
 cp configs/${VER}/packages/VPISparseGrid/src/sandia_rules.cpp ${DAK_SRC}/packages/VPISparseGrid/src
 cp configs/${VER}/src/DakotaInterface.cpp ${DAK_SRC}/src
@@ -58,12 +57,10 @@ cmake \
 	-DCMAKE_C_COMPILER=mpicc \
 	-DCMAKE_C_FLAGS="-Wno-error=implicit-function-declaration" \
 	-DCMAKE_CXX_COMPILER=mpicxx \
-	-DCMAKE_Fortran_COMPILER=/usr/bin/gfortran \
+	-DCMAKE_Fortran_COMPILER=gfortran \
 	-DBoost_NO_BOOST_CMAKE=TRUE \
 	-DHAVE_ACRO=OFF \
 	-DHAVE_JEGA=OFF \
-	-DHAVE_QUESO=ON \
-	-DDAKOTA_HAVE_GSL=ON \
 	-C${DAK_SRC}/cmake/BuildDakotaCustom.cmake \
 	-C${DAK_SRC}/cmake/DakotaDev.cmake \
 	${DAK_SRC}

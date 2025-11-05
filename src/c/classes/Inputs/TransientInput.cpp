@@ -18,11 +18,9 @@
 /*TransientInput constructors and destructor*/
 TransientInput::TransientInput(){/*{{{*/
 
-	enum_type=UNDEF;
-	inputs=NULL;
-	this->numtimesteps=0;
+	this->enum_type=UNDEF;
 	this->parameters=NULL;
-	this->timesteps=NULL;
+	this->numtimesteps=0;
 
 	this->current_input=NULL;
 	this->current_step=-1;
@@ -38,17 +36,10 @@ TransientInput::TransientInput(int in_enum_type,int nbe,int nbv,IssmDouble* time
 
 	/*Allocate values and timesteps, and copy: */
 	_assert_(N>=0 && N<1e6);
-	this->numtimesteps=N;
-	if(N>0){
-		this->timesteps=xNew<IssmDouble>(N);
-		xMemCpy(this->timesteps,timesin,N);
-
-		this->inputs     = xNew<Input*>(N);
-		for(int i=0;i<N;i++) this->inputs[i] = NULL;
-	}
-	else{
-		this->timesteps=0;
-		this->inputs   =0;
+	this->numtimesteps = N;
+	for(int i=0;i<N;i++){
+		this->timesteps.push_back(timesin[i]);
+		this->inputs.push_back(NULL);
 	}
 	this->parameters = NULL;
 	this->current_input=NULL;
@@ -60,8 +51,8 @@ TransientInput::~TransientInput(){/*{{{*/
 	for(int i=0;i<this->numtimesteps;i++){
 		delete this->inputs[i];
 	}
-	xDelete<Input*>(this->inputs);
-	xDelete<IssmDouble>(this->timesteps);
+
+	/*No need to delete vectors, they manage their own memory*/
 
 	if(this->current_input) delete this->current_input;
 }
@@ -70,25 +61,25 @@ TransientInput::~TransientInput(){/*{{{*/
 /*Object virtual functions definitions:*/
 Input* TransientInput::copy() {/*{{{*/
 
-	TransientInput* output=NULL;
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
 
-	output = new TransientInput();
-	output->enum_type=this->enum_type;
-	output->numtimesteps=this->numtimesteps;
-	if(this->numtimesteps>0){
-		output->timesteps=xNew<IssmDouble>(this->numtimesteps);
-		xMemCpy(output->timesteps,this->timesteps,this->numtimesteps);
-		output->inputs = xNew<Input*>(this->numtimesteps);
-		for(int i=0;i<this->numtimesteps;i++){
-			if(this->inputs[i]){
-				output->inputs[i] = this->inputs[i]->copy();
-			}
-			else{
-				output->inputs[i] = NULL;
-			}
+	TransientInput* output = new TransientInput();
+	output->enum_type    = this->enum_type;
+	output->numtimesteps = this->numtimesteps;
+	for(int i=0;i<this->numtimesteps;i++){
+		output->timesteps.push_back(this->timesteps[i]);
+		if(this->inputs[i]){
+			output->inputs.push_back(this->inputs[i]->copy());
+		}
+		else{
+			output->inputs.push_back(NULL);
 		}
 	}
 	output->parameters=this->parameters;
+
+	_assert_(output->timesteps.size()==output->numtimesteps);
+	_assert_(output->inputs.size()==output->numtimesteps);
 
 	return output;
 }/*}}}*/
@@ -125,34 +116,28 @@ int  TransientInput::Id(void){ return -1; }/*{{{*/
 /*}}}*/
 void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
-	bool isnull;
+	bool       isnull;
+	IssmDouble time;
 
 	int object_enum = TransientInputEnum;
    marshallhandle->call(object_enum);
-
 	marshallhandle->call(this->numberofelements_local);
 	marshallhandle->call(this->numberofvertices_local);
 	marshallhandle->call(this->enum_type);
 	marshallhandle->call(this->numtimesteps);
-	marshallhandle->call(this->timesteps,numtimesteps);
-
-	/*Allocate memory if need be*/
-	if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
-		int N = this->numtimesteps; _assert_(N>=0 && N<1e6);
-		if(N){
-			this->inputs = xNew<Input*>(N);
-			for(int i=0;i<N;i++) this->inputs[i] = NULL;
-		}
-		else{
-			this->inputs = NULL;
-		}
-	}
 
 	/*Marshall!*/
 	if(marshallhandle->OperationNumber()!=MARSHALLING_LOAD){
+
+		_assert_(this->timesteps.size()==this->numtimesteps);
+		_assert_(this->inputs.size()==this->numtimesteps);
+
 		for(int i=0;i<this->numtimesteps;i++){
 
-			//_assert_(this->inputs[i]);
+			/*Write time for slice i*/
+			marshallhandle->call(this->timesteps[i]);
+
+			/*Write input for slice i*/
 			isnull = false;
 			if(!this->inputs[i]) isnull = true;
 			marshallhandle->call(isnull);
@@ -166,6 +151,12 @@ void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	}
 	else{
 		for(int i=0;i<this->numtimesteps;i++){
+
+			/*Load time for slice i*/
+			marshallhandle->call(time);
+			this->timesteps.push_back(time);
+
+			/*Load input for slice i*/
 			marshallhandle->call(isnull);
 			if(!isnull){
 				marshallhandle->call(object_enum);
@@ -173,20 +164,25 @@ void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 				if(object_enum==TriaInputEnum){
 					TriaInput* triainput2=new TriaInput();
 					triainput2->Marshall(marshallhandle);
-					this->inputs[i]=triainput2;
+					this->inputs.push_back(triainput2);
 				}
 				else if(object_enum==PentaInputEnum){
 					PentaInput* pentainput2=new PentaInput();
 					pentainput2->Marshall(marshallhandle);
-					this->inputs[i]=pentainput2;
+					this->inputs.push_back(pentainput2);
 				}
 				else{
 					_error_("input "<<EnumToStringx(object_enum)<<" not supported");
 				}
 			}
+			else{
+				this->inputs.push_back(NULL);
+			}
 		}
 	}
 
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
 }
 /*}}}*/
 int  TransientInput::ObjectEnum(void){/*{{{*/
@@ -208,35 +204,14 @@ void TransientInput::AddTriaTimeInput(IssmDouble time,int numindices,int* indice
 	}
 
 	/*This is a new time step! we need to add it to the list*/
-	if(this->numtimesteps>0 && time<this->timesteps[this->numtimesteps-1]) _error_("timestep values must increase sequentially, here " << this->timesteps[this->numtimesteps-1] <<" is the last step but smaller than the preceding "<< time<<"\n");
-
-	IssmDouble *old_timesteps = NULL;
-	Input    **old_inputs    = NULL;
-	if (this->numtimesteps > 0){
-		old_timesteps=xNew<IssmDouble>(this->numtimesteps);
-		xMemCpy(old_timesteps,this->timesteps,this->numtimesteps);
-		xDelete<IssmDouble>(this->timesteps);
-		old_inputs=xNew<Input*>(this->numtimesteps);
-		xMemCpy(old_inputs,this->inputs,this->numtimesteps);
-		xDelete<Input*>(this->inputs);
+	if(this->numtimesteps>0 && time<this->timesteps[this->numtimesteps-1]){
+		_error_("timestep values must increase sequentially, here " << this->timesteps[this->numtimesteps-1] <<" is the last step but smaller than the preceding "<< time<<"\n");
 	}
 
-	this->numtimesteps=this->numtimesteps+1;
-	this->timesteps=xNew<IssmDouble>(this->numtimesteps);
-	this->inputs   = xNew<Input*>(this->numtimesteps);
-
-	if (this->numtimesteps > 1){
-		xMemCpy(this->inputs,old_inputs,this->numtimesteps-1);
-		xMemCpy(this->timesteps,old_timesteps,this->numtimesteps-1);
-		xDelete(old_timesteps);
-		xDelete<Input*>(old_inputs);
-	}
-
-	/*go ahead and plug: */
-	this->timesteps[this->numtimesteps-1] = time;
-	this->inputs[this->numtimesteps-1]    = NULL;
+	this->numtimesteps++;
+	this->timesteps.push_back(time);
+	this->inputs.push_back(NULL);
 	this->AddTriaTimeInput(this->numtimesteps-1,numindices,indices,values_in,interp_in);
-
 }
 /*}}}*/
 void TransientInput::AddPentaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in){/*{{{*/
@@ -252,38 +227,17 @@ void TransientInput::AddPentaTimeInput(IssmDouble time,int numindices,int* indic
 	/*This is a new time step! we need to add it to the list*/
 	if(this->numtimesteps>0 && time<this->timesteps[this->numtimesteps-1]) _error_("timestep values must increase sequentially");
 
-	IssmDouble *old_timesteps = NULL;
-	Input    **old_inputs    = NULL;
-	if (this->numtimesteps > 0){
-		old_timesteps=xNew<IssmDouble>(this->numtimesteps);
-		xMemCpy(old_timesteps,this->timesteps,this->numtimesteps);
-		xDelete<IssmDouble>(this->timesteps);
-		old_inputs=xNew<Input*>(this->numtimesteps);
-		xMemCpy(old_inputs,this->inputs,this->numtimesteps);
-		xDelete<Input*>(this->inputs);
-	}
-
-	this->numtimesteps=this->numtimesteps+1;
-	this->timesteps=xNew<IssmDouble>(this->numtimesteps);
-	this->inputs   = xNew<Input*>(this->numtimesteps);
-
-	if (this->numtimesteps > 1){
-		xMemCpy(this->inputs,old_inputs,this->numtimesteps-1);
-		xMemCpy(this->timesteps,old_timesteps,this->numtimesteps-1);
-		xDelete(old_timesteps);
-		xDelete<Input*>(old_inputs);
-	}
-
-	/*go ahead and plug: */
-	this->timesteps[this->numtimesteps-1] = time;
-	this->inputs[this->numtimesteps-1]    = NULL;
+	this->numtimesteps++;
+	this->timesteps.push_back(time);
+	this->inputs.push_back(NULL);
 	this->AddPentaTimeInput(this->numtimesteps-1,numindices,indices,values_in,interp_in);
-
 }
 /*}}}*/
 void TransientInput::AddTriaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in){/*{{{*/
 
 	_assert_(step>=0 && step<this->numtimesteps);
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
 
 	/*Create it if necessary*/
 	if(this->inputs[step]){
@@ -321,7 +275,7 @@ void TransientInput::GetAllTimes(IssmDouble** ptimesteps,int* pnumtimesteps){/*{
 
 	if(ptimesteps){
 		*ptimesteps=xNew<IssmDouble>(this->numtimesteps);
-		xMemCpy(*ptimesteps,this->timesteps,this->numtimesteps);
+		xMemCpy(*ptimesteps,this->timesteps.data(),this->numtimesteps);
 	}
 	if(pnumtimesteps){
 		*pnumtimesteps = this->numtimesteps;
@@ -432,6 +386,9 @@ PentaInput* TransientInput::GetPentaInput(IssmDouble start_time, IssmDouble end_
 
 void TransientInput::SetCurrentTimeInput(IssmDouble time){/*{{{*/
 
+	_assert_(this->timesteps.size()==this->numtimesteps);
+	_assert_(this->inputs.size()==this->numtimesteps);
+
 	/*First, recover current time from parameters: */
 	bool linear_interp,average,cycle;
 	int  timestepping;
@@ -478,10 +435,10 @@ void TransientInput::SetCurrentTimeInput(IssmDouble time){/*{{{*/
 
 	/*Figure step out*/
 	int offset, prevoffset;
-	if(!binary_search(&offset,time,this->timesteps,this->numtimesteps)){
+	if(!binary_search(&offset, time, this->timesteps.data(), this->numtimesteps)){
 		_error_("Input not found (is TransientInput sorted ?)");
 	}
-	if(!binary_search(&prevoffset,reCast<IssmDouble>(time-dt),this->timesteps,this->numtimesteps)){
+	if(!binary_search(&prevoffset, reCast<IssmDouble>(time-dt), this->timesteps.data(), this->numtimesteps)){
 		_error_("Input not found (is TransientInput sorted ?)");
 	}
 
@@ -564,9 +521,9 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 	int         found,start_offset,end_offset,input_offset;
 
 	/*go through the timesteps, and grab offset for start and end*/
-	found=binary_search(&start_offset,start_time,this->timesteps,this->numtimesteps);
+	found = binary_search(&start_offset, start_time,this->timesteps.data(), this->numtimesteps);
 	if(!found) _error_("Input not found (is TransientInput sorted ?)");
-	found=binary_search(&end_offset,end_time,this->timesteps,this->numtimesteps);
+	found = binary_search(&end_offset, end_time, this->timesteps.data(), this->numtimesteps);
 	if(!found) _error_("Input not found (is TransientInput sorted ?)");
 
 	if(start_offset==-1){
@@ -640,6 +597,7 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 	}
 	_assert_(dtsum>0);
 	durinv=1./dtsum;
+
 	/*Integration done, now normalize*/
 	switch(averaging_method){
 		case 0: //Arithmetic mean
@@ -656,18 +614,20 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 	}
 }/*}}}*/
 IssmDouble  TransientInput::GetTimeByOffset(int offset){/*{{{*/
+
 	if(offset<0) offset=0;
 	_assert_(offset<this->numtimesteps);
 	return this->timesteps[offset];
+
 }
 /*}}}*/
 int  TransientInput::GetTimeInputOffset(IssmDouble time){/*{{{*/
 
-	int offset;
-
 	/*go through the timesteps, and figure out which interval we
-	 *     *fall within. Then interpolate the values on this interval: */
-	int found=binary_search(&offset,time,this->timesteps,this->numtimesteps);
+	 * fall within. Then interpolate the values on this interval: */
+
+	int offset;
+	int found = binary_search(&offset, time, this->timesteps.data(), this->numtimesteps);
 	if(!found) _error_("Input not found (is TransientInput sorted ?)");
 
 	return offset;

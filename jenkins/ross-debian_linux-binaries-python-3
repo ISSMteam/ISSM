@@ -16,9 +16,7 @@ ISSM_CONFIG='\
 	--enable-standalone-libraries \
 	--disable-dependency-tracking \
 	--with-pic \
-	--with-python-version=3.11 \
-	--with-python-dir=/usr \
-	--with-python-numpy-dir="${HOME}/.venv/issm/lib/python3.11/site-packages/numpy" \
+	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran -lgcc_s" \
 	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
@@ -29,7 +27,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-hdf5-dir=${ISSM_DIR}/externalpackages/hdf5/install \
 	--with-petsc-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-boost-dir=${ISSM_DIR}/externalpackages/boost/install \
 	--with-dakota-dir=${ISSM_DIR}/externalpackages/dakota/install \
 	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
@@ -46,7 +43,6 @@ EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
 	petsc		install-3.22-linux-static.sh
-	gsl			install-static.sh
 	boost		install-1.7-linux-static.sh
 	dakota		install-6.2-linux-static.sh
 	chaco		install-linux.sh

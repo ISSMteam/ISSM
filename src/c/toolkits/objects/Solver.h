@@ -62,8 +62,8 @@ class Solver{
 			switch(Kff->type){
 				#ifdef _HAVE_PETSC_
 				case PetscMatType:{
-					PetscVec* uf0_vector = NULL;
-					PetscVec* df_vector  = NULL;
+					PetscVec<doubletype>* uf0_vector = NULL;
+					PetscVec<doubletype>* df_vector  = NULL;
 					if(uf0) uf0_vector = uf0->pvector;
 					if(df)  df_vector  = df->pvector;
 					PetscSolve(&uf->pvector,Kff->pmatrix,pf->pvector,uf0_vector,df_vector,parameters);

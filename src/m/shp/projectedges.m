@@ -7,9 +7,9 @@ for i=1:length(edges)/3,
 	if shpepsg==epsg,
 		%do nothing; 
 	else
-		%use gdaltransform to reproject the shp file: and give it another name.
+		%use CoordTransform to reproject the shp file: and give it another name.
 		contour=shpread([shpname '.shp']);
-		[contour.x,contour.y]=gdaltransform(contour.x,contour.y,sprintf('EPSG:%i',shpepsg),sprintf('EPSG:%i',epsg));
+		[contour.x,contour.y]=CoordTransform(contour.x,contour.y,sprintf('EPSG:%i',shpepsg),sprintf('EPSG:%i',epsg));
 		%write: 
 		shpwrite(contour,[shpname  '-' num2str(epsg) '.shp']);
 		%modify the name: 
