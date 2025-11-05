@@ -673,10 +673,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
 	#endif
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);              _assert_(gllevelset_input);
-	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                       _assert_(ms_input);
-	Input* thickness_input  = element->GetInput(ThicknessEnum);                            _assert_(thickness_input);
-	Input* vxaverage_input  = element->GetInput(VxAverageEnum);										_assert_(vxaverage_input);
-	Input* vyaverage_input  = element->GetInput(VyAverageEnum);										_assert_(vyaverage_input);
+	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                 _assert_(ms_input);
+	Input* thickness_input  = element->GetInput(ThicknessEnum);                      _assert_(thickness_input);
+	Input* vxaverage_input  = element->GetInput(VxAverageEnum);						 _assert_(vxaverage_input);
+	Input* vyaverage_input  = element->GetInput(VyAverageEnum);						 _assert_(vyaverage_input);
 
 	h=element->CharacteristicLength();
 
@@ -688,6 +688,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	}
 	else if(melt_style==IntrusionMeltEnum){
 		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
 		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
 		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
        	gauss = element->NewGauss(point1,fraction1,fraction2,3);
