@@ -1620,7 +1620,7 @@ void       Element::GetSolutionFromInputsOneDof(Vector<IssmDouble>* solution, in
 	int numnodes = this->GetNumberOfNodes();
 
 	/*Fetch dof list and allocate solution vector*/
-	GetDofList(&doflist,NoneApproximationEnum,GsetEnum);
+	GetDofList(&doflist,NoneApproximationEnum,GsetEnum, true);
 	IssmDouble* values = xNew<IssmDouble>(numnodes);
 
 	/*Get inputs*/
