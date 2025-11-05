@@ -28,8 +28,8 @@ function groundingline (){
 
 			checkfield(md,'fieldname','groundingline.migration','values',['None', 'AggressiveMigration', 'SoftMigration', 'Contact', 'GroundingOnly']);
 			checkfield(md,'fieldname','groundingline.friction_interpolation','values',['NoFrictionOnPartiallyFloating', 'SubelementFriction1', 'SubelementFriction2']);
-			checkfield(md,'fieldname','groundingline.melt_interpolation','values',['NoMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt', 'FullMeltOnPartiallyFloating']);
-			checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices, 1],'>=',0,'<=',6000);
+			checkfield(md,'fieldname','groundingline.melt_interpolation','values',['NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt']);
+			checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'>=',0);
 
 			if (this.migration !='None'){
 				if (isNaN(md.geometry.bed)){
@@ -61,7 +61,7 @@ function groundingline (){
 	this.migration              = '';
 	this.friction_interpolation = '';
 	this.melt_interpolation     = '';
-	this.intrusion_distance		= NaN;
+	this.intrusion_distance		= 0;
 	this.setdefaultparameters();
 	//}}}
 }

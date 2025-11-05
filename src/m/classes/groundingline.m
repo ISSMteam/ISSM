@@ -8,7 +8,7 @@ classdef groundingline
 		migration              = '';
 		friction_interpolation = '';
 		melt_interpolation     = '';
-		intrusion_distance     = NaN;
+		intrusion_distance     = 0;
 		requested_outputs      = {};
 	end
 	methods
@@ -26,6 +26,7 @@ classdef groundingline
 			self.migration             = 'SubelementMigration';
 			self.friction_interpolation= 'SubelementFriction1';
 			self.melt_interpolation    = 'NoMeltOnPartiallyFloating';
+			self.intrusion_distance    = 0;
 			%default output
 			self.requested_outputs     = {'default'};
 
@@ -34,8 +35,8 @@ classdef groundingline
 
 			md = checkfield(md,'fieldname','groundingline.migration','values',{'None' 'SubelementMigration' 'AggressiveMigration' 'SoftMigration' 'Contact' 'GroundingOnly'});
 			md = checkfield(md,'fieldname','groundingline.friction_interpolation','values',{'NoFrictionOnPartiallyFloating' 'SubelementFriction1' 'SubelementFriction2'});
-			md = checkfield(md,'fieldname','groundingline.melt_interpolation','values',{'NoMeltOnPartiallyFloating' 'SubelementMelt1' 'SubelementMelt2' 'IntrusionMelt' 'FullMeltOnPartiallyFloating'});
-			md = checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1],'>=',0, '<=',6000);
+			md = checkfield(md,'fieldname','groundingline.melt_interpolation','values',{'NoMeltOnPartiallyFloating' 'FullMeltOnPartiallyFloating' 'SubelementMelt1' 'SubelementMelt2' 'IntrusionMelt'});
+			md = checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'>=',0);
 			md = checkfield(md,'fieldname','groundingline.requested_outputs','stringrow',1);
 
 			if ~strcmp(self.migration,'None') & strcmp(solution,'TransientSolution') & md.transient.isgroundingline==1,
@@ -62,7 +63,7 @@ classdef groundingline
 			disp(sprintf('   grounding line migration parameters:'));
 			fielddisplay(self,'migration','type of grounding line migration: ''SoftMigration'',''SubelementMigration'',''AggressiveMigration'',''Contact'' or ''None''');
 			fielddisplay(self,'friction_interpolation','type of friction interpolation for partially floating elements: ''NoFrictionOnPartiallyFloating'',''SubelementFriction1'', or ''SubelementFriction2''');
-			fielddisplay(self,'melt_interpolation','type of melt interpolation for partially floating elements: ''NoMeltOnPartiallyFloating'',''SubelementMelt1'',''SubelementMelt2'',''IntrusionMelt'' or ''FullMeltOnPartiallyFloating''');
+			fielddisplay(self,'melt_interpolation','type of melt interpolation for partially floating elements: ''NoMeltOnPartiallyFloating'',''FullMeltOnPartiallyFloating'',''SubelementMelt1'',''SubelementMelt2'' or ''IntrusionMelt''');
 			fielddisplay(self,'intrusion_distance','distance of seawater intrusion from grounding line [m]');
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 
