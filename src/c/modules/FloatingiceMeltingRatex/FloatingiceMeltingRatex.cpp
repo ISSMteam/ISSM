@@ -17,7 +17,7 @@ void FloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 	/*First, get melt_interpolation model from parameters*/
 	femmodel->parameters->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
 	if(melt_style==IntrusionMeltEnum){
-		InputDuplicatex(femmodel,MaskOceanLevelsetEnum,DistanceToGroundinglineEnum);//FIXME Duplicate first so that it can preserve the sign
+		InputDuplicatex(femmodel,MaskOceanLevelsetEnum,DistanceToGroundinglineEnum); //FIXME Duplicate first so that it can preserve the sign
 		femmodel->DistanceToFieldValue(MaskOceanLevelsetEnum,0.,DistanceToGroundinglineEnum);
 	}
 

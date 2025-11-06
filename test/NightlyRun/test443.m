@@ -54,6 +54,8 @@ md.outputdefinition.definitions{13}=regionaloutput('name','IceVolumeAboveFloatat
 
 md=extrude(md,3,1);
 md2=collapse(md);
+
+md.groundingline.intrusion_distance = zeros(md.mesh.numberofvertices,1);
 md=solve(md,'Transient');
 
 %Fields and tolerances to track changes
