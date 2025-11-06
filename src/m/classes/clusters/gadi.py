@@ -24,8 +24,8 @@ class gadi(object):
     def __init__(self, *args):  # {{{
         self.name           = oshostname()
         self.login          = ''
-        self.moduleload     = ['openmpi/4.1.2']
-        self.moduleuse      = ['/apps/Modules/modulefiles']
+        self.moduleload     = []
+        self.moduleuse      = []
         self.numnodes       = 1
         self.cpuspernode    = 4
         self.memory         = 40  # e.g. '40GB'
