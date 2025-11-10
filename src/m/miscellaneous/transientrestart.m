@@ -44,9 +44,9 @@ if isfield(results,'Enthalpy')      md.initialization.enthalpy      = results.En
 %Change debris initialization fields
 if isfield(results,'DebrisThickness') md.initialization.debris = results.DebrisThickness; end
 %Change hydroloty initialization fields
-if isfield(results,'HydrologyHead')            md.initialization.head        = results.HydrologyHead; end
-if isfield(results,'HydrologyGapHeight')       md.initialization.gap_height  = results.HydrologyGapHeight; end
-if isfield(results,'HydrologyReynolds')        md.initialization.reynolds    = results.HydrologyReynolds; end
+if isfield(results,'HydrologyHead')            md.hydrology.head        = results.HydrologyHead; end
+if isfield(results,'HydrologyGapHeight')       md.hydrology.gap_height  = results.HydrologyGapHeight; end
+if isfield(results,'HydrologyReynolds')        md.hydrology.reynolds    = results.HydrologyReynolds; end
 if isfield(results,'HydrologySheetThickness')  md.initialization.watercolumn = results.HydrologySheetThickness; end
 if isfield(results,'ChannelArea')              md.initialization.channelarea = results.ChannelArea; end
 
