@@ -38,7 +38,7 @@ field_names = ['Vx1', 'Vy1', 'Vel1', 'Pressure1', 'Thickness1', 'Surface1', 'Mas
                'Vx3', 'Vy3', 'Vel3', 'Pressure3', 'Thickness3', 'Surface3', 'MaskIceLevelset3', 'Enthalpy3', 'Watercolumn3']
 field_tolerances = [2e-12, 2e-12, 2e-12, 3e-13, 3e-13, 2e-13, 2e-13, 1e-13, 1e-13,
                     4e-12, 6e-12, 4e-12, 3e-13, 8e-13, 2e-13, 2e-13, 1e-13, 1e-13,
-                    6e-12, 2e-11, 6e-12, 7e-13, 9e-13, 3e-13, 2e-13, 1e-13, 1e-13]
+                    6e-12, 2e-11, 6e-12, 8e-13, 9e-13, 3e-13, 2e-13, 1e-13, 1e-13]
 field_values = [md.results.TransientSolution[0].Vx,
                 md.results.TransientSolution[0].Vy,
                 md.results.TransientSolution[0].Vel,

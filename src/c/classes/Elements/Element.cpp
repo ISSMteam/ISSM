@@ -1867,6 +1867,19 @@ IssmDouble Element::GroundedArea(IssmDouble* mask, bool scaled){/*{{{*/
 	return this->GroundedArea(scaled);
 }
 /*}}}*/
+IssmDouble Element::GroundinglineMassFlux(IssmDouble* mask, bool scaled){/*{{{*/
+
+	/*Retrieve values of the mask defining the element: */
+	for(int i=0;i<this->GetNumberOfVertices();i++){
+		if(mask[this->vertices[i]->Sid()]<=0.){
+			return 0.;
+		}
+	}
+
+	/*Return: */
+	return this->GroundinglineMassFlux(scaled);
+}
+/*}}}*/
 bool       Element::HasNodeOnBase(){/*{{{*/
 	Input* input=this->GetInput(MeshVertexonbaseEnum); _assert_(input);
 	return (input->GetInputMax()>0.);

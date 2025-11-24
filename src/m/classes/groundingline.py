@@ -29,7 +29,7 @@ class groundingline(object):
         s = '   grounding line migration parameters:\n'
         s += '{}\n'.format(fielddisplay(self, 'migration', 'type of grounding line migration: \'SoftMigration\', \'SubelementMigration\', \'AggressiveMigration\', \'Contact\', \'None\''))
         s += '{}\n'.format(fielddisplay(self, 'migration', 'type of friction interpolation on partially floating elements: ''SubelementFriction1'', ''SubelementFriction2'', ''NoFrictionOnPartiallyFloating'''))
-        s += '{}\n'.format(fielddisplay(self, 'migration', 'type of melt interpolation on partially floating elements: \'SubelementMelt1\', \'SubelementMelt2\', \'IntrusionMelt\', \'NoMeltOnPartiallyFloating\', \'FullMeltOnPartiallyFloating\''))
+        s += '{}\n'.format(fielddisplay(self, 'migration', 'type of melt interpolation on partially floating elements: \'NoMeltOnPartiallyFloating\', \'FullMeltOnPartiallyFloating\', \'SubelementMelt1\', \'SubelementMelt2\', \'IntrusionMelt\''))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         return s
     # }}}
@@ -44,7 +44,7 @@ class groundingline(object):
         self.migration = 'SubelementMigration'
         self.friction_interpolation = 'SubelementFriction1'
         self.melt_interpolation = 'NoMeltOnPartiallyFloating'
-        self.intrusion_distance = 0
+        self.intrusion_distance =  0
         # Default output
         self.requested_outputs = ['default']
 
@@ -54,8 +54,8 @@ class groundingline(object):
     def checkconsistency(self, md, solution, analyses):  # {{{
         md = checkfield(md, 'fieldname', 'groundingline.migration', 'values', ['None', 'SubelementMigration', 'AggressiveMigration', 'SoftMigration', 'Contact', 'GroundingOnly'])
         md = checkfield(md, 'fieldname', 'groundingline.friction_interpolation', 'values', ['SubelementFriction1', 'SubelementFriction2', 'NoFrictionOnPartiallyFloating'])
-        md = checkfield(md, 'fieldname', 'groundingline.melt_interpolation', 'values', ['SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt', 'NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating'])
-        md = checkfield(md, 'fieldname', 'groundingline.intrusion_distance','>=',0)
+        md = checkfield(md, 'fieldname', 'groundingline.melt_interpolation', 'values', ['NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt'])
+        md = checkfield(md, 'fieldname', 'groundingline.intrusion_distance', 'NaN', 1, 'Inf', 1, '>=', 0)
         md = checkfield(md, 'fieldname', 'groundingline.requested_outputs', 'stringrow', 1)
 
         if(not m.strcmp(self.migration, 'None') and md.transient.isgroundingline and solution == 'TransientSolution'):
@@ -74,7 +74,7 @@ class groundingline(object):
         WriteData(fid, prefix, 'data', self.migration, 'name', 'md.groundingline.migration', 'format', 'String')
         WriteData(fid, prefix, 'data', self.friction_interpolation, 'name', 'md.groundingline.friction_interpolation', 'format', 'String')
         WriteData(fid, prefix, 'data', self.melt_interpolation, 'name', 'md.groundingline.melt_interpolation', 'format', 'String')
-        WriteData(fid, prefix, 'object', self, 'fieldname', 'intrusion_distance', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'intrusion_distance', 'format', 'DoubleMat', 'mattype', 1)
         
         # Process requested outputs
         outputs = self.requested_outputs

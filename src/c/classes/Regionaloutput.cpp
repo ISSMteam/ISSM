@@ -100,6 +100,9 @@ IssmDouble Regionaloutput::Response(FemModel* femmodel){/*{{{*/
 			case GroundedAreaScaledEnum:
 				val_t+=element->GroundedArea(this->mask,true);
 				break;
+			case GroundinglineMassFluxEnum:
+				val_t+=element->GroundinglineMassFlux(this->mask,false);
+				break;
 			case FloatingAreaEnum:
 				val_t+=element->FloatingArea(this->mask,false);
 				break;
