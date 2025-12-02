@@ -98,11 +98,6 @@ if ( -d {$PETSC_ROOT} ) then
 	endif
 endif
 
-set SCOTCH_ROOT="{$ISSM_EXT_DIR}/scotch/install"
-if ( -d {$SCOTCH_ROOT} ) then
-	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$SCOTCH_ROOT}/lib
-endif
-
 set DAKOTA_ROOT="{$ISSM_EXT_DIR}/dakota/install"
 if ( -d {$DAKOTA_ROOT} ) then
 	setenv PATH {$PATH}:{$DAKOTA_ROOT}/bin
@@ -200,11 +195,6 @@ set TRIANGLE_ROOT="{$ISSM_EXT_DIR}/triangle/install"
 if ( -d {$TRIANGLE_ROOT} ) then
 	setenv LD_LIBRARY_PATH {$LD_LIBRARY_PATH}:{$TRIANGLE_ROOT}/lib
 	setenv DYLD_LIBRARY_PATH {$DYLD_LIBRARY_PATH}:{$TRIANGLE_ROOT}/lib
-endif
-
-set YAMS_ROOT="{$ISSM_EXT_DIR}/yams/install"
-if ( -d {$YAMS_ROOT} ) then
-	setenv PATH {$PATH}:{$YAMS_ROOT}
 endif
 
 set VALGRIND_ROOT="{$ISSM_EXT_DIR}/valgrind/install"

@@ -339,9 +339,6 @@ if [ -d "${ADJOINTPETSC_TEMP}" ]; then
 	ld_library_path_append "${ADJOINTPETSC_TEMP}/lib"
 fi
 
-SCOTCH_ROOT_TEMP="${ISSM_EXT_DIR}/scotch/install"
-ld_library_path_append "${SCOTCH_ROOT_TEMP}/lib"
-
 BOOST_ROOT_TEMP="${ISSM_EXT_DIR}/boost/install"
 if [ -d "${BOOST_ROOT_TEMP}" ]; then
 	export BOOST_ROOT=${BOOST_ROOT_TEMP} # Used in installation of Dakota
@@ -445,16 +442,6 @@ if [ -d "${TRIANGLE_ROOT_TEMP}" ]; then
 	fi
 fi
 
-BBFTP_ROOT_TEMP="${ISSM_EXT_DIR}/bbftp/install"
-if [ -d "${BBFTP_ROOT_TEMP}" ]; then
-	path_append "${BBFTP_ROOT_TEMP}/bin"
-fi
-
-SHAPELIB_ROOT_TEMP="${ISSM_EXT_DIR}/shapelib/install"
-if [ -d "${SHAPELIB_ROOT_TEMP}" ]; then
-	path_append "${SHAPELIB_ROOT_TEMP}/exec"
-fi
-
 ESMF_ROOT_TEMP="${ISSM_EXT_DIR}/esmf/install"
 if [ -d "${ESMF_ROOT_TEMP}" ]; then
 	path_prepend "${ESMF_ROOT_TEMP}/bin"
@@ -464,11 +451,6 @@ fi
 NEOPZ_ROOT_TEMP="${ISSM_EXT_DIR}/neopz/install"
 if [ -d "${NEOPZ_ROOT_TEMP}" ]; then
 	export REFPATTERNDIR="${NEOPZ_ROOT_TEMP}/include/refpatterns"
-fi
-
-YAMS_ROOT_TEMP="${ISSM_EXT_DIR}/yams/install"
-if [ -d "${YAMS_ROOT_TEMP}" ]; then
-	path_prepend "${YAMS_ROOT_TEMP}"
 fi
 
 VALGRIND_ROOT_TEMP="${ISSM_DIR}/externalpackages/valgrind/install"
