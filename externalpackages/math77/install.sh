@@ -1,27 +1,28 @@
 #!/bin/bash
 set -eu
 
-#Some cleanup
-rm -rf src install math77
-mkdir src install
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/math77.tar.gz' 'math77.tar.gz'
+## Constants
+#
+PREFIX="${ISSM_DIR}/externalpackages/math77/install" # Set to location where external package should be installed
 
-#Untar 
-tar -zxvf  math77.tar.gz
+# Cleanup
+rm -rf ${PREFIX}
 
-#Move math77 into src directory
-mv math77/* src
-rm -rf math77
+# Download source
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/math77.tar.gz" "math77.tar.gz"
 
-#Configure math77
+# Unpack source
+tar -zxvf math77.tar.gz
+
+# Move math77/ to/ src/ directory
+mv math77 src
+
+# Compile and install
 cd src
-
-#Compile math77
 if [ $# -eq 0 ]; then
 	make
 else
 	make -j $1
 fi
-make install 
+make install
