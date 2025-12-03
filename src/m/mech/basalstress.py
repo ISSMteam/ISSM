@@ -1,4 +1,5 @@
 from friction import friction
+from frictionschoof import frictionschoof
 from averaging import averaging
 import numpy as np
 
@@ -17,10 +18,6 @@ def basalstress(md):
     #Check md.friction class
     if not isinstance(md.friction,friction):
         raise Exception('Error: md.friction only supports "friction.m" class.')
-
-    #compute exponents
-    s=averaging(md,1/md.friction.p,0)
-    r=averaging(md,md.friction.q/md.friction.p,0)
 
     #Compute effective pressure
     g        =md.constants.g
@@ -51,18 +48,34 @@ def basalstress(md):
     ub=np.sqrt(md.initialization.vx**2+md.initialization.vy**2)/md.constants.yts
     ubx=md.initialization.vx/md.constants.yts
     uby=md.initialization.vy/md.constants.yts
-
-    #compute basal drag (S.I.)
-    #reshape array to vector (N,)
-    coefficient=np.ravel(md.friction.coefficient)
-    N          =np.ravel(N)
-    r          =np.ravel(r)
-    s          =np.ravel(s)
     ub         =np.ravel(ub)
     ubx        =np.ravel(ubx)
     uby        =np.ravel(uby)
 
-    alpha2 = (N**r)*(md.friction.coefficient**2)*(ub**(s-1))
+    #compute basal drag (S.I.)
+    #reshape array to vector (N,)
+    N          =np.ravel(N)
+    
+    if isinstance(md.friction,friction):
+        #compute exponents
+        s=averaging(md,1/md.friction.p,0)
+        r=averaging(md,md.friction.q/md.friction.p,0)
+        coefficient=np.ravel(md.friction.coefficient)
+        r          =np.ravel(r)
+        s          =np.ravel(s)
+
+        alpha2 = (N**r)*(md.friction.coefficient**2)*(ub**(s-1))
+    elif isinstance(md.friction,frictionschoof):
+        if np.any(N<0):
+            %NOTE: Sometimes, N negative values gives image number in alpha2. To prevent the image value in alpha2, we use small values.
+        m=averaging(md,md.friction.m,0)
+        C=averaging(md,md.friction.C,0)
+        Cmax=averaging(md,md.friction.Cmax,0)
+
+        alpha2 = (C**2 * ub**(m-1))/(1 + (C**2/(Cmax*N))**(1/m)*ub)**m
+    else:
+        raise Exception('not supported yet')
+
     b  =  alpha2*ub
     bx = -alpha2*ubx
     by = -alpha2*uby
