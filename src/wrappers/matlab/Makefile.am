@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@
 AUTOMAKE_OPTIONS = subdir-objects
 
 EXEEXT=$(MATLABWRAPPEREXT)
@@ -60,7 +60,6 @@ lib_LTLIBRARIES += \
 	PointCloudFindNeighbors_matlab.la \
 	ProcessRifts_matlab.la \
 	PropagateFlagsFromConnectivity_matlab.la \
-	Scotch_matlab.la \
 	Triangle_matlab.la
 
 if CHACO
@@ -71,9 +70,6 @@ lib_LTLIBRARIES += Kriging_matlab.la
 endif
 if PROJ
 lib_LTLIBRARIES += CoordTransform_matlab.la
-endif
-if SHP
-lib_LTLIBRARIES += ShpRead_matlab.la
 endif
 #}}}
 
@@ -178,7 +174,7 @@ if !MSYS2
 libISSMMatlab_la_LDFLAGS += -static
 libISSMApi_matlab_la_LDFLAGS += -static
 endif
-deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(OSLIBS) ${LIBADD_FOR_MEX}
+deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(OSLIBS) ${LIBADD_FOR_MEX}
 endif
 
 libISSMApi_matlab_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
@@ -283,14 +279,6 @@ PointCloudFindNeighbors_matlab_la_LIBADD = ${deps}
 PropagateFlagsFromConnectivity_matlab_la_SOURCES = ../PropagateFlagsFromConnectivity/PropagateFlagsFromConnectivity.cpp
 PropagateFlagsFromConnectivity_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 PropagateFlagsFromConnectivity_matlab_la_LIBADD = ${deps}
-
-Scotch_matlab_la_SOURCES = ../Scotch/Scotch.cpp
-Scotch_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-Scotch_matlab_la_LIBADD = ${deps}
-
-ShpRead_matlab_la_SOURCES = ../ShpRead/ShpRead.cpp
-ShpRead_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-ShpRead_matlab_la_LIBADD = ${deps} $(SHAPELIBLIB)
 
 Triangle_matlab_la_SOURCES = ../Triangle/Triangle.cpp
 Triangle_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
