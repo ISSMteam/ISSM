@@ -208,6 +208,8 @@ enum definitions{
 	FrictionDNNEnum,
 	FrictionDNNpsEnum,
 	FrictionDNNstEnum,
+	FrictionDNNInputScaleEnum,
+	FrictionDNNOutputScaleEnum,
 	FrictionEffectivePressureLimitEnum,
 	FrictionFEnum,
 	FrictionGammaEnum,
