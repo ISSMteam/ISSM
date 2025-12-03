@@ -16,6 +16,6 @@ git clone git@github.com:danmar/cppcheck.git src
 cd src
 if [ $# -eq 0 ]; then
 	make MATCHCOMPILER=yes FILESDIR="${PREFIX}" HAVE_RULES=yes CXXFLAGS="-O2 -DNDEBUG -Wall -Wno-sign-compare -Wno-unused-function"
-else 
+else
 	make -j $1 MATCHCOMPILER=yes FILESDIR="${PREFIX}" HAVE_RULES=yes CXXFLAGS="-O2 -DNDEBUG -Wall -Wno-sign-compare -Wno-unused-function"
 fi
