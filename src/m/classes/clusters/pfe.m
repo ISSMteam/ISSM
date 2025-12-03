@@ -129,8 +129,19 @@ classdef pfe
 					end
 				end
 			
+			elseif strcmpi(cluster.processor,'rom_ait'),
+				if cluster.hyperthreading,
+					if ((cluster.cpuspernode>256 ) | (cluster.cpuspernode<1)),
+						md = checkmessage(md,'cpuspernode should be between 1 and 80 for ''rom_ait'' processors in hyperthreading mode');
+					end
+				else
+					if ((cluster.cpuspernode>128 ) | (cluster.cpuspernode<1)),
+						md = checkmessage(md,'cpuspernode should be between 1 and 128 for ''rom_ait'' processors');
+					end
+				end
+			
 			else
-				md = checkmessage(md,'unknown processor type, should be ''bro'', ''has'', ''ivy'', ''san'', or ''cas_ait''');
+				md = checkmessage(md,'unknown processor type, should be ''bro'', ''has'', ''ivy'', ''san'', ''cas_ait'', or ''rom_ait''');
 			end
 
 			%Miscellaneous

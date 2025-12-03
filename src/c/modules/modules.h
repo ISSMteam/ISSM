@@ -83,7 +83,6 @@
 #include "./ResetFSBasalBoundaryConditionx/ResetFSBasalBoundaryConditionx.h"
 #include "./RheologyBbarAbsGradientx/RheologyBbarAbsGradientx.h"
 #include "./RheologyBAbsGradientx/RheologyBAbsGradientx.h"
-#include "./Scotchx/Scotchx.h"
 #include "./StochasticForcingx/StochasticForcingx.h"
 #include "./SurfaceMassBalancex/SurfaceMassBalancex.h"
 #include "./Solverx/Solverx.h"

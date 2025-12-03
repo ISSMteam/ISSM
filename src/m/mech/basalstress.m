@@ -9,13 +9,9 @@ function [bx by b]=basalstress(md)
 %   See also: plot_basaldrag
 
 %Check md.friction class
-if ~isa(md.friction,'friction')
-	error('Error: md.friction only supports "friction.m" class.');
+if ~(isa(md.friction,'friction') | isa(md.friction,'frictionschoof'))
+	error('Error: md.friction only supports "friction.m", "frictionschoof.m" classes.');
 end
-
-%compute exponents
-s=averaging(md,1./md.friction.p,0);
-r=averaging(md,md.friction.q./md.friction.p,0);
 
 %Compute effective pressure
 g        =md.constants.g;
@@ -48,7 +44,27 @@ ubx=md.initialization.vx/md.constants.yts;
 uby=md.initialization.vy/md.constants.yts;
 
 %compute basal drag (S.I.)
-alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+switch(class(md.friction))
+	case 'friction'
+		%compute exponents
+		s=averaging(md,1./md.friction.p,0);
+		r=averaging(md,md.friction.q./md.friction.p,0);
+
+		alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+	case 'frictionschoof'
+		if any(N < 0)
+			%NOTE: Sometimes, negative value of effective pressure N gives image number in alpha2. To prevent the image value in alpha2, we use small values.
+			warning('Find effective pressure value < 0. Treating minimum effective value with 0.1');
+			N = max(N, 0.1);
+		end
+		m=averaging(md,md.friction.m,0);
+		C=averaging(md,md.friction.C,0);
+		Cmax=averaging(md,md.friction.Cmax,0);
+		
+		alpha2 = (C.^2 .* ub.^(m-1))./(1 + (C.^2./(Cmax.*N)).^(1./m).*ub).^(m);
+	otherwise
+		error('not supported yet');
+end
 b  =  alpha2.*ub;
 bx = -alpha2.*ubx;
 by = -alpha2.*uby;

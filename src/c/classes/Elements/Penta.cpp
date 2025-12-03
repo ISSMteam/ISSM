@@ -1429,10 +1429,9 @@ void       Penta::GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, i
 }
 /*}}}*/
 void       Penta::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance){/*{{{*/
-	/*Computeportion of the element that is grounded*/
-
+	/*Compute portion of the element that is grounded*/
 	bool               floating=true;
-	int                point;
+	int                point, melt_style;
 	const IssmPDouble  epsilon= 1.e-15;
 	IssmDouble         gl[NUMVERTICES];
 	IssmDouble         f1,f2;
@@ -1440,7 +1439,7 @@ void       Penta::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* 
 	/*Recover parameters and values*/
 	Element::GetInputListOnVertices(&gl[0],distance_enum);
 
-	/*Determine where to apply sub-element melt using intrusion distance*/
+	/*Determine where to apply sub-element melt using intrusion_distance*/
 	for(int i=0; i<NUMVERTICES; i++){
 		gl[i] -= intrusion_distance;
 	}
