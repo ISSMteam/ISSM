@@ -39,46 +39,60 @@ jobs:
       test_matrix: ${{ steps.createTestMatrix.outputs.test_output }}
     steps:
       - name: Free disk space
-        run: |
-          # Source: https://dev.to/mathio/squeezing-disk-space-from-github-actions-runners-an-engineers-guide-3pjg#6-how-to-automate-cleanup-in-your-ci
-          #
+        uses: jlumbroso/free-disk-space@main
+        with:
+            # this might remove tools that are actually needed,
+            # if set to "true" but frees about 6 GB
+            tool-cache: false
+            
+            # all of these default to true, but feel free to set to
+            # "false" if necessary for your workflow
+            android: true
+            dotnet: true
+            haskell: true
+            large-packages: true
+            docker-images: true
+            swap-storage: true
+        # run: |
+        #   # Source: https://dev.to/mathio/squeezing-disk-space-from-github-actions-runners-an-engineers-guide-3pjg#6-how-to-automate-cleanup-in-your-ci
+        #   #
 
-          # Remove Java (JDKs)
-          #sudo rm -rf /usr/lib/jvm
+        #   # Remove Java (JDKs)
+        #   #sudo rm -rf /usr/lib/jvm
 
-          # Remove .NET SDKs
-          sudo rm -rf /usr/share/dotnet
+        #   # Remove .NET SDKs
+        #   sudo rm -rf /usr/share/dotnet
 
-          # Remove Swift toolchain
-          sudo rm -rf /usr/share/swift
+        #   # Remove Swift toolchain
+        #   sudo rm -rf /usr/share/swift
 
-          # Remove Haskell (GHC)
-          sudo rm -rf /usr/local/.ghcup
+        #   # Remove Haskell (GHC)
+        #   sudo rm -rf /usr/local/.ghcup
 
-          # Remove Julia
-          sudo rm -rf /usr/local/julia*
+        #   # Remove Julia
+        #   sudo rm -rf /usr/local/julia*
 
-          # Remove Android SDKs
-          sudo rm -rf /usr/local/lib/android
+        #   # Remove Android SDKs
+        #   sudo rm -rf /usr/local/lib/android
 
-          # Remove Chromium (optional if not using for browser tests)
-          sudo rm -rf /usr/local/share/chromium
+        #   # Remove Chromium (optional if not using for browser tests)
+        #   sudo rm -rf /usr/local/share/chromium
 
-          # Remove Microsoft/Edge and Google Chrome builds
-          sudo rm -rf /opt/microsoft /opt/google
+        #   # Remove Microsoft/Edge and Google Chrome builds
+        #   sudo rm -rf /opt/microsoft /opt/google
 
-          # Remove Azure CLI
-          sudo rm -rf /opt/az
+        #   # Remove Azure CLI
+        #   sudo rm -rf /opt/az
 
-          # Remove PowerShell
-          sudo rm -rf /usr/local/share/powershell
+        #   # Remove PowerShell
+        #   sudo rm -rf /usr/local/share/powershell
 
-          # Remove CodeQL and other toolcaches
-          sudo rm -rf /opt/hostedtoolcache
+        #   # Remove CodeQL and other toolcaches
+        #   sudo rm -rf /opt/hostedtoolcache
 
-          docker system prune -af || true
-          docker builder prune -af || true
-          df -h
+        #   docker system prune -af || true
+        #   docker builder prune -af || true
+        #   df -h
       - name: Check out copy of repository
         uses: actions/checkout@v4
 
