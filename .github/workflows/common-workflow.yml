@@ -12,8 +12,11 @@ on:
       build_command:
         required: true
         type: string
-      ext_install_command:
+      ext_pkg_build_command:
         required: true
+        type: string
+      ext_pkg_cleanup_command:
+        required: false
         type: string
       test_cases:
         required: true
@@ -140,7 +143,6 @@ jobs:
       - name: Unpack ISSM artifact
         run: |
           tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
-          rm -rf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
           source $ISSM_DIR/etc/environment.sh
         working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
