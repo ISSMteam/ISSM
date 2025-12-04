@@ -150,16 +150,11 @@ void HydrologyGlaDSAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.watercolumn",HydrologySheetThicknessEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.hydraulic_potential",HydraulicPotentialEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.rheology_B_base",HydrologyRheologyBBaseEnum);
-
+	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
 	if(iomodel->domaintype==Domain2DhorizontalEnum){
-		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
-		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxBaseEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyBaseEnum);
-	}
-	else{
-		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
-		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
 	}
 
 	/*Friction*/
