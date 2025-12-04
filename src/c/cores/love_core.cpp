@@ -365,13 +365,14 @@ template<typename doubletype> void         postwidder_transform(doubletype* Love
 
 	indf=(t*2*NTit)*(sh_nmax+1)+d;
 	doubletype* LoveM = NULL;
+	doubletype zero = 0;
 
 
 	// test variation across frequencies tested, something with little frequency dependence is not worth going through PW tranform
 	// that transform would also be numerically unstable
 	PW_test = abs((Lovef[indf+(2*NTit-1)*(sh_nmax+1)]-Lovef[indf])/Lovef[indf]); 
 
-	if (PW_test==0){ //elastic or fluid response: Love(t) = Love(s), we can do an early return
+	if (PW_test==zero){ //elastic or fluid response: Love(t) = Love(s), we can do an early return
 		Lovet[t*(sh_nmax+1)+d]=Lovef[indf];
 		return;
 	}
@@ -611,8 +612,9 @@ template <typename doubletype> void        GetEarthRheology(doubletype* pla, dou
 	doubletype mu0=matlitho->lame_mu[layer_index];
 	doubletype la0=matlitho->lame_lambda[layer_index];
 	int rheo=matlitho->rheologymodel[layer_index];
+	doubletype zero = 0;
 
-	if (vi!=0 && omega!=0.0){ //take into account viscosity in the rigidity if the material isn't a perfect fluid
+	if (vi!=zero && omega!=zero){ //take into account viscosity in the rigidity if the material isn't a perfect fluid
 		doubletype ka=la0 + 2.0/3.0*mu0; //Bulk modulus
 		if (rheo==2){//EBM
 			mu=muEBM<doubletype>(layer_index, omega, matlitho, femmodel);
@@ -695,7 +697,8 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 
 	doubletype frh,frhg0,fgr0,fgr,fn,rm0,rlm,flm;
 	doubletype xmin,xmax,x,dr;
-	doubletype g,ro, issolid;
+	doubletype g,ro;
+	bool       issolid;
 
 	if (pomega) { //frequency and degree dependent terms /*{{{*/
 		doubletype la,mu;
@@ -784,7 +787,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 				nindex=nsteps*36+n*36;
 				g=GetGravity<doubletype>(x*ra,layer_index,femmodel,matlitho,vars);
 
-				if(issolid==1){
+				if(issolid){
 					yi_prefactor[nindex+ 1*6+3]= fn/x;                  // in dy[1*6+3]
 					yi_prefactor[nindex+ 5*6+2]= -(fgr/g0*fn)/x;        // in dy[5*6+2]
 					yi_prefactor[nindex+ 5*6+4]= fn/(x*x);		     // in dy[5*6+4]
@@ -816,7 +819,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 			for (int n=0;n<nstep;n++){
 				g=GetGravity<doubletype>(x*ra,layer_index,femmodel,matlitho,vars);
 				nindex=nsteps*36+n*36;
-				if(issolid==1){
+				if(issolid){
 					yi_prefactor[nindex+ 1*6+5]= -frhg0;       // in dy[1*6+5]
 					yi_prefactor[nindex+ 2*6+0]= -1.0/x;       // in dy[2*6+0]
 					yi_prefactor[nindex+ 2*6+2]= 1.0/x;        // in dy[2*6+2]
@@ -839,7 +842,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 template <typename doubletype> void        yi_derivatives(doubletype* dydx, doubletype* y, int layer_index, int n, doubletype* yi_prefactor, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars){ /*{{{*/
 	//computes yi derivatives at r=radius[layer_index]+ n/nstep*(radius[layer_index+1]-radius[layer_index])
 
-	int issolid=matlitho->issolid[layer_index];
+	bool issolid=matlitho->issolid[layer_index];
 	int iy,id,ny, nindex, nstep, nsteps;
 	//femmodel->parameters->FindParam(&nstep,LoveIntStepsPerLayerEnum);
 
