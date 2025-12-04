@@ -62,7 +62,7 @@ jobs:
         --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
         --with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
         --with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install"
-      ext_install_command: |
+      ext_pkg_build_command: |
         cd $ISSM_DIR/externalpackages/triangle   && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/m1qn3      && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/petsc      && ./install-3.22-linux.sh
