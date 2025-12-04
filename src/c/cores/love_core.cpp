@@ -403,12 +403,11 @@ template<typename doubletype> void         postwidder_transform(doubletype* Love
 }/*}}}*/
 
 template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, doubletype alpha, IssmDouble* h1, IssmDouble* z, int nz, int nalpha){/*{{{*/
-	int iz1, iz2, ialpha;	
-	doubletype lincoef;
+	int iz1, iz2;	
 	doubletype hf,h00,h10, h01, h11, za, zd, ha, hb,hc,hd, m0,m1,t;
 	doubletype dalpha=1.0/(nalpha-1); // alpha table resolution given 0 <= alpha <= 1
-	ialpha= static_cast<int>(DownCastVarToDouble(alpha/dalpha));
-	lincoef=alpha/dalpha-ialpha;//linear fraction in [0;1] for alpha interpolation
+	int        ialpha  = static_cast<int>(DownCastVarToDouble(alpha/dalpha));
+	doubletype lincoef = alpha/dalpha - std::floor(DownCastVarToDouble(alpha/dalpha));//linear fraction in [0;1] for alpha interpolation
 	iz1=nz;
 	for (int i=0;i<nz;i++){
 		if (abs(z[i])>abs(z1)) {
@@ -464,9 +463,9 @@ template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, do
 		t=(z1-z[iz1])/(z[iz1+1]-z[iz1]);
 		
 		//cubic spline functions
-		h00=2*pow(t,3)-3*pow(t,2)+1;
-		h10=pow(t,3)-2*pow(t,2)+t;
-		h01=-2*pow(t,3)+3*pow(t,2);
+		h00=2.*pow(t,3)-3.*pow(t,2)+1.;
+		h10=pow(t,3)-2.*pow(t,2)+t;
+		h01=-2.*pow(t,3)+3.*pow(t,2);
 		h11=pow(t,3)-pow(t,2);
 
 		hf=h00*hb + h10*m0 + h01*hc + h11*m1;
@@ -1388,8 +1387,8 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 
 		//-- Resolution
 		int* ipiv=xNewZeroInit<int>(nyi); //pivot index vector
-		int info = 0;// error checker
-		int nrhs=1; // number of right hand size columns
+		int  info = 0;// error checker
+		int  nrhs=1; // number of right hand size columns
 
 		allgesv<doubletype>(&nyi, &nrhs, yilocal, &lda, ipiv, rhslocal, &ldb, &info);
 
@@ -1429,6 +1428,7 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 		doubletype loveh1s = rhslocal[nyi-3];
 		doubletype lovel1s = rhslocal[nyi-2];
 		doubletype lovek1s = rhslocal[nyi-1] - 1.0/(g0*ra);
+		doubletype zero    = 0;
 
 		loveratio = abs(loveh1/loveh1s); //ratio of center to surface love numbers, determines if we should remove layers
 		if (abs(lovel1/lovel1s) < loveratio) loveratio = abs(lovel1/lovel1s); 
@@ -1443,7 +1443,7 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 			  inverse laplace transform.*/
 		}
 
-		if (omega==0){ // if running elastic love_numbers, record at which degree we must delete layers, this way we synch layer deletion between cpus next time we calculate love numbers
+		if (omega==zero){ // if running elastic love_numbers, record at which degree we must delete layers, this way we synch layer deletion between cpus next time we calculate love numbers
 			//We need to delete a layer and try again if the ratio between deepest love number to surface love number is too low (risk of underflow) or garbage
 			if (loveratio<=underflow_tol || xIsNan(loveratio) || xIsInf(loveratio)) {
 				vars->deg_layer_delete[starting_layer]=deg;
