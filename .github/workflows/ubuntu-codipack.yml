@@ -69,11 +69,6 @@ jobs:
         cd $ISSM_DIR/externalpackages/gsl        && ./install.sh
         cd $ISSM_DIR/externalpackages/codipack   && ./install.sh
         cd $ISSM_DIR/externalpackages/medipack   && ./install.sh
-      ext_pkg_cleanup_command: |
-        cd $ISSM_DIR/externalpackages
-        find -maxdepth 1 -name src -exec rm -rf {} \;
-        find -maxdepth 1 -name *tar.gz -exec rm -rf {} \;
-        find -maxdepth 1 -name *zip -exec rm -rf {} \;
       test_cases: '["3015, 3119, 3480, 3201:3206"]'
       additional_options: "'benchmark','all',"
     secrets: inherit

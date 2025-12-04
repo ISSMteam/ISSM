@@ -15,9 +15,6 @@ on:
       ext_pkg_build_command:
         required: true
         type: string
-      ext_pkg_cleanup_command:
-        required: false
-        type: string
       test_cases:
         required: true
         type: string
@@ -115,7 +112,12 @@ jobs:
         run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar -C ${{ env.ISSM_DIR }}/ .
+        run: |
+          rm -rf .git
+          find externalpackages -maxdepth 1 -name src -exec rm -rf {} \;
+          find externalpackages -maxdepth 1 -name *tar.gz -exec rm -rf {} \;
+          find externalpackages -maxdepth 1 -name *zip -exec rm -rf {} \;
+          tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar -C ${{ env.ISSM_DIR }}/ .
 
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
