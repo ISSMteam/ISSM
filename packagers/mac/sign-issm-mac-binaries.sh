@@ -76,7 +76,7 @@ ASC_PROVIDER="**********"
 ## NOTE: The following need to be set for the particular signing job (see comments for options)
 #
 PKG="ISSM-macOS-<ARCH>-<API>[-<VER>]" # <ARCH>: 'Intel' or 'Silicon'; <API>[-<VER>]: 'MATLAB' or 'Python-3'
-VARIANT_REPO_SUBPATH="<ARCH>/<API>[/<VER>]" # <ARCH>: 'intel' or 'silicon'; <API>[-<VER>]: 'matlab' or 'python/3'
+VARIANT_REPO_SUBPATH="<ARCH>/<API>" # <ARCH>: 'intel' or 'silicon'; <API>: 'matlab' or 'python'
 
 MAX_SVN_ATTEMPTS=10
 NOTARIZATION_CHECK_ATTEMPTS=20
@@ -84,17 +84,17 @@ NOTARIZATION_CHECK_PERIOD=60
 NOTARIZATION_LOGFILE="notarization.log"
 NOTARIZATION_LOGFILE_PATH="."
 PASSWORD=${ISSM_BINARIES_PASS}
-REPO_URL="https://issm.ess.uci.edu/svn/issm-binaries"
 SIGNED_REPO_COPY="./signed"
-SIGNED_REPO_URL="${REPO_URL}/${VARIANT_REPO_SUBPATH}/signed"
 SIGNING_LOCK_FILE="signing.lock"
+SIGNING_REPO_BASE_URL="https://issm.ess.uci.edu/svn/issm-macos-signing"
+SIGNING_REPO_URL="${SIGNING_REPO_BASE_URL}/${VARIANT_REPO_SUBPATH}"
 SUCCESS_LOGFILE="${SIGNED_REPO_COPY}/success.log"
 UNSIGNED_REPO_COPY="./unsigned"
-UNSIGNED_REPO_URL="${REPO_URL}/${VARIANT_REPO_SUBPATH}/unsigned"
 USERNAME=${ISSM_BINARIES_USER}
 
 COMPRESSED_PKG="${PKG}.zip"
-EXE_ENTITLEMENTS_PLIST="${PKG}/bin/entitlements.plist"
+SIGNED_REPO_URL="${SIGNING_REPO_URL}/signed"
+UNSIGNED_REPO_URL="${SIGNING_REPO_URL}/unsigned"
 
 # NOTE: Uncomment the following for local testing (Jenkins checks out copy of 
 #		repository for unsigned packages to working directory)
