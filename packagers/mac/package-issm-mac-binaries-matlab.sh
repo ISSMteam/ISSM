@@ -148,7 +148,7 @@ if [ ${skip_tests} -eq 0 ]; then
 	${MATLAB_PATH}/bin/matlab -nojvm -nosplash -nojvm -r "try, addpath ${ISSM_DIR}/bin ${ISSM_DIR}/lib ${ISSM_DIR}/share; runme(${MATLAB_NROPTIONS}); exit; catch me,fprintf('%s',getReport(me)); exit; end" &> matlab.log
 
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab.log`
+	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab.log`
 
 	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"

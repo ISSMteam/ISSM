@@ -126,8 +126,8 @@ xattr -cr ${PKG}
 
 # Build list of ISSM executables
 ISSM_BINS=$(\
+	find ${PKG}/lib -type f -name *.dylib; \
 	find ${PKG}/bin -type f -name *.exe; \
-	find ${PKG}/bin -type f -name *.pyc; \
 	find ${PKG}/lib -type f -name *.mexmaca64; \
 	find ${PKG}/lib -type f -name *.mexmaci64; \
 	find ${PKG}/test -type f -name *.pkg; \
@@ -135,12 +135,13 @@ ISSM_BINS=$(\
 
 # Build list of third party executables
 THIRD_PARTY_BINS=$(\
-	echo ${PKG}/bin/mpiexec; \
-	echo ${PKG}/bin/hydra_pmi_proxy; \
 	echo ${PKG}/bin/gdalsrsinfo; \
 	echo ${PKG}/bin/gdaltransform; \
 	echo ${PKG}/bin/gmsh; \
 	echo ${PKG}/bin/gmt; \
+	echo ${PKG}/bin/hydra_pmi_proxy; \
+	echo ${PKG}/bin/mpiexec; \
+	echo ${PKG}/bin/projinfo; \
 )
 
 # Sign all executables in package
