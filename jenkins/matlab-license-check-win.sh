@@ -35,9 +35,10 @@ echo '-----------------------------'
 cat matlab.log | tr -cd '\11\12\40-\176' > matlab.log2 && mv matlab.log2 matlab.log
 
 # Check log for license expiration message
-matlabLicenseExpiring=`grep -c -E "Your license will expire in"`
+matlabLicenseExpiring=`grep -c -E "Your license will expire in" matlab.log`
 
 if [ ${matlabLicenseExpiring} -ne 0 ]; then
+	cat matlab.log
 	echo "Login to build node to update MATLAB license."
 	exit 1;
 fi

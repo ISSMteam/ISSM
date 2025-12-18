@@ -17,9 +17,10 @@ fi
 ${MATLAB_PATH}/bin/matlab -nojvm -nosplash -nojvm -r "exit;" &> matlab.log
 
 # Check log for license expiration message
-matlabLicenseExpiring=`grep -c -E "Your license will expire in"`
+matlabLicenseExpiring=`grep -c -E "Your license will expire in" matlab.log`
 
 if [ ${matlabLicenseExpiring} -ne 0 ]; then
+	cat matlab.log
 	echo "Login to build node to update MATLAB license."
 	exit 1;
 fi
