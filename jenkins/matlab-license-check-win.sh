@@ -27,9 +27,24 @@ ${MATLAB_PATH}/bin/matlab -nodesktop -nosplash -nojvm -r "exit;" -logfile matlab
 sleep 5;
 echo "Waiting for MATLAB to exit"
 pid=$(ps -W | grep MATLAB | awk '{print $1}')
-echo '-----------------------------'
-echo "pid: ${pid}"
-echo '-----------------------------'
+
+# Time out after $max_time seconds because sometimes multiple MATLAB processes get locked in race condition
+timer=0
+max_time=7200
+while [[ $timer -lt $max_time && -n "${pid}" ]]; do
+	pid=$(ps -W | grep MATLAB | awk '{print $1}')
+	timer=$((timer + 1))
+	sleep 1;
+done
+
+# Check if timer hit $max_time
+if [ $timer -eq $max_time ]; then
+	echo "Testing timed out at ${timer} seconds"
+	# Kill MATLAB processes
+	pid=$(ps -W | grep MATLAB | awk '{print $1}')
+	echo "${pid}" | xargs /bin/kill -f
+	exit 1
+fi
 
 # Filter out Windows characters
 cat matlab.log | tr -cd '\11\12\40-\176' > matlab.log2 && mv matlab.log2 matlab.log
