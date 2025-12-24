@@ -18,6 +18,7 @@ from processdata import processdata
 from processmesh import processmesh
 from plot_gridded import plot_gridded
 from plot_landsat import plot_landsat
+from plot_none import plot_none
 
 
 def plot_manager(md, options, fig, axgrid, gridindex):
@@ -77,9 +78,11 @@ def plot_manager(md, options, fig, axgrid, gridindex):
             plot_vertexnumbering(md, options, fig, axgrid, gridindex)
             return
         elif data == 'none':
-            print('no data provided to plot (TODO: write plot_none.py)')
-            applyoptions(md, [], options, fig, axgrid, gridindex)
-            return
+            #print('no data provided to plot (TODO: write plot_none.py)')
+            #applyoptions(md, [], options, fig, axgrid, gridindex)
+            if not options.exist('overlay'):
+                plot_none(md, options, fig, axgrid, gridindex)
+                return
         else:
             print(("WARNING: '%s' is not implemented or is not a valid string for option 'data'" % data))
     # }}}
