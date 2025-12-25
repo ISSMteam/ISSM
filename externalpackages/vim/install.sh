@@ -12,7 +12,7 @@ VER="9.1.1943"
 rm -rf ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/vim/vim/archive/refs/tags/v${VER}.tar.gz" "v${VER}.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/vim/vim/archive/refs/tags/v${VER}.tar.gz" "v${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf v${VER}.tar.gz

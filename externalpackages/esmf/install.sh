@@ -18,7 +18,7 @@ export ESMF_INSTALL_PREFIX="${PREFIX}"
 rm -rf ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/esmf-org/esmf/archive/refs/tags/ESMF_${VER}.tar.gz" "ESMF_${VER}.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/esmf-org/esmf/archive/refs/tags/ESMF_${VER}.tar.gz" "ESMF_${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf ESMF_${VER}.tar.gz

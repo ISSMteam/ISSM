@@ -26,9 +26,11 @@ ISSM_MPI_Comm EnvironmentInit(int argc,char** argv){
 	int my_rank = 0;
 	ISSM_MPI_Comm_rank(comm,&my_rank);
 	if(!my_rank) printf("\n");
-	if(!my_rank) printf("%s version  %s\n",PACKAGE_NAME,PACKAGE_VERSION);
-	if(!my_rank) printf("(GitHub: %s Documentation: %s)\n",PACKAGE_URL,PACKAGE_BUGREPORT);
-	if(!my_rank) printf("\n");
+	if(!my_rank) printf("──────────────────────────────────────────────────────────────────────\n");
+	if(!my_rank) printf("%s version %s\n", PACKAGE_NAME, PACKAGE_VERSION);
+	if(!my_rank) printf("          GitHub: %s\n", PACKAGE_BUGREPORT);
+	if(!my_rank) printf("   Documentation: %s\n", PACKAGE_URL);
+	if(!my_rank) printf("──────────────────────────────────────────────────────────────────────\n");
 
 	/*Return communicator*/
 	return comm;
