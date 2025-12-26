@@ -9,7 +9,7 @@ def issmscpout(host, path, login, port, packages, no_symlinks=0, bracketstyle=1)
     Usage:
         issmscpout(host, path, login, port, packages, no_symlinks, bracketstyle)
 
-        bracketstyle:   1 - \{\}    (escaped; default)
+        bracketstyle:   1 - \\{\\}    (escaped; default)
                         2 - {}      (not escaped)
     """
 

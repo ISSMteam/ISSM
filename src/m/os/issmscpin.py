@@ -10,7 +10,7 @@ def issmscpin(host, login, port, path, packages=1):
     Usage:
         issmscpin(host, packages, path)
 
-        bracketstyle:   1 - \{\}    (escaped; default)
+        bracketstyle:   1 - \\{\\}    (escaped; default)
                         2 - {}      (not escaped)
     """
 
