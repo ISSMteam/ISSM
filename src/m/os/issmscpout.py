@@ -34,9 +34,9 @@ def issmscpout(host, path, login, port, packages, no_symlinks=0, bracketstyle=1)
         if len(packages) == 1:
             fileliststr = packages[0]
         else:
-            fileliststr = '\{'
+            fileliststr = r'\{'
             fileliststr += ','.join([package for package in packages])
-            fileliststr += '\}'
+            fileliststr += r'\}'
 
             # Remove backslashes if bracketstyle is 2
             if bracketstyle == 2:
