@@ -33,9 +33,9 @@ alias grep=$(which grep)
 
 ## Constants
 #
-LIBGMT="${ISSM_DIR}/externalpackages/gmt/install/lib/libgmt.6.5.0.dylib" # Important that this is the library itself
+LIBGMT="${ISSM_DIR}/externalpackages/gmt/install/lib/libgmt.6.6.0.dylib" # Important that this is the library itself
 LIBGMT_DIST="${ISSM_DIR}/lib/libgmt.6.dylib" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
-LIBPSL="${ISSM_DIR}/externalpackages/gmt/install/lib/libpostscriptlight.6.5.0.dylib" # Important that this is the library itself
+LIBPSL="${ISSM_DIR}/externalpackages/gmt/install/lib/libpostscriptlight.6.6.0.dylib" # Important that this is the library itself
 LIBPSL_DIST="${ISSM_DIR}/lib/libpostscriptlight.6.dylib" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 
 ## Environment
@@ -78,7 +78,7 @@ cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
 
 echo "Moving certain shared libraries to lib/"
 cp ${LIBGMT} ${LIBGMT_DIST} 2>/dev/null
-#cp ${LIBPSL} ${LIBPSL_DIST} 2>/dev/null
+cp ${LIBPSL} ${LIBPSL_DIST} 2>/dev/null
 
 echo "Moving MPICH binaries to bin/"
 if [ -f ${ISSM_DIR}/externalpackages/petsc/install/bin/mpiexec ]; then
