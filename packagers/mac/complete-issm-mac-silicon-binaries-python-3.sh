@@ -64,14 +64,17 @@
 ## Constants
 #
 PKG="ISSM-macOS-Silicon-Python-3" # Name of directory to copy distributable files to
+VARIANT_REPO_SUBPATH="silicon/python"
+
 PYTHON_NROPTIONS="--benchmark all --exclude 119 124:126 129 216 234:235 274 362 417:418 420 423 430 433 435 441:442 444:445 448 456 462:464 470:476 508 517 544 546 701:703 808 1101:1110 1201:1208 1301:1304 1401:1402 1601:1602 2002 2004 2006 2010:2013 2020:2021 2052:2053 2085 2090:2092 2110:2113 2424:2425 3001:3300 3480:3481 4001:4100" # NOTE: Combination of test suites from basic, Dakota, and Solid Earth builds, with tests that require a restart and those that require the JVM excluded
-REPO_BASE_URL="https://issm.ess.uci.edu/svn/issm-binaries/mac/silicon/python/3"
+SIGNING_REPO_BASE_URL="https://issm.ess.uci.edu/svn/issm-macos-signing"
+SIGNING_REPO_URL="${SIGNING_REPO_BASE_URL}/${VARIANT_REPO_SUBPATH}"
 SIGNED_REPO_COPY="./signed"
-SIGNED_REPO_URL="${REPO_BASE_URL}/signed"
 UNSIGNED_REPO_COPY="./unsigned"
-UNSIGNED_REPO_URL="${REPO_BASE_URL}/unsigned"
 
 COMPRESSED_PKG="${PKG}.zip"
+SIGNED_REPO_URL="${SIGNING_REPO_URL}/signed"
+UNSIGNED_REPO_URL="${SIGNING_REPO_URL}/unsigned"
 
 ## Environment
 #
