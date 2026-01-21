@@ -8,19 +8,21 @@ function [bx by b]=basalstress(md)
 %
 %   See also: plot_basaldrag
 
-%Check md.friction class
-if ~(isa(md.friction,'friction') | isa(md.friction,'frictionschoof'))
-	error('Error: md.friction only supports "friction.m", "frictionschoof.m" classes.');
+%Compute effective pressure
+g         = md.constants.g;
+rho_ice   = md.materials.rho_ice;
+rho_water = md.materials.rho_water;
+
+sealevel = 0;
+p_ice = g*rho_ice*md.geometry.thickness;
+
+if isfield(md.friction, 'coupling')
+	coupling = md.friction.coupling;
+else
+	coupling = 0;
 end
 
-%Compute effective pressure
-g        =md.constants.g;
-rho_ice  =md.materials.rho_ice;
-rho_water=md.materials.rho_water;
-
-sealevel=0;
-p_ice=g*rho_ice*md.geometry.thickness;
-switch(md.friction.coupling)
+switch(coupling)
    case 0
 		p_water=g*rho_water*(sealevel-md.geometry.base);
       N = p_ice-p_water;
@@ -51,6 +53,7 @@ switch(class(md.friction))
 		r=averaging(md,md.friction.q./md.friction.p,0);
 
 		alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+
 	case 'frictionschoof'
 		if any(N < 0)
 			%NOTE: Sometimes, negative value of effective pressure N gives image number in alpha2. To prevent the image value in alpha2, we use small values.
@@ -62,8 +65,14 @@ switch(class(md.friction))
 		Cmax=averaging(md,md.friction.Cmax,0);
 		
 		alpha2 = (C.^2 .* ub.^(m-1))./(1 + (C.^2./(Cmax.*N)).^(1./m).*ub).^(m);
+
+	case 'frictionweertman'
+		m = averaging(md,md.friction.m,0);
+		C = md.friction.C;
+		alpha2 = C.^2 .* ub.^(1./m-1);
+
 	otherwise
-		error('not supported yet');
+		error('friction class not supported yet');
 end
 b  =  alpha2.*ub;
 bx = -alpha2.*ubx;
