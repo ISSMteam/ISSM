@@ -213,7 +213,7 @@ class ub_ccr(object):
             compressstring += ' {}.run {}.errlog {}.outlog'.format(modelname, modelname, modelname)
         subprocess.call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
+        #upload input files
         if self.interactive:
             directory = '{}/Interactive{}'.format(self.executionpath, self.interactive)
         else:
@@ -243,7 +243,7 @@ class ub_ccr(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && sbatch {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         # NOTE: Replacement for issmssh(self.name, self.login, self.port, launchcommand)
         subprocess.call(launchcommand, shell=True)
     # }}}

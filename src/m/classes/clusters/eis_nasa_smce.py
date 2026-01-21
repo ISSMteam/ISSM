@@ -200,7 +200,7 @@ class eis_nasa_smce(object):
             else:
                 launchcommand = 'cd {} && rm -rf {} && mkdir {} && cd {} && cp /efs/issm/tmp/{}.tar.gz . && tar -zxf {}.tar.gz && /opt/slurm/bin/sbatch {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
 
         # NOTE: Replacement for issmssh(self.name, self.login, self.port, launchcommand)
         subprocess.call('ssh -l {} -i {} {} "{}"'.format(self.login, self.idfile, self.name, launchcommand), shell=True)

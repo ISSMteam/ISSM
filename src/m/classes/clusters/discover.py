@@ -180,7 +180,7 @@ class discover(object):
             compressstring += ' {}.run {}.errlog {}.outlog'.format(modelname, modelname, modelname)
         subprocess.call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
+        #upload input files
         if self.interactive:
             directory = '{}/Interactive{}'.format(self.executionpath, self.interactive)
         else:
@@ -204,7 +204,7 @@ class discover(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && sbatch {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 

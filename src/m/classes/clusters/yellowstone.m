@@ -127,7 +127,7 @@ classdef yellowstone
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			directory=cluster.executionpath;
 
 			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
@@ -140,7 +140,7 @@ classdef yellowstone
 			launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
 						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && bsub < ' modelname '.queue '];
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end
 		%}}}

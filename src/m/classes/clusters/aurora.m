@@ -109,7 +109,7 @@ classdef aurora
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 
 		end %}}}
@@ -122,7 +122,7 @@ classdef aurora
 					' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && qsub ' modelname '.queue '];
 			end
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 
 		end %}}}

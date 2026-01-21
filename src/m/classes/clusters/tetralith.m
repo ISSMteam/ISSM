@@ -191,7 +191,7 @@ classdef tetralith
 				compressstring = [compressstring ' ' filelist{i}];
 			end
 			system(compressstring);
-			disp('uploading input file and queuing script');
+			%upload input files
 			directory=cluster.executionpath;
 % 			issmbbftpout(cluster.name,directory,cluster.login,cluster.port,cluster.numstreams,{[dirname '.tar.gz']});
 			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
@@ -200,7 +200,7 @@ classdef tetralith
 		%}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
 				' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && hostname && sbatch ' modelname '.queue '];
 

@@ -449,7 +449,7 @@ classdef pfe
 				end
 			end
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end
 		%}}}

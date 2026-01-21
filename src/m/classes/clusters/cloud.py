@@ -74,7 +74,7 @@ class cloud(object):
         if isempty(self.login):
             raise Exception('cloud BuildQueueScript: login should be supplied!')
 
-        print('uploading input file and queuing script')
+        #upload input files
         issmstscpout(self.name, self.executionpath, self.login, '{}.tar.gz'.format(dirname))
     # }}}
 
@@ -86,7 +86,7 @@ class cloud(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
         else:
-            print('launching solution sequence on remote cluster')
+            #Execute Queue job
             if not isempty(restart):
                 launchcommand = 'cd {} && cd {} && qsub {}.queue'.format(self.executionpath, dirname, modelname)
             else:

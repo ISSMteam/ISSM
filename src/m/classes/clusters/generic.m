@@ -294,7 +294,7 @@ classdef generic
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
 
-			if ~ispc,
+			if ~ispc
 
 				%compress the files into one zip.
 				compressstring=['tar -zcf ' dirname '.tar.gz '];
@@ -309,7 +309,6 @@ classdef generic
 				end
 				system(compressstring);
 
-				if cluster.verbose, disp('uploading input file and queuing script'); end
 				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 			end
 		end %}}}
@@ -322,8 +321,6 @@ classdef generic
 				else
 					shellext='csh';
 				end
-
-				if cluster.verbose, disp('launching solution sequence on remote cluster'); end
 
 				if ~isempty(restart)
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
@@ -344,7 +341,7 @@ classdef generic
 		end %}}}
 		function LaunchQueueJobIceOcean(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			if ~ispc,
+			if ~ispc
 
 				%figure out what shell extension we will use:
 				if isempty(strfind(cluster.shell,'csh')),
@@ -352,8 +349,6 @@ classdef generic
 				else
 					shellext='csh';
 				end
-
-				if cluster.verbose, disp('launching solution sequence on remote cluster'); end
 
 				if ~isempty(restart)
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];

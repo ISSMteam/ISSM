@@ -215,7 +215,7 @@ class pfe(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz  && qsub {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         issmssh(self.name, self.login, self.port, launchcommand)
 
     # }}}

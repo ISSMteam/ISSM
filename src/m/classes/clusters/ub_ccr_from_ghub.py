@@ -157,7 +157,7 @@ class ub_ccr_from_ghub(object):
             compressstring += ' {}.run {}.errlog {}.outlog'.format(modelname, modelname, modelname)
         subprocess.call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
+        #upload input files
         directory = issmexecdir
 
         issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)])
@@ -166,7 +166,7 @@ class ub_ccr_from_ghub(object):
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
         launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && sbatch {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 

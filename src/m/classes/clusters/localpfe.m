@@ -243,7 +243,6 @@ classdef localpfe
 				end
 				system(compressstring);
 
-				if cluster.verbose, disp('uploading input file and queuing script'); end
 				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 			end
 		end %}}}
@@ -256,7 +255,7 @@ classdef localpfe
 				shellext='csh';
 			end
 
-			if cluster.verbose, disp('launching solution sequence on remote cluster'); end
+			if cluster.verbose, %Execute Queue job end
 
 			launchcommand=['cd ' cluster.executionpath ' && rm -rf *.lock && rm -rf ADOLC* && tar -zxf ' dirname '.tar.gz  && rm -rf *.tar.gz'];
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
@@ -271,7 +270,7 @@ classdef localpfe
 				shellext='csh';
 			end
 
-			if cluster.verbose, disp('launching solution sequence on remote cluster'); end
+			if cluster.verbose, %Execute Queue job end
 
 			launchcommand=['cd ' cluster.executionpath ' && rm -rf *.lock && tar -zxf ' dirname '.tar.gz  && rm -rf *.tar.gz'];
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);

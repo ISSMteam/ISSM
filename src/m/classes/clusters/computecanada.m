@@ -109,13 +109,13 @@ classdef computecanada
 			 end
 			 system(compressstring);
 
-			 disp('uploading input file and queuing script');
+			 %upload input files
 			 issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']}, 0, 2);
 
 		 end %}}}
 		 function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
 
-			 disp('launching solution sequence on remote cluster');
+			 %Execute Queue job
 			 if ~isempty(restart)
 				 launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && hostname && sbatch ' modelname '.queue '];
 			 else

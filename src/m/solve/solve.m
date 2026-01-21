@@ -146,10 +146,12 @@ if md.qmu.isdakota,
 end
 
 if isempty(restart),
+	disp('uploading input files')
 	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist);
 end
 
 %launch queue job: 
+disp('launching solution sequence')
 LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
 %return if batch: 

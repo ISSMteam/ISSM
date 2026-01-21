@@ -83,6 +83,7 @@ def solveslm(slm, solutionstringi, *args):
     UploadQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist)
 
     # Launch queue job
+    print('launching solution sequence')
     LaunchQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist, '', batch)
 
     # Wait on lock
