@@ -79,7 +79,7 @@ basinid_data    = double(ncread(basin_datanc,'basinNumber'));
 
 disp('   == Interpolating basin Id');
 num_basins = length(unique(basinid_data));
-deltat_median = NaN(length(unique(basinid_data)),1);
+deltat_median = NaN(1,length(unique(basinid_data)));
 
 for i=0:num_basins-1
 	pos = find(basinid_data==i);
