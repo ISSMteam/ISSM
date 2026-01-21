@@ -26,7 +26,7 @@ void balancevelocity_core(FemModel* femmodel){
 	femmodel->parameters->SetParam(DrivingStressYEnum,InputToSmoothEnum);
 	solutionsequence_linear(femmodel);
 
-	if(VerboseSolution()) _printf0_("   call computational core:\n");
+	if(VerboseSolution()) _printf0_("computing balance velocities\n");
 	femmodel->SetCurrentConfiguration(BalancevelocityAnalysisEnum);
 	solutionsequence_linear(femmodel);
 

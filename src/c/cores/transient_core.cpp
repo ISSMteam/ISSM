@@ -78,10 +78,10 @@ void transient_core(FemModel* femmodel){/*{{{*/
 		femmodel->parameters->SetParam(step,StepEnum);
 
 		if(VerboseSolution()){
-			_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
-			//_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
+			//_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
+			_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
 		}
 		bool save_results=false;
 		if(step%output_frequency==0 || (time >= finaltime - (yts*DBL_EPSILON)) || step==1) save_results=true;
