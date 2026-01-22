@@ -28,13 +28,14 @@ function md = BinReadMatlab(infile)
 		%See if field exists in md
 		parts =  strsplit(recordName, '.');
 		addtomd = true;
-		if ~isprop(md, parts{2})
+		if numel(parts)<3
 			addtomd = false;
-		elseif numel(parts)<3
+		elseif ~isprop(md, parts{2})
 			addtomd = false;
 		elseif ~isprop(md.(parts{2}), parts{3})
 			addtomd = false;
 		end
+
 
 		% Step 2: read length of record (int64)
 		reclen = fread(fid, 1, 'int64');
@@ -56,8 +57,12 @@ function md = BinReadMatlab(infile)
 			case FormatToCode('Double')
 				data = fread(fid, 1, 'double');
 
-			case {FormatToCode('BooleanMat'), FormatToCode('IntMat'), ...
-					FormatToCode('DoubleMat')}
+			case FormatToCode('String')
+				len  = fread(fid, 1, 'int');
+				data = char(fread(fid, len, 'char'))';
+
+			case {FormatToCode('BooleanMat'), FormatToCode('IntMat'), FormatToCode('DoubleMat')}
+
 				% Read matrix type (int32) – not used further here
 				mattype = fread(fid, 1, 'int32');
 
@@ -68,7 +73,7 @@ function md = BinReadMatlab(infile)
 				% Choose element precision according to the specific matrix type
 				switch code
 					case FormatToCode('BooleanMat')
-						elemType = 'int32';
+						elemType = 'double';
 					case FormatToCode('IntMat')
 						elemType = 'int32';
 					case FormatToCode('DoubleMat')
@@ -79,6 +84,7 @@ function md = BinReadMatlab(infile)
 				% MATLAB stores column‑major, so we transpose after reading)
 				data = fread(fid, rows*cols, elemType);
 				data = reshape(data, [cols, rows])';
+
 
 			otherwise
 				% For unsupported or array types we simply skip the remaining bytes
@@ -91,6 +97,15 @@ function md = BinReadMatlab(infile)
 			md.(parts{2}).(parts{3}) = data;
 		else
 			disp([' -> Skipping ', recordName]);
+		end
+
+		%Change class depending on what's provided
+		if strcmp(recordName, 'md.mesh.elementtype')
+			switch(data)
+				case 'Tria';  md.mesh = mesh2d();
+				case 'Penta'; md.mesh = mesh3dprisms();
+				otherwise error(['Element type ', data, ' not supported yet']);
+			end
 		end
 	end
 	fclose(fid);
