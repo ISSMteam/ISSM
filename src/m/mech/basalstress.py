@@ -67,7 +67,8 @@ def basalstress(md):
         alpha2 = (N**r)*(md.friction.coefficient**2)*(ub**(s-1))
     elif isinstance(md.friction,frictionschoof):
         if np.any(N<0):
-            %NOTE: Sometimes, N negative values gives image number in alpha2. To prevent the image value in alpha2, we use small values.
+            #NOTE: Sometimes, N negative values gives image number in alpha2. To prevent the image value in alpha2, we use small values.
+            N = np.maximum(N,0.1)
         m=averaging(md,md.friction.m,0)
         C=averaging(md,md.friction.C,0)
         Cmax=averaging(md,md.friction.Cmax,0)
