@@ -1,4 +1,5 @@
 from friction import friction
+from frictionweertman import frictionweertman
 from frictionschoof import frictionschoof
 from averaging import averaging
 import numpy as np
@@ -16,7 +17,7 @@ def basalstress(md):
     '''
 
     #Check md.friction class
-    if not isinstance(md.friction,friction):
+    if not (isinstance(md.friction,friction) | isinstance(md.friction,frictionschoof) | isinstance(md.friction,frictionweertman)):
         raise Exception('Error: md.friction only supports "friction.m" class.')
 
     #Compute effective pressure
@@ -74,6 +75,12 @@ def basalstress(md):
         Cmax=averaging(md,md.friction.Cmax,0)
 
         alpha2 = (C**2 * ub**(m-1))/(1 + (C**2/(Cmax*N))**(1/m)*ub)**m
+
+    elif isinstance(md.friction,frictionweertman):
+        m = averaging(md,md.friction.m,0.0)
+        C = md.friction.C
+        alpha2 = C**2 * ub**(1/m-1)
+
     else:
         raise Exception('not supported yet')
 
