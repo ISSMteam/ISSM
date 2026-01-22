@@ -1,0 +1,24 @@
+on:
+  push:
+    tags:
+      - '*'
+    branches:
+      - access-release
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+        contents: write
+
+    steps:
+      - name: Checkout copy of repository
+        uses: actions/checkout@v4
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
