@@ -16,9 +16,10 @@ rho_water = md.materials.rho_water;
 sealevel = 0;
 p_ice = g*rho_ice*md.geometry.thickness;
 
-if isfield(md.friction, 'coupling')
+if isprop(md.friction, 'coupling')
 	coupling = md.friction.coupling;
 else
+	warning(sprintf('md.friction.coupling is not found. Default coupling is set to 0.'));
 	coupling = 0;
 end
 
