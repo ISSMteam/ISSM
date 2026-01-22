@@ -111,8 +111,8 @@ classdef matice
 				md = checkfield(md,'fieldname','materials.rho_water','>',0);
 				md = checkfield(md,'fieldname','materials.rho_freshwater','>',0);
 				md = checkfield(md,'fieldname','materials.mu_water','>',0);
-				md = checkfield(md,'fieldname','materials.rheology_B','>',0,'universal',1,'NaN',1,'Inf',1);
-				md = checkfield(md,'fieldname','materials.rheology_n','>',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','materials.rheology_B','>',0,'size','universal','NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','materials.rheology_n','>',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','materials.rheology_law','values',{'None' 'BuddJacka' 'Cuffey' 'CuffeyTemperate' 'Paterson' 'Arrhenius' 'LliboutryDuval' 'NyeCO2' 'NyeH2O'});
 				md = checkfield(md,'fieldname','materials.effectiveconductivity_averaging','numel',[1],'values',[0 1 2]);
 			end
