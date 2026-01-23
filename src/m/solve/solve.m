@@ -97,7 +97,7 @@ if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes'),
 	if md.verbose.solution,
 		disp('checking model consistency');
 	end
-	ismodelselfconsistent(md),
+	ismodelselfconsistent(md);
 end
 
 %If we are restarting, actually use the provided runtime name:
@@ -155,8 +155,8 @@ disp('launching solution sequence')
 LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
 %return if batch: 
-if batch,
-	if md.verbose.solution,
+if batch
+	if md.verbose.solution
 		disp('batch mode requested: not launching job interactively');
 		disp('launch solution sequence on remote cluster by hand');
 	end
