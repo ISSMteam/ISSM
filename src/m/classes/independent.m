@@ -12,7 +12,7 @@ classdef independent
 		nods								= 0;
 		min_parameters					= NaN;
 		max_parameters					= NaN;
-		control_scaling_factor     = NaN;
+		control_scaling_factor     = 0;
 		control_size					= 0;
 
 	end
@@ -33,7 +33,9 @@ classdef independent
 		end
 		%}}}
 		function self = setdefaultparameters(self) % {{{
-			%do nothing
+
+			%Set default scaling factor to 1 (i.e., do not scale)
+			self.control_scaling_factor = 1.0;
 
 		end % }}}
 		function md = checkconsistency(self,md,i,solution,analyses,driver) % {{{

@@ -20,7 +20,7 @@ class independent(object):
         self.nods = 0
         self.min_parameters = np.nan
         self.max_parameters = np.nan
-        self.control_scaling_factor = np.nan
+        self.control_scaling_factor = 0.
         self.control_size = 0
 
         # Set defaults
@@ -55,7 +55,10 @@ class independent(object):
     # }}}
 
     def setdefaultparameters(self):  # {{{
-        # Do nothing
+
+        # Set default scaling factor to 1 (i.e., do not scale)
+        self.control_scaling_factor = 1.0
+
         return self
     # }}}
 
