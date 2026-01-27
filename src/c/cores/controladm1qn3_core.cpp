@@ -185,6 +185,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 			X[index] = X[index]*scaling_factors[c];
 			if(X[index]>XU[index]) X[index]=XU[index];
 			if(X[index]<XL[index]) X[index]=XL[index];
+			_assert_(!xIsNan(X[index]));
 		}
 		offset += M[c]*N[c];
 	}
