@@ -17,6 +17,7 @@
 #include "../../shared/Enum/Enum.h"
 #include "../petsc/petscincludes.h"
 #include "../issm/issmtoolkit.h"
+#include "perf.hpp"
 /*}}}*/
 
 enum vectortype { PetscVecType, IssmVecType };
@@ -34,11 +35,13 @@ class Vector{
 
 		/*Vector constructors, destructors */
 		Vector(){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 		}
 		/*}}}*/
 		Vector(int M,bool fromlocalsize=false){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -52,6 +55,7 @@ class Vector{
 		}
 		/*}}}*/
 		Vector(int m,int M){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -64,6 +68,7 @@ class Vector{
 		}
 		/*}}}*/
 		Vector(doubletype* serial_vec,int M){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -76,6 +81,7 @@ class Vector{
 		}
 		/*}}}*/
 		~Vector(){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -87,6 +93,7 @@ class Vector{
 		/*}}}*/
 		#ifdef _HAVE_PETSC_
 		Vector(PVec petsc_vector){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			this->type=PetscVecType;
 			this->ivector=NULL;
@@ -96,6 +103,7 @@ class Vector{
 		/*}}}*/
 		#endif
 		void InitCheckAndSetType(void){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			#ifdef _HAVE_PETSC_
 			pvector=NULL;
@@ -129,6 +137,7 @@ class Vector{
 
 		/*Vector specific routines*/
 		void Echo(void){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -140,6 +149,7 @@ class Vector{
 		}
 		/*}}}*/
 		void EchoDebug(std::string message){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 #ifdef _HAVE_PETSC_
@@ -150,6 +160,7 @@ class Vector{
 		}
 		/*}}}*/
 		void Assemble(void){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -161,6 +172,8 @@ class Vector{
 		}
 		/*}}}*/
 		void SetValues(int ssize, int* list, doubletype* values, InsMode mode){ _assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
+
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
 				this->pvector->SetValues(ssize,list,values,mode);
@@ -171,6 +184,7 @@ class Vector{
 		}
 		/*}}}*/
 		void SetValue(int dof, doubletype value, InsMode mode){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -182,6 +196,7 @@ class Vector{
 		}
 		/*}}}*/
 		void GetValue(doubletype* pvalue,int dof){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -193,6 +208,7 @@ class Vector{
 		}
 		/*}}}*/
 		void GetSize(int* pM){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -204,6 +220,7 @@ class Vector{
 		}
 		/*}}}*/
 		bool IsEmpty(void){/*{{{*/
+                        ISSM_PERF_ZONE
 			int M;
 
 			_assert_(this);
@@ -216,6 +233,7 @@ class Vector{
 		}
 		/*}}}*/
 		void GetLocalSize(int* pM){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -227,6 +245,7 @@ class Vector{
 		}
 		/*}}}*/
 		void GetLocalVector(doubletype** pvector,int** pindices){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -238,6 +257,7 @@ class Vector{
 		}
 		/*}}}*/
 		Vector<doubletype>* Duplicate(void){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			Vector<doubletype>* output=NULL;
 
@@ -253,6 +273,7 @@ class Vector{
 			return output;
 		} /*}}}*/
 		void Set(doubletype value){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -264,6 +285,7 @@ class Vector{
 		}
 		/*}}}*/
 		void AXPY(Vector* X, doubletype a){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -275,6 +297,7 @@ class Vector{
 		}
 		/*}}}*/
 		void AYPX(Vector* X, doubletype a){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -285,6 +308,7 @@ class Vector{
 		}
 		/*}}}*/
 		doubletype* ToMPISerial(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype* vec_serial=NULL;
 
@@ -301,6 +325,7 @@ class Vector{
 		}
 		/*}}}*/
 		doubletype* ToMPISerial0(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype* vec_serial=NULL;
 
@@ -319,6 +344,7 @@ class Vector{
 		}
 		/*}}}*/
 		void Shift(doubletype shift){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -329,6 +355,7 @@ class Vector{
 		}
 		/*}}}*/
 		void Copy(Vector* to){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -339,6 +366,7 @@ class Vector{
 		}
 		/*}}}*/
 		doubletype Max(void){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype max=0;
 
@@ -352,6 +380,7 @@ class Vector{
 		}
 		/*}}}*/
 		doubletype Norm(NormMode norm_type){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype norm=0;
 
@@ -365,6 +394,7 @@ class Vector{
 		}
 		/*}}}*/
 		void Scale(doubletype scale_factor){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -375,6 +405,7 @@ class Vector{
 		}
 		/*}}}*/
 		doubletype Dot(Vector* vector){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype dot;
 
@@ -388,6 +419,7 @@ class Vector{
 		}
 		/*}}}*/
 		void PointwiseDivide(Vector* x,Vector* y){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -398,6 +430,7 @@ class Vector{
 		}
 		/*}}}*/
 		void PointwiseMult(Vector* x,Vector* y){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -408,6 +441,7 @@ class Vector{
 		}
 		/*}}}*/
 		void Pow(doubletype scale_factor){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscVecType){
 				#ifdef _HAVE_PETSC_
@@ -417,16 +451,18 @@ class Vector{
 			else this->ivector->Pow(scale_factor);
 		}
 		/*}}}*/
-void Sum(doubletype* pvalue){ /*{{{*/
-	_assert_(this);/*{{{*/
+                void Sum(doubletype* pvalue){ /*{{{*/
+                        ISSM_PERF_ZONE
 
-	if(type==PetscVecType){
-		#ifdef _HAVE_PETSC_
-		this->pvector->Sum(pvalue);
-		#endif
-	}
-	else this->ivector->Sum(pvalue);
-}
-/*}}}*/
+                        _assert_(this);
+
+                        if(type==PetscVecType){
+                                #ifdef _HAVE_PETSC_
+                                this->pvector->Sum(pvalue);
+                                #endif
+                        }
+                        else this->ivector->Sum(pvalue);
+                }
+                /*}}}*/
 }; /*}}}*/
 #endif //#ifndef _VECTOR_H_

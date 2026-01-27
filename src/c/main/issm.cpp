@@ -4,6 +4,8 @@
 
 #include "./issm.h"
 
+#include "../toolkits/objects/perf.hpp"
+
 int main(int argc,char **argv){
 
 	/*Initialize exception trapping: */
@@ -29,6 +31,8 @@ int main(int argc,char **argv){
 
 	/*Delete Model: */
 	delete femmodel;
+
+        perf.write("times.dat");
 
 	/*Finalize environment:*/
 	EnvironmentFinalize();
