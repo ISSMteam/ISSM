@@ -73,7 +73,7 @@ class independent(object):
                 raise TypeError('independent checkconsistency error: nods should be set to the size of the independent variable')
             md = checkfield(md, 'fieldname', 'autodiff.independents[%d].fov_forward_indices' % i, '>=', 1, '<=', self.nods)
 
-        md = checkfield(md, 'fieldname', 'autodiff.independents[%d].control_scaling_factor' % i, 'size',[1 1], '>', 0, 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'autodiff.independents[%d].control_scaling_factor' % i, 'size', [1, 1], '>', 0, 'NaN', 1, 'Inf', 1)
 
         return md
     # }}}
