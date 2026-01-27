@@ -9,7 +9,7 @@ import numpy as np
 
 md = triangle(model(), '../Exp/Square.exp', 150000.)
 md = setmask(md, 'all', '')
-md = parameterize(md, '../Par/SquareShelfConstrained.par')
+md = parameterize(md, '../Par/SquareShelfConstrained.py')
 md = md.sampling.setparameters(md,2e5,1)
 md.sampling.seed = 100
 md.sampling.phi = np.zeros(md.mesh.numberofvertices, 1)
