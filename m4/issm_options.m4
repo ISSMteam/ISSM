@@ -2391,6 +2391,22 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AM_CONDITIONAL([KRIGING], [test "x${HAVE_KRIGING}" == "xyes"])
 	AC_MSG_RESULT([${HAVE_KRIGING}])
 	dnl }}}
+	dnl performancemeasurements{{{
+	AC_ARG_ENABLE(
+		[performancemeasurements],
+		AS_HELP_STRING([--enable-performancemeasurements], [turn performance measurements on]),
+		[performancemeasurements=${enableval}],
+		[performancemeasurements=no]
+	)
+	AC_MSG_CHECKING(for performance measurements support)
+	HAVE_PERF=no
+	if test "x${performancemeasurements}" == "xyes"; then
+		HAVE_PERF=yes
+		AC_DEFINE([_HAVE_PERFORMANCE_MEASUREMENTS_], [1], [Macro to enable performance measurements in ISSM])
+	fi
+	AM_CONDITIONAL([PERFORMANCE_MEASUREMENTS], [test "x${HAVE_PERF}" == "xyes"])
+	AC_MSG_RESULT([${HAVE_PERF}])
+	dnl }}}
 
 	dnl Analyses
 	AX_ANALYSES_SELECTION
