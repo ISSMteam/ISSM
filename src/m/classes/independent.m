@@ -23,7 +23,8 @@ classdef independent
 			options=pairoptions(varargin{:});
 
 			%OK get other fields
-			self=AssignObjectFields(pairoptions(varargin{:}),self);
+			self = setdefaultparameters(self);
+			self = AssignObjectFields(pairoptions(varargin{:}), self);
 
 			if(self.control_size == 0)
 				self.control_size = 1;
