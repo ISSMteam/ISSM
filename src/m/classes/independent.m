@@ -5,15 +5,15 @@
 
 classdef independent
 	properties (SetAccess=public) 
-		name			               = '';
-		type					         = '';
-		fos_forward_index			   = NaN;
-		fov_forward_indices			= [];
-		nods								= 0;
-		min_parameters					= NaN;
-		max_parameters					= NaN;
-		control_scaling_factor     = 0;
-		control_size					= 0;
+		name					= '';
+		type					= '';
+		fos_forward_index		= NaN;
+		fov_forward_indices		= [];
+		nods					= 0;
+		min_parameters			= NaN;
+		max_parameters			= NaN;
+		control_scaling_factor	= 0;
+		control_size			= 0;
 
 	end
 	methods

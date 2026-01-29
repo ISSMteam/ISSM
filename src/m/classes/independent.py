@@ -20,16 +20,14 @@ class independent(object):
         self.nods = 0
         self.min_parameters = np.nan
         self.max_parameters = np.nan
-        self.control_scaling_factor = 0.
+        self.control_scaling_factor = 0
         self.control_size = 0
-
-        # Set defaults
-        self.setdefaultparameters()
 
         # Use provided options to change fields
         options = pairoptions(*args)
 
         # Get other fields
+        self.setdefaultparameters()
         self = options.AssignObjectFields(self)
 
         if self.control_size == 0:
