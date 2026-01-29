@@ -449,8 +449,8 @@ source $ISSM_EXT_DIR/shell2junit/install/bin/sh2ju.sh
 juLogClean
 
 # Strip special characters
-sed -e -i'' 's|\^\[\[92m||g'
-sed -e -i'' 's|\^\[\[m||g'
+sed -i -e 's|\[92m||g'
+sed -i -e 's|\[m||g'
 
 if [ $MATLAB_TEST -eq 1 ]; then
 	# Number tests
