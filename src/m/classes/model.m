@@ -681,17 +681,17 @@ classdef model
 						elseif fieldsize(1)==numberofelements1
 							md2.(model_fields{i}).(object_fields{j})=field(pos_elem,:);
 						elseif (fieldsize(1)==numberofelements1+1)
-						        md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
-                                                %3D cell array
-                                                elseif strcmp(class(field),'cell') & ndims(field) == 3
-                                                        new_cell = cell(fieldsize);
-                                                        for k=1:fieldsize(3)
-                                                                layer = field{k};
-                                                                extracted_layer = [layer(pos_node, :); layer(end, :)];
-                                                                new_cell{k} = extracted_layer;
-                                                        end
-                                                        md2.(model_fields{i}).(object_fields{j}) = new_cell;
-                                                end
+							md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
+                        %3D cell array
+                        elseif strcmp(class(field),'cell') & ndims(field) == 3
+                    		new_cell = cell(fieldsize);
+                        	for k=1:fieldsize(3)
+                        		layer = field{k};
+                                extracted_layer = [layer(pos_node, :); layer(end, :)];
+                             	new_cell{k} = extracted_layer;
+                        	end
+                            md2.(model_fields{i}).(object_fields{j}) = new_cell;
+                        end
 					end
 				else
 					%size = number of nodes * n
