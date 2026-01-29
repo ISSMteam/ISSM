@@ -677,19 +677,20 @@ classdef model
 							md2.(model_fields{i}).(object_fields{j})=field(pos_node,:);
 						elseif (fieldsize(1)==numberofvertices1+1)
 							md2.(model_fields{i}).(object_fields{j})=[field(pos_node,:); field(end,:)];
-						%size = number of elements * n
+							%size = number of elements * n
 						elseif fieldsize(1)==numberofelements1
 							md2.(model_fields{i}).(object_fields{j})=field(pos_elem,:);
 						elseif (fieldsize(1)==numberofelements1+1)
 							md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
-                        end
+						end
+					end
 				else
 					%size = number of nodes * n
 					if fieldsize(1)==numberofvertices1
 						md2.(model_fields{i})=field(pos_node,:);
 					elseif (fieldsize(1)==numberofvertices1+1)
 						md2.(model_fields{i})=[field(pos_node,:); field(end,:)];
-					%size = number of elements * n
+						%size = number of elements * n
 					elseif fieldsize(1)==numberofelements1
 						md2.(model_fields{i})=field(pos_elem,:);
 					elseif (fieldsize(1)==numberofelements1+1)
