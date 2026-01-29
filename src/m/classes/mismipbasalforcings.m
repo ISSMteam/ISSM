@@ -46,19 +46,19 @@ classdef mismipbasalforcings
 
 			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.threshold_thickness','>=',0,'numel',1);
 				md = checkfield(md,'fieldname','basalforcings.upperdepth_melt','<=',0,'numel',1);
 			end
 			if ismember('BalancethicknessAnalysis',analyses),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.threshold_thickness','>=',0,'numel',1);
 				md = checkfield(md,'fieldname','basalforcings.upperdepth_melt','<=',0,'numel',1);
 			end
 			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.threshold_thickness','>=',0,'numel',1);
 				md = checkfield(md,'fieldname','basalforcings.upperdepth_melt','<=',0,'numel',1);
 				md = checkfield(md,'fieldname','basalforcings.geothermalflux','NaN',1,'Inf',1,'timeseries',1,'>=',0);
