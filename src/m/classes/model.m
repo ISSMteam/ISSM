@@ -682,7 +682,7 @@ classdef model
 							md2.(model_fields{i}).(object_fields{j})=field(pos_elem,:);
 						elseif (fieldsize(1)==numberofelements1+1)
 							md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
-                                        end
+                        end
 				else
 					%size = number of nodes * n
 					if fieldsize(1)==numberofvertices1
@@ -705,12 +705,12 @@ classdef model
 			md2.mesh.numberofvertices=numberofvertices2;
 			md2.mesh.elements=elements_2;
 
-                        % Extract ISMIP6 basal tf field
-                        if isa(md1.basalforcings, 'basalforcingsismip6')
-                            for i=1:numel(md.basalforcings.tf)
-                                md2.basalforcings.tf{i} = [md1.basalforcings.tf{i}(pos_node); md1.basalforcings.tf{i}(end)];
-                            end
-                        end
+            % Extract ISMIP6 basal tf field
+            if isa(md1.basalforcings, 'basalforcingsismip6')
+            	for i=1:numel(md.basalforcings.tf)
+                	md2.basalforcings.tf{i} = [md1.basalforcings.tf{i}(pos_node); md1.basalforcings.tf{i}(end)];
+               end
+            end
                         
 			%mesh.uppervertex mesh.lowervertex
 			if isa(md1.mesh,'mesh3dprisms'),
