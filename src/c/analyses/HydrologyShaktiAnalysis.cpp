@@ -134,6 +134,13 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyBaseEnum);
 	}
 
+	/*Initialize requested outputs in case they are not defined later for this partition*/
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyBasalFluxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,DegreeOfChannelizationEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyMeltRateEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyFrictionHeatEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyDissipationEnum,P0Enum);
+
 	/*Friction*/
 	FrictionUpdateInputs(elements, inputs, iomodel);
 }/*}}}*/
