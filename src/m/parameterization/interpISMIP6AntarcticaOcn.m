@@ -26,15 +26,11 @@ function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, varargin)
 %   Examples:
 %      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
 
-
-defaultStartEnd = [1995 2100];
-
+% Parse inputs
 p = inputParser;
-p.FunctionName = mfilename;
-
 addRequired(p, 'md');
 addRequired(p, 'model_name', @(x) ischar(x) || isstring(x));
-addParameter(p, 'start_end_year', defaultStartEnd,...
+addParameter(p, 'start_end_year', [1995 2100],...
              @(x) isnumeric(x) &&...
              numel(x) == 2 &&...
              x(1) >= 1995 &&...
