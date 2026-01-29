@@ -520,7 +520,7 @@ if [ $EXAMPLES_TEST -eq 1 ]; then
 		-e 's|\[92m||g' \
 		-e 's|\[m||g' \
 		-e 's|\x1B||g' \
-		python_log.log
+		matlab_log_examples.log
 
 	# Inexplicably, there are backspace characters in the error output; remove them
 	sed -i -e 's|\x08||g' matlab_log_examples.log
