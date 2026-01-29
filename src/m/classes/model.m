@@ -598,7 +598,7 @@ classdef model
 			%copy model
 			md1=md;
 
-			%recover optoins: 
+			%recover options: 
 			options=pairoptions(varargin{:});
 
 			%some checks
@@ -662,13 +662,13 @@ classdef model
 
 			%loop over model fields
 			model_fields=fields(md1);
-			for i=1:length(model_fields),
+			for i=1:length(model_fields)
 				%get field
 				field=md1.(model_fields{i});
 				fieldsize=size(field);
 				if isobject(field), %recursive call
 					object_fields=fields(md1.(model_fields{i}));
-					for j=1:length(object_fields),
+					for j=1:length(object_fields)
 						%get field
 						field=md1.(model_fields{i}).(object_fields{j});
 						fieldsize=size(field);
@@ -681,8 +681,17 @@ classdef model
 						elseif fieldsize(1)==numberofelements1
 							md2.(model_fields{i}).(object_fields{j})=field(pos_elem,:);
 						elseif (fieldsize(1)==numberofelements1+1)
-							md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
-						end
+						        md2.(model_fields{i}).(object_fields{j})=[field(pos_elem,:); field(end,:)];
+                                                %3D cell array
+                                                elseif strcmp(class(field),'cell') & ndims(field) == 3
+                                                        new_cell = cell(fieldsize);
+                                                        for k=1:fieldsize(3)
+                                                                layer = field{k};
+                                                                extracted_layer = [layer(pos_node, :); layer(end, :)];
+                                                                new_cell{k} = extracted_layer;
+                                                        end
+                                                        md2.(model_fields{i}).(object_fields{j}) = new_cell;
+                                                end
 					end
 				else
 					%size = number of nodes * n
