@@ -1,4 +1,4 @@
-function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
+function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, varargin)
 %interpISMIP6AntarcticaOcn - interpolate chosen ISMIP6 atmospheric forcing to model
 %
 %   Input:
@@ -25,6 +25,25 @@ function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
 %
 %   Examples:
 %      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
+
+
+defaultStartEnd = [1995 2100];
+
+p = inputParser;
+p.FunctionName = mfilename;
+
+addRequired(p, 'md');
+addRequired(p, 'model_name', @(x) ischar(x) || isstring(x));
+addParameter(p, 'start_end_year', defaultStartEnd,...
+             @(x) isnumeric(x) &&...
+             numel(x) == 2 &&...
+             x(1) >= 1995 &&...
+             x(2) <= 2100 && ...
+             x(1) <= x(2));
+
+parse(p, md, model_name, varargin{:});
+start_time = p.Results.start_end_year(1);
+end_time = p.Results.start_end_year(2);
 
 % Find appropriate directory
 switch oshostname(),
@@ -56,13 +75,15 @@ tf_data = double(ncread(tfnc,'thermal_forcing'));
 z_data  = double(ncread(tfnc,'z'));
 
 %Build tf cell array
-time = 1995:2100;
+time = start_time:end_time;
 tf = cell(1,1,size(tf_data,3));
+start_idx = start_time - 1994;
+final_idx = end_time - 1994;
 for i=1:size(tf_data,3)  %Iterate over depths
 	disp(['   == Interpolating over depth ' num2str(i) '/' num2str(size(tf_data,3))]);
 	
 	temp_matrix=[];
-	for ii=1:size(tf_data,4) %Iterate over time steps
+	for ii=start_idx:final_idx %Iterate over time steps
 		%temp_tfdata=InterpFromGridToMesh(x_n,y_n,tf_data(:,:,i,ii)',md.mesh.x,md.mesh.y,0);
 		temp_tfdata=InterpFromGrid(x_n,y_n,tf_data(:,:,i,ii)',md.mesh.x,md.mesh.y);
 		temp_matrix = [temp_matrix temp_tfdata];
@@ -102,4 +123,4 @@ basalforcings.tf_depths  = z_data';
 basalforcings.gamma_0    = gamma0_median;
 basalforcings.tf         = tf;
 
-disp('Info: forcings cover 1995 to 2100');
+disp(['Info: forcings cover ' num2str(start_time),' to ', num2str(end_time)]);
