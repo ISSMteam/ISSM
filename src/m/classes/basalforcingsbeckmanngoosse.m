@@ -81,7 +81,7 @@ classdef basalforcingsbeckmanngoosse
 
 			if ismember('MasstransportAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.ismasstransport==0),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.isthermalforcing','values',[0 1]);
 				if(self.isthermalforcing==0)
 					md = checkfield(md,'fieldname','basalforcings.ocean_temp','NaN',1,'Inf',1,'timeseries',1);
@@ -92,7 +92,7 @@ classdef basalforcingsbeckmanngoosse
 			end
 			if ismember('BalancethicknessAnalysis',analyses),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.isthermalforcing','values',[0 1]);
 				if(self.isthermalforcing==0)
 					md = checkfield(md,'fieldname','basalforcings.ocean_temp','NaN',1,'Inf',1,'timeseries',1);
@@ -104,7 +104,7 @@ classdef basalforcingsbeckmanngoosse
 			if ismember('ThermalAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.isthermal==0),
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.geothermalflux','NaN',1,'Inf',1,'timeseries',1,'>=',0);
-				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'universal',1,'NaN',1,'Inf',1);
+				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 			end
 		end % }}}
 		function disp(self) % {{{
