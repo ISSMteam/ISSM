@@ -448,12 +448,11 @@ cd $ISSM_DIR/nightlylog
 source $ISSM_EXT_DIR/shell2junit/install/bin/sh2ju.sh
 juLogClean
 
-# Strip special characters
-TEST_LOG="$ISSM_DIR/nightlylog/results/TEST-jenkins.xml"
-sed -i -e 's|\[92m||g' $TEST_LOG
-sed -i -e 's|\[m||g' $TEST_LOG
-
 if [ $MATLAB_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i -e 's|\[92m||g' matlab_log.log
+	sed -i -e 's|\[m||g' matlab_log.log
+
 	# Number tests
 	numtests=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
 	testlist=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
@@ -480,6 +479,10 @@ if [ $MATLAB_TEST -eq 1 ]; then
 fi
 
 if [ $PYTHON_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i -e 's|\[92m||g' python_log.log
+	sed -i -e 's|\[m||g' python_log.log
+
 	# Number tests
 	numtests=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
 	testlist=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
@@ -506,6 +509,10 @@ if [ $PYTHON_TEST -eq 1 ]; then
 fi
 
 if [ $EXAMPLES_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i -e 's|\[92m||g' matlab_log_examples.log
+	sed -i -e 's|\[m||g' matlab_log_examples.log
+
 	# Inexplicably, there are backspace characters in the error output; remove them
 	perl -p -i'.bak' -e 's/\x08//g' matlab_log_examples.log
 
