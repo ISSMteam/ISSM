@@ -17,6 +17,7 @@
 #include "../../shared/Enum/Enum.h"
 #include "../petsc/petscincludes.h"
 #include "../issm/issmtoolkit.h"
+#include "perf.hpp"
 /*}}}*/
 
 enum matrixtype { PetscMatType, IssmMatType };
@@ -36,10 +37,12 @@ class Matrix{
 
 		/*Matrix constructors, destructors*/
 		Matrix(){/*{{{*/
+                        ISSM_PERF_ZONE
 			InitCheckAndSetType();
 		}
 		/*}}}*/
 		Matrix(int M,int N){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -55,6 +58,7 @@ class Matrix{
 		}
 		/*}}}*/
 		Matrix(int m,int n,int M,int N,int* d_nnz,int* o_nnz){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -70,6 +74,7 @@ class Matrix{
 		}
 		/*}}}*/
 		Matrix(int M,int N,double sparsity){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -84,6 +89,7 @@ class Matrix{
 		}
 		/*}}}*/
 		Matrix(IssmPDouble* serial_mat,int M,int N,IssmPDouble sparsity){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -99,6 +105,7 @@ class Matrix{
 		}
 		/*}}}*/
 		Matrix(int M,int N,int connectivity,int numberofdofspernode){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			InitCheckAndSetType();
 
@@ -114,6 +121,7 @@ class Matrix{
 		}
 		/*}}}*/
 		~Matrix(){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -157,6 +165,7 @@ class Matrix{
 
 		/*Matrix specific routines:*/
 		void Echo(void){/*{{{*/
+                        ISSM_PERF_ZONE
 			_assert_(this);
 
 			if(type==PetscMatType){
@@ -171,6 +180,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void EchoDebug(std::string message){_assert_(this);/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 #ifdef _HAVE_PETSC_
@@ -180,6 +190,7 @@ class Matrix{
 			else this->imatrix->EchoDebug(message);
 		}
 		void AllocationInfo(void){/*{{{*/
+                        ISSM_PERF_ZONE
 			_assert_(this);
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -192,6 +203,7 @@ class Matrix{
 			}
 		}/*}}}*/
 		void Assemble(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -204,6 +216,7 @@ class Matrix{
 		}
 		/*}}}*/
 		IssmDouble Norm(NormMode norm_type){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			IssmDouble norm=0;
 
@@ -220,6 +233,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void GetSize(int* pM,int* pN){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -233,6 +247,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void GetLocalSize(int* pM,int* pN){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -246,6 +261,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void MatMult(Vector<doubletype>* X,Vector<doubletype>* AX){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -259,6 +275,7 @@ class Matrix{
 		}
 		/*}}}*/
 		Matrix<doubletype>* Duplicate(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			Matrix<doubletype>* output=new Matrix<doubletype>();
 
@@ -275,6 +292,7 @@ class Matrix{
 		}
 		/*}}}*/
 		doubletype* ToMPISerial0(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype* output=NULL;
 
@@ -291,6 +309,7 @@ class Matrix{
 		}
 		/*}}}*/
 		doubletype* ToMPISerial(void){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			doubletype* output=NULL;
 
@@ -307,6 +326,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void SetValues(int m,int* idxm,int n,int* idxn,IssmDouble* values,InsMode mode){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -319,6 +339,7 @@ class Matrix{
 		}
 		/*}}}*/
 		void Convert(MatrixType newtype){/*{{{*/
+                        ISSM_PERF_ZONE
 
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_
@@ -332,6 +353,8 @@ class Matrix{
 		}
 		/*}}}*/
 		void SetZero(void) {/*{{{*/
+                        ISSM_PERF_ZONE
+
 			// sets all values to 0 but keeps the structure of a sparse matrix
 			if(type==PetscMatType){
 				#ifdef _HAVE_PETSC_

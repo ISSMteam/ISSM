@@ -13,6 +13,7 @@
 #include <cstring> // for memcpy
 
 #include "./issmmpi.h"
+#include "../objects/perf.hpp"
 
 #if defined(_HAVE_MPI_) && defined(_HAVE_CODIPACK_)
 MpiTypes* mpiTypes;
@@ -595,3 +596,5 @@ int ISSM_MPI_Intercomm_create(ISSM_MPI_Comm comm,int local_leader,ISSM_MPI_Comm 
 #endif
 	return rc;
 }/*}}}*/
+
+Perf perf = {};

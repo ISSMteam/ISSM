@@ -14,6 +14,7 @@
 #include "./Vector.h"
 #include "../issm/issmtoolkit.h"
 #include "../petsc/petscincludes.h"
+#include "perf.hpp"
 class Parameters;
 
 template <class doubletype> 
@@ -51,6 +52,7 @@ class Solver{
 
 		/*Methods: */
 		Vector<doubletype>* Solve(void){ /*{{{*/
+                        ISSM_PERF_ZONE
 
 			/*output: */
 			Vector<doubletype>* uf=NULL;
