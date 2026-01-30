@@ -1,4 +1,4 @@
-function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, varargin)
+function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
 %interpISMIP6AntarcticaOcn - interpolate chosen ISMIP6 atmospheric forcing to model
 %
 %   Input:
@@ -18,28 +18,25 @@ function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, varargin)
 %                                      miroc-esm-chem_rcp8.5
 %             noresm1-m_rcp2.6         noresm1-m_rcp8.5
 %                                      ukesm1-0-ll_ssp585
+%     - start_end (int array): two entry array of [start_year end_year]
 %
 %   Output:
 %     - basalforcings: prepared to be input directly into md.basalforcings
 %                      time series from 1995-2100
 %
 %   Examples:
-%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
+%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5', 'start_end', [2007 2050]);
 
 % Parse inputs
-p = inputParser;
-addRequired(p, 'md');
-addRequired(p, 'model_name', @(x) ischar(x) || isstring(x));
-addParameter(p, 'start_end_year', [1995 2100],...
-             @(x) isnumeric(x) &&...
-             numel(x) == 2 &&...
-             x(1) >= 1995 &&...
-             x(2) <= 2100 && ...
-             x(1) <= x(2));
-
-parse(p, md, model_name, varargin{:});
-start_time = p.Results.start_end_year(1);
-end_time = p.Results.start_end_year(2);
+if nargin<3
+   start_time = 1995;
+   end_time = 2100;
+elseif
+   start_time = start_end(1);
+   end_time = start_end(2);
+else
+   error('no supported');
+end
 
 % Find appropriate directory
 switch oshostname(),
