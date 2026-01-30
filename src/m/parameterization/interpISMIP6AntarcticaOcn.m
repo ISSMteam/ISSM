@@ -18,14 +18,15 @@ function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
 %                                      miroc-esm-chem_rcp8.5
 %             noresm1-m_rcp2.6         noresm1-m_rcp8.5
 %                                      ukesm1-0-ll_ssp585
-%     - start_end (int array): two entry array of [start_year end_year]
+%     - start_end (optional int array): two entry array of [start_year end_year]
 %
 %   Output:
 %     - basalforcings: prepared to be input directly into md.basalforcings
 %                      time series from 1995-2100
 %
 %   Examples:
-%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5', 'start_end', [2007 2050]);
+%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
+%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5', [2007 2050]);
 
 % Parse inputs
 if nargin<3
