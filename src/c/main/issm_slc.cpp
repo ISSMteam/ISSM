@@ -76,10 +76,7 @@ int main(int argc,char **argv){
 
 	/*Initialize femmodel from arguments provided command line: */
 	FemModel *femmodel = new FemModel(4,arguments,modelcomm);
-	xDelete<char>(arguments[0]);
-	xDelete<char>(arguments[1]);
-	xDelete<char>(arguments[2]);
-	xDelete<char>(arguments[3]);
+	for(int i=0;i<4;i++) xDelete<char>(arguments[i]);
 	xDelete<char*>(arguments);
 
 	/*Now that the models are initialized, keep communicator information in the parameters datasets of each model: */
