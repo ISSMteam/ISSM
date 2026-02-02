@@ -58,54 +58,53 @@ classdef sealevelmodel < handle
 			%end
 
 			%check that the transition vectors have the right size:
-
 			if slm.earth.mesh.numberofvertices ~= length(slm.earth.solidearth.transfercount)
-				error('sealevelmodel.m::checkconsistency: earth.solidearth.transfercount should be of size earth.mesh.numberofvertices') 
+				error('earth.solidearth.transfercount should be of size earth.mesh.numberofvertices') 
 			end
 
 			%check that the transition vectors have the right size:
 			for i=1:length(slm.icecaps),
 				if slm.icecaps{i}.mesh.numberofvertices ~= length(slm.earth.solidearth.transitions{i}),
-					error(['sealevelmodel.m::checkconsistency: issue with size of transition vector for ice cap: ' num2str(i) ' name: ' slm.icecaps{i}.miscellaneous.name]);
+					error(['issue with size of transition vector for ice cap: ' num2str(i) ' name: ' slm.icecaps{i}.miscellaneous.name]);
 				end
 			end
 			
 			%check that runfrequency is the same everywhere:
-			for i=1:length(slm.icecaps),
-				if slm.icecaps{i}.solidearth.settings.runfrequency~=slm.earth.solidearth.settings.runfrequency,
-					error(sprintf('sealevelmodel.m::checkconsistency: icecap model %s should have the same run frequency as earth!',slm.icecaps{i}.miscellaneous.name));
+			for i=1:length(slm.icecaps)
+				if slm.icecaps{i}.solidearth.settings.runfrequency~=slm.earth.solidearth.settings.runfrequency
+					error(['icecap model ' slm.icecaps{i}.miscellaneous.name ' should have the same run frequency as earth!']);
 				end
 			end
 
 			%make sure steric_rate is the same everywhere:
-			for i=1:length(slm.icecaps),
+			for i=1:length(slm.icecaps)
 				md= slm.icecaps{i};
-				if ~isempty(find(md.dsl.sea_surface_height_above_geoid - slm.earth.dsl.sea_surface_height_above_geoid(slm.transitions{i}))),
-					error(sprintf('sealevelmodel.m::checkconsistency: steric rate on ice cap %s is not the same as for the earth\n',md.miscellaneous.name));
+				if ~isempty(find(md.dsl.sea_surface_height_above_geoid - slm.earth.dsl.sea_surface_height_above_geoid(slm.transitions{i})))
+					error(['steric rate on ice cap ' md.miscellaneous.name ' is not the same as for the earth']);
 				end
 			end
 
 			%make sure grd is the same everywhere:
-			for i=1:length(slm.icecaps),
+			for i=1:length(slm.icecaps)
 				md= slm.icecaps{i};
 				if md.solidearth.settings.isgrd~=slm.earth.solidearth.settings.isgrd
-					error(sprintf('sealevelmodel.m::checkconsistency: isgrd on ice cap %s is not the same as for the earth\n',md.miscellaneous.name));
+					error(['isgrd on ice cap ' md.miscellaneous.name ' is not the same as for the earth']);
 				end
 			end
 
 			%make sure that there is no solid earth external forcing on the basins:
-			for i=1:length(slm.icecaps),
+			for i=1:length(slm.icecaps)
 				md= slm.icecaps{i};
-				if ~isempty(md.solidearth.external),
-					error('sealevelmodel.m::checkconsistency: cannot run external forcings on an ice sheet when running a coupling earth/ice sheet model');
+				if ~isempty(md.solidearth.external)
+					error('cannot run external forcings on an ice sheet when running a coupling earth/ice sheet model');
 				end
-
 			end
+
 			%make sure that we have the right grd model for computing out sealevel patterns:
-			for i=1:length(slm.icecaps),
+			for i=1:length(slm.icecaps)
 				md= slm.icecaps{i};
 				if md.solidearth.settings.grdmodel~=0
-					error(sprintf('sealevelmodel.m::checkconsistency: ice sheets do not run GRD module, specify solidearth.settings.grdmodel=0 on ice cap %i',i));
+					error(['ice sheets do not run GRD module, specify solidearth.settings.grdmodel=0 on ice cap ',num2str(i)]);
 				end
 			end
 
