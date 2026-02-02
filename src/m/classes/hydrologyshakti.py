@@ -86,7 +86,7 @@ class hydrologyshakti(object):
         md = checkfield(md, 'fieldname', 'hydrology.neumannflux', 'timeseries', 1, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.spchead', 'Inf', 1, 'timeseries', 1)
         md = checkfield(md, 'fieldname', 'hydrology.relaxation', '>=', 0)
-        md = checkfield(md, 'fieldname', 'hydrology.storage', '>=', 0, 'universal', 1, 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.storage', '>=', 0, 'size', 'universal', 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.requested_outputs', 'stringrow', 1)
         return md
     # }}}

@@ -1,6 +1,6 @@
 import numpy as np
 import os
-from re import findall, split
+from re import findall, match, split
 from pairoptions import pairoptions
 from operator import attrgetter
 import MatlabFuncs as m
@@ -40,23 +40,31 @@ def checkfield(md, *args):
     options = pairoptions(*args)
 
     #get field from model
+    field = None
     if options.exist('field'):
         field = options.getfieldvalue('field')
         fieldname = options.getfieldvalue('fieldname', 'no fieldname')
     else:
         fieldname = options.getfieldvalue('fieldname')
-        fieldprefix = split(r'\[(.*?)\]', fieldname)[0]
-        fieldindexes = findall(r'\[(.*?)\]', fieldname)
-        field = attrgetter(fieldprefix)(md)
-        for index in fieldindexes:
-            try:
-                field = field[index.strip("\'")]
-            except TypeError:
-                field = field[int(index)]  #looking for an index and not a key
-
-    # that works for py2
-    #        exec("field = md.{}".format(fieldname))
-    #        exec("field = md.{}".format(fieldname), namespace)
+        fieldnametokens = split(r'\.', fieldname)
+        for i in range(len(fieldnametokens)):
+            if match(r'(.*?)\[(.*?)\]', fieldnametokens[i]):
+                listname = split(r'\[(.*?)\]', fieldnametokens[i])[0]
+                listindex = findall(r'\[(.*?)\]', fieldnametokens[i])[0]
+                if field == None:
+                    field = attrgetter(listname)(md)
+                else:
+                    field = attrgetter(listname)(field)
+                try:
+                    listindex = int(listindex)
+                    field = field[listindex]
+                except:
+                    field = attrgetter(listindex)(field)
+            else:
+                if field == None:
+                    field = attrgetter(fieldnametokens[i])(md)
+                else:
+                    field = attrgetter(fieldnametokens[i])(field)
 
     if isinstance(field, (bool, int, float)):
         field = np.array([field])
@@ -295,5 +303,5 @@ def checkfield(md, *args):
             md = md.checkmessage(options.getfieldvalue('message', "field {} columns should be sorted chronologically".format(fieldname)))
         if np.ndim(field) > 1 and any(field[-1, 0:-1] == field[-1, 1:]):
             md = md.checkmessage(options.getfieldvalue('message', "field {} columns must not contain duplicate timesteps".format(fieldname)))
-  
+
     return md

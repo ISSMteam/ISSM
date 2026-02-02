@@ -219,7 +219,6 @@ classdef hpc_simba2
 			 end
 		 end %}}}
 		 function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
-			 disp('launching solution sequence on remote cluster: simba20');
 			 if ~isempty(restart)
 				 if cluster.isqsub 
 					 launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && hostname && qsub ' modelname '.queue '];
