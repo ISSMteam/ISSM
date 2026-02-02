@@ -52,9 +52,14 @@ def checkfield(md, *args):
                 listname = split(r'\[(.*?)\]', fieldnametokens[i])[0]
                 listindex = findall(r'\[(.*?)\]', fieldnametokens[i])[0]
                 if field == None:
-                    field = attrgetter(listname)(md)[listindex]
+                    field = attrgetter(listname)(md)
                 else:
-                    field = attrgetter(listname)(field)[listindex]
+                    field = attrgetter(listname)(field)
+                try:
+                    listindex = int(listindex)
+                    field = field[listindex]
+                except:
+                    field = attrgetter(listindex)(field)
             else:
                 if field == None:
                     field = attrgetter(fieldnametokens[i])(md)
