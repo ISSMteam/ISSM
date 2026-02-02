@@ -148,7 +148,6 @@ class generic_static(object):
             else:
                 shellext='csh'
 
-            print('launching solution sequence')
             launchcommand = './' + modelname + '.queue'
             subprocess.call([launchcommand])
         else:
