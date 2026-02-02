@@ -50,7 +50,7 @@ def checkfield(md, *args):
         for i in range(len(fieldnametokens)):
             if match(r'(.*?)\[(.*?)\]', fieldnametokens[i]):
                 listname = split(r'\[(.*?)\]', fieldnametokens[i])[0]
-                listindex = int(findall(r'\[(.*?)\]', fieldnametokens[i])[0])
+                listindex = findall(r'\[(.*?)\]', fieldnametokens[i])[0]
                 if field == None:
                     field = attrgetter(listname)(md)[listindex]
                 else:
@@ -298,5 +298,5 @@ def checkfield(md, *args):
             md = md.checkmessage(options.getfieldvalue('message', "field {} columns should be sorted chronologically".format(fieldname)))
         if np.ndim(field) > 1 and any(field[-1, 0:-1] == field[-1, 1:]):
             md = md.checkmessage(options.getfieldvalue('message', "field {} columns must not contain duplicate timesteps".format(fieldname)))
-  
+
     return md
