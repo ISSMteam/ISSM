@@ -25,9 +25,8 @@ class rifts(object):
 
     def __repr__(self):  # {{{
         string = '   rifts parameters:'
-
-        string = "%s\n%s" % (string, fielddisplay(self, 'riftstruct', 'structure containing all rift information (vertices coordinates, segments, type of melange, ...)'))
-        string = "%s\n%s" % (string, fielddisplay(self, 'riftproperties', ''))
+        string += '\n{}'.format(fielddisplay(self, 'riftstruct', 'structure containing all rift information (vertices coordinates, segments, type of melange, ...)'))
+        string += '\n{}'.format(fielddisplay(self, 'riftproperties', ''))
         return string
     # }}}
 
@@ -43,17 +42,17 @@ class rifts(object):
 
         if numrifts:
             if not m.strcmp(md.mesh.domaintype(), '2Dhorizontal'):
-                md.checkmessage("models with rifts are only supported in 2d for now!")
+                md.checkmessage('models with rifts are only supported in 2d for now!')
             if not isinstance(self.riftstruct, list):
-                md.checkmessage("rifts.riftstruct should be a structure!")
+                md.checkmessage('rifts.riftstruct should be a list of dict!')
             if np.any(md.mesh.segmentmarkers >= 2):
                 #We have segments with rift markers, but no rift structure!
-                md.checkmessage("model should be processed for rifts (run meshprocessrifts)!")
+                md.checkmessage('model should be processed for rifts (run meshprocessrifts)!')
             for i, rift in enumerate(self.riftstruct):
-                md = checkfield(md, 'fieldname', "rifts.riftstruct[{}]['fill']".format(i), 'values', ['Water', 'Air', 'Ice', 'Melange', 0, 1, 2, 3])
+                md = checkfield(md, 'fieldname', 'rifts.riftstruct[{}][\'fill\']'.format(i), 'values', ['Water', 'Air', 'Ice', 'Melange', 0, 1, 2, 3])
         else:
             if self.riftstruct and np.any(np.logical_not(isnans(self.riftstruct))):
-                md.checkmessage("riftstruct should be NaN since numrifts is 0!")
+                md.checkmessage('riftstruct should be NaN since numrifts is 0!')
 
         return md
     # }}}
