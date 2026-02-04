@@ -70,7 +70,7 @@ jobs:
       - name: Prepare external packages
         if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true' }}
         run: |
-          ${{ inputs.ext_install_command }}
+          ${{ inputs.ext_pkg_build_command }}
 
       - name: Get MATLAB
         if: ${{ inputs.interface == 'matlab' }}
