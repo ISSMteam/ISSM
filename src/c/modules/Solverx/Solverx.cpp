@@ -17,16 +17,25 @@ void	Solverx(Vector<IssmDouble>** puf, Matrix<IssmDouble>* Kff, Vector<IssmDoubl
 	/*Create Solver Object*/
 	Solver<IssmDouble>* solver=new Solver<IssmDouble>(Kff,pf,uf0,df,parameters);
 
+	#if defined(_HAVE_CODIPACK_)
+	auto& tape = IssmDouble::getTape();
+	auto pos = tape.getPosition();
+	#endif
+
 	/*Solve:*/
 	if(VerboseModule()) _printf0_("   Solving matrix system\n");
 	Vector<IssmDouble>* uf=solver->Solve();
 
 	/*Check convergence, if failed, try recovery model*/
 	if(!checkconvergence(Kff,pf,uf,parameters)){
-
 		_printf0_("WARNING: Solver failed, Trying Recovery Mode\n");
-		ToolkitsOptionsFromAnalysis(parameters,RecoveryAnalysisEnum);
 		delete uf;
+
+		#if defined(_HAVE_CODIPACK_)
+		tape.resetTo(pos);
+		#endif
+
+		ToolkitsOptionsFromAnalysis(parameters,RecoveryAnalysisEnum);
 		uf=solver->Solve();
 
 		if(!checkconvergence(Kff,pf,uf,parameters)) _error_("Recovery solver failed...");
