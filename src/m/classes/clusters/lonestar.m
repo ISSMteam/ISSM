@@ -8,12 +8,12 @@
 classdef lonestar
 	properties (SetAccess=public)
 		% {{{
-		name          = 'ls5.tacc.utexas.edu'
+		name          = 'ls6.tacc.utexas.edu'
 		login         = '';
-		modules        = {'intel/18.0.2' 'gsl'};
+		modules        = {'intel/24.1' 'impi/21.12' 'gsl/2.8'};
 		numnodes      = 1;
 		cpuspernode   = 24;
-		port          = 1099;
+		port          = 0;
 		queue         = 'normal';
 		codepath      = '';
 		executionpath = '';
