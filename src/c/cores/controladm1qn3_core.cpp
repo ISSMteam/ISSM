@@ -391,6 +391,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsInf(Gnorm));
 
 	/*Print info*/
+	OutputResultsx(femmodel);
 	InversionStatsIter( (*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
 
 	/*Clean-up and return*/
