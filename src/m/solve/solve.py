@@ -143,9 +143,11 @@ def solve(md, solutionstring, *args):
         filelist.append(modelname + '.qmu.in')
 
     if isempty(restart):
+        print('uploading input files')
         cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, filelist)
 
     # Launch job
+    print('launching solution sequence')
     cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, filelist, restart, batch)
 
     # Return if batch

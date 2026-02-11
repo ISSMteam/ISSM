@@ -1,0 +1,28 @@
+fails @ step 11
+need to couple with Dan's code
+check Helene's skype mail
+
+h0.bin is real*8
+you can read using:
+h=readbin('h0.bin',[200 3],1,'real*8');
+
+Grid information is in:
+$ISSM_DIR/test/MITgcm/install_dngoldberg/verification/shelfice_remeshing/input/data
+ xgOrigin = -105.5,
+ delX=3*.125,
+ ygOrigin =  -75.4457,
+ delY=200*.0078125,
+
+These coordinates indicate the southwest corners of the grid cells in degrees:
+xg=-105.5:.125:-105.25;
+yg=-75.4457:.0078125:-73.891;
+
+You can also find complete grid information in:
+$ISSM_DIR/test/NightlyRun/run
+after you run test4003.m
+XG=readbin('XG.data',[3 200]);
+YG=readbin('YG.data',[3 200]);
+
+This directory also contains all the information about center of grid cells,
+and various distances (corner to corner, center to center, and face to face)
+in m between the grid cells.

@@ -57,13 +57,13 @@ classdef solidearthsolution
 				time=self.displacementeast(end,:);
 				dt=diff(time,1,2);
 				displacementeast_rate=diff(self.displacementeast(1:end-1,:),1,2)./dt;
-				displacementeast_rate(end+1,:)=time(1:end-1);
+				displacementeast_rate(end+1,:)=time(2:end);
 				displacementnorth_rate=diff(self.displacementnorth(1:end-1,:),1,2)./dt;
-				displacementnorth_rate(end+1,:)=time(1:end-1);
+				displacementnorth_rate(end+1,:)=time(2:end);
 				displacementup_rate=diff(self.displacementup(1:end-1,:),1,2)./dt;
-				displacementup_rate(end+1,:)=time(1:end-1);
+				displacementup_rate(end+1,:)=time(2:end);
 				geoid_rate=diff(self.geoid(1:end-1,:),1,2)./dt;
-				geoid_rate(end+1,:)=time(1:end-1);
+				geoid_rate(end+1,:)=time(2:end);
 			end
 
 			WriteData(fid, prefix, 'name', 'md.solidearth.external.nature', 'data', 0, 'format', 'Integer');

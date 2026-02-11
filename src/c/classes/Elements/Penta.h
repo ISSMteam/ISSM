@@ -85,7 +85,7 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		Element*       GetBasalElement(void);
 		Penta*         GetBasalPenta(void);
 		int            GetElementType(void);
-		void           GetGroundedPart(int* point1,IssmDouble* fraction1, IssmDouble* fraction2,bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance);
+		void           GetGroundedPart(int* point1, IssmDouble* fraction1, IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance);
 		IssmDouble     GetGroundedPortion(IssmDouble* xyz_list);
 		void           GetFractionGeometry(IssmDouble* weights, IssmDouble* pphi, int* ppoint1,IssmDouble* pfraction1,IssmDouble* pfraction2, bool* ptrapezeisnegative, IssmDouble* gl){_error_("not implemented yet");};
 		void           GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, int* ppoint1,IssmDouble* pfraction1,IssmDouble* pfraction2, bool* ptrapezeisnegative, IssmDouble* gl);

@@ -1,7 +1,7 @@
 function maxtime=cfl_step(md,vx,vy)
 %CFL_STEP - return the maximum time step for the model in years
 %
-%   Dt < 0.5 / ( u/Dx +v/Dy )
+%   Dt < 0.5 / (u/Dx + v/Dy)
 %
 %   Usage:
 %      maxtime=cfl_step(md,vx,vy);
@@ -11,7 +11,7 @@ function maxtime=cfl_step(md,vx,vy)
 
 %Check length of velocities 
 if size(vx,1)~=md.mesh.numberofvertices & size(vy,1)~=md.mesh.numberofvertices,
-	error('timestpes error message: size of velocity components must be the same as md.mesh.numberofvertices');
+	error('timesteps error message: size of velocity components must be the same as md.mesh.numberofvertices');
 end
 
 index=md.mesh.elements;

@@ -38,8 +38,8 @@ function varargout=runme(varargin)
 %   Examples:
 %      runme;
 %      runme('exclude',101);
-%      runme('id',102,'procedure','update');
-%      runme('procedure','valgrind','stoponerror',1,'exclude','IdFromString('Dak'));
+%      runme('id', 102, 'procedure', 'update');
+%      runme('procedure', 'valgrind', 'stoponerror', 1, 'exclude', IdFromString('Dak'));
 %
 %   NOTE:
 %   - Will only run test scripts whose names explicitly follow the convention,

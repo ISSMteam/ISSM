@@ -12,7 +12,7 @@ on:
       build_command:
         required: true
         type: string
-      ext_install_command:
+      ext_pkg_build_command:
         required: true
         type: string
       test_cases:
@@ -38,6 +38,21 @@ jobs:
     outputs:
       test_matrix: ${{ steps.createTestMatrix.outputs.test_output }}
     steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+            # this might remove tools that are actually needed,
+            # if set to "true" but frees about 6 GB
+            tool-cache: false
+            
+            # all of these default to true, but feel free to set to
+            # "false" if necessary for your workflow
+            android: true
+            dotnet: true
+            haskell: true
+            large-packages: true
+            docker-images: true
+            swap-storage: true
       - name: Check out copy of repository
         uses: actions/checkout@v4
 
@@ -55,7 +70,7 @@ jobs:
       - name: Prepare external packages
         if: ${{ steps.cache-externalpackages.outputs.cache-hit != 'true' }}
         run: |
-          ${{ inputs.ext_install_command }}
+          ${{ inputs.ext_pkg_build_command }}
 
       - name: Get MATLAB
         if: ${{ inputs.interface == 'matlab' }}
@@ -75,10 +90,11 @@ jobs:
       - name: Install Python dependencies
         if: contains(inputs.interface, 'python')
         run: |
-          sudo apt-get install libpython${{ inputs.python_version }}-dev
-          sudo apt-get install python3-dev
+          sudo apt update
+          sudo apt install libpython${{ inputs.python_version }}-dev
+          sudo apt install python3-dev
           python -m pip install --upgrade pip
-          sudo apt-get update && sudo apt-get install -y python3-tk
+          sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose
 
       - name: Build ISSM
@@ -90,14 +106,18 @@ jobs:
           export F90=$FC
           export MATLAB_ROOT=${{ steps.setup-matlab.outputs.matlabroot }}
           export PYTHON_ROOT=${{ env.pythonLocation }}
-          export NUMPY_ROOT=${{ env.LD_LIBRARY_PATH }}/python${{ inputs.python_version }}/site-packages/numpy
           ${{ inputs.build_command }}
 
       - name: Compile ISSM
         run: make -j4 install
 
       - name: Compress ISSM artifact
-        run: tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar -C ${{ env.ISSM_DIR }}/ .
+        run: |
+          rm -rf .git
+          find externalpackages -maxdepth 1 -name src -exec rm -rf {} \;
+          find externalpackages -maxdepth 1 -name *tar.gz -exec rm -rf {} \;
+          find externalpackages -maxdepth 1 -name *zip -exec rm -rf {} \;
+          tar --exclude='./externalpackages/petsc/src' -cvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar -C ${{ env.ISSM_DIR }}/ .
 
       - name: Upload ISSM artifact
         uses: actions/upload-artifact@v4
@@ -125,6 +145,7 @@ jobs:
       - name: Unpack ISSM artifact
         run: |
           tar -xvf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
+          rm -rf ISSM_artifact-${{ runner.os }}-${{ inputs.build_type }}.tar
           source $ISSM_DIR/etc/environment.sh
         working-directory: ${{ env.ISSM_DIR }}
         shell: 'bash'
@@ -134,7 +155,7 @@ jobs:
         id: setup-matlab
         uses: matlab-actions/setup-matlab@v2
         with:
-          release: R2023b
+          release: R2025b
           cache: true
 
       - name: Creating matlab_ci.m
@@ -177,7 +198,7 @@ jobs:
         if: contains( inputs.interface, 'python')
         run: |
           python -m pip install --upgrade pip
-          sudo apt-get update && sudo apt-get install -y python3-tk
+          sudo apt update && sudo apt install -y python3-tk
           python -m pip install numpy scipy matplotlib nose netCDF4
 
       - name: Run Python tests

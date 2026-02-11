@@ -1298,7 +1298,7 @@ void       Element::FrictionAlpha2CreateInput(void){/*{{{*/
 	this->AddBasalInput(FrictionAlpha2Enum,&alpha2_list[0],P1Enum);
 }
 /*}}}*/
-void       Element::GetDofList(int** pdoflist,int approximation_enum,int setenum){/*{{{*/
+void       Element::GetDofList(int** pdoflist,int approximation_enum,int setenum,bool hideclones){/*{{{*/
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = this->GetNumberOfNodes();
@@ -1313,7 +1313,7 @@ void       Element::GetDofList(int** pdoflist,int approximation_enum,int setenum
 	/*Populate: */
 	int count=0;
 	for(int i=0;i<numnodes;i++){
-		nodes[i]->GetDofList(&doflist[count],approximation_enum,setenum);
+		nodes[i]->GetDofList(&doflist[count],approximation_enum,setenum,hideclones);
 		count+=nodes[i]->GetNumberOfDofs(approximation_enum,GsetEnum);
 	}
 
@@ -1620,7 +1620,7 @@ void       Element::GetSolutionFromInputsOneDof(Vector<IssmDouble>* solution, in
 	int numnodes = this->GetNumberOfNodes();
 
 	/*Fetch dof list and allocate solution vector*/
-	GetDofList(&doflist,NoneApproximationEnum,GsetEnum);
+	GetDofList(&doflist,NoneApproximationEnum,GsetEnum, true);
 	IssmDouble* values = xNew<IssmDouble>(numnodes);
 
 	/*Get inputs*/
@@ -1659,6 +1659,10 @@ void       Element::GetVectorFromInputs(Vector<IssmDouble>* vector,int input_enu
 			const int  NUM_VERTICES = this->GetNumberOfVertices();
 			/*Fill in values*/
 			this->GetVerticesPidList(&doflist[0]);
+			/*Take care of Clones*/
+			for(int i=0;i<NUM_VERTICES;i++){
+				if(vertices[i]->clone) doflist[i] = -1;
+			}
 			this->GetInputListOnVertices(&values[0],input_enum);
 			vector->SetValues(NUM_VERTICES,doflist,values,INS_VAL);
                          }
@@ -1861,6 +1865,19 @@ IssmDouble Element::GroundedArea(IssmDouble* mask, bool scaled){/*{{{*/
 
 	/*Return: */
 	return this->GroundedArea(scaled);
+}
+/*}}}*/
+IssmDouble Element::GroundinglineMassFlux(IssmDouble* mask, bool scaled){/*{{{*/
+
+	/*Retrieve values of the mask defining the element: */
+	for(int i=0;i<this->GetNumberOfVertices();i++){
+		if(mask[this->vertices[i]->Sid()]<=0.){
+			return 0.;
+		}
+	}
+
+	/*Return: */
+	return this->GroundinglineMassFlux(scaled);
 }
 /*}}}*/
 bool       Element::HasNodeOnBase(){/*{{{*/
@@ -4514,7 +4531,7 @@ void       Element::RignotMeltParameterization(){/*{{{*/
 	this->FindParam(&yts, ConstantsYtsEnum);
 	this->parameters->FindParam(&numbasins,FrontalForcingsNumberofBasinsEnum);
 	this->parameters->FindParam(&basin_icefront_area,&numbasins,FrontalForcingsBasinIcefrontAreaEnum);
-	IssmDouble meltrates[numvertices];  
+	IssmDouble meltrates[MAXVERTICES];  
 
 	/* Start looping on the number of vertices: */
 	Gauss* gauss=this->NewGauss();
@@ -5906,13 +5923,12 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 /*}}}*/
 void       Element::SubglacialWaterPressure(int output_enum){/*{{{*/
 
-	bool ispwHydroArma;
-   int M;
-   int numvertices = this->GetNumberOfVertices();
-   IssmDouble p_water[numvertices];
-   IssmDouble* perturbationvalues = xNew<IssmDouble>(numvertices);
-   Gauss* gauss=this->NewGauss();
-   Friction* friction = new Friction(this);
+	bool        ispwHydroArma;
+	int         numvertices = this->GetNumberOfVertices();
+	IssmDouble  p_water[MAXVERTICES];
+	IssmDouble *perturbationvalues   = xNew<IssmDouble>(numvertices);
+	Gauss      *gauss     = this->NewGauss();
+	Friction   *friction  = new Friction(this);
    /*Calculate subglacial water pressure*/
    for(int i=0;i<numvertices;i++){
          gauss->GaussVertex(i);
@@ -6532,8 +6548,6 @@ void       Element::TransformStiffnessMatrixCoord(ElementMatrix* Ke,Node** nodes
 void       Element::ViscousHeatingCreateInput(void){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble phi;
-	IssmDouble thickness;
 	IssmDouble *xyz_list = NULL;
 
 	/*Fetch number vertices and allocate memory*/
@@ -6548,12 +6562,9 @@ void       Element::ViscousHeatingCreateInput(void){/*{{{*/
 
 	/*loop over vertices: */
 	Gauss* gauss=this->NewGauss();
-	for (int iv=0;iv<NUM_VERTICES;iv++){
+	for(int iv=0;iv<NUM_VERTICES;iv++){
 		gauss->GaussVertex(iv);
-
-		this->ViscousHeating(&phi,xyz_list,gauss,vx_input,vy_input,vz_input);
-
-		viscousheating[iv]=phi;
+		this->ViscousHeating(&viscousheating[iv],xyz_list,gauss,vx_input,vy_input,vz_input);
 	}
 
 	/*Create PentaVertex input, which will hold the basal friction:*/

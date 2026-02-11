@@ -428,6 +428,14 @@ void solutionsequence_fct(FemModel* femmodel){/*{{{*/
 	#ifdef _HAVE_CODIPACK_
 		_error_("No CoDiPack handling for PETSc and fct");
 	#else
+
+	/*Even though PETSc is installed, check toolkit*/
+	char* toolkittype=ToolkitOptions::GetToolkitType();
+	if(strcmp(toolkittype,"issm")==0){
+		_error_("FCT needs a PETSc toolkit");
+	}
+	xDelete<char>(toolkittype);
+	
 	/*Convert matrices to PETSc matrices*/
 	Mat D_petsc  = NULL;
 	Mat LHS      = NULL;

@@ -9,6 +9,8 @@ switch (oshostname())
 		rignotmelt='/home/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
 	case {'totten'}
 		rignotmelt='/totten_1/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
+	case {'amundsen.thayer.dartmouth.edu'}
+		rignotmelt='/local/ModelData/AntarcticMeltRignot/Ant_MeltingRate.nc';
 	case {'thwaites','larsen','murdo','astrid'}
 		rignotmelt=['/u/astrid-r1b/ModelData/RignotAntarcticaMeltRates/Ant_MeltingRate.v2.nc'];
 	otherwise

@@ -112,8 +112,7 @@ classdef autodiff
 				return;
 			end
 
-
-			%buffer sizes {{{
+			%buffer sizes
 			WriteData(fid,prefix,'object',self,'fieldname','obufsize','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','lbufsize','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','cbufsize','format','Double');
@@ -121,19 +120,17 @@ classdef autodiff
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerRatio','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','gcTriggerMaxSize','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','tapeAlloc','format','Integer');
-			%}}}
-			%output of memory and time {{{
+
+			%output of memory and time
 			WriteData(fid,prefix,'object',self,'fieldname','outputTapeMemory','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','outputTime','format','Boolean');
-			%}}}
-			%memory reduction options {{{
+
+			%memory reduction options
 			WriteData(fid,prefix,'object',self,'fieldname','enablePreaccumulation','format','Boolean');
-			%}}}
-			%process dependent variables {{{
+			%process dependent variables
 			num_dependent_objects=numel(self.dependents);
 			WriteData(fid,prefix,'data',num_dependent_objects,'name','md.autodiff.num_dependent_objects','format','Integer');
-
-			if(num_dependent_objects),
+			if(num_dependent_objects)
 				names={};
 				for i=1:num_dependent_objects,
 					dep=self.dependents{i};
@@ -141,8 +138,8 @@ classdef autodiff
 				end
 				WriteData(fid,prefix,'data',names,'name','md.autodiff.dependent_object_names','format','StringArray');
 			end
-			%}}}
-			%process independent variables {{{
+
+			%process independent variables
 			num_independent_objects=numel(self.independents);
 			WriteData(fid,prefix,'data',num_independent_objects,'name','md.autodiff.num_independent_objects','format','Integer');
 			for i=1:num_independent_objects
@@ -153,11 +150,10 @@ classdef autodiff
 				WriteData(fid,prefix,'data',indep.control_scaling_factor,'name','md.autodiff.independent_scaling_factor','format','Double');
 				WriteData(fid,prefix,'data',indep.control_size,'name','md.autodiff.independent_control_size','format','Integer');
 			end
-			%}}}
-			%if driver is fos_forward, build index:  {{{
-			if strcmpi(self.driver,'fos_forward'),
-				index=0;
 
+			%if driver is fos_forward, build inde
+			if strcmpi(self.driver,'fos_forward')
+				index=0;
 				for i=1:num_independent_objects,
 					indep=self.independents{i};
 					if ~isnan(indep.fos_forward_index),
@@ -174,8 +170,8 @@ classdef autodiff
 				index=index-1; %get c-index numbering going
 				WriteData(fid,prefix,'data',index,'name','md.autodiff.fos_forward_index','format','Integer');
 			end
-			%}}}
-			%if driver is fos_reverse, build index:  {{{
+
+			%if driver is fos_reverse, build index:
 			if strcmpi(self.driver,'fos_reverse'),
 				index=0;
 
@@ -191,8 +187,8 @@ classdef autodiff
 				index=index-1; %get c-index numbering going
 				WriteData(fid,prefix,'data',index,'name','md.autodiff.fos_reverse_index','format','Integer');
 			end
-			%}}}
-			%if driver is fov_forward, build indices:  {{{
+
+			%if driver is fov_forward, build indices
 			if strcmpi(self.driver,'fov_forward'),
 				indices=0;
 
@@ -212,8 +208,8 @@ classdef autodiff
 				indices=indices-1; %get c-indices numbering going
 				WriteData(fid,prefix,'data',indices,'name','md.autodiff.fov_forward_indices','format','IntMat','mattype',3);
 			end
-			%}}}
-			%deal with mass fluxes:  {{{
+
+			%deal with mass fluxes
 			mass_flux_segments=cell(0,1);
 			for i=1:num_dependent_objects,
 				dep=self.dependents{i};
@@ -228,8 +224,8 @@ classdef autodiff
 				flag=false;
 			end
 			WriteData(fid,prefix,'data',flag,'name','md.autodiff.mass_flux_segments_present','format','Boolean');
-			%}}}
-			%deal with trace keep on: {{{
+
+			%deal with trace keep on
 			keep=false;
 
 			%From ADOLC userdoc: 
@@ -249,7 +245,6 @@ classdef autodiff
 				end
 			end
 			WriteData(fid,prefix,'data',keep,'name','md.autodiff.keep','format','Boolean');
-			%}}}
 
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{

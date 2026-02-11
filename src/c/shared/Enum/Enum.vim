@@ -211,6 +211,11 @@ syn keyword cConstant FlowequationIsNitscheEnum
 syn keyword cConstant FeFSNitscheGammaEnum
 syn keyword cConstant FrictionCouplingEnum
 syn keyword cConstant FrictionDeltaEnum
+syn keyword cConstant FrictionDNNEnum
+syn keyword cConstant FrictionDNNpsEnum
+syn keyword cConstant FrictionDNNstEnum
+syn keyword cConstant FrictionDNNInputScaleEnum
+syn keyword cConstant FrictionDNNOutputScaleEnum
 syn keyword cConstant FrictionEffectivePressureLimitEnum
 syn keyword cConstant FrictionFEnum
 syn keyword cConstant FrictionGammaEnum
@@ -249,7 +254,6 @@ syn keyword cConstant FrontalForcingsSdNumberofParamsEnum
 syn keyword cConstant FrontalForcingsSdpolyparamsEnum
 syn keyword cConstant GrdModelEnum
 syn keyword cConstant GroundinglineFrictionInterpolationEnum
-syn keyword cConstant GroundinglineIntrusionDistanceEnum
 syn keyword cConstant GroundinglineMeltInterpolationEnum
 syn keyword cConstant GroundinglineMigrationEnum
 syn keyword cConstant GroundinglineNumRequestedOutputsEnum
@@ -911,6 +915,7 @@ syn keyword cConstant FrontalForcingsBasinIdEnum
 syn keyword cConstant FrontalForcingsSubglacialDischargearmaEnum
 syn keyword cConstant FrontalForcingsSubglacialDischargeEnum
 syn keyword cConstant GeometryHydrostaticRatioEnum
+syn keyword cConstant GroundinglineIntrusionDistanceEnum
 syn keyword cConstant NGiaEnum
 syn keyword cConstant NGiaRateEnum
 syn keyword cConstant UGiaEnum
@@ -3373,6 +3378,7 @@ syn keyword cConstant AmrBamgEnum
 syn keyword cConstant AmrNeopzEnum
 syn keyword cConstant ArrheniusEnum
 syn keyword cConstant AutodiffJacobianEnum
+syn keyword cConstant AverageButtressingEnum
 syn keyword cConstant Balancethickness2AnalysisEnum
 syn keyword cConstant Balancethickness2SolutionEnum
 syn keyword cConstant BalancethicknessAnalysisEnum

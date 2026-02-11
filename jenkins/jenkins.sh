@@ -223,8 +223,8 @@ if [ $JAVASCRIPT_TEST -eq 1 ]; then
 	export AR=emar
 	export RANLIB=emranlib
 	#export EMCC_DEBUG=1 # Uncomment to enable debugging
-	export EMCC_CFLAGS="-s ERROR_ON_UNDEFINED_SYMBOLS=0" # Required after v1.38.14 to avoid undefined symbol warnings from our Fortran object files being treated as errors
-	source ${ISSM_DIR}/externalpackages/emscripten/install/emsdk_env.sh
+	export EMCC_CFLAGS="-sERROR_ON_UNDEFINED_SYMBOLS=0" # Required after v1.38.14 to avoid undefined symbol warnings from our Fortran object files being treated as errors
+	source ${EMSCRIPTEN_ROOT}/emsdk_env.sh
 fi
 
 # }}}
@@ -449,6 +449,13 @@ source $ISSM_EXT_DIR/shell2junit/install/bin/sh2ju.sh
 juLogClean
 
 if [ $MATLAB_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i \
+		-e 's|\[92m||g' \
+		-e 's|\[m||g' \
+		-e 's|\x1B||g' \
+		matlab_log.log
+
 	# Number tests
 	numtests=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
 	testlist=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
@@ -475,6 +482,13 @@ if [ $MATLAB_TEST -eq 1 ]; then
 fi
 
 if [ $PYTHON_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i \
+		-e 's|\[92m||g' \
+		-e 's|\[m||g' \
+		-e 's|\x1B||g' \
+		python_log.log
+
 	# Number tests
 	numtests=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
 	testlist=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
@@ -501,8 +515,15 @@ if [ $PYTHON_TEST -eq 1 ]; then
 fi
 
 if [ $EXAMPLES_TEST -eq 1 ]; then
+	# Strip special characters
+	sed -i \
+		-e 's|\[92m||g' \
+		-e 's|\[m||g' \
+		-e 's|\x1B||g' \
+		matlab_log_examples.log
+
 	# Inexplicably, there are backspace characters in the error output; remove them
-	perl -p -i'.bak' -e 's/\x08//g' matlab_log_examples.log
+	sed -i -e 's|\x08||g' matlab_log_examples.log
 
 	numtests=`cat matlab_log_examples.log | grep "starting: " | wc -l`
 	testlist=`cat matlab_log_examples.log | grep "starting: " | sed 's/starting: //'`

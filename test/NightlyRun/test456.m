@@ -41,7 +41,7 @@ md.transient.requested_outputs={'default','BasalforcingsFloatingiceMeltingRate'}
 md.groundingline.migration='SubelementMigration';
 md.groundingline.friction_interpolation='SubelementFriction2';
 md.groundingline.melt_interpolation='IntrusionMelt';
-md.groundingline.intrusion_distance = 5000;
+md.groundingline.intrusion_distance = 5000.*ones(md.mesh.numberofvertices,1);
 
 md.timestepping.final_time=30;
 md.timestepping.time_step=10;

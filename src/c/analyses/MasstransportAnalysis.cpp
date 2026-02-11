@@ -6,6 +6,7 @@
 #include "../classes/Inputs/TransientInput.h"
 
 #define FINITEELEMENT P1Enum
+//#define MELTPERTURBATION
 
 /*Model processing*/
 void MasstransportAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
@@ -155,6 +156,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 	iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.groundedice_melting_rate",BasalforcingsGroundediceMeltingRateEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vx",VxEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum);
 
 	if(isgroundingline) 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.bed",BedEnum);
 	/*Initialize ThicknessResidual input*/
@@ -276,7 +278,7 @@ void MasstransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.stabilization",MasstransportStabilizationEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.min_thickness",MasstransportMinThicknessEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.penalty_factor",MasstransportPenaltyFactorEnum));
-	parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
+	//parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
 
 	iomodel->FindConstant(&requestedoutputs,&numoutputs,"md.masstransport.requested_outputs");
 	parameters->AddObject(new IntParam(MasstransportNumRequestedOutputsEnum,numoutputs));
@@ -634,7 +636,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	int         melt_style,point1;
 	bool        mainlyfloating;
 	IssmDouble  fraction1,fraction2;
-	IssmDouble  Jdet,dt,intrusiondist;
+	IssmDouble  Jdet,dt,intrusiondist_avg;
 	IssmDouble  ms,mb,gmb,fmb,thickness,fmb_pert,gldistance;
 	IssmDouble  vx,vy,vel,dvxdx,dvydy,xi,h,tau;
 	IssmDouble  dvx[2],dvy[2];
@@ -664,17 +666,18 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	element->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,MasstransportStabilizationEnum);
-	element->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(gmb_input);
 	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum);  _assert_(fmb_input);
-	//Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
+	#ifdef MELTPERTURBATION
+	Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
+	#endif
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);              _assert_(gllevelset_input);
-	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                       _assert_(ms_input);
-	Input* thickness_input  = element->GetInput(ThicknessEnum);                            _assert_(thickness_input);
-	Input* vxaverage_input  = element->GetInput(VxAverageEnum);										_assert_(vxaverage_input);
-	Input* vyaverage_input  = element->GetInput(VyAverageEnum);										_assert_(vyaverage_input);
-	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
+	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                 _assert_(ms_input);
+	Input* thickness_input  = element->GetInput(ThicknessEnum);                      _assert_(thickness_input);
+	Input* vxaverage_input  = element->GetInput(VxAverageEnum);						 _assert_(vxaverage_input);
+	Input* vyaverage_input  = element->GetInput(VyAverageEnum);						 _assert_(vyaverage_input);
+
 	h=element->CharacteristicLength();
 
 	/*Recover portion of element that is grounded*/
@@ -684,7 +687,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	    gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else if(melt_style==IntrusionMeltEnum){
-		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist);
+		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
+		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
        	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
 	else{
@@ -700,7 +706,9 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		ms_input->GetInputValue(&ms,gauss);
 		gmb_input->GetInputValue(&gmb,gauss);
 		fmb_input->GetInputValue(&fmb,gauss);
-		//fmb_pert_input->GetInputValue(&fmb_pert,gauss);
+		#ifdef MELTPERTURBATION
+		fmb_pert_input->GetInputValue(&fmb_pert,gauss);
+		#endif
 		gllevelset_input->GetInputValue(&gllevelset,gauss);
 		thickness_input->GetInputValue(&thickness,gauss);
 
@@ -714,7 +722,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		}
 		else if(melt_style==NoMeltOnPartiallyFloatingEnum){
 			if (phi<0.00000001){
-				mb=fmb;//+fmb_pert;
+				mb=fmb;
+				#ifdef MELTPERTURBATION
+				mb += +fmb_pert;
+				#endif
 			}
 			else mb=gmb;
 		}
@@ -723,17 +734,17 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 			else mb=gmb;
 		}
 		else if(melt_style==IntrusionMeltEnum){
-			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
+			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			if(intrusiondist==0){
+			if(intrusiondist_avg==0){
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
 			}
-			else if(gldistance>intrusiondist) {
+			else if(gldistance>intrusiondist_avg) {
 				mb=gmb;
 			}
-			else if(gldistance<=intrusiondist && gldistance>0) {
-				mb=fmb*(1-gldistance/intrusiondist); 
+			else if(gldistance<=intrusiondist_avg && gldistance>0) {
+				mb=fmb*(1-gldistance/intrusiondist_avg); 
 			}
 			else{
 				mb=fmb;
@@ -789,7 +800,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	int melt_style, point1;
 	bool mainlyfloating;
 	IssmDouble  fraction1,fraction2,gllevelset;
-	IssmDouble  Jdet,dt,intrusiondist;
+	IssmDouble  Jdet,dt,intrusiondist_avg;
 	IssmDouble  ms,mb,gmb,fmb,thickness,phi=1.,gldistance;
 	IssmDouble* xyz_list = NULL;
 
@@ -804,13 +815,14 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
-	element->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum); _assert_(gmb_input);
 	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum); _assert_(fmb_input);
 	Input* ms_input         = element->GetInput(SmbMassBalanceEnum);                      _assert_(ms_input);
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);             _assert_(gllevelset_input);
 	Input* thickness_input  = element->GetInput(ThicknessEnum);                           _assert_(thickness_input);
+	//Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
+	Input* intrusiondist_input = element->GetInput(GroundinglineIntrusionDistanceEnum);		_assert_(intrusiondist_input);
 
    /*Recover portion of element that is grounded*/
    Gauss* gauss=NULL;
@@ -819,9 +831,11 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
       element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
       gauss = element->NewGauss(point1,fraction1,fraction2,3);
    }
-   else if(melt_style==IntrusionMeltEnum){
-	    element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist);
-       gauss = element->NewGauss(point1,fraction1,fraction2,3);
+   else if(melt_style==IntrusionMeltEnum){		
+		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
+		element->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
+       	gauss = element->NewGauss(point1,fraction1,fraction2,3);
 	}
    else{
       gauss = element->NewGauss(3);
@@ -856,15 +870,15 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
          else mb=gmb;
       	}
 	  	else if(melt_style==IntrusionMeltEnum){
-			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              _assert_(gldistance_input); 
-        	gldistance_input->GetInputValue(&gldistance,gauss);
-			if (intrusiondist==0)
+			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
+			gldistance_input->GetInputValue(&gldistance,gauss);
+			if (intrusiondist_avg==0)
 				if(gllevelset>0.) mb=gmb;
 				else mb=fmb;
-	        else if(gldistance>intrusiondist) 
+	        else if(gldistance>intrusiondist_avg) 
 				mb=gmb;
-			else if(gldistance<=intrusiondist && gldistance>0) 
-				mb=fmb*(1-gldistance/intrusiondist); 
+			else if(gldistance<=intrusiondist_avg && gldistance>0) 
+				mb=fmb*(1-gldistance/intrusiondist_avg); 
 			else
 				mb=fmb;
     	}

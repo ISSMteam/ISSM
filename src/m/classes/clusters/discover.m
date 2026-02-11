@@ -172,7 +172,7 @@ classdef discover
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			if cluster.interactive,
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 			else 
@@ -204,7 +204,7 @@ classdef discover
 				end
 			end
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end
 		%}}}

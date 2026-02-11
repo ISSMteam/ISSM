@@ -200,6 +200,11 @@
 	FeFSNitscheGammaEnum
 	FrictionCouplingEnum
 	FrictionDeltaEnum
+	FrictionDNNEnum
+	FrictionDNNpsEnum
+	FrictionDNNstEnum
+	FrictionDNNInputScaleEnum
+	FrictionDNNOutputScaleEnum
 	FrictionEffectivePressureLimitEnum
 	FrictionFEnum
 	FrictionGammaEnum
@@ -238,7 +243,6 @@
 	FrontalForcingsSdpolyparamsEnum
 	GrdModelEnum
 	GroundinglineFrictionInterpolationEnum
-	GroundinglineIntrusionDistanceEnum
 	GroundinglineMeltInterpolationEnum
 	GroundinglineMigrationEnum
 	GroundinglineNumRequestedOutputsEnum
@@ -900,6 +904,7 @@
 	FrontalForcingsSubglacialDischargearmaEnum
 	FrontalForcingsSubglacialDischargeEnum
 	GeometryHydrostaticRatioEnum
+	GroundinglineIntrusionDistanceEnum
 	NGiaEnum
 	NGiaRateEnum
 	UGiaEnum
@@ -3362,6 +3367,7 @@
 	AmrNeopzEnum
 	ArrheniusEnum
 	AutodiffJacobianEnum
+	AverageButtressingEnum
 	Balancethickness2AnalysisEnum
 	Balancethickness2SolutionEnum
 	BalancethicknessAnalysisEnum
@@ -3970,6 +3976,11 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FeFSNitscheGammaEnum) return "FeFSNitscheGamma" end
 	if(enum==FrictionCouplingEnum) return "FrictionCoupling" end
 	if(enum==FrictionDeltaEnum) return "FrictionDelta" end
+	if(enum==FrictionDNNEnum) return "FrictionDNN" end
+	if(enum==FrictionDNNpsEnum) return "FrictionDNNps" end
+	if(enum==FrictionDNNstEnum) return "FrictionDNNst" end
+	if(enum==FrictionDNNInputScaleEnum) return "FrictionDNNInputScale" end
+	if(enum==FrictionDNNOutputScaleEnum) return "FrictionDNNOutputScale" end
 	if(enum==FrictionEffectivePressureLimitEnum) return "FrictionEffectivePressureLimit" end
 	if(enum==FrictionFEnum) return "FrictionF" end
 	if(enum==FrictionGammaEnum) return "FrictionGamma" end
@@ -4008,7 +4019,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrontalForcingsSdpolyparamsEnum) return "FrontalForcingsSdpolyparams" end
 	if(enum==GrdModelEnum) return "GrdModel" end
 	if(enum==GroundinglineFrictionInterpolationEnum) return "GroundinglineFrictionInterpolation" end
-	if(enum==GroundinglineIntrusionDistanceEnum) return "GroundinglineIntrusionDistance" end
 	if(enum==GroundinglineMeltInterpolationEnum) return "GroundinglineMeltInterpolation" end
 	if(enum==GroundinglineMigrationEnum) return "GroundinglineMigration" end
 	if(enum==GroundinglineNumRequestedOutputsEnum) return "GroundinglineNumRequestedOutputs" end
@@ -4670,6 +4680,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrontalForcingsSubglacialDischargearmaEnum) return "FrontalForcingsSubglacialDischargearma" end
 	if(enum==FrontalForcingsSubglacialDischargeEnum) return "FrontalForcingsSubglacialDischarge" end
 	if(enum==GeometryHydrostaticRatioEnum) return "GeometryHydrostaticRatio" end
+	if(enum==GroundinglineIntrusionDistanceEnum) return "GroundinglineIntrusionDistance" end
 	if(enum==NGiaEnum) return "NGia" end
 	if(enum==NGiaRateEnum) return "NGiaRate" end
 	if(enum==UGiaEnum) return "UGia" end
@@ -7132,6 +7143,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==AmrNeopzEnum) return "AmrNeopz" end
 	if(enum==ArrheniusEnum) return "Arrhenius" end
 	if(enum==AutodiffJacobianEnum) return "AutodiffJacobian" end
+	if(enum==AverageButtressingEnum) return "AverageButtressing" end
 	if(enum==Balancethickness2AnalysisEnum) return "Balancethickness2Analysis" end
 	if(enum==Balancethickness2SolutionEnum) return "Balancethickness2Solution" end
 	if(enum==BalancethicknessAnalysisEnum) return "BalancethicknessAnalysis" end
@@ -7740,6 +7752,11 @@ function StringToEnum(name::String)
 	if(name=="FeFSNitscheGamma") return FeFSNitscheGammaEnum  end
 	if(name=="FrictionCoupling") return FrictionCouplingEnum  end
 	if(name=="FrictionDelta") return FrictionDeltaEnum  end
+	if(name=="FrictionDNN") return FrictionDNNEnum  end
+	if(name=="FrictionDNNps") return FrictionDNNpsEnum  end
+	if(name=="FrictionDNNst") return FrictionDNNstEnum  end
+	if(name=="FrictionDNNInputScale") return FrictionDNNInputScaleEnum  end
+	if(name=="FrictionDNNOutputScale") return FrictionDNNOutputScaleEnum  end
 	if(name=="FrictionEffectivePressureLimit") return FrictionEffectivePressureLimitEnum  end
 	if(name=="FrictionF") return FrictionFEnum  end
 	if(name=="FrictionGamma") return FrictionGammaEnum  end
@@ -7778,7 +7795,6 @@ function StringToEnum(name::String)
 	if(name=="FrontalForcingsSdpolyparams") return FrontalForcingsSdpolyparamsEnum  end
 	if(name=="GrdModel") return GrdModelEnum  end
 	if(name=="GroundinglineFrictionInterpolation") return GroundinglineFrictionInterpolationEnum  end
-	if(name=="GroundinglineIntrusionDistance") return GroundinglineIntrusionDistanceEnum  end
 	if(name=="GroundinglineMeltInterpolation") return GroundinglineMeltInterpolationEnum  end
 	if(name=="GroundinglineMigration") return GroundinglineMigrationEnum  end
 	if(name=="GroundinglineNumRequestedOutputs") return GroundinglineNumRequestedOutputsEnum  end
@@ -8440,6 +8456,7 @@ function StringToEnum(name::String)
 	if(name=="FrontalForcingsSubglacialDischargearma") return FrontalForcingsSubglacialDischargearmaEnum  end
 	if(name=="FrontalForcingsSubglacialDischarge") return FrontalForcingsSubglacialDischargeEnum  end
 	if(name=="GeometryHydrostaticRatio") return GeometryHydrostaticRatioEnum  end
+	if(name=="GroundinglineIntrusionDistance") return GroundinglineIntrusionDistanceEnum  end
 	if(name=="NGia") return NGiaEnum  end
 	if(name=="NGiaRate") return NGiaRateEnum  end
 	if(name=="UGia") return UGiaEnum  end
@@ -10902,6 +10919,7 @@ function StringToEnum(name::String)
 	if(name=="AmrNeopz") return AmrNeopzEnum  end
 	if(name=="Arrhenius") return ArrheniusEnum  end
 	if(name=="AutodiffJacobian") return AutodiffJacobianEnum  end
+	if(name=="AverageButtressing") return AverageButtressingEnum  end
 	if(name=="Balancethickness2Analysis") return Balancethickness2AnalysisEnum  end
 	if(name=="Balancethickness2Solution") return Balancethickness2SolutionEnum  end
 	if(name=="BalancethicknessAnalysis") return BalancethicknessAnalysisEnum  end

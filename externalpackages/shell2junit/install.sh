@@ -13,7 +13,7 @@ rm -rf ${PREFIX}
 mkdir -p ${PREFIX}/bin
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/shell2junit-${VER}.zip" "shell2junit-${VER}.zip"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/shell2junit-${VER}.zip" "shell2junit-${VER}.zip"
 
 # Unpack source
 unzip -q shell2junit-${VER}.zip

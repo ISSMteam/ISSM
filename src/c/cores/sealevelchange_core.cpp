@@ -34,8 +34,6 @@ void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel);
 /*main cores:*/
 void              sealevelchange_core(FemModel* femmodel){ /*{{{*/
 
-	SealevelGeometry* slgeom=NULL;
-
 	/*Start profiler*/
 	femmodel->profiler->Start(SLRCORE);
 
@@ -55,7 +53,7 @@ void              sealevelchange_core(FemModel* femmodel){ /*{{{*/
 	couplerinput_core(femmodel);
 
 	/*run geometry core: */
-	slgeom=sealevelchange_geometry(femmodel);
+	SealevelGeometry* slgeom=sealevelchange_geometry(femmodel);
 
 	/*any external forcings?:*/
 	solidearthexternal_core(femmodel);
@@ -545,7 +543,7 @@ void              coupleroutput_core(FemModel* femmodel){  /*{{{*/
 		}
 	}
 
-}; /*}}}*/
+}/*}}}*/
 void              ivins_deformation_core(FemModel* femmodel){ /*{{{*/
 
 	int  gsize;
@@ -787,9 +785,7 @@ void              sealevelchange_finalize(FemModel* femmodel) {  /*{{{*/
 	return;
 
 }/*}}}*/
-
-
-void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
+void              slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
 
 	/*early return?:*/
 	if(slgeom==NULL) return;
@@ -805,7 +801,7 @@ void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*
 } /*}}}*/
 
 /*subroutines:*/
-bool slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_rel,IssmDouble eps_abs, IssmDouble totaloceanarea, FemModel* femmodel){ /*{{{*/
+bool       slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_rel,IssmDouble eps_abs, IssmDouble totaloceanarea, FemModel* femmodel){ /*{{{*/
 
 	int nel;
 	bool converged=true;
@@ -865,7 +861,7 @@ bool slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_rel,Iss
 	return converged;
 
 } /*}}}*/
-IssmDouble  SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* suboceanareas, IssmDouble totaloceanarea){ /*{{{*/
+IssmDouble SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* suboceanareas, IssmDouble totaloceanarea){ /*{{{*/
 
 	IssmDouble sealevelloadsaverage;	
 	IssmDouble subsealevelloadsaverage;	
@@ -875,7 +871,7 @@ IssmDouble  SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* ocean
 
 	return (sealevelloadsaverage+subsealevelloadsaverage)/totaloceanarea;
 } /*}}}*/
-void PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoads* loads, SealevelGeometry* slgeom, bool computefuture){ /*{{{*/
+void       PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoads* loads, SealevelGeometry* slgeom, bool computefuture){ /*{{{*/
 	//The purpose of this routine is to get the polar motion vector m=(m1, m2, m3) induced by the GrdLoads
 	IssmDouble  S2coef[3];
 	IssmDouble*	pmtf_col= NULL;
@@ -1073,8 +1069,7 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 		xDelete<IssmDouble>(viscoustimes);
 		if (rotation) 	xDelete<IssmDouble>(viscouspolarmotion);
 	}
-
-}
+}/*}}}*/
 void        ConserveOceanMass(FemModel* femmodel,GrdLoads* loads, IssmDouble offset, SealevelGeometry* slgeom){ /*{{{*/
 
 	/*Shift sealevel loads by ocean average, only on ocean! :*/
@@ -1147,7 +1142,6 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 	femmodel->parameters->FindParam(&nummodels,NumModelsEnum);
 	int my_rank=IssmComm::GetRank();
 
-
 	/*retrieve the inter communicators that will be used to send data from each ice cap to the earth: */
 	if(modelid==earthid){
 		GenericParam<ISSM_MPI_Comm*>* parcoms = dynamic_cast<GenericParam<ISSM_MPI_Comm*>*>(femmodel->parameters->FindParamObject(IcecapToEarthCommEnum));
@@ -1198,7 +1192,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		}
 	}
 
-	/*On the earth model, consolidate all the forcings into one, and update the elements dataset accordingly: {{{*/
+	/*On the earth model, consolidate all the forcings into one, and update the elements dataset accordingly*/
 	if(modelid==earthid){
 
 		/*Out of all the delta thicknesses, build one delta thickness vector made of all the ice cap contributions. 
@@ -1316,7 +1310,7 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 		GetVectorFromInputsx(&forcingglobal,femmodel,forcingenum,VertexSIdEnum);
 	}
 
-	/*Send the forcing to the ice caps:{{{*/
+	/*Send the forcing to the ice caps*/
 	if(my_rank==0){
 
 		if(modelid==earthid){
@@ -1351,9 +1345,8 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 			ISSM_MPI_Recv(forcing, nv, ISSM_MPI_DOUBLE, 0, modelid, fromcomm, &status);
 		}
 	}
-	/*}}}*/
 
-	/*On each ice cap, spread the forcing across cpus, and update the elements dataset accordingly: {{{*/
+	/*On each ice cap, spread the forcing across cpus, and update the elements dataset accordingly*/
 	if(modelid!=earthid){
 
 		ISSM_MPI_Bcast(&nv,1,ISSM_MPI_INT,0,IssmComm::GetComm());
@@ -1363,7 +1356,6 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 		/*Plug into elements:*/
 		InputUpdateFromVectorx(femmodel,forcing,forcingenum,VertexSIdEnum);
 	} 
-	/*}}}*/
 
 	/*Free resources:*/
 	if(my_rank==0 && modelid==earthid){

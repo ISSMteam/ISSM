@@ -204,6 +204,11 @@ syn keyword juliaConstC FlowequationIsNitscheEnum
 syn keyword juliaConstC FeFSNitscheGammaEnum
 syn keyword juliaConstC FrictionCouplingEnum
 syn keyword juliaConstC FrictionDeltaEnum
+syn keyword juliaConstC FrictionDNNEnum
+syn keyword juliaConstC FrictionDNNpsEnum
+syn keyword juliaConstC FrictionDNNstEnum
+syn keyword juliaConstC FrictionDNNInputScaleEnum
+syn keyword juliaConstC FrictionDNNOutputScaleEnum
 syn keyword juliaConstC FrictionEffectivePressureLimitEnum
 syn keyword juliaConstC FrictionFEnum
 syn keyword juliaConstC FrictionGammaEnum
@@ -242,7 +247,6 @@ syn keyword juliaConstC FrontalForcingsSdNumberofParamsEnum
 syn keyword juliaConstC FrontalForcingsSdpolyparamsEnum
 syn keyword juliaConstC GrdModelEnum
 syn keyword juliaConstC GroundinglineFrictionInterpolationEnum
-syn keyword juliaConstC GroundinglineIntrusionDistanceEnum
 syn keyword juliaConstC GroundinglineMeltInterpolationEnum
 syn keyword juliaConstC GroundinglineMigrationEnum
 syn keyword juliaConstC GroundinglineNumRequestedOutputsEnum
@@ -904,6 +908,7 @@ syn keyword juliaConstC FrontalForcingsBasinIdEnum
 syn keyword juliaConstC FrontalForcingsSubglacialDischargearmaEnum
 syn keyword juliaConstC FrontalForcingsSubglacialDischargeEnum
 syn keyword juliaConstC GeometryHydrostaticRatioEnum
+syn keyword juliaConstC GroundinglineIntrusionDistanceEnum
 syn keyword juliaConstC NGiaEnum
 syn keyword juliaConstC NGiaRateEnum
 syn keyword juliaConstC UGiaEnum
@@ -3366,6 +3371,7 @@ syn keyword juliaConstC AmrBamgEnum
 syn keyword juliaConstC AmrNeopzEnum
 syn keyword juliaConstC ArrheniusEnum
 syn keyword juliaConstC AutodiffJacobianEnum
+syn keyword juliaConstC AverageButtressingEnum
 syn keyword juliaConstC Balancethickness2AnalysisEnum
 syn keyword juliaConstC Balancethickness2SolutionEnum
 syn keyword juliaConstC BalancethicknessAnalysisEnum

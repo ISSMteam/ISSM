@@ -82,7 +82,7 @@ class generic_static(object):
             raise RuntimeError('File ' + self.codepath + '/' + executable + ' does not exist')
 
         # Process codepath and prepend empty spaces with \ to avoid errors in queuing script
-        codepath = self.codepath.replace(' ', '\ ')
+        codepath = self.codepath.replace(' ', r'\ ')
 
         # Write queuing script
         fid = open(modelname + '.queue', 'w')
@@ -117,7 +117,7 @@ class generic_static(object):
             raise RuntimeError('File ' + self.codepath + '/' + executable + ' does not exist')
 
         # Process codepath and prepend empty spaces with \ to avoid errors in queuing script
-        codepath = self.codepath.replace(' ', '\ ')
+        codepath = self.codepath.replace(' ', r'\ ')
 
         # Write queuing script
         fid = open(modelname + '.queue', 'w')
@@ -148,7 +148,6 @@ class generic_static(object):
             else:
                 shellext='csh'
 
-            print('launching solution sequence')
             launchcommand = './' + modelname + '.queue'
             subprocess.call([launchcommand])
         else:

@@ -7,19 +7,19 @@ function marshall(md)
 %   Usage:
 %      marshall(md)
 
-if md.verbose.solution,
+if md.verbose.solution
 	disp(['marshalling file ' md.miscellaneous.name '.bin']);
 end
 
 %open file for binary writing
 fid=fopen([ md.miscellaneous.name '.bin'],'wb');
-if fid==-1,
+if fid==-1
 	error(['marshall error message: could not open ' [md.miscellaneous.name '.bin'],' file for binary writing']);
 end
 
 % Go through all model fields: check that it is a class and call checkconsistency
 fields=sort(properties('model')); %sort fields so that comparison of binary files is easier
-for i=1:length(fields),
+for i=1:length(fields)
 	field=fields{i};
 
 	%Some properties do not need to be marshalled

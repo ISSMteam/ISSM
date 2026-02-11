@@ -1,6 +1,6 @@
 import numpy as np
 
-from math import *
+import math
 
 from checkfield import checkfield
 from fielddisplay import fielddisplay
@@ -38,7 +38,7 @@ class sampling(object):
         s += '{}\n'.format(fielddisplay(self, 'tau', 'scaling coefficient of the solution (default: 1.0)'))
         s += '{}\n'.format(fielddisplay(self, 'alpha', 'exponent in PDE operator, (default: 2.0, BiLaplacian covariance operator)'))
 
-        s += '      Parameters of Robin boundary conditions nabla () \cdot normvec + beta ():\n'
+        s += '      Parameters of Robin boundary conditions nabla () \\cdot normvec + beta ():\n'
         s += '{}\n'.format(fielddisplay(self, 'robin', 'Apply Robin boundary conditions (1 if applied and 0 for homogenous Neumann boundary conditions) (default: 0)'))
         s += '{}\n'.format(fielddisplay(self, 'beta', 'Coefficient in Robin boundary conditions (to be defined for robin = 1)'))
 

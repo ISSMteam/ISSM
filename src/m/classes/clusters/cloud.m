@@ -69,7 +69,7 @@ classdef cloud
 			if isempty(cluster.login),
 				error('cloud BuildQueueScript: login should be supplied!');
 			end
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmstscpout(cluster.name,cluster.executionpath,cluster.login,{[dirname '.tar.gz']});
 
 		end %}}}
@@ -84,7 +84,7 @@ classdef cloud
 						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz'];
 				end
 			else
-				disp('launching solution sequence on remote cluster');
+				%Execute Queue job
 				if ~isempty(restart)
 					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && qsub ' modelname '.queue'];
 				else

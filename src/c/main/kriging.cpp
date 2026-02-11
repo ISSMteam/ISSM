@@ -47,7 +47,7 @@ int main(int argc,char **argv){
 	ProcessInputfile(&x,&y,&data,&nobs,&x_interp,&y_interp,&ninterp,&options,input_fid);
 	pfclose(input_fid,binfilename);
 
-	_printf0_("call computational core:\n");
+	_printf0_("computing predictions\n");
 	pKrigingx(&predictions,&error,x,y,data,nobs,x_interp,y_interp,ninterp,options);
 
 	_printf0_("write results to disk:\n");

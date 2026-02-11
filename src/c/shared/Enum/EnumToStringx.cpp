@@ -213,6 +213,11 @@ const char* EnumToStringx(int en){
 		case FeFSNitscheGammaEnum : return "FeFSNitscheGamma";
 		case FrictionCouplingEnum : return "FrictionCoupling";
 		case FrictionDeltaEnum : return "FrictionDelta";
+		case FrictionDNNEnum : return "FrictionDNN";
+		case FrictionDNNpsEnum : return "FrictionDNNps";
+		case FrictionDNNstEnum : return "FrictionDNNst";
+		case FrictionDNNInputScaleEnum : return "FrictionDNNInputScale";
+		case FrictionDNNOutputScaleEnum : return "FrictionDNNOutputScale";
 		case FrictionEffectivePressureLimitEnum : return "FrictionEffectivePressureLimit";
 		case FrictionFEnum : return "FrictionF";
 		case FrictionGammaEnum : return "FrictionGamma";
@@ -251,7 +256,6 @@ const char* EnumToStringx(int en){
 		case FrontalForcingsSdpolyparamsEnum : return "FrontalForcingsSdpolyparams";
 		case GrdModelEnum : return "GrdModel";
 		case GroundinglineFrictionInterpolationEnum : return "GroundinglineFrictionInterpolation";
-		case GroundinglineIntrusionDistanceEnum : return "GroundinglineIntrusionDistance";
 		case GroundinglineMeltInterpolationEnum : return "GroundinglineMeltInterpolation";
 		case GroundinglineMigrationEnum : return "GroundinglineMigration";
 		case GroundinglineNumRequestedOutputsEnum : return "GroundinglineNumRequestedOutputs";
@@ -913,6 +917,7 @@ const char* EnumToStringx(int en){
 		case FrontalForcingsSubglacialDischargearmaEnum : return "FrontalForcingsSubglacialDischargearma";
 		case FrontalForcingsSubglacialDischargeEnum : return "FrontalForcingsSubglacialDischarge";
 		case GeometryHydrostaticRatioEnum : return "GeometryHydrostaticRatio";
+		case GroundinglineIntrusionDistanceEnum : return "GroundinglineIntrusionDistance";
 		case NGiaEnum : return "NGia";
 		case NGiaRateEnum : return "NGiaRate";
 		case UGiaEnum : return "UGia";
@@ -3375,6 +3380,7 @@ const char* EnumToStringx(int en){
 		case AmrNeopzEnum : return "AmrNeopz";
 		case ArrheniusEnum : return "Arrhenius";
 		case AutodiffJacobianEnum : return "AutodiffJacobian";
+		case AverageButtressingEnum : return "AverageButtressing";
 		case Balancethickness2AnalysisEnum : return "Balancethickness2Analysis";
 		case Balancethickness2SolutionEnum : return "Balancethickness2Solution";
 		case BalancethicknessAnalysisEnum : return "BalancethicknessAnalysis";

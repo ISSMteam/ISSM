@@ -1,0 +1,63 @@
+--- src/cmake/ConfigUserAdvancedTemplate.cmake	2025-07-23 03:39:53
++++ src/cmake/ConfigUser.cmake	2026-01-29 12:55:46
+@@ -46,12 +46,12 @@
+ #set (GMT_INSTALL_TRADITIONAL_FOLDERNAMES OFF)
+ 
+ # Make executables relocatable on supported platforms (relative RPATH) [FALSE]:
+-#set (GMT_INSTALL_RELOCATABLE TRUE)
++set (GMT_INSTALL_RELOCATABLE TRUE)
+ 
+ # Exclude optional GEOS, PCRE, PCRE2, FFTW3, LAPACK, BLAS, ZLIB dependencies even if you have them installed [FALSE]
+ #set (GMT_EXCLUDE_GEOS TRUE)
+-#set (GMT_EXCLUDE_PCRE TRUE)
+-#set (GMT_EXCLUDE_PCRE2 TRUE)
++set (GMT_EXCLUDE_PCRE TRUE)
++set (GMT_EXCLUDE_PCRE2 TRUE)
+ #set (GMT_EXCLUDE_FFTW3 TRUE)
+ #set (GMT_EXCLUDE_LAPACK TRUE)
+ #set (GMT_EXCLUDE_BLAS TRUE)
+@@ -100,11 +100,11 @@
+ 
+ # Set location of NetCDF (can be root directory, path to header file or path
+ # to nc-config) [auto]:
+-#set (NETCDF_ROOT "netcdf_install_prefix")
++#set (NETCDF_ROOT "$ENV{NETCDF_ROOT}")
+ 
+ # Set location of GDAL (can be root directory, path to header file or path to
+ # gdal-config) [auto]:
+-#set (GDAL_ROOT "gdal_install_prefix")
++#set (GDAL_ROOT "$ENV{GDAL_ROOT}")
+ 
+ # Set location of GEOS (can be root directory, path to header file or path to
+ # geos-config) [auto]:
+@@ -122,10 +122,10 @@
+ #set (FFTW3_ROOT "fftw_install_prefix")
+ 
+ # Set location of ZLIB (can be root directory or path to header file) [auto]:
+-#set (ZLIB_ROOT "zlib_install_prefix")
++#set (ZLIB_ROOT "$ENV{ZLIB_ROOT}")
+ 
+ # Set location of CURL (can be root directory or path to header file) [auto]:
+-#set (CURL_ROOT "curl_install_prefix")
++#set (CURL_ROOT "$ENV{CURL_ROOT}")
+ 
+ # Set location of OpenMP (can be root directory or path to header file) [auto]:
+ # CMake sometimes may fail to find the OpenMP library (libomp) on macOS.
+@@ -167,7 +167,7 @@
+ #set (CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+ 
+ # Build GMT shared lib with supplemental modules [TRUE]:
+-#set (BUILD_SUPPLEMENTS FALSE)
++set (BUILD_SUPPLEMENTS FALSE)
+ 
+ # Build/Install GMT Developer include files [TRUE]:
+ # This installs the extra include files and configured files needed by 3rd-party
+@@ -283,7 +283,7 @@
+ #set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS c:/Windows/System32/msvcr100.dll)
+ 
+ # If your NetCDF library is static (not recommended, applies to Windows only)
+-#set (NETCDF_STATIC TRUE)
++set (NETCDF_STATIC TRUE)
+ 
+ # If want to rename the DLLs to something else than the default (e.g. to
+ # append the bitness - Windows only)

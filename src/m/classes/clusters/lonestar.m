@@ -8,12 +8,12 @@
 classdef lonestar
 	properties (SetAccess=public)
 		% {{{
-		name          = 'ls5.tacc.utexas.edu'
+		name          = 'ls6.tacc.utexas.edu'
 		login         = '';
-		modules        = {'intel/18.0.2' 'gsl'};
+		modules        = {'intel/24.1' 'impi/21.12' 'gsl/2.8'};
 		numnodes      = 1;
 		cpuspernode   = 24;
-		port          = 1099;
+		port          = 0;
 		queue         = 'normal';
 		codepath      = '';
 		executionpath = '';
@@ -175,13 +175,13 @@ classdef lonestar
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && hostname && sbatch ' modelname '.queue '];
 			else

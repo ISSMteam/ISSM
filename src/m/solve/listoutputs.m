@@ -175,6 +175,7 @@ FrontalForcingsBasinId
 FrontalForcingsSubglacialDischargearma
 FrontalForcingsSubglacialDischarge
 GeometryHydrostaticRatio
+GroundinglineIntrusionDistance
 NGia
 NGiaRate
 UGia
@@ -627,6 +628,7 @@ OldAccumulatedDeltaIceThickness
 OldAccumulatedDeltaTws
 
 %Scalar outputs
+AverageButtressing
 Divergence
 MaxDivergence
 IceMass

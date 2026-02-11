@@ -1,8 +1,9 @@
-function sout = interpGimpdem(X,Y),
+function sout = interpGrIMP(X,Y)
 
 switch oshostname(),
 	case {'totten'}
-		howatpath='/totten_1/ModelData/Greenland/GrIMP/GrIMP_100m.tif';
+		datapath='/totten_1/ModelData/Greenland/GrIMP/GrIMP_100m.tif'; %McGregor
+		datapath='/totten_1/ModelData/Greenland/GrIMP/GIMP2_3413.tif'; %Bea
 	otherwise
 		error('machine not supported yet');
 end
@@ -17,7 +18,7 @@ elseif license('checkout','map_toolbox')==0
 end
 
 if usemap,
-	[data,R] = geotiffread(howatpath);
+	[data,R] = geotiffread(datapath);
 	data=double(flipud(data));
 	xdata=R.XLimWorld(1):R.DeltaX:R.XLimWorld(2); xdata=xdata(:);
 	xdata =(xdata(1:end-1)+xdata(2:end))/2;
@@ -26,7 +27,7 @@ if usemap,
 else
 
 	%Get image info
-	Tinfo = imfinfo(howatpath);
+	Tinfo = imfinfo(datapath);
 	N     = Tinfo.Width;
 	M     = Tinfo.Height;
 	dx    = Tinfo.ModelPixelScaleTag(1);
@@ -58,9 +59,13 @@ else
 		id2y=min(numel(ydata),posy(end)+offset);
 	end
 
-	data  = double(imread(howatpath,'PixelRegion',{[id1y,id2y],[id1x,id2x]}));
+	data  = double(imread(datapath,'PixelRegion',{[id1y,id2y],[id1x,id2x]}));
 	xdata=xdata(id1x:id2x);
 	ydata=ydata(id1y:id2y);
 end
 
-sout = InterpFromGrid(xdata,ydata,data,X,Y);
+%corrections
+data(data==-9999) = NaN;
+data(data>1e6) = NaN;
+sout = InterpFromGrid(xdata,ydata,data,X,Y,'linear');
+sout(sout==-9999) = NaN;

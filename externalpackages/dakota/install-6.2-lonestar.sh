@@ -14,14 +14,14 @@ rm -rf install
 mkdir src build install 
 
 #Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/dakota-6.2-public.src.tar.gz' 'dakota-6.2-public-src.tar.gz'
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 #Untar 
-tar -zxvf dakota-6.2-public-src.tar.gz
+tar -zxvf dakota-${VER}-public-src.tar.gz
 
 #Move Dakota to src directory
-mv dakota-6.2.0.src/* src
-rm -rf dakota-6.2.0.src
+mv dakota-${VER}.0.src/* src
+rm -rf dakota-${VER}.0.src
 
 #Set up Dakota cmake variables and config
 export DAK_SRC=$ISSM_DIR/externalpackages/dakota/src

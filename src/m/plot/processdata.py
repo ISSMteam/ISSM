@@ -104,7 +104,11 @@ def processdata(md, data, options):
             flags = options.getfieldvalue('mask')
             hide = np.invert(flags)
             if np.size(flags) == numberofvertices:
-                EltMask = np.asarray([np.any(np.in1d(index, np.where(hide))) for index in md.mesh.elements - 1])
+                if hasattr(np, 'isin'): #Numpy 2017+
+                    tmp = np.isin(index, np.where(hide))
+                else: #For backward compatibility
+                    tmp = np.in1d(index, np.where(hide))
+                EltMask = np.asarray([np.any(tmp) for index in md.mesh.elements - 1])
                 procdata = np.ma.array(procdata, mask=EltMask)
                 options.addfielddefault('cmap_set_bad', 'w')
             elif np.size(flags) == numberofelements:

@@ -200,13 +200,11 @@ class generic(object):
             compressstring += ' {}.errlog {}.outlog '.format(modelname, modelname)
         call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
         issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
 
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
-        print('launching solution sequence on remote cluster')
         if not isempty(restart):
             launchcommand = 'cd {} && cd {} chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
         else:

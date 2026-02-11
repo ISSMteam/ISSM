@@ -4,7 +4,7 @@ set -e
 
 ## Constants
 #
-VER="6.5.0"
+VER="6.6.0"
 
 PREFIX="${ISSM_DIR}/externalpackages/gmt/install"
 
@@ -58,10 +58,10 @@ cd build
 #
 cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DBLAS_LIBRARIES="-L${BLAS_ROOT}/lib;-lfblas;-L${LIBGFORTRAN_ROOT};-lgfortran" \
+	-DBLAS_LIBRARIES="-lblas;-L${LIBGFORTRAN_ROOT};-lgfortran" \
 	-DCURL_INCLUDE_DIR="${CURL_ROOT}/include" \
 	-DCURL_LIBRARY="-L${CURL_ROOT}/lib;-lcurl" \
-	-DLAPACK_LIBRARIES="-L${LAPACK_ROOT}/lib;-lflapack;-L${LIBGFORTRAN_ROOT};-lgfortran" \
+	-DLAPACK_LIBRARIES="-llapack;-L${LIBGFORTRAN_ROOT};-lgfortran" \
 	-DLIBGFORTRAN_ROOT="${LIBGFORTRAN_ROOT}" \
 	..
 

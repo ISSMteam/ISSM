@@ -71,7 +71,7 @@ classdef pollux
 		%}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && qsub ' modelname '.queue '];
 			else

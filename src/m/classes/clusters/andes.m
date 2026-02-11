@@ -97,7 +97,7 @@ classdef andes
 
 			%write queuing script
 			fid=fopen([modelname '.queue'],'w');
-			fprintf(fid,'#!/bin/bash\n');
+			fprintf(fid,'#!/bin/bash -l\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			fprintf(fid,'#SBATCH --account=ice\n'); %Make sure we use the ICE account for this run
 			fprintf(fid,'#SBATCH -o %s.outlog \n',modelname);
@@ -111,9 +111,6 @@ classdef andes
 				fprintf(fid,'#SBATCH --mail-user=%s@%s\n',cluster.login, cluster.email_domain);
 			end
 			fprintf(fid,'\n');
-			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath);
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');
-			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
 			fprintf(fid,'mpirun -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
@@ -146,13 +143,13 @@ classdef andes
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']});
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && hostname && sbatch ' modelname '.queue '];
 			else

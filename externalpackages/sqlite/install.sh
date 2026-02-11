@@ -4,7 +4,7 @@ set -eu
 
 # Constants
 #
-VER="3300100"
+VER="3.51.2"
 
 PREFIX="${ISSM_DIR}/externalpackages/sqlite/install" # Set to location where external package should be installed
 
@@ -17,21 +17,19 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/sqlite-autoconf-${VER}.tar.gz" "sqlite-autoconf-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/sqlite/sqlite/archive/refs/tags/version-${VER}.tar.gz" "sqlite-version-${VER}.tar.gz"
 
 # Unpack source
-tar -zxvf sqlite-autoconf-${VER}.tar.gz
+tar -zxvf sqlite-version-${VER}.tar.gz
 
 # Move source into 'src' directory
-mv sqlite-autoconf-${VER}/* src
-rm -rf sqlite-autoconf-${VER}
+mv sqlite-version-${VER}/* src
+rm -rf sqlite-version-${VER}
 
 # Configure
 cd src
 ./configure \
-	--prefix="${PREFIX}" \
-	--enable-fast-install \
-	--enable-static=no
+	--prefix="${PREFIX}"
 
 # Compile and install
 if [ $# -eq 0 ]; then

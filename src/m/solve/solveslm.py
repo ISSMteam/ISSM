@@ -24,9 +24,6 @@ def solveslm(slm, solutionstringi, *args):
         slm=solveslm(slm,'Transient');
     """
 
-    print('Yep')
-    exit()
-
     # Recover and process solve options
     if solutionstringi.lower() == 'tr' or solutionstringi.lower() == 'transient':
         solutionstring = 'TransientSolution'
@@ -50,7 +47,7 @@ def solveslm(slm, solutionstringi, *args):
         totalnp = totalnp + slm.icecaps[i].cluster.np
     totalnp = totalnp + slm.earth.cluster.np
     if totalnp != slm.cluster.np:
-        raise RuntimeError('sum of all icecaps and earch cluster processors requestes should be equal to slm.cluster.np')
+        raise RuntimeError('sum of all icecaps and earth cluster processors requests should be equal to slm.cluster.np')
 
     # Recover some fields
     slm.private.solution = solutionstring
@@ -83,6 +80,7 @@ def solveslm(slm, solutionstringi, *args):
     UploadQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist)
 
     # Launch queue job
+    print('launching solution sequence')
     LaunchQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist, '', batch)
 
     # Wait on lock

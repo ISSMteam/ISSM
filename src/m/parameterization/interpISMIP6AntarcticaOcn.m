@@ -1,4 +1,4 @@
-function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
+function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
 %interpISMIP6AntarcticaOcn - interpolate chosen ISMIP6 atmospheric forcing to model
 %
 %   Input:
@@ -18,6 +18,7 @@ function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
 %                                      miroc-esm-chem_rcp8.5
 %             noresm1-m_rcp2.6         noresm1-m_rcp8.5
 %                                      ukesm1-0-ll_ssp585
+%     - start_end (optional int array): two entry array of [start_year end_year]
 %
 %   Output:
 %     - basalforcings: prepared to be input directly into md.basalforcings
@@ -25,6 +26,18 @@ function basalforcings = interpISMIP6AntarcticaOcn(md,model_name)
 %
 %   Examples:
 %      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
+%      md.basalforcings = interpISMIP6AntarcticaOcn(md,'miroc-esm-chem_rcp8.5', [2007 2050]);
+
+% Parse inputs
+if nargin<3
+   start_time = 1995;
+   end_time = 2100;
+elseif
+   start_time = start_end(1);
+   end_time = start_end(2);
+else
+   error('no supported');
+end
 
 % Find appropriate directory
 switch oshostname(),
@@ -56,13 +69,15 @@ tf_data = double(ncread(tfnc,'thermal_forcing'));
 z_data  = double(ncread(tfnc,'z'));
 
 %Build tf cell array
-time = 1995:2100;
+time = start_time:end_time;
 tf = cell(1,1,size(tf_data,3));
+start_idx = start_time - 1994;
+final_idx = end_time - 1994;
 for i=1:size(tf_data,3)  %Iterate over depths
 	disp(['   == Interpolating over depth ' num2str(i) '/' num2str(size(tf_data,3))]);
 	
 	temp_matrix=[];
-	for ii=1:size(tf_data,4) %Iterate over time steps
+	for ii=start_idx:final_idx %Iterate over time steps
 		%temp_tfdata=InterpFromGridToMesh(x_n,y_n,tf_data(:,:,i,ii)',md.mesh.x,md.mesh.y,0);
 		temp_tfdata=InterpFromGrid(x_n,y_n,tf_data(:,:,i,ii)',md.mesh.x,md.mesh.y);
 		temp_matrix = [temp_matrix temp_tfdata];
@@ -79,7 +94,7 @@ basinid_data    = double(ncread(basin_datanc,'basinNumber'));
 
 disp('   == Interpolating basin Id');
 num_basins = length(unique(basinid_data));
-deltat_median = NaN(length(unique(basinid_data)),1);
+deltat_median = NaN(1,length(unique(basinid_data)));
 
 for i=0:num_basins-1
 	pos = find(basinid_data==i);
@@ -102,4 +117,4 @@ basalforcings.tf_depths  = z_data';
 basalforcings.gamma_0    = gamma0_median;
 basalforcings.tf         = tf;
 
-disp('Info: forcings cover 1995 to 2100');
+disp(['Info: forcings cover ' num2str(start_time),' to ', num2str(end_time)]);

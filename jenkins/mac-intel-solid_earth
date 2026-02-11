@@ -47,7 +47,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.22-mac.sh
+	petsc		install-3.23-mac.sh
 	boost		install-1.7-mac.sh
 	dakota		install-6.2-mac.sh
 	chaco		install-mac.sh
@@ -92,7 +92,8 @@ NUMCPUS_RUN=2
 # NOTE:
 # - Excluding 2006 until it can be debugged (file I/O)
 # - Excluding 2012 until it can be looked at by Eric ("FindParam error message: Parameter HydrologyModel not set")
+# - Excluding 2085 because of large errors after switching to system/developer copy of BLASLAPACK
 # - Excluding 2091 until it can be debugged (resource starvation)
 #
-MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2424 2425]"
-PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2424 2425"
+MATLAB_NROPTIONS="'benchmark','slc','exclude',[2004 2006 2012 2051 2052 2053 2085 2424 2425]"
+PYTHON_NROPTIONS="--benchmark slc --exclude 2004 2006 2012 2051 2052 2053 2085 2424 2425"

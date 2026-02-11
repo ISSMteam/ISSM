@@ -995,7 +995,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([CODIPACKINCL])
 	fi
 	AM_CONDITIONAL([CODIPACK], [test "x${HAVE_CODIPACK}" == "xyes"])
-	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++11"])
+	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++17"])
 	dnl }}}
 	dnl Tape Allocation {{{
 	AC_MSG_CHECKING(for tape allocation)
@@ -1420,45 +1420,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AM_CONDITIONAL([MPI], [test "x${HAVE_MPI}" == "xyes"])
 	AC_MSG_RESULT([${HAVE_MPI}])
 	dnl }}}
-	dnl SCOTCH{{{
-	AC_MSG_CHECKING([for SCOTCH])
-	AC_ARG_WITH(
-		[scotch-dir],
-		AS_HELP_STRING([--with-scotch-dir=DIR], [SCOTCH root directory]),
-		[SCOTCH_ROOT=$withval],
-		[SCOTCH_ROOT="no"]
-	)
-	if test "x${SCOTCH_ROOT}" == "xno"; then
-		HAVE_SCOTCH=no
-	else
-		HAVE_SCOTCH=yes
-		if ! test -d "${SCOTCH_ROOT}"; then
-			AC_MSG_ERROR([SCOTCH directory provided (${SCOTCH_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_SCOTCH}])
-	AM_CONDITIONAL([SCOTCH], [test "x${HAVE_SCOTCH}" == "xyes"])
-
-	dnl SCOTCH libraries and header files
-	if test "x${HAVE_SCOTCH}" == "xyes"; then
-		if test "x${SCOTCH_ROOT}" == "x${PETSC_ROOT}"; then
-			AC_DEFINE([_PETSC_SCOTCH_], [1], [is SCOTCH installed via PETSc])
-			SCOTCHINCL="-DNOFILEIO -I${SCOTCH_ROOT}/include -DSCOTCH_VERSION=\\\"UNKNOWN\\\""
-			SCOTCHLIB="-L${SCOTCH_ROOT}/lib -lnfioscotch -lnfioscotcherr -lnfioscotcherrexit "
-		else
-			SCOTCHINCL="-I${SCOTCH_ROOT}/include"
-			SCOTCHLIB="-L${SCOTCH_ROOT}/lib "
-			if test "x${HAVE_MPI}" == "xyes"; then
-				SCOTCHLIB+="-lptesmumps -lptscotch -lptscotcherr -lptscotcherrexit -lscotch"
-			else
-				SCOTCHLIB+="-lscotch -lscotcherr -lscotcherrexit"
-			fi
-		fi
-		AC_DEFINE([_HAVE_SCOTCH_], [1], [with SCOTCH in ISSM src])
-		AC_SUBST([SCOTCHINCL])
-		AC_SUBST([SCOTCHLIB])
-	fi
-	dnl }}}
 	dnl METIS{{{
 	AC_MSG_CHECKING([for METIS])
 	AC_ARG_WITH(
@@ -1672,38 +1633,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([PROJINCL])
 		AC_SUBST([PROJLIB])
 	fi
-	dnl }}}
-	dnl shapelib{{{
-	AC_MSG_CHECKING([for shapelib])
-	AC_ARG_WITH(
-		[shapelib-dir],
-		AS_HELP_STRING([--with-shapelib-dir=DIR], [shapelib root directory]),
-		[SHAPELIB_ROOT=${withval}],
-		[SHAPELIB_ROOT="no"]
-	)
-	if test "x${SHAPELIB_ROOT}" == "xno"; then
-		HAVE_SHAPELIB=no
-	else
-		HAVE_SHAPELIB=yes
-		if ! test -d "${SHAPELIB_ROOT}"; then
-			AC_MSG_ERROR([shapelib directory provided (${SHAPELIB_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_SHAPELIB}])
-
-	dnl shapelib libraries and header files
-	if test "x${HAVE_SHAPELIB}" == "xyes"; then
-		SHAPELIBINCL="-I${SHAPELIB_ROOT}/include"
-		if test -f "${SHAPELIB_ROOT}/lib/libshp.a"; then
-			SHAPELIBLIB="-L${SHAPELIB_ROOT}/lib -lshp"
-		else
-			SHAPELIBLIB="-L${SHAPELIB_ROOT}/lib -lshape"
-		fi
-		AC_DEFINE([_HAVE_SHAPELIB_], [1], [with shapelib in ISSM src])
-		AC_SUBST([SHAPELIBINCL])
-		AC_SUBST([SHAPELIBLIB])
-	fi
-	AM_CONDITIONAL([SHP], [test "x${HAVE_SHAPELIB}" == "xyes"])
 	dnl }}}
 	dnl ScaLAPACK{{{
 	dnl NOTE: User should supply path to root directory or libraries, but not both
@@ -2287,31 +2216,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AC_MSG_RESULT([done])
 	dnl }}}
-	dnl MATH77{{{
-	AC_MSG_CHECKING([for MATH77])
-	AC_ARG_WITH(
-		[math77-dir],
-		AS_HELP_STRING([--with-math77-dir=DIR], [MATH77 root directory]),
-		[MATH77_ROOT=${withval}],
-		[MATH77_ROOT="no"]
-	)
-	if test "x${MATH77_ROOT}" == "xno"; then
-		HAVE_MATH77=no
-	else
-		HAVE_MATH77=yes
-		if ! test -d "${MATH77_ROOT}"; then
-			AC_MSG_ERROR([MATH77 directory provided (${MATH77_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_MATH77}])
-
-	dnl MATH77 libraries and header files
-	if test "x${HAVE_MATH77}" == "xyes"; then
-		MATH77LIB="-L${MATH77_ROOT} -lmath77"
-		AC_DEFINE([_HAVE_MATH77_], [1], [with MATH77 in ISSM src])
-		AC_SUBST([MATH77LIB])
-	fi
-	dnl }}}
 	dnl Fortran{{{
 	AC_MSG_CHECKING(for Fortran compilation)
 	AC_ARG_WITH(
@@ -2404,7 +2308,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/SubStruct"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Topology"
 		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Util"
-		CXXFLAGS+=" -std=c++11"
 		AC_DEFINE([_HAVE_NEOPZ_], [1], [with NeoPZ in ISSM src])
 		AC_SUBST([NEOPZINCL])
 		AC_SUBST([NEOPZLIB])
@@ -2487,6 +2390,22 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([KRIGING], [test "x${HAVE_KRIGING}" == "xyes"])
 	AC_MSG_RESULT([${HAVE_KRIGING}])
+	dnl }}}
+	dnl performancemeasurements{{{
+	AC_ARG_ENABLE(
+		[performancemeasurements],
+		AS_HELP_STRING([--enable-performancemeasurements], [turn performance measurements on]),
+		[performancemeasurements=${enableval}],
+		[performancemeasurements=no]
+	)
+	AC_MSG_CHECKING(for performance measurements support)
+	HAVE_PERF=no
+	if test "x${performancemeasurements}" == "xyes"; then
+		HAVE_PERF=yes
+		AC_DEFINE([_HAVE_PERFORMANCE_MEASUREMENTS_], [1], [Macro to enable performance measurements in ISSM])
+	fi
+	AM_CONDITIONAL([PERFORMANCE_MEASUREMENTS], [test "x${HAVE_PERF}" == "xyes"])
+	AC_MSG_RESULT([${HAVE_PERF}])
 	dnl }}}
 
 	dnl Analyses

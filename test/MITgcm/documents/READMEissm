@@ -1,0 +1,43 @@
+# Install ISSM: https://issm.jpl.nasa.gov/download/
+
+# get Xcode
+# install command line xcode
+   xcode-select --install
+
+# get ISSM repo
+   cd
+   mkdir issm
+   cd issm
+   git clone git@github.com:ISSMteam/ISSM.git
+
+# add to ~/.zshrc
+   export ISSM_DIR='/Users/dmenemen/issm/ISSM'
+   source $ISSM_DIR/etc/environment.sh
+
+# https://issm.jpl.nasa.gov/download/unix/
+   cd $ISSM_DIR/externalpackages/autotools
+   install-mac.sh
+   source $ISSM_DIR/etc/environment.sh
+   cd $ISSM_DIR/externalpackages/cmake
+   install.sh
+   source $ISSM_DIR/etc/environment.sh
+   cd $ISSM_DIR/externalpackages/petsc
+   install-3.22-mac.sh
+   source $ISSM_DIR/etc/environment.sh
+   cd $ISSM_DIR/externalpackages/triangle
+   install-mac.sh
+   source $ISSM_DIR/etc/environment.sh
+   cd $ISSM_DIR/externalpackages/m1qn3
+   install-mac.sh
+   source $ISSM_DIR/etc/environment.sh
+   cd $ISSM_DIR
+   autoreconf -ivf
+
+# create configure.sh as per instructions
+# or get from test/MITgcm/documents/config-macOS-arm64.sh
+   cd $ISSM_DIR
+   cp test/MITgcm/documents/config-macOS-arm64.sh configure.sh
+   chmod a+x configure.sh
+   ./configure.sh
+   make
+   make install

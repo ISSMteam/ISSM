@@ -14,7 +14,6 @@ ISSM_CONFIG='\
 	--without-fortran \
 	--without-Sealevelchange \
 	--without-Love \
-	--without-kml \
 	--without-kriging \
 	--with-gsl-dir="${ISSM_DIR}/externalpackages/gsl/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
@@ -29,7 +28,7 @@ EXTERNALPACKAGES="
 	cmake		install.sh
 	emscripten	install.sh
 	gsl			install-javascript.sh
-	triangle	install-linux-javascript.sh
+	triangle	install-javascript.sh
 	shell2junit	install.sh
 "
 

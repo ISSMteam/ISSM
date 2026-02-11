@@ -78,7 +78,7 @@ cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DENABLE_BUILD_LIB=1 \
-	-DBLAS_LAPACK_LIBRARIES="-L${LAPACK_ROOT}/lib -lflapack -L${BLAS_ROOT}/lib -lfblas ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" \
+	-DBLAS_LAPACK_LIBRARIES="-llapack -lblas ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" \
 	-DENABLE_BLAS_LAPACK=1 \
 	-DENABLE_EIGEN=0 \
 	-DENABLE_FLTK=0 \

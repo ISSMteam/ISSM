@@ -74,6 +74,7 @@ filelist={[slm.miscellaneous.name '.queue']};
 UploadQueueJob(cluster,slm.miscellaneous.name,slm.private.runtimename,filelist);
 
 %launch queue job: 
+disp('launching solution sequence')
 LaunchQueueJob(cluster,slm.miscellaneous.name,slm.private.runtimename,filelist,'',batch);
 
 %wait on lock

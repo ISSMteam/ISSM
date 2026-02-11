@@ -27,6 +27,7 @@ if nargin<5
 	ncdate='2022-07-28';
 	ncdate='v6.0';
 	ncdate='v6.1';
+	ncdate='v6.6';
 end
 if nargin<4
 	if strcmp(string,'mask') | strcmp(string,'source')
@@ -39,7 +40,7 @@ if nargin<3, string = 'bed'; end
 
 basename = 'BedMachineGreenland';
 
-if nargin==5
+if nargin==5 && exist(ncdate, 'file')
 	ncfile = ncdate;
 else
 	%List of common paths to try

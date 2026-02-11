@@ -348,7 +348,6 @@ void           LevelsetAnalysis::Core(FemModel* femmodel){/*{{{*/
 	/*activate formulation: */
 	femmodel->SetCurrentConfiguration(LevelsetAnalysisEnum);
 
-	if(VerboseSolution()) _printf0_("   call computational core:\n");
 	if(stabilization==4){
 		solutionsequence_fct(femmodel);
 	}

@@ -4,7 +4,7 @@
 # Intended to be run in the context of a Jenkins project on a JPL 
 # Cybersecurity server for signing macOS applications. Polls SCM of the 
 # Subversion repository hosted at 
-# https://issm.ess.uci.edu/svn/issm-binaries/mac/<ARCH>/<API>[/<VER>]/unsigned to 
+# https://issm.ess.uci.edu/svn/issm-macos-signing/<ARCH>/<API>/unsigned to 
 # trigger new builds.
 #
 # In order to replicate the required Jenkins project configuration,
@@ -19,12 +19,12 @@
 # - under 'Source Code Management', select 'Subversion',
 #		- the 'Repository URL' text field should be set to 
 #
-# 		https://issm.ess.uci.edu/svn/issm-binaries/mac/<ARCH>/<API>[/<VER>]/unsigned
+# 		https://issm.ess.uci.edu/svn/issm-binaries/mac/<ARCH>/<API>/unsigned
 #
 #		where,
 #
 #		<ARCH>			'intel' or 'silicon'
-#		<API>[/<VER>]	'matlab' or 'python/3'
+#		<API>			'matlab' or 'python'
 #
 #		- the 'Credentials' select menu should be set to the new credentials 
 #		created previously.
@@ -75,26 +75,27 @@ ASC_PROVIDER="**********"
 
 ## NOTE: The following need to be set for the particular signing job (see comments for options)
 #
-PKG="ISSM-macOS-<ARCH>-<API>[-<VER>]" # <ARCH>: 'Intel' or 'Silicon'; <API>[-<VER>]: 'MATLAB' or 'Python-3'
-VARIANT_REPO_SUBPATH="<ARCH>/<API>[/<VER>]" # <ARCH>: 'intel' or 'silicon'; <API>[-<VER>]: 'matlab' or 'python/3'
+PKG="ISSM-macOS-<ARCH>-<API>" # <ARCH>: 'Intel' or 'Silicon'; <API>: 'MATLAB' or 'Python-3'
+VARIANT_REPO_SUBPATH="<ARCH>/<API>" # <ARCH>: 'intel' or 'silicon'; <API>: 'matlab' or 'python'
 
+EXE_ENTITLEMENTS_PLIST="${PKG}/bin/entitlements.plist"
 MAX_SVN_ATTEMPTS=10
 NOTARIZATION_CHECK_ATTEMPTS=20
 NOTARIZATION_CHECK_PERIOD=60
 NOTARIZATION_LOGFILE="notarization.log"
 NOTARIZATION_LOGFILE_PATH="."
 PASSWORD=${ISSM_BINARIES_PASS}
-REPO_URL="https://issm.ess.uci.edu/svn/issm-binaries"
+SIGNING_REPO_BASE_URL="https://issm.ess.uci.edu/svn/issm-macos-signing"
+SIGNING_REPO_URL="${SIGNING_REPO_BASE_URL}/${VARIANT_REPO_SUBPATH}"
 SIGNED_REPO_COPY="./signed"
-SIGNED_REPO_URL="${REPO_URL}/${VARIANT_REPO_SUBPATH}/signed"
 SIGNING_LOCK_FILE="signing.lock"
-SUCCESS_LOGFILE="${SIGNED_REPO_COPY}/success.log"
 UNSIGNED_REPO_COPY="./unsigned"
-UNSIGNED_REPO_URL="${REPO_URL}/${VARIANT_REPO_SUBPATH}/unsigned"
-USERNAME=${ISSM_BINARIES_USER}
+USERNAME=${ISSM_USERNAME}
 
 COMPRESSED_PKG="${PKG}.zip"
-EXE_ENTITLEMENTS_PLIST="${PKG}/bin/entitlements.plist"
+
+SIGNED_REPO_URL="${SIGNING_REPO_URL}/signed"
+UNSIGNED_REPO_URL="${SIGNING_REPO_URL}/unsigned"
 
 # NOTE: Uncomment the following for local testing (Jenkins checks out copy of 
 #		repository for unsigned packages to working directory)
@@ -124,29 +125,45 @@ ditto -xk ${UNSIGNED_REPO_COPY}/${COMPRESSED_PKG} .
 # Clear extended attributes on all files
 xattr -cr ${PKG}
 
-# Build list of ISSM executables
+# Build list of ISSM executables, libraries, and packages
 ISSM_BINS=$(\
+	find ${PKG}/lib -type f -name *.dylib; \
 	find ${PKG}/bin -type f -name *.exe; \
-	find ${PKG}/bin -type f -name *.pyc; \
 	find ${PKG}/lib -type f -name *.mexmaca64; \
 	find ${PKG}/lib -type f -name *.mexmaci64; \
 	find ${PKG}/test -type f -name *.pkg; \
+	find ${PKG}/bin -type f -name *.pyc; \
+	find ${PKG}/lib -type f -name *.so; \
 )
 
 # Build list of third party executables
 THIRD_PARTY_BINS=$(\
-	echo ${PKG}/bin/mpiexec; \
-	echo ${PKG}/bin/hydra_pmi_proxy; \
 	echo ${PKG}/bin/gdalsrsinfo; \
 	echo ${PKG}/bin/gdaltransform; \
 	echo ${PKG}/bin/gmsh; \
 	echo ${PKG}/bin/gmt; \
+	echo ${PKG}/bin/hydra_pmi_proxy; \
+	echo ${PKG}/bin/mpiexec; \
+	echo ${PKG}/bin/projinfo; \
 )
 
 # Sign all executables in package
-echo "Signing all executables in package"
-codesign -s ${AD_IDENTITY} --timestamp --options=runtime --entitlements ${EXE_ENTITLEMENTS_PLIST} ${ISSM_BINS}
-codesign -s ${AD_IDENTITY} --timestamp --options=runtime ${THIRD_PARTY_BINS}
+echo "Signing ISSM executables, libraries, and packges in package"
+codesign -s ${AD_IDENTITY} -v --timestamp --options=runtime --entitlements ${EXE_ENTITLEMENTS_PLIST} ${ISSM_BINS}
+for ISSM_BIN in "${ISSM_BINS[@]}"; do
+	codesign -s ${AD_IDENTITY} -v --timestamp --options=runtime ${ISSM_BIN}
+done
+
+echo "Signing third-party executables in package"
+for THIRD_PARTY_BIN in "${THIRD_PARTY_BINS[@]}"; do
+	codesign -s ${AD_IDENTITY} -v --timestamp --options=runtime ${THIRD_PARTY_BIN}
+done
+
+# Validate timestamp
+echo "Validating timestamp on an ISSM executable"
+codesign -dvv ${PKG}/bin/issm.exe
+echo "Validating timestamp on a third-party executable"
+codesign -dvv ${PKG}/bin/hydra_pmi_proxy
 
 # NOTE: Skipping signature validation because this is not a true package nor app
 

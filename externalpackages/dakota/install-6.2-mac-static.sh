@@ -22,11 +22,11 @@ LIBGCC=$(find ${LIBGFORTRAN_ROOT} -name libgcc* 2>/dev/null | egrep -n libgcc.a 
 
 ## Environment
 #
-export BLAS_LIBS="-L${BLAS_ROOT}/lib -lfblas ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export BLAS_LIBS="-lblas ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export BLAS_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export DAK_BUILD=${ISSM_DIR}/externalpackages/dakota/build # DO NOT CHANGE THIS
 export DAK_INSTALL=${PREFIX} # DO NOT CHANGE THIS
 export DAK_SRC=${ISSM_DIR}/externalpackages/dakota/src # DO NOT CHANGE THIS
-export LAPACK_LIBS="-L${LAPACK_ROOT}/lib -lflapack ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
+export LAPACK_LIBS="-llapack ${LIBGFORTRAN_ROOT}/libgfortran.a ${LIBGFORTRAN_ROOT}/libquadmath.a ${LIBGCC}" # Need to export LAPACK_LIBS *and* pass it as an option to CMake to ensure that external packages also find it
 export LDFLAGS="-framework CoreFoundation"
 
 # Cleanup
@@ -34,7 +34,7 @@ rm -rf ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 mkdir -p ${DAK_BUILD} ${DAK_INSTALL} ${DAK_SRC}
 
 # Download source
-${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/dakota-${VER}-public.src.tar.gz" "dakota-${VER}-public-src.tar.gz"
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/dakota-${VER}-public-src.tar.gz" "dakota-${VER}-public-src.tar.gz"
 
 # Unpack source
 tar -zxvf dakota-${VER}-public-src.tar.gz

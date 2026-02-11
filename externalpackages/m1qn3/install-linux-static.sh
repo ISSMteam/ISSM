@@ -12,7 +12,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/m1qn3-${VER}-distrib.tgz" "m1qn3-${VER}-distrib.tgz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/m1qn3-${VER}-distrib.tgz" "m1qn3-${VER}-distrib.tgz"
 
 # Unpack source
 tar -xzf m1qn3-${VER}-distrib.tgz

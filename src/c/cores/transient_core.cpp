@@ -78,10 +78,10 @@ void transient_core(FemModel* femmodel){/*{{{*/
 		femmodel->parameters->SetParam(step,StepEnum);
 
 		if(VerboseSolution()){
-			_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
-			//_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
+			//_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
+			_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
 		}
 		bool save_results=false;
 		if(step%output_frequency==0 || (time >= finaltime - (yts*DBL_EPSILON)) || step==1) save_results=true;
@@ -304,10 +304,9 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts,time;
-	int       isoceancoupling;
-	int       step,timestepping;
-	int       checkpoint_frequency,num_responses;
-	int		 *M = NULL;
+	int        isoceancoupling;
+	int        step,timestepping;
+	int        checkpoint_frequency,num_responses;
 	int		 *control_enum;
 
 	/*Get rank*/
@@ -322,7 +321,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&checkpoint_frequency,SettingsCheckpointFrequencyEnum); _assert_(checkpoint_frequency>0);
 	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
-	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 
 	std::vector<IssmDouble> time_all;
 	std::vector<IssmDouble> dt_all;

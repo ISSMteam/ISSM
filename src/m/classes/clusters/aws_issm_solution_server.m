@@ -148,7 +148,7 @@ classdef aws_issm_solution_server
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			if cluster.interactive==10,
 				directory=[pwd() '/run/'];
 			elseif cluster.interactive,
@@ -187,7 +187,7 @@ classdef aws_issm_solution_server
 				end
 			end
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			%NOTE: Replacement for issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 			launchstring=['ssh -l ' cluster.login ' -i ' cluster.idfile ' ' cluster.name ' "' launchcommand '"'];
 			[status,result]=system(launchstring);

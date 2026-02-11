@@ -11,9 +11,9 @@ function md = checkfield(md,varargin)
 %      - size: [lines cols], NaN for non checked dimensions, or 'universal' for any input type (nodal, element, time series, etc)
 %      - >:  greater than provided value
 %      - >=: greater or equal to provided value
-%      - <:  smallerthan provided value
+%      - <:  smaller than provided value
 %      - <=: smaller or equal to provided value
-%      - < vec:  smallerthan provided values on each vertex
+%      - < vec:  smaller than provided values on each vertex
 %      - timeseries: 1 if check time series consistency (size and time)
 %      - values: cell of strings or vector of acceptable values
 %      - numel: list of acceptable number of elements

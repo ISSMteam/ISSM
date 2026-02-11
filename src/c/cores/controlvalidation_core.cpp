@@ -97,7 +97,7 @@ void simul_stoptrace2(){/*{{{*/
 
 	#elif defined(_HAVE_CODIPACK_)
 
-	#if _CODIPACK_MAJOR_==2
+	#if _CODIPACK_MAJOR_>=2
 	auto& tape_codi = IssmDouble::getTape();
 	#elif _CODIPACK_MAJOR_==1
 	auto& tape_codi = IssmDouble::getGlobalTape();

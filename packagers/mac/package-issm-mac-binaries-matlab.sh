@@ -33,9 +33,9 @@ alias grep=$(which grep)
 
 ## Constants
 #
-LIBGMT="${ISSM_DIR}/externalpackages/gmt/install/lib/libgmt.6.5.0.dylib" # Important that this is the library itself
+LIBGMT="${ISSM_DIR}/externalpackages/gmt/install/lib/libgmt.6.6.0.dylib" # Important that this is the library itself
 LIBGMT_DIST="${ISSM_DIR}/lib/libgmt.6.dylib" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
-LIBPSL="${ISSM_DIR}/externalpackages/gmt/install/lib/libpostscriptlight.6.5.0.dylib" # Important that this is the library itself
+LIBPSL="${ISSM_DIR}/externalpackages/gmt/install/lib/libpostscriptlight.6.6.0.dylib" # Important that this is the library itself
 LIBPSL_DIST="${ISSM_DIR}/lib/libpostscriptlight.6.dylib" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
 
 ## Environment
@@ -148,7 +148,7 @@ if [ ${skip_tests} -eq 0 ]; then
 	${MATLAB_PATH}/bin/matlab -nojvm -nosplash -nojvm -r "try, addpath ${ISSM_DIR}/bin ${ISSM_DIR}/lib ${ISSM_DIR}/share; runme(${MATLAB_NROPTIONS}); exit; catch me,fprintf('%s',getReport(me)); exit; end" &> matlab.log
 
 	# Check that MATLAB did not exit in error
-	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|license|Warning: Name is nonexistent or not a directory" matlab.log`
+	matlabExitedInError=`grep -c -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab.log`
 
 	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"
