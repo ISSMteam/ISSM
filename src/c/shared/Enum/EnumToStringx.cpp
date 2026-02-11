@@ -1239,6 +1239,9 @@ const char* EnumToStringx(int en){
 		case SmbSummerAlbedoEnum : return "SmbSummerAlbedo";
 		case SmbSnowheightEnum : return "SmbSnowheight";
 		case SmbTEnum : return "SmbT";
+		case SmbT10Enum : return "SmbT10";
+		case SmbT30Enum : return "SmbT30";
+		case SmbT50Enum : return "SmbT50";
 		case SmbTaEnum : return "SmbTa";
 		case SmbTampEnum : return "SmbTamp";
 		case SmbTeValueEnum : return "SmbTeValue";
@@ -1249,6 +1252,7 @@ const char* EnumToStringx(int en){
 		case SmbTemperaturesReconstructedEnum : return "SmbTemperaturesReconstructed";
 		case SmbTiniEnum : return "SmbTini";
 		case SmbTmeanEnum : return "SmbTmean";
+		case SmbTsEnum : return "SmbTs";
 		case SmbTzEnum : return "SmbTz";
 		case SmbValuesAutoregressionEnum : return "SmbValuesAutoregression";
 		case SmbValuesMovingaverageEnum : return "SmbValuesMovingaverage";

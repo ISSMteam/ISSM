@@ -402,8 +402,13 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				parameters->AddObject(new DoubleVecParam(SmbMappedforcingelevationEnum,&temp[0],M));
 				iomodel->DeleteData(temp,"md.smb.mappedforcingelevation");
 
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapseTaValue",SmbLapseTaValueEnum));
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapsedlwrfValue",SmbLapsedlwrfValueEnum));
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lapseTaValue"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLapseTaValueEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lapseTaValue");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lapsedlwrfValue"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLapsedlwrfValueEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lapsedlwrfValue");
+
 			}
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.aIdx",SmbAIdxEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.eIdx",SmbEIdxEnum));

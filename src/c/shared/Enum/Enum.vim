@@ -1237,6 +1237,9 @@ syn keyword cConstant SmbSummerMeltEnum
 syn keyword cConstant SmbSummerAlbedoEnum
 syn keyword cConstant SmbSnowheightEnum
 syn keyword cConstant SmbTEnum
+syn keyword cConstant SmbT10Enum
+syn keyword cConstant SmbT30Enum
+syn keyword cConstant SmbT50Enum
 syn keyword cConstant SmbTaEnum
 syn keyword cConstant SmbTampEnum
 syn keyword cConstant SmbTeValueEnum
@@ -1247,6 +1250,7 @@ syn keyword cConstant SmbTemperaturesPresentdayEnum
 syn keyword cConstant SmbTemperaturesReconstructedEnum
 syn keyword cConstant SmbTiniEnum
 syn keyword cConstant SmbTmeanEnum
+syn keyword cConstant SmbTsEnum
 syn keyword cConstant SmbTzEnum
 syn keyword cConstant SmbValuesAutoregressionEnum
 syn keyword cConstant SmbValuesMovingaverageEnum

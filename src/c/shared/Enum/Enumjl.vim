@@ -1230,6 +1230,9 @@ syn keyword juliaConstC SmbSummerMeltEnum
 syn keyword juliaConstC SmbSummerAlbedoEnum
 syn keyword juliaConstC SmbSnowheightEnum
 syn keyword juliaConstC SmbTEnum
+syn keyword juliaConstC SmbT10Enum
+syn keyword juliaConstC SmbT30Enum
+syn keyword juliaConstC SmbT50Enum
 syn keyword juliaConstC SmbTaEnum
 syn keyword juliaConstC SmbTampEnum
 syn keyword juliaConstC SmbTeValueEnum
@@ -1240,6 +1243,7 @@ syn keyword juliaConstC SmbTemperaturesPresentdayEnum
 syn keyword juliaConstC SmbTemperaturesReconstructedEnum
 syn keyword juliaConstC SmbTiniEnum
 syn keyword juliaConstC SmbTmeanEnum
+syn keyword juliaConstC SmbTsEnum
 syn keyword juliaConstC SmbTzEnum
 syn keyword juliaConstC SmbValuesAutoregressionEnum
 syn keyword juliaConstC SmbValuesMovingaverageEnum

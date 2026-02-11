@@ -501,6 +501,9 @@ SmbSummerMelt
 SmbSummerAlbedo
 SmbSnowheight
 SmbT
+SmbT10
+SmbT30
+SmbT50
 SmbTa
 SmbTamp
 SmbTeValue
@@ -511,6 +514,7 @@ SmbTemperaturesPresentday
 SmbTemperaturesReconstructed
 SmbTini
 SmbTmean
+SmbTs
 SmbTz
 SmbValuesAutoregression
 SmbValuesMovingaverage
