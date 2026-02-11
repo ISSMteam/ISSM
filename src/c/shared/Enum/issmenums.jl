@@ -200,6 +200,11 @@
 	FeFSNitscheGammaEnum
 	FrictionCouplingEnum
 	FrictionDeltaEnum
+	FrictionDNNEnum
+	FrictionDNNpsEnum
+	FrictionDNNstEnum
+	FrictionDNNInputScaleEnum
+	FrictionDNNOutputScaleEnum
 	FrictionEffectivePressureLimitEnum
 	FrictionFEnum
 	FrictionGammaEnum
@@ -238,7 +243,6 @@
 	FrontalForcingsSdpolyparamsEnum
 	GrdModelEnum
 	GroundinglineFrictionInterpolationEnum
-	GroundinglineIntrusionDistanceEnum
 	GroundinglineMeltInterpolationEnum
 	GroundinglineMigrationEnum
 	GroundinglineNumRequestedOutputsEnum
@@ -900,6 +904,7 @@
 	FrontalForcingsSubglacialDischargearmaEnum
 	FrontalForcingsSubglacialDischargeEnum
 	GeometryHydrostaticRatioEnum
+	GroundinglineIntrusionDistanceEnum
 	NGiaEnum
 	NGiaRateEnum
 	UGiaEnum
@@ -1226,6 +1231,9 @@
 	SmbSummerAlbedoEnum
 	SmbSnowheightEnum
 	SmbTEnum
+	SmbT10Enum
+	SmbT30Enum
+	SmbT50Enum
 	SmbTaEnum
 	SmbTampEnum
 	SmbTeValueEnum
@@ -1236,6 +1244,7 @@
 	SmbTemperaturesReconstructedEnum
 	SmbTiniEnum
 	SmbTmeanEnum
+	SmbTsEnum
 	SmbTzEnum
 	SmbValuesAutoregressionEnum
 	SmbValuesMovingaverageEnum
@@ -3967,6 +3976,11 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FeFSNitscheGammaEnum) return "FeFSNitscheGamma" end
 	if(enum==FrictionCouplingEnum) return "FrictionCoupling" end
 	if(enum==FrictionDeltaEnum) return "FrictionDelta" end
+	if(enum==FrictionDNNEnum) return "FrictionDNN" end
+	if(enum==FrictionDNNpsEnum) return "FrictionDNNps" end
+	if(enum==FrictionDNNstEnum) return "FrictionDNNst" end
+	if(enum==FrictionDNNInputScaleEnum) return "FrictionDNNInputScale" end
+	if(enum==FrictionDNNOutputScaleEnum) return "FrictionDNNOutputScale" end
 	if(enum==FrictionEffectivePressureLimitEnum) return "FrictionEffectivePressureLimit" end
 	if(enum==FrictionFEnum) return "FrictionF" end
 	if(enum==FrictionGammaEnum) return "FrictionGamma" end
@@ -4005,7 +4019,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrontalForcingsSdpolyparamsEnum) return "FrontalForcingsSdpolyparams" end
 	if(enum==GrdModelEnum) return "GrdModel" end
 	if(enum==GroundinglineFrictionInterpolationEnum) return "GroundinglineFrictionInterpolation" end
-	if(enum==GroundinglineIntrusionDistanceEnum) return "GroundinglineIntrusionDistance" end
 	if(enum==GroundinglineMeltInterpolationEnum) return "GroundinglineMeltInterpolation" end
 	if(enum==GroundinglineMigrationEnum) return "GroundinglineMigration" end
 	if(enum==GroundinglineNumRequestedOutputsEnum) return "GroundinglineNumRequestedOutputs" end
@@ -4667,6 +4680,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrontalForcingsSubglacialDischargearmaEnum) return "FrontalForcingsSubglacialDischargearma" end
 	if(enum==FrontalForcingsSubglacialDischargeEnum) return "FrontalForcingsSubglacialDischarge" end
 	if(enum==GeometryHydrostaticRatioEnum) return "GeometryHydrostaticRatio" end
+	if(enum==GroundinglineIntrusionDistanceEnum) return "GroundinglineIntrusionDistance" end
 	if(enum==NGiaEnum) return "NGia" end
 	if(enum==NGiaRateEnum) return "NGiaRate" end
 	if(enum==UGiaEnum) return "UGia" end
@@ -4993,6 +5007,9 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbSummerAlbedoEnum) return "SmbSummerAlbedo" end
 	if(enum==SmbSnowheightEnum) return "SmbSnowheight" end
 	if(enum==SmbTEnum) return "SmbT" end
+	if(enum==SmbT10Enum) return "SmbT10" end
+	if(enum==SmbT30Enum) return "SmbT30" end
+	if(enum==SmbT50Enum) return "SmbT50" end
 	if(enum==SmbTaEnum) return "SmbTa" end
 	if(enum==SmbTampEnum) return "SmbTamp" end
 	if(enum==SmbTeValueEnum) return "SmbTeValue" end
@@ -5003,6 +5020,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbTemperaturesReconstructedEnum) return "SmbTemperaturesReconstructed" end
 	if(enum==SmbTiniEnum) return "SmbTini" end
 	if(enum==SmbTmeanEnum) return "SmbTmean" end
+	if(enum==SmbTsEnum) return "SmbTs" end
 	if(enum==SmbTzEnum) return "SmbTz" end
 	if(enum==SmbValuesAutoregressionEnum) return "SmbValuesAutoregression" end
 	if(enum==SmbValuesMovingaverageEnum) return "SmbValuesMovingaverage" end
@@ -7734,6 +7752,11 @@ function StringToEnum(name::String)
 	if(name=="FeFSNitscheGamma") return FeFSNitscheGammaEnum  end
 	if(name=="FrictionCoupling") return FrictionCouplingEnum  end
 	if(name=="FrictionDelta") return FrictionDeltaEnum  end
+	if(name=="FrictionDNN") return FrictionDNNEnum  end
+	if(name=="FrictionDNNps") return FrictionDNNpsEnum  end
+	if(name=="FrictionDNNst") return FrictionDNNstEnum  end
+	if(name=="FrictionDNNInputScale") return FrictionDNNInputScaleEnum  end
+	if(name=="FrictionDNNOutputScale") return FrictionDNNOutputScaleEnum  end
 	if(name=="FrictionEffectivePressureLimit") return FrictionEffectivePressureLimitEnum  end
 	if(name=="FrictionF") return FrictionFEnum  end
 	if(name=="FrictionGamma") return FrictionGammaEnum  end
@@ -7772,7 +7795,6 @@ function StringToEnum(name::String)
 	if(name=="FrontalForcingsSdpolyparams") return FrontalForcingsSdpolyparamsEnum  end
 	if(name=="GrdModel") return GrdModelEnum  end
 	if(name=="GroundinglineFrictionInterpolation") return GroundinglineFrictionInterpolationEnum  end
-	if(name=="GroundinglineIntrusionDistance") return GroundinglineIntrusionDistanceEnum  end
 	if(name=="GroundinglineMeltInterpolation") return GroundinglineMeltInterpolationEnum  end
 	if(name=="GroundinglineMigration") return GroundinglineMigrationEnum  end
 	if(name=="GroundinglineNumRequestedOutputs") return GroundinglineNumRequestedOutputsEnum  end
@@ -8434,6 +8456,7 @@ function StringToEnum(name::String)
 	if(name=="FrontalForcingsSubglacialDischargearma") return FrontalForcingsSubglacialDischargearmaEnum  end
 	if(name=="FrontalForcingsSubglacialDischarge") return FrontalForcingsSubglacialDischargeEnum  end
 	if(name=="GeometryHydrostaticRatio") return GeometryHydrostaticRatioEnum  end
+	if(name=="GroundinglineIntrusionDistance") return GroundinglineIntrusionDistanceEnum  end
 	if(name=="NGia") return NGiaEnum  end
 	if(name=="NGiaRate") return NGiaRateEnum  end
 	if(name=="UGia") return UGiaEnum  end
@@ -8760,6 +8783,9 @@ function StringToEnum(name::String)
 	if(name=="SmbSummerAlbedo") return SmbSummerAlbedoEnum  end
 	if(name=="SmbSnowheight") return SmbSnowheightEnum  end
 	if(name=="SmbT") return SmbTEnum  end
+	if(name=="SmbT10") return SmbT10Enum  end
+	if(name=="SmbT30") return SmbT30Enum  end
+	if(name=="SmbT50") return SmbT50Enum  end
 	if(name=="SmbTa") return SmbTaEnum  end
 	if(name=="SmbTamp") return SmbTampEnum  end
 	if(name=="SmbTeValue") return SmbTeValueEnum  end
@@ -8770,6 +8796,7 @@ function StringToEnum(name::String)
 	if(name=="SmbTemperaturesReconstructed") return SmbTemperaturesReconstructedEnum  end
 	if(name=="SmbTini") return SmbTiniEnum  end
 	if(name=="SmbTmean") return SmbTmeanEnum  end
+	if(name=="SmbTs") return SmbTsEnum  end
 	if(name=="SmbTz") return SmbTzEnum  end
 	if(name=="SmbValuesAutoregression") return SmbValuesAutoregressionEnum  end
 	if(name=="SmbValuesMovingaverage") return SmbValuesMovingaverageEnum  end
