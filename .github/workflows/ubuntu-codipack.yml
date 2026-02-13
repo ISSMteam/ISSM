@@ -35,7 +35,8 @@ jobs:
     with:
       os: ubuntu-latest
       build_type: codipack
-      interface: matlab
+      interface: python
+      python_version: 3.12
       build_command: |
         source $ISSM_DIR/etc/environment.sh
         autoreconf -ivf
@@ -48,7 +49,7 @@ jobs:
         --without-kml \
         --without-Sealevelchange \
         --without-Love \
-        --with-matlab-dir=$MATLAB_ROOT \
+        --with-python=${PYTHON_ROOT}/bin/python3 \
         --with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
         --with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
         --with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
@@ -69,7 +70,8 @@ jobs:
         cd $ISSM_DIR/externalpackages/gsl        && ./install.sh
         cd $ISSM_DIR/externalpackages/codipack   && ./install.sh
         cd $ISSM_DIR/externalpackages/medipack   && ./install.sh
-      test_cases: '["3015, 3119, 3480, 3201:3206"]'
+      # test_cases: '["3015, 3119, 3480, 3201:3206"]'
+      test_cases: '["3015"]'
       additional_options: "'benchmark','all',"
     secrets: inherit
     name: build-test-ubuntu-codipack

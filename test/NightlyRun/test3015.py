@@ -28,9 +28,25 @@ md.toolkits.DefaultAnalysis = issmgslsolver()
 
 #setup autodiff parameters
 index = 1  #this is the scalar component we are checking against
-md.autodiff.independents = [independent('name', 'md.geometry.thickness', 'type', 'vertex', 'nods', md.mesh.numberofvertices, 'fos_forward_index', index)]
-md.autodiff.dependents = [dependent('name', 'IceVolume', 'type', 'scalar')]
-md.autodiff.driver = 'fos_forward'
+if IssmConfig('_HAVE_CODIPACK_'):
+    md.autodiff.independents = [
+		independent('name', 'md.geometry.thickness', 'type', 'vertex', 'nods', md.mesh.numberofvertices)
+		]
+    md.autodiff.dependents = [
+		dependent('name', 'IceVolume', 'type', 'scalar', 'fos_reverse_index', index)
+		]
+
+    md.autodiff.driver = 'fos_reverse'
+
+else:
+    md.autodiff.independents = [
+		independent('name', 'md.geometry.thickness', 'type', 'vertex', 'nods', md.mesh.numberofvertices, 'fos_forward_index', index)
+		]
+    md.autodiff.dependents = [
+		dependent('name', 'IceVolume', 'type', 'scalar')
+		]
+
+    md.autodiff.driver = 'fos_forward'    
 
 #PYTHON: indices start at 0, make sure to offset index
 index = index - 1
@@ -81,7 +97,10 @@ md = SetIceShelfBC(md)
 
 md = solve(md, 'Masstransport')
 #retrieve directly
-dVdh_ad = md.results.MasstransportSolution.AutodiffJacobian[0][0]
+if IssmConfig('_HAVE_CODIPACK_'):
+    dVdh_ad = md.results.MasstransportSolution.AutodiffJacobian[index]
+else:
+    dVdh_ad = md.results.MasstransportSolution.AutodiffJacobian[0][0]
 
 print("dV / dh: analytical:  %16.16g\n       using adolc:  %16.16g\n" % (dVdh_an, dVdh_ad))
 
