@@ -1,8 +1,12 @@
 /*!\file: controladm1qn3_core.cpp
  * \brief: core of the control solution
  */
+#include <fstream>
 #include <ctime>
 #include <config.h>
+#include <fstream>
+#include <string>
+#include <iostream>
 #include "./cores.h"
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
@@ -391,8 +395,8 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsInf(Gnorm));
 
 	/*Print info*/
-	OutputResultsx(femmodel);
-	InversionStatsIter( (*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
+	write_control_output(*Jlisti, X, G, M, N, num_controls);
+	InversionStatsIter((*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
 
 	/*Clean-up and return*/
 	delete femmodel;
@@ -596,6 +600,44 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	xDelete<int>(M);
 	xDelete<int>(N);
 }/*}}}*/
+
+
+void write_control_output(int iter, double* X, double* G, int* spatial_size, int* temporal_size, int num_controls)
+{
+    for (int c = 0; c < num_controls; c++)
+    {
+        std::string filename = "control" + std::to_string(c) + "_iter_" + std::to_string(iter) + ".bin";
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            std::cerr << "Error: Failed to open file " << filename << " for writing\n";
+            continue;
+        }
+
+        uint64_t s = static_cast<uint64_t>(spatial_size[c]);
+        uint64_t t = static_cast<uint64_t>(temporal_size[c]);
+        uint64_t n = s * t;
+
+        if (!out.write(reinterpret_cast<const char*>(&s), sizeof(s))) {
+            std::cerr << "Error: Failed to write spatial size for control " << c << "\n";
+            continue;
+        }
+        if (!out.write(reinterpret_cast<const char*>(&t), sizeof(t))) {
+            std::cerr << "Error: Failed to write temporal size for control " << c << "\n";
+            continue;
+        }
+
+        if (!out.write(reinterpret_cast<const char*>(X + n * c), n * sizeof(double))) {
+            std::cerr << "Error: Failed to write X data for control " << c << "\n";
+            continue;
+        }
+        if (!out.write(reinterpret_cast<const char*>(G + n * c), n * sizeof(double))) {
+            std::cerr << "Error: Failed to write G data for control " << c << "\n";
+            continue;
+        }
+
+        out.close();
+    }
+}
 
 #else
 void controladm1qn3_core(FemModel* femmodel){_error_("M1QN3 or ADOLC/CoDiPack not installed");}
