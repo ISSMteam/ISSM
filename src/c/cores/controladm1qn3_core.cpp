@@ -1,7 +1,6 @@
 /*!\file: controladm1qn3_core.cpp
  * \brief: core of the control solution
  */
-#include <fstream>
 #include <ctime>
 #include <config.h>
 #include <fstream>
