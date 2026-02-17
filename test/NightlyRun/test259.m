@@ -43,6 +43,8 @@ md.smb.isprecipforcingremapped=0;
 md.smb.lapsedlwrfValue=0;
 md.smb.mappedforcingpoint=griddata(xe2,ye2,mpoints,xe,ye,'nearest');
 md.smb.mappedforcingelevation=mean(md2.geometry.surface(md2.mesh.elements),2);
+md.smb.lapseTaValue=md.smb.lapseTaValue*ones(size(md.smb.mappedforcingelevation));
+md.smb.lapsedlwrfValue=md.smb.lapsedlwrfValue*ones(size(md.smb.mappedforcingelevation));
 
 %smb settings
 md.smb.requested_outputs={'SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbEC',...

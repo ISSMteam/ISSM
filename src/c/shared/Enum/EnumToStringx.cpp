@@ -213,6 +213,11 @@ const char* EnumToStringx(int en){
 		case FeFSNitscheGammaEnum : return "FeFSNitscheGamma";
 		case FrictionCouplingEnum : return "FrictionCoupling";
 		case FrictionDeltaEnum : return "FrictionDelta";
+		case FrictionDNNEnum : return "FrictionDNN";
+		case FrictionDNNpsEnum : return "FrictionDNNps";
+		case FrictionDNNstEnum : return "FrictionDNNst";
+		case FrictionDNNInputScaleEnum : return "FrictionDNNInputScale";
+		case FrictionDNNOutputScaleEnum : return "FrictionDNNOutputScale";
 		case FrictionEffectivePressureLimitEnum : return "FrictionEffectivePressureLimit";
 		case FrictionFEnum : return "FrictionF";
 		case FrictionGammaEnum : return "FrictionGamma";
@@ -251,7 +256,6 @@ const char* EnumToStringx(int en){
 		case FrontalForcingsSdpolyparamsEnum : return "FrontalForcingsSdpolyparams";
 		case GrdModelEnum : return "GrdModel";
 		case GroundinglineFrictionInterpolationEnum : return "GroundinglineFrictionInterpolation";
-		case GroundinglineIntrusionDistanceEnum : return "GroundinglineIntrusionDistance";
 		case GroundinglineMeltInterpolationEnum : return "GroundinglineMeltInterpolation";
 		case GroundinglineMigrationEnum : return "GroundinglineMigration";
 		case GroundinglineNumRequestedOutputsEnum : return "GroundinglineNumRequestedOutputs";
@@ -913,6 +917,7 @@ const char* EnumToStringx(int en){
 		case FrontalForcingsSubglacialDischargearmaEnum : return "FrontalForcingsSubglacialDischargearma";
 		case FrontalForcingsSubglacialDischargeEnum : return "FrontalForcingsSubglacialDischarge";
 		case GeometryHydrostaticRatioEnum : return "GeometryHydrostaticRatio";
+		case GroundinglineIntrusionDistanceEnum : return "GroundinglineIntrusionDistance";
 		case NGiaEnum : return "NGia";
 		case NGiaRateEnum : return "NGiaRate";
 		case UGiaEnum : return "UGia";
@@ -1239,6 +1244,9 @@ const char* EnumToStringx(int en){
 		case SmbSummerAlbedoEnum : return "SmbSummerAlbedo";
 		case SmbSnowheightEnum : return "SmbSnowheight";
 		case SmbTEnum : return "SmbT";
+		case SmbT10Enum : return "SmbT10";
+		case SmbT30Enum : return "SmbT30";
+		case SmbT50Enum : return "SmbT50";
 		case SmbTaEnum : return "SmbTa";
 		case SmbTampEnum : return "SmbTamp";
 		case SmbTeValueEnum : return "SmbTeValue";
@@ -1249,6 +1257,7 @@ const char* EnumToStringx(int en){
 		case SmbTemperaturesReconstructedEnum : return "SmbTemperaturesReconstructed";
 		case SmbTiniEnum : return "SmbTini";
 		case SmbTmeanEnum : return "SmbTmean";
+		case SmbTsEnum : return "SmbTs";
 		case SmbTzEnum : return "SmbTz";
 		case SmbValuesAutoregressionEnum : return "SmbValuesAutoregression";
 		case SmbValuesMovingaverageEnum : return "SmbValuesMovingaverage";

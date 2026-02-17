@@ -5185,6 +5185,11 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble sumMassAdd=0.0;
 	IssmDouble fac=0.0;
 	IssmDouble sumMass=0.0;
+	IssmDouble sumH=0.0;
+	IssmDouble T0m=0.0;
+	IssmDouble T10m=0.0;
+	IssmDouble T30m=0.0;
+	IssmDouble T50m=0.0;
 	IssmDouble dMass=0.0;
 	IssmDouble accsumR=0.0;
 	IssmDouble accsumF=0.0;
@@ -5610,8 +5615,11 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		bool isprecipmap=true;
 		parameters->FindParam(&isprecipmap,SmbIsprecipforcingremappedEnum);
 
-		parameters->FindParam(&tlapse,SmbLapseTaValueEnum);
-		parameters->FindParam(&dlwlapse,SmbLapsedlwrfValueEnum);
+		IssmDouble* tlapse = NULL;
+		parameters->FindParam(&tlapse,&N,SmbLapseTaValueEnum); _assert_(tlapse);
+
+		IssmDouble* dlwlapse = NULL;
+		parameters->FindParam(&dlwlapse,&N,SmbLapsedlwrfValueEnum); _assert_(dlwlapse);
 
 		IssmDouble* elevation = NULL;
 		parameters->FindParam(&elevation,&N,SmbMappedforcingelevationEnum); _assert_(elevation);
@@ -5629,9 +5637,11 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		parameters->FindParam(&dsw, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswrfParamEnum);
 		parameters->FindParam(&dswdiff, Mappedpoint-1, timeinputs, timestepping, dt, SmbDswdiffrfParamEnum);
 
-		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse;
-		if (fabs(dlwlapse) > Dtol) dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse,0.0);
-		else{
+		Ta = taparam + (currentsurface - elevation[Mappedpoint-1])*tlapse[Mappedpoint-1];
+		Tmean = Tmean + (currentsurface - elevation[Mappedpoint-1])*tlapse[Mappedpoint-1];
+		if (fabs(dlwlapse[Mappedpoint-1]) > Dtol){
+			dlw = fmax(dlwrfparam + (currentsurface - elevation[Mappedpoint-1])*dlwlapse[Mappedpoint-1],0.0);
+		}else{
 			//adjust downward longwave, holding emissivity equal (Glover et al, 1999)
 			IssmDouble SB = 5.67e-8; // Stefan-Boltzmann constant (W m-2 K-4)
 			IssmDouble effe = 1.;
@@ -5639,7 +5649,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 			dlw = fmax(effe*SB*pow(Ta,4.0),0.0);
 		}
 
-		if ( (fabs(dlwlapse) > Dtol) || (fabs(tlapse) > Dtol)){
+		if ( (fabs(dlwlapse[Mappedpoint-1]) > Dtol) || (fabs(tlapse[Mappedpoint-1]) > Dtol)){
 			IssmDouble Rg = 8.314; // gas constant (J mol-1 K-1)
 			IssmDouble dAir = 0.0;
 			// calculated air density [kg/m3]
@@ -5655,14 +5665,17 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		//Ding et al., 2019 after Bolton, 1980
 		//ea37 = rh37*100*6.112.*exp((17.67*(t237-273.15))./(t237-29.65));
 		rhparam=eaparam/6.112/exp((17.67*(taparam-273.15))/(taparam-29.65));
-		eAir=rhparam*6.112*exp((17.67*(Ta-273.15))/(Ta-29.65));
+		eAir=fmax(rhparam*6.112*exp((17.67*(Ta-273.15))/(Ta-29.65)),0.0);
 
-		if (isprecipmap && (eaparam>0)){
+		if (isprecipmap && (eaparam>0) && (eAir>0)){
 			P=prparam*eAir/eaparam;
+			C=C*eAir/eaparam;
 		}
 		else P=prparam;
 
 		xDelete<IssmDouble>(elevation);
+		xDelete<IssmDouble>(tlapse);
+		xDelete<IssmDouble>(dlwlapse);
 	}
 	/*}}}*/
 
@@ -5739,9 +5752,18 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	/*Calculate total system mass:*/
 	sumMass=0;
 	fac=0;
+	T0m=0;
+	T10m=0;
+	T30m=0;
+	T50m=0;
 	for(int i=0;i<m;i++){
 		sumMass += dz[i]*d[i];
+		sumH += dz[i];
 		if (d[i] > 0) fac += dz[i]*(rho_ice - fmin(d[i],rho_ice));
+		if (i==0 || (d[i]<rho_ice && d[i]>0 && sumH <= 50)) T50m = T[i];
+		if (i==0 || (d[i]<rho_ice && d[i]>0 && sumH <= 30)) T30m = T[i];
+		if (i==0 || (d[i]<rho_ice && d[i]>0 && sumH <= 10)) T10m = T[i];
+		if (i==0) T0m = T[i];
 	}
 
 	#if defined(_HAVE_AD_)
@@ -5852,6 +5874,10 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	this->SetElementInput(SmbMSurfSumEnum,sumMsurf/dt/rho_ice);
 	this->SetElementInput(SmbWAddEnum,sumW/dt);
 	this->SetElementInput(SmbFACEnum,fac/1000.); // output in meters
+	this->SetElementInput(SmbTsEnum,T0m); // output in K at surface
+	this->SetElementInput(SmbT10Enum,T10m); // output in K at 10m depth
+	this->SetElementInput(SmbT30Enum,T30m); // output in K at 10m depth
+	this->SetElementInput(SmbT50Enum,T50m); // output in K ar 10m depth
 	this->SetElementInput(SmbECDtEnum,EC);
 
 	/*Free allocations:{{{*/
