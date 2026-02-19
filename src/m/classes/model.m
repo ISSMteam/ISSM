@@ -198,7 +198,9 @@ classdef model
 			%2022 Oct 28
 			if ~isa(md.debris,'debris'); md.debris=debris(); end
 			%Mmetransport: Jun 2022:
-			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end;
+			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end
+			% 2026 February 18
+			if isa(md.friction, 'frictionjosh') && md.friction.coefficient_max==0; md.friction.coefficient_max=300; end
 		end% }}}
 	end
 	methods
@@ -598,7 +600,7 @@ classdef model
 			%copy model
 			md1=md;
 
-			%recover options: 
+			%recover optoins: 
 			options=pairoptions(varargin{:});
 
 			%some checks
@@ -662,13 +664,13 @@ classdef model
 
 			%loop over model fields
 			model_fields=fields(md1);
-			for i=1:length(model_fields)
+			for i=1:length(model_fields),
 				%get field
 				field=md1.(model_fields{i});
 				fieldsize=size(field);
 				if isobject(field), %recursive call
 					object_fields=fields(md1.(model_fields{i}));
-					for j=1:length(object_fields)
+					for j=1:length(object_fields),
 						%get field
 						field=md1.(model_fields{i}).(object_fields{j});
 						fieldsize=size(field);
@@ -677,7 +679,7 @@ classdef model
 							md2.(model_fields{i}).(object_fields{j})=field(pos_node,:);
 						elseif (fieldsize(1)==numberofvertices1+1)
 							md2.(model_fields{i}).(object_fields{j})=[field(pos_node,:); field(end,:)];
-							%size = number of elements * n
+						%size = number of elements * n
 						elseif fieldsize(1)==numberofelements1
 							md2.(model_fields{i}).(object_fields{j})=field(pos_elem,:);
 						elseif (fieldsize(1)==numberofelements1+1)
@@ -690,7 +692,7 @@ classdef model
 						md2.(model_fields{i})=field(pos_node,:);
 					elseif (fieldsize(1)==numberofvertices1+1)
 						md2.(model_fields{i})=[field(pos_node,:); field(end,:)];
-						%size = number of elements * n
+					%size = number of elements * n
 					elseif fieldsize(1)==numberofelements1
 						md2.(model_fields{i})=field(pos_elem,:);
 					elseif (fieldsize(1)==numberofelements1+1)
@@ -706,13 +708,6 @@ classdef model
 			md2.mesh.numberofvertices=numberofvertices2;
 			md2.mesh.elements=elements_2;
 
-            % Extract ISMIP6 basal tf field
-            if isa(md1.basalforcings, 'basalforcingsismip6')
-            	for i=1:numel(md.basalforcings.tf)
-                	md2.basalforcings.tf{i} = [md1.basalforcings.tf{i}(pos_node); md1.basalforcings.tf{i}(end)];
-               end
-            end
-                        
 			%mesh.uppervertex mesh.lowervertex
 			if isa(md1.mesh,'mesh3dprisms'),
 				md2.mesh.uppervertex=md1.mesh.uppervertex(pos_node);

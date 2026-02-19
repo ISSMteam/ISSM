@@ -210,6 +210,7 @@
 	FrictionGammaEnum
 	FrictionLawEnum
 	FrictionLinearizeEnum
+	FrictionMaxCoefficientEnum
 	FrictionPseudoplasticityExponentEnum
 	FrictionU0Enum
 	FrictionThresholdSpeedEnum
@@ -3986,6 +3987,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrictionGammaEnum) return "FrictionGamma" end
 	if(enum==FrictionLawEnum) return "FrictionLaw" end
 	if(enum==FrictionLinearizeEnum) return "FrictionLinearize" end
+	if(enum==FrictionMaxCoefficientEnum) return "FrictionMaxCoefficient" end
 	if(enum==FrictionPseudoplasticityExponentEnum) return "FrictionPseudoplasticityExponent" end
 	if(enum==FrictionU0Enum) return "FrictionU0" end
 	if(enum==FrictionThresholdSpeedEnum) return "FrictionThresholdSpeed" end
@@ -7762,6 +7764,7 @@ function StringToEnum(name::String)
 	if(name=="FrictionGamma") return FrictionGammaEnum  end
 	if(name=="FrictionLaw") return FrictionLawEnum  end
 	if(name=="FrictionLinearize") return FrictionLinearizeEnum  end
+	if(name=="FrictionMaxCoefficient") return FrictionMaxCoefficientEnum  end
 	if(name=="FrictionPseudoplasticityExponent") return FrictionPseudoplasticityExponentEnum  end
 	if(name=="FrictionU0") return FrictionU0Enum  end
 	if(name=="FrictionThresholdSpeed") return FrictionThresholdSpeedEnum  end

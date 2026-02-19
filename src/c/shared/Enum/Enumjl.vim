@@ -214,6 +214,7 @@ syn keyword juliaConstC FrictionFEnum
 syn keyword juliaConstC FrictionGammaEnum
 syn keyword juliaConstC FrictionLawEnum
 syn keyword juliaConstC FrictionLinearizeEnum
+syn keyword juliaConstC FrictionMaxCoefficientEnum
 syn keyword juliaConstC FrictionPseudoplasticityExponentEnum
 syn keyword juliaConstC FrictionU0Enum
 syn keyword juliaConstC FrictionThresholdSpeedEnum

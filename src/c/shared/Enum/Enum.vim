@@ -221,6 +221,7 @@ syn keyword cConstant FrictionFEnum
 syn keyword cConstant FrictionGammaEnum
 syn keyword cConstant FrictionLawEnum
 syn keyword cConstant FrictionLinearizeEnum
+syn keyword cConstant FrictionMaxCoefficientEnum
 syn keyword cConstant FrictionPseudoplasticityExponentEnum
 syn keyword cConstant FrictionU0Enum
 syn keyword cConstant FrictionThresholdSpeedEnum

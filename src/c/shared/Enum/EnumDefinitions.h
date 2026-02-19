@@ -215,6 +215,7 @@ enum definitions{
 	FrictionGammaEnum,
 	FrictionLawEnum,
 	FrictionLinearizeEnum,
+	FrictionMaxCoefficientEnum,
 	FrictionPseudoplasticityExponentEnum,
 	FrictionU0Enum,
 	FrictionThresholdSpeedEnum,

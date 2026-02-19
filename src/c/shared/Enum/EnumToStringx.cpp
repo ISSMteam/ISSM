@@ -223,6 +223,7 @@ const char* EnumToStringx(int en){
 		case FrictionGammaEnum : return "FrictionGamma";
 		case FrictionLawEnum : return "FrictionLaw";
 		case FrictionLinearizeEnum : return "FrictionLinearize";
+		case FrictionMaxCoefficientEnum : return "FrictionMaxCoefficient";
 		case FrictionPseudoplasticityExponentEnum : return "FrictionPseudoplasticityExponent";
 		case FrictionU0Enum : return "FrictionU0";
 		case FrictionThresholdSpeedEnum : return "FrictionThresholdSpeed";
