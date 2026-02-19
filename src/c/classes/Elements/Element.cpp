@@ -5659,17 +5659,21 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		}
 		else pAir=pparam;
 
-		//Hold relative humidity constant and calculte new saturation vapor pressure
+		//Hold relative humidity constant, calculte new saturation vapor pressure,
+		// and new saturation specific humidity to scale precipitation
 		//https://cran.r-project.org/web/packages/humidity/vignettes/humidity-measures.html
 		//es over ice calculation
 		//Ding et al., 2019 after Bolton, 1980
 		//ea37 = rh37*100*6.112.*exp((17.67*(t237-273.15))./(t237-29.65));
-		rhparam=eaparam/6.112/exp((17.67*(taparam-273.15))/(taparam-29.65));
-		eAir=fmax(rhparam*6.112*exp((17.67*(Ta-273.15))/(Ta-29.65)),0.0);
+		IssmDouble esparam, es;
+		esparam=6.112*exp((17.67*(taparam-273.15))/(taparam-29.65));
+		es=6.112*exp((17.67*(Ta-273.15))/(Ta-29.65));
+		rhparam=eaparam/esparam;
+		eAir=fmax(rhparam*es,0.0);
 
-		if (isprecipmap && (eaparam>0) && (eAir>0)){
-			P=prparam*eAir/eaparam;
-			C=C*eAir/eaparam;
+		if ((isprecipmap) && (eaparam>0) && (pAir>0)){ 
+			P=fmax(prparam*es/esparam*pparam/pAir,0.0);
+			C=fmax(C*es/esparam*pparam/pAir,0.0);
 		}
 		else P=prparam;
 
