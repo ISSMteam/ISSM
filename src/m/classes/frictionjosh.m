@@ -5,11 +5,11 @@
 
 classdef frictionjosh
 	properties (SetAccess=public) 
-		coefficient = NaN;
+		coefficient                   = NaN;
 		pressure_adjusted_temperature = NaN;
-		gamma      = 0.;
-		effective_pressure_limit = 0;
-		coefficient_max = 0;
+		gamma                         = 0.0;
+		effective_pressure_limit      = 0.0;
+		coefficient_max               = 0.0;
 	end
 	methods
 		function self = extrude(self,md) % {{{
@@ -32,10 +32,10 @@ classdef frictionjosh
 			self.gamma = 1.;
 
 			% Default max friction coefficient: 300
-			self.coefficient_max = 300;
+			self.coefficient_max = 300.0;
 
 			%Default 0
-			self.effective_pressure_limit = 0;
+			self.effective_pressure_limit = 0.0;
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -62,12 +62,12 @@ classdef frictionjosh
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
-			WriteData(fid,prefix,'name','md.friction.law','data',9,'format','Integer');
-			WriteData(fid,prefix,'class','friction','object',self,'fieldname','coefficient','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'class','friction','object',self,'fieldname','pressure_adjusted_temperature','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'class','friction','object',self,'fieldname','gamma','format','Double');
-			WriteData(fid,prefix,'object',self,'class','friction','fieldname','effective_pressure_limit','format','Double');
-			WriteData(fid,prefix,'class','friction','object',self,'fieldname','coefficient_max','format','Double');
+			WriteData(fid,prefix, 'name', 'md.friction.law', 'data',9, 'format', 'Integer');
+			WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'coefficient', 'format', 'DoubleMat', 'mattype',1, 'timeserieslength',md.mesh.numberofvertices+1, 'yts',md.constants.yts);
+			WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'pressure_adjusted_temperature', 'format', 'DoubleMat', 'mattype',1, 'timeserieslength',md.mesh.numberofvertices+1, 'yts',md.constants.yts);
+			WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'gamma', 'format', 'Double');
+			WriteData(fid,prefix, 'object',self, 'class', 'friction', 'fieldname', 'effective_pressure_limit', 'format', 'Double');
+			WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'coefficient_max', 'format', 'Double');
 		end % }}}
 	end
 end
