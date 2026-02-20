@@ -428,6 +428,8 @@ enum definitions{
 	OutputFileNameEnum,
 	OutputFilePointerEnum,
 	OutputdefinitionEnum,
+	PddfacIceEnum,
+	PddfacSnowEnum,
 	QmuErrNameEnum,
 	QmuInNameEnum,
 	QmuIsdakotaEnum,

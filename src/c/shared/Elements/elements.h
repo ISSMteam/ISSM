@@ -28,7 +28,7 @@ IssmDouble PddSurfaceMassBalance(IssmDouble* monthlytemperatures,  IssmDouble* m
 IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures,  IssmDouble* monthlyprec,
 				 IssmDouble* melt, IssmDouble* accu, IssmDouble* melt_star, IssmDouble* t_ampl, IssmDouble* p_ampl,
 				 IssmDouble yts, IssmDouble s, IssmDouble desfac,IssmDouble s0t,
-				 IssmDouble s0p, IssmDouble rlaps, IssmDouble rho_water, IssmDouble rho_ice);
+				 IssmDouble s0p, IssmDouble rlaps, IssmDouble rho_water, IssmDouble rho_ice, IssmDouble pdd_fac_ice, IssmDouble pdd_fac_snow);
 void ComputeDelta18oTemperaturePrecipitation(IssmDouble Delta18oSurfacePresent, IssmDouble Delta18oSurfaceLgm, IssmDouble Delta18oSurfaceTime,
 					     IssmDouble Delta18oPresent, IssmDouble Delta18oLgm, IssmDouble Delta18oTime,
 					     IssmDouble* PrecipitationsPresentday,

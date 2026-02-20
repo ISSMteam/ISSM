@@ -436,6 +436,8 @@ const char* EnumToStringx(int en){
 		case OutputFileNameEnum : return "OutputFileName";
 		case OutputFilePointerEnum : return "OutputFilePointer";
 		case OutputdefinitionEnum : return "Outputdefinition";
+		case PddfacIceEnum : return "PddfacIce";
+		case PddfacSnowEnum : return "PddfacSnow";
 		case QmuErrNameEnum : return "QmuErrName";
 		case QmuInNameEnum : return "QmuInName";
 		case QmuIsdakotaEnum : return "QmuIsdakota";
