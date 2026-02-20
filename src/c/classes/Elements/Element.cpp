@@ -5670,15 +5670,18 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		//es over ice calculation
 		//Ding et al., 2019 after Bolton, 1980
 		//ea37 = rh37*100*6.112.*exp((17.67*(t237-273.15))./(t237-29.65));
-		IssmDouble esparam, es;
+		//ea37s (hPa) = 6.1121*exp(22.587*(t-273.15)/(t-273.15+273.86)); (with respect to ice)
+		IssmDouble esparam, es, qsparam, qs;
 		esparam=6.112*exp((17.67*(taparam-273.15))/(taparam-29.65));
 		es=6.112*exp((17.67*(Ta-273.15))/(Ta-29.65));
 		rhparam=eaparam/esparam;
 		eAir=fmax(rhparam*es,0.0);
+		qs=fmax(0.622*es/(pAir/100 - 0.378*es),0);
+		qsparam=fmax(0.622*esparam/(pparam/100 - 0.378*esparam),0);
 
-		if ((isprecipmap) && (eaparam>0) && (pAir>0)){ 
-			P=fmax(prparam*es/esparam*pparam/pAir,0.0);
-			C=fmax(C*es/esparam*pparam/pAir,0.0);
+		if ((isprecipmap) && (qsparam>0)){ 
+			P=fmax(prparam*qs/qsparam,0.0);
+			C=fmax(C*qs/qsparam,0.0);
 		}
 		else P=prparam;
 
