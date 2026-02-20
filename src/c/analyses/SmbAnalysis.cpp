@@ -338,6 +338,8 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_ice",PddfacIceEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_snow",PddfacSnowEnum));
 			break;
 		case SMBdebrisEvattEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.qlaps",SmbDesfacEnum));
