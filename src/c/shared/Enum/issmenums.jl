@@ -423,6 +423,8 @@
 	OutputFileNameEnum
 	OutputFilePointerEnum
 	OutputdefinitionEnum
+	PddfacIceEnum
+	PddfacSnowEnum
 	QmuErrNameEnum
 	QmuInNameEnum
 	QmuIsdakotaEnum
@@ -4200,6 +4202,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==OutputFileNameEnum) return "OutputFileName" end
 	if(enum==OutputFilePointerEnum) return "OutputFilePointer" end
 	if(enum==OutputdefinitionEnum) return "Outputdefinition" end
+	if(enum==PddfacIceEnum) return "PddfacIce" end
+	if(enum==PddfacSnowEnum) return "PddfacSnow" end
 	if(enum==QmuErrNameEnum) return "QmuErrName" end
 	if(enum==QmuInNameEnum) return "QmuInName" end
 	if(enum==QmuIsdakotaEnum) return "QmuIsdakota" end
@@ -7977,6 +7981,8 @@ function StringToEnum(name::String)
 	if(name=="OutputFileName") return OutputFileNameEnum  end
 	if(name=="OutputFilePointer") return OutputFilePointerEnum  end
 	if(name=="Outputdefinition") return OutputdefinitionEnum  end
+	if(name=="PddfacIce") return PddfacIceEnum  end
+	if(name=="PddfacSnow") return PddfacSnowEnum  end
 	if(name=="QmuErrName") return QmuErrNameEnum  end
 	if(name=="QmuInName") return QmuInNameEnum  end
 	if(name=="QmuIsdakota") return QmuIsdakotaEnum  end

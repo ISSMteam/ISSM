@@ -434,6 +434,8 @@ syn keyword cConstant OutputBufferSizePointerEnum
 syn keyword cConstant OutputFileNameEnum
 syn keyword cConstant OutputFilePointerEnum
 syn keyword cConstant OutputdefinitionEnum
+syn keyword cConstant PddfacIceEnum
+syn keyword cConstant PddfacSnowEnum
 syn keyword cConstant QmuErrNameEnum
 syn keyword cConstant QmuInNameEnum
 syn keyword cConstant QmuIsdakotaEnum
