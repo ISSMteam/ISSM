@@ -3517,6 +3517,7 @@
 	HydrologypismEnum
 	HydrologyshaktiEnum
 	HydrologyshreveEnum
+	HydrologyPrescribeEnum
 	IceMassEnum
 	IceMassScaledEnum
 	IceVolumeAboveFloatationEnum
@@ -7296,6 +7297,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologypismEnum) return "Hydrologypism" end
 	if(enum==HydrologyshaktiEnum) return "Hydrologyshakti" end
 	if(enum==HydrologyshreveEnum) return "Hydrologyshreve" end
+	if(enum==HydrologyPrescribeEnum) return "HydrologyPrescribe" end
 	if(enum==IceMassEnum) return "IceMass" end
 	if(enum==IceMassScaledEnum) return "IceMassScaled" end
 	if(enum==IceVolumeAboveFloatationEnum) return "IceVolumeAboveFloatation" end
@@ -11075,6 +11077,7 @@ function StringToEnum(name::String)
 	if(name=="Hydrologypism") return HydrologypismEnum  end
 	if(name=="Hydrologyshakti") return HydrologyshaktiEnum  end
 	if(name=="Hydrologyshreve") return HydrologyshreveEnum  end
+	if(name=="HydrologyPrescribe") return HydrologyPrescribeEnum  end
 	if(name=="IceMass") return IceMassEnum  end
 	if(name=="IceMassScaled") return IceMassScaledEnum  end
 	if(name=="IceVolumeAboveFloatation") return IceVolumeAboveFloatationEnum  end

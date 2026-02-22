@@ -3617,6 +3617,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Hydrologypism")==0) return HydrologypismEnum;
 	      else if (strcmp(name,"Hydrologyshakti")==0) return HydrologyshaktiEnum;
 	      else if (strcmp(name,"Hydrologyshreve")==0) return HydrologyshreveEnum;
+	      else if (strcmp(name,"HydrologyPrescribe")==0) return HydrologyPrescribeEnum;
 	      else if (strcmp(name,"IceMass")==0) return IceMassEnum;
 	      else if (strcmp(name,"IceMassScaled")==0) return IceMassScaledEnum;
 	      else if (strcmp(name,"IceVolumeAboveFloatation")==0) return IceVolumeAboveFloatationEnum;
@@ -3702,11 +3703,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"MeltingAnalysis")==0) return MeltingAnalysisEnum;
 	      else if (strcmp(name,"MeshElements")==0) return MeshElementsEnum;
 	      else if (strcmp(name,"MeshX")==0) return MeshXEnum;
-	      else if (strcmp(name,"MeshY")==0) return MeshYEnum;
          else stage=31;
    }
    if(stage==31){
-	      if (strcmp(name,"MinVel")==0) return MinVelEnum;
+	      if (strcmp(name,"MeshY")==0) return MeshYEnum;
+	      else if (strcmp(name,"MinVel")==0) return MinVelEnum;
 	      else if (strcmp(name,"MinVx")==0) return MinVxEnum;
 	      else if (strcmp(name,"MinVy")==0) return MinVyEnum;
 	      else if (strcmp(name,"MinVz")==0) return MinVzEnum;
@@ -3825,11 +3826,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SubelementFriction2")==0) return SubelementFriction2Enum;
 	      else if (strcmp(name,"IntrusionMelt")==0) return IntrusionMeltEnum;
 	      else if (strcmp(name,"SubelementMelt1")==0) return SubelementMelt1Enum;
-	      else if (strcmp(name,"SubelementMelt2")==0) return SubelementMelt2Enum;
          else stage=32;
    }
    if(stage==32){
-	      if (strcmp(name,"SubelementMigration")==0) return SubelementMigrationEnum;
+	      if (strcmp(name,"SubelementMelt2")==0) return SubelementMelt2Enum;
+	      else if (strcmp(name,"SubelementMigration")==0) return SubelementMigrationEnum;
 	      else if (strcmp(name,"SurfaceSlopeSolution")==0) return SurfaceSlopeSolutionEnum;
 	      else if (strcmp(name,"TaylorHood")==0) return TaylorHoodEnum;
 	      else if (strcmp(name,"Tetra")==0) return TetraEnum;

@@ -3530,6 +3530,7 @@ const char* EnumToStringx(int en){
 		case HydrologypismEnum : return "Hydrologypism";
 		case HydrologyshaktiEnum : return "Hydrologyshakti";
 		case HydrologyshreveEnum : return "Hydrologyshreve";
+		case HydrologyPrescribeEnum : return "HydrologyPrescribe";
 		case IceMassEnum : return "IceMass";
 		case IceMassScaledEnum : return "IceMassScaled";
 		case IceVolumeAboveFloatationEnum : return "IceVolumeAboveFloatation";

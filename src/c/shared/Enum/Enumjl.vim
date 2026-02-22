@@ -3521,6 +3521,7 @@ syn keyword juliaConstC HydrologydcEnum
 syn keyword juliaConstC HydrologypismEnum
 syn keyword juliaConstC HydrologyshaktiEnum
 syn keyword juliaConstC HydrologyshreveEnum
+syn keyword juliaConstC HydrologyPrescribeEnum
 syn keyword juliaConstC IceMassEnum
 syn keyword juliaConstC IceMassScaledEnum
 syn keyword juliaConstC IceVolumeAboveFloatationEnum

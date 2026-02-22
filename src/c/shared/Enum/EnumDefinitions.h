@@ -3527,6 +3527,7 @@ enum definitions{
 	HydrologypismEnum,
 	HydrologyshaktiEnum,
 	HydrologyshreveEnum,
+	HydrologyPrescribeEnum,
 	IceMassEnum,
 	IceMassScaledEnum,
 	IceVolumeAboveFloatationEnum,
