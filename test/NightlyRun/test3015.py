@@ -69,7 +69,7 @@ md = solve(md, 'Masstransport')
 V2 = md.results.MasstransportSolution.IceVolume
 
 #compute resulting derivative
-dVdh_an = (V2 - V0) / deltaH
+dVdh_an = ((V2 - V0) / deltaH)[0]
 
 #evaluate derivative using ADOLC
 md = md2
@@ -81,7 +81,7 @@ md = SetIceShelfBC(md)
 
 md = solve(md, 'Masstransport')
 #retrieve directly
-dVdh_ad = md.results.MasstransportSolution.AutodiffJacobian
+dVdh_ad = md.results.MasstransportSolution.AutodiffJacobian[0][0]
 
 print("dV / dh: analytical:  %16.16g\n       using adolc:  %16.16g\n" % (dVdh_an, dVdh_ad))
 

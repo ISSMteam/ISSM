@@ -56,8 +56,8 @@ class SMBgemb(object):
         self.dulwrfValue            = np.nan    #Delta with which to perturb the long wave radiation upwards. Use if isdeltaLWup is true.
         self.mappedforcingpoint     = np.nan    #Mapping of which forcing point will map to each mesh element (integer). Of size number of elements. Use if ismappedforcing is true.
         self.mappedforcingelevation = np.nan    #The elevation of each mapped forcing location (m above sea level). Of size number of forcing points. Use if ismappedforcing is true.
-        self.lapseTaValue           = np.nan    #Temperature lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true. (Default value is -0.006 K m-1.)
-        self.lapsedlwrfValue        = np.nan    #Longwave down lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true. If set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1.)
+        self.lapseTaValue           = np.nan    #Temperature lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true. (Default value is -0.006 K m-1., vector of mapping points)
+        self.lapsedlwrfValue        = np.nan    #Longwave down lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true. Where set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1., vector of mapping points)
 
         # Initialization of snow properties
         self.Dzini                  = np.nan    # cell depth (m)
@@ -224,8 +224,8 @@ class SMBgemb(object):
 
         s += '{}\n'.format(fielddisplay(self,'mappedforcingpoint','Mapping of which forcing point will map to each mesh element for ismappedforcing option (integer). Size number of elements.'))
         s += '{}\n'.format(fielddisplay(self,'mappedforcingelevation','The elevation of each mapped forcing location (m above sea level) for ismappedforcing option. Size number of forcing points.'))
-        s += '{}\n'.format(fielddisplay(self,'lapseTaValue','Temperature lapse rate if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.006 K m-1.)'))
-        s += '{}\n'.format(fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate if forcing has different grid and should be remapped for ismappedforcing option. If set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1.)'))
+        s += '{}\n'.format(fielddisplay(self,'lapseTaValue','Temperature lapse rate of each mapped forcing location, if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.006 K m-1, vector of mapping points)'))
+        s += '{}\n'.format(fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate of each mapped forcing location if forcing has different grid and should be remapped for ismappedforcing option. Where set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1., vector of mapping points)'))
 
         # Snow properties init
         s += '{}\n'.format(fielddisplay(self, 'Dzini', 'Initial cell depth when restart [m]'))
@@ -450,8 +450,14 @@ class SMBgemb(object):
         if self.ismappedforcing:
             md = checkfield(md, 'fieldname', 'smb.mappedforcingpoint', 'size',[md.mesh.numberofelements], 'NaN', 1, 'Inf', 1, '>', 0, '<=' ,sizeta[0]-1)
             md = checkfield(md, 'fieldname', 'smb.mappedforcingelevation', 'size', [sizeta[0]-1], 'NaN', 1, 'Inf', 1)
-            md = checkfield(md, 'fieldname', 'smb.lapseTaValue', 'NaN', 1, 'Inf', 1)
-            md = checkfield(md, 'fieldname', 'smb.lapsedlwrfValue', 'NaN', 1, 'Inf', 1)
+            if np.prod(np.shape(self.lapseTaValue))==1:
+                print("WARNING:smb.lapseTaValue is now a vector of mapped elements. Set to md.smb.lapseTaValue*ones.np(np.shape(md.smb.mappedforcingelevation)).")
+
+            if np.prod(np.shape(self.lapsedlwrfValue))==1:
+                print("WARNING:smb.lapsedlwrfValue is now a vector of mapped elements. Set to md.smb.lapsedlwrfValue*np.ones(np.shape(md.smb.mappedforcingelevation)).")
+
+            md = checkfield(md, 'fieldname', 'smb.lapseTaValue', 'size',[sizeta[0]-1],'NaN',1,'Inf',1);
+            md = checkfield(md, 'fieldname', 'smb.lapsedlwrfValue', 'size',[sizeta[0]-1], 'NaN',1,'Inf',1);
 
         md = checkfield(md, 'fieldname', 'smb.aIdx', 'NaN', 1, 'Inf', 1, 'values', [0, 1, 2, 3, 4])
         md = checkfield(md, 'fieldname', 'smb.eIdx', 'NaN', 1, 'Inf', 1, 'values', [0, 1, 2])
@@ -584,8 +590,8 @@ class SMBgemb(object):
         if self.ismappedforcing:
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingpoint','format','IntMat','mattype',2)
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingelevation','format','DoubleMat','mattype',3)
-            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','Double')
-            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','Double')
+            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','DoubleMat','mattype',3)
+            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','DoubleMat','mattype',3)
 
         # Figure out dt from forcings
         if (np.any(self.P[-1] - self.Ta[-1] != 0) | np.any(self.V[-1] - self.Ta[-1] != 0) | np.any(self.dswrf[-1] - self.Ta[-1] != 0) | np.any(self.dlwrf[-1] - self.Ta[-1] != 0) | np.any(self.eAir[-1] - self.Ta[-1] != 0) | np.any(self.pAir[-1] - self.Ta[-1] != 0)):

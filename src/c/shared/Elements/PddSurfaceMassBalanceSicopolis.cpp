@@ -11,7 +11,7 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
 				 IssmDouble* melt, IssmDouble* accu, IssmDouble* melt_star, IssmDouble* t_ampl, IssmDouble* p_ampl,
 				 IssmDouble yts, IssmDouble s, IssmDouble desfac,
 				 IssmDouble s0t, IssmDouble s0p, IssmDouble rlaps,
-				 IssmDouble rho_water,IssmDouble rho_ice){
+				 IssmDouble rho_water,IssmDouble rho_ice,IssmDouble pdd_fac_ice,IssmDouble pdd_fac_snow){
 
   int			imonth;				// month counter
   IssmDouble B;					// output: surface mass balance (m/a IE), melt+accumulation
@@ -27,16 +27,13 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
   IssmDouble pdd;					// pdd factor (a * degC)
   IssmDouble tstar;				// monthly temp. after lapse rate correction (degC)
   IssmDouble precip_star;		// monthly precip after correction (m/a IE)
-  IssmDouble beta1 = 2.73;		// 3 mm IE/(d*deg C),  ablation factor for snow per positive degree day.
-  IssmDouble beta2 = 7.28;		// 8 mm IE/(d*deg C),  ablation factor for ice per pdd (Braithwaite 1995 from tarasov 2002).
   IssmDouble Pmax = 0.6;
   IssmDouble inv_twelve=1./12.; 
 
   sconv=(rho_water/rho_ice);		//rhow_rain/rhoi
 
-  /* FIXME betas shoud be user input */
-  beta1=beta1*(0.001*365)*sconv; // (mm WE)/(d*deg C) --> (m IE)/(a*deg C)
-  beta2=beta2*(0.001*365)*sconv; // (mm WE)/(d*deg C) --> (m IE)/(a*deg C)
+  pdd_fac_snow=pdd_fac_snow*(0.001*365)*sconv; // (mm WE)/(d*deg C) --> (m IE)/(a*deg C)
+  pdd_fac_ice=pdd_fac_ice*(0.001*365)*sconv; // (mm WE)/(d*deg C) --> (m IE)/(a*deg C)
 
   /* initalize fields */
   precip=0.0;
@@ -49,8 +46,7 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
     /********* Surface temperature correction *******/    
     st=(s-s0t)/1000.;
 
-    // FIXME rlaps ??
-	 rlaps=-6.309e-03+(-5.426e-03-(-6.309e-03))*sin((imonth+1-4)*PI/6.0)*1000.0;
+    /******** Monhtly temperature correction *******/
     monthlytemperatures[imonth]=monthlytemperatures[imonth]-rlaps*st;//*max(st,1e-3);
     tstar=monthlytemperatures[imonth]+t_ampl[0];
 
@@ -109,20 +105,20 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
   if(rainfall<0.0) rainfall=0.0;   // negative values
 
   if(rainfall<=(Pmax*snowfall)){
-	  if((rainfall+beta1*pdd)<=(Pmax*snowfall)) {
-		  smelt_star = rainfall+beta1*pdd;
+	  if((rainfall+pdd_fac_snow*pdd)<=(Pmax*snowfall)) {
+		  smelt_star = rainfall+pdd_fac_snow*pdd;
 		  smelt      = 0.0;
 		  runoff     = smelt;
 	  }
 	  else{
 		  smelt_star = Pmax*snowfall;
-		  smelt      = beta2*(pdd-(smelt_star-rainfall)/beta1);
+		  smelt      = pdd_fac_ice*(pdd-(smelt_star-rainfall)/pdd_fac_snow);
 		  runoff     = smelt;
 	  }
   } 
   else{
 	  smelt_star = Pmax*snowfall;
-	  smelt      = beta2*pdd;
+	  smelt      = pdd_fac_ice*pdd;
 	  runoff     = smelt+rainfall-Pmax*snowfall;
   }
 

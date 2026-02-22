@@ -121,7 +121,6 @@ classdef generic_static
 					shellext='csh';
 				end
 
-				disp('launching solution sequence');
 				launchcommand=['source  ' modelname '.queue '];
 				issmssh(cluster.name,'',0,launchcommand);
 			else

@@ -134,6 +134,13 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyBaseEnum);
 	}
 
+	/*Initialize requested outputs in case they are not defined later for this partition*/
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyBasalFluxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,DegreeOfChannelizationEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyMeltRateEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyFrictionHeatEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyDissipationEnum,P0Enum);
+
 	/*Friction*/
 	FrictionUpdateInputs(elements, inputs, iomodel);
 }/*}}}*/
@@ -493,9 +500,8 @@ void           HydrologyShaktiAnalysis::UpdateConstraints(FemModel* femmodel){/*
 				node->Activate(); //Not sure if we need this!
 			}
 			else{
-				IssmDouble phi =  rho_ice*g*thickness[in] + rho_water*g*bed[in]; //FIXME this is correct!
-				node->Deactivate();// Not sure if we need this
-				node->ApplyConstraint(0,phi);
+			   node->Deactivate();// node should be inactive
+            node->ApplyConstraint(0,0.0); // set head (dof 0) to 0.0 m
 			}
 		}
 		xDelete<IssmDouble>(mask);
@@ -708,6 +714,14 @@ void HydrologyShaktiAnalysis::UpdateEffectivePressure(Element* element){/*{{{*/
 
 		N[i] = rho_ice*g*thickness - rho_water*g*(head-bed);
 	}
+
+	/*Set to 0 if inactive element*/
+   if(element->IsAllFloating() || !element->IsIceInElement()){
+      for(int iv=0;iv<numnodes;iv++) N[iv] = 0.;
+      element->AddInput(EffectivePressureEnum,N,P1Enum);
+      xDelete<IssmDouble>(N);
+      return;
+   }
 
 	/*Add new gap as an input*/
 	element->AddBasalInput(EffectivePressureEnum,N,element->GetElementType());

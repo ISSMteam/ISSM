@@ -26,6 +26,8 @@ class SMBpddSicopolis(object):
         self.s0t = np.nan
         self.rlaps = 0
         self.isfirnwarming = 0
+        self.pdd_fac_ice = 0
+        self.pdd_fac_snow = 0
         self.steps_per_step = 1
         self.averaging = 0
         self.requested_outputs = []
@@ -50,7 +52,9 @@ class SMBpddSicopolis(object):
         s += '{}\n'.format(fielddisplay(self, 'desfac', 'desertification elevation factor (default is -log(2.0)/1000)'))
         s += '{}\n'.format(fielddisplay(self, 'isfirnwarming', 'is firnwarming (Reeh 1991) activated (0 or 1, default is 1)'))
         s += '{}\n'.format(fielddisplay(self, 'steps_per_step', 'number of smb steps per time step'))
-        s += '{}\n'.format(fielddisplay(self, 'averaging', 'averaging methods from short to long steps'))
+        s += '{}\n'.format(fielddisplay(self, 'averaging', 'averaging methods from short to long steps'))        
+        s += '{}\n'.format(fielddisplay(self, 'pdd_fac_ice', 'Pdd factor for ice for all the domain [mm ice equiv/day/degree C]'))
+        s += '{}\n'.format(fielddisplay(self, 'pdd_fac_snow', 'Pdd factor for snow for all the domain [mm ice equiv/day/degree C]'))
         s += '\t\t{}\n'.format('0: Arithmetic (default)')
         s += '\t\t{}\n'.format('1: Geometric')
         s += '\t\t{}\n'.format('2: Harmonic')
@@ -100,6 +104,8 @@ class SMBpddSicopolis(object):
         self.isfirnwarming = 1
         self.desfac = -np.log(2.0) / 1000
         self.rlaps = 7.4
+        self.pdd_fac_ice = 7.28
+        self.pdd_fac_snow = 2.73
         self.requested_outputs = ['default']
         return self
     # }}}
@@ -114,6 +120,8 @@ class SMBpddSicopolis(object):
             md = checkfield(md, 'fieldname', 'smb.rlaps', '>=', 0, 'numel', 1)
             md = checkfield(md, 'fieldname', 'smb.monthlytemperatures', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices, 12])
             md = checkfield(md, 'fieldname', 'smb.precipitation', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices, 12])
+            md = checkfield(md, 'fieldname', 'smb.pdd_fac_ice', '>', 0, 'numel', 1)
+            md = checkfield(md, 'fieldname', 'smb.pdd_fac_snow', '>', 0, 'numel', 1)
         md = checkfield(md, 'fieldname', 'smb.steps_per_step', '>=', 1, 'numel', [1])
         md = checkfield(md, 'fieldname', 'smb.averaging', 'numel', [1], 'values', [0, 1, 2])
         md = checkfield(md, 'fieldname', 'smb.requested_outputs', 'stringrow', 1)
@@ -128,6 +136,8 @@ class SMBpddSicopolis(object):
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 's0p', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 's0t', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'rlaps', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'pdd_fac_ice', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'pdd_fac_snow', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'monthlytemperatures', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts)
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'precipitation', 'format', 'DoubleMat', 'mattype', 1, 'scale', 1. / yts, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts)
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'temperature_anomaly', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts)

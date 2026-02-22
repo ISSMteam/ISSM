@@ -1,6 +1,6 @@
 import numpy as np
 
-from math import *
+import math
 
 from checkfield import checkfield
 from fielddisplay import fielddisplay

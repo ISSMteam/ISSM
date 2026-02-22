@@ -95,7 +95,7 @@ elseif strcmpi(format,'Double'), % {{{
 	if(numel(data)~=1), error(['field ' name ' cannot be marshalled as it has more than one element!']); end
 
 	%first write length of record
-	fwrite(fid,8+4,'int64');  %1 double+code
+	fwrite(fid,4+8,'int64');  %1 double+code
 
 	%write data code:
 	fwrite(fid,FormatToCode(format),'int');

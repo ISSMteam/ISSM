@@ -60,6 +60,8 @@ md.smb.isprecipforcingremapped=1
 interpp = NearestNDInterpolator((xe2, ye2), mpoints)
 md.smb.mappedforcingpoint=interpp(xe,ye)
 md.smb.mappedforcingelevation=np.mean(md2.geometry.surface[md2.mesh.elements-1],axis=1)
+md.smb.lapseTaValue=md.smb.lapseTaValue*np.ones(np.shape(md.smb.mappedforcingelevation))
+md.smb.lapsedlwrfValue=md.smb.lapsedlwrfValue*np.ones(np.shape(md.smb.mappedforcingelevation))
 
 #smb settings
 md.smb.requested_outputs = ['SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbEC',
@@ -67,7 +69,7 @@ md.smb.requested_outputs = ['SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','Smb
                             'SmbMeanULW','SmbNetLW','SmbNetSW','SmbWAdd','SmbRunoff','SmbRefreeze','SmbMelt',
                             'SmbEC','SmbPrecipitation','SmbRain','SmbAccumulatedMassBalance','SmbAccumulatedRunoff',
                             'SmbAccumulatedMelt','SmbAccumulatedEC','SmbAccumulatedPrecipitation','SmbAccumulatedRain',
-                            'SmbAccumulatedPrecipitation','SmbAccumulatedRefreeze']
+                            'SmbAccumulatedPrecipitation','SmbAccumulatedRefreeze','SmbTs','SmbT10','SmbT30','SmbT50']
 
 #only run smb core:
 md.transient.isstressbalance = 0
@@ -88,8 +90,8 @@ for i in range(1, len(md.results.TransientSolution)):
     nlayers=np.minimum(md.results.TransientSolution[i].SmbT.shape[1], nlayers)
 
 #Fields and tolerances to track changes
-field_names = ['Layers', 'SmbDz', 'SmbT', 'SmbD', 'SmbRe', 'SmbGdn', 'SmbGsp', 'SmbA', 'SmbEC', 'SmbMassBalance', 'SmbMAdd', 'SmbDzAdd', 'SmbFAC', 'SmbMeanSHF', 'SmbMeanLHF', 'SmbMeanULW', 'SmbNetLW', 'SmbNetSW', 'SmbAccumulatedMassBalance', 'SmbAccumulatedRunoff', 'SmbAccumulatedMelt', 'SmbAccumulatedEC', 'SmbAccumulatedPrecipitation', 'SmbAccumulatedRain', 'SmbAccumulatedRefreeze', 'SmbRunoff', 'SmbMelt', 'SmbEC', 'SmbPrecipitation', 'SmbRain', 'SmbRefreeze', 'SmbWAdd']
-field_tolerances = [1e-12, 4e-11, 2e-11, 3e-11, 6e-11, 8e-11, 8e-11, 1e-12, 5e-11, 2e-12, 1e-12, 1e-12, 4e-11, 2e-11, 5e-11, 1e-11, 9e-10, 2e-11, 1e-11, 9e-10, 2e-11, 2e-09, 1e-11, 1e-11, 1e-11, 8e-10, 2e-11, 2e-11, 1e-11, 1e-11, 2e-11, 1e-11]
+field_names = ['Layers', 'SmbDz', 'SmbT', 'SmbD', 'SmbRe', 'SmbGdn', 'SmbGsp', 'SmbA', 'SmbEC', 'SmbMassBalance', 'SmbMAdd', 'SmbDzAdd', 'SmbFAC', 'SmbMeanSHF', 'SmbMeanLHF', 'SmbMeanULW', 'SmbNetLW', 'SmbNetSW', 'SmbTs', 'SmbT10', 'SmbT30', 'SmbT50', 'SmbAccumulatedMassBalance', 'SmbAccumulatedRunoff', 'SmbAccumulatedMelt', 'SmbAccumulatedEC', 'SmbAccumulatedPrecipitation', 'SmbAccumulatedRain', 'SmbAccumulatedRefreeze', 'SmbRunoff', 'SmbMelt', 'SmbEC', 'SmbPrecipitation', 'SmbRain', 'SmbRefreeze', 'SmbWAdd']
+field_tolerances = [1e-12, 4e-11, 2e-11, 3e-11, 6e-11, 8e-11, 8e-11, 1e-12, 5e-11, 2e-12, 1e-12, 1e-12, 4e-11, 2e-11, 5e-11, 1e-11, 9e-10, 2e-11, 2e-11, 2e-11, 2e-11, 2e-11, 1e-11, 9e-10, 2e-11, 2e-09, 1e-11, 1e-11, 1e-11, 8e-10, 2e-11, 2e-11, 1e-11, 1e-11, 2e-11, 1e-11]
 
 # Shape is different in python solution (fixed using reshape) which can cause test failure
 field_values = [
@@ -111,6 +113,10 @@ field_values = [
     md.results.TransientSolution[-1].SmbMeanULW[0],
     md.results.TransientSolution[-1].SmbNetLW[0],
     md.results.TransientSolution[-1].SmbNetSW[0],
+    md.results.TransientSolution[-1].SmbTs[0],
+    md.results.TransientSolution[-1].SmbT10[0],
+    md.results.TransientSolution[-1].SmbT30[0],
+    md.results.TransientSolution[-1].SmbT50[0],
     md.results.TransientSolution[-1].SmbAccumulatedMassBalance[0],
     md.results.TransientSolution[-1].SmbAccumulatedRunoff[0],
     md.results.TransientSolution[-1].SmbAccumulatedMelt[0],

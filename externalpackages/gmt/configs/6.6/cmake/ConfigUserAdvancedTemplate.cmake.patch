@@ -1,12 +1,5 @@
---- ./src/cmake/ConfigUserAdvancedTemplate.cmake	2024-01-07 01:32:40
-+++ ./ConfigUserAdvancedTemplate.cmake	2024-03-23 11:15:43
-@@ -1,5 +1,5 @@
- #
--# Copyright (c) 1991-2024 by the GMT Team (https://www.generic-mapping-tools.org/team.html)
-+# Copyright (c) 1991-2022 by the GMT Team (https://www.generic-mapping-tools.org/team.html)
- # See LICENSE.TXT file for copying and redistribution conditions.
- #
- # This program is free software; you can redistribute it and/or modify it
+--- src/cmake/ConfigUserAdvancedTemplate.cmake	2026-01-29 12:44:03
++++ src/cmake/ConfigUser.cmake	2026-01-29 12:45:30
 @@ -46,12 +46,12 @@
  #set (GMT_INSTALL_TRADITIONAL_FOLDERNAMES OFF)
  
@@ -28,35 +21,38 @@
  # Set location of NetCDF (can be root directory, path to header file or path
  # to nc-config) [auto]:
 -#set (NETCDF_ROOT "netcdf_install_prefix")
-+set (NETCDF_ROOT "$ENV{NETCDF_ROOT}")
++#set (NETCDF_ROOT "$ENV{NETCDF_ROOT}")
  
  # Set location of GDAL (can be root directory, path to header file or path to
  # gdal-config) [auto]:
 -#set (GDAL_ROOT "gdal_install_prefix")
-+set (GDAL_ROOT "$ENV{GDAL_ROOT}")
++#set (GDAL_ROOT "$ENV{GDAL_ROOT}")
  
  # Set location of GEOS (can be root directory, path to header file or path to
  # geos-config) [auto]:
-@@ -122,14 +122,14 @@
+@@ -122,10 +122,10 @@
  #set (FFTW3_ROOT "fftw_install_prefix")
  
  # Set location of ZLIB (can be root directory or path to header file) [auto]:
 -#set (ZLIB_ROOT "zlib_install_prefix")
-+set (ZLIB_ROOT "$ENV{ZLIB_ROOT}")
++#set (ZLIB_ROOT "$ENV{ZLIB_ROOT}")
  
  # Set location of CURL (can be root directory or path to header file) [auto]:
 -#set (CURL_ROOT "curl_install_prefix")
-+set (CURL_ROOT "$ENV{CURL_ROOT}")
++#set (CURL_ROOT "$ENV{CURL_ROOT}")
+ 
+ # Set location of OpenMP (can be root directory or path to header file) [auto]:
+ # CMake sometimes may fail to find the OpenMP library (libomp) on macOS.
+@@ -133,7 +133,7 @@
  
  # Set location of GLIB component gthread [auto].  This is an optional (and
--# experimental) option which you need to enable or disable:
+ # experimental) option which you need to enable or disable:
 -set (GMT_USE_THREADS TRUE)
-+# experimental) option which you need to enable:
 +#set (GMT_USE_THREADS TRUE)
  # If pkg-config is not installed (e.g. on Windows) you need to specify these:
  #set (GLIB_INCLUDE_DIR c:/path/to/glib-dev/include/glib-2.0)
  #set (GLIB_LIBRARIES c:/path/to/glib-dev/lib/glib-2.0.lib)
-@@ -148,7 +148,7 @@
+@@ -152,7 +152,7 @@
  #set (LICENSE_RESTRICTED GPL)
  
  # Allow building of OpenMP if compiler supports it
@@ -65,7 +61,7 @@
  
  # Configure default units (possible values are SI and US) [SI]:
  #set (UNITS "US")
-@@ -163,7 +163,7 @@
+@@ -167,7 +167,7 @@
  #set (CMAKE_POSITION_INDEPENDENT_CODE TRUE)
  
  # Build GMT shared lib with supplemental modules [TRUE]:
@@ -74,42 +70,3 @@
  
  # Build/Install GMT Developer include files [TRUE]:
  # This installs the extra include files and configured files needed by 3rd-party
-@@ -204,8 +204,9 @@
- #set (DO_SUPPLEMENT_TESTS ON)
- 
- # Uncomment the following line if you need to run the full tests suite using
--# the gmtserver "static" distribution instead of the default server.
--# set (GMT_DATA_SERVER "static")
-+# the gmtserver "test" distribution instead of the default server.
-+# You may wish to rename existing cache and server dirs so you can restore afterwards
-+# set (GMT_DATA_SERVER "test")
- 
- # List extra sub-dirs of 'src' with a CMakeLists.txt to build custom modules
- # that link against the full gmt libs. (For building codes that only need the GMT API,
-@@ -218,8 +219,8 @@
- #set (GMT_RELEASE_PREFIX "release-src-prefix")
- 
- # If set to false, image conversion from PS images to PNG and PDF does
--# not depend on the gmt binary target. It assumes that you already have the
--# gmt executable in your PATH [TRUE].
-+# not depend on the gmt binary target. Note: "make gmt" is then required
-+# before docs_depends [TRUE].
- #set (GMT_DOCS_DEPEND_ON_GMT FALSE)
- 
- #
-@@ -236,14 +237,9 @@
- #	add_definitions(-DDEBUG_MODERN)			# To set PPID == 0 during Xcode test
- #	message("Add Xcode definition for GMT")
- #endif()
--
--# Uncomment if you want to temporarily replace Miller projection with the "Christmas" projection.
--# add_definitions(-DCHRISTMAS)
--# Then, rebuild GMT and try the script share/tools/christmas-cube.sh
--
- # Uncomment these two statements if you are a developer debugging GMT:
- #add_definitions(-DDEBUG)
--#add_definitions(-DMEMDEBUG) # Turn on memory tracking; see gmt_memory .c on MEMDEBUG for information
-+#add_definitions(-DMEMDEBUG) # Turn on memory tracking see gmt_support.c for extra info
- #add_definitions(-DUSE_COMMON_LONG_OPTIONS) 	# Turn on testing of upcoming long-option syntax for common GMT options
- #add_definitions(-DUSE_MODULE_LONG_OPTIONS) 	# Turn on testing of upcoming long-option syntax for module options
- #add_definitions(-DEXPORT_GMTLIB)				# Turn on to access normally un-exported or static gmtlib functions from external tools

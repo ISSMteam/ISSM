@@ -198,7 +198,12 @@ classdef model
 			%2022 Oct 28
 			if ~isa(md.debris,'debris'); md.debris=debris(); end
 			%Mmetransport: Jun 2022:
-			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end;
+			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end
+			% 2026 February 18
+			if isa(md.friction, 'frictionjosh') && md.friction.coefficient_max==0; md.friction.coefficient_max=300; end
+			% 2026 February 20
+			if isa(md.smb, 'SMBpddSicopolis') && md.smb.pdd_fac_ice==0; md.smb.pdd_fac_ice=7.28; end
+			if isa(md.smb, 'SMBpddSicopolis') && md.smb.pdd_fac_snow==0; md.smb.pdd_fac_snow=2.73; end
 		end% }}}
 	end
 	methods

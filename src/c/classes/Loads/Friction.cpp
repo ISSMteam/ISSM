@@ -641,7 +641,7 @@ void Friction::GetAlpha2Josh(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 
 	/*Intermediaries: */
 	IssmDouble  T,Tpmp,deltaT,deltaTref,pressure,diff,drag_coefficient;
-	IssmDouble  alpha2,time,gamma,ref,alp_new,alphascaled;
+	IssmDouble  alpha2,time,gamma,ref,alp_new,alphascaled,max_coefficient;
 	const IssmDouble yts = 365*24*3600.;
 
 	/*Get viscous part*/
@@ -654,6 +654,8 @@ void Friction::GetAlpha2Josh(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	/*element->GetInputValue(&deltaTrefsfc,gauss,FrictionSurfaceTemperatureEnum);
 	 *    element->GetInputValue(&Tpdd,gauss,TemperaturePDDEnum);
 	 *       */
+
+	element->parameters->FindParam(&max_coefficient,FrictionMaxCoefficientEnum);
 
 	/*Compute delta T*/
 	element->GetInputValue(&T,gauss,TemperatureEnum);
@@ -669,7 +671,7 @@ void Friction::GetAlpha2Josh(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	alp_new = ref/exp(deltaT/gamma);
 
 	alphascaled = sqrt(alp_new)*drag_coefficient;
-	if (alphascaled > 300) alp_new = (300/drag_coefficient)*(300/drag_coefficient);
+	if (alphascaled > max_coefficient) alp_new = (max_coefficient/drag_coefficient)*(max_coefficient/drag_coefficient);
 
 	alp_new=alp_new*alpha2;
 
@@ -1419,6 +1421,7 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 		case 9:
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.gamma",FrictionGammaEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coefficient_max",FrictionMaxCoefficientEnum));
 			parameters->AddObject(new IntParam(FrictionCouplingEnum,2));/*comment this line to use effective pressure from Beuler and Pelt (2015)*/
 			break;
 		case 10:
