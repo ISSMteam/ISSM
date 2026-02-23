@@ -689,10 +689,16 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	IssmDouble  drag_coefficient;
 	IssmDouble  alpha2;
 
+	IssmDouble  haf_limit;
+	bool        ishaf;
+
 	/*Recover parameters: */
 	element->GetInputValue(&drag_p,gauss,FrictionPEnum);
 	element->GetInputValue(&drag_q,gauss,FrictionQEnum);
 	element->GetInputValue(&drag_coefficient, gauss,FrictionCoefficientEnum);
+
+	element->parameters->FindParam(&ishaf,FrictionIsHafEnum);
+	element->parameters->FindParam(&haf_limit,FrictionHafLimitEnum);
 
 	/*compute r and q coefficients: */
 	r=drag_q/drag_p;
@@ -716,6 +722,15 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	else{
 		/*Compute effective pressure directly*/
 		Neff = EffectivePressure(gauss);
+	}
+
+	/*Applying reduced effective pressure*/
+	if (ishaf){
+		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
+		element->GetInputValue(&haf, gauss, MaskOceanLevelsetEnum);
+		if ((haf < haf_limit) & (haf >= 0.0)){
+			Neff = (haf/haf_limit)*Neff;
+		}
 	}
 
 	/*Check to prevent dividing by zero if vmag==0*/
@@ -1393,6 +1408,8 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.ishaf",FrictionIsHafEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.haf_limit",FrictionHafLimitEnum));
 			break;
 		case 2:
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));

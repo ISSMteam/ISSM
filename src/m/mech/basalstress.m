@@ -55,6 +55,16 @@ switch(class(md.friction))
 
 		alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
 
+		%Now applying above flotation method
+		if md.friction.ishaf
+			haf = md.geometry.thickness + md.materials.rho_water/md.materials.rho_ice*md.geometry.bed;
+			lambda = ones(size(alpha2));
+			pos = (haf < md.friction.haf_limit) & (haf > 0);
+			lambda(pos) = haf(pos)/md.friction.haf_limit;
+
+			alpha2 = lambda.*alpha2;
+		end
+
 	case 'frictionschoof'
 		if any(N < 0)
 			%NOTE: Sometimes, negative value of effective pressure N gives image number in alpha2. To prevent the image value in alpha2, we use small values.

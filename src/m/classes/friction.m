@@ -12,6 +12,8 @@ classdef friction
 		linearize                = 0;
 		effective_pressure       = NaN;
 		effective_pressure_limit = 0;
+		ishaf                    = 0;
+		haf_limit                = 0;
 	end
 	methods
 		function self = extrude(self,md) % {{{
@@ -37,6 +39,8 @@ classdef friction
 			self.linearize = 0;
 			self.coupling  = 0;
 			self.effective_pressure_limit = 0;
+			self.ishaf     = 0;
+			self.haf_limit = 40;
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -54,6 +58,10 @@ classdef friction
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
 			end
+			md = checkfield(md,'fieldname','friction.ishaf','numel',[1],'values',[0,1]);
+			if md.friction.ishaf
+				md = checkfield(md,'fieldname','friction.haf_limit','numel',[1],'>=',0);
+			end
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('Basal shear stress parameters: Sigma_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)'));
@@ -64,6 +72,9 @@ classdef friction
 			fielddisplay(self,'linearize','0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)');
 			fielddisplay(self,'effective_pressure','Effective Pressure for the forcing if not coupled [Pa]');
 			fielddisplay(self,'effective_pressure_limit','Neff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)');
+            % TODO: Update to explain following variable
+			fielddisplay(self,'ishaf','Compute reduced friction coefficient near groundingline near grounding line. (default: 0). (See also Joughin et al. (2010), Jougin et al. (2019) document)');
+			fielddisplay(self,'haf_limit','Limit of height above flotation. If friction.ishaf is 1, compute reduced friction coefficient based on haf_limit.');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			WriteData(fid,prefix,'name','md.friction.law','data',1,'format','Integer');
@@ -83,6 +94,9 @@ classdef friction
 			if self.coupling==3 || self.coupling==4
 				WriteData(fid,prefix,'class','friction','object',self,'fieldname','effective_pressure','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			end
+			WriteData(fid,prefix,'object',self,'fieldname','ishaf','format','Boolean');
+			%TODO: Just write "haf_limit" value in friction
+			WriteData(fid,prefix,'object',self,'fieldname','haf_limit','format','Double');
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 		
@@ -93,6 +107,8 @@ classdef friction
 			writejs1Darray(fid,[modelname '.friction.linearize'],self.linearize);
 			writejs1Darray(fid,[modelname '.friction.effective_pressure'],self.effective_pressure);
 			writejs1Darray(fid,[modelname '.friction.effective_pressure_limit'],self.effective_pressure_limit);
+			writejs1Darray(fid,[modelname '.friction.ishaf'],self.ishaf);
+			writejs1Darray(fid,[modelname '.friction.haf_limit'],self.haf_limit);
 		end % }}}
 	end
 end

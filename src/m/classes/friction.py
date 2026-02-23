@@ -21,6 +21,8 @@ class friction(object):
         self.linearize = 0
         self.effective_pressure = np.nan
         self.effective_pressure_limit = 0
+        self.ishaf = 0
+        self.haf_limit = 0
         self.setdefaultparameters()
     # }}}
     def __repr__(self):  # {{{
@@ -33,12 +35,17 @@ class friction(object):
         s += '{}\n'.format(fielddisplay(self, 'linearize', '0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)'))
         s += '{}\n'.format(fielddisplay(self, 'effective_pressure', 'Effective Pressure for the forcing if not coupled [Pa]'))
         s += '{}\n'.format(fielddisplay(self, 'effective_pressure_limit', 'Neff do not allow to fall below a certain limit: effective_pressure_limit * rho_ice * g * thickness (default 0)'))
+        # TODO: Update to explain following variable
+        s += '{}\n'.format(fielddisplay(self, 'ishaf', 'Compute reduced friction coefficient near groundingline near grounding line. (default: 0). (See also Joughin et al. (2010), Jougin et al. (2019) document)'))
+        s += '{}\n'.format(fielddisplay(self, 'haf_limit', 'Limit of height above flotation. If friction.ishaf is 1, compute reduced friction coefficient based on haf_limit [m]. (default: 40)'))
         return s
     # }}}
     def setdefaultparameters(self):  # {{{
         self.linearize = 0
         self.coupling = 0
         self.effective_pressure_limit = 0
+        self.ishaf    = 0
+        self.haf_limit= 40
         return self
     # }}}
     def extrude(self, md):  # {{{
@@ -67,6 +74,9 @@ class friction(object):
         md = checkfield(md, 'fieldname', 'friction.effective_pressure_limit', 'numel', [1], '>=', 0)
         if self.coupling == 3:
             md = checkfield(md, 'fieldname', 'friction.effective_pressure', 'NaN', 1, 'Inf', 1, 'timeseries', 1)
+        md = checkfield(md,'fieldname','friction.ishaf','numel',[1],'values',[0,1])
+        if md.friction.ishaf:
+            md = checkfield(md,'fieldname','friction.haf_limit','numel',[1],'>=',0)
         return md
     # }}}
     def marshall(self, prefix, md, fid):  # {{{
@@ -85,4 +95,7 @@ class friction(object):
         WriteData(fid, prefix, 'object', self, 'class', 'friction', 'fieldname', 'effective_pressure_limit', 'format', 'Double')
         if self.coupling == 3 or self.coupling == 4:
             WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'effective_pressure', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
+        WriteData(fid,prefix,'object',self,'fieldname','ishaf','format','Boolean')
+        #TODO: Just write "haf_limit" value in friction
+        WriteData(fid,prefix,'object',self,'fieldname','haf_limit','format','Double')
     # }}}

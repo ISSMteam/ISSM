@@ -212,6 +212,8 @@ syn keyword juliaConstC FrictionDNNOutputScaleEnum
 syn keyword juliaConstC FrictionEffectivePressureLimitEnum
 syn keyword juliaConstC FrictionFEnum
 syn keyword juliaConstC FrictionGammaEnum
+syn keyword juliaConstC FrictionHafLimitEnum
+syn keyword juliaConstC FrictionIsHafEnum
 syn keyword juliaConstC FrictionLawEnum
 syn keyword juliaConstC FrictionLinearizeEnum
 syn keyword juliaConstC FrictionMaxCoefficientEnum
@@ -3521,7 +3523,6 @@ syn keyword juliaConstC HydrologydcEnum
 syn keyword juliaConstC HydrologypismEnum
 syn keyword juliaConstC HydrologyshaktiEnum
 syn keyword juliaConstC HydrologyshreveEnum
-syn keyword juliaConstC HydrologyPrescribeEnum
 syn keyword juliaConstC IceMassEnum
 syn keyword juliaConstC IceMassScaledEnum
 syn keyword juliaConstC IceVolumeAboveFloatationEnum

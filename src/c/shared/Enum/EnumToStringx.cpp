@@ -221,6 +221,8 @@ const char* EnumToStringx(int en){
 		case FrictionEffectivePressureLimitEnum : return "FrictionEffectivePressureLimit";
 		case FrictionFEnum : return "FrictionF";
 		case FrictionGammaEnum : return "FrictionGamma";
+		case FrictionHafLimitEnum : return "FrictionHafLimit";
+		case FrictionIsHafEnum : return "FrictionIsHaf";
 		case FrictionLawEnum : return "FrictionLaw";
 		case FrictionLinearizeEnum : return "FrictionLinearize";
 		case FrictionMaxCoefficientEnum : return "FrictionMaxCoefficient";
@@ -3530,7 +3532,6 @@ const char* EnumToStringx(int en){
 		case HydrologypismEnum : return "Hydrologypism";
 		case HydrologyshaktiEnum : return "Hydrologyshakti";
 		case HydrologyshreveEnum : return "Hydrologyshreve";
-		case HydrologyPrescribeEnum : return "HydrologyPrescribe";
 		case IceMassEnum : return "IceMass";
 		case IceMassScaledEnum : return "IceMassScaled";
 		case IceVolumeAboveFloatationEnum : return "IceVolumeAboveFloatation";

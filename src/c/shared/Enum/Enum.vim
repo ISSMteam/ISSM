@@ -219,6 +219,8 @@ syn keyword cConstant FrictionDNNOutputScaleEnum
 syn keyword cConstant FrictionEffectivePressureLimitEnum
 syn keyword cConstant FrictionFEnum
 syn keyword cConstant FrictionGammaEnum
+syn keyword cConstant FrictionHafLimitEnum
+syn keyword cConstant FrictionIsHafEnum
 syn keyword cConstant FrictionLawEnum
 syn keyword cConstant FrictionLinearizeEnum
 syn keyword cConstant FrictionMaxCoefficientEnum
@@ -3528,7 +3530,6 @@ syn keyword cConstant HydrologydcEnum
 syn keyword cConstant HydrologypismEnum
 syn keyword cConstant HydrologyshaktiEnum
 syn keyword cConstant HydrologyshreveEnum
-syn keyword cConstant HydrologyPrescribeEnum
 syn keyword cConstant IceMassEnum
 syn keyword cConstant IceMassScaledEnum
 syn keyword cConstant IceVolumeAboveFloatationEnum
