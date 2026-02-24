@@ -174,10 +174,10 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
         if is2d:
             if np.ma.is_masked(data):
                 if hasattr(np, 'isin'): #Numpy 2017+
-                    tmp = np.isin(index, np.where(data.mask))
+                    tmp = np.isin(range(len(data)), np.where(data.mask))
                 else: #For backward compatibility
-                    tmp = np.in1d(index, np.where(data.mask))
-                EltMask = np.asarray([np.any(tmp) for index in elements])
+                    tmp = np.in1d(range(len(data)), np.where(data.mask))
+                EltMask = np.asarray([np.any(tmp[index]) for index in elements])
                 triangles = mpl.tri.Triangulation(x, y, elements, EltMask)
             else:
                 triangles = mpl.tri.Triangulation(x, y, elements)
