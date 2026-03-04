@@ -18,10 +18,10 @@ def InterpFromMeshToMesh3d(index, x, y, z, data, x_prime, y_prime, z_prime, defa
     """
 
     # Check usage
-    nargs = len(args)
-    if nargs != 9:
-        print(InterpFromMeshToMesh3d.__doc__)
-        raise Exception('Wrong usage (see above)')
+    #nargs = len(args)
+    #if nargs != 9:
+    #    print(InterpFromMeshToMesh3d.__doc__)
+    #    raise Exception('Wrong usage (see above)')
 
     # Call Python module
     data_prime = InterpFromMeshToMesh3d_python(index, x, y, z, data, x_prime, y_prime, z_prime, default_value)
