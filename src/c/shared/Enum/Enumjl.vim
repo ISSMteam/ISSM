@@ -3514,6 +3514,7 @@ syn keyword juliaConstC HydrologyGlaDSEnum
 syn keyword juliaConstC HydrologyPismAnalysisEnum
 syn keyword juliaConstC HydrologyShaktiAnalysisEnum
 syn keyword juliaConstC HydrologyShreveAnalysisEnum
+syn keyword juliaConstC HydrologyPrescribeAnalysisEnum
 syn keyword juliaConstC HydrologySolutionEnum
 syn keyword juliaConstC HydrologySubstepsEnum
 syn keyword juliaConstC HydrologySubTimeEnum
@@ -3521,6 +3522,7 @@ syn keyword juliaConstC HydrologydcEnum
 syn keyword juliaConstC HydrologypismEnum
 syn keyword juliaConstC HydrologyshaktiEnum
 syn keyword juliaConstC HydrologyshreveEnum
+syn keyword juliaConstC HydrologyprescribeEnum
 syn keyword juliaConstC IceMassEnum
 syn keyword juliaConstC IceMassScaledEnum
 syn keyword juliaConstC IceVolumeAboveFloatationEnum
