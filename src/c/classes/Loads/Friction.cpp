@@ -1422,6 +1422,8 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.gamma",FrictionGammaEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.ishaf",FrictionIsHafEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.haf_limit",FrictionHafLimitEnum));
 			break;
 		case 5:
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.f",FrictionFEnum));
