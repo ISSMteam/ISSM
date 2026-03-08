@@ -75,62 +75,76 @@ def plotmodel(md, *args):
         if plotnum == 1:
             plotnum = None
 
-        # NOTE: The inline comments for each of the following parameters are
-        #       taken from https://matplotlib.org/api/_as_gen/mpl_toolkits.axes_grid1.axes_grid.ImageGrid.html
-        #
-        direction = options.list[0].getfieldvalue('direction', 'row')  # {"row", "column"}, default: "row"
-        axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)  # float or (float, float), default : 0.02; Padding or (horizonal padding, vertical padding) between axes, in inches
-        add_all = options.list[0].getfieldvalue('add_all', True)  # bool, default: True
-        share_all = options.list[0].getfieldvalue('share_all', True)  # bool, default: False
-        label_mode = options.list[0].getfieldvalue('label_mode', 'L')  # {"L", "1", "all"}, default: "L"; Determines which axes will get tick labels: "L": All axes on the left column get vertical tick labels; all axes on the bottom row get horizontal tick labels;. "1": Only the bottom left axes is labelled. "all": all axes are labelled.
+        if options.list[0].getfieldvalue('use_subplots',0):
+            #TODO: Make this section to perform exactly same as "ImageGrid".
 
-        # Translate MATLAB colorbar mode to matplotlib
-        #
-        # TODO:
-        # - Add 'edge' option (research if there is a corresponding option in
-        #   MATLAB)?
-        #
-        colorbar = options.list[0].getfieldvalue('colorbar', 'on')  # on, off (single)
+            #NOTE: This section force "plotmodel" to work original code.
+            share_all = options.list[0].getfieldvalue('share_all',True)
 
-        if colorbar == 'on':
-            colorbar = 'each'
-        elif colorbar == 'one':
-            colorbar = 'single'
-        elif colorbar == 'off':
-            colorbar = None
+            #Make axgrid using "subplots"
+            axgrid = fig.subplots(nrows, ncols,
+                                  sharex=share_all,sharey=share_all,
+                                  squeeze=True)
+            axgrid = axgrid.flatten() # flattening...
         else:
-            raise RuntimeError('plotmodel error: colorbar mode \'{}\' is not a valid option'.format(colorbar))
+            # NOTE: The inline comments for each of the following parameters are
+            #       taken from https://matplotlib.org/api/_as_gen/mpl_toolkits.axes_grid1.axes_grid.ImageGrid.html
+            #
+            direction = options.list[0].getfieldvalue('direction', 'row')  # {"row", "column"}, default: "row"
+            axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)  # float or (float, float), default : 0.02; Padding or (horizonal padding, vertical padding) between axes, in inches
+            add_all = options.list[0].getfieldvalue('add_all', True)  # bool, default: True
+            share_all = options.list[0].getfieldvalue('share_all', True)  # bool, default: False
+            label_mode = options.list[0].getfieldvalue('label_mode', 'L')  # {"L", "1", "all"}, default: "L"; Determines which axes will get tick labels: "L": All axes on the left column get vertical tick labels; all axes on the bottom row get horizontal tick labels;. "1": Only the bottom left axes is labelled. "all": all axes are labelled.
 
-        cbar_mode = colorbar # {"each", "single", "edge", None }, default: None
-        cbar_location = options.list[0].getfieldvalue('colorbarpos', 'right') # {"left", "right", "bottom", "top"}, default: "right"
-        cbar_pad = options.list[0].getfieldvalue('colorbarpad', 0.025) # float, default: None
-        cbar_size = options.list[0].getfieldvalue('colorbarsize', '5%') # size specification (see Size.from_any), default: "5%"
+            # Translate MATLAB colorbar mode to matplotlib
+            #
+            # TODO:
+            # - Add 'edge' option (research if there is a corresponding option in
+            #   MATLAB)?
+            #
+            colorbar = options.list[0].getfieldvalue('colorbar', 'on')  # on, off (single)
 
-        # NOTE: Second parameter is:
-        #
-        #   rect(float, float, float, float) or int
-        #
-        # The axes position, as a (left, bottom, width, height) tuple or as a
-        # three-digit subplot position code (e.g., "121").
-        #
-        axgrid = ImageGrid(
-            fig,
-            111,
-            nrows_ncols=(nrows, ncols),
-            direction=direction,
-            axes_pad=axes_pad,
-            share_all=share_all,
-            label_mode=label_mode,
-            cbar_mode=cbar_mode,
-            cbar_location=cbar_location,
-            cbar_size=cbar_size,
-            cbar_pad=cbar_pad
-        )
+            if colorbar == 'on':
+                colorbar = 'each'
+            elif colorbar == 'one':
+                colorbar = 'single'
+            elif colorbar == 'off':
+                colorbar = None
+            else:
+                raise RuntimeError('plotmodel error: colorbar mode \'{}\' is not a valid option'.format(colorbar))
 
-        if cbar_mode == 'None':
-            for ax in axgrid.cbar_axes:
-                fig._axstack.remove(ax)
-        for i, ax in enumerate(axgrid.axes_all):
+            cbar_mode = colorbar # {"each", "single", "edge", None }, default: None
+            cbar_location = options.list[0].getfieldvalue('colorbarpos', 'right') # {"left", "right", "bottom", "top"}, default: "right"
+            cbar_pad = options.list[0].getfieldvalue('colorbarpad', 0.025) # float, default: None
+            cbar_size = options.list[0].getfieldvalue('colorbarsize', '5%') # size specification (see Size.from_any), default: "5%"
+
+            # NOTE: Second parameter is:
+            #
+            #   rect(float, float, float, float) or int
+            #
+            # The axes position, as a (left, bottom, width, height) tuple or as a
+            # three-digit subplot position code (e.g., "121").
+            #
+            axgrid = ImageGrid(
+                fig,
+                111,
+                nrows_ncols=(nrows, ncols),
+                direction=direction,
+                axes_pad=axes_pad,
+                share_all=share_all,
+                label_mode=label_mode,
+                cbar_mode=cbar_mode,
+                cbar_location=cbar_location,
+                cbar_size=cbar_size,
+                cbar_pad=cbar_pad
+            )
+
+            if cbar_mode == 'None':
+                for ax in axgrid.cbar_axes:
+                    fig._axstack.remove(ax)
+
+        #for i, ax in enumerate(axgrid.axes_all):
+        for i in range(len(axgrid)):
             try:
                 plot_manager(options.list[i].getfieldvalue('model', md), options.list[i], fig, axgrid, i)
             except KeyError:

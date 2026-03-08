@@ -7,7 +7,7 @@ function out = interpStal2020(X,Y)
 switch oshostname(),
 	case {'amundsen.thayer.dartmouth.edu'}
 		gtfpath='/local/ModelData/GeothermalFluxAntarcticaStal/aq1_01_20.nc';
-	case {'thwaites','larsen','murdo','astrid'}
+	case {'thwaites','larsen','murdo','astrid','wilkins.jpl.nasa.gov'}
 		gtfpath='/u/astrid-r1b/ModelData/StalGeothermalFlux2020/aq1_01_20.nc';
 	otherwise
 		error('machine not supported yet');
