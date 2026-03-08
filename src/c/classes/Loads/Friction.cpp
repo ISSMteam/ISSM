@@ -244,10 +244,16 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 	IssmDouble  drag_coefficient;
 	IssmDouble  alpha_complement;
 
+	IssmDouble  haf_limit;
+	bool        ishaf;
+
 	/*Recover parameters: */
 	element->GetInputValue(&drag_p,gauss,FrictionPEnum);
 	element->GetInputValue(&drag_q,gauss,FrictionQEnum);
 	element->GetInputValue(&drag_coefficient, gauss,FrictionCoefficientEnum);
+
+	element->parameters->FindParam(&ishaf,FrictionIsHafEnum);
+	element->parameters->FindParam(&haf_limit,FrictionHafLimitEnum);
 
 	/*compute r and q coefficients: */
 	r=drag_q/drag_p;
@@ -265,6 +271,15 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 		/*Check to prevent dividing by zero if vmag==0*/
 		if(vmag==0. && (s-1.)<0.) alpha_complement=0.;
 		else alpha_complement=pow(Neff,r)*pow(vmag,(s-1.));
+	}
+
+	/*Applying reduced effective pressure*/
+	if (ishaf){
+		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
+		element->GetInputValue(&haf, gauss, MaskOceanLevelsetEnum);
+		if ((haf < haf_limit) & (haf >= 0.0)){
+			Neff = (haf/haf_limit)*Neff;
+		}
 	}
 
 	/*Assign output pointers:*/
