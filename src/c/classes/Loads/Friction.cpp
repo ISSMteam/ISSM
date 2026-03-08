@@ -275,8 +275,15 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 
 	/*Applying reduced effective pressure*/
 	if (ishaf){
+		IssmDouble  rho_freshwater, rho_ice;
+		IssmDouble  thickness;
+		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
-		element->GetInputValue(&haf, gauss, MaskOceanLevelsetEnum);
+		element->parameters->FindParam(&rho_freshwater, MaterialsRhoFreshwaterEnum);
+		element->parameters->FindParam(&rho_ice, MaterialsRhoIce);
+		element->GetInputValue(&thickness, gauss, ThicknessEnum);
+		element->GetInputValue(&zb, gauss, BedEnum);
+		haf = thickness + zb * rho_freshwater / rho_ice;
 		if ((haf < haf_limit) & (haf >= 0.0)){
 			Neff = (haf/haf_limit)*Neff;
 		}
@@ -741,8 +748,15 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 
 	/*Applying reduced effective pressure*/
 	if (ishaf){
+		IssmDouble  rho_freshwater, rho_ice;
+		IssmDouble  thickness;
+		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
-		element->GetInputValue(&haf, gauss, MaskOceanLevelsetEnum);
+		element->parameters->FindParam(&rho_freshwater, MaterialsRhoFreshwaterEnum);
+		element->parameters->FindParam(&rho_ice, MaterialsRhoIce);
+		element->GetInputValue(&thickness, gauss, ThicknessEnum);
+		element->GetInputValue(&zb, gauss, BedEnum);
+		haf = thickness + zb * rho_freshwater / rho_ice;
 		if ((haf < haf_limit) & (haf >= 0.0)){
 			Neff = (haf/haf_limit)*Neff;
 		}
