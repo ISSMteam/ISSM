@@ -12,6 +12,8 @@ classdef frictiontemp
 		coupling    = 0;
 		effective_pressure = NaN;
 		effective_pressure_limit = 0;
+		ishaf       = 0;
+		haf_limit   = 0;
 	end
 	methods
 		function self = extrude(self,md) % {{{
@@ -47,6 +49,9 @@ classdef frictiontemp
 			self.coupling = 0;
 			self.effective_pressure_limit = 0;
 
+			self.ishaf = 0;
+			self.haf_limit = 40;
+
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -61,6 +66,11 @@ classdef frictiontemp
 
 			%Check that temperature is provided
 			md = checkfield(md,'fieldname','initialization.temperature','NaN',1,'Inf',1,'size','universal');
+
+			md = checkfield(md,'fieldname','friction.ishaf','numel',[1],'values',[0,1]);
+			if md.friction.ishaf
+				md = checkfield(md,'fieldname','friction.haf_limit','numel',[1],'>=',0);
+			end
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('Basal shear stress parameters: tau_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b * 1/f(T)\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)'));
@@ -71,6 +81,10 @@ classdef frictiontemp
 			fielddisplay(self,'effective_pressure','Effective Pressure for the forcing if not coupled [Pa]');
 			fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: used coupled model (not implemented yet)');
 			fielddisplay(self,'effective_pressure_limit','Neff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)');
+
+         % TODO: Update to explain following variable
+			fielddisplay(self,'ishaf','Compute reduced friction coefficient near groundingline near grounding line. (default: 0). (See also Joughin et al. (2010), Jougin et al. (2019) document)');
+			fielddisplay(self,'haf_limit','Limit of height above flotation. If friction.ishaf is 1, compute reduced friction coefficient based on haf_limit.');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
@@ -92,6 +106,9 @@ classdef frictiontemp
 				otherwise
 					error('not supported yet');
 			end
+			WriteData(fid,prefix,'object',self,'fieldname','ishaf','format','Boolean');
+			%TODO: Just write "haf_limit" value in friction
+			WriteData(fid,prefix,'object',self,'fieldname','haf_limit','format','Double');
 		end % }}}
 	end
 end
