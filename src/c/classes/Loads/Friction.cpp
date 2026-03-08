@@ -280,7 +280,7 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
 		element->parameters->FindParam(&rho_freshwater, MaterialsRhoFreshwaterEnum);
-		element->parameters->FindParam(&rho_ice, MaterialsRhoIce);
+		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BedEnum);
 		haf = thickness + zb * rho_freshwater / rho_ice;
@@ -753,7 +753,7 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
 		element->parameters->FindParam(&rho_freshwater, MaterialsRhoFreshwaterEnum);
-		element->parameters->FindParam(&rho_ice, MaterialsRhoIce);
+		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BedEnum);
 		haf = thickness + zb * rho_freshwater / rho_ice;
