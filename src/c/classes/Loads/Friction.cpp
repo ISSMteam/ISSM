@@ -283,7 +283,7 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BaseEnum);
-		haf = thickness + zb * rho_freshwater / rho_ice;
+		haf = thickness + zb * rho_water / rho_ice;
 		if ((haf < haf_limit) & (haf >= 0.0)){
 			Neff = (haf/haf_limit)*Neff;
 		}
@@ -756,7 +756,7 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BaseEnum);
-		haf = thickness + zb * rho_freshwater / rho_ice;
+		haf = thickness + zb * rho_water/ rho_ice;
 		if ((haf < haf_limit) & (haf >= 0.0)){
 			Neff = (haf/haf_limit)*Neff;
 		}
