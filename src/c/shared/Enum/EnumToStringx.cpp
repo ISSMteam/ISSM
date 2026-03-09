@@ -468,6 +468,7 @@ const char* EnumToStringx(int en){
 		case SamplingRobinEnum : return "SamplingRobin";
 		case SamplingSeedEnum : return "SamplingSeed";
 		case SaveResultsEnum : return "SaveResults";
+		case SaveFinalResultsEnum : return "SaveFinalResults";
 		case SolidearthPartitionIceEnum : return "SolidearthPartitionIce";
 		case SolidearthPartitionHydroEnum : return "SolidearthPartitionHydro";
 		case SolidearthPartitionOceanEnum : return "SolidearthPartitionOcean";
