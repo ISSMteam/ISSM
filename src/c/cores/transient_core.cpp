@@ -24,6 +24,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts;
+	bool       save_final_results;
 	bool       iscontrol,isautodiff;
 	int        timestepping;
 	int        output_frequency,checkpoint_frequency;
@@ -48,6 +49,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&amr_frequency,TransientAmrFrequencyEnum);
 	femmodel->parameters->FindParam(&iscontrol,InversionIscontrolEnum);
 	femmodel->parameters->FindParam(&isautodiff,AutodiffIsautodiffEnum);
+	femmodel->parameters->FindParam(&save_final_results,SaveFinalResultsEnum);
 
 	/*call modules that are not dependent on time stepping:*/
 	transient_precore(femmodel);
@@ -83,8 +85,9 @@ void transient_core(FemModel* femmodel){/*{{{*/
 			_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
 						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
 		}
-		bool save_results=false;
-		if(step%output_frequency==0 || (time >= finaltime - (yts*DBL_EPSILON)) || step==1) save_results=true;
+		const bool save_results = step==1 //save first step
+		                       || step%output_frequency==0 //save at regular intervals
+		                       || (save_final_results && time >= finaltime - (yts*DBL_EPSILON)); //save last step (optional)
 		femmodel->parameters->SetParam(save_results,SaveResultsEnum);
 
 		/*Run transient step!*/

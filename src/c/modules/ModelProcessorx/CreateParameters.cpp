@@ -326,6 +326,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 
 	/*By default, save all results*/
 	parameters->AddObject(new BoolParam(SaveResultsEnum,true));
+	
+	/*Option to not save results after the final time step, e.g. for external coupling*/
+	parameters->AddObject(new BoolParam(SaveFinalResultsEnum,true));
 
 	/*Should we output results on nodes?*/
 	iomodel->FindConstant(&outputonnodes,&numoutputs,"md.settings.results_on_nodes");
