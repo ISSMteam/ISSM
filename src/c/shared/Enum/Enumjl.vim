@@ -311,6 +311,7 @@ syn keyword juliaConstC HydrologyStepAdaptEnum
 syn keyword juliaConstC HydrologydcTransferFlagEnum
 syn keyword juliaConstC HydrologydcUnconfinedFlagEnum
 syn keyword juliaConstC HydrologyshreveStabilizationEnum
+syn keyword juliaConstC HydrologyshaktiIsBasalforcingEnum
 syn keyword juliaConstC IcecapToEarthCommEnum
 syn keyword juliaConstC IndexEnum
 syn keyword juliaConstC InputFileNameEnum

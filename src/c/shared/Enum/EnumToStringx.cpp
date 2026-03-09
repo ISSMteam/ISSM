@@ -320,6 +320,7 @@ const char* EnumToStringx(int en){
 		case HydrologydcTransferFlagEnum : return "HydrologydcTransferFlag";
 		case HydrologydcUnconfinedFlagEnum : return "HydrologydcUnconfinedFlag";
 		case HydrologyshreveStabilizationEnum : return "HydrologyshreveStabilization";
+		case HydrologyshaktiIsBasalforcingEnum : return "HydrologyshaktiIsBasalforcing";
 		case IcecapToEarthCommEnum : return "IcecapToEarthComm";
 		case IndexEnum : return "Index";
 		case InputFileNameEnum : return "InputFileName";
