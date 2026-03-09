@@ -48,7 +48,7 @@ class hydrologyshakti(object):
         s += '{}\n'.format(fielddisplay(self, 'spchead', 'water head constraints (NaN means no constraint) (m)'))
         s += '{}\n'.format(fielddisplay(self, 'relaxation', 'under - relaxation coefficient for nonlinear iteration'))
         s += '{}\n'.format(fielddisplay(self, 'storage', 'englacial storage coefficient (void ratio)'))
-        s += '{}\n'.format(fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2019), 1: use md.basalforcings.grounded_melting_rate'))
+        s += '{}\n'.format(fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2018), 1: use md.basalforcings.grounded_melting_rate'))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         return s
     # }}}

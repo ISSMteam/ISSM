@@ -94,7 +94,7 @@ classdef hydrologyshakti
 			fielddisplay(self,'spchead','water head constraints (NaN means no constraint) (m)');
 			fielddisplay(self,'relaxation','under-relaxation coefficient for nonlinear iteration');
 			fielddisplay(self,'storage','englacial storage coefficient (void ratio)');
-			fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2019), 1: use md.basalforcings.grounded_melting_rate');
+			fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2018), 1: use md.basalforcings.grounded_melting_rate');
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
