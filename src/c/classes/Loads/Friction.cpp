@@ -279,14 +279,19 @@ void Friction::GetAlphaBuddComplement(IssmDouble* palpha_complement, Gauss* gaus
 		IssmDouble  thickness;
 		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
+		IssmDouble  gamma; /* HAF-scaling factor = haf / haf_limit */
+
 		element->parameters->FindParam(&rho_water, MaterialsRhoSeawaterEnum);
 		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BaseEnum);
+
 		haf = thickness + zb * rho_water / rho_ice;
-		if ((haf < haf_limit) & (haf >= 0.0)){
-			Neff = (haf/haf_limit)*Neff;
-		}
+		gamma = haf/haf_limit;
+		if (haf > haf_limit) gamma = 1.0;
+		if (haf < 0) gamma = 0.0;
+
+		Neff = gamma*Neff;
 	}
 
 	/*Assign output pointers:*/
@@ -752,14 +757,18 @@ void Friction::GetAlpha2Budd(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 		IssmDouble  thickness;
 		IssmDouble  zb;
 		IssmDouble  haf; /* OceanLevelset maybe "ice_thickness +  z_b * rho_w / rho_i" */
+		IssmDouble  gamma; /* HAF-scaling factor = haf / haf_limit */
+
 		element->parameters->FindParam(&rho_water, MaterialsRhoSeawaterEnum);
 		element->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
 		element->GetInputValue(&thickness, gauss, ThicknessEnum);
 		element->GetInputValue(&zb, gauss, BaseEnum);
 		haf = thickness + zb * rho_water/ rho_ice;
-		if ((haf < haf_limit) & (haf >= 0.0)){
-			Neff = (haf/haf_limit)*Neff;
-		}
+		gamma = haf/haf_limit;
+
+		if (haf > haf_limit) gamma = 1.0;
+		if (haf < 0) gamma = 0.0;
+		Neff = gamma*Neff;
 	}
 
 	/*Check to prevent dividing by zero if vmag==0*/
