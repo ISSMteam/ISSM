@@ -307,7 +307,6 @@
 	HydrologydcTransferFlagEnum
 	HydrologydcUnconfinedFlagEnum
 	HydrologyshreveStabilizationEnum
-	HydrologyshaktiIsBasalforcingEnum
 	IcecapToEarthCommEnum
 	IndexEnum
 	InputFileNameEnum
@@ -4087,7 +4086,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologydcTransferFlagEnum) return "HydrologydcTransferFlag" end
 	if(enum==HydrologydcUnconfinedFlagEnum) return "HydrologydcUnconfinedFlag" end
 	if(enum==HydrologyshreveStabilizationEnum) return "HydrologyshreveStabilization" end
-	if(enum==HydrologyshaktiIsBasalforcingEnum) return "HydrologyshaktiIsBasalforcing" end
 	if(enum==IcecapToEarthCommEnum) return "IcecapToEarthComm" end
 	if(enum==IndexEnum) return "Index" end
 	if(enum==InputFileNameEnum) return "InputFileName" end
@@ -7867,7 +7865,6 @@ function StringToEnum(name::String)
 	if(name=="HydrologydcTransferFlag") return HydrologydcTransferFlagEnum  end
 	if(name=="HydrologydcUnconfinedFlag") return HydrologydcUnconfinedFlagEnum  end
 	if(name=="HydrologyshreveStabilization") return HydrologyshreveStabilizationEnum  end
-	if(name=="HydrologyshaktiIsBasalforcing") return HydrologyshaktiIsBasalforcingEnum  end
 	if(name=="IcecapToEarthComm") return IcecapToEarthCommEnum  end
 	if(name=="Index") return IndexEnum  end
 	if(name=="InputFileName") return InputFileNameEnum  end

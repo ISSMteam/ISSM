@@ -318,7 +318,6 @@ syn keyword cConstant HydrologyStepAdaptEnum
 syn keyword cConstant HydrologydcTransferFlagEnum
 syn keyword cConstant HydrologydcUnconfinedFlagEnum
 syn keyword cConstant HydrologyshreveStabilizationEnum
-syn keyword cConstant HydrologyshaktiIsBasalforcingEnum
 syn keyword cConstant IcecapToEarthCommEnum
 syn keyword cConstant IndexEnum
 syn keyword cConstant InputFileNameEnum

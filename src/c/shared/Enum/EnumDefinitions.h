@@ -312,7 +312,6 @@ enum definitions{
 	HydrologydcTransferFlagEnum,
 	HydrologydcUnconfinedFlagEnum,
 	HydrologyshreveStabilizationEnum,
-	HydrologyshaktiIsBasalforcingEnum,
 	IcecapToEarthCommEnum,
 	IndexEnum,
 	InputFileNameEnum,
