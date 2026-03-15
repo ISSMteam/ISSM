@@ -492,6 +492,9 @@ endif
 if HYDROLOGYARMAPW
 issm_sources += ./analyses/HydrologyArmapwAnalysis.cpp
 endif
+if HYDROLOGYPRESCRIBE
+issm_sources += ./analyses/HydrologyPrescribeAnalysis.cpp
+endif
 if L2PROJECTIONEPL
 issm_sources += ./analyses/L2ProjectionEPLAnalysis.cpp
 endif
