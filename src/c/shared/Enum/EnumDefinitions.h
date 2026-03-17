@@ -460,6 +460,7 @@ enum definitions{
 	SamplingRobinEnum,
 	SamplingSeedEnum,
 	SaveResultsEnum,
+	SaveFinalResultsEnum,
 	SolidearthPartitionIceEnum,
 	SolidearthPartitionHydroEnum,
 	SolidearthPartitionOceanEnum,

@@ -375,10 +375,10 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 			meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
 		}else if (meltflag == 1){
 			meltrate_input->GetInputValue(&meltrate,gauss);
-			/*Unit conversion: ice to water*/
-			meltrate = meltrate*rho_water/rho_ice;
+			/*Unit conversion: ice m s-1 to kg m-2 s-1*/
+			meltrate = meltrate*rho_ice;
 			/*NOTE: Add dissipation melting due to subglacial flow*/
-			meltrate += dissipation;
+			//meltrate += dissipation;
 		}else{
 			_error_("Not implemented yet.");
 		}
@@ -652,10 +652,10 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 			meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
 		}else if (meltflag == 1){
 			meltrate_input->GetInputValue(&meltrate,gauss);
-			/*Unit conversion: ice to water*/
-			meltrate = meltrate*rho_water/rho_ice;
+			/*Unit conversion: ice m s-1 to kg m-2 s-1*/
+			meltrate = meltrate*rho_ice;
 			/*NOTE: Add dissipation melting due to subglacial flow*/
-			meltrate += dissipation;
+			//meltrate += dissipation;
 		}else{
 			_error_("Not implemented yet.");
 		}

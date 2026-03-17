@@ -477,6 +477,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SamplingRobin")==0) return SamplingRobinEnum;
 	      else if (strcmp(name,"SamplingSeed")==0) return SamplingSeedEnum;
 	      else if (strcmp(name,"SaveResults")==0) return SaveResultsEnum;
+	      else if (strcmp(name,"SaveFinalResults")==0) return SaveFinalResultsEnum;
 	      else if (strcmp(name,"SolidearthPartitionIce")==0) return SolidearthPartitionIceEnum;
 	      else if (strcmp(name,"SolidearthPartitionHydro")==0) return SolidearthPartitionHydroEnum;
 	      else if (strcmp(name,"SolidearthPartitionOcean")==0) return SolidearthPartitionOceanEnum;

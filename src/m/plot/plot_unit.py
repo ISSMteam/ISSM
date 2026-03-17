@@ -118,7 +118,7 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
             else:
                 triangles = mpl.tri.Triangulation(x, y, elements)
 
-            tri = ax.tripcolor(triangles, data, colorlevels, cmap=cmap, norm=norm, alpha=alpha, edgecolors=edgecolor)
+            tri = ax.tripcolor(triangles, data, cmap=cmap, norm=norm, alpha=alpha, edgecolors=edgecolor)
         else:
             #first deal with colormap
             loccmap = plt.cm.ScalarMappable(cmap=cmap)

@@ -40,8 +40,15 @@ classdef organizer < handle
 
 			%Get repository
 			repository=getfieldvalue(options,'repository','./');
-			if ~ischar(repository),        error('repository is not a string'); end
-			if exist(repository,'dir')~=7, error(['Directory ' repository ' not found']), end
+			if ~ischar(repository)         error('repository is not a string'); end
+			if exist(repository,'dir')~=7
+				choice=input(['Directory ' repository ' not found, would you like to create it (y/n)\n'],'s');
+				if ~strcmp(choice,'y')
+					error('interrupting process')
+				else
+					mkdir(repository);
+				end
+			end
 			org.repository=repository;
 
 			%Color

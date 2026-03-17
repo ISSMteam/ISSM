@@ -51,11 +51,11 @@ void FloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 			FloatingiceMeltingRateIsmip6x(femmodel);
 			break;
 		case BeckmannGoosseFloatingMeltRateEnum:
-			if(VerboseSolution())_printf0_("        call BeckmannGoosse Floating melting rate module\n");
+			if(VerboseSolution())_printf0_("   call BeckmannGoosse Floating melting rate module\n");
 			BeckmannGoosseFloatingiceMeltingRatex(femmodel);
 			break;
 		case LinearFloatingMeltRatearmaEnum:
-			if(VerboseSolution())_printf0_("        call Linear Floating melting rate ARMA module\n");
+			if(VerboseSolution())_printf0_("   call Linear Floating melting rate ARMA module\n");
 			LinearFloatingiceMeltingRatearmax(femmodel);
 			break;
 		default:

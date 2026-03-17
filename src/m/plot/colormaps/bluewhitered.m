@@ -1,4 +1,4 @@
-function newmap = bluewhitered(m,CAXIS)
+function newmap = bluewhitered(m,CAXIS,reverse)
 %BLUEWHITERED   Blue, white, and red color map.
 %   BLUEWHITERED(M) returns an M-by-3 matrix containing a blue to white
 %   to red colormap, with white corresponding to the CAXIS value closest
@@ -32,12 +32,22 @@ function newmap = bluewhitered(m,CAXIS)
 if nargin < 1
    m = size(get(gcf,'colormap'),1);
 end
+if nargin < 2
+	reverse = 0;
+end
 
-bottom = [0 0 0.5];
-botmiddle = [0 0.5 1];
+if reverse
+	top = [0 0 0.5];
+	topmiddle = [0 0.5 1];
+	botmiddle = [1 0 0];
+	bottom = [0.5 0 0];
+else
+	bottom = [0 0 0.5];
+	botmiddle = [0 0.5 1];
+	topmiddle = [1 0 0];
+	top = [0.5 0 0];
+end
 middle = [1 1 1];
-topmiddle = [1 0 0];
-top = [0.5 0 0];
 
 % Find middle
 if nargin < 2
