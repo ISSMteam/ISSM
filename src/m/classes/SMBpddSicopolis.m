@@ -112,10 +112,10 @@ classdef SMBpddSicopolis
 			fielddisplay(self,'rlaps','present day lapse rate (default is 7.4 degree/km)');
 			fielddisplay(self,'desfac','desertification elevation factor (default is -log(2.0)/1000)');
 			fielddisplay(self,'isfirnwarming','is firnwarming (Reeh 1991) activated (0 or 1, default is 1)');
-			fielddisplay(self, 'steps_per_step', 'number of smb steps per time step');
+			fielddisplay(self,'steps_per_step', 'number of smb steps per time step');
 			fielddisplay(self,'averaging','averaging methods from short to long steps');
-			fielddisplay(self,'pdd_fac_ice','Pdd factor for ice for all the domain [mm ice equiv/day/degree C]');
-			fielddisplay(self,'pdd_fac_snow','Pdd factor for snow for all the domain [mm ice equiv/day/degree C]');
+			fielddisplay(self,'pdd_fac_ice','Pdd factor for ice for all the domain [mm water equiv/day/degree C]');
+			fielddisplay(self,'pdd_fac_snow','Pdd factor for snow for all the domain [mm water equiv/day/degree C]');
 			disp(sprintf('%51s  0: Arithmetic (default)',' '));
 			disp(sprintf('%51s  1: Geometric',' '));
 			disp(sprintf('%51s  2: Harmonic',' '));
