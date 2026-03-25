@@ -455,6 +455,7 @@
 	SamplingRobinEnum
 	SamplingSeedEnum
 	SaveResultsEnum
+	SaveFinalResultsEnum
 	SolidearthPartitionIceEnum
 	SolidearthPartitionHydroEnum
 	SolidearthPartitionOceanEnum
@@ -3678,6 +3679,7 @@
 	SMBpddEnum
 	SMBpddSicopolisEnum
 	SMBpddGCMEnum
+	SMBpddFastEnum
 	SMBsemicEnum
 	SSAApproximationEnum
 	SSAFSApproximationEnum
@@ -4234,6 +4236,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SamplingRobinEnum) return "SamplingRobin" end
 	if(enum==SamplingSeedEnum) return "SamplingSeed" end
 	if(enum==SaveResultsEnum) return "SaveResults" end
+	if(enum==SaveFinalResultsEnum) return "SaveFinalResults" end
 	if(enum==SolidearthPartitionIceEnum) return "SolidearthPartitionIce" end
 	if(enum==SolidearthPartitionHydroEnum) return "SolidearthPartitionHydro" end
 	if(enum==SolidearthPartitionOceanEnum) return "SolidearthPartitionOcean" end
@@ -7457,6 +7460,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SMBpddEnum) return "SMBpdd" end
 	if(enum==SMBpddSicopolisEnum) return "SMBpddSicopolis" end
 	if(enum==SMBpddGCMEnum) return "SMBpddGCM" end
+	if(enum==SMBpddFastEnum) return "SMBpddFast" end
 	if(enum==SMBsemicEnum) return "SMBsemic" end
 	if(enum==SSAApproximationEnum) return "SSAApproximation" end
 	if(enum==SSAFSApproximationEnum) return "SSAFSApproximation" end
@@ -8013,6 +8017,7 @@ function StringToEnum(name::String)
 	if(name=="SamplingRobin") return SamplingRobinEnum  end
 	if(name=="SamplingSeed") return SamplingSeedEnum  end
 	if(name=="SaveResults") return SaveResultsEnum  end
+	if(name=="SaveFinalResults") return SaveFinalResultsEnum  end
 	if(name=="SolidearthPartitionIce") return SolidearthPartitionIceEnum  end
 	if(name=="SolidearthPartitionHydro") return SolidearthPartitionHydroEnum  end
 	if(name=="SolidearthPartitionOcean") return SolidearthPartitionOceanEnum  end
@@ -11236,6 +11241,7 @@ function StringToEnum(name::String)
 	if(name=="SMBpdd") return SMBpddEnum  end
 	if(name=="SMBpddSicopolis") return SMBpddSicopolisEnum  end
 	if(name=="SMBpddGCM") return SMBpddGCMEnum  end
+	if(name=="SMBpddFast") return SMBpddFastEnum  end
 	if(name=="SMBsemic") return SMBsemicEnum  end
 	if(name=="SSAApproximation") return SSAApproximationEnum  end
 	if(name=="SSAFSApproximation") return SSAFSApproximationEnum  end

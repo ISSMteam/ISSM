@@ -45,6 +45,7 @@ void EnthalpyAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomod
 		if(smb_model==SMBpddEnum)				isdynamic=true;
 		if(smb_model==SMBd18opddEnum)			isdynamic=true;
 		if(smb_model==SMBpddSicopolisEnum)	isdynamic=true;
+		if(smb_model==SMBpddFastEnum)	      isdynamic=true;
 	}
 
 	/*Convert spcs from temperatures to enthalpy*/

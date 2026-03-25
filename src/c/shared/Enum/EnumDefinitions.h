@@ -3689,6 +3689,7 @@ enum definitions{
 	SMBpddEnum,
 	SMBpddSicopolisEnum,
 	SMBpddGCMEnum,
+	SMBpddFastEnum,
 	SMBsemicEnum,
 	SSAApproximationEnum,
 	SSAFSApproximationEnum,

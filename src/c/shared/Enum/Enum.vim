@@ -466,6 +466,7 @@ syn keyword cConstant SamplingRequestedOutputsEnum
 syn keyword cConstant SamplingRobinEnum
 syn keyword cConstant SamplingSeedEnum
 syn keyword cConstant SaveResultsEnum
+syn keyword cConstant SaveFinalResultsEnum
 syn keyword cConstant SolidearthPartitionIceEnum
 syn keyword cConstant SolidearthPartitionHydroEnum
 syn keyword cConstant SolidearthPartitionOceanEnum
@@ -3689,6 +3690,7 @@ syn keyword cConstant SMBmeltcomponentsEnum
 syn keyword cConstant SMBpddEnum
 syn keyword cConstant SMBpddSicopolisEnum
 syn keyword cConstant SMBpddGCMEnum
+syn keyword cConstant SMBpddFastEnum
 syn keyword cConstant SMBsemicEnum
 syn keyword cConstant SSAApproximationEnum
 syn keyword cConstant SSAFSApproximationEnum
@@ -3947,7 +3949,6 @@ syn keyword cType FreeSurfaceBaseAnalysis
 syn keyword cType FreeSurfaceTopAnalysis
 syn keyword cType GLheightadvectionAnalysis
 syn keyword cType HydrologyArmapwAnalysis
-syn keyword cType HydrologyCuasAnalysis
 syn keyword cType HydrologyDCEfficientAnalysis
 syn keyword cType HydrologyDCInefficientAnalysis
 syn keyword cType HydrologyGlaDSAnalysis

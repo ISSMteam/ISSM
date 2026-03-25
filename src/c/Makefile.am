@@ -182,6 +182,7 @@ issm_sources += \
 	./shared/Elements/PrintArrays.cpp \
 	./shared/Elements/PddSurfaceMassBalance.cpp \
 	./shared/Elements/PddSurfaceMassBalanceSicopolis.cpp \
+	./shared/Elements/PddSurfaceMassBalanceFast.cpp \
 	./shared/Elements/ComputeDelta18oTemperaturePrecipitation.cpp \
 	./shared/Elements/ComputeMungsmTemperaturePrecipitation.cpp \
 	./shared/Elements/ComputeD18OTemperaturePrecipitationFromPD.cpp \
