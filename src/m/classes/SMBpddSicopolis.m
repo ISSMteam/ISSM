@@ -87,8 +87,8 @@ classdef SMBpddSicopolis
 				md = checkfield(md,'fieldname','smb.s0p','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.s0t','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.rlaps','>=',0,'numel',1);
-				md = checkfield(md,'fieldname','smb.monthlytemperatures','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 12]);
-				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 12]);
+				md = checkfield(md,'fieldname','smb.monthlytemperatures','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 12],'>' ,0., '<', 300.);
+				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 12],'>=' ,0.);
 				md = checkfield(md,'fieldname','smb.pdd_fac_ice','>',0,'numel',1);
 				md = checkfield(md,'fieldname','smb.pdd_fac_snow','>',0,'numel',1);
 
