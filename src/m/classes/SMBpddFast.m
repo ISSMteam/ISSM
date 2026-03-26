@@ -1,9 +1,9 @@
-%SMBpddSicopolis Class definition
+%SMBpddFast Class definition
 %
 %   Usage:
-%      SMBpddSicopolis=SMBpddSicopolis();
+%      SMBpddFast=SMBpddFast();
 
-classdef SMBpddSicopolis
+classdef SMBpddFast
 	properties (SetAccess=public)
 
 		precipitation         = NaN;
@@ -23,7 +23,7 @@ classdef SMBpddSicopolis
 		requested_outputs     = {};
 	end
 	methods
-		function self = SMBpddSicopolis(varargin) % {{{
+		function self = SMBpddFast(varargin) % {{{
 			switch nargin
 				case 0
 					self=setdefaultparameters(self);
@@ -48,23 +48,23 @@ classdef SMBpddSicopolis
 
 			if isnan(self.s0p),
 				self.s0p=zeros(md.mesh.numberofvertices,1);
-				disp('      no SMBpddSicopolis.s0p specified: values set as zero');
+				disp('      no SMBpddFast.s0p specified: values set as zero');
 			end
 			if isnan(self.s0t),
 				self.s0t=zeros(md.mesh.numberofvertices,1);
-				disp('      no SMBpddSicopolis.s0t specified: values set as zero');
+				disp('      no SMBpddFast.s0t specified: values set as zero');
 			end
 			if isnan(self.temperature_anomaly),
 				self.temperature_anomaly=zeros(md.mesh.numberofvertices,1);
-				disp('      no SMBpddSicopolis.temperature_anomaly specified: values set as zero');
+				disp('      no SMBpddFast.temperature_anomaly specified: values set as zero');
 			end
 			if isnan(self.precipitation_anomaly),
 				self.precipitation_anomaly=ones(md.mesh.numberofvertices,1);
-				disp('      no SMBpddSicopolis.precipitation_anomaly specified: values set as ones');
+				disp('      no SMBpddFast.precipitation_anomaly specified: values set as ones');
 			end
 			if isnan(self.smb_corr),
 				self.smb_corr=zeros(md.mesh.numberofvertices,1);
-				disp('      no SMBpddSicopolis.smb_corr specified: values set as zero');
+				disp('      no SMBpddFast.smb_corr specified: values set as zero');
 			end
 
 		end % }}}
@@ -101,7 +101,7 @@ classdef SMBpddSicopolis
 		function disp(self) % {{{
 			disp(sprintf('   surface forcings parameters:'));
 
-			disp(sprintf('\n   SICOPOLIS PDD scheme (Calov & Greve, 2005) :'));
+			disp(sprintf('\n   MODIFIED SICOPOLIS PDD scheme (After Calov & Greve, 2005, modified by Alicia Bråtner) :'));
 			fielddisplay(self,'monthlytemperatures','monthly surface temperatures [K]');
 			fielddisplay(self,'precipitation','monthly surface precipitation [m/yr water eq]');
 			fielddisplay(self,'temperature_anomaly','anomaly to monthly reference temperature (additive; [K])');
@@ -125,7 +125,7 @@ classdef SMBpddSicopolis
 
 			yts=md.constants.yts;
 
-			WriteData(fid,prefix,'name','md.smb.model','data',10,'format','Integer');
+			WriteData(fid,prefix,'name','md.smb.model','data',16,'format','Integer');
 
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','isfirnwarming','format','Boolean');
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','desfac','format','Double');

@@ -459,6 +459,7 @@ syn keyword juliaConstC SamplingRequestedOutputsEnum
 syn keyword juliaConstC SamplingRobinEnum
 syn keyword juliaConstC SamplingSeedEnum
 syn keyword juliaConstC SaveResultsEnum
+syn keyword juliaConstC SaveFinalResultsEnum
 syn keyword juliaConstC SolidearthPartitionIceEnum
 syn keyword juliaConstC SolidearthPartitionHydroEnum
 syn keyword juliaConstC SolidearthPartitionOceanEnum
@@ -3682,6 +3683,7 @@ syn keyword juliaConstC SMBmeltcomponentsEnum
 syn keyword juliaConstC SMBpddEnum
 syn keyword juliaConstC SMBpddSicopolisEnum
 syn keyword juliaConstC SMBpddGCMEnum
+syn keyword juliaConstC SMBpddFastEnum
 syn keyword juliaConstC SMBsemicEnum
 syn keyword juliaConstC SSAApproximationEnum
 syn keyword juliaConstC SSAFSApproximationEnum
