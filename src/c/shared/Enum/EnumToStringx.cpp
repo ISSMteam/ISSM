@@ -1191,6 +1191,7 @@ const char* EnumToStringx(int en){
 		case SmbIsInitializedEnum : return "SmbIsInitialized";
 		case SmbMAddEnum : return "SmbMAdd";
 		case SmbMappedforcingpointEnum : return "SmbMappedforcingpoint";
+		case SmbMappedforcingprecipscalingEnum : return "SmbMappedforcingprecipscaling";
 		case SmbMassBalanceEnum : return "SmbMassBalance";
 		case SmbMassBalanceSnowEnum : return "SmbMassBalanceSnow";
 		case SmbMassBalanceIceEnum : return "SmbMassBalanceIce";

@@ -23,7 +23,8 @@ int  SmbAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*
 void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	int    smb_model;
-	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic,ismappedforcing;
+	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic;
+	bool   ismappedforcing,isprecipforcingremapped;
 
 	/*Update elements: */
 	int counter=0;
@@ -49,6 +50,7 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		case SMBgembEnum:
 			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
+			iomodel->FindConstant(&isprecipforcingremapped,"md.smb.isprecipforcingremapped");
 			if (!ismappedforcing){
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
@@ -65,6 +67,9 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
 			} else {
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingpoint",SmbMappedforcingpointEnum);
+				if(isprecipforcingremapped){
+					iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingprecipscaling",SmbMappedforcingprecipscalingEnum);
+				}
 			}
 
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zTop",SmbZTopEnum);

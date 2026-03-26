@@ -5872,8 +5872,12 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 		qsparam=fmax(0.622*esparam/(pparam/100 - 0.378*esparam),0);
 
 		if ((isprecipmap) && (qsparam>0)){ 
-			P=fmax(prparam*qs/qsparam,0.0);
-			C=fmax(C*qs/qsparam,0.0);
+			IssmDouble precipscaling = 1.0;
+			Input *pscaling_input            = NULL;
+			pscaling_input = this->GetInput(SmbMappedforcingprecipscalingEnum);  _assert_(pscaling_input);
+			pscaling_input->GetInputAverage(&precipscaling);
+			P=fmax(prparam*qs/qsparam*precipscaling,0.0);
+			C=fmax(C*qs/qsparam*precipscaling,0.0);
 		}
 		else P=prparam;
 

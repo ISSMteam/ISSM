@@ -62,6 +62,7 @@ md.smb.mappedforcingpoint=interpp(xe,ye)
 md.smb.mappedforcingelevation=np.mean(md2.geometry.surface[md2.mesh.elements-1],axis=1)
 md.smb.lapseTaValue=md.smb.lapseTaValue*np.ones(np.shape(md.smb.mappedforcingelevation))
 md.smb.lapsedlwrfValue=md.smb.lapsedlwrfValue*np.ones(np.shape(md.smb.mappedforcingelevation))
+md.smb.mappedforcingprecipscaling=np.arange(1,md.mesh.numberofelements+1)/md.mesh.numberofelements
 
 #smb settings
 md.smb.requested_outputs = ['SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbEC',
