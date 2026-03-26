@@ -1185,6 +1185,7 @@ enum definitions{
 	SmbIsInitializedEnum,
 	SmbMAddEnum,
 	SmbMappedforcingpointEnum,
+	SmbMappedforcingprecipscalingEnum,
 	SmbMassBalanceEnum,
 	SmbMassBalanceSnowEnum,
 	SmbMassBalanceIceEnum,
