@@ -160,6 +160,7 @@ class Element: public Object{
 		bool		   IsAllMinThicknessInElement();
 		bool               IsLandInElement();
 		void               Ismip6FloatingiceMeltingRate();
+        void               Ismip7FloatingiceMeltingRate();
 		void               LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation);
 		void               LinearFloatingiceMeltingRate();
 		void               SpatialLinearFloatingiceMeltingRate();

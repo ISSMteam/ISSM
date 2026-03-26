@@ -58,6 +58,10 @@ void FloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 			if(VerboseSolution())_printf0_("   call Linear Floating melting rate ARMA module\n");
 			LinearFloatingiceMeltingRatearmax(femmodel);
 			break;
+        case BasalforcingsIsmip7Enum:
+            if(VerboseSolution())_printf0_("   call ISMIP 7 Floating melting rate module\n");
+			FloatingiceMeltingRateIsmip7x(femmodel);
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}
@@ -213,6 +217,31 @@ void FloatingiceMeltingRateIsmip6x(FemModel* femmodel){/*{{{*/
 	xDelete<IssmDouble>(tf_depths);
 }
 /*}}}*/
+void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
+
+	IssmDouble  time;
+    IssmDouble  g;
+	IssmDouble* tf_depths=NULL;
+    int		    num_depths;
+
+	femmodel->parameters->FindParam(&time,TimeEnum);
+
+	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip6TfDepthsEnum); _assert_(tf_depths);
+
+	/*Binary search works for vectors that are sorted in increasing order only, make depths positive*/
+	for(int i=0;i<num_depths;i++) tf_depths[i] = -tf_depths[i];
+
+	/*FIXME: Prepare thermal forcing at specific depths*/
+    for(Object* & object : femmodel->elements->objects){
+		        
+    }
+
+    /*Compute meltrates*/
+	for(Object* & object : femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		element->Ismip7FloatingiceMeltingRate();
+	}
+}
 void BeckmannGoosseFloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 
 	for(Object* & object : femmodel->elements->objects){
