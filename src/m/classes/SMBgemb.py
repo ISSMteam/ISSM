@@ -465,7 +465,7 @@ class SMBgemb(object):
             md = checkfield(md, 'fieldname', 'smb.lapseTaValue', 'size',[sizeta[0]-1],'NaN',1,'Inf',1);
             md = checkfield(md, 'fieldname', 'smb.lapsedlwrfValue', 'size',[sizeta[0]-1], 'NaN',1,'Inf',1);
             if self.isprecipforcingremapped:
-                md = checkfield(md,'fieldname','smb.mappedforcingprecipscaling','size',[md.mesh.numberofelements],'NaN',1,'Inf',1,'>',0,'<=',sizeta[0]-1)
+                md = checkfield(md,'fieldname','smb.mappedforcingprecipscaling','size',[md.mesh.numberofelements],'NaN',1,'Inf',1,'>',0)
                 if np.prod(np.shape(self.mappedforcingprecipscaling))==1:
                     print("WARNING:smb.mappedforcingprecipscaling is now a vector of mapped elements. Set to md.smb.mappedforcingprecipscaling*ones(size(md.smb.mappedforcingelevation)).")
 
