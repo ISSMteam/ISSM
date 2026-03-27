@@ -531,6 +531,7 @@ void              coupleroutput_core(FemModel* femmodel){  /*{{{*/
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 
 	count++;
+	if(count>frequency) count=1;
 	femmodel->parameters->SetParam(count,SealevelchangeRunCountEnum); 
 
 	if(iscoupling){
