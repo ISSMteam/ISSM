@@ -78,6 +78,7 @@ syn keyword juliaConstC BasalforcingsIsmip6Gamma0Enum
 syn keyword juliaConstC BasalforcingsIsmip6IsLocalEnum
 syn keyword juliaConstC BasalforcingsIsmip6NumBasinsEnum
 syn keyword juliaConstC BasalforcingsIsmip6TfDepthsEnum
+syn keyword juliaConstC BasalforcingsIsmip7GammaEnum
 syn keyword juliaConstC BasalforcingsLinearNumBasinsEnum
 syn keyword juliaConstC BasalforcingsLinearNumBreaksEnum
 syn keyword juliaConstC BasalforcingsLinearNumParamsEnum
@@ -768,6 +769,7 @@ syn keyword juliaConstC BalancethicknessOmegaEnum
 syn keyword juliaConstC BalancethicknessSpcthicknessEnum
 syn keyword juliaConstC BalancethicknessThickeningRateEnum
 syn keyword juliaConstC BasalCrevasseEnum
+syn keyword juliaConstC BasalforcingsCoriolisFEnum
 syn keyword juliaConstC BasalforcingsDeepwaterMeltingRatearmaEnum
 syn keyword juliaConstC BasalforcingsDeepwaterMeltingRateNoiseEnum
 syn keyword juliaConstC BasalforcingsDeepwaterMeltingRateValuesAutoregressionEnum
@@ -787,6 +789,8 @@ syn keyword juliaConstC BasalforcingsIsmip6BasinIdEnum
 syn keyword juliaConstC BasalforcingsIsmip6TfEnum
 syn keyword juliaConstC BasalforcingsIsmip6TfShelfEnum
 syn keyword juliaConstC BasalforcingsIsmip6MeltAnomalyEnum
+syn keyword juliaConstC BasalforcingsIsmip7SalinityEnum
+syn keyword juliaConstC BasalforcingsIsmip7SalinityShelfEnum
 syn keyword juliaConstC BasalforcingsMeltrateFactorEnum
 syn keyword juliaConstC BasalforcingsOceanSalinityEnum
 syn keyword juliaConstC BasalforcingsOceanTempEnum
@@ -3386,6 +3390,7 @@ syn keyword juliaConstC BalancethicknessSolutionEnum
 syn keyword juliaConstC BalancevelocityAnalysisEnum
 syn keyword juliaConstC BalancevelocitySolutionEnum
 syn keyword juliaConstC BasalforcingsIsmip6Enum
+syn keyword juliaConstC BasalforcingsIsmip7Enum
 syn keyword juliaConstC BasalforcingsPicoEnum
 syn keyword juliaConstC BeckmannGoosseFloatingMeltRateEnum
 syn keyword juliaConstC BedSlopeSolutionEnum

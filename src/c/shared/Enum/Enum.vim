@@ -85,6 +85,7 @@ syn keyword cConstant BasalforcingsIsmip6Gamma0Enum
 syn keyword cConstant BasalforcingsIsmip6IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip6NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip6TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7GammaEnum
 syn keyword cConstant BasalforcingsLinearNumBasinsEnum
 syn keyword cConstant BasalforcingsLinearNumBreaksEnum
 syn keyword cConstant BasalforcingsLinearNumParamsEnum
@@ -775,6 +776,7 @@ syn keyword cConstant BalancethicknessOmegaEnum
 syn keyword cConstant BalancethicknessSpcthicknessEnum
 syn keyword cConstant BalancethicknessThickeningRateEnum
 syn keyword cConstant BasalCrevasseEnum
+syn keyword cConstant BasalforcingsCoriolisFEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRatearmaEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateNoiseEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateValuesAutoregressionEnum
@@ -794,6 +796,8 @@ syn keyword cConstant BasalforcingsIsmip6BasinIdEnum
 syn keyword cConstant BasalforcingsIsmip6TfEnum
 syn keyword cConstant BasalforcingsIsmip6TfShelfEnum
 syn keyword cConstant BasalforcingsIsmip6MeltAnomalyEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityShelfEnum
 syn keyword cConstant BasalforcingsMeltrateFactorEnum
 syn keyword cConstant BasalforcingsOceanSalinityEnum
 syn keyword cConstant BasalforcingsOceanTempEnum
@@ -3393,6 +3397,7 @@ syn keyword cConstant BalancethicknessSolutionEnum
 syn keyword cConstant BalancevelocityAnalysisEnum
 syn keyword cConstant BalancevelocitySolutionEnum
 syn keyword cConstant BasalforcingsIsmip6Enum
+syn keyword cConstant BasalforcingsIsmip7Enum
 syn keyword cConstant BasalforcingsPicoEnum
 syn keyword cConstant BeckmannGoosseFloatingMeltRateEnum
 syn keyword cConstant BedSlopeSolutionEnum
