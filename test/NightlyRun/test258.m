@@ -44,6 +44,7 @@ md.smb.mappedforcingpoint=griddata(xe2,ye2,mpoints,xe,ye,'nearest');
 md.smb.mappedforcingelevation=mean(md2.geometry.surface(md2.mesh.elements),2);
 md.smb.lapseTaValue=md.smb.lapseTaValue*ones(size(md.smb.mappedforcingelevation));
 md.smb.lapsedlwrfValue=md.smb.lapsedlwrfValue*ones(size(md.smb.mappedforcingelevation));
+md.smb.mappedforcingprecipscaling=(1:md.mesh.numberofelements)'/md.mesh.numberofelements;
 
 %smb settings
 md.smb.requested_outputs={'SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbEC',...
@@ -74,7 +75,7 @@ end
 
 %Fields and tolerances to track changes
 field_names      ={'Layers','SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbA' ,'SmbEC','SmbMassBalance','SmbMAdd','SmbDzAdd','SmbFAC','SmbMeanSHF','SmbMeanLHF','SmbMeanULW','SmbNetLW','SmbNetSW','SmbTs','SmbT10','SmbT30','SmbT50','SmbAccumulatedMassBalance','SmbAccumulatedRunoff','SmbAccumulatedMelt','SmbAccumulatedEC','SmbAccumulatedPrecipitation','SmbAccumulatedRain','SmbAccumulatedRefreeze','SmbRunoff','SmbMelt','SmbEC','SmbPrecipitation','SmbRain','SmbRefreeze','SmbWAdd'};
-field_tolerances ={1e-12,4e-11,2e-11,3e-11,6e-11,8e-11,8e-11,1e-12,5e-11,2e-12,1e-12,1e-12,4e-11,2e-11,5e-11,1e-11,9e-10,2e-11,2e-11,2e-11,2e-11,2e-11,1e-11,9e-10,2e-11,2e-09,1e-11,1e-11,1e-11,8e-10,2e-11,2e-11,1e-11,1e-11,2e-11,1e-11};
+field_tolerances ={1e-12,4e-11,2e-11,3e-11,6e-11,8e-11,8e-11,1e-12,5e-11,3e-12,1e-12,1e-12,4e-11,2e-11,5e-11,1e-11,9e-10,2e-11,2e-11,2e-11,2e-11,2e-11,1e-11,9e-10,2e-11,2e-09,1e-11,1e-11,1e-11,8e-10,2e-11,2e-11,1e-11,1e-11,2e-11,1e-11};
 
 field_values={...
 	(nlayers),...

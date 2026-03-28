@@ -1182,6 +1182,7 @@
 	SmbIsInitializedEnum
 	SmbMAddEnum
 	SmbMappedforcingpointEnum
+	SmbMappedforcingprecipscalingEnum
 	SmbMassBalanceEnum
 	SmbMassBalanceSnowEnum
 	SmbMassBalanceIceEnum
@@ -4968,6 +4969,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsInitializedEnum) return "SmbIsInitialized" end
 	if(enum==SmbMAddEnum) return "SmbMAdd" end
 	if(enum==SmbMappedforcingpointEnum) return "SmbMappedforcingpoint" end
+	if(enum==SmbMappedforcingprecipscalingEnum) return "SmbMappedforcingprecipscaling" end
 	if(enum==SmbMassBalanceEnum) return "SmbMassBalance" end
 	if(enum==SmbMassBalanceSnowEnum) return "SmbMassBalanceSnow" end
 	if(enum==SmbMassBalanceIceEnum) return "SmbMassBalanceIce" end
@@ -8754,6 +8756,7 @@ function StringToEnum(name::String)
 	if(name=="SmbIsInitialized") return SmbIsInitializedEnum  end
 	if(name=="SmbMAdd") return SmbMAddEnum  end
 	if(name=="SmbMappedforcingpoint") return SmbMappedforcingpointEnum  end
+	if(name=="SmbMappedforcingprecipscaling") return SmbMappedforcingprecipscalingEnum  end
 	if(name=="SmbMassBalance") return SmbMassBalanceEnum  end
 	if(name=="SmbMassBalanceSnow") return SmbMassBalanceSnowEnum  end
 	if(name=="SmbMassBalanceIce") return SmbMassBalanceIceEnum  end
