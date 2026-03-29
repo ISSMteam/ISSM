@@ -3753,6 +3753,7 @@ const char* EnumToStringx(int en){
 		case TotalFloatingBmbScaledEnum : return "TotalFloatingBmbScaled";
 		case TotalGroundedBmbEnum : return "TotalGroundedBmb";
 		case TotalGroundedBmbScaledEnum : return "TotalGroundedBmbScaled";
+		case TotalHydrologyBasalFluxEnum : return "TotalHydrologyBasalFlux";
 		case TotalSmbEnum : return "TotalSmb";
 		case TotalSmbScaledEnum : return "TotalSmbScaled";
 		case TotalSmbRefreezeEnum : return "TotalSmbRefreeze";

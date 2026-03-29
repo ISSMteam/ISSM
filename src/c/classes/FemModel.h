@@ -143,6 +143,7 @@ class FemModel {
 		void TotalCalvingMeltingFluxLevelsetx(IssmDouble* pGbmb, bool scaled);
 		void TotalFloatingBmbx(IssmDouble* pFbmb, bool scaled);
 		void TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled);
+		void TotalHydrologyBasalFluxx(IssmDouble* pM, bool scaled);
 		void TotalSmbx(IssmDouble* pSmb, bool scaled);
 		void TotalSmbMeltx(IssmDouble* pSmbMelt, bool scaled);
 		void TotalSmbRefreezex(IssmDouble* pSmbRefreeze, bool scaled);
