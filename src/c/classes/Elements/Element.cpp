@@ -2513,7 +2513,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	IssmDouble  tf,gamma0;
 	IssmDouble  salinity; /*local salinity [psu]*/
 	IssmDouble  coriolis; /*Coriolis parameter*/
-	IssmDouble* dbase;
+	IssmDouble  dbase[2]; /*derivative of z_b*/
 	IssmDouble  theta, slope;
 	IssmDouble* depths  = NULL;
 	
@@ -2536,12 +2536,13 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	this->parameters->FindParam(&gamma0,BasalforcingsIsmip7GammaEnum);
 	
 	Input* base_input = this->GetInput(BaseEnum); _assert_(base_input);
-	Input* tf_input = this->GetInput(BasalforcingsIsmip6TfShelfEnum);              _assert_(tf_input);
-	Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityEnum); _assert_(salinity_input);
+	Input* tf_input   = this->GetInput(BasalforcingsIsmip6TfShelfEnum); _assert_(tf_input);
+	Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityShelfEnum); _assert_(salinity_input);
 	Input* coriolis_input = this->GetInput(BasalforcingsCoriolisFEnum); _assert_(coriolis_input);
 	
 	/*Compute melt rate for Local and Nonlocal parameterizations*/
 	Gauss* gauss=this->NewGauss();
+	if(VerboseSolution()) _printf0_("   ismip7: now compute element-wise basal melting rate\n");
 	for(int i=0;i<numvertices;i++){
 		gauss->GaussVertex(i);
 
@@ -2553,7 +2554,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 		slope = sqrt(pow(dbase[0],2)+pow(dbase[1],2));
 		theta = atan(slope);
 
-		basalmeltrate[i] = gamma0*sin(theta)*rhow/rhoi*pow(cp/lf,2.0)*betaS*salinity*g/2.0/abs(coriolis)*abs(tf)*tf;
+		basalmeltrate[i] = gamma0*sin(theta)*(rhow/rhoi)*pow(cp/lf,2.0)*betaS*salinity*g/2.0/abs(coriolis)*abs(tf)*tf;
 
 	}
 
