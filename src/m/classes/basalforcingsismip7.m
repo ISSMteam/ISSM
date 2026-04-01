@@ -5,6 +5,8 @@
 
 classdef basalforcingsismip7
 	properties (SetAccess=public) 
+		num_basins                = 0;
+		basin_id                  = 0;
 		gamma                     = 0;
 		coriolis_f                = NaN;
 
@@ -37,7 +39,7 @@ classdef basalforcingsismip7
 		end % }}}
 		function self = initialize(self,md) % {{{
 			%Update fixed-coriolis parameter
-			if isnan(self.lat) | isempty(self.lat),
+			if isnan(md.mesh.lat) | isempty(md.mesh.lat),
 				disp('      no md.mesh.lat specified.');
 				if md.mesh.epsg == 3031 % For Antarctica
 					[lat, lon] = xy2ll(md.mesh.x,md.mesh.y,-1);
@@ -67,7 +69,9 @@ classdef basalforcingsismip7
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			md = checkfield(md,'fieldname','basalforcings.model','values',7);
+			md = checkfield(md,'fieldname','basalforcings.num_basins','numel',1,'NaN',1,'Inf',1,'>',0);
+			md = checkfield(md,'fieldname','basalforcings.basin_id','Inf',1,'>=',0,'<=',md.basalforcings.num_basins,'size',[md.mesh.numberofelements 1]);
+
 			md = checkfield(md,'fieldname','basalforcings.gamma','numel',1,'NaN',1,'Inf',1,'>',0);
 
 			md = checkfield(md,'fieldname','basalforcings.coriolis_f','size',[md.mesh.numberofvertices, 1],'NaN',1,'Inf',1);
@@ -76,7 +80,7 @@ classdef basalforcingsismip7
 			md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 
 			md = checkfield(md,'fieldname','basalforcings.tf','size',[1,1,numel(md.basalforcings.tf_depths)]);
-			md = checkfield(md,'fieldname','basalforcings.salinity','size',[1,numel(md.basalforcings.tf_depths)]);
+			md = checkfield(md,'fieldname','basalforcings.salinity','size',[1,1,numel(md.basalforcings.tf_depths)]);
 			for i=1:numel(md.basalforcings.tf_depths)
 				md = checkfield(md,'fieldname',['basalforcings.tf{' num2str(i) '}'],'field',md.basalforcings.tf{i},'size',[md.mesh.numberofvertices+1 NaN],'NaN',1,'Inf',1,'>=',0,'timeseries',1);
 				md = checkfield(md,'fieldname',['basalforcings.salinity{' num2str(i) '}'],'field',md.basalforcings.salinity{i},'size',[md.mesh.numberofvertices+1 NaN],'NaN',1,'Inf',1,'>=',0,'timeseries',1);
@@ -85,6 +89,8 @@ classdef basalforcingsismip7
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   ISMIP7 basal melt rate parameterization:'));
+			fielddisplay(self,'num_basins','number of basins the model domain is partitioned into [unitless]');
+			fielddisplay(self,'basin_id','basin number assigned to each node (unitless)');
 			fielddisplay(self,'gamma','melt rate coefficient (m/yr)');
 			fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset');
 			fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)');
@@ -99,6 +105,8 @@ classdef basalforcingsismip7
 			yts=md.constants.yts;
 
 			WriteData(fid,prefix,'name','md.basalforcings.model','data',10,'format','Integer');
+			WriteData(fid,prefix,'object',self,'fieldname','num_basins','format','Integer');
+			WriteData(fid,prefix,'object',self,'fieldname','basin_id','data',self.basin_id-1,'name','md.basalforcings.basin_id','format','IntMat','mattype',2);   %0-indexed
 			WriteData(fid,prefix,'object',self,'fieldname','gamma','format','Double','scale',1./yts);
 			WriteData(fid,prefix,'object',self,'fieldname','coriolis_f','format','DoubleMat','name','md.basalforcings.coriolis_f','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','tf_depths','format','DoubleMat','name','md.basalforcings.tf_depths');
