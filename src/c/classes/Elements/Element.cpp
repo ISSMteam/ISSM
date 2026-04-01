@@ -2505,16 +2505,16 @@ void       Element::Ismip6FloatingiceMeltingRate(){/*{{{*/
 
 }/*}}}*/
 void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
-    if(!this->IsIceInElement() || !this->IsAllFloating() || !this->IsOnBase()) return;
+	if(!this->IsIceInElement() || !this->IsAllFloating() || !this->IsOnBase()) return;
 
 	int         basinid,num_basins,M,N;
-    IssmDouble* xyz_list;
+	IssmDouble* xyz_list;
 	
 	IssmDouble  tf,gamma0;
-    IssmDouble  salinity; /*local salinity [psu]*/
-    IssmDouble  coriolis; /*Coriolis parameter*/
-    IssmDouble* dbase;
-    IssmDouble  theta, slope;
+	IssmDouble  salinity; /*local salinity [psu]*/
+	IssmDouble  coriolis; /*Coriolis parameter*/
+	IssmDouble* dbase;
+	IssmDouble  theta, slope;
 	IssmDouble* depths  = NULL;
 	
 
@@ -2523,8 +2523,8 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	IssmDouble basalmeltrate[MAXVERTICES];
 
 	/*Get variables*/
-    this->GetVerticesCoordinates(&xyz_list);
-        
+	this->GetVerticesCoordinates(&xyz_list);
+
 	IssmDouble rhoi = this->FindParam(MaterialsRhoIceEnum);
 	IssmDouble rhow = this->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble lf   = this->FindParam(MaterialsLatentheatEnum);
@@ -2535,10 +2535,10 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	/* Get parameters and inputs */
 	this->parameters->FindParam(&gamma0,BasalforcingsIsmip7GammaEnum);
 	
-    Input* base_input = this->GetInput(BaseEnum); _assert_(base_input);
+	Input* base_input = this->GetInput(BaseEnum); _assert_(base_input);
 	Input* tf_input = this->GetInput(BasalforcingsIsmip6TfShelfEnum);              _assert_(tf_input);
-    Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityEnum); _assert_(salinity_input);
-    Input* coriolis_input = this->GetInput(BasalforcingsCoriolisFEnum); _assert_(coriolis_input);
+	Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityEnum); _assert_(salinity_input);
+	Input* coriolis_input = this->GetInput(BasalforcingsCoriolisFEnum); _assert_(coriolis_input);
 	
 	/*Compute melt rate for Local and Nonlocal parameterizations*/
 	Gauss* gauss=this->NewGauss();
@@ -2546,16 +2546,16 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 		gauss->GaussVertex(i);
 
 		tf_input->GetInputValue(&tf,gauss);
-        salinity_input->GetInputValue(&salinity,gauss);
+		salinity_input->GetInputValue(&salinity,gauss);
 		coriolis_input->GetInputValue(&coriolis,gauss);
 
-        base_input->GetInputDerivativeValue(&dbase[0],xyz_list,gauss);
-        slope = sqrt(pow(dbase[0],2)+pow(dbase[1],2));
-        theta = atan(slope);
+		base_input->GetInputDerivativeValue(&dbase[0],xyz_list,gauss);
+		slope = sqrt(pow(dbase[0],2)+pow(dbase[1],2));
+		theta = atan(slope);
 
-        basalmeltrate[i] = gamma0*sin(theta)*rhow/rhoi*pow(cp/lf,2.0)*betaS*salinity*g/2.0/abs(coriolis)*abs(tf)*tf;
+		basalmeltrate[i] = gamma0*sin(theta)*rhow/rhoi*pow(cp/lf,2.0)*betaS*salinity*g/2.0/abs(coriolis)*abs(tf)*tf;
 
-    }
+	}
 
 	/*Return basal melt rate*/
 	this->AddInput(BasalforcingsFloatingiceMeltingRateEnum,basalmeltrate,P1DGEnum);
