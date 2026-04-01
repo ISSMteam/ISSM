@@ -162,7 +162,7 @@ classdef andes
 
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,0,directory,filelist);
+			issmscpin(cluster.name,cluster.login,0,directory,filelist, 2); %use {} and not \{\}
 
 		end %}}}
 	end
