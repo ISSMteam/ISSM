@@ -193,7 +193,7 @@ classdef frontera
 
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist, 2);%use {} instead of \{\}
 
 		end %}}}
 	end
