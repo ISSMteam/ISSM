@@ -2536,13 +2536,12 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	this->parameters->FindParam(&gamma0,BasalforcingsIsmip7GammaEnum);
 	
 	Input* base_input = this->GetInput(BaseEnum); _assert_(base_input);
-	Input* tf_input   = this->GetInput(BasalforcingsIsmip6TfShelfEnum); _assert_(tf_input);
+	Input* tf_input   = this->GetInput(BasalforcingsIsmip7TfShelfEnum); _assert_(tf_input);
 	Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityShelfEnum); _assert_(salinity_input);
 	Input* coriolis_input = this->GetInput(BasalforcingsCoriolisFEnum); _assert_(coriolis_input);
 	
 	/*Compute melt rate for Local and Nonlocal parameterizations*/
 	Gauss* gauss=this->NewGauss();
-	if(VerboseSolution()) _printf0_("   ismip7: now compute element-wise basal melting rate\n");
 	for(int i=0;i<numvertices;i++){
 		gauss->GaussVertex(i);
 

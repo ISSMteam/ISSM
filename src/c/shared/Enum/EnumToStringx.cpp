@@ -87,6 +87,8 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6IsLocalEnum : return "BasalforcingsIsmip6IsLocal";
 		case BasalforcingsIsmip6NumBasinsEnum : return "BasalforcingsIsmip6NumBasins";
 		case BasalforcingsIsmip6TfDepthsEnum : return "BasalforcingsIsmip6TfDepths";
+		case BasalforcingsIsmip7TfDepthsEnum : return "BasalforcingsIsmip7TfDepths";
+		case BasalforcingsIsmip7NumBasinsEnum : return "BasalforcingsIsmip7NumBasins";
 		case BasalforcingsIsmip7GammaEnum : return "BasalforcingsIsmip7Gamma";
 		case BasalforcingsLinearNumBasinsEnum : return "BasalforcingsLinearNumBasins";
 		case BasalforcingsLinearNumBreaksEnum : return "BasalforcingsLinearNumBreaks";
@@ -798,6 +800,8 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6TfEnum : return "BasalforcingsIsmip6Tf";
 		case BasalforcingsIsmip6TfShelfEnum : return "BasalforcingsIsmip6TfShelf";
 		case BasalforcingsIsmip6MeltAnomalyEnum : return "BasalforcingsIsmip6MeltAnomaly";
+		case BasalforcingsIsmip7TfEnum : return "BasalforcingsIsmip7Tf";
+		case BasalforcingsIsmip7TfShelfEnum : return "BasalforcingsIsmip7TfShelf";
 		case BasalforcingsIsmip7SalinityEnum : return "BasalforcingsIsmip7Salinity";
 		case BasalforcingsIsmip7SalinityShelfEnum : return "BasalforcingsIsmip7SalinityShelf";
 		case BasalforcingsMeltrateFactorEnum : return "BasalforcingsMeltrateFactor";

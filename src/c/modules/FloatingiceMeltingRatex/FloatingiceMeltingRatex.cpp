@@ -226,14 +226,14 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 
 	femmodel->parameters->FindParam(&time,TimeEnum);
 
-	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip6TfDepthsEnum); _assert_(tf_depths);
+	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip7TfDepthsEnum); _assert_(tf_depths);
 
 	/*Binary search works for vectors that are sorted in increasing order only, make depths positive*/
-	if(VerboseSolution())_printf0_("	  ismip7: prepare binary search\n");
+	//if(VerboseSolution())_printf0_("	  ismip7: prepare binary search\n");
 	for(int i=0;i<num_depths;i++) tf_depths[i] = -tf_depths[i];
 
 	/*Get TF and salinity at each ice shelf point - linearly intepolate in depth and time*/
-	if(VerboseSolution())_printf0_("	  ismip7: get tf and salinity\n");
+	//if(VerboseSolution())_printf0_("	  ismip7: get tf and salinity\n");
 	for(Object* & object : femmodel->elements->objects){
       Element* element = xDynamicCast<Element*>(object);
 		int      numvertices = element->GetNumberOfVertices();
@@ -242,7 +242,7 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 		if(!element->IsIceInElement() || !element->IsAllFloating() || !element->IsOnBase()){
 			IssmDouble* values = xNewZeroInit<IssmDouble>(numvertices);
 			element->AddInput(BasalforcingsFloatingiceMeltingRateEnum,values,P1DGEnum);
-			element->AddInput(BasalforcingsIsmip6TfShelfEnum,values,P1DGEnum);
+			element->AddInput(BasalforcingsIsmip7TfShelfEnum,values,P1DGEnum);
 			element->AddInput(BasalforcingsIsmip7SalinityShelfEnum,values,P1DGEnum);
 			xDelete<IssmDouble>(values);
 			continue;
@@ -252,7 +252,7 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 		IssmDouble*   tf_test        = xNew<IssmDouble>(numvertices);
 		IssmDouble*   so_test        = xNew<IssmDouble>(numvertices);
 		IssmDouble*   depth_vertices = xNew<IssmDouble>(numvertices);
-		DatasetInput* tf_input = element->GetDatasetInput(BasalforcingsIsmip6TfEnum); _assert_(tf_input);
+		DatasetInput* tf_input = element->GetDatasetInput(BasalforcingsIsmip7TfEnum); _assert_(tf_input);
 		DatasetInput* so_input = element->GetDatasetInput(BasalforcingsIsmip7SalinityEnum); _assert_(so_input);
 
 		element->GetInputListOnVertices(&depth_vertices[0],BaseEnum);
@@ -297,7 +297,7 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 			}
 		}
 
-		element->AddInput(BasalforcingsIsmip6TfShelfEnum,tf_test,P1DGEnum);
+		element->AddInput(BasalforcingsIsmip7TfShelfEnum,tf_test,P1DGEnum);
 		element->AddInput(BasalforcingsIsmip7SalinityShelfEnum,so_test,P1DGEnum);
 		xDelete<IssmDouble>(tf_test);
 		xDelete<IssmDouble>(so_test);
@@ -306,7 +306,7 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 	}
 
 	/*Compute meltrates*/
-	if(VerboseSolution())_printf0_("	  ismip7: compute melting rate\n");
+	//if(VerboseSolution())_printf0_("	  ismip7: compute melting rate\n");
 	for(Object* & object : femmodel->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);
 		element->Ismip7FloatingiceMeltingRate();

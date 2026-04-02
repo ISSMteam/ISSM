@@ -255,7 +255,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 				for(Object* & object : elements->objects){
 					Element*  element = xDynamicCast<Element*>(object);
 					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
-					element->DatasetInputAdd(BasalforcingsIsmip6TfEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip6TfEnum,kk);
+					element->DatasetInputAdd(BasalforcingsIsmip7TfEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7TfEnum,kk);
 				}
 			}
 			

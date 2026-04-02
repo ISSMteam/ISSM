@@ -85,6 +85,8 @@ syn keyword cConstant BasalforcingsIsmip6Gamma0Enum
 syn keyword cConstant BasalforcingsIsmip6IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip6NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip6TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip7GammaEnum
 syn keyword cConstant BasalforcingsLinearNumBasinsEnum
 syn keyword cConstant BasalforcingsLinearNumBreaksEnum
@@ -796,6 +798,8 @@ syn keyword cConstant BasalforcingsIsmip6BasinIdEnum
 syn keyword cConstant BasalforcingsIsmip6TfEnum
 syn keyword cConstant BasalforcingsIsmip6TfShelfEnum
 syn keyword cConstant BasalforcingsIsmip6MeltAnomalyEnum
+syn keyword cConstant BasalforcingsIsmip7TfEnum
+syn keyword cConstant BasalforcingsIsmip7TfShelfEnum
 syn keyword cConstant BasalforcingsIsmip7SalinityEnum
 syn keyword cConstant BasalforcingsIsmip7SalinityShelfEnum
 syn keyword cConstant BasalforcingsMeltrateFactorEnum

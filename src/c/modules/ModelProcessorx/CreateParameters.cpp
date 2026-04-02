@@ -287,10 +287,10 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
          xDelete<IssmDouble>(transparam);
 			break;
 		case BasalforcingsIsmip7Enum:
-			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.num_basins",BasalforcingsIsmip6NumBasinsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.num_basins",BasalforcingsIsmip7NumBasinsEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.gamma",BasalforcingsIsmip7GammaEnum));
 			iomodel->FetchData(&transparam,&M,&N,"md.basalforcings.tf_depths");
-			parameters->AddObject(new DoubleVecParam(BasalforcingsIsmip6TfDepthsEnum,transparam,N));
+			parameters->AddObject(new DoubleVecParam(BasalforcingsIsmip7TfDepthsEnum,transparam,N));
 			xDelete<IssmDouble>(transparam);
 			break;
 			break;
