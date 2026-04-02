@@ -239,7 +239,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.basin_id",BasalforcingsLinearBasinIdEnum);
 			if(isstochastic) iomodel->FetchDataToInput(inputs,elements,"md.stochasticforcing.default_id",StochasticForcingDefaultIdEnum);
 			break;
-		case BasalforcingsIsmip7Enum:
+		case BasalforcingsIsmip7Enum:{
 			/*TODO: Update for ISMIP7*/
 			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.coriolis_f",BasalforcingsCoriolisFEnum);
 			
@@ -257,6 +257,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
 					element->DatasetInputAdd(BasalforcingsIsmip7TfEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7TfEnum,kk);
 				}
+				xDelete<IssmDouble>(array2d);
 			}
 			
 			/*Deal with salinity...*/
@@ -270,9 +271,9 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
 					element->DatasetInputAdd(BasalforcingsIsmip7SalinityEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7SalinityEnum,kk);
 				}
+				xDelete<IssmDouble>(array2d);
 			}
-			
-			xDelete<IssmDouble>(array2d);
+												}
 			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
