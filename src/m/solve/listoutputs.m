@@ -31,6 +31,7 @@ BalancethicknessOmega
 BalancethicknessSpcthickness
 BalancethicknessThickeningRate
 BasalCrevasse
+BasalforcingsCoriolisF
 BasalforcingsDeepwaterMeltingRatearma
 BasalforcingsDeepwaterMeltingRateNoise
 BasalforcingsDeepwaterMeltingRateValuesAutoregression
@@ -50,6 +51,8 @@ BasalforcingsIsmip6BasinId
 BasalforcingsIsmip6Tf
 BasalforcingsIsmip6TfShelf
 BasalforcingsIsmip6MeltAnomaly
+BasalforcingsIsmip7Salinity
+BasalforcingsIsmip7SalinityShelf
 BasalforcingsMeltrateFactor
 BasalforcingsOceanSalinity
 BasalforcingsOceanTemp

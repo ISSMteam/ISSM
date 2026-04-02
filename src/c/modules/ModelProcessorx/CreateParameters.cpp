@@ -286,6 +286,14 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
          parameters->AddObject(new DoubleVecParam(BasalforcingsDeepwaterElevationEnum,transparam,N));
          xDelete<IssmDouble>(transparam);
 			break;
+		case BasalforcingsIsmip7Enum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.num_basins",BasalforcingsIsmip7NumBasinsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.gamma",BasalforcingsIsmip7GammaEnum));
+			iomodel->FetchData(&transparam,&M,&N,"md.basalforcings.tf_depths");
+			parameters->AddObject(new DoubleVecParam(BasalforcingsIsmip7TfDepthsEnum,transparam,N));
+			xDelete<IssmDouble>(transparam);
+			break;
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}
