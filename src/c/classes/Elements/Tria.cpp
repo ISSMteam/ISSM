@@ -6031,6 +6031,129 @@ IssmDouble Tria::TotalGroundedBmb(bool scaled){/*{{{*/
 	return Total_Gbmb;
 }
 /*}}}*/
+IssmDouble Tria::TotalHydrologyBasalFlux(bool scaled){/*{{{*/
+
+	/*Make sure there is a grounding line here*/
+	if(!IsIceInElement()) return 0;
+	if(!IsZeroLevelset(MaskOceanLevelsetEnum)) return 0;
+
+	/*Scaled not implemented yet...*/
+	_assert_(!scaled);
+
+	int               domaintype,index1,index2;
+	const IssmPDouble epsilon = 1.e-15;
+	IssmDouble        s1,s2;
+	IssmDouble        gl[NUMVERTICES];
+	IssmDouble        xyz_front[2][3];
+
+	IssmDouble  xyz_list[NUMVERTICES][3];
+	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+
+	/*Recover parameters and values*/
+	parameters->FindParam(&domaintype,DomainTypeEnum);
+	Element::GetInputListOnVertices(&gl[0],MaskOceanLevelsetEnum);
+
+	/*Be sure that values are not zero*/
+	if(gl[0]==0.) gl[0]=gl[0]+epsilon;
+	if(gl[1]==0.) gl[1]=gl[1]+epsilon;
+	if(gl[2]==0.) gl[2]=gl[2]+epsilon;
+
+	if(domaintype==Domain2DverticalEnum || domaintype==Domain3DEnum || domaintype==Domain3DsurfaceEnum){
+		_error_("not implemented");
+	}
+	else if(domaintype==Domain2DhorizontalEnum){
+		int pt1 = 0;
+		int pt2 = 1;
+		if(gl[0]*gl[1]>0){ //Nodes 0 and 1 are similar, so points must be found on segment 0-2 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[2]/(gl[2]-gl[1]);
+			s2=gl[2]/(gl[2]-gl[0]);
+			if(gl[2]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+			xyz_front[pt2][0]=xyz_list[2][0]+s1*(xyz_list[1][0]-xyz_list[2][0]);
+			xyz_front[pt2][1]=xyz_list[2][1]+s1*(xyz_list[1][1]-xyz_list[2][1]);
+			xyz_front[pt2][2]=xyz_list[2][2]+s1*(xyz_list[1][2]-xyz_list[2][2]);
+			xyz_front[pt1][0]=xyz_list[2][0]+s2*(xyz_list[0][0]-xyz_list[2][0]);
+			xyz_front[pt1][1]=xyz_list[2][1]+s2*(xyz_list[0][1]-xyz_list[2][1]);
+			xyz_front[pt1][2]=xyz_list[2][2]+s2*(xyz_list[0][2]-xyz_list[2][2]);
+		}
+		else if(gl[1]*gl[2]>0){ //Nodes 1 and 2 are similar, so points must be found on segment 0-1 and 0-2
+
+			/*Portion of the segments*/
+			s1=gl[0]/(gl[0]-gl[1]);
+			s2=gl[0]/(gl[0]-gl[2]);
+			if(gl[0]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt1][0]=xyz_list[0][0]+s1*(xyz_list[1][0]-xyz_list[0][0]);
+			xyz_front[pt1][1]=xyz_list[0][1]+s1*(xyz_list[1][1]-xyz_list[0][1]);
+			xyz_front[pt1][2]=xyz_list[0][2]+s1*(xyz_list[1][2]-xyz_list[0][2]);
+			xyz_front[pt2][0]=xyz_list[0][0]+s2*(xyz_list[2][0]-xyz_list[0][0]);
+			xyz_front[pt2][1]=xyz_list[0][1]+s2*(xyz_list[2][1]-xyz_list[0][1]);
+			xyz_front[pt2][2]=xyz_list[0][2]+s2*(xyz_list[2][2]-xyz_list[0][2]);
+		}
+		else if(gl[0]*gl[2]>0){ //Nodes 0 and 2 are similar, so points must be found on segment 1-0 and 1-2
+
+			/*Portion of the segments*/
+			s1=gl[1]/(gl[1]-gl[0]);
+			s2=gl[1]/(gl[1]-gl[2]);
+			if(gl[1]<0.){
+				pt1 = 1; pt2 = 0;
+			}
+
+			xyz_front[pt2][0]=xyz_list[1][0]+s1*(xyz_list[0][0]-xyz_list[1][0]);
+			xyz_front[pt2][1]=xyz_list[1][1]+s1*(xyz_list[0][1]-xyz_list[1][1]);
+			xyz_front[pt2][2]=xyz_list[1][2]+s1*(xyz_list[0][2]-xyz_list[1][2]);
+			xyz_front[pt1][0]=xyz_list[1][0]+s2*(xyz_list[2][0]-xyz_list[1][0]);
+			xyz_front[pt1][1]=xyz_list[1][1]+s2*(xyz_list[2][1]-xyz_list[1][1]);
+			xyz_front[pt1][2]=xyz_list[1][2]+s2*(xyz_list[2][2]-xyz_list[1][2]);
+		}
+		else{
+			_error_("case not possible");
+		}
+
+	}
+	else _error_("mesh type "<<EnumToStringx(domaintype)<<"not supported yet ");
+
+	/*Some checks in debugging mode*/
+	_assert_(s1>=0 && s1<=1.);
+	_assert_(s2>=0 && s2<=1.);
+
+	/*Get normal vector*/
+	IssmDouble normal[3];
+	this->NormalSection(&normal[0],&xyz_front[0][0]);
+
+	/*Get inputs*/
+	IssmDouble flux = 0.;
+	IssmDouble vx,vy,Jdet;
+	IssmDouble rho_water=FindParam(MaterialsRhoFreshwaterEnum);
+	Input* vx_input=NULL;
+	Input* vy_input=NULL;
+	if(domaintype==Domain2DhorizontalEnum){
+		vx_input=this->GetInput(HydrologyWaterVxEnum); _assert_(vx_input);
+		vy_input=this->GetInput(HydrologyWaterVyEnum); _assert_(vy_input);
+	}
+	else{
+		_error_("Not implemented yet.");
+	}
+
+	/*Start looping on Gaussian points*/
+	Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
+	while(gauss->next()){
+		vx_input->GetInputValue(&vx,gauss);
+		vy_input->GetInputValue(&vy,gauss);
+		this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
+
+		flux += rho_water*Jdet*gauss->weight*(vx*normal[0] + vy*normal[1]);
+	}
+
+	/*Cleanup and return*/
+	delete gauss;
+	return flux;
+}/*}}}*/
 IssmDouble Tria::TotalSmb(bool scaled){/*{{{*/
 
 	/*The smb[kg yr-1] of one element is area[m2] * smb [kg m^-2 yr^-1]*/

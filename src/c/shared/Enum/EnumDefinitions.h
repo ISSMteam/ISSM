@@ -3759,6 +3759,7 @@ enum definitions{
 	TotalFloatingBmbScaledEnum,
 	TotalGroundedBmbEnum,
 	TotalGroundedBmbScaledEnum,
+	TotalHydrologyBasalFluxEnum,
 	TotalSmbEnum,
 	TotalSmbScaledEnum,
 	TotalSmbRefreezeEnum,

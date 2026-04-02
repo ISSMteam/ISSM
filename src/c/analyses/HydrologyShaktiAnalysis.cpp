@@ -136,6 +136,8 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 
 	/*Initialize requested outputs in case they are not defined later for this partition*/
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyBasalFluxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyWaterVxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyWaterVyEnum,P0Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,DegreeOfChannelizationEnum,P0Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyMeltRateEnum,P0Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyFrictionHeatEnum,P0Enum);
@@ -573,6 +575,8 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	IssmDouble* xyz_list = NULL;
 	IssmDouble  dpressure_water[3],dbed[3],PMPheat,dissipation;
 	IssmDouble  q = 0.;
+	IssmDouble  qx = 0.;
+	IssmDouble  qy = 0.;
 	IssmDouble  channelization = 0.;
 	int         meltflag;
 
@@ -674,7 +678,9 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 		totalweights +=gauss->weight*Jdet;
 
 		/* Compute basal water flux */
-		q += gauss->weight*Jdet*(conductivity*sqrt(dh[0]*dh[0]+dh[1]*dh[1]));
+		q +=  gauss->weight*Jdet*(conductivity*sqrt(dh[0]*dh[0]+dh[1]*dh[1]));
+		qx+= -gauss->weight*Jdet*(conductivity*dh[0]);
+		qy+= -gauss->weight*Jdet*(conductivity*dh[1]);
 
 		/* Compute "degree of channelization" (ratio of melt opening to opening by sliding) */
 		channelization += gauss->weight*Jdet*(meltrate/rho_ice/(meltrate/rho_ice+beta*sqrt(vx*vx+vy*vy)));
@@ -690,7 +696,11 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 
 	/*Divide by connectivity, add basal flux as an input*/
 	q = q/totalweights;
+	qx= qx/totalweights;
+	qy= qy/totalweights;
 	element->AddBasalInput(HydrologyBasalFluxEnum,&q,P0Enum);
+	element->AddBasalInput(HydrologyWaterVxEnum,&qx,P0Enum);
+	element->AddBasalInput(HydrologyWaterVyEnum,&qy,P0Enum);
 
 	/* Divide by connectivity, add degree of channelization as an input */
 	channelization = channelization/totalweights;

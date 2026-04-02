@@ -208,6 +208,7 @@ class Element: public Object{
 		void               SubglacialWaterPressure(int output_enum);
 		IssmDouble         TotalFloatingBmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalGroundedBmb(IssmDouble* mask, bool scaled);
+		IssmDouble         TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbMelt(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbRefreeze(IssmDouble* mask, bool scaled);
@@ -397,6 +398,7 @@ class Element: public Object{
 		virtual IssmDouble TotalCalvingMeltingFluxLevelset(bool scaled){_error_("not implemented");};
 		virtual IssmDouble TotalFloatingBmb(bool scaled)=0;
 		virtual IssmDouble TotalGroundedBmb(bool scaled)=0;
+		virtual IssmDouble TotalHydrologyBasalFlux(bool scaled)=0;
 		virtual IssmDouble TotalSmb(bool scaled)=0;
 		virtual IssmDouble TotalSmbMelt(bool scaled)=0;
 		virtual IssmDouble TotalSmbRefreeze(bool scaled)=0;

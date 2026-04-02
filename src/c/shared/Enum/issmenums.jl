@@ -3749,6 +3749,7 @@
 	TotalFloatingBmbScaledEnum
 	TotalGroundedBmbEnum
 	TotalGroundedBmbScaledEnum
+	TotalHydrologyBasalFluxEnum
 	TotalSmbEnum
 	TotalSmbScaledEnum
 	TotalSmbRefreezeEnum
@@ -7540,6 +7541,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==TotalFloatingBmbScaledEnum) return "TotalFloatingBmbScaled" end
 	if(enum==TotalGroundedBmbEnum) return "TotalGroundedBmb" end
 	if(enum==TotalGroundedBmbScaledEnum) return "TotalGroundedBmbScaled" end
+	if(enum==TotalHydrologyBasalFluxEnum) return "TotalHydrologyBasalFlux" end
 	if(enum==TotalSmbEnum) return "TotalSmb" end
 	if(enum==TotalSmbScaledEnum) return "TotalSmbScaled" end
 	if(enum==TotalSmbRefreezeEnum) return "TotalSmbRefreeze" end
@@ -11331,6 +11333,7 @@ function StringToEnum(name::String)
 	if(name=="TotalFloatingBmbScaled") return TotalFloatingBmbScaledEnum  end
 	if(name=="TotalGroundedBmb") return TotalGroundedBmbEnum  end
 	if(name=="TotalGroundedBmbScaled") return TotalGroundedBmbScaledEnum  end
+	if(name=="TotalHydrologyBasalFlux") return TotalHydrologyBasalFluxEnum  end
 	if(name=="TotalSmb") return TotalSmbEnum  end
 	if(name=="TotalSmbScaled") return TotalSmbScaledEnum  end
 	if(name=="TotalSmbRefreeze") return TotalSmbRefreezeEnum  end

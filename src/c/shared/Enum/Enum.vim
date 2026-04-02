@@ -3760,6 +3760,7 @@ syn keyword cConstant TotalFloatingBmbEnum
 syn keyword cConstant TotalFloatingBmbScaledEnum
 syn keyword cConstant TotalGroundedBmbEnum
 syn keyword cConstant TotalGroundedBmbScaledEnum
+syn keyword cConstant TotalHydrologyBasalFluxEnum
 syn keyword cConstant TotalSmbEnum
 syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum
