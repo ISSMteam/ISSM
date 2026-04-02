@@ -2354,7 +2354,12 @@ void       Penta::InputDepthAverageAtBase(int original_enum,int average_enum){/*
 
 	/*Now we only need to divide the depth integrated input by the total thickness!*/
 	for(int iv=0;iv<3;iv++){
-		total[iv  ] = total[iv]/intz[iv];
+		if(intz[iv]<1e-50){/*If thickness is 0 we set the input as 0*/
+			total[iv] = 0.;
+		}
+		else{
+			total[iv] = total[iv]/intz[iv];
+		}
 		total[iv+3] = total[iv];
 	}
 	GetVerticesLidList(&lidlist[0]);
