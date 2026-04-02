@@ -861,28 +861,37 @@ LDADD += $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
 issm_CXXFLAGS= $(CXXFLAGS)
+issm_DEPENDENCIES = libISSMCore.la libISSMModules.la
 
 issm_slc_SOURCES = main/issm_slc.cpp
 issm_slc_CXXFLAGS= $(CXXFLAGS)
+issm_slc_DEPENDENCIES = libISSMCore.la libISSMModules.la
 
 if OCEAN
 bin_PROGRAMS += issm_ocean
 issm_ocean_SOURCES = main/issm_ocean.cpp
 issm_ocean_CXXFLAGS= $(CXXFLAGS)
+issm_ocean_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 
 if KRIGING
 bin_PROGRAMS += kriging
 kriging_SOURCES = main/kriging.cpp
 kriging_CXXFLAGS= $(CXXFLAGS)
+kriging_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 
 if ISSM_DAKOTA
 bin_PROGRAMS += issm_dakota
 issm_dakota_SOURCES = main/issm_dakota.cpp
 issm_dakota_CXXFLAGS= $(CXXFLAGS)
+issm_dakota_DEPENDENCIES = libISSMCore.la libISSMModules.la
 bin_PROGRAMS += issm_post
 issm_post_SOURCES = main/issm_post.cpp
 issm_post_CXXFLAGS= $(CXXFLAGS)
+issm_post_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 #}}}
+
+# Ensure install does not run before build completes
+install-exec-local: $(lib_LTLIBRARIES) $(bin_PROGRAMS)

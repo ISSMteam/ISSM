@@ -7,7 +7,7 @@ m4_include([m4/issm_options.m4])
 
 #print header
 AC_MSG_NOTICE(============================================================================)
-AC_MSG_NOTICE(=      AC_PACKAGE_NAME AC_PACKAGE_VERSION configuration      =)
+AC_MSG_NOTICE(=      AC_PACKAGE_NAME AC_PACKAGE_VERSION configuration    =)
 AC_MSG_NOTICE(============================================================================)
 
 #Determine System type and OS
