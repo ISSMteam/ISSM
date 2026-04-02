@@ -58,6 +58,10 @@ void FloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 			if(VerboseSolution())_printf0_("   call Linear Floating melting rate ARMA module\n");
 			LinearFloatingiceMeltingRatearmax(femmodel);
 			break;
+		case BasalforcingsIsmip7Enum:
+			if(VerboseSolution())_printf0_("   call ISMIP 7 Floating melting rate module\n");
+			FloatingiceMeltingRateIsmip7x(femmodel);
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}
@@ -213,6 +217,104 @@ void FloatingiceMeltingRateIsmip6x(FemModel* femmodel){/*{{{*/
 	xDelete<IssmDouble>(tf_depths);
 }
 /*}}}*/
+void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
+
+	IssmDouble  time;
+	IssmDouble  g;
+	IssmDouble* tf_depths=NULL;
+	int		   num_depths;
+
+	femmodel->parameters->FindParam(&time,TimeEnum);
+
+	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip7TfDepthsEnum); _assert_(tf_depths);
+
+	/*Binary search works for vectors that are sorted in increasing order only, make depths positive*/
+	//if(VerboseSolution())_printf0_("	  ismip7: prepare binary search\n");
+	for(int i=0;i<num_depths;i++) tf_depths[i] = -tf_depths[i];
+
+	/*Get TF and salinity at each ice shelf point - linearly intepolate in depth and time*/
+	//if(VerboseSolution())_printf0_("	  ismip7: get tf and salinity\n");
+	for(Object* & object : femmodel->elements->objects){
+      Element* element = xDynamicCast<Element*>(object);
+		int      numvertices = element->GetNumberOfVertices();
+
+		/*Set melt to 0 if non floating*/
+		if(!element->IsIceInElement() || !element->IsAllFloating() || !element->IsOnBase()){
+			IssmDouble* values = xNewZeroInit<IssmDouble>(numvertices);
+			element->AddInput(BasalforcingsFloatingiceMeltingRateEnum,values,P1DGEnum);
+			element->AddInput(BasalforcingsIsmip7TfShelfEnum,values,P1DGEnum);
+			element->AddInput(BasalforcingsIsmip7SalinityShelfEnum,values,P1DGEnum);
+			xDelete<IssmDouble>(values);
+			continue;
+		}
+
+		/*Get TF on all vertices*/
+		IssmDouble*   tf_test        = xNew<IssmDouble>(numvertices);
+		IssmDouble*   so_test        = xNew<IssmDouble>(numvertices);
+		IssmDouble*   depth_vertices = xNew<IssmDouble>(numvertices);
+		DatasetInput* tf_input = element->GetDatasetInput(BasalforcingsIsmip7TfEnum); _assert_(tf_input);
+		DatasetInput* so_input = element->GetDatasetInput(BasalforcingsIsmip7SalinityEnum); _assert_(so_input);
+
+		element->GetInputListOnVertices(&depth_vertices[0],BaseEnum);
+
+		Gauss* gauss=element->NewGauss();
+		for(int iv=0;iv<numvertices;iv++){
+			gauss->GaussVertex(iv);
+
+			/*Find out where the ice shelf base is within tf_depths*/
+			IssmDouble depth = -depth_vertices[iv]; /*NOTE: make sure we are dealing with depth>0*/
+			int offset;
+			int found=binary_search(&offset,depth,tf_depths,num_depths);
+			if(!found) _error_("depth not found");
+
+			if (offset==-1){
+				/*get values for the first depth: */
+				_assert_(depth<=tf_depths[0]);
+				tf_input->GetInputValue(&tf_test[iv],gauss,0);
+				so_input->GetInputValue(&so_test[iv],gauss,0);
+			}
+			else if(offset==num_depths-1){
+				/*get values for the last time: */
+				_assert_(depth>=tf_depths[num_depths-1]);
+				tf_input->GetInputValue(&tf_test[iv],gauss,num_depths-1);
+				so_input->GetInputValue(&so_test[iv],gauss,num_depths-1);
+			}
+			else {
+				/*get values between two times [offset:offset+1], Interpolate linearly*/
+				_assert_(depth>=tf_depths[offset] && depth<tf_depths[offset+1]);
+				IssmDouble deltaz=tf_depths[offset+1]-tf_depths[offset];
+				IssmDouble alpha2=(depth-tf_depths[offset])/deltaz;
+				IssmDouble alpha1=(1.-alpha2);
+				IssmDouble tf1,tf2;
+				IssmDouble so1,so2;
+				tf_input->GetInputValue(&tf1,gauss,offset);
+				tf_input->GetInputValue(&tf2,gauss,offset+1);
+				tf_test[iv] = alpha1*tf1 + alpha2*tf2;
+
+				so_input->GetInputValue(&so1,gauss,offset);
+				so_input->GetInputValue(&so2,gauss,offset+1);
+				so_test[iv] = alpha1*so1 + alpha2*so2;
+			}
+		}
+
+		element->AddInput(BasalforcingsIsmip7TfShelfEnum,tf_test,P1DGEnum);
+		element->AddInput(BasalforcingsIsmip7SalinityShelfEnum,so_test,P1DGEnum);
+		xDelete<IssmDouble>(tf_test);
+		xDelete<IssmDouble>(so_test);
+		xDelete<IssmDouble>(depth_vertices);
+		delete gauss;
+	}
+
+	/*Compute meltrates*/
+	//if(VerboseSolution())_printf0_("	  ismip7: compute melting rate\n");
+	for(Object* & object : femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		element->Ismip7FloatingiceMeltingRate();
+	}
+
+	/*Cleanup and return */
+	xDelete<IssmDouble>(tf_depths);
+}
 void BeckmannGoosseFloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 
 	for(Object* & object : femmodel->elements->objects){

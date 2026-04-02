@@ -239,6 +239,41 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.basin_id",BasalforcingsLinearBasinIdEnum);
 			if(isstochastic) iomodel->FetchDataToInput(inputs,elements,"md.stochasticforcing.default_id",StochasticForcingDefaultIdEnum);
 			break;
+		case BasalforcingsIsmip7Enum:
+			/*TODO: Update for ISMIP7*/
+			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.coriolis_f",BasalforcingsCoriolisFEnum);
+			
+			/*Deal with tf...*/
+			IssmDouble* array2d = NULL; int M,N,K; IssmDouble* temp = NULL;
+			iomodel->FetchData(&temp,&M,&K,"md.basalforcings.tf_depths"); xDelete<IssmDouble>(temp);
+			_assert_(M==1); _assert_(K>=1);
+			for(int kk=0;kk<K;kk++){
+
+				/*Fetch TF for this depth*/
+				iomodel->FetchData(&array2d, &M, &N, kk, "md.basalforcings.tf");
+				if(!array2d) _error_("md.basalforcings.tf not found in binary file");
+				for(Object* & object : elements->objects){
+					Element*  element = xDynamicCast<Element*>(object);
+					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
+					element->DatasetInputAdd(BasalforcingsIsmip7TfEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7TfEnum,kk);
+				}
+			}
+			
+			/*Deal with salinity...*/
+			for(int kk=0;kk<K;kk++){
+
+				/*Fetch Salinity for this depth*/
+				iomodel->FetchData(&array2d, &M, &N, kk, "md.basalforcings.salinity");
+				if(!array2d) _error_("md.basalforcings.salinity not found in binary file");
+				for(Object* & object : elements->objects){
+					Element*  element = xDynamicCast<Element*>(object);
+					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
+					element->DatasetInputAdd(BasalforcingsIsmip7SalinityEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7SalinityEnum,kk);
+				}
+			}
+			
+			xDelete<IssmDouble>(array2d);
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}

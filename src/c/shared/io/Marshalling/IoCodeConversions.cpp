@@ -283,6 +283,7 @@ int IoCodeToEnumBasal(int enum_in){/*{{{*/
 		case 7: return BasalforcingsIsmip6Enum;
 		case 8: return BeckmannGoosseFloatingMeltRateEnum;
 		case 9: return LinearFloatingMeltRatearmaEnum;
+        case 10: return BasalforcingsIsmip7Enum;
 		default: _error_("Marshalled Basal Forcings code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/
