@@ -803,6 +803,9 @@ void FemModel::SolutionAnalysesList(int** panalyses,int* pnumanalyses,IoModel* i
 			if(hydrology_model==HydrologyarmapwEnum){
 				analyses_temp[numanalyses++]=HydrologyArmapwAnalysisEnum;
 			}
+			if(hydrology_model==HydrologyprescribeEnum){
+				analyses_temp[numanalyses++]=HydrologyPrescribeAnalysisEnum;
+			}
 		}
 			break;
 

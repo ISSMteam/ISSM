@@ -51,6 +51,8 @@ BasalforcingsIsmip6BasinId
 BasalforcingsIsmip6Tf
 BasalforcingsIsmip6TfShelf
 BasalforcingsIsmip6MeltAnomaly
+BasalforcingsIsmip7Tf
+BasalforcingsIsmip7TfShelf
 BasalforcingsIsmip7Salinity
 BasalforcingsIsmip7SalinityShelf
 BasalforcingsMeltrateFactor

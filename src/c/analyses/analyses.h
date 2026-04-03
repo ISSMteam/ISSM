@@ -35,6 +35,7 @@
 #include "./HydrologyGlaDSAnalysis.h"
 #include "./HydrologyShaktiAnalysis.h"
 #include "./HydrologyPismAnalysis.h"
+#include "./HydrologyPrescribeAnalysis.h"
 #include "./LevelsetAnalysis.h"
 #include "./MasstransportAnalysis.h"
 #include "./MmemasstransportAnalysis.h"

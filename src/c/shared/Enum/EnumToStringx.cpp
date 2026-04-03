@@ -3534,6 +3534,7 @@ const char* EnumToStringx(int en){
 		case HydrologyPismAnalysisEnum : return "HydrologyPismAnalysis";
 		case HydrologyShaktiAnalysisEnum : return "HydrologyShaktiAnalysis";
 		case HydrologyShreveAnalysisEnum : return "HydrologyShreveAnalysis";
+		case HydrologyPrescribeAnalysisEnum : return "HydrologyPrescribeAnalysis";
 		case HydrologySolutionEnum : return "HydrologySolution";
 		case HydrologySubstepsEnum : return "HydrologySubsteps";
 		case HydrologySubTimeEnum : return "HydrologySubTime";
@@ -3541,6 +3542,7 @@ const char* EnumToStringx(int en){
 		case HydrologypismEnum : return "Hydrologypism";
 		case HydrologyshaktiEnum : return "Hydrologyshakti";
 		case HydrologyshreveEnum : return "Hydrologyshreve";
+		case HydrologyprescribeEnum : return "Hydrologyprescribe";
 		case IceMassEnum : return "IceMass";
 		case IceMassScaledEnum : return "IceMassScaled";
 		case IceVolumeAboveFloatationEnum : return "IceVolumeAboveFloatation";

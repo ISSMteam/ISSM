@@ -495,6 +495,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
       parameters->AddObject(new DoubleMatParam(HydrologyarmaMonthlyFactorsEnum,transparam,M,N));
       xDelete<IssmDouble>(transparam);
    }
+	else if(hydrology_model==HydrologyprescribeEnum){
+		/*Nothing to add*/
+	}
 	else{
 		_error_("Hydrology model "<<EnumToStringx(hydrology_model)<<" not supported yet");
 	}

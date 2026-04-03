@@ -3532,6 +3532,7 @@ syn keyword cConstant HydrologyGlaDSEnum
 syn keyword cConstant HydrologyPismAnalysisEnum
 syn keyword cConstant HydrologyShaktiAnalysisEnum
 syn keyword cConstant HydrologyShreveAnalysisEnum
+syn keyword cConstant HydrologyPrescribeAnalysisEnum
 syn keyword cConstant HydrologySolutionEnum
 syn keyword cConstant HydrologySubstepsEnum
 syn keyword cConstant HydrologySubTimeEnum
@@ -3539,6 +3540,7 @@ syn keyword cConstant HydrologydcEnum
 syn keyword cConstant HydrologypismEnum
 syn keyword cConstant HydrologyshaktiEnum
 syn keyword cConstant HydrologyshreveEnum
+syn keyword cConstant HydrologyprescribeEnum
 syn keyword cConstant IceMassEnum
 syn keyword cConstant IceMassScaledEnum
 syn keyword cConstant IceVolumeAboveFloatationEnum
@@ -3964,6 +3966,7 @@ syn keyword cType HydrologyDCEfficientAnalysis
 syn keyword cType HydrologyDCInefficientAnalysis
 syn keyword cType HydrologyGlaDSAnalysis
 syn keyword cType HydrologyPismAnalysis
+syn keyword cType HydrologyPrescribeAnalysis
 syn keyword cType HydrologyShaktiAnalysis
 syn keyword cType HydrologyShreveAnalysis
 syn keyword cType HydrologyTwsAnalysis
