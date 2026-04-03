@@ -86,6 +86,11 @@ def solve(md, solutionstring, *args):
         raise ValueError('solutionstring {} not supported!'.format(solutionstring))
     options = pairoptions('solutionstring', solutionstring, *args)
 
+    # Do we load results only?
+    if options.getfieldvalue('loadonly', False):
+        md = loadresultsfromcluster(md)
+        return md
+
     # Recover some fields
     md.private.solution = solutionstring
     cluster = md.cluster
@@ -119,11 +124,6 @@ def solve(md, solutionstring, *args):
     # fields needs to be carried out
     if md.qmu.isdakota:
         md = preqmu(md, options)
-
-    # Do we load results only?
-    if options.getfieldvalue('loadonly', False):
-        md = loadresultsfromcluster(md)
-        return md
 
     # Write all input files
     marshall(md) # bin file

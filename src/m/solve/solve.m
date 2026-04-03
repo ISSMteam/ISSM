@@ -83,6 +83,12 @@ else
 end
 options=pairoptions(varargin{:},'solutionstring',solutionstring);
 
+%Do we load results only?
+if getfieldvalue(options,'loadonly',false)
+	md=loadresultsfromcluster(md);
+	return;
+end
+
 %recover some fields
 md.private.solution=solutionstring;
 cluster=md.cluster;
@@ -119,12 +125,6 @@ end
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out. 
 if md.qmu.isdakota,
 	md=preqmu(md,options);
-end
-
-%Do we load results only?
-if getfieldvalue(options,'loadonly',false),
-	md=loadresultsfromcluster(md);
-	return;
 end
 
 %Write all input files
