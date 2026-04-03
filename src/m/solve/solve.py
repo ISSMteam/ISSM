@@ -86,6 +86,20 @@ def solve(md, solutionstring, *args):
         raise ValueError('solutionstring {} not supported!'.format(solutionstring))
     options = pairoptions('solutionstring', solutionstring, *args)
 
+    # If we are restarting, actually use the provided runtime name
+    restart = options.getfieldvalue('restart', '')
+    if restart == 1:
+        pass # Leave the runtimename as is
+    else:
+        if not isempty(restart):
+            md.private.runtimename = restart
+        else:
+            if options.getfieldvalue('runtimename', True):
+                c = datetime.now()
+                md.private.runtimename = '%s-%02i-%02i-%04i-%02i-%02i-%02i-%i' % (md.miscellaneous.name, c.month, c.day, c.year, c.hour, c.minute, c.second, os.getpid())
+            else:
+                md.private.runtimename = md.miscellaneous.name
+
     # Do we load results only?
     if options.getfieldvalue('loadonly', False):
         md = loadresultsfromcluster(md)
@@ -105,20 +119,6 @@ def solve(md, solutionstring, *args):
             print('checking model consistency')
         ismodelselfconsistent(md)
 
-    # If we are restarting, actually use the provided runtime name
-    restart = options.getfieldvalue('restart', '')
-    # First, build a runtime name that is unique
-    if restart == 1:
-        pass # Leave the runtimename as is
-    else:
-        if not isempty(restart):
-            md.private.runtimename = restart
-        else:
-            if options.getfieldvalue('runtimename', True):
-                c = datetime.now()
-                md.private.runtimename = '%s-%02i-%02i-%04i-%02i-%02i-%02i-%i' % (md.miscellaneous.name, c.month, c.day, c.year, c.hour, c.minute, c.second, os.getpid())
-            else:
-                md.private.runtimename = md.miscellaneous.name
 
     # If running QMU analysis, some preprocessing of Dakota files using model 
     # fields needs to be carried out

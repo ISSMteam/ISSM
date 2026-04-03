@@ -83,6 +83,21 @@ else
 end
 options=pairoptions(varargin{:},'solutionstring',solutionstring);
 
+%If we are restarting, actually use the provided runtime name:
+restart=getfieldvalue(options,'restart','');
+if restart==1 
+	%Leave the runtimename as is
+else
+	if ~isempty(restart)
+		md.private.runtimename=restart;
+	elseif getfieldvalue(options,'runtimename',true)
+		c=clock;
+		md.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',md.miscellaneous.name,c(2),c(3),c(1),c(4),c(5),floor(c(6)),feature('GetPid'));
+	else
+		md.private.runtimename=md.miscellaneous.name;
+	end
+end
+
 %Do we load results only?
 if getfieldvalue(options,'loadonly',false)
 	md=loadresultsfromcluster(md);
@@ -99,27 +114,11 @@ else
 end
 
 %check model consistency
-if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes'),
+if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
 	if md.verbose.solution,
 		disp('checking model consistency');
 	end
 	ismodelselfconsistent(md);
-end
-
-%If we are restarting, actually use the provided runtime name:
-restart=getfieldvalue(options,'restart','');
-%First, build a runtime name that is unique
-if restart==1 
-	%Leave the runtimename as is
-else
-	if ~isempty(restart),
-		md.private.runtimename=restart;
-	elseif getfieldvalue(options,'runtimename',true),
-		c=clock;
-		md.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',md.miscellaneous.name,c(2),c(3),c(1),c(4),c(5),floor(c(6)),feature('GetPid'));
-	else
-		md.private.runtimename=md.miscellaneous.name;
-	end
 end
 
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out. 
