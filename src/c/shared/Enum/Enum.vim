@@ -85,6 +85,9 @@ syn keyword cConstant BasalforcingsIsmip6Gamma0Enum
 syn keyword cConstant BasalforcingsIsmip6IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip6NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip6TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7NumBasinsEnum
+syn keyword cConstant BasalforcingsIsmip7GammaEnum
 syn keyword cConstant BasalforcingsLinearNumBasinsEnum
 syn keyword cConstant BasalforcingsLinearNumBreaksEnum
 syn keyword cConstant BasalforcingsLinearNumParamsEnum
@@ -466,6 +469,7 @@ syn keyword cConstant SamplingRequestedOutputsEnum
 syn keyword cConstant SamplingRobinEnum
 syn keyword cConstant SamplingSeedEnum
 syn keyword cConstant SaveResultsEnum
+syn keyword cConstant SaveFinalResultsEnum
 syn keyword cConstant SolidearthPartitionIceEnum
 syn keyword cConstant SolidearthPartitionHydroEnum
 syn keyword cConstant SolidearthPartitionOceanEnum
@@ -774,6 +778,7 @@ syn keyword cConstant BalancethicknessOmegaEnum
 syn keyword cConstant BalancethicknessSpcthicknessEnum
 syn keyword cConstant BalancethicknessThickeningRateEnum
 syn keyword cConstant BasalCrevasseEnum
+syn keyword cConstant BasalforcingsCoriolisFEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRatearmaEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateNoiseEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateValuesAutoregressionEnum
@@ -793,6 +798,10 @@ syn keyword cConstant BasalforcingsIsmip6BasinIdEnum
 syn keyword cConstant BasalforcingsIsmip6TfEnum
 syn keyword cConstant BasalforcingsIsmip6TfShelfEnum
 syn keyword cConstant BasalforcingsIsmip6MeltAnomalyEnum
+syn keyword cConstant BasalforcingsIsmip7TfEnum
+syn keyword cConstant BasalforcingsIsmip7TfShelfEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityShelfEnum
 syn keyword cConstant BasalforcingsMeltrateFactorEnum
 syn keyword cConstant BasalforcingsOceanSalinityEnum
 syn keyword cConstant BasalforcingsOceanTempEnum
@@ -1188,6 +1197,7 @@ syn keyword cConstant SmbHrefEnum
 syn keyword cConstant SmbIsInitializedEnum
 syn keyword cConstant SmbMAddEnum
 syn keyword cConstant SmbMappedforcingpointEnum
+syn keyword cConstant SmbMappedforcingprecipscalingEnum
 syn keyword cConstant SmbMassBalanceEnum
 syn keyword cConstant SmbMassBalanceSnowEnum
 syn keyword cConstant SmbMassBalanceIceEnum
@@ -3392,6 +3402,7 @@ syn keyword cConstant BalancethicknessSolutionEnum
 syn keyword cConstant BalancevelocityAnalysisEnum
 syn keyword cConstant BalancevelocitySolutionEnum
 syn keyword cConstant BasalforcingsIsmip6Enum
+syn keyword cConstant BasalforcingsIsmip7Enum
 syn keyword cConstant BasalforcingsPicoEnum
 syn keyword cConstant BeckmannGoosseFloatingMeltRateEnum
 syn keyword cConstant BedSlopeSolutionEnum
@@ -3691,6 +3702,7 @@ syn keyword cConstant SMBmeltcomponentsEnum
 syn keyword cConstant SMBpddEnum
 syn keyword cConstant SMBpddSicopolisEnum
 syn keyword cConstant SMBpddGCMEnum
+syn keyword cConstant SMBpddFastEnum
 syn keyword cConstant SMBsemicEnum
 syn keyword cConstant SSAApproximationEnum
 syn keyword cConstant SSAFSApproximationEnum
@@ -3750,6 +3762,7 @@ syn keyword cConstant TotalFloatingBmbEnum
 syn keyword cConstant TotalFloatingBmbScaledEnum
 syn keyword cConstant TotalGroundedBmbEnum
 syn keyword cConstant TotalGroundedBmbScaledEnum
+syn keyword cConstant TotalHydrologyBasalFluxEnum
 syn keyword cConstant TotalSmbEnum
 syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum
@@ -3949,7 +3962,6 @@ syn keyword cType FreeSurfaceBaseAnalysis
 syn keyword cType FreeSurfaceTopAnalysis
 syn keyword cType GLheightadvectionAnalysis
 syn keyword cType HydrologyArmapwAnalysis
-syn keyword cType HydrologyCuasAnalysis
 syn keyword cType HydrologyDCEfficientAnalysis
 syn keyword cType HydrologyDCInefficientAnalysis
 syn keyword cType HydrologyGlaDSAnalysis

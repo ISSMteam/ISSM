@@ -109,7 +109,9 @@ jobs:
           ${{ inputs.build_command }}
 
       - name: Compile ISSM
-        run: make -j4 install
+        run: |
+          make -j4 
+          make install
 
       - name: Compress ISSM artifact
         run: |

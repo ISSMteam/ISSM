@@ -87,6 +87,9 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6IsLocalEnum : return "BasalforcingsIsmip6IsLocal";
 		case BasalforcingsIsmip6NumBasinsEnum : return "BasalforcingsIsmip6NumBasins";
 		case BasalforcingsIsmip6TfDepthsEnum : return "BasalforcingsIsmip6TfDepths";
+		case BasalforcingsIsmip7TfDepthsEnum : return "BasalforcingsIsmip7TfDepths";
+		case BasalforcingsIsmip7NumBasinsEnum : return "BasalforcingsIsmip7NumBasins";
+		case BasalforcingsIsmip7GammaEnum : return "BasalforcingsIsmip7Gamma";
 		case BasalforcingsLinearNumBasinsEnum : return "BasalforcingsLinearNumBasins";
 		case BasalforcingsLinearNumBreaksEnum : return "BasalforcingsLinearNumBreaks";
 		case BasalforcingsLinearNumParamsEnum : return "BasalforcingsLinearNumParams";
@@ -777,6 +780,7 @@ const char* EnumToStringx(int en){
 		case BalancethicknessSpcthicknessEnum : return "BalancethicknessSpcthickness";
 		case BalancethicknessThickeningRateEnum : return "BalancethicknessThickeningRate";
 		case BasalCrevasseEnum : return "BasalCrevasse";
+		case BasalforcingsCoriolisFEnum : return "BasalforcingsCoriolisF";
 		case BasalforcingsDeepwaterMeltingRatearmaEnum : return "BasalforcingsDeepwaterMeltingRatearma";
 		case BasalforcingsDeepwaterMeltingRateNoiseEnum : return "BasalforcingsDeepwaterMeltingRateNoise";
 		case BasalforcingsDeepwaterMeltingRateValuesAutoregressionEnum : return "BasalforcingsDeepwaterMeltingRateValuesAutoregression";
@@ -796,6 +800,10 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6TfEnum : return "BasalforcingsIsmip6Tf";
 		case BasalforcingsIsmip6TfShelfEnum : return "BasalforcingsIsmip6TfShelf";
 		case BasalforcingsIsmip6MeltAnomalyEnum : return "BasalforcingsIsmip6MeltAnomaly";
+		case BasalforcingsIsmip7TfEnum : return "BasalforcingsIsmip7Tf";
+		case BasalforcingsIsmip7TfShelfEnum : return "BasalforcingsIsmip7TfShelf";
+		case BasalforcingsIsmip7SalinityEnum : return "BasalforcingsIsmip7Salinity";
+		case BasalforcingsIsmip7SalinityShelfEnum : return "BasalforcingsIsmip7SalinityShelf";
 		case BasalforcingsMeltrateFactorEnum : return "BasalforcingsMeltrateFactor";
 		case BasalforcingsOceanSalinityEnum : return "BasalforcingsOceanSalinity";
 		case BasalforcingsOceanTempEnum : return "BasalforcingsOceanTemp";
@@ -1191,6 +1199,7 @@ const char* EnumToStringx(int en){
 		case SmbIsInitializedEnum : return "SmbIsInitialized";
 		case SmbMAddEnum : return "SmbMAdd";
 		case SmbMappedforcingpointEnum : return "SmbMappedforcingpoint";
+		case SmbMappedforcingprecipscalingEnum : return "SmbMappedforcingprecipscaling";
 		case SmbMassBalanceEnum : return "SmbMassBalance";
 		case SmbMassBalanceSnowEnum : return "SmbMassBalanceSnow";
 		case SmbMassBalanceIceEnum : return "SmbMassBalanceIce";
@@ -3395,6 +3404,7 @@ const char* EnumToStringx(int en){
 		case BalancevelocityAnalysisEnum : return "BalancevelocityAnalysis";
 		case BalancevelocitySolutionEnum : return "BalancevelocitySolution";
 		case BasalforcingsIsmip6Enum : return "BasalforcingsIsmip6";
+		case BasalforcingsIsmip7Enum : return "BasalforcingsIsmip7";
 		case BasalforcingsPicoEnum : return "BasalforcingsPico";
 		case BeckmannGoosseFloatingMeltRateEnum : return "BeckmannGoosseFloatingMeltRate";
 		case BedSlopeSolutionEnum : return "BedSlopeSolution";
@@ -3694,6 +3704,7 @@ const char* EnumToStringx(int en){
 		case SMBpddEnum : return "SMBpdd";
 		case SMBpddSicopolisEnum : return "SMBpddSicopolis";
 		case SMBpddGCMEnum : return "SMBpddGCM";
+		case SMBpddFastEnum : return "SMBpddFast";
 		case SMBsemicEnum : return "SMBsemic";
 		case SSAApproximationEnum : return "SSAApproximation";
 		case SSAFSApproximationEnum : return "SSAFSApproximation";
@@ -3753,6 +3764,7 @@ const char* EnumToStringx(int en){
 		case TotalFloatingBmbScaledEnum : return "TotalFloatingBmbScaled";
 		case TotalGroundedBmbEnum : return "TotalGroundedBmb";
 		case TotalGroundedBmbScaledEnum : return "TotalGroundedBmbScaled";
+		case TotalHydrologyBasalFluxEnum : return "TotalHydrologyBasalFlux";
 		case TotalSmbEnum : return "TotalSmb";
 		case TotalSmbScaledEnum : return "TotalSmbScaled";
 		case TotalSmbRefreezeEnum : return "TotalSmbRefreeze";

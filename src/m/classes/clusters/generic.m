@@ -32,7 +32,7 @@ classdef generic
 		function cluster=generic(varargin) % {{{
 
 			%Change the defaults if ispc
-			if ispc,
+			if ispc
 				cluster.codepath      = [issmdir() '\bin'];
 				cluster.etcpath       = [issmdir() '\etc'];
 				cluster.executionpath = [issmdir() '\execution'];

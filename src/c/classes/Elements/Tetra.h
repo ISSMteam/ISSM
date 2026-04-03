@@ -165,6 +165,7 @@ class Tetra: public Element,public ElementHook,public TetraRef{
 		IssmDouble  TimeAdapt(){_error_("not implemented yet");};
 		IssmDouble  TotalFloatingBmb(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalGroundedBmb(bool scaled){_error_("not implemented yet");};
+		IssmDouble  TotalHydrologyBasalFlux(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmb(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmbMelt(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmbRefreeze(bool scaled){_error_("not implemented yet");};

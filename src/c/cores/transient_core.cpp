@@ -177,13 +177,13 @@ void transient_step(FemModel* femmodel){/*{{{*/
 			femmodel->parameters->FindParam(&isenthalpy,ThermalIsenthalpyEnum);
 			femmodel->parameters->FindParam(&smb_model,SmbEnum);
 			if(isenthalpy){
-				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum){
+				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum || smb_model==SMBpddFastEnum){
 					femmodel->SetCurrentConfiguration(EnthalpyAnalysisEnum);
 					ResetBoundaryConditions(femmodel,EnthalpyAnalysisEnum);
 				}
 			}
 			else{
-				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum){
+				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum || smb_model==SMBpddFastEnum){
 					femmodel->SetCurrentConfiguration(ThermalAnalysisEnum);
 					ResetBoundaryConditions(femmodel,ThermalAnalysisEnum);
 				}

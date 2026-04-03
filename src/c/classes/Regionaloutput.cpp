@@ -139,6 +139,9 @@ IssmDouble Regionaloutput::Response(FemModel* femmodel){/*{{{*/
 			case TotalGroundedBmbScaledEnum:
 				val_t+=element->TotalGroundedBmb(this->mask,true);
 				break;
+			case TotalHydrologyBasalFluxEnum:
+				val_t+=element->TotalHydrologyBasalFlux(this->mask,false);
+				break;
 			case TotalSmbEnum:
 				val_t+=element->TotalSmb(this->mask,false);
 				break;

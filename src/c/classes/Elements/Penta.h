@@ -200,6 +200,7 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		IssmDouble		TotalCalvingMeltingFluxLevelset(bool scaled);
 		IssmDouble     TotalFloatingBmb(bool scaled);
 		IssmDouble     TotalGroundedBmb(bool scaled);
+		IssmDouble     TotalHydrologyBasalFlux(bool scaled){_error_("not implemented yet");};
 		IssmDouble     TotalSmb(bool scaled);
 		IssmDouble     TotalSmbMelt(bool scaled);
 		IssmDouble     TotalSmbRefreeze(bool scaled);

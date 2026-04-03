@@ -35,6 +35,7 @@ void ThermalAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomode
 		if(smb_model==SMBpddEnum)				isdynamic=true;
 		if(smb_model==SMBd18opddEnum)			isdynamic=true;
 		if(smb_model==SMBpddSicopolisEnum)  isdynamic=true;
+		if(smb_model==SMBpddFastEnum)       isdynamic=true;
 	}
 	else{
 		_error_("Solution "<<EnumToStringx(iomodel->solution_enum)<<" not supported yet");

@@ -356,6 +356,17 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
+void PositiveDegreeDayFastx(FemModel* femmodel){/*{{{*/
+
+	bool isfirnwarming;
+	femmodel->parameters->FindParam(&isfirnwarming,SmbIsfirnwarmingEnum);
+
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->PositiveDegreeDayFast(isfirnwarming);
+	}
+
+}/*}}}*/
 void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	IssmDouble* x = NULL;
 	IssmDouble* y = NULL;

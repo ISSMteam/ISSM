@@ -18,12 +18,12 @@ md.private.runtimename = getfieldvalue(options,'runtimename',md.private.runtimen
 cluster=md.cluster;
 
 %Download outputs from the cluster
-if ~nolog,
+if ~nolog
 	filelist={[md.miscellaneous.name '.outlog'],[md.miscellaneous.name '.errlog']};
 else
 	filelist={};
 end
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	filelist{end+1}=[md.miscellaneous.name '.qmu.err'];
 	filelist{end+1}=[md.miscellaneous.name '.qmu.out'];
 	if isfield(md.qmu.params,'tabular_graphics_data'),

@@ -23,7 +23,8 @@ int  SmbAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*
 void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	int    smb_model;
-	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic,ismappedforcing;
+	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic;
+	bool   ismappedforcing,isprecipforcingremapped;
 
 	/*Update elements: */
 	int counter=0;
@@ -49,6 +50,7 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		case SMBgembEnum:
 			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
+			iomodel->FindConstant(&isprecipforcingremapped,"md.smb.isprecipforcingremapped");
 			if (!ismappedforcing){
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
@@ -65,6 +67,9 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
 			} else {
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingpoint",SmbMappedforcingpointEnum);
+				if(isprecipforcingremapped){
+					iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingprecipscaling",SmbMappedforcingprecipscalingEnum);
+				}
 			}
 
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zTop",SmbZTopEnum);
@@ -114,6 +119,16 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			}
 			break;
 		case SMBpddSicopolisEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0p",SmbS0pEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
+			iomodel->FindConstant(&isfirnwarming,"md.smb.isfirnwarming");
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.smb_corr",SmbSmbCorrEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.precipitation_anomaly",SmbPrecipitationsAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.temperature_anomaly",SmbTemperaturesAnomalyEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.monthlytemperatures",SmbMonthlytemperaturesEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
+			break;
+		case SMBpddFastEnum:
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0p",SmbS0pEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
 			iomodel->FindConstant(&isfirnwarming,"md.smb.isfirnwarming");
@@ -335,6 +350,13 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			xDelete<IssmDouble>(temp);
 			break;
 		case SMBpddSicopolisEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_ice",PddfacIceEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_snow",PddfacSnowEnum));
+			break;
+		case SMBpddFastEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
@@ -674,6 +696,10 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 		case SMBpddSicopolisEnum:
 			if(VerboseSolution()) _printf0_("   call SICOPOLIS positive degree day module\n");
 			PositiveDegreeDaySicopolisx(femmodel);
+			break;
+		case SMBpddFastEnum:
+			if(VerboseSolution()) _printf0_("   call Fast positive degree day module\n");
+			PositiveDegreeDayFastx(femmodel);
 			break;
 		case SMBpddGCMEnum:
 			if(VerboseSolution()) _printf0_("   call positive degree day module based on downsacling GCM data\n");
