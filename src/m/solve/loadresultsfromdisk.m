@@ -68,7 +68,7 @@ if ~md.qmu.isdakota
 	end
 
 	if ~isempty(md.results.(structure(1).SolutionType)(1).errlog)
-		disp(['loadresultsfromdisk info message: error during solution. Check your errlog and outlog model fields']);
+		disp(['WARNING: possible error during solution. Check the errlog and outlog']);
 	end
 
 %postprocess qmu results if necessary
