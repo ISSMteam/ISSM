@@ -84,8 +84,21 @@ def plotmodel(md, *args):
             #Make axgrid using "subplots"
             axgrid = fig.subplots(nrows, ncols,
                                   sharex=share_all,sharey=share_all,
+                                  width_ratios=options.list[0].getfieldvalue('width_ratios',[1]*ncols),
+                                  height_ratios=options.list[0].getfieldvalue('height_ratios',[1]*nrows),
                                   squeeze=True)
+            if (nrows == 1) & (ncols == 1):
+                axgrid = [axgrid] # make axgrid iterable contents.
             axgrid = axgrid.flatten() # flattening...
+
+            for ax in axgrid:
+                ax.set_aspect('equal')
+
+            # Control axes vertical and horizontal spaces.
+            if options.list[0].exist('axes_pad'):
+                axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)
+                if len(axes_pad) == 1: axes_pad = 2*axes_pad
+                fig.subplots_adjust(wspace=axes_pad[0],hspace=axes_pad[1])
         else:
             # NOTE: The inline comments for each of the following parameters are
             #       taken from https://matplotlib.org/api/_as_gen/mpl_toolkits.axes_grid1.axes_grid.ImageGrid.html
