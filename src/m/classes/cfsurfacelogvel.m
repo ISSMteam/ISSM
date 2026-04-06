@@ -82,7 +82,7 @@ classdef cfsurfacelogvel
 			fielddisplay(self,'definitionstring','string that identifies this output definition uniquely, from ''Outputdefinition[1-10]''');
 			fielddisplay(self,'vxobs','observed field that we compare the model against');
 			fielddisplay(self,'vxobs_string','observation string');
-                        fielddisplay(self,'vyobs','observed field that we compare the model against');
+            fielddisplay(self,'vyobs','observed field that we compare the model against');
 			fielddisplay(self,'vyobs_string','observation string');
 			fielddisplay(self,'weights','weights (at vertices) to apply to the cfsurfacelogvel');
 			fielddisplay(self,'weights_string','string for weights for identification purposes');
