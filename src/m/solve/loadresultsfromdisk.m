@@ -56,7 +56,7 @@ if ~md.qmu.isdakota
 
 	%read log files onto fields (only keep the first 1000 lines!)
 	if exist([md.miscellaneous.name '.errlog'],'file')
-		errlog = readlines([md.miscellaneous.name '.errlog']);
+		errlog = readlines([md.miscellaneous.name '.errlog'],'EmptyLineRule','skip');
 		md.results.(structure(1).SolutionType)(1).errlog= errlog(1:min(1000, end));
 	else
 		md.results.(structure(1).SolutionType)(1).errlog='';
