@@ -6,20 +6,27 @@
 
 /*Model processing*/
 void HydrologyPrescribeAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
-
-	return;
-
+	/*Nothing to be done*/
 }/*}}}*/
 void HydrologyPrescribeAnalysis::CreateLoads(Loads* loads, IoModel* iomodel){/*{{{*/
-
-	return;
-
+	/*Nothing to be done*/
 }/*}}}*/
 void HydrologyPrescribeAnalysis::CreateNodes(Nodes* nodes,IoModel* iomodel,bool isamr){/*{{{*/
-	return;
+
+	/*Fetch parameters: */
+	int  hydrology_model;
+	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
+
+	/*Now, do we really want Prescribe?*/
+	if(hydrology_model!=HydrologyprescribeEnum) return;
+
+	if(iomodel->domaintype==Domain3DEnum) iomodel->FetchData(2,"md.mesh.vertexonbase","md.mesh.vertexonsurface");
+	::CreateNodes(nodes,iomodel,HydrologyPrescribeAnalysisEnum,P1Enum);
+	iomodel->DeleteData(2,"md.mesh.vertexonbase","md.mesh.vertexonsurface");
+
 }/*}}}*/
 int  HydrologyPrescribeAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*{{{*/
-	return 0;
+	return 1;
 }/*}}}*/
 void HydrologyPrescribeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
@@ -30,10 +37,26 @@ void HydrologyPrescribeAnalysis::UpdateElements(Elements* elements,Inputs* input
 	/*Now, do we really want Prescribe?*/
 	if(hydrology_model!=HydrologyprescribeEnum) return;
 
+	/*Update elements: */
+	int counter=0;
+	for(int i=0;i<iomodel->numberofelements;i++){
+		if(iomodel->my_elements[i]){
+			Element* element=(Element*)elements->GetObjectByOffset(counter);
+			element->Update(inputs,i,iomodel,analysis_counter,analysis_type,P1Enum);
+			counter++;
+		}
+	}
+
 	/*Add input to elements*/
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ice_levelset",MaskIceLevelsetEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ocean_levelset",MaskOceanLevelsetEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.head",HydrologyHeadEnum);
+
+	iomodel->FetchDataToInput(inputs,elements,"md.geometry.thickness",ThicknessEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.geometry.base",BaseEnum);
+
+	/*Initialize requested outputs in case they are not defined later for this partition*/
+	iomodel->ConstantToInput(inputs,elements,0.,EffectivePressureEnum,P1Enum);
 }/*}}}*/
 void HydrologyPrescribeAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int solution_enum,int analysis_enum){/*{{{*/
 
@@ -44,7 +67,7 @@ void HydrologyPrescribeAnalysis::UpdateParameters(Parameters* parameters,IoModel
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
 	/*Now, do we really want Prescribe?*/
-	if(hydrology_model!=HydrologypismEnum) return;
+	if(hydrology_model!=HydrologyprescribeEnum) return;
 	parameters->AddObject(new IntParam(HydrologyModelEnum,hydrology_model));
 
 	/*Requested outputs*/
@@ -101,7 +124,6 @@ void HydrologyPrescribeAnalysis::UpdateEffectivePressure(FemModel* femmodel){/*{
 void HydrologyPrescribeAnalysis::UpdateEffectivePressure(Element* element){/*{{{*/
 
 	/*Skip if water or ice shelf element*/
-	if(element->IsAllFloating() || !element->IsIceInElement()) return;
 	if(!element->IsOnBase()) return;
 
 	/*Intermediaries*/
@@ -121,7 +143,7 @@ void HydrologyPrescribeAnalysis::UpdateEffectivePressure(Element* element){/*{{{
 
    Gauss* gauss=element->NewGauss();
    for (int i=0;i<numnodes;i++){
-      gauss->GaussNode(element->GetElementType(),i);
+      gauss->GaussVertex(i);
 
 		base_input->GetInputValue(&bed,gauss);
 		thickness_input->GetInputValue(&thickness,gauss);
@@ -139,7 +161,7 @@ void HydrologyPrescribeAnalysis::UpdateEffectivePressure(Element* element){/*{{{
    }
 
 	/*Add new gap as an input*/
-	element->AddBasalInput(EffectivePressureEnum,N,element->GetElementType());
+	element->AddInput(EffectivePressureEnum,N,P1Enum);
 
 	/*Clean up and return*/
    xDelete<IssmDouble>(N);
