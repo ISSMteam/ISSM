@@ -403,6 +403,14 @@ classdef model
 				md.smb.mass_balance=project2d(md,md.smb.mass_balance,md.mesh.numberoflayers); 
 			elseif isa(md.smb,'SMBhenning') & ~isnan(md.smb.smbref),
 				md.smb.smbref=project2d(md,md.smb.smbref,md.mesh.numberoflayers);
+			elseif isa(md.smb, 'SMBpddSicopolis');
+				md.smb.s0p = project2d(md, md.smb.s0p, md.mesh.numberoflayers);
+				md.smb.s0t = project2d(md, md.smb.s0t, md.mesh.numberoflayers);
+				md.smb.smb_corr = project2d(md, md.smb.smb_corr, md.mesh.numberoflayers);
+				md.smb.monthlytemperatures = project2d(md, md.smb.monthlytemperatures, md.mesh.numberoflayers);
+				md.smb.temperature_anomaly = project2d(md, md.smb.temperature_anomaly, md.mesh.numberoflayers);
+				md.smb.precipitation       = project2d(md, md.smb.precipitation, md.mesh.numberoflayers);
+				md.smb.precipitation_anomaly = project2d(md, md.smb.precipitation_anomaly, md.mesh.numberoflayers);
 			end
 
 			%results
@@ -442,7 +450,6 @@ classdef model
 			if ~isnan(md.initialization.debris),
 				md.initialization.debris=project2d(md,md.initialization.debris,1);
 			end
-
 
 			%elementstype
 			if ~isnan(md.flowequation.element_equation)
