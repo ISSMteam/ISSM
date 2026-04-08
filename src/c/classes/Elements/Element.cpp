@@ -2553,8 +2553,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 		slope = sqrt(pow(dbase[0],2)+pow(dbase[1],2));
 		theta = atan(slope);
 
-		basalmeltrate[i] = gamma0*sin(theta)*(rhow/rhoi)*pow(cp/lf,2.0)*betaS*salinity*g/2.0/abs(coriolis)*abs(tf)*tf;
-
+		basalmeltrate[i] = gamma0*sin(theta)*(rhow/rhoi)*pow(cp/lf,2)*betaS*salinity*g/2.0/fabs(coriolis)*fabs(tf)*tf;
 	}
 
 	/*Return basal melt rate*/

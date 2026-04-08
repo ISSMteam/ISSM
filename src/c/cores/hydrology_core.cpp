@@ -271,7 +271,7 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
    /*Using the prescribed hydrology model*/
    else if (hydrology_model==HydrologyprescribeEnum){
       femmodel->SetCurrentConfiguration(HydrologyPrescribeAnalysisEnum);
-      if(VerboseSolution()) _printf0_("   updating subglacial water pressure\n");
+      if(VerboseSolution()) _printf0_("   updating effective pressure\n");
       HydrologyPrescribeAnalysis* analysis = new HydrologyPrescribeAnalysis();
       analysis->UpdateEffectivePressure(femmodel);
       delete analysis;
