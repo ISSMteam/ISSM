@@ -142,6 +142,8 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyMeltRateEnum,P0Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyFrictionHeatEnum,P0Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,HydrologyDissipationEnum,P0Enum);
+	/* FIXME: 'EffectivePressure' in md.hydrology.requested_outputs sometimes causes an error indicating that ISSM cannot write EffectivePressure. Therefore, this line was added to resolve this issue. This line should be tracked to determine whether it remains necessary in the future. */
+	iomodel->ConstantToInput(inputs,elements,0.,EffectivePressureEnum,P1Enum);
 
 	/*Friction*/
 	FrictionUpdateInputs(elements, inputs, iomodel);
