@@ -507,6 +507,12 @@ classdef model
 			if isprop(md.basalforcings,'floatingice_melting_rate') & ~isnan(md.basalforcings.floatingice_melting_rate),
 				md.basalforcings.floatingice_melting_rate=project2d(md,md.basalforcings.floatingice_melting_rate,1); 
 			end
+			if isprop(md.basalforcings,'deepwater_melting_rate')
+				md.basalforcings.deepwater_melting_rate = project2d(md,md.basalforcings.deepwater_melting_rate,1);
+				md.basalforcings.deepwater_elevation = project2d(md,md.basalforcings.deepwater_elevation,1);
+				md.basalforcings.upperwater_melting_rate = project2d(md,md.basalforcings.upperwater_melting_rate,1);
+				md.basalforcings.upperwater_elevation = project2d(md,md.basalforcings.upperwater_elevation,1);
+			end
 			md.basalforcings.geothermalflux=project2d(md,md.basalforcings.geothermalflux,1); %bedrock only gets geothermal flux
 
 			if isprop(md.calving,'coeff') & ~isnan(md.calving.coeff),
