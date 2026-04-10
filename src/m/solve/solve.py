@@ -106,7 +106,6 @@ def solve(md, solutionstring, *args):
         return md
 
     # Recover some fields
-    md.private.solution = solutionstring
     cluster = md.cluster
     if options.getfieldvalue('batch', 'no') == 'yes':
         batch = 1
@@ -115,6 +114,7 @@ def solve(md, solutionstring, *args):
 
     # Check model consistency
     if options.getfieldvalue('checkconsistency', 'yes') == 'yes':
+        md.private.solution = solutionstring
         if md.verbose.solution:
             print('checking model consistency')
         ismodelselfconsistent(md)
@@ -126,7 +126,7 @@ def solve(md, solutionstring, *args):
         md = preqmu(md, options)
 
     # Write all input files
-    marshall(md) # bin file
+    marshall(md, md.miscellaneous.name + '.bin') # bin file
     md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits') # toolkits file
     cluster.BuildQueueScript(md.private.runtimename, md.miscellaneous.name, md.private.solution, md.settings.io_gather, md.debug.valgrind, md.debug.gprof, md.qmu.isdakota, md.transient.isoceancoupling) # queue file
 
