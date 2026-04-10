@@ -1837,7 +1837,7 @@ classdef model
 			save('id','md');
 
 			%Now, upload the file: 
-			issmscpout(md.settings.upload_server,md.settings.upload_path,md.settings.upload_login,md.settings.upload_port,{id},1);
+			issmscpout(md.settings.upload_server,md.settings.upload_path,md.settings.upload_login,md.settings.upload_port,{id});
 
 			%Now, empty this model of everything except settings, and record name of file we just uploaded!
 			settings_back=md.settings;
@@ -1847,7 +1847,6 @@ classdef model
 
 			%get locally rid of file that was uploaded
 			delete(id);
-
 		end % }}}
 		function md=download(md) % {{{
 

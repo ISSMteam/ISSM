@@ -3,11 +3,11 @@ import subprocess
 from MatlabFuncs import *
 
 
-def issmscpout(host, path, login, port, packages, no_symlinks=0, bracketstyle=1):
+def issmscpout(host, path, login, port, packages, , bracketstyle=1):
     """issmscpout send files to host
 
     Usage:
-        issmscpout(host, path, login, port, packages, no_symlinks, bracketstyle)
+        issmscpout(host, path, login, port, packages,  bracketstyle)
 
         bracketstyle:   1 - \\{\\}    (escaped; default)
                         2 - {}      (not escaped)
@@ -24,10 +24,7 @@ def issmscpout(host, path, login, port, packages, no_symlinks=0, bracketstyle=1)
                 os.remove(os.path.join(path, package))
             except OSError:
                 pass
-            if no_symlinks:
-                subprocess.call('cp {} {}'.format(package, path), shell=True)
-            else:
-                subprocess.call('ln -s {} {}'.format(os.path.join(here, package), path), shell=True)
+            subprocess.call('ln -s {} {}'.format(os.path.join(here, package), path), shell=True)
 
     # General case: this is not a local machine
     else:
