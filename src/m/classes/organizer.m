@@ -237,24 +237,37 @@ classdef organizer < handle
 		function savemodel(org,md) % {{{
 
 			%check
-			if (org.currentstep==0), error('Cannot save model because organizer (org) is empty! Make sure you did not skip any perform call'); end
-			if (org.currentstep>length(org.steps)), error('Cannot save model because organizer (org) is not up to date!'); end
+			if (org.currentstep==0)
+				error('Cannot save model because organizer (org) is empty! Make sure you did not skip any perform call');
+			end
+			if (org.currentstep>length(org.steps))
+				error('Cannot save model because organizer (org) is not up to date!');
+			end
+			if ~isa(md,'model') & ~isa(md,'sealevelmodel')
+				warning('second argument is not a model');
+			end
 
+			%File name to save the model
 			name=[org.repository '/' org.prefix org.steps(org.currentstep).string ];
-			disp(['saving model as: ' name]);
 
 			%Skip if requested
-			if org.skipio,
+			if org.skipio
 				disp(['WARNING: Skipping saving ' name]);
 				return;
 			end
 
-			%check that md is a model
-			if ~isa(md,'model') & ~isa(md,'sealevelmodel'), warning('second argument is not a model'); end
-			if (org.currentstep>length(org.steps)), error(['organizer error message: element with id ' num2str(org.currentstep) ' not found']); end
+			% which format needs to be used?
+			% v7.3: zlib compression (HDF5, slower read/write) >2Gb
+			% v6  : No compression → fastest read/write, 2Gb limit
+			mdSizeGB = whos('md').bytes / (1024^3);
+			if mdSizeGB > 2
+				disp(['saving model (' num2str(mdSizeGB, '%.2f') ' GB → v7.3) as ' name]);
+				save(name,'md','-v7.3');
+			else
+				disp(['saving model (' num2str(mdSizeGB, '%.2f') ' GB → v6) as ' name]);
+				save(name,'md');
+			end
 
-			%save model
-			save(name,'md','-v7.3');
 		end%}}}
 		function savedata(org,varargin) % {{{
 
