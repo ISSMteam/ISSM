@@ -71,22 +71,32 @@ classdef yellowstone
 
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			executable='issm.exe';
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
 				if (version>=6),
 					executable='issm_dakota.exe';
 				end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/tcsh\n');
 			fprintf(fid,'#BSUB -P %s\n',cluster.grouplist);
 			fprintf(fid,'#BSUB -W %i:%i\n',floor(cluster.time/60),cluster.time-floor(cluster.time/60)*60);
@@ -116,7 +126,6 @@ classdef yellowstone
 
 			fprintf(fid,'mpirun.lsf %s/%s %s %s %s\n',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			fclose(fid);
-
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
 

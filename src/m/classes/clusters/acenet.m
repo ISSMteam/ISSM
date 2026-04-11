@@ -8,19 +8,14 @@
 classdef acenet
 	properties (SetAccess=public)
 		% {{{
-		%name='glacdyn.ace-net.ca'
 		name='placentia.ace-net.ca'
-		%name='brasdor.ace-net.ca'
-		login='klemorza';
+		login='';
 		np=10;
 		port=0;
 		queue='longq';
 		time=10;
-		% codepath='/usr/local/issm-r11321/bin'; % this one is for issm on acenet global
-		codepath='/home/klemorza/issm/trunk-jpl/bin'; % this one is for issm on my acenet directory
-		%executionpath='/home/klemorza/issm/trunk-jpl/execution';
-		%executionpath='/home/klemorza/scratch/issmres.dir';
-		executionpath='/net/glacdyn-data/glacdyn/1/klemorza/issm.dir';
+		codepath='';
+		executionpath='';
 		%}}}
 	end
 	methods
@@ -55,24 +50,28 @@ classdef acenet
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.np,cluster.time)
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+			%Get variables from md
+			dirname         = md.private.runtimename;
+			modelname       = md.miscellaneous.name;
+			solution        = md.private.solution;
+			io_gather       = md.settings.io_gather;
+			isvalgrind      = md.debug.valgrind;
+			isgprof         = md.debug.gprof;
+			isdakota        = md.qmu.isdakota;
+			isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#$ -cwd\n');
 
 			fprintf(fid,'#$ -N issm\n');
-			% fprintf(fid,'#$ -l h_rt=00:15:00\n');
-			% fprintf(fid,'#$ -l h_rt=5:00:0\n');
-			% fprintf(fid,'#$ -l h_rt=25:00:0\n');
-			% fprintf(fid,'#$ -l h_rt=47:59:00\n');
-			% fprintf(fid,'#$ -l h_rt=72:00:0\n');
-			% fprintf(fid,'#$ -l h_rt=96:00:0\n');
-			% fprintf(fid,'#$ -l h_rt=336:00:0\n');
 			tstr = sprintf('#$ -l h_rt=%i:00:00\n',cluster.time);
 			fprintf(fid,tstr);
 
@@ -81,12 +80,6 @@ classdef acenet
 			if strcmp(cluster.executionpath,'/home/klemorza/scratch/issmres.dir')
 				% ---- Which acent queue to use ----
 				fprintf(fid,'#$ -q short.q@*,medium.q@*\n');
-				%fprintf(fid,'#$ -q medium.q@*,long.q@*\n');
-				%fprintf(fid,'#$ -q medium.q@*\n');
-				%fprintf(fid,'#$ -q short.q@*\n');
-				% Acenet nodes with 16cpus and more than 60G mem
-				% fprintf(fid,'#$ -l h=cl001|cl002|cl003|cl004|cl005|cl006|cl007|cl008|cl009|cl010|cl011|cl012|cl021|cl022|cl023|cl024 \n');
-				% ---- cpus on different nodes ----
 				if cluster.np==4
 					% -------- All cpus in the same node --------          
 					fprintf(fid,'#$ -pe openmp %i\n',cluster.np);
@@ -95,42 +88,28 @@ classdef acenet
 				end
 
 			elseif strcmp(cluster.executionpath,'/net/glacdyn-data/glacdyn/1/klemorza/issm.dir')
-				% ---- Which node for Lev's queue are selected ----
 				fprintf(fid,'#$ -q tarasov.q\n');
 				fprintf(fid,'#$ -l h=cl27*|cl28*|cl29*|cl30*|cl31*|cl320|cl267|cl268|cl269|cl338 \n');
-				%fprintf(fid,'#$ -l h=cl27*|cl28*|cl29*|cl30*|cl31*|cl320|cl267|cl268|cl269 \n');
-				%fprintf(fid,'#$ -l h=cl0* \n');
-				% fprintf(fid,'#$ -l h=cl338 \n');
 				
 				if cluster.np==4
 					% -------- All cpus in the same node --------          
 					fprintf(fid,'#$ -pe openmp %i\n',cluster.np);
 				else
 					fprintf(fid,'#$ -pe ompi* %i\n',cluster.np);
-					%fprintf(fid,'#$ -pe 4per %i\n',cluster.np);
-					%fprintf(fid,'#$ -pe 8per %i\n',cluster.np);
 				end
 			end
 						
-			% ---- misc ----
 			fprintf(fid,'#$ -j y\n');
-			
 			fprintf(fid,'module purge\n');
-			%fprintf(fid,'module load gcc openmpi/gcc\n');
-			%fprintf(fid,'module unload openmpi\n');
 			fprintf(fid,'module load intel/12.1.7.367\n');
 			fprintf(fid,'module load openmpi/intel/1.2.9\n');
-
 			fprintf(fid,'module load gsl\n');
-			%fprintf(fid,'module load issm\n');
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
 			fprintf(fid,'\n');
 			fprintf(fid,'mpiexec %s/issm.exe %s %s %s 2> %s.errlog >%s.outlog\n',...
 					cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
-			%fprintf(fid,'echo $HOSTNAME >>%s.outlog',modelname);
 			fclose(fid);
-
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
@@ -146,7 +125,6 @@ classdef acenet
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 
 		end %}}}
-
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{
 
 			%Execute Queue job
@@ -158,7 +136,6 @@ classdef acenet
 			end
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end %}}}
-
 		function Download(cluster,dirname,filelist) % {{{
 
 			%copy files from cluster to current directory

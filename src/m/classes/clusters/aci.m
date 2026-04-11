@@ -59,13 +59,24 @@ classdef aci
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+			%checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#PBS -A %s\n', cluster.queue); %open or brp106....
 			fprintf(fid,'#PBS -l nodes=%i:ppn=%i:stmem\n',cluster.nodes,cluster.ppn);
 			fprintf(fid,'#PBS -l walltime=%i\n',cluster.time*60); % walltime is in seconds

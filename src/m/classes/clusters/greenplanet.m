@@ -68,38 +68,24 @@ classdef greenplanet
 
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
-			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
-			fprintf(fid,'#!/bin/bash\n');
-			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
-			fprintf(fid,'#SBATCH -p %s \n',cluster.queue);
-			fprintf(fid,'#SBATCH -N %i -n %i\n',cluster.numnodes,cluster.cpuspernode);
-			fprintf(fid,'#SBATCH --time=%i\n',cluster.time*60); %walltime is in seconds.
-			fprintf(fid,'#SBATCH --mem-per-cpu=%igb\n',cluster.memory);
-			fprintf(fid,'#SBATCH -o %s.outlog \n',modelname);
-			fprintf(fid,'#SBATCH -e %s.errlog \n\n',modelname);
-			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
-			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
-			fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname);
-			if ~io_gather, %concatenate the output files:
-				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-			end
-			fclose(fid);
-		end
-		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
-
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			fprintf(fid,'#SBATCH --partition=%s',cluster.queue{1});
@@ -133,10 +119,8 @@ classdef greenplanet
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{

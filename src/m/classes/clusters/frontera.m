@@ -72,13 +72,24 @@ classdef frontera
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,modelname,solution,io_gather,isvalgrind,isgprof) % {{{
+		function BuildKrigingQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#$ -N %s\n',modelname);
 			fprintf(fid,'#$ -q %s \n',cluster.queue);
@@ -97,25 +108,35 @@ classdef frontera
 			fclose(fid);
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6),
+				if (version>=6)
 					executable='issm_dakota.exe';
 				end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
-
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH -J %s \n',modelname);
 			fprintf(fid,'#SBATCH -p %s \n',cluster.queue);
@@ -132,10 +153,9 @@ classdef frontera
 				fprintf(fid,['module load ' cluster.modules{i} '\n']);
 			end
 
-			if isdakota,
+			if isdakota
 				fprintf(fid,'export KMP_AFFINITY="granularity=fine,compact,verbose" \n\n');
 			end
-
 
 			fprintf(fid,'export PATH="$PATH:."\n\n');
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
@@ -145,21 +165,18 @@ classdef frontera
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 			end
-
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.run'],'w');
 				fprintf(fid,'ibrun -np %i %s/%s %s %s %s\n',cluster.nprocs(),executable,cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 				if ~io_gather, %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{

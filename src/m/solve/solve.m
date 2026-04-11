@@ -127,14 +127,14 @@ if md.qmu.isdakota,
 end
 
 %Write all input files
-marshall(md);                                          % bin file
+marshall(md);                                                  % bin file
 ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']); % toolkits file
-BuildQueueScript(cluster,md.private.runtimename,md.miscellaneous.name,md.private.solution,md.settings.io_gather,md.debug.valgrind,md.debug.gprof,md.qmu.isdakota,md.transient.isoceancoupling); % queue file
+BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue']);   % queue file
 
 %Upload all required files
 modelname = md.miscellaneous.name;
 filelist  = {[modelname '.bin'] [modelname '.toolkits']};
-if ispc,
+if ispc
 	filelist{end+1}=[modelname '.bat'];
 else
 	filelist{end+1}=[modelname '.queue'];
@@ -144,7 +144,7 @@ if md.qmu.isdakota,
 	filelist{end+1} = [modelname '.qmu.in'];
 end
 
-if isempty(restart),
+if isempty(restart)
 	disp('uploading input files')
 	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist);
 end
@@ -153,32 +153,30 @@ end
 disp('launching solution sequence')
 LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
-%return if batch: 
+%return if batch:
 if batch
-	if md.verbose.solution
-		disp('batch mode requested: not launching job interactively');
-		disp('launch solution sequence on remote cluster by hand');
-	end
+	disp('batch mode requested: not launching job interactively');
+	disp('launch solution sequence on remote cluster by hand');
 	return;
 end
 
 %wait on lock
-if isnan(md.settings.waitonlock),
-	%load when user enters 'y'
-	disp('solution launched on remote cluster. log in to detect job completion.');
+if md.settings.waitonlock==0
+	disp('Model results must be loaded manually with md=loadresultsfromcluster(md);');
+	return
+elseif isnan(md.settings.waitonlock)
+	disp('solution launched on remote cluster. Log in to detect job completion.');
 	choice=input('Is the job successfully completed? (y/n)','s');
-	if ~strcmp(choice,'y'), 
+	if ~strcmp(choice,'y')
 		disp('Results not loaded... exiting'); 
+		return;
 	else
-		md=loadresultsfromcluster(md);
 	end
-elseif md.settings.waitonlock>0,
-	%wait for done file
-	done=waitonlock(md);
-	if md.verbose.solution,
-		disp('loading results from cluster');
-	end
-	md=loadresultsfromcluster(md);
-elseif md.settings.waitonlock==0,
-	 disp('Model results must be loaded manually with md=loadresultsfromcluster(md);');
+elseif md.settings.waitonlock>0
+	done = waitonlock(md);
+else
+	error('not supported');
 end
+
+if md.verbose.solution; disp('loading results from cluster'); end
+md=loadresultsfromcluster(md);
