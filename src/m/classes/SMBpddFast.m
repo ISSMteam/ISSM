@@ -27,6 +27,8 @@ classdef SMBpddFast
 			switch nargin
 				case 0
 					self=setdefaultparameters(self);
+				case 1
+					self=structtoobj(SMBpddFast(), varargin{1});
 				otherwise
 					error('constructor not supported');
 			end

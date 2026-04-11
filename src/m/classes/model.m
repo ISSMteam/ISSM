@@ -403,7 +403,7 @@ classdef model
 				md.smb.mass_balance=project2d(md,md.smb.mass_balance,md.mesh.numberoflayers); 
 			elseif isa(md.smb,'SMBhenning') & ~isnan(md.smb.smbref),
 				md.smb.smbref=project2d(md,md.smb.smbref,md.mesh.numberoflayers);
-			elseif isa(md.smb, 'SMBpddSicopolis');
+			elseif isa(md.smb, 'SMBpddSicopolis') || isa(md.smb, 'SMBpddFast');
 				md.smb.s0p = project2d(md, md.smb.s0p, md.mesh.numberoflayers);
 				md.smb.s0t = project2d(md, md.smb.s0t, md.mesh.numberoflayers);
 				md.smb.smb_corr = project2d(md, md.smb.smb_corr, md.mesh.numberoflayers);

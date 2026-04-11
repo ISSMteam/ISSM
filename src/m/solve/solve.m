@@ -105,7 +105,6 @@ if getfieldvalue(options,'loadonly',false)
 end
 
 %recover some fields
-md.private.solution=solutionstring;
 cluster=md.cluster;
 if strcmpi(getfieldvalue(options,'batch','no'),'yes')
 	batch=1;
@@ -115,21 +114,24 @@ end
 
 %check model consistency
 if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
-	if md.verbose.solution,
+	md.private.solution=solutionstring;
+	if md.verbose.solution
 		disp('checking model consistency');
 	end
 	ismodelselfconsistent(md);
 end
 
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out. 
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	md=preqmu(md,options);
 end
 
+%Prepare directory in execution
+
 %Write all input files
-marshall(md);                                                  % bin file
-ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']); % toolkits file
-BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue']);   % queue file
+marshall(md, [md.miscellaneous.name '.bin']);                    % bin file
+ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']);   % toolkits file
+BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue']); % queue file
 
 %Upload all required files
 modelname = md.miscellaneous.name;
