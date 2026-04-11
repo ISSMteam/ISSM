@@ -145,7 +145,7 @@ class generic(object):
             fid.close()
 
         else:  # Windows
-            fid = open(filename + '.bat', 'w')
+            fid = open(modelname + '.bat', 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/{}" {} "{}/{}" {} '.format(self.codepath, executable, solution, self.executionpath, dirname, modelname))
@@ -194,7 +194,7 @@ class generic(object):
             fid.close()
 
         else:    # Windows
-            fid = open(filename + '.bat', 'w')
+            fid = open(modelname + '.bat', 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/issm.exe" {} "{}/{}" {} '.format(self.codepath, solution, self.executionpath, modelname, modelname))
