@@ -32,6 +32,7 @@ class local(object):  # {{{
 
         # OK get other fields
         self = options.AssignObjectFields(self)
+        #}}}
 
     def __repr__(cluster):  # {{{
         # Display the object
@@ -57,17 +58,29 @@ class local(object):  # {{{
         return md
     # }}}
 
-    def BuildQueueScript(cluster, dirname, modelname, solution, io_gather, isvalgrind, isgporf, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         # Which executable are we calling?
         executable = 'issm.exe' # Default
 
         if isdakota:
             executable = 'issm_dakota.exe'
 
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('#!{}\n'.format(cluster.shell))
         fid.write('mpiexec -np {} {}/{} {} {} {}\n',cluster.np,cluster.codepath,executable,solution,'./',modelname)
         fid.close()
+        #}}}
 
     def UploadQueueJob(cluster, modelname, dirname, filelist):  # {{{
         # Do nothing really

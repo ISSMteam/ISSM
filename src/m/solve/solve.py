@@ -126,9 +126,9 @@ def solve(md, solutionstring, *args):
         md = preqmu(md, options)
 
     # Write all input files
-    marshall(md, md.miscellaneous.name + '.bin') # bin file
-    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits') # toolkits file
-    cluster.BuildQueueScript(md.private.runtimename, md.miscellaneous.name, md.private.solution, md.settings.io_gather, md.debug.valgrind, md.debug.gprof, md.qmu.isdakota, md.transient.isoceancoupling) # queue file
+    marshall(md, md.miscellaneous.name + '.bin')                   # bin file
+    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits')  # toolkits file
+    cluster.BuildQueueScript(md, md.miscellaneous.name + '.queue') # queue file
 
     # Upload all required files
     modelname = md.miscellaneous.name

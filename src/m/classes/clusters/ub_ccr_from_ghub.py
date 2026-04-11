@@ -88,7 +88,18 @@ class ub_ccr_from_ghub(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         if isgprof:
             print('gprof not supported by cluster, ignoring...')
 
@@ -102,7 +113,7 @@ class ub_ccr_from_ghub(object):
             executable = 'issm_ocean.exe'
 
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
 
         partition = 'general-compute'
         qos = 'general-compute'

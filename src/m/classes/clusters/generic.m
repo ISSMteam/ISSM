@@ -299,11 +299,7 @@ classdef generic
 					fprintf(fid,'mpiexec -np %i %s --leak-check=full --suppressions=%s %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',...
 						cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
 				end
-				if ~io_gather, %concatenate the output files:
-					fprintf(fid,'\ncat %s.outbin.* > %s.outbin',modelname,modelname);
-				end
 				fclose(fid);
-
 			else % Windows
 				error('not supported');
 			end

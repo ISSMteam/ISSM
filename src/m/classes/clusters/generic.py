@@ -86,21 +86,30 @@ class generic(object):
         return md
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         # Which executable are we calling?
         executable = 'issm.exe'  # default
-
         if isdakota:
             version = IssmConfig('_DAKOTA_VERSION_')
             version = float(version[0])
-            if version >= 6:
-                executable = 'issm_dakota.exe'
+            if version >= 6: executable = 'issm_dakota.exe'
         if isoceancoupling:
             executable = 'issm_ocean.exe'
 
         # Write queuing script
         if not ispc():
-            fid = open(modelname + '.queue', 'w')
+            fid = open(filename, 'w')
             fid.write('#!/bin/sh\n')
             if not isvalgrind:
                 if self.interactive:
@@ -136,7 +145,7 @@ class generic(object):
             fid.close()
 
         else:  # Windows
-            fid = open(modelname + '.bat', 'w')
+            fid = open(filename + '.bat', 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/{}" {} "{}/{}" {} '.format(self.codepath, executable, solution, self.executionpath, dirname, modelname))
@@ -153,10 +162,21 @@ class generic(object):
             fid.close()
     # }}}
 
-    def BuildKrigingQueueScript(self, modelname, solution, io_gather, isvalgrind, isgprof):  # {{{
+    def BuildKrigingQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         #write queuing script
         if not ispc():
-            fid = open(modelname + '.queue', 'w')
+            fid = open(filename, 'w')
             fid.write('#!/bin/sh\n')
             if not isvalgrind:
                 if self.interactive:
@@ -174,7 +194,7 @@ class generic(object):
             fid.close()
 
         else:    # Windows
-            fid = open(modelname + '.bat', 'w')
+            fid = open(filename + '.bat', 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/issm.exe" {} "{}/{}" {} '.format(self.codepath, solution, self.executionpath, modelname, modelname))
