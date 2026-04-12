@@ -89,8 +89,8 @@ classdef basalforcingsismip7
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   ISMIP7 basal melt rate parameterization:'));
-			fielddisplay(self,'num_basins','number of basins the model domain is partitioned into [unitless]');
-			fielddisplay(self,'basin_id','basin number assigned to each node (unitless)');
+			fielddisplay(self,'num_basins','[TODO] number of basins the model domain is partitioned into [unitless]');
+			fielddisplay(self,'basin_id','[TODO] basin number assigned to each node (unitless)');
 			fielddisplay(self,'gamma','melt rate coefficient (m/yr)');
 			fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset');
 			fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)');
