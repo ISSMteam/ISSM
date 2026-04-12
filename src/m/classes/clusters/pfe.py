@@ -148,7 +148,18 @@ class pfe(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         if isgprof:
             print('gprof not supported by cluster, ignoring...')
 
@@ -162,7 +173,7 @@ class pfe(object):
             executable = 'issm_ocean.exe'
 
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('#PBS -S /bin/bash\n')
         fid.write('#PBS -l select={}:ncpus={}:model={}\n'.format(self.numnodes, self.cpuspernode, self.processor))
         fid.write('#PBS -l walltime={}\n'.format(self.time * 60)) # walltime is in seconds
@@ -199,6 +210,7 @@ class pfe(object):
         issmscpout(self.name, directory, self.login, self.port, [dirname + '.tar.gz'])
 
     # }}}
+
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
         # Launch command, to be executed via ssh
         if self.interactive:
@@ -219,6 +231,7 @@ class pfe(object):
         issmssh(self.name, self.login, self.port, launchcommand)
 
     # }}}
+
     def Download(self, dirname, filelist):  # {{{
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)

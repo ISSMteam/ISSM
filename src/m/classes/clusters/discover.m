@@ -94,23 +94,34 @@ classdef discover
 
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isgprof) disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
 				if (version>=6),
 					executable='issm_dakota.exe';
 				end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
 			%write queuing script
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH -J %s \n',modelname);
@@ -150,30 +161,28 @@ classdef discover
 				else
 					fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/%s %s %s/%s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname);
 				end
-				if ~io_gather, %concatenate the output files:
+				if ~io_gather %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w'); % TODO: Change this to system call (touch <file>)?
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w'); % TODO: Change this to system call (touch <file>)?
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz'];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.run '  modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);
 
 			%upload input files
-			if cluster.interactive,
+			if cluster.interactive
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 			else 
 				directory=cluster.executionpath;

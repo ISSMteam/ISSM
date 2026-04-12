@@ -83,22 +83,31 @@ classdef generic
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
 			% Which executable are we calling?
 			executable='issm.exe'; % default
 
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_');
 				version=str2num(version(1:3));
-				if (version>=6),
-					executable='issm_dakota.exe';
-				end
+				if(version>=6) executable='issm_dakota.exe'; end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
-			if ~ispc(),
+			if ~ispc()
 				% Check that executable exists at the right path
 				if ~exist([cluster.codepath '/' executable],'file'),
 					error(['File ' cluster.codepath '/' executable ' does not exist']);
@@ -108,13 +117,13 @@ classdef generic
 				codepath=strrep(cluster.codepath,' ','\ ');
 
 				% Write queuing script
-				fid=fopen([modelname '.queue'],'w');
+				fid=fopen(filename, 'w');
 				fprintf(fid,'#!%s\n',cluster.shell);
-				if isvalgrind,
+				if isvalgrind
 					%Add --gen-suppressions=all to get suppression lines
 					%fprintf(fid,'LD_PRELOAD=%s \\\n',cluster.valgrindlib); it could be deleted
-					if ismac,
-						if IssmConfig('_HAVE_MPI_'),
+					if ismac
+						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s --leak-check=full --leak-check=full --show-leak-kinds=all --error-limit=no --dsymutil=yes --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog ',...
 							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname], modelname,modelname,modelname);
 						else
@@ -165,29 +174,33 @@ classdef generic
 			end
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildQueueScriptMultipleModels(cluster,dirname,modelname,solution,dirnames,modelnames,nps) % {{{
+		function BuildQueueScriptMultipleModels(cluster, slm, dirnames, modelnames, nps, filename) % {{{
 
-			%some checks:
-			if isempty(modelname), error('BuildQueueScriptMultipleModels error message: need a non empty model name!');end
+         %Get variables from slm
+         dirname         = slm.private.runtimename;
+         modelname       = slm.miscellaneous.name;
+         solution        = slm.private.solution;
+
+         %checks
+			if(isempty(modelname)) error('BuildQueueScriptMultipleModels error message: need a non empty model name!');end
+			if(ispc()) error('BuildQueueScriptMultipleModels not support yet on windows machines');end;
 
 			%what is the executable being called?
 			executable='issm_slc.exe';
 
-			if ispc(), error('BuildQueueScriptMultipleModels not support yet on windows machines');end;
-
 			%write queuing script
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 
 			fprintf(fid,'#!%s\n',cluster.shell);
 
 			%number of cpus:
-			mpistring=sprintf('mpiexec -np %i ',cluster.np);
+			mpistring = sprintf('mpiexec -np %i ',cluster.np);
 
 			%executable:
 			mpistring=[mpistring sprintf('%s/%s ',cluster.codepath,executable)];
@@ -207,7 +220,7 @@ classdef generic
 			end
 
 			%log files:
-			if ~cluster.interactive,
+			if ~cluster.interactive
 				mpistring=[mpistring sprintf('2> %s.errlog> %s.outlog',modelname,modelname)];
 			end
 
@@ -216,21 +229,30 @@ classdef generic
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildQueueScriptIceOcean(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota) % {{{
+		function BuildQueueScriptIceOcean(cluster, md, filename) % {{{
 
-			%write queuing script
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
 			%what is the executable being called?
 			executable='issm_ocean.exe';
 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!%s\n',cluster.shell);
-			if ~isvalgrind,
+			if ~isvalgrind
 				fprintf(fid,'mpiexec -np %i %s/%s %s %s %s : -np %i ./mitgcmuv\n',cluster.np,cluster.codepath,executable,solution,cluster.executionpath,modelname,cluster.npocean);
 
 			else
@@ -240,18 +262,28 @@ classdef generic
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,modelname,solution,io_gather,isvalgrind,isgprof) % {{{
+		function BuildKrigingQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script
-			if ~ispc(),
+			if ~ispc()
 
-				fid=fopen([modelname '.queue'],'w');
+				fid=fopen(filename, 'w');
 				fprintf(fid,'#!/bin/sh\n');
 				if ~isvalgrind,
 					if cluster.interactive
@@ -267,26 +299,13 @@ classdef generic
 					fprintf(fid,'mpiexec -np %i %s --leak-check=full --suppressions=%s %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',...
 						cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
 				end
-				if ~io_gather, %concatenate the output files:
-					fprintf(fid,'\ncat %s.outbin.* > %s.outbin',modelname,modelname);
-				end
 				fclose(fid);
-
 			else % Windows
-
-				fid=fopen([modelname '.bat'],'w');
-				fprintf(fid,'@echo off\n');
-				if cluster.interactive
-					fprintf(fid,'"%s/issm.exe" %s "%s" %s ',cluster.codepath,solution,[cluster.executionpath '/' modelname],modelname);
-				else
-					fprintf(fid,'"%s/issm.exe" %s "%s" %s 2> %s.errlog >%s.outlog',...
-						cluster.codepath,solution,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
-				end
-				fclose(fid);
+				error('not supported');
 			end
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
@@ -314,7 +333,7 @@ classdef generic
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			if ~ispc,
+			if ~ispc
 				%figure out what shell extension we will use:
 				if isempty(strfind(cluster.shell,'csh')),
 					shellext='sh';
@@ -325,7 +344,7 @@ classdef generic
 				if ~isempty(restart)
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
 				else
-					if ~batch,
+					if ~batch
 						launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
 						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && source  ' modelname '.queue '];
 					else
@@ -368,7 +387,7 @@ classdef generic
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 
-			if ispc(),
+			if ispc()
 				%do nothing
 				return;
 			end

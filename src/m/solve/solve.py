@@ -106,7 +106,6 @@ def solve(md, solutionstring, *args):
         return md
 
     # Recover some fields
-    md.private.solution = solutionstring
     cluster = md.cluster
     if options.getfieldvalue('batch', 'no') == 'yes':
         batch = 1
@@ -115,6 +114,7 @@ def solve(md, solutionstring, *args):
 
     # Check model consistency
     if options.getfieldvalue('checkconsistency', 'yes') == 'yes':
+        md.private.solution = solutionstring
         if md.verbose.solution:
             print('checking model consistency')
         ismodelselfconsistent(md)
@@ -126,9 +126,9 @@ def solve(md, solutionstring, *args):
         md = preqmu(md, options)
 
     # Write all input files
-    marshall(md) # bin file
-    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits') # toolkits file
-    cluster.BuildQueueScript(md.private.runtimename, md.miscellaneous.name, md.private.solution, md.settings.io_gather, md.debug.valgrind, md.debug.gprof, md.qmu.isdakota, md.transient.isoceancoupling) # queue file
+    marshall(md, md.miscellaneous.name + '.bin')                   # bin file
+    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits')  # toolkits file
+    cluster.BuildQueueScript(md, md.miscellaneous.name + '.queue') # queue file
 
     # Upload all required files
     modelname = md.miscellaneous.name
@@ -152,19 +152,19 @@ def solve(md, solutionstring, *args):
 
     # Return if batch
     if batch:
-        if md.verbose.solution:
-            print('batch mode requested: not launching job interactively')
-            print('launch solution sequence on remote cluster by hand')
+        print('batch mode requested: not launching job interactively')
+        print('launch solution sequence on remote cluster by hand')
         return md
 
     # Wait on lock
     if md.settings.waitonlock > 0:
-        # Wait for done file
         done = waitonlock(md)
-        if md.verbose.solution:
-            print('loading results from cluster')
-        md = loadresultsfromcluster(md)
+
     elif md.settings.waitonlock == 0:
         print('Model results must be loaded manually with md = loadresultsfromcluster(md).')
+        return md
 
+    #load results
+    if md.verbose.solution: print('loading results from cluster')
+    md = loadresultsfromcluster(md)
     return md

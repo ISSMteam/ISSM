@@ -86,23 +86,34 @@ classdef aws_issm_solution_server
 
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+			%Get variables from md
+			dirname         = md.private.runtimename;
+			modelname       = md.miscellaneous.name;
+			solution        = md.private.solution;
+			io_gather       = md.settings.io_gather;
+			isvalgrind      = md.debug.valgrind;
+			isgprof         = md.debug.gprof;
+			isdakota        = md.qmu.isdakota;
+			isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isgprof) disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
 			if isdakota,
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6),
+				if (version>=6)
 					executable='issm_dakota.exe';
 				end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'export PATH="${PATH}:."\n');
 			fprintf(fid,'export MPI_LAUNCH_TIMEOUT=520\n');
@@ -143,7 +154,7 @@ classdef aws_issm_solution_server
 			for i=1:numel(filelist),
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.run '  modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);

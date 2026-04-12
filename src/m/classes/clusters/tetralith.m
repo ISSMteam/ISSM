@@ -71,53 +71,21 @@ classdef tetralith
 			numprocs=self.numnodes*self.cpuspernode;
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,modelname,solution,io_gather,isvalgrind,isgprof) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
-			%compute number of processors
-% 			cluster.np=cluster.numnodes*cluster.cpuspernode;
-%			nprocs(cluster);%=cluster.numnodes*cluster.cpuspernode;
-
-			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
-			fprintf(fid,'#!/bin/bash\n');
-			fprintf(fid,'#\n');
-			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
-% 			fprintf(fid,'#SBATCH -p %s \n',cluster.partition);
-			fprintf(fid,'#SBATCH -A %s \n',cluster.accountname);
-% 			fprintf(fid,'#SBATCH --mail-type=ALL\n');
-			fprintf(fid,'#SBATCH -N %i -n %i\n',cluster.numnodes,cluster.cpuspernode);
-			%calculate walltime in hh:mm:ss format
-			walltime=datestr(cluster.time/(60*24),'HH:MM:SS')
-			fprintf(fid,'#SBATCH -t %s\n',walltime); %walltime should be in hh:mm:ss
-			fprintf(fid,'#SBATCH --mem=%i\n',cluster.mem);
-			fprintf(fid,'#SBATCH -o %s.outlog \n',modelname);
-			fprintf(fid,'#SBATCH -e %s.errlog \n\n',modelname);
-% 			fprintf(fid,'module load intelcomp/17.0.0\n') %module load not recommended within job script at Tetralith
-% 			fprintf(fid,'module load mpt/2.14\n')
-% 			fprintf(fid,'module load petsc/3.7.4d\n')
-% 			fprintf(fid,'module load parmetis/4.0.3\n') 
-% 			fprintf(fid,'module load mumps/5.0.2\n')
-% 			fprintf(fid,'export ISSM_DIR="%s"\n',cluster.codepath); %FIXME
-			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
-			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
-% 			fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
-% 			fprintf(fid,'mpiexec_mpt -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
-			fprintf(fid,'mpiexec -np %i %s/issm.exe %s %s %s\n',cluster.nprocs(),cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
-% 			fprintf(fid,'mpirun -np %i %s/issm.exe %s %s %s\n',cluster.nprocs(),cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
-			if ~io_gather, %concatenate the output files:
-				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-			end
-			fclose(fid);
-		end
-		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
-
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
 			if isdakota,
@@ -136,7 +104,7 @@ classdef tetralith
 % 			shortname = substring(modelname,1,min(12,length(modelname)));
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
@@ -170,17 +138,15 @@ classdef tetralith
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
-				fid=fopen([modelname '.run'],'w');
+			if cluster.interactive
+				fid=fopen([filename '.run'],'w');
 				fprintf(fid,'mpiexec_mpt -np %i %s/issm.exe %s %s %s\n',cluster.nprocs(),cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 				if ~io_gather, %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
