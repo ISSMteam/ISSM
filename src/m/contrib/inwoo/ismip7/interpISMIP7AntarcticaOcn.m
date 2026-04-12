@@ -12,6 +12,9 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	%                      time series from 1995-2100
 	%
 	%   Examples:
+    %      # Get observation dataset
+    %      md.basalforcings = interpISMIP7AntarcticaOcn(md,'obs')
+    %      md.basalforcings = interpISMIP7AntarcticaOcn(md,'obs')
 	%      md.basalforcings = interpISMIP7AntarcticaOcn(md,'miroc-esm-chem_rcp8.5');
 	%      md.basalforcings = interpISMIP7AntarcticaOcn(md,'miroc-esm-chem_rcp8.5', [2007 2050]);
 
@@ -27,7 +30,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		start_time = start_end(1);
 		end_time = start_end(2);
 	else
-		error('no supported');
+		error('not supported');
 	end
 
 	% Find appropriate directory
@@ -48,7 +51,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	% Searching forcing files
 	[tf_file, so_file] = search_forcing_file(datadir, modelname, scenario);
 
-	%load TF data
+	% Load TF and salinity data
 	disp('   == loading TF');
 	x_n     = double(ncread(tf_file,'x'));
 	y_n     = double(ncread(tf_file,'y'));
@@ -57,7 +60,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	so_data = double(ncread(so_file,'tf')); % FIXME: really "tf" variable in "so" (salinity)?
 	z_data  = double(ncread(tf_file,'z'));
 
-	%Build tf cell array
+	%Build tf and salinity cell array
 	tf = cell(1,1,size(tf_data,3));
 	so = cell(1,1,size(so_data,3));
 	if modelname
@@ -88,6 +91,8 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 
 	clear temp_matrix_tf, temp_matrix_so;
 
+    % TODO:
+    % Wait calibrated dataset
 	%load Delta and gamma data
 	%deltatnc_median = fullfile(datadir,'parameterizations/coeff_gamma0_DeltaT_quadratic_non_local_median.nc');
 	basin_datanc    = fullfile(datadir,'obs/ocean/IMBIE-basins/v3/IMBIE-basins_AIS_obs_ocean_v3.nc');
@@ -125,15 +130,16 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	disp(['Info: forcings cover ' num2str(start_time),' to ', num2str(end_time)]);
 end
 
-function [so_file, tf_file] = search_forcing_file(datadir, modelname, scenario)
+function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario)
 	%{
 	%Explain
+    %-------
 	%	Return specific file names...
 	%
 	%Example
 	%-------
 	%.. code-block:: python
-	%	fname = search_filenames
+	%	[tf_file, so_file] = search_filenames(datadir, 'cesm2-waccm', 'ssp585')
 	%
 	%Parameters
 	%----------
