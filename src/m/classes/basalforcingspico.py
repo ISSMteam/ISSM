@@ -6,6 +6,7 @@ from structtoobj import structtoobj
 from checkfield import checkfield
 from project3d import project3d
 from WriteData import WriteData
+from fielddisplay import fielddisplay
 
 class basalforcingspico(object):
     """PICO BASAL FORCINGS class definition
