@@ -61,7 +61,9 @@ def interpISMIP7AntarcticaOcn(*args):
     elif hostname == 'amundsen.thayer.dartmouth.edu':
         raise Exception('set default machine settings')
     elif hostname == 'simba00':
-        datadir='/data2/msmg/DATA/ISMIP7/AIS/'
+        datadir = '/data2/msmg/DATA/ISMIP7/AIS/'
+    elif hostname == 'simba41':
+        datadir = '/data04/Data/ISMIP7/AIS/'
     else:
         raise Exception('machine not supported yet, please provide your own path')
 
