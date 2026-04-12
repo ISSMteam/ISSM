@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
 
+from structtoobj import structtoobj
 from checkfield import checkfield
 from fielddisplay import fielddisplay
 from project3d import project3d
@@ -31,11 +32,7 @@ class basalforcingsismip7(object):
             self.setdefaultparameters()
         elif len(args) == 1:
             self.setdefaultparameters()
-
-            constructor = args[0]
-            for field in vars(self).keys():
-                if field in constructor.__dict__.keys():
-                    setattr(self,field,getattr(constructor,field))
+            self=structtoobj(self,args[0])
         else:
             raise Exception('constructuor not supported')
     # }}}
