@@ -3562,6 +3562,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Element")==0) return ElementEnum;
 	      else if (strcmp(name,"ElementHook")==0) return ElementHookEnum;
 	      else if (strcmp(name,"ElementSId")==0) return ElementSIdEnum;
+	      else if (strcmp(name,"EmulatorParam")==0) return EmulatorParamEnum;
 	      else if (strcmp(name,"EnthalpyAnalysis")==0) return EnthalpyAnalysisEnum;
 	      else if (strcmp(name,"EsaAnalysis")==0) return EsaAnalysisEnum;
 	      else if (strcmp(name,"EsaSolution")==0) return EsaSolutionEnum;
@@ -3579,11 +3580,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"FixedTimestepping")==0) return FixedTimesteppingEnum;
 	      else if (strcmp(name,"FloatingArea")==0) return FloatingAreaEnum;
 	      else if (strcmp(name,"FloatingAreaScaled")==0) return FloatingAreaScaledEnum;
-	      else if (strcmp(name,"FloatingMeltRate")==0) return FloatingMeltRateEnum;
          else stage=30;
    }
    if(stage==30){
-	      if (strcmp(name,"Free")==0) return FreeEnum;
+	      if (strcmp(name,"FloatingMeltRate")==0) return FloatingMeltRateEnum;
+	      else if (strcmp(name,"Free")==0) return FreeEnum;
 	      else if (strcmp(name,"FreeSurfaceBaseAnalysis")==0) return FreeSurfaceBaseAnalysisEnum;
 	      else if (strcmp(name,"FreeSurfaceTopAnalysis")==0) return FreeSurfaceTopAnalysisEnum;
 	      else if (strcmp(name,"FrontalForcingsDefault")==0) return FrontalForcingsDefaultEnum;
@@ -3702,11 +3703,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Matice")==0) return MaticeEnum;
 	      else if (strcmp(name,"Matlitho")==0) return MatlithoEnum;
 	      else if (strcmp(name,"Mathydro")==0) return MathydroEnum;
-	      else if (strcmp(name,"MatrixParam")==0) return MatrixParamEnum;
          else stage=31;
    }
    if(stage==31){
-	      if (strcmp(name,"MaxAbsVx")==0) return MaxAbsVxEnum;
+	      if (strcmp(name,"MatrixParam")==0) return MatrixParamEnum;
+	      else if (strcmp(name,"MaxAbsVx")==0) return MaxAbsVxEnum;
 	      else if (strcmp(name,"MaxAbsVy")==0) return MaxAbsVyEnum;
 	      else if (strcmp(name,"MaxAbsVz")==0) return MaxAbsVzEnum;
 	      else if (strcmp(name,"MaxDivergence")==0) return MaxDivergenceEnum;
@@ -3825,11 +3826,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SpcTransient")==0) return SpcTransientEnum;
 	      else if (strcmp(name,"Sset")==0) return SsetEnum;
 	      else if (strcmp(name,"StatisticsSolution")==0) return StatisticsSolutionEnum;
-	      else if (strcmp(name,"SteadystateSolution")==0) return SteadystateSolutionEnum;
          else stage=32;
    }
    if(stage==32){
-	      if (strcmp(name,"StressIntensityFactor")==0) return StressIntensityFactorEnum;
+	      if (strcmp(name,"SteadystateSolution")==0) return SteadystateSolutionEnum;
+	      else if (strcmp(name,"StressIntensityFactor")==0) return StressIntensityFactorEnum;
 	      else if (strcmp(name,"StressbalanceAnalysis")==0) return StressbalanceAnalysisEnum;
 	      else if (strcmp(name,"StressbalanceConvergenceNumSteps")==0) return StressbalanceConvergenceNumStepsEnum;
 	      else if (strcmp(name,"StressbalanceSIAAnalysis")==0) return StressbalanceSIAAnalysisEnum;

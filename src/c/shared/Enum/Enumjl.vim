@@ -3469,6 +3469,7 @@ syn keyword juliaConstC DoubleVecParamEnum
 syn keyword juliaConstC ElementEnum
 syn keyword juliaConstC ElementHookEnum
 syn keyword juliaConstC ElementSIdEnum
+syn keyword juliaConstC EmulatorParamEnum
 syn keyword juliaConstC EnthalpyAnalysisEnum
 syn keyword juliaConstC EsaAnalysisEnum
 syn keyword juliaConstC EsaSolutionEnum

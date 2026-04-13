@@ -3476,6 +3476,7 @@ syn keyword cConstant DoubleVecParamEnum
 syn keyword cConstant ElementEnum
 syn keyword cConstant ElementHookEnum
 syn keyword cConstant ElementSIdEnum
+syn keyword cConstant EmulatorParamEnum
 syn keyword cConstant EnthalpyAnalysisEnum
 syn keyword cConstant EsaAnalysisEnum
 syn keyword cConstant EsaSolutionEnum
@@ -3847,6 +3848,7 @@ syn keyword cType ElementInput
 syn keyword cType ElementMatrix
 syn keyword cType Elements
 syn keyword cType ElementVector
+syn keyword cType EmulatorParam
 syn keyword cType ExponentialVariogram
 syn keyword cType ExternalResult
 syn keyword cType FemModel

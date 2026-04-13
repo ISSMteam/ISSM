@@ -3475,6 +3475,7 @@ enum definitions{
 	ElementEnum,
 	ElementHookEnum,
 	ElementSIdEnum,
+	EmulatorParamEnum,
 	EnthalpyAnalysisEnum,
 	EsaAnalysisEnum,
 	EsaSolutionEnum,

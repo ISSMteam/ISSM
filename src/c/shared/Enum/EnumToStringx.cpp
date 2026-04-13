@@ -3478,6 +3478,7 @@ const char* EnumToStringx(int en){
 		case ElementEnum : return "Element";
 		case ElementHookEnum : return "ElementHook";
 		case ElementSIdEnum : return "ElementSId";
+		case EmulatorParamEnum : return "EmulatorParam";
 		case EnthalpyAnalysisEnum : return "EnthalpyAnalysis";
 		case EsaAnalysisEnum : return "EsaAnalysis";
 		case EsaSolutionEnum : return "EsaSolution";

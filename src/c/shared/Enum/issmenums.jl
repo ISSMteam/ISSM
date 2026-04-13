@@ -3465,6 +3465,7 @@
 	ElementEnum
 	ElementHookEnum
 	ElementSIdEnum
+	EmulatorParamEnum
 	EnthalpyAnalysisEnum
 	EsaAnalysisEnum
 	EsaSolutionEnum
@@ -7259,6 +7260,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==ElementEnum) return "Element" end
 	if(enum==ElementHookEnum) return "ElementHook" end
 	if(enum==ElementSIdEnum) return "ElementSId" end
+	if(enum==EmulatorParamEnum) return "EmulatorParam" end
 	if(enum==EnthalpyAnalysisEnum) return "EnthalpyAnalysis" end
 	if(enum==EsaAnalysisEnum) return "EsaAnalysis" end
 	if(enum==EsaSolutionEnum) return "EsaSolution" end
@@ -11053,6 +11055,7 @@ function StringToEnum(name::String)
 	if(name=="Element") return ElementEnum  end
 	if(name=="ElementHook") return ElementHookEnum  end
 	if(name=="ElementSId") return ElementSIdEnum  end
+	if(name=="EmulatorParam") return EmulatorParamEnum  end
 	if(name=="EnthalpyAnalysis") return EnthalpyAnalysisEnum  end
 	if(name=="EsaAnalysis") return EsaAnalysisEnum  end
 	if(name=="EsaSolution") return EsaSolutionEnum  end
