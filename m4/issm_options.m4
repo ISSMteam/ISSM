@@ -2342,6 +2342,32 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_DEFINE_UNQUOTED([_GMSH_VERSION_MAJOR_], ${GMSH_VERSION_MAJOR}, [Gmsh major version])
 	fi
 	dnl }}}
+	dnl PyBind11{{{
+	AC_MSG_CHECKING([for pybind11])
+	AC_ARG_WITH(
+		[pybind11-include],
+		AS_HELP_STRING([--with-pybind11-include=DIR], [PyBind11 include directory, necessary for emulator integration]),
+		[PyBind11INCL=${withval}],
+		[PyBind11INCL=""]
+	)
+	AC_ARG_WITH(
+		[pybind11-libflags],
+		AS_HELP_STRING([--with-pybind11-libflags=LIBS], [PyBind11 libraries to be used, necessary for emulator integration]),
+		[PyBind11LIB=${withval}],
+		[PyBind11LIB=""]
+	)
+	if test -z "${PyBind11INCL}"; then
+	   HAVE_PyBind11=no
+	else
+	   HAVE_PyBind11=yes
+
+		AC_DEFINE([_HAVE_PyBind11_], [1], [with PyBind11 in ISSM src])
+		AC_SUBST([PyBind11INCL])
+		AC_SUBST([PyBind11LIB])
+	fi
+	AM_CONDITIONAL([PyBind11], [test "x${HAVE_PyBind11}" == "xyes"])
+   AC_MSG_RESULT([${HAVE_PyBind11}])
+	dnl }}}
 	dnl Capabilities
 	dnl with-bamg{{{
 	AC_MSG_CHECKING([for BAMG capability compilation])
