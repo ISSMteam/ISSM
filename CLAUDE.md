@@ -99,7 +99,14 @@ Glue code that compiles C++ modules as shared libraries loadable from MATLAB (`*
 
 ### External packages (`externalpackages/`)
 
-Each subdirectory has its own `install-linux.sh` / `install-mac.sh`. Key dependencies: **PETSc** (includes MPI/MPICH, BLAS/LAPACK, MUMPS, METIS/ParMETIS, ScaLAPACK), **Triangle** (mesh generation), **m1qn3** (L-BFGS optimizer for inversions), **GSL**, **proj**, **GDAL**, **NetCDF**. Optional: **Dakota** (UQ/sampling), **CodiPack** (automatic differentiation), **ESMF** (Earth System Modeling Framework coupling).
+Each subdirectory has its own `install-linux.sh` / `install-mac.sh` / etc. ISSM only needs a handful of external packages installed depending on the desired configuration. The key dependencies are: 
+- **PETSc** (includes MPI/MPICH, BLAS/LAPACK, MUMPS, METIS/ParMETIS, ScaLAPACK)
+- **Triangle** (mesh generation),
+- **m1qn3** (L-BFGS optimizer for inversions).
+
+Some optional that can be useful depending on the application:
+- **Dakota** (UQ/sampling),
+- **CoDiPack** (automatic differentiation)
 
 ### Path setup for interfaces
 
