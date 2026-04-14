@@ -21,21 +21,27 @@ EmulatorParam::EmulatorParam(){/*{{{*/
 	return;
 }
 /*}}}*/
-EmulatorParam::EmulatorParam(int in_enum_type,DataSet* in_value){/*{{{*/
+EmulatorParam::EmulatorParam(int in_enum_type, char* pt_path_in){/*{{{*/
 
-	enum_type=in_enum_type;
-	value=in_value->Copy();
+	this->enum_type=in_enum_type;
+
+	/*Copy path to emulator*/
+	this->pt_path = xNew<char>(strlen(pt_path_in)+1);
+	xMemCpy<char>(this->pt_path, pt_path_in,(strlen(pt_path_in)+1));
+
+	/*Activate interpretor*/
+	_error_("not finished yet");
 }
 /*}}}*/
 EmulatorParam::~EmulatorParam(){/*{{{*/
-	delete value;
+	xDelete<char>(this->pt_path);
 }
 /*}}}*/
 
 /*Object virtual functions definitions:*/
 Param* EmulatorParam::copy() {/*{{{*/
 
-	return new EmulatorParam(this->enum_type,this->guard, this->mod);
+	_error_("not implemented");
 
 }
 /*}}}*/

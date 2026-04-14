@@ -3587,6 +3587,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Free")==0) return FreeEnum;
 	      else if (strcmp(name,"FreeSurfaceBaseAnalysis")==0) return FreeSurfaceBaseAnalysisEnum;
 	      else if (strcmp(name,"FreeSurfaceTopAnalysis")==0) return FreeSurfaceTopAnalysisEnum;
+	      else if (strcmp(name,"FrictionEmulator")==0) return FrictionEmulatorEnum;
 	      else if (strcmp(name,"FrontalForcingsDefault")==0) return FrontalForcingsDefaultEnum;
 	      else if (strcmp(name,"FrontalForcingsRignot")==0) return FrontalForcingsRignotEnum;
 	      else if (strcmp(name,"FrontalForcingsRignotarma")==0) return FrontalForcingsRignotarmaEnum;
@@ -3702,11 +3703,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Matestar")==0) return MatestarEnum;
 	      else if (strcmp(name,"Matice")==0) return MaticeEnum;
 	      else if (strcmp(name,"Matlitho")==0) return MatlithoEnum;
-	      else if (strcmp(name,"Mathydro")==0) return MathydroEnum;
          else stage=31;
    }
    if(stage==31){
-	      if (strcmp(name,"MatrixParam")==0) return MatrixParamEnum;
+	      if (strcmp(name,"Mathydro")==0) return MathydroEnum;
+	      else if (strcmp(name,"MatrixParam")==0) return MatrixParamEnum;
 	      else if (strcmp(name,"MaxAbsVx")==0) return MaxAbsVxEnum;
 	      else if (strcmp(name,"MaxAbsVy")==0) return MaxAbsVyEnum;
 	      else if (strcmp(name,"MaxAbsVz")==0) return MaxAbsVzEnum;
@@ -3825,11 +3826,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SpcStatic")==0) return SpcStaticEnum;
 	      else if (strcmp(name,"SpcTransient")==0) return SpcTransientEnum;
 	      else if (strcmp(name,"Sset")==0) return SsetEnum;
-	      else if (strcmp(name,"StatisticsSolution")==0) return StatisticsSolutionEnum;
          else stage=32;
    }
    if(stage==32){
-	      if (strcmp(name,"SteadystateSolution")==0) return SteadystateSolutionEnum;
+	      if (strcmp(name,"StatisticsSolution")==0) return StatisticsSolutionEnum;
+	      else if (strcmp(name,"SteadystateSolution")==0) return SteadystateSolutionEnum;
 	      else if (strcmp(name,"StressIntensityFactor")==0) return StressIntensityFactorEnum;
 	      else if (strcmp(name,"StressbalanceAnalysis")==0) return StressbalanceAnalysisEnum;
 	      else if (strcmp(name,"StressbalanceConvergenceNumSteps")==0) return StressbalanceConvergenceNumStepsEnum;

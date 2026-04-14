@@ -3498,6 +3498,7 @@ syn keyword cConstant FloatingMeltRateEnum
 syn keyword cConstant FreeEnum
 syn keyword cConstant FreeSurfaceBaseAnalysisEnum
 syn keyword cConstant FreeSurfaceTopAnalysisEnum
+syn keyword cConstant FrictionEmulatorEnum
 syn keyword cConstant FrontalForcingsDefaultEnum
 syn keyword cConstant FrontalForcingsRignotEnum
 syn keyword cConstant FrontalForcingsRignotarmaEnum

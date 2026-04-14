@@ -3487,6 +3487,7 @@
 	FreeEnum
 	FreeSurfaceBaseAnalysisEnum
 	FreeSurfaceTopAnalysisEnum
+	FrictionEmulatorEnum
 	FrontalForcingsDefaultEnum
 	FrontalForcingsRignotEnum
 	FrontalForcingsRignotarmaEnum
@@ -7282,6 +7283,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FreeEnum) return "Free" end
 	if(enum==FreeSurfaceBaseAnalysisEnum) return "FreeSurfaceBaseAnalysis" end
 	if(enum==FreeSurfaceTopAnalysisEnum) return "FreeSurfaceTopAnalysis" end
+	if(enum==FrictionEmulatorEnum) return "FrictionEmulator" end
 	if(enum==FrontalForcingsDefaultEnum) return "FrontalForcingsDefault" end
 	if(enum==FrontalForcingsRignotEnum) return "FrontalForcingsRignot" end
 	if(enum==FrontalForcingsRignotarmaEnum) return "FrontalForcingsRignotarma" end
@@ -11077,6 +11079,7 @@ function StringToEnum(name::String)
 	if(name=="Free") return FreeEnum  end
 	if(name=="FreeSurfaceBaseAnalysis") return FreeSurfaceBaseAnalysisEnum  end
 	if(name=="FreeSurfaceTopAnalysis") return FreeSurfaceTopAnalysisEnum  end
+	if(name=="FrictionEmulator") return FrictionEmulatorEnum  end
 	if(name=="FrontalForcingsDefault") return FrontalForcingsDefaultEnum  end
 	if(name=="FrontalForcingsRignot") return FrontalForcingsRignotEnum  end
 	if(name=="FrontalForcingsRignotarma") return FrontalForcingsRignotarmaEnum  end

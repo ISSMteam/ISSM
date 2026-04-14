@@ -23,12 +23,13 @@ class EmulatorParam: public Param{
 		int   enum_type;
 
 	public:
+		char*                   pt_path;
 		py::scoped_interpreter* guard;
 		py::mod_                mod;
 
 		/*EmulatorParam constructors, destructors: {{{*/
 		EmulatorParam();
-		EmulatorParam(int enum_type,py::scoped_interpreter* guard_in, py::mod_* mod_in);
+		EmulatorParam(int enum_type, char* pt_path_in);
 		~EmulatorParam();
 		/*}}}*/
 		/*Object virtual functions definitions:{{{ */

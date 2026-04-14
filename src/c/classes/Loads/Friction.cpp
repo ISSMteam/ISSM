@@ -97,6 +97,13 @@ Friction::Friction(Element* element_in){/*{{{*/
 			_error_("not supported yet");
 		}
 	}
+
+	#ifdef _HAVE_PyBind11_
+	Param* emulator_param = element_in->parameters->FindParamObject(FrictionEmulatorEnum);
+	if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Paramerer should be EmulatorParam");
+	this->emulator = (EmulatorParam*)emulator_param;
+	#endif
+
 }
 /*}}}*/
 Friction::Friction(Element* element_in,int dim) : Friction(element_in) {/*{{{*/
@@ -437,6 +444,11 @@ void Friction::GetAlpha2(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 			case 15:
 				GetAlpha2RegCoulomb2(palpha2,gauss);
 				break;
+			#ifdef _HAVE_PyBind11_
+			case 20:
+				GetAlpha2Emulator(palpha2, gauss);
+				break;
+			#endif
 			default:
 				_error_("Friction law "<< this->law <<" not supported");
 		}
@@ -1084,6 +1096,20 @@ void Friction::GetAlpha2RegCoulomb2(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	/*Assign output pointers:*/
 	*palpha2=alpha2;
 }/*}}}*/
+#if _HAVE_PyBind11_
+void Friction::GetAlpha2Emulator(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
+
+	/*Get velocity magnitude*/
+	IssmDouble ub = VelMag(gauss);
+	IssmDouble Neff = EffectivePressure(gauss);
+
+	/*Compute alpha^2*/
+	alpha2 = 0.0;
+
+	/*Assign output pointers:*/
+	*palpha2=alpha2;
+}/*}}}*/
+#endif
 IssmDouble Friction::EffectivePressure(Gauss* gauss){/*{{{*/
 	/*Get effective pressure as a function of  flag */
 
@@ -1451,6 +1477,15 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(new IntParam(FrictionCouplingEnum,2));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
 			break;
+		#ifdef _HAVE_PyBind11_
+		case 20:{
+					  /*Get path from iomodel*/
+					  char* pt_path = NULL;
+					  iomodel->FetchData(&pt_path, "md.friction.pt_path");
+					  parameters->AddObject(new EmulatorParam(FrictionEmulatorEnum, pt_path));
+					  xDelete<char>(pt_path);
+				  }
+		#endif
 		default: _error_("Friction law "<<frictionlaw<<" not implemented yet");
 	}
 

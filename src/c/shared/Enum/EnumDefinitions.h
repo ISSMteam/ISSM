@@ -3497,6 +3497,7 @@ enum definitions{
 	FreeEnum,
 	FreeSurfaceBaseAnalysisEnum,
 	FreeSurfaceTopAnalysisEnum,
+	FrictionEmulatorEnum,
 	FrontalForcingsDefaultEnum,
 	FrontalForcingsRignotEnum,
 	FrontalForcingsRignotarmaEnum,
