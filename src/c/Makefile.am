@@ -585,6 +585,11 @@ if OCEAN
 issm_sources += ./modules/OceanExchangeDatax/OceanExchangeDatax.cpp
 endif
 #}}}
+# PyBind11{{{
+if PyBind11
+issm_sources += ./classes/Params/EmulatorParam.cpp
+endif
+#}}}
 # Sampling sources {{{
 if SAMPLING
 issm_sources += \
