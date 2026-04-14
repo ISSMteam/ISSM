@@ -16,20 +16,22 @@
 #include "../../shared/shared.h"
 /*}}}*/
 #include <pybind11/embed.h>
-
+namespace py = pybind11;
 class EmulatorParam: public Param{
 
 	private: 
 		int   enum_type;
 
 	public:
-		char*                   pt_path;
-		py::scoped_interpreter* guard;
-		py::mod_                mod;
+		char*                module_dir;
+		char*                   pt_name;
+		char*                   py_name;
+		py::scoped_interpreter*   guard;
+		py::module_                 mod;
 
 		/*EmulatorParam constructors, destructors: {{{*/
 		EmulatorParam();
-		EmulatorParam(int enum_type, char* pt_path_in);
+		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in);
 		~EmulatorParam();
 		/*}}}*/
 		/*Object virtual functions definitions:{{{ */

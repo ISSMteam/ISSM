@@ -14,27 +14,59 @@
 #include "shared/shared.h"
 /*}}}*/
 #include <pybind11/numpy.h>
+namespace py = pybind11;
 
 /*EmulatorParam constructors and destructor*/
 EmulatorParam::EmulatorParam(){/*{{{*/
-	value=NULL;
 	return;
 }
 /*}}}*/
-EmulatorParam::EmulatorParam(int in_enum_type, char* pt_path_in){/*{{{*/
+EmulatorParam::EmulatorParam(int in_enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in){/*{{{*/
 
 	this->enum_type=in_enum_type;
 
 	/*Copy path to emulator*/
-	this->pt_path = xNew<char>(strlen(pt_path_in)+1);
-	xMemCpy<char>(this->pt_path, pt_path_in,(strlen(pt_path_in)+1));
+	this->module_dir = xNew<char>(strlen(module_dir_in)+1);
+	xMemCpy<char>(this->module_dir, module_dir_in,(strlen(module_dir_in)+1));
+	this->pt_name = xNew<char>(strlen(pt_name_in)+1);
+	xMemCpy<char>(this->pt_name, pt_name_in,(strlen(pt_name_in)+1));
+	this->py_name = xNew<char>(strlen(py_name_in)+1);
+	xMemCpy<char>(this->py_name, py_name_in,(strlen(py_name_in)+1));
 
 	/*Activate interpretor*/
-	_error_("not finished yet");
+   this->guard = NULL;
+	try{
+		/*What if multi-emulator are activated?*/
+		this->guard = new py::scoped_interpreter();
+
+		py::module_ sys = py::module_::import("sys");
+		sys.attr("path").attr("append")(this->module_dir);
+		std::string pt_path(this->module_dir);
+      if(!pt_path.empty() && pt_path.back() != '/'){
+      	pt_path += "/";
+      }
+      pt_path += this->pt_name;
+		std::string py_module_name(this->py_name);
+      std::size_t dot = py_module_name.rfind('.');
+      if(dot != std::string::npos){
+	       py_module_name = py_module_name.substr(0,dot);
+      }
+
+		this->mod = py::module_::import(py_module_name.c_str());
+		this->mod.attr("init_model")(pt_path.c_str(), "auto");
+	}
+	catch(...){
+		delete this->guard;
+		this->guard = NULL;
+		throw;
+	}	
 }
 /*}}}*/
 EmulatorParam::~EmulatorParam(){/*{{{*/
-	xDelete<char>(this->pt_path);
+	xDelete<char>(this->module_dir);
+	xDelete<char>(this->pt_name);
+	xDelete<char>(this->py_name);
+	delete this->guard;
 }
 /*}}}*/
 
@@ -47,7 +79,8 @@ Param* EmulatorParam::copy() {/*{{{*/
 /*}}}*/
 void EmulatorParam::DeepEcho(void){/*{{{*/
 
-	_printf_(setw(22)<<"   EmulatoParam "<<setw(35)<<left<<EnumToStringx(this->enum_type)<<" guard: "<<this->guard<<", mod: "<< this->mod <<\n");
+	_error_("not implemented");
+
 }
 /*}}}*/
 void EmulatorParam::Echo(void){/*{{{*/

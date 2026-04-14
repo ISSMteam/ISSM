@@ -1101,10 +1101,9 @@ void Friction::GetAlpha2Emulator(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 
 	/*Get velocity magnitude*/
 	IssmDouble ub = VelMag(gauss);
-	IssmDouble Neff = EffectivePressure(gauss);
 
 	/*Compute alpha^2*/
-	alpha2 = 0.0;
+	IssmDouble alpha2 = 0.0;
 
 	/*Assign output pointers:*/
 	*palpha2=alpha2;
@@ -1480,10 +1479,16 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 		#ifdef _HAVE_PyBind11_
 		case 20:{
 					  /*Get path from iomodel*/
-					  char* pt_path = NULL;
-					  iomodel->FetchData(&pt_path, "md.friction.pt_path");
-					  parameters->AddObject(new EmulatorParam(FrictionEmulatorEnum, pt_path));
-					  xDelete<char>(pt_path);
+					  char* module_dir = NULL;
+					  char* pt_name = NULL;
+					  char* py_name = NULL;
+					  iomodel->FetchData(&module_dir, "md.friction.module_dir");
+					  iomodel->FetchData(&pt_name, "md.friction.pt_name");
+					  iomodel->FetchData(&py_name, "md.friction.py_name");
+					  parameters->AddObject(new EmulatorParam(FrictionEmulatorEnum, module_dir,pt_name, py_name));
+					  xDelete<char>(module_dir);
+					  xDelete<char>(pt_name);
+					  xDelete<char>(py_name);
 				  }
 		#endif
 		default: _error_("Friction law "<<frictionlaw<<" not implemented yet");

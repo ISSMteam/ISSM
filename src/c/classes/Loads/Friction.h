@@ -18,6 +18,9 @@ class Parameters;
 class IoModel;
 class GaussPenta;
 class GaussTria;
+#ifdef _HAVE_PyBind11_
+class EmulatorParam;
+#endif
 
 class Friction{
 
