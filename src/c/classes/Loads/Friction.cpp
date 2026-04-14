@@ -108,7 +108,7 @@ Friction::Friction(Element* element_in,IssmPDouble dim) : Friction(element_in) {
 }
 /*}}}*/
 Friction::~Friction(){/*{{{*/
-	if(this->linearize){
+	if(this->linearize!=0){
 		xDelete<IssmDouble>(this->alpha2_list);
 		xDelete<IssmDouble>(this->alpha2_complement_list);
 	}

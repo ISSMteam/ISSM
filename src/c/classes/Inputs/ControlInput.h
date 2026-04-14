@@ -20,7 +20,6 @@ class ControlInput: public Input{
 		Input *gradient;
 		Input *maxvalues;
 		Input *minvalues;
-		Input *savedvalues;
 		Input *values;
 
 		/*ControlInput constructors, destructors: {{{*/
