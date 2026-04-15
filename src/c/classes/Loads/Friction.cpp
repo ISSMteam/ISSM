@@ -1098,12 +1098,36 @@ void Friction::GetAlpha2RegCoulomb2(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 }/*}}}*/
 #if _HAVE_PyBind11_
 void Friction::GetAlpha2Emulator(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
+	IssmDouble C,m;
+	IssmDouble alpha2;
 
-	/*Get velocity magnitude*/
-	IssmDouble ub = VelMag(gauss);
+	element->GetInputValue(&C,gauss,FrictionCEnum);
+	element->GetInputValue(&m,gauss,FrictionMEnum);
+	IssmDouble vmag = VelMag(gauss);
 
-	/*Compute alpha^2*/
-	IssmDouble alpha2 = 0.0;
+	/*Check to prevent dividing by zero if vmag==0*/
+	if(vmag==0. && (1./m-1.)<0.) {
+		alpha2=0.;
+	}
+	else {
+		try {
+			pybind11::array_t<double> feats({1, 2});
+			auto feats_mut = feats.mutable_unchecked<2>();
+			feats_mut(0, 0) = static_cast<double>(C * C);
+			feats_mut(0, 1) = static_cast<double>(vmag);
+
+			pybind11::object pred_obj = mod.attr("predict_alpha2_np")(feats, pybind11::arg("dtype") = "float64");
+			pybind11::array_t<double, pybind11::array::c_style | pybind11::array::forcecast> pred(pred_obj);
+			auto pred_view = pred.unchecked<2>();
+			alpha2 = static_cast<IssmDouble>(pred_view(0, 0));
+		}
+		catch (const pybind11::error_already_set& e) {
+			_error_(std::string("Python friction inference failed: ") + e.what());
+		}
+		catch (const std::exception& e) {
+			_error_(std::string("Friction emulator inference failed: ") + e.what());
+		}
+	}
 
 	/*Assign output pointers:*/
 	*palpha2=alpha2;
