@@ -908,15 +908,23 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	  	else if(melt_style==IntrusionMeltEnum){
 			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			if (intrusiondist_avg==0)
-				if(gllevelset>0.) mb=gmb;
-				else mb=fmb;
-	        else if(gldistance>intrusiondist_avg) 
+			if(intrusiondist_avg==0){
+				if(gllevelset>0.){
+					mb=gmb;
+				}
+				else{
+					mb=fmb;
+				}
+			}
+			else if(gldistance>intrusiondist_avg){
 				mb=gmb;
-			else if(gldistance<=intrusiondist_avg && gldistance>0) 
+			}
+			else if(gldistance<=intrusiondist_avg && gldistance>0) {
 				mb=fmb*(1-gldistance/intrusiondist_avg); 
-			else
+			}
+			else{
 				mb=fmb;
+			}
     	}
       	else  _error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 
@@ -973,7 +981,6 @@ void           MasstransportAnalysis::InputUpdateFromSolution(IssmDouble* soluti
 	}
 	element->AddBasalInput(ThicknessEnum,newthickness,element->GetElementType());
 	element->AddBasalInput(ThicknessResidualEnum,thicknessresidual,element->GetElementType());
-
 	xDelete<int>(doflist);
 	xDelete<IssmDouble>(newthickness);
  	xDelete<IssmDouble>(thicknessresidual);
@@ -1056,7 +1063,6 @@ void           MasstransportAnalysis::InputUpdateFromSolution(IssmDouble* soluti
 	xDelete<IssmDouble>(phi);
 	xDelete<IssmDouble>(sealevel);
 	xDelete<IssmDouble>(bed);
-	xDelete<int>(doflist);
 	if(basalelement->IsSpawnedElement()){basalelement->DeleteMaterials(); delete basalelement;};
 }/*}}}*/
 void           MasstransportAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
@@ -1083,7 +1089,6 @@ ElementMatrix* MasstransportAnalysis::CreateFctKMatrix(Element* element){/*{{{*/
 	ElementMatrix* Ke     = element->NewElementMatrix();
 	IssmDouble*    basis  = xNew<IssmDouble>(numnodes);
 	IssmDouble*    dbasis = xNew<IssmDouble>(dim*numnodes);
-	IssmDouble*    D      = xNewZeroInit<IssmDouble>(dim*dim);
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
@@ -1117,7 +1122,6 @@ ElementMatrix* MasstransportAnalysis::CreateFctKMatrix(Element* element){/*{{{*/
 
 	/*Clean up and return*/
 	xDelete<IssmDouble>(xyz_list);
-	xDelete<IssmDouble>(D);
 	xDelete<IssmDouble>(basis);
 	xDelete<IssmDouble>(dbasis);
 	delete gauss;
@@ -1192,7 +1196,6 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Initialize Element vector and other vectors*/
 	ElementVector* pe    = element->NewElementVector();
 	IssmDouble*    basis = xNew<IssmDouble>(numnodes);
-	IssmDouble*    dbasis= xNew<IssmDouble>(dim*numnodes);
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
@@ -1252,7 +1255,6 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Clean up and return*/
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(basis);
-	xDelete<IssmDouble>(dbasis);
 	delete gauss;
 	return pe;
 }/*}}}*/
