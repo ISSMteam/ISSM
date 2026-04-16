@@ -487,6 +487,7 @@ void  IoModel::DeclareIndependents(bool trace,IssmPDouble* X){/*{{{*/
 			/*create independent objects, and at the same time, fetch the corresponding independent variables,
 			 *and declare them as such in ADOLC: */
 			for(int i=0;i<num_independent_objects;i++){
+				_error_("Is this code dead?");
 				this->FetchIndependentData(&Xcount,X,names[i]);
 			}
 			for(int i=0;i<num_independent_objects;i++) xDelete<char>(names[i]);
