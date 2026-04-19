@@ -166,6 +166,7 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 
 	/*retrieve more parameters:*/
 	femmodel->parameters->FindParam(&iscoupling,IsSlcCouplingEnum);
+	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
 
@@ -806,19 +807,17 @@ bool       slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_r
 
 	int nel;
 	bool converged=true;
-	IssmDouble ndS,nS, nS_old; 
-	IssmDouble* dRSLg    = NULL;
-	IssmDouble rho_water =0;
+	IssmDouble rho_water;
 
 	femmodel->parameters->FindParam(&nel,MeshNumberofelementsEnum);
 	femmodel->parameters->FindParam(&rho_water,MaterialsRhoSeawaterEnum);
 
 	//compute norm(du) and norm(u) if requested
-	dRSLg=xNewZeroInit<IssmDouble>(nel);
+	IssmDouble* dRSLg=xNewZeroInit<IssmDouble>(nel);
 
-	ndS=0;
-	nS=0;
-	nS_old=0;
+	IssmDouble ndS=0;
+	IssmDouble nS=0;
+	IssmDouble nS_old=0;
 
 	for (int e=0;e<nel;e++){
 		dRSLg[e]=(RSLg[e]-RSLg_old[e])/rho_water/totaloceanarea;
@@ -839,6 +838,7 @@ bool       slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_r
 	xDelete<IssmDouble>(dRSLg);
 
 	//print
+	_assert_(nS>0);
 	if(!xIsNan<IssmDouble>(eps_rel)){
 		if((ndS/nS)<eps_rel){
 			if(VerboseConvergence()) _printf0_(setw(50) << left << "              convergence criterion: norm(dS)/norm(S)" << ndS/nS*100 << " < " << eps_rel*100 << " %\n");
