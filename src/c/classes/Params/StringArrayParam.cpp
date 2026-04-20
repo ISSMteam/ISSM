@@ -16,6 +16,7 @@
 
 /*StringArrayParam constructors and destructor*/
 StringArrayParam::StringArrayParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/
@@ -41,10 +42,8 @@ StringArrayParam::StringArrayParam(int in_enum_type,char** in_values, int in_num
 /*}}}*/
 StringArrayParam::~StringArrayParam(){/*{{{*/
 
-	int i;
-
 	char* string=NULL;
-	for(i=0;i<this->numstrings;i++){
+	for(int i=0;i<this->numstrings;i++){
 		string=value[i];
 		xDelete<char>(string);
 	}

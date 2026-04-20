@@ -16,6 +16,7 @@
 
 /*DoubleMatParam constructors and destructor*/
 DoubleMatParam::DoubleMatParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/

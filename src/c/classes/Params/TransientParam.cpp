@@ -16,6 +16,8 @@
 
 /*TransientParam constructors and destructor*/
 TransientParam::TransientParam(){/*{{{*/
+	this->values = NULL;
+	this->timesteps = NULL;
 	return;
 }
 /*}}}*/
@@ -97,7 +99,7 @@ int  TransientParam::ObjectEnum(void){/*{{{*/
 void  TransientParam::GetParameterValue(IssmDouble* pdouble,IssmDouble time){/*{{{*/
 
 	IssmDouble output;
-	bool   found;
+	bool found = false;
 
 	if(this->cycle) _error_("not implemented yet");
 

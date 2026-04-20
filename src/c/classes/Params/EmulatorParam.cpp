@@ -18,6 +18,9 @@ namespace py = pybind11;
 
 /*EmulatorParam constructors and destructor*/
 EmulatorParam::EmulatorParam(){/*{{{*/
+	this->module_dir = NULL;
+	this->pt_name    = NULL;
+	this->py_name    = NULL;
 	return;
 }
 /*}}}*/

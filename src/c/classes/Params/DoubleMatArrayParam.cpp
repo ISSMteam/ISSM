@@ -16,6 +16,9 @@
 
 /*DoubleMatArrayParam constructors and destructor*/
 DoubleMatArrayParam::DoubleMatArrayParam(){/*{{{*/
+	this->array = NULL;
+	this->mdim_array = NULL;
+	this->ndim_array = NULL;
 	return;
 }
 /*}}}*/
@@ -204,7 +207,7 @@ void  DoubleMatArrayParam::SetValue(IssmDouble** in_array, int in_M, int* in_mdi
 	/*avoid leak: */
 	xDelete<int>(mdim_array);
 	xDelete<int>(ndim_array);
-	for(i=0;i<M;i++){
+	for(i=0;i<this->M;i++){
 		matrix=array[i];
 		xDelete<IssmDouble>(matrix);
 	}
@@ -229,6 +232,4 @@ void  DoubleMatArrayParam::SetValue(IssmDouble** in_array, int in_M, int* in_mdi
 
 		this->array[i]=matrix;
 	}
-
-}
-/*}}}*/
+}/*}}}*/

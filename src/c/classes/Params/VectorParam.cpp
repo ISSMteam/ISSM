@@ -16,6 +16,7 @@
 
 /*VectorParam constructors and destructor*/
 VectorParam::VectorParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/
