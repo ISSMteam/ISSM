@@ -322,3 +322,14 @@ if getfieldvalue(options,'filepath',0)
 		end
 	end
 end
+
+%Check scalar string
+if getfieldvalue(options,'string',0)
+	if ~ischar(field)
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' should be a string']));
+	elseif size(field,1)~=1
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' should have only one row']));
+	end
+end
