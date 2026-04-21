@@ -36,13 +36,14 @@ class BarystaticContributions {
 		~BarystaticContributions();
 
 		/*routines:*/
+		void Assemble();
+		void CumAssemble();
 		IssmDouble Total();
 		IssmDouble CumTotal();
 		void Cumulate(Parameters* parameters);
 		void Save(Results* results, Parameters* parameters, IssmDouble oceanarea);
 		void Set(int eid, IssmDouble icevalue, IssmDouble hydrovalue, IssmDouble oceanvalue);
 		void Reset();
-		void Finalize();
 
 };
 #endif  /* _BARYSTATICCONTRIBUTIONS_H_ */
