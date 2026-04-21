@@ -979,7 +979,7 @@ void FemModel::Solve(void){/*{{{*/
 	int solution_type;
 	void (*solutioncore)(FemModel*)=NULL; //core solution function pointer
 
-	_printf0_("call computational core:\n");
+	if(VerboseSolution()) _printf0_("call computational core:\n");
 
 	/*Retrieve solution_type from parameters: */
 	parameters->FindParam(&solution_type,SolutionTypeEnum);
