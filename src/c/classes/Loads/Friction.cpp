@@ -31,6 +31,9 @@ Friction::Friction(){/*{{{*/
 	this->vz_input=NULL;
 	this->alpha2_list=NULL;
 	this->alpha2_complement_list=NULL;
+	#ifdef _HAVE_PyBind11_
+	this->emulator=NULL;
+	#endif
 }
 /*}}}*/
 Friction::Friction(Element* element_in){/*{{{*/
@@ -42,6 +45,9 @@ Friction::Friction(Element* element_in){/*{{{*/
 
 	this->element=element_in;
 	this->linearize  = 0;
+	#ifdef _HAVE_PyBind11_
+	this->emulator=NULL;
+	#endif
 
 	/* Load necessary parameters */
 	element_in->FindParam(&this->law,FrictionLawEnum);
@@ -103,9 +109,11 @@ Friction::Friction(Element* element_in){/*{{{*/
 	}
 
 	#ifdef _HAVE_PyBind11_
-	Param* emulator_param = element_in->parameters->FindParamObject(FrictionEmulatorEnum);
-	if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Paramerer should be EmulatorParam");
-	this->emulator = (EmulatorParam*)emulator_param;
+	if(this->law==20){
+	  Param* emulator_param = element_in->parameters->FindParamObject(FrictionEmulatorEnum);
+	  if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Paramerer should be EmulatorParam");
+	  this->emulator = (EmulatorParam*)emulator_param;
+	}
 	#endif
 
 }
@@ -1426,9 +1434,11 @@ void FrictionUpdateInputs(Elements* elements,Inputs* inputs,IoModel* iomodel){/*
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.m",FrictionMEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.K",FrictionKEnum);
 			break;
+		#ifdef _HAVE_PyBind11_
 		case 20:
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.C",FrictionCEnum);
 			break;
+		#endif
 		default:
 			_error_("friction law "<< frictionlaw <<" not supported");
 	}
