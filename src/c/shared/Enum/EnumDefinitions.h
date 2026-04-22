@@ -749,6 +749,7 @@ enum definitions{
 	ZzeEnum,
 	AreaeEnum,
 	WorldCommEnum,
+	FrictionEmulatorEnum,
 	/*}}}*/
 	ParametersENDEnum,
 	InputsSTARTEnum,
@@ -3497,7 +3498,6 @@ enum definitions{
 	FreeEnum,
 	FreeSurfaceBaseAnalysisEnum,
 	FreeSurfaceTopAnalysisEnum,
-	FrictionEmulatorEnum,
 	FrontalForcingsDefaultEnum,
 	FrontalForcingsRignotEnum,
 	FrontalForcingsRignotarmaEnum,

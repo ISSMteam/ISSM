@@ -1515,6 +1515,9 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 					  iomodel->FetchData(&module_dir, "md.friction.module_dir");
 					  iomodel->FetchData(&pt_name, "md.friction.pt_name");
 					  iomodel->FetchData(&py_name, "md.friction.py_name");
+					  if(parameters->Exist(FrictionEmulatorEnum)){
+						  _error_("FrictionEmulatorEnum already exists in this process; EmulatorParam is process-local and must only be created once");
+					  }
 					  parameters->AddObject(new EmulatorParam(FrictionEmulatorEnum, module_dir,pt_name, py_name));
 					  xDelete<char>(module_dir);
 					  xDelete<char>(pt_name);

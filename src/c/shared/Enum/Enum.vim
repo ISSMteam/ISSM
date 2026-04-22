@@ -755,6 +755,7 @@ syn keyword cConstant YyeEnum
 syn keyword cConstant ZzeEnum
 syn keyword cConstant AreaeEnum
 syn keyword cConstant WorldCommEnum
+syn keyword cConstant FrictionEmulatorEnum
 syn keyword cConstant ParametersENDEnum
 syn keyword cConstant InputsSTARTEnum
 syn keyword cConstant AccumulatedDeltaBottomPressureEnum
@@ -3498,7 +3499,6 @@ syn keyword cConstant FloatingMeltRateEnum
 syn keyword cConstant FreeEnum
 syn keyword cConstant FreeSurfaceBaseAnalysisEnum
 syn keyword cConstant FreeSurfaceTopAnalysisEnum
-syn keyword cConstant FrictionEmulatorEnum
 syn keyword cConstant FrontalForcingsDefaultEnum
 syn keyword cConstant FrontalForcingsRignotEnum
 syn keyword cConstant FrontalForcingsRignotarmaEnum

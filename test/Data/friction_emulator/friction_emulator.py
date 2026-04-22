@@ -34,12 +34,6 @@ class FrictionMLP(nn.Module):# {{{
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x)# }}}
-def load_checkpoint_into_model(model: nn.Module, ckpt_path: str) -> nn.Module:# {{{
-    checkpoint = torch.load(ckpt_path, map_location="cpu")
-    state_dict = checkpoint["state_dict"]
-    model.load_state_dict(state_dict)
-    model.eval()
-    return model# }}}
 def init_model(weights_path: str = DEFAULT_WEIGHTS_PATH, device: str = "auto") -> None:# {{{
     global _MODEL, _DEVICE, _X_MEAN_T, _X_STD_T, _Y_MEAN_T, _Y_STD_T
 
@@ -47,7 +41,7 @@ def init_model(weights_path: str = DEFAULT_WEIGHTS_PATH, device: str = "auto") -
     if not ckpt_path.exists():
         raise FileNotFoundError(f"Friction emulator checkpoint not found: {ckpt_path}")
 
-    checkpoint = torch.load(str(ckpt_path), map_location="cpu")
+    checkpoint = torch.load(str(ckpt_path), map_location="cpu", weights_only=False)
     in_dim = int(checkpoint["in_dim"])
     h1 = int(checkpoint["h1"])
     h2 = int(checkpoint["h2"])

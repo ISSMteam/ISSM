@@ -757,6 +757,7 @@ const char* EnumToStringx(int en){
 		case ZzeEnum : return "Zze";
 		case AreaeEnum : return "Areae";
 		case WorldCommEnum : return "WorldComm";
+		case FrictionEmulatorEnum : return "FrictionEmulator";
 		case ParametersENDEnum : return "ParametersEND";
 		case InputsSTARTEnum : return "InputsSTART";
 		case AccumulatedDeltaBottomPressureEnum : return "AccumulatedDeltaBottomPressure";
@@ -3500,7 +3501,6 @@ const char* EnumToStringx(int en){
 		case FreeEnum : return "Free";
 		case FreeSurfaceBaseAnalysisEnum : return "FreeSurfaceBaseAnalysis";
 		case FreeSurfaceTopAnalysisEnum : return "FreeSurfaceTopAnalysis";
-		case FrictionEmulatorEnum : return "FrictionEmulator";
 		case FrontalForcingsDefaultEnum : return "FrontalForcingsDefault";
 		case FrontalForcingsRignotEnum : return "FrontalForcingsRignot";
 		case FrontalForcingsRignotarmaEnum : return "FrontalForcingsRignotarma";

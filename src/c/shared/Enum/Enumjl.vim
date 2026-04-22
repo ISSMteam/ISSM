@@ -748,6 +748,7 @@ syn keyword juliaConstC YyeEnum
 syn keyword juliaConstC ZzeEnum
 syn keyword juliaConstC AreaeEnum
 syn keyword juliaConstC WorldCommEnum
+syn keyword juliaConstC FrictionEmulatorEnum
 syn keyword juliaConstC ParametersENDEnum
 syn keyword juliaConstC InputsSTARTEnum
 syn keyword juliaConstC AccumulatedDeltaBottomPressureEnum
@@ -3491,7 +3492,6 @@ syn keyword juliaConstC FloatingMeltRateEnum
 syn keyword juliaConstC FreeEnum
 syn keyword juliaConstC FreeSurfaceBaseAnalysisEnum
 syn keyword juliaConstC FreeSurfaceTopAnalysisEnum
-syn keyword juliaConstC FrictionEmulatorEnum
 syn keyword juliaConstC FrontalForcingsDefaultEnum
 syn keyword juliaConstC FrontalForcingsRignotEnum
 syn keyword juliaConstC FrontalForcingsRignotarmaEnum
