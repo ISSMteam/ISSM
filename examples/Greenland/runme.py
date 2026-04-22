@@ -17,6 +17,7 @@ from ll2xy import ll2xy
 from BamgTriangulate import BamgTriangulate
 from InterpFromMeshToMesh2d import InterpFromMeshToMesh2d
 from scipy.interpolate import griddata
+import matplotlib.pyplot as plt
 
 steps = [1]
 
@@ -152,7 +153,7 @@ if 5 in steps:
               'title', 'Surface (m)')
 
     #Line Plots
-    figure
+    plt.figure
 
     #Plot surface mass balance, velocity and volume
     surfmb = []
