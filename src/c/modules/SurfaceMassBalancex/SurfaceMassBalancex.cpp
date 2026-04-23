@@ -415,6 +415,17 @@ void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	xDelete<IssmDouble>(annualtemp);
 	xDelete<IssmDouble>(precepitation);
 }/*}}}*/
+#ifdef _HAVE_PyBind11_
+void SmbEmulatorx(FemModel* femmodel){/*{{{*/
+
+	IssmDouble timeinputs = 0.0;
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->SmbEmulator(timeinputs);
+	}
+
+}/*}}}*/
+#endif
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 
 	/*Intermediaries*/

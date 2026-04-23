@@ -745,6 +745,7 @@
 	AreaeEnum
 	WorldCommEnum
 	FrictionEmulatorEnum
+	SmbEmulatorEnum
 	ParametersENDEnum
 	InputsSTARTEnum
 	AccumulatedDeltaBottomPressureEnum
@@ -1272,6 +1273,16 @@
 	SmbZMinEnum
 	SmbZTopEnum
 	SmbZYEnum
+	SmbElevEnum
+	SmbAlEnum
+	SmbStEnum
+	SmbTtEnum
+	SmbSwdEnum
+	SmbLwdEnum
+	SmbSwuEnum
+	SmbLwuEnum
+	SmbShfEnum
+	SmbLhfEnum
 	SolidearthExternalDisplacementEastRateEnum
 	SolidearthExternalDisplacementNorthRateEnum
 	SolidearthExternalDisplacementUpRateEnum
@@ -3695,6 +3706,7 @@
 	SMBpddGCMEnum
 	SMBpddFastEnum
 	SMBsemicEnum
+	SMBmariaEnum
 	SSAApproximationEnum
 	SSAFSApproximationEnum
 	SSAHOApproximationEnum
@@ -4541,6 +4553,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==AreaeEnum) return "Areae" end
 	if(enum==WorldCommEnum) return "WorldComm" end
 	if(enum==FrictionEmulatorEnum) return "FrictionEmulator" end
+	if(enum==SmbEmulatorEnum) return "SmbEmulator" end
 	if(enum==ParametersENDEnum) return "ParametersEND" end
 	if(enum==InputsSTARTEnum) return "InputsSTART" end
 	if(enum==AccumulatedDeltaBottomPressureEnum) return "AccumulatedDeltaBottomPressure" end
@@ -5068,6 +5081,16 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbZMinEnum) return "SmbZMin" end
 	if(enum==SmbZTopEnum) return "SmbZTop" end
 	if(enum==SmbZYEnum) return "SmbZY" end
+	if(enum==SmbElevEnum) return "SmbElev" end
+	if(enum==SmbAlEnum) return "SmbAl" end
+	if(enum==SmbStEnum) return "SmbSt" end
+	if(enum==SmbTtEnum) return "SmbTt" end
+	if(enum==SmbSwdEnum) return "SmbSwd" end
+	if(enum==SmbLwdEnum) return "SmbLwd" end
+	if(enum==SmbSwuEnum) return "SmbSwu" end
+	if(enum==SmbLwuEnum) return "SmbLwu" end
+	if(enum==SmbShfEnum) return "SmbShf" end
+	if(enum==SmbLhfEnum) return "SmbLhf" end
 	if(enum==SolidearthExternalDisplacementEastRateEnum) return "SolidearthExternalDisplacementEastRate" end
 	if(enum==SolidearthExternalDisplacementNorthRateEnum) return "SolidearthExternalDisplacementNorthRate" end
 	if(enum==SolidearthExternalDisplacementUpRateEnum) return "SolidearthExternalDisplacementUpRate" end
@@ -7491,6 +7514,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SMBpddGCMEnum) return "SMBpddGCM" end
 	if(enum==SMBpddFastEnum) return "SMBpddFast" end
 	if(enum==SMBsemicEnum) return "SMBsemic" end
+	if(enum==SMBmariaEnum) return "SMBmaria" end
 	if(enum==SSAApproximationEnum) return "SSAApproximation" end
 	if(enum==SSAFSApproximationEnum) return "SSAFSApproximation" end
 	if(enum==SSAHOApproximationEnum) return "SSAHOApproximation" end
@@ -8337,6 +8361,7 @@ function StringToEnum(name::String)
 	if(name=="Areae") return AreaeEnum  end
 	if(name=="WorldComm") return WorldCommEnum  end
 	if(name=="FrictionEmulator") return FrictionEmulatorEnum  end
+	if(name=="SmbEmulator") return SmbEmulatorEnum  end
 	if(name=="ParametersEND") return ParametersENDEnum  end
 	if(name=="InputsSTART") return InputsSTARTEnum  end
 	if(name=="AccumulatedDeltaBottomPressure") return AccumulatedDeltaBottomPressureEnum  end
@@ -8864,6 +8889,16 @@ function StringToEnum(name::String)
 	if(name=="SmbZMin") return SmbZMinEnum  end
 	if(name=="SmbZTop") return SmbZTopEnum  end
 	if(name=="SmbZY") return SmbZYEnum  end
+	if(name=="SmbElev") return SmbElevEnum  end
+	if(name=="SmbAl") return SmbAlEnum  end
+	if(name=="SmbSt") return SmbStEnum  end
+	if(name=="SmbTt") return SmbTtEnum  end
+	if(name=="SmbSwd") return SmbSwdEnum  end
+	if(name=="SmbLwd") return SmbLwdEnum  end
+	if(name=="SmbSwu") return SmbSwuEnum  end
+	if(name=="SmbLwu") return SmbLwuEnum  end
+	if(name=="SmbShf") return SmbShfEnum  end
+	if(name=="SmbLhf") return SmbLhfEnum  end
 	if(name=="SolidearthExternalDisplacementEastRate") return SolidearthExternalDisplacementEastRateEnum  end
 	if(name=="SolidearthExternalDisplacementNorthRate") return SolidearthExternalDisplacementNorthRateEnum  end
 	if(name=="SolidearthExternalDisplacementUpRate") return SolidearthExternalDisplacementUpRateEnum  end
@@ -11287,6 +11322,7 @@ function StringToEnum(name::String)
 	if(name=="SMBpddGCM") return SMBpddGCMEnum  end
 	if(name=="SMBpddFast") return SMBpddFastEnum  end
 	if(name=="SMBsemic") return SMBsemicEnum  end
+	if(name=="SMBmaria") return SMBmariaEnum  end
 	if(name=="SSAApproximation") return SSAApproximationEnum  end
 	if(name=="SSAFSApproximation") return SSAFSApproximationEnum  end
 	if(name=="SSAHOApproximation") return SSAHOApproximationEnum  end

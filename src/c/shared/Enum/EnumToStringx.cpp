@@ -758,6 +758,7 @@ const char* EnumToStringx(int en){
 		case AreaeEnum : return "Areae";
 		case WorldCommEnum : return "WorldComm";
 		case FrictionEmulatorEnum : return "FrictionEmulator";
+		case SmbEmulatorEnum : return "SmbEmulator";
 		case ParametersENDEnum : return "ParametersEND";
 		case InputsSTARTEnum : return "InputsSTART";
 		case AccumulatedDeltaBottomPressureEnum : return "AccumulatedDeltaBottomPressure";
@@ -1285,6 +1286,16 @@ const char* EnumToStringx(int en){
 		case SmbZMinEnum : return "SmbZMin";
 		case SmbZTopEnum : return "SmbZTop";
 		case SmbZYEnum : return "SmbZY";
+		case SmbElevEnum : return "SmbElev";
+		case SmbAlEnum : return "SmbAl";
+		case SmbStEnum : return "SmbSt";
+		case SmbTtEnum : return "SmbTt";
+		case SmbSwdEnum : return "SmbSwd";
+		case SmbLwdEnum : return "SmbLwd";
+		case SmbSwuEnum : return "SmbSwu";
+		case SmbLwuEnum : return "SmbLwu";
+		case SmbShfEnum : return "SmbShf";
+		case SmbLhfEnum : return "SmbLhf";
 		case SolidearthExternalDisplacementEastRateEnum : return "SolidearthExternalDisplacementEastRate";
 		case SolidearthExternalDisplacementNorthRateEnum : return "SolidearthExternalDisplacementNorthRate";
 		case SolidearthExternalDisplacementUpRateEnum : return "SolidearthExternalDisplacementUpRate";
@@ -3708,6 +3719,7 @@ const char* EnumToStringx(int en){
 		case SMBpddGCMEnum : return "SMBpddGCM";
 		case SMBpddFastEnum : return "SMBpddFast";
 		case SMBsemicEnum : return "SMBsemic";
+		case SMBmariaEnum : return "SMBmaria";
 		case SSAApproximationEnum : return "SSAApproximation";
 		case SSAFSApproximationEnum : return "SSAFSApproximation";
 		case SSAHOApproximationEnum : return "SSAHOApproximation";

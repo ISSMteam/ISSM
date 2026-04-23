@@ -284,6 +284,21 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.windspeed_anomaly",SmbWindspeedAnomalyEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.airhumidity_anomaly",SmbAirhumidityAnomalyEnum);
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",SmbMassBalanceEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",SmbElevEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",SmbAlEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",SmbStEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",SmbTtEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",SmbSwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",SmbLwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",SmbSwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",SmbLwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",SmbShfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",SmbLhfEnum);
+			break;
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
@@ -651,6 +666,27 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			}
 			/*Nothing to add to parameters*/
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:{
+			                  char* module_dir = NULL;
+			                  char* pt_name    = NULL;
+			                  char* py_name    = NULL;
+
+			                  iomodel->FetchData(&module_dir,"md.smb.module_dir");
+			                  iomodel->FetchData(&pt_name,"md.smb.pt_name");
+			                  iomodel->FetchData(&py_name,"md.smb.py_name");
+
+			                  if(parameters->Exist(SmbEmulatorEnum)){
+			                  	_error_("SmbEmulatorEnum already exists in this process; EmulatorParam is process-local and must only be created once");
+			                  }
+			                  parameters->AddObject(new EmulatorParam(SmbEmulatorEnum,module_dir,pt_name,py_name));
+
+			                  xDelete<char>(module_dir);
+			                  xDelete<char>(pt_name);
+			                  xDelete<char>(py_name);
+			                  break;
+								}
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
@@ -760,6 +796,12 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			if(VerboseSolution())_printf0_("        call smb Evatt debris module\n");
 			SmbDebrisEvattx(femmodel);
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:
+			if(VerboseSolution()) _printf0_("   call smb emulator module\n");
+			SmbEmulatorx(femmodel);
+			break;
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}

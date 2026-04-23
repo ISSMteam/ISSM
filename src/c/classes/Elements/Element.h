@@ -39,6 +39,9 @@ template <class doubletype> class Vector;
 class ElementMatrix;
 class ElementVector;
 class BarystaticContributions;
+#if _HAVE_PyBind11_
+class EmulatorParam;
+#endif
 /*}}}*/
 
 class Element: public Object{
@@ -54,6 +57,9 @@ class Element: public Object{
 		Parameters  *parameters;
 		bool         isonsurface;
 		bool         isonbase;
+		#ifdef _HAVE_PyBind11_
+		EmulatorParam* smbemulator;
+		#endif
 
 		int* element_type_list;
 		int  element_type;
@@ -182,6 +188,9 @@ class Element: public Object{
 		void               PositiveDegreeDaySicopolis(bool isfirnwarming);
 		void               PositiveDegreeDayFast(bool isfirnwarming);
 		void               PositiveDegreeDayGCM();
+		#ifdef _HAVE_PyBind11_
+		void               SmbEmulator(IssmDouble timeinputs);
+		#endif
 		void               ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum);
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();

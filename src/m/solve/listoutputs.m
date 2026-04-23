@@ -535,6 +535,16 @@ SmbZMax
 SmbZMin
 SmbZTop
 SmbZY
+SmbElev
+SmbAl
+SmbSt
+SmbTt
+SmbSwd
+SmbLwd
+SmbSwu
+SmbLwu
+SmbShf
+SmbLhf
 SolidearthExternalDisplacementEastRate
 SolidearthExternalDisplacementNorthRate
 SolidearthExternalDisplacementUpRate
