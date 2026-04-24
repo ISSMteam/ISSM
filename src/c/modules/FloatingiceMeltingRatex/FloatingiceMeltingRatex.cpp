@@ -226,6 +226,7 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 
 	femmodel->parameters->FindParam(&time,TimeEnum);
 
+	//femmodel->parameters->FindParam(&num_basins,BasalforcingsIsmip7NumBasinsEnum);
 	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip7TfDepthsEnum); _assert_(tf_depths);
 
 	/*Binary search works for vectors that are sorted in increasing order only, make depths positive*/

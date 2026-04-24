@@ -15,9 +15,21 @@ except:
 from basalforcingsismip7 import basalforcingsismip7
 from InterpFromGridToMesh import InterpFromGridToMesh
 
-def interpISMIP7AntarcticaOcn(*args):
+def interpISMIP7AntarcticaOcn(*args): # {{{
     '''
     interpISMIP7AntarcticaOcn - interpolate chosen ISMIP7 ocean forcing to model
+
+        Globus directory:
+        AIS/
+            CESM2-WACCM/
+                historical/
+                ssp126/
+                ssp245/
+                ssp585/
+            obs/
+            meltmip/
+            SMBmip/
+            parameterizations/
 
         Input:
             - md (model object)
@@ -33,6 +45,7 @@ def interpISMIP7AntarcticaOcn(*args):
             md.basalforcings = interpISMIP7AntarcticaOcn(md,'obs')
 
             # GCM forcings
+            md.basalforcings = interpISMIP7AntarcticaOcn(md,'cesm2-waccm','ssp126',[1995, 2100])
             md.basalforcings = interpISMIP7AntarcticaOcn(md,'cesm2-waccm','ssp585',[1995, 2100])
     '''
 
@@ -70,24 +83,47 @@ def interpISMIP7AntarcticaOcn(*args):
     # Search forcing files
     tf_file, so_file = search_forcing_file(datadir, modelname, scenario)
 
-    # Load TF and salinity data
-    nc_tf = netCDF4.Dataset(tf_file,'r')
-    nc_so = netCDF4.Dataset(so_file,'r')
-
-    x_n = nc_tf['x'][:]
-    y_n = nc_tf['y'][:]
-    # Python: dimension (time, z, y, x) for tf and so file
-    tf_data = nc_tf['tf'][:]
-    so_data = nc_so['tf'][:] # FIXME: really "tf" variable in "so" (salinity) ?
-    z_data  = nc_tf['z'][:]
+    # Define field name depending on modelname
     if modelname == 'obs':
-        #NOTE: observation dataset contains (z, y, x). observation dataset is required additional axis
-        tf_data = tf_data[np.newaxis,:,:,:]
-        so_data = so_data[np.newaxis,:,:,:]
+        tf_name = 'tf'
+        so_name = 'so'
+    else:
+        tf_name = 'tf'
+        so_name = 'so'
 
-    nc_tf.close()
-    nc_so.close()
-    del nc_tf, nc_so
+    # Load TF and salinity data
+    # First, load grid information. 
+    nc = netCDF4.Dataset(tf_file[0],'r')
+    x_n = nc['x'][:]
+    y_n = nc['y'][:]
+    # Python: dimension (time, z, y, x) for tf and so file
+    z_data  = nc['z'][:]
+
+    # Close...
+    nc.close()
+
+    tf_data   = []
+    so_data   = []
+    time_data = []
+    print('   == loading Thermal Forcing (TF)')
+    for i in range(len(tf_file)):
+        nc_tf = netCDF4.Dataset(tf_file[i],'r')
+        print(tf_file[i])
+        tf_data = np.concatenate((tf_data, nc_tf[tf_name][:]),axis=0)
+        try:
+            time_data = np.concatenate((time_data, nc_tf['time']),axis=0)
+        except:
+            continue
+        nc_tf.close()
+    print('   == loading Salinity (SO)')
+    for i in range(len(so_file)):
+        print(so_file[i])
+        nc_so = netCDF4.Dataset(so_file[i],'r')
+        so_data = np.concatenate((so_data, nc_so[so_name][:]),axis=0)
+        nc_so.close()
+
+    # Corret time
+    time_data = time_data/365 + 1850
 
     # Build tf and salinity array
     tf = []
@@ -95,11 +131,13 @@ def interpISMIP7AntarcticaOcn(*args):
     if modelname:
         start_idx = 0
         final_idx = 1
-        time = [[1996]]
-    else:
-        start_idx = start_time - 1994
-        final_idx = end_time - 1994
+        time = np.array([[1996]])
+    elif modelname.lower() in ['cesm2-waccm']:
+        start_idx = np.where(time_data == start_time)[0][0]
+        final_idx = np.where(time_data == end_time)[0][0]
         time = np.arange(start_time, end_time+1)
+    else:
+        raise Exception('Error: Given' + modelname + ' is not supported.')
 
     for i in range(len(z_data)):
         print('   == Interpolating over depth ' + str(i+1) + '/' + str(len(z_data)))
@@ -126,6 +164,8 @@ def interpISMIP7AntarcticaOcn(*args):
     # TODO:
     # Wait calibrated dataset
     # load Delta and gamm data
+    cal_gamma, cal_delta_t = calibrated_parameters_ismip7()
+
     basin_datanc    = netCDF4.Dataset(os.path.join(datadir,'obs/ocean/IMBIE-basins/v3/IMBIE-basins_AIS_obs_ocean_v3.nc'),'r')
     basinid_data    = basin_datanc['basinNumber'][:]
 
@@ -147,15 +187,18 @@ def interpISMIP7AntarcticaOcn(*args):
     basalforcings             = basalforcings.initialize(md)
     basalforcings.basin_id    = basinid
     basalforcings.num_basins  = num_basins
+    basalforcings.delta_t     = cal_delta_t
     basalforcings.tf_depths   = np.reshape(z_data,(1,-1))
     basalforcings.tf          = tf
     basalforcings.salinity    = so
+    basalforcings.gamma       = cal_gamma
 
     print('Info: forcings cover ' + str(start_time) + ' to ' + str(end_time));
 
     return basalforcings
+    # }}}
 
-def search_forcing_file(datadir, modelname, scenario):
+def search_forcing_file(datadir, modelname, scenario, start_time, end_time): # {{{
     """
     Explain
     -------
@@ -174,6 +217,9 @@ def search_forcing_file(datadir, modelname, scenario):
 
     scenario: str
 
+    start_time, end_time: int or float
+        Start and fnal year for searching files
+
     Returns
     -------
     tf_file, so_file: list
@@ -185,14 +231,88 @@ def search_forcing_file(datadir, modelname, scenario):
     if modelname == 'obs':
         tf_file = os.path.join(datadir,'obs/ocean/climatology/zhou_annual_06_nov/tf/v3/tf_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc')
         so_file = os.path.join(datadir,'obs/ocean/climatology/zhou_annual_06_nov/so/v3/so_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc')
+
+        tf_file = [tf_file]
+        so_file = [so_file]
     elif modelname == 'cems2-waccm':
-        raise Exception('Error: given %s is not supported yet.'%(modelname))
-        tf_file = ''
-        so_file = ''
+        tf_file_hist = glob.glob(os.path.join(dataset,'CESM2-WACCM','historical','ocean/tf/v3/tf*.nc'))
+        tf_file_proj = glob.glob(os.path.join(dataset,'CESM2-WACCM',scenario,'ocean/tf/v3/tf*.nc'))
+
+        tf_file_hist = np.sort(tf_file_hist)
+        tf_file_proj = np.sort(tf_file_proj)
+
+        so_file_hist = glob.glob(os.path.join(dataset,'CESM2-WACCM','historical','ocean/so/v3/so*.nc'))
+        so_file_proj = glob.glob(os.path.join(dataset,'CESM2-WACCM',scenario,'ocean/so/v3/so*.nc'))
+
+        so_file_hist = np.sort(so_file_hist)
+        so_file_proj = np.sort(so_file_proj)
+
+        # Merget file lists. Coerce list to array
+        tf_file = np.array(tf_file_hist + tf_file_proj)
+        so_file = np.array(so_file_hist + so_file_proj)
+
+        # Choose specific year
+        #NOTE:
+        #File format: tf_AIS_CESM2-WACCM_historical_ocean_v3_2000-2009.nc
+        years = np.arange(start_time, end_time+1)
+
+        pos = np.zeros((len(tf_file),))
+        for i in range(len(tf_file)):
+            tmp_year = os.path.split(tf_file[i])[-1] # get file anme
+            tmp_year = os.path.splitext(tmp_year)[0] # without extension
+            tmp_year = tmp_year.split('_')[6] # select duration
+
+            tmp_start = int(tmp_year.split('-')[0])
+            tmp_end   = int(tmp_year.split('-')[1])
+
+            # Now, check find file in years
+            if np.any(years == tmp_start) | np.any(years == tmp_end):
+                pos[i] = 1
+        tf_file = tf_file[np.where(pos)[0])
+
+        pos = np.zeros((len(so_file),))
+        for i in range(len(so_file)):
+            tmp_year = os.path.split(so_file[i])[-1] # get file anme
+            tmp_year = os.path.splitext(tmp_year)[0] # without extension
+            tmp_year = tmp_year.split('_')[6] # select duration
+
+            tmp_start = int(tmp_year.split('-')[0])
+            tmp_end   = int(tmp_year.split('-')[1])
+
+            # Now, check find file in years
+            if np.any(years == tmp_start) | np.any(years == tmp_end):
+                pos[i] = 1
+        so_file = so_file[np.where(pos)[0])
     else:
         raise Exception('Error: not implemented yet.')
 
-    assert(os.path.isfile(tf_file), 'Error: We cannot find filename: ' + tf_file)
-    assert(os.path.isfile(so_file), 'Error: We cannot find filename: ' + so_file)
-
     return tf_file, so_file
+    # }}}
+
+def calibrated_parameters_ismip7():# {{{
+    """
+    Explain
+    -------
+    Hard-coded optimized parameters for ismip7.
+    
+    Referneces
+    ----------
+    See notebook scripts at
+    https://github.com/ismip/ismip7-antarctic-ocean-forcing/blob/main/parameterisations/parameter_selection_quadratic_example.ipynb
+    """
+
+    # Example
+    #FIXME: unit for ISMIP7 protocol...
+    yts = 31536000 # from md.constants.yts
+
+    Kt = 7.5e-5*yts
+    delta_t_basin = [-0.2,  -0.25, 0.15, 0.6 ,  0.1,
+                    0.65, -0.2, -0.15, 0.8 ,  2.0,
+                    0.55, -0.2,   0.5, 0.05, -0.2,
+                    0.15]
+
+    # Coerce list to array
+    delta_t_basin = np.array(delta_t_basin)
+
+    return Kt, deltaT_basin
+    # }}}

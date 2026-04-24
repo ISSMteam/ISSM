@@ -74,6 +74,7 @@
 	BasalforcingsIsmip6IsLocalEnum
 	BasalforcingsIsmip6NumBasinsEnum
 	BasalforcingsIsmip6TfDepthsEnum
+	BasalforcingsIsmip7DeltaTEnum
 	BasalforcingsIsmip7TfDepthsEnum
 	BasalforcingsIsmip7NumBasinsEnum
 	BasalforcingsIsmip7GammaEnum
@@ -789,6 +790,7 @@
 	BasalforcingsIsmip6TfEnum
 	BasalforcingsIsmip6TfShelfEnum
 	BasalforcingsIsmip6MeltAnomalyEnum
+	BasalforcingsIsmip7BasinIdEnum
 	BasalforcingsIsmip7TfEnum
 	BasalforcingsIsmip7TfShelfEnum
 	BasalforcingsIsmip7SalinityEnum
@@ -3882,6 +3884,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==BasalforcingsIsmip6IsLocalEnum) return "BasalforcingsIsmip6IsLocal" end
 	if(enum==BasalforcingsIsmip6NumBasinsEnum) return "BasalforcingsIsmip6NumBasins" end
 	if(enum==BasalforcingsIsmip6TfDepthsEnum) return "BasalforcingsIsmip6TfDepths" end
+	if(enum==BasalforcingsIsmip7DeltaTEnum) return "BasalforcingsIsmip7DeltaT" end
 	if(enum==BasalforcingsIsmip7TfDepthsEnum) return "BasalforcingsIsmip7TfDepths" end
 	if(enum==BasalforcingsIsmip7NumBasinsEnum) return "BasalforcingsIsmip7NumBasins" end
 	if(enum==BasalforcingsIsmip7GammaEnum) return "BasalforcingsIsmip7Gamma" end
@@ -4597,6 +4600,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==BasalforcingsIsmip6TfEnum) return "BasalforcingsIsmip6Tf" end
 	if(enum==BasalforcingsIsmip6TfShelfEnum) return "BasalforcingsIsmip6TfShelf" end
 	if(enum==BasalforcingsIsmip6MeltAnomalyEnum) return "BasalforcingsIsmip6MeltAnomaly" end
+	if(enum==BasalforcingsIsmip7BasinIdEnum) return "BasalforcingsIsmip7BasinId" end
 	if(enum==BasalforcingsIsmip7TfEnum) return "BasalforcingsIsmip7Tf" end
 	if(enum==BasalforcingsIsmip7TfShelfEnum) return "BasalforcingsIsmip7TfShelf" end
 	if(enum==BasalforcingsIsmip7SalinityEnum) return "BasalforcingsIsmip7Salinity" end
@@ -7690,6 +7694,7 @@ function StringToEnum(name::String)
 	if(name=="BasalforcingsIsmip6IsLocal") return BasalforcingsIsmip6IsLocalEnum  end
 	if(name=="BasalforcingsIsmip6NumBasins") return BasalforcingsIsmip6NumBasinsEnum  end
 	if(name=="BasalforcingsIsmip6TfDepths") return BasalforcingsIsmip6TfDepthsEnum  end
+	if(name=="BasalforcingsIsmip7DeltaT") return BasalforcingsIsmip7DeltaTEnum  end
 	if(name=="BasalforcingsIsmip7TfDepths") return BasalforcingsIsmip7TfDepthsEnum  end
 	if(name=="BasalforcingsIsmip7NumBasins") return BasalforcingsIsmip7NumBasinsEnum  end
 	if(name=="BasalforcingsIsmip7Gamma") return BasalforcingsIsmip7GammaEnum  end
@@ -8405,6 +8410,7 @@ function StringToEnum(name::String)
 	if(name=="BasalforcingsIsmip6Tf") return BasalforcingsIsmip6TfEnum  end
 	if(name=="BasalforcingsIsmip6TfShelf") return BasalforcingsIsmip6TfShelfEnum  end
 	if(name=="BasalforcingsIsmip6MeltAnomaly") return BasalforcingsIsmip6MeltAnomalyEnum  end
+	if(name=="BasalforcingsIsmip7BasinId") return BasalforcingsIsmip7BasinIdEnum  end
 	if(name=="BasalforcingsIsmip7Tf") return BasalforcingsIsmip7TfEnum  end
 	if(name=="BasalforcingsIsmip7TfShelf") return BasalforcingsIsmip7TfShelfEnum  end
 	if(name=="BasalforcingsIsmip7Salinity") return BasalforcingsIsmip7SalinityEnum  end

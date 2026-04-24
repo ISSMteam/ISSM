@@ -241,6 +241,7 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 			break;
 		case BasalforcingsIsmip7Enum:{
 			/*TODO: Update for ISMIP7*/
+			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.basin_id",BasalforcingsIsmip7BasinIdEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.coriolis_f",BasalforcingsCoriolisFEnum);
 			
 			/*Deal with tf...*/
