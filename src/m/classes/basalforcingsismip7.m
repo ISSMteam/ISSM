@@ -13,6 +13,7 @@ classdef basalforcingsismip7
 		salinity                  = NaN;
 		tf                        = NaN;
 		tf_depths                 = NaN;
+		delta_t                   = NaN;
 		
 		geothermalflux            = NaN;
 		groundedice_melting_rate  = NaN;
@@ -71,6 +72,7 @@ classdef basalforcingsismip7
 
 			md = checkfield(md,'fieldname','basalforcings.num_basins','numel',1,'NaN',1,'Inf',1,'>',0);
 			md = checkfield(md,'fieldname','basalforcings.basin_id','Inf',1,'>=',0,'<=',md.basalforcings.num_basins,'size',[md.mesh.numberofelements 1]);
+			md = checkfield(md,'fieldname','basalforcings.delta_t','NaN',1,'Inf',1,'numel',md.basalforcings.num_basins,'size',[1,md.basalforcings.num_basins]);
 
 			md = checkfield(md,'fieldname','basalforcings.gamma','numel',1,'NaN',1,'Inf',1,'>',0);
 
@@ -89,11 +91,12 @@ classdef basalforcingsismip7
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   ISMIP7 basal melt rate parameterization:'));
-			fielddisplay(self,'num_basins','[TODO] number of basins the model domain is partitioned into [unitless]');
-			fielddisplay(self,'basin_id','[TODO] basin number assigned to each node (unitless)');
+			fielddisplay(self,'num_basins','number of basins the model domain is partitioned into [unitless]');
+			fielddisplay(self,'basin_id','basin number assigned to each node (unitless)');
 			fielddisplay(self,'gamma','melt rate coefficient (m/yr)');
 			fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset');
 			fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)');
+			fielddisplay(self,'delta_t','Ocean temperature correction per basin (degrees C)');
 			fielddisplay(self,'salinity','salinity (psu)');
 			fielddisplay(self,'coriolis_f','Coriolis parameter (s^-1)');
 			fielddisplay(self,'geothermalflux','geothermal heat flux (W/m^2)');
@@ -111,6 +114,7 @@ classdef basalforcingsismip7
 			WriteData(fid,prefix,'object',self,'fieldname','coriolis_f','format','DoubleMat','name','md.basalforcings.coriolis_f','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','tf_depths','format','DoubleMat','name','md.basalforcings.tf_depths');
 			WriteData(fid,prefix,'object',self,'fieldname','tf','format','MatArray','name','md.basalforcings.tf','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','delta_t','format','DoubleMat','name','md.basalforcings.delta_t','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','salinity','format','MatArray','name','md.basalforcings.salinity','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','geothermalflux','format','DoubleMat','name','md.basalforcings.geothermalflux','mattype',1,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','groundedice_melting_rate','format','DoubleMat','mattype',1,'scale',1./yts,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);

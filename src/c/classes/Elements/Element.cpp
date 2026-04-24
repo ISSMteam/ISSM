@@ -2520,6 +2520,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	if(!this->IsIceInElement() || !this->IsAllFloating() || !this->IsOnBase()) return;
 
 	int         basinid,num_basins,M,N;
+	IssmDouble  delta_t_basin;
 	IssmDouble* xyz_list;
 	
 	IssmDouble  tf,gamma0;
@@ -2527,6 +2528,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	IssmDouble  coriolis; /*Coriolis parameter*/
 	IssmDouble  dbase[2]; /*derivative of z_b*/
 	IssmDouble  theta, slope;
+	IssmDouble* delta_t = NULL;
 	IssmDouble* depths  = NULL;
 	
 
@@ -2545,12 +2547,17 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	IssmDouble g   = this->FindParam(ConstantsGEnum);
 
 	/* Get parameters and inputs */
+	this->GetInputValue(&basinid,BasalforcingsIsmip7BasinIdEnum);
+	this->parameters->FindParam(&num_basins,BasalforcingsIsmip7NumBasinsEnum);
+	this->parameters->FindParam(&delta_t,&M,BasalforcingsIsmip7DeltaTEnum);    _assert_(M==num_basins);
 	this->parameters->FindParam(&gamma0,BasalforcingsIsmip7GammaEnum);
 	
 	Input* base_input = this->GetInput(BaseEnum); _assert_(base_input);
 	Input* tf_input   = this->GetInput(BasalforcingsIsmip7TfShelfEnum); _assert_(tf_input);
 	Input* salinity_input = this->GetInput(BasalforcingsIsmip7SalinityShelfEnum); _assert_(salinity_input);
 	Input* coriolis_input = this->GetInput(BasalforcingsCoriolisFEnum); _assert_(coriolis_input);
+
+	delta_t_basin = delta_t[basinid];
 	
 	/*Compute melt rate for Local and Nonlocal parameterizations*/
 	Gauss* gauss=this->NewGauss();
@@ -2565,7 +2572,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 		slope = sqrt(pow(dbase[0],2)+pow(dbase[1],2));
 		theta = atan(slope);
 
-		basalmeltrate[i] = gamma0*sin(theta)*(rhow/rhoi)*pow(cp/lf,2)*betaS*salinity*g/2.0/fabs(coriolis)*fabs(tf)*tf;
+		basalmeltrate[i] = gamma0*sin(theta)*(rhow/rhoi)*pow(cp/lf,2)*betaS*salinity*g/2.0/fabs(coriolis)*fabs(tf+delta_t_basin)*(tf+delta_t_basin);
 	}
 
 	/*Return basal melt rate*/
@@ -2574,7 +2581,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	/*Cleanup and return*/
 	delete gauss;
 	xDelete<IssmDouble>(depths);
-
+	xDelete<IssmDouble>(delta_t);
 }/*}}}*/
 void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation){/*{{{*/
 

@@ -24,6 +24,7 @@ class basalforcingsismip7(object):
         self.salinity                  = np.nan
         self.tf                        = np.nan
         self.tf_depths                 = np.nan
+        self.delta_t                   = np.nan
 
         self.geothermalflux = np.nan
         self.groundedice_melting_rate = np.nan
@@ -38,11 +39,12 @@ class basalforcingsismip7(object):
     # }}}
     def __repr__(self):  # {{{
         s = '   ISMIP7 basal melt rate parameterization:\n'
-        s += '{}\n'.format(fielddisplay(self,'num_basins','[TODO] number of basins the model domain is partitioned into [unitless]'))
-        s += '{}\n'.format(fielddisplay(self,'basin_id','[TODO] basin number assigned to each node (unitless)'))
+        s += '{}\n'.format(fielddisplay(self,'num_basins','number of basins the model domain is partitioned into [unitless]'))
+        s += '{}\n'.format(fielddisplay(self,'basin_id','basin number assigned to each node (unitless)'))
         s += '{}\n'.format(fielddisplay(self,'gamma','melt rate coefficient (m/yr)'))
         s += '{}\n'.format(fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset'))
         s += '{}\n'.format(fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)'))
+		s += '{}\n'.format(fielddisplay(self,'delta_t','Ocean temperature correction per basin (degrees C)'))
         s += '{}\n'.format(fielddisplay(self,'salinity','salinity (psu)'))
         s += '{}\n'.format(fielddisplay(self,'coriolis_f','Coriolis parameter (s^-1)'))
         s += '{}\n'.format(fielddisplay(self,'geothermalflux','geothermal heat flux (W/m^2)'))
@@ -90,6 +92,7 @@ class basalforcingsismip7(object):
 
         md = checkfield(md,'fieldname','basalforcings.num_basins','numel',1,'NaN',1,'Inf',1,'>',0)
         md = checkfield(md,'fieldname','basalforcings.basin_id','Inf',1,'>=',0,'<=',md.basalforcings.num_basins,'size',[md.mesh.numberofelements, 1])
+        md = checkfield(md,'fieldname','basalforcings.delta_t','NaN',1,'Inf',1,'numel',md.basalforcings.num_basins,'size',[1,md.basalforcings.num_basins]);
 
         md = checkfield(md,'fieldname','basalforcings.gamma','numel',1,'NaN',1,'Inf',1,'>',0)
 
@@ -118,6 +121,7 @@ class basalforcingsismip7(object):
         WriteData(fid,prefix,'object',self,'fieldname','coriolis_f','format','DoubleMat','name','md.basalforcings.coriolis_f','mattype',1)
         WriteData(fid,prefix,'object',self,'fieldname','tf_depths','format','DoubleMat','name','md.basalforcings.tf_depths')
         WriteData(fid,prefix,'object',self,'fieldname','tf','format','MatArray','name','md.basalforcings.tf','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
+        WriteData(fid,prefix,'object',self,'fieldname','delta_t','format','DoubleMat','name','md.basalforcings.delta_t','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
         WriteData(fid,prefix,'object',self,'fieldname','salinity','format','MatArray','name','md.basalforcings.salinity','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
         WriteData(fid,prefix,'object',self,'fieldname','geothermalflux','format','DoubleMat','name','md.basalforcings.geothermalflux','mattype',1,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts)
         WriteData(fid,prefix,'object',self,'fieldname','groundedice_melting_rate','format','DoubleMat','mattype',1,'scale',1./yts,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
