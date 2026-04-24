@@ -1,5 +1,5 @@
 from collections import OrderedDict
-
+import numpy as np
 
 class pairoptions(object):
     """PAIROPTIONS class definition
@@ -12,6 +12,7 @@ class pairoptions(object):
     def __init__(self, *arg):  # {{{
         #self.functionname = ''
         self.list = OrderedDict()
+        self.used = []
 
         #get calling function name
         #import inspect
@@ -50,11 +51,13 @@ class pairoptions(object):
         if len(arg) % 2:
             raise TypeError('Invalid parameter/value pair arguments')
         numoptions = int(len(arg) / 2)
+        self.used = np.zeros((numoptions,),dtype=bool) # initialize used options
 
         #go through arg and build list of objects
         for i in range(numoptions):
             if isinstance(arg[2 * i], str):
                 self.list[arg[2 * i]] = arg[2 * i + 1]
+                self.used[i] = False
             else:
                 #option is not a string, ignore it
                 print(("WARNING: option number {} is not a string and will be ignored.".format(i + 1)))
@@ -67,6 +70,8 @@ class pairoptions(object):
         if isinstance(field, str):
             if field in self.list:
                 print(("WARNING: field '{}' with value={} exists and will be overwritten with value={}.".format(field, str(self.list[field]), str(value))))
+            else:
+                self.used = np.append(self.used,[False])
             self.list[field] = value
     # }}}
 
@@ -77,6 +82,7 @@ class pairoptions(object):
         if isinstance(field, str):
             if field not in self.list:
                 self.list[field] = value
+                self.used = np.append(self.used,[True]) # It is a default so user will not be notified if not used
     # }}}
 
     def AssignObjectFields(self, obj2):  # {{{
@@ -95,14 +101,32 @@ class pairoptions(object):
         """CHANGEOPTIONVALUE - change the value of an option in an option list
         """
 
-        self.list[field] = newvalue
+        #track occurrence of field
+        try:
+            lines=list(self.list.keys()).index(field)
+        except:
+            lines=[] # tricky part: if we cannot find field in list, return empty array. Looks like matlab.
+
+        #replace value
+        if ~np.any(lines):
+            #add new field if not found
+            self.addfield(field,newvalue)
+        else:
+            keys = list(self.list.keys())
+            self.list[keys[lines]] = newvalue
     # }}}
 
     def displayunused(self):  # {{{
         """DISPLAYUNUSED - display unused options
         """
 
-        print('WARNING: pairoptions::displayunused is not yet implemented')
+        numoptions=len(self.list)
+        keys = list(self.list.keys()) # get keys in OrderedDict
+        for i in range(numoptions):
+            if ~self.used[i]:
+                print('WARNING: option ' + str(keys[i]) + ' was not used')
+
+        #print('WARNING: pairoptions::displayunused is not yet implemented')
     # }}}
 
     def exist(self, field):  # {{{
@@ -143,8 +167,13 @@ class pairoptions(object):
             raise TypeError("getfieldvalue error message: field '%s' should be a string." % str(field))
 
         #Recover option
+        keys=list(self.list.keys())
         if field in self.list:
             value = self.list[field]
+
+            # Find field
+            pos = keys.index(field)
+            self.used[pos] = True # option used
         else:
             if default is not None:
                 value = default
@@ -166,9 +195,12 @@ class pairoptions(object):
 
         #check if field exist
         if field in self.list:
+            pos = np.ones((len(self.list),),dtype=bool)
+            pos[list(self.list.keys()).index(field)] = False
 
             #remove duplicates from the options list
             del self.list[field]
+            self.used = self.used[pos]
 
             #warn user if requested
             if warn:
