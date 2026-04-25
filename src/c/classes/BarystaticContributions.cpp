@@ -17,38 +17,52 @@
 /*Constructors and destructors:*/
 BarystaticContributions::BarystaticContributions(IoModel* iomodel ){ /*{{{*/
 
-	int nel;
+   /*Intermediaries*/
+   int nel;
 
-	iomodel->FetchData(&nice,"md.solidearth.npartice");
-	if(nice){
-		iomodel->FetchData(&pice,&nel,NULL,"md.solidearth.partitionice");
-		ice=new Vector<IssmDouble>(nice);
-		cumice=new Vector<IssmDouble>(nice); cumice->Set(0); cumice->Assemble();
+   /*Allocate all pointers to NULL*/
+   this->ice      = NULL; //contributions to every ice partition (size nice x 1)
+   this->cumice   = NULL; //cumulated contributions to every ice partition
+   this->pice     = NULL; //ice partition (nel)
+
+   this->hydro    = NULL; //contributions to every hydro partition (size nhydro x 1)
+   this->cumhydro = NULL; //cumulated contributions to every hydro partition
+   this->phydro   = NULL; //hydro partition (nel)
+
+   this->ocean    = NULL; //contributions to every ocean partition (size nocean x 1)
+   this->cumocean = NULL; //cumulated contributions to every ocean partition
+   this->pocean   = NULL; //ocean partition (nel)
+
+	iomodel->FetchData(&this->nice,"md.solidearth.npartice");
+	if(this->nice){
+		iomodel->FetchData(&this->pice,&nel,NULL,"md.solidearth.partitionice");
+		this->ice=new Vector<IssmDouble>(nice);
+		this->cumice=new Vector<IssmDouble>(nice); this->cumice->Set(0); this->cumice->Assemble();
 	}
 	else{
-		ice=new Vector<IssmDouble>(1);
-		cumice=new Vector<IssmDouble>(1);
+		this->ice=new Vector<IssmDouble>(1);
+		this->cumice=new Vector<IssmDouble>(1);
 	}
 
-	iomodel->FetchData(&nhydro,"md.solidearth.nparthydro");
-	if(nhydro){
-		iomodel->FetchData(&phydro,&nel,NULL,"md.solidearth.partitionhydro");
-		hydro=new Vector<IssmDouble>(nhydro);
-		cumhydro=new Vector<IssmDouble>(nhydro); cumhydro->Set(0); cumhydro->Assemble();
+	iomodel->FetchData(&this->nhydro,"md.solidearth.nparthydro");
+	if(this->nhydro){
+		iomodel->FetchData(&this->phydro,&nel,NULL,"md.solidearth.partitionhydro");
+		this->hydro=new Vector<IssmDouble>(this->nhydro);
+		this->cumhydro=new Vector<IssmDouble>(this->nhydro); this->cumhydro->Set(0); this->cumhydro->Assemble();
 	}
 	else{
-		hydro=new Vector<IssmDouble>(1);
-		cumhydro=new Vector<IssmDouble>(1);
+		this->hydro=new Vector<IssmDouble>(1);
+		this->cumhydro=new Vector<IssmDouble>(1);
 	}
-	iomodel->FetchData(&nocean,"md.solidearth.npartocean");
-	if(nocean){
-		iomodel->FetchData(&pocean,&nel,NULL,"md.solidearth.partitionocean");
-		ocean=new Vector<IssmDouble>(nocean);
-		cumocean=new Vector<IssmDouble>(nocean); cumocean->Set(0); cumocean->Assemble();
+	iomodel->FetchData(&this->nocean,"md.solidearth.npartocean");
+	if(this->nocean){
+		iomodel->FetchData(&this->pocean,&nel,NULL,"md.solidearth.partitionocean");
+		this->ocean=new Vector<IssmDouble>(this->nocean);
+		this->cumocean=new Vector<IssmDouble>(this->nocean); this->cumocean->Set(0); this->cumocean->Assemble();
 	}
 	else{
-		ocean=new Vector<IssmDouble>(1);
-		cumocean=new Vector<IssmDouble>(1);
+		this->ocean=new Vector<IssmDouble>(1);
+		this->cumocean=new Vector<IssmDouble>(1);
 	}
 
 } /*}}}*/
@@ -138,6 +152,16 @@ void BarystaticContributions::Reset(){ /*{{{*/
 	ice->Set(0.);
 	hydro->Set(0.);
 	ocean->Set(0.);
+
+} /*}}}*/
+void BarystaticContributions::Finalize(){ /*{{{*/
+
+	ice->Set(0.);
+	cumice->Set(0.);
+	hydro->Set(0.);
+	cumhydro->Set(0.);
+	ocean->Set(0.);
+	cumocean->Set(0.);
 
 } /*}}}*/
 void BarystaticContributions::Save(Results* results, Parameters* parameters, IssmDouble oceanarea){ /*{{{*/
