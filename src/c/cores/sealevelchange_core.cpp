@@ -223,7 +223,7 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 }; /*}}}*/
 void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{*/
 
-	/*variables:{{{*/
+	/*variables:*/
 	int nel;
 	BarystaticContributions* barycontrib=NULL;
 	GenericParam<BarystaticContributions*>* barycontribparam=NULL;
@@ -252,16 +252,14 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	int  grd=0;
 	int  grdmodel; 
 	int  sealevelloading=0;
-	bool sal=false;
-	bool viscous=false;
-	bool rotation=false;
-	bool planethasocean=false;
-	bool computefuture=false;
-	IssmDouble*           sealevelpercpu=NULL;
+	bool        sal            = false;
+	bool        viscous        = false;
+	bool        rotation       = false;
+	bool        planethasocean = false;
+	bool        computefuture  = false;
+	IssmDouble *sealevelpercpu = NULL;
 
-	/*}}}*/
-
-	/*retrieve parameters:{{{*/
+	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&grd,SolidearthSettingsGRDEnum); 
 	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
@@ -273,7 +271,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	femmodel->parameters->FindParam(&viscous,SolidearthSettingsViscousEnum);
 	femmodel->parameters->FindParam(&rotation,SolidearthSettingsRotationEnum);
 	femmodel->parameters->FindParam(&planethasocean,SolidearthSettingsGrdOceanEnum);
-	/*}}}*/
 
 	/*only run if grd was requested, if we are the earth, and we have reached
 	 * the necessary number of time steps dictated by :*/
@@ -294,7 +291,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing GRD patterns\n");
 
-	/*retrieve parameters: {{{*/ 
+	/*retrieve parameters:*/ 
 	femmodel->parameters->FindParam(&scaleoceanarea,SolidearthSettingsOceanAreaScalingEnum);
 	barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
 	barycontrib=barycontribparam->GetParameterValue();
@@ -303,7 +300,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	femmodel->parameters->FindParam(&eps_abs,SolidearthSettingsAbstolEnum);
 	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	femmodel->parameters->FindParam(&sal,SolidearthSettingsSelfAttractionEnum);
-	/*}}}*/
 
 	/*initialize loads and sea level loads:*/
 	femmodel->parameters->FindParam(&nel,MeshNumberofelementsEnum);
@@ -334,70 +330,70 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		loads->sealevelloads=xNewZeroInit<IssmDouble>(nel);
 		loads->subsealevelloads=xNewZeroInit<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
 		PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
-		goto deformation;
 	}
+	else{
+		if(VerboseSolution()) _printf0_("	  converging GRD convolutions\n");
+		for(;;){
 
-	if(VerboseSolution()) _printf0_("	  converging GRD convolutions\n");
-	for(;;){
+			//compute polar motion:
+			PolarMotion(&polarmotionvector[0],femmodel,loads,slgeom,computefuture=false);
 
-		//compute polar motion:
-		PolarMotion(&polarmotionvector[0],femmodel,loads,slgeom,computefuture=false);
+			oldsealevelloads=xNewZeroInit<IssmDouble>(nel);
+			if(loads->sealevelloads){
+				xMemCpy<IssmDouble>(oldsealevelloads,loads->sealevelloads,nel);
+			}
 
-		oldsealevelloads=xNewZeroInit<IssmDouble>(nel);
-		if (loads->sealevelloads){
-			xMemCpy<IssmDouble>(oldsealevelloads,loads->sealevelloads,nel);
+			/*convolve load and sealevel loads on oceans:*/
+			loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
+			for(Object* & object : femmodel->elements->objects){
+				Element* element = xDynamicCast<Element*>(object);
+				element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
+			}
+
+			/*retrieve sea level average  and ocean area:*/
+			for(Object* & object : femmodel->elements->objects){
+				Element* element = xDynamicCast<Element*>(object);
+				element->SealevelchangeOceanAverage(loads, oceanareas, subelementoceanareas, sealevelpercpu, slgeom);
+			}
+
+			loads->AssembleSealevelLoads();
+
+			/*compute ocean areas:*/
+			if(!loads->sealevelloads){ //first time in the loop
+				oceanareas->Assemble(); 
+				subelementoceanareas->Assemble();
+				oceanareas->Sum(&totaloceanarea); _assert_(totaloceanarea>0.);
+				if(scaleoceanarea) totaloceanarea=3.619e+14; // use true ocean area, m^2
+			}
+
+			//Conserve ocean mass: 
+			oceanaverage=SealevelloadsOceanAverage(loads, oceanareas,subelementoceanareas, totaloceanarea);
+			ConserveOceanMass(femmodel,loads,barystatictotal/totaloceanarea -oceanaverage,slgeom);
+
+			//broadcast sea level loads 
+			loads->BroadcastSealevelLoads();
+
+			if(!sal){
+				xDelete<IssmDouble>(oldsealevelloads); break;
+			}
+
+			//convergence?
+			if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
+				xDelete<IssmDouble>(oldsealevelloads); break;
+			}
+
+			xDelete<IssmDouble>(oldsealevelloads);
+
+			//early return?
+			iterations++;	//slc_geometry_cleanup(slgeom, femmodel);
+			if(iterations>=max_nonlinear_iterations){
+				break;
+			}
 		}
 
-		/*convolve load and sealevel loads on oceans:*/
-		loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
-		for(Object* & object : femmodel->elements->objects){
-			Element* element = xDynamicCast<Element*>(object);
-			element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
-		}
-
-		/*retrieve sea level average  and ocean area:*/
-		for(Object* & object : femmodel->elements->objects){
-			Element* element = xDynamicCast<Element*>(object);
-			element->SealevelchangeOceanAverage(loads, oceanareas, subelementoceanareas, sealevelpercpu, slgeom);
-		}
-
-		loads->AssembleSealevelLoads();
-
-		/*compute ocean areas:*/
-		if(!loads->sealevelloads){ //first time in the loop
-			oceanareas->Assemble(); 
-			subelementoceanareas->Assemble();
-			oceanareas->Sum(&totaloceanarea); _assert_(totaloceanarea>0.);
-			if(scaleoceanarea) totaloceanarea=3.619e+14; // use true ocean area, m^2
-		}
-
-		//Conserve ocean mass: 
-		oceanaverage=SealevelloadsOceanAverage(loads, oceanareas,subelementoceanareas, totaloceanarea);
-		ConserveOceanMass(femmodel,loads,barystatictotal/totaloceanarea -oceanaverage,slgeom);
-
-		//broadcast sea level loads 
-		loads->BroadcastSealevelLoads();
-
-		if (!sal) {xDelete<IssmDouble>(oldsealevelloads); break;}
-
-		//convergence?
-		if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
-			xDelete<IssmDouble>(oldsealevelloads); break;
-		}
-
-		//early return?
-		if(iterations>=max_nonlinear_iterations){
-			xDelete<IssmDouble>(oldsealevelloads); break;
-		}
-		iterations++;	//slc_geometry_cleanup(slgeom, femmodel);
-
-		xDelete<IssmDouble>(oldsealevelloads);
+		/*recompute polar motion one final time, this time updating viscous stacks for future time steps*/
+		if (viscous)	PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
 	}
-
-	//recompute polar motion one final time, this time updating viscous stacks for future time steps
-	if (viscous)	PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
-
-	deformation:
 
 	if(VerboseSolution()) _printf0_("	  deformation GRD convolutions\n");
 
