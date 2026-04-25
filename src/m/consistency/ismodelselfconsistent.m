@@ -1,4 +1,4 @@
-function ismodelselfconsistent(md),
+function ismodelselfconsistent(md)
 %ISMODELSELFCONSISTENT - check that model forms a closed form solvable problem.
 %
 %   Usage:
@@ -13,7 +13,7 @@ solution=md.private.solution;
 
 %Go through a model field, check that it is a class, and call checkconsistency
 fields=properties('model');
-for i=1:length(fields),
+for i=1:length(fields)
 	field=fields{i};
 
 	%Some properties do not need to be checked
@@ -32,7 +32,7 @@ for i=1:length(fields),
 end
 
 %error message if mode is not consistent
-if md.private.isconsistent==false,
+if md.private.isconsistent==false
 	error('Model not consistent, see messages above');
 end
 end
@@ -44,7 +44,7 @@ function [analyses]=AnalysisConfiguration(solutiontype), % {{{
 %      [analyses]=AnalysisConfiguration(solutiontype);
 
 	if strcmp(solutiontype,'StressbalanceSolution')
-		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','AgeAnalysis'};
+		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis'};
 	elseif strcmp(solutiontype,'SteadystateSolution')
 		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','ThermalAnalysis','MeltingAnalysis','EnthalpyAnalysis','AgeAnalysis'};
 	elseif strcmp(solutiontype,'ThermalSolution')
@@ -72,11 +72,11 @@ function [analyses]=AnalysisConfiguration(solutiontype), % {{{
 	elseif strcmp(solutiontype,'EsaSolution')
 		analyses={'EsaAnalysis'};
 	elseif strcmp(solutiontype,'TransientSolution')
-		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','ThermalAnalysis','MeltingAnalysis','EnthalpyAnalysis','MasstransportAnalysis','OceantransportAnalysis','HydrologyShaktiAnalysis','HydrologyGladsAnalysis','HydrologyShreveAnalysis','HydrologyTwsAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','SealevelchangeAnalysis','AgeAnalysis','HydrologyArmapwAnalysis','AgeAnalysis','DebrisAnalysis'};
+		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','ThermalAnalysis','MeltingAnalysis','EnthalpyAnalysis','MasstransportAnalysis','OceantransportAnalysis','HydrologyShaktiAnalysis','HydrologyGladsAnalysis','HydrologyShreveAnalysis','HydrologyTwsAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyPrescribeAnalysis','SealevelchangeAnalysis','AgeAnalysis','HydrologyArmapwAnalysis','AgeAnalysis','DebrisAnalysis'};
 	elseif strcmp(solutiontype,'SealevelchangeSolution')
 		analyses={'SealevelchangeAnalysis'};
 	elseif strcmp(solutiontype,'HydrologySolution')
-		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis'};
+		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis','HydrologyPrescribeAnalysis'};
 	elseif strcmp(solutiontype,'DamageEvolutionSolution')
 		analyses={'DamageEvolutionAnalysis'};
     elseif strcmp(solutiontype,'SamplingSolution')

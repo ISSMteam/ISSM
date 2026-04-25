@@ -111,7 +111,18 @@ class discover(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         if isgprof:
             print('gprof not supported by cluster, ignoring...')
 
@@ -125,8 +136,7 @@ class discover(object):
             executable = 'issm_ocean.exe'
 
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
-
+        fid = open(filename, 'w')
         fid.write('#!/bin/bash\n')
         fid.write('#SBATCH -J {} \n'.format(modelname))
         fid.write('#SBATCH --qos={} \n'.format(self.queue))
@@ -180,7 +190,7 @@ class discover(object):
             compressstring += ' {}.run {}.errlog {}.outlog'.format(modelname, modelname, modelname)
         subprocess.call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
+        #upload input files
         if self.interactive:
             directory = '{}/Interactive{}'.format(self.executionpath, self.interactive)
         else:
@@ -204,7 +214,7 @@ class discover(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && sbatch {}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
 
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 

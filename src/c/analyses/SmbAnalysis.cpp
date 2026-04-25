@@ -23,7 +23,8 @@ int  SmbAnalysis::DofsPerNode(int** doflist,int domaintype,int approximation){/*
 void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	int    smb_model;
-	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic,ismappedforcing;
+	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic;
+	bool   ismappedforcing,isprecipforcingremapped;
 
 	/*Update elements: */
 	int counter=0;
@@ -49,6 +50,7 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		case SMBgembEnum:
 			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
+			iomodel->FindConstant(&isprecipforcingremapped,"md.smb.isprecipforcingremapped");
 			if (!ismappedforcing){
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
@@ -65,6 +67,9 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
 			} else {
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingpoint",SmbMappedforcingpointEnum);
+				if(isprecipforcingremapped){
+					iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingprecipscaling",SmbMappedforcingprecipscalingEnum);
+				}
 			}
 
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.zTop",SmbZTopEnum);
@@ -114,6 +119,16 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			}
 			break;
 		case SMBpddSicopolisEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0p",SmbS0pEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
+			iomodel->FindConstant(&isfirnwarming,"md.smb.isfirnwarming");
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.smb_corr",SmbSmbCorrEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.precipitation_anomaly",SmbPrecipitationsAnomalyEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.temperature_anomaly",SmbTemperaturesAnomalyEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.monthlytemperatures",SmbMonthlytemperaturesEnum);
+			iomodel->FetchDataToDatasetInput(inputs,elements,"md.smb.precipitation",SmbPrecipitationEnum);
+			break;
+		case SMBpddFastEnum:
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0p",SmbS0pEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.s0t",SmbS0tEnum);
 			iomodel->FindConstant(&isfirnwarming,"md.smb.isfirnwarming");
@@ -269,6 +284,21 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.windspeed_anomaly",SmbWindspeedAnomalyEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.airhumidity_anomaly",SmbAirhumidityAnomalyEnum);
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",SmbMassBalanceEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",SmbElevEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",SmbAlEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",SmbStEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",SmbTtEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",SmbSwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",SmbLwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",SmbSwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",SmbLwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",SmbShfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",SmbLhfEnum);
+			break;
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
@@ -338,6 +368,15 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_ice",PddfacIceEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_snow",PddfacSnowEnum));
+			break;
+		case SMBpddFastEnum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isfirnwarming",SmbIsfirnwarmingEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.desfac",SmbDesfacEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.rlaps",SmbRlapsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_ice",PddfacIceEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.pdd_fac_snow",PddfacSnowEnum));
 			break;
 		case SMBdebrisEvattEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.qlaps",SmbDesfacEnum));
@@ -402,8 +441,13 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				parameters->AddObject(new DoubleVecParam(SmbMappedforcingelevationEnum,&temp[0],M));
 				iomodel->DeleteData(temp,"md.smb.mappedforcingelevation");
 
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapseTaValue",SmbLapseTaValueEnum));
-				parameters->AddObject(iomodel->CopyConstantObject("md.smb.lapsedlwrfValue",SmbLapsedlwrfValueEnum));
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lapseTaValue"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLapseTaValueEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lapseTaValue");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lapsedlwrfValue"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLapsedlwrfValueEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lapsedlwrfValue");
+
 			}
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.aIdx",SmbAIdxEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.eIdx",SmbEIdxEnum));
@@ -622,6 +666,27 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			}
 			/*Nothing to add to parameters*/
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:{
+			                  char* module_dir = NULL;
+			                  char* pt_name    = NULL;
+			                  char* py_name    = NULL;
+
+			                  iomodel->FetchData(&module_dir,"md.smb.module_dir");
+			                  iomodel->FetchData(&pt_name,"md.smb.pt_name");
+			                  iomodel->FetchData(&py_name,"md.smb.py_name");
+
+			                  if(parameters->Exist(SmbEmulatorEnum)){
+			                  	_error_("SmbEmulatorEnum already exists in this process; EmulatorParam is process-local and must only be created once");
+			                  }
+			                  parameters->AddObject(new EmulatorParam(SmbEmulatorEnum,module_dir,pt_name,py_name));
+
+			                  xDelete<char>(module_dir);
+			                  xDelete<char>(pt_name);
+			                  xDelete<char>(py_name);
+			                  break;
+								}
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
@@ -667,6 +732,10 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 		case SMBpddSicopolisEnum:
 			if(VerboseSolution()) _printf0_("   call SICOPOLIS positive degree day module\n");
 			PositiveDegreeDaySicopolisx(femmodel);
+			break;
+		case SMBpddFastEnum:
+			if(VerboseSolution()) _printf0_("   call Fast positive degree day module\n");
+			PositiveDegreeDayFastx(femmodel);
 			break;
 		case SMBpddGCMEnum:
 			if(VerboseSolution()) _printf0_("   call positive degree day module based on downsacling GCM data\n");
@@ -727,6 +796,12 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			if(VerboseSolution())_printf0_("        call smb Evatt debris module\n");
 			SmbDebrisEvattx(femmodel);
 			break;
+		#ifdef _HAVE_PyBind11_
+		case SMBmariaEnum:
+			if(VerboseSolution()) _printf0_("   call smb emulator module\n");
+			SmbEmulatorx(femmodel);
+			break;
+		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}

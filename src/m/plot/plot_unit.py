@@ -118,7 +118,7 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
             else:
                 triangles = mpl.tri.Triangulation(x, y, elements)
 
-            tri = ax.tripcolor(triangles, data, colorlevels, cmap=cmap, norm=norm, alpha=alpha, edgecolors=edgecolor)
+            tri = ax.tripcolor(triangles, data, cmap=cmap, norm=norm, alpha=alpha, edgecolors=edgecolor)
         else:
             #first deal with colormap
             loccmap = plt.cm.ScalarMappable(cmap=cmap)
@@ -173,7 +173,11 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
     elif datatype == 2:
         if is2d:
             if np.ma.is_masked(data):
-                EltMask = np.asarray([np.any(np.in1d(index, np.where(data.mask))) for index in elements])
+                if hasattr(np, 'isin'): #Numpy 2017+
+                    tmp = np.isin(range(len(data)), np.where(data.mask))
+                else: #For backward compatibility
+                    tmp = np.in1d(range(len(data)), np.where(data.mask))
+                EltMask = np.asarray([np.any(tmp[index]) for index in elements])
                 triangles = mpl.tri.Triangulation(x, y, elements, EltMask)
             else:
                 triangles = mpl.tri.Triangulation(x, y, elements)

@@ -74,7 +74,7 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 		parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.migration",GroundinglineMigrationEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.friction_interpolation",GroundinglineFrictionInterpolationEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.melt_interpolation",GroundinglineMeltInterpolationEnum));
-		parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
+		//parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.isstressbalance",TransientIsstressbalanceEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.ismasstransport",TransientIsmasstransportEnum));
 		parameters->AddObject(iomodel->CopyConstantObject("md.transient.ismmemasstransport",TransientIsmmemasstransportEnum));
@@ -286,6 +286,17 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
          parameters->AddObject(new DoubleVecParam(BasalforcingsDeepwaterElevationEnum,transparam,N));
          xDelete<IssmDouble>(transparam);
 			break;
+		case BasalforcingsIsmip7Enum:
+			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.num_basins",BasalforcingsIsmip7NumBasinsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.basalforcings.gamma",BasalforcingsIsmip7GammaEnum));
+			iomodel->FetchData(&transparam,&M,&N,"md.basalforcings.delta_t");
+			parameters->AddObject(new DoubleVecParam(BasalforcingsIsmip7DeltaTEnum,transparam,N));
+			xDelete<IssmDouble>(transparam);
+			iomodel->FetchData(&transparam,&M,&N,"md.basalforcings.tf_depths");
+			parameters->AddObject(new DoubleVecParam(BasalforcingsIsmip7TfDepthsEnum,transparam,N));
+			xDelete<IssmDouble>(transparam);
+			break;
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}
@@ -326,6 +337,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 
 	/*By default, save all results*/
 	parameters->AddObject(new BoolParam(SaveResultsEnum,true));
+	
+	/*Option to not save results after the final time step, e.g. for external coupling*/
+	parameters->AddObject(new BoolParam(SaveFinalResultsEnum,true));
 
 	/*Should we output results on nodes?*/
 	iomodel->FindConstant(&outputonnodes,&numoutputs,"md.settings.results_on_nodes");
@@ -484,6 +498,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
       parameters->AddObject(new DoubleMatParam(HydrologyarmaMonthlyFactorsEnum,transparam,M,N));
       xDelete<IssmDouble>(transparam);
    }
+	else if(hydrology_model==HydrologyprescribeEnum){
+		/*Nothing to add*/
+	}
 	else{
 		_error_("Hydrology model "<<EnumToStringx(hydrology_model)<<" not supported yet");
 	}

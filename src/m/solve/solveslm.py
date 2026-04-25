@@ -1,12 +1,9 @@
 from datetime import datetime
 import os
-
 import numpy as np
-
 from loadresultsfromcluster import loadresultsfromcluster
 from pairoptions import pairoptions
 from waitonlock import waitonlock
-
 
 def solveslm(slm, solutionstringi, *args):
     """solveslm - apply solution sequence for this sealevel model
@@ -23,9 +20,6 @@ def solveslm(slm, solutionstringi, *args):
     Examples:
         slm=solveslm(slm,'Transient');
     """
-
-    print('Yep')
-    exit()
 
     # Recover and process solve options
     if solutionstringi.lower() == 'tr' or solutionstringi.lower() == 'transient':
@@ -50,7 +44,7 @@ def solveslm(slm, solutionstringi, *args):
         totalnp = totalnp + slm.icecaps[i].cluster.np
     totalnp = totalnp + slm.earth.cluster.np
     if totalnp != slm.cluster.np:
-        raise RuntimeError('sum of all icecaps and earch cluster processors requestes should be equal to slm.cluster.np')
+        raise RuntimeError('sum of all icecaps and earth cluster processors requests should be equal to slm.cluster.np')
 
     # Recover some fields
     slm.private.solution = solutionstring
@@ -83,6 +77,7 @@ def solveslm(slm, solutionstringi, *args):
     UploadQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist)
 
     # Launch queue job
+    print('launching solution sequence')
     LaunchQueueJob(cluster, slm.miscellaneous.name, slm.private.runtimename, filelist, '', batch)
 
     # Wait on lock

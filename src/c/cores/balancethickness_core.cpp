@@ -29,7 +29,7 @@ void balancethickness_core(FemModel* femmodel){
 		}
 	}
 
-	if(VerboseSolution()) _printf0_("   call computational core:\n");
+	if(VerboseSolution()) _printf0_("computing balance thickness\n");
 	femmodel->SetCurrentConfiguration(BalancethicknessAnalysisEnum);
 	solutionsequence_linear(femmodel);
 

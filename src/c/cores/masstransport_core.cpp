@@ -55,7 +55,6 @@ void masstransport_core(FemModel* femmodel){ /*{{{*/
 		extrudefromtop_core(femmodel);
 	}
 	else{
-		if(VerboseSolution()) _printf0_("   call computational core\n");
 		femmodel->parameters->SetParam(VxEnum,InputToDepthaverageInEnum);
 		femmodel->parameters->SetParam(VxAverageEnum,InputToDepthaverageOutEnum);
 		depthaverage_core(femmodel);

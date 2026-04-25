@@ -384,27 +384,45 @@ int  Node::GetDof(int dofindex,int setenum){/*{{{*/
 	else _error_("set of enum type " << EnumToStringx(setenum) << " not supported yet!");
 
 } /*}}}*/
-void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum){/*{{{*/
+void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum,bool hideclones){/*{{{*/
+
 	_assert_(!this->indexingupdate);
-	int i;
 
 	int* doflistpointer = NULL;
-	if(setenum==GsetEnum) doflistpointer = gdoflist;
-	else if(setenum==FsetEnum)for(i=0;i<this->gsize;i++) doflistpointer = fdoflist;
-	else if(setenum==SsetEnum)for(i=0;i<this->gsize;i++) doflistpointer = sdoflist;
+	if(setenum==GsetEnum)      doflistpointer = gdoflist;
+	else if(setenum==FsetEnum) doflistpointer = fdoflist;
+	else if(setenum==SsetEnum) doflistpointer = sdoflist;
 	else _error_("not supported");
 
 	if(approximation_enum==NoneApproximationEnum){
-		for(i=0;i<this->gsize;i++) outdoflist[i]=doflistpointer[i];
+		for(int i=0;i<this->gsize;i++){
+			if(hideclones && this->IsClone()){
+				outdoflist[i]=-1;
+			}
+			else{
+				outdoflist[i]=doflistpointer[i];
+			}
+		}
 	}
 	else{
 		if(doftype){
 			int count = 0;
-			for(i=0;i<this->gsize;i++){
-				if(doftype[i]==approximation_enum) outdoflist[count++]=doflistpointer[i];
+			for(int i=0;i<this->gsize;i++){
+				if(doftype[i]==approximation_enum){
+					outdoflist[count++]=doflistpointer[i];
+				}
 			}
 		}
-		else for(i=0;i<this->gsize;i++) outdoflist[i]=doflistpointer[i];
+		else{
+			for(int i=0;i<this->gsize;i++){
+				if(hideclones && this->IsClone()){
+					outdoflist[i]=-1;
+				}
+				else{
+					outdoflist[i]=doflistpointer[i];
+				}
+			}
+		}
 	}
 }/*}}}*/
 void Node::GetDofListLocal(int* outdoflist,int approximation_enum,int setenum){/*{{{*/
@@ -470,7 +488,7 @@ void Node::ApplyConstraint(int dof,IssmDouble value){/*{{{*/
 /*}}}*/
 void Node::CreateNodalConstraints(Vector<IssmDouble>* ys){/*{{{*/
 
-	if(this->SSize()){
+	if(this->SSize() && !this->clone){
 		/*Add values into constraint vector: */
 		ys->SetValues(this->gsize,this->sdoflist,this->svalues,INS_VAL);
 	}

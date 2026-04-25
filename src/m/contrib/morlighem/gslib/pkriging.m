@@ -9,7 +9,7 @@ cluster=getfieldvalue(options,'cluster',generic('np',1));
 options=removefield(options,'cluster',0);
 name   = ['krig' num2str(feature('GetPid'))];
 
-if 1,
+if 1
 % =========================================   MARSHALL.m =================================================
 disp(['marshalling file ' name '.bin']);
 fid=fopen([name '.bin'],'wb');
@@ -30,13 +30,15 @@ options.marshall(fid);
 %Last, write "md.EOF" to make sure that the binary file is not corrupt
 WriteData(fid,'','name','md.EOF','data',true,'format','Boolean');
 
+%Fake md as a place holder
+md=model; md.cluster=cluster; md.settings.waitonlock=Inf; md.private.runtimename=name;md.miscellaneous.name=name;
+
 %Launch job on remote cluster
-BuildKrigingQueueScript(cluster,name,'',1,0,0); %gather, valgrind, gprof
+BuildKrigingQueueScript(cluster, md, [name '.queue']);
 UploadQueueJob(cluster,name,name,{[name '.bin'] [name '.queue']})
 LaunchQueueJob(cluster,name,name,{[name '.bin'] [name '.queue']},'',0);
 
 %Call waitonlock
-md=model; md.cluster=cluster; md.settings.waitonlock=Inf; md.private.runtimename=name;md.miscellaneous.name=name;
 waitonlock(md);
 
 %Download
@@ -47,9 +49,7 @@ delete([name '.outlog']);
 delete([name '.errlog']);
 delete([name '.outbin']);
 delete([name '.bin']);
-if ~ispc(),
-	delete([name '.tar.gz']);
-end
+delete([name '.tar.gz']);
 
 %Process results
 B=structure.predictions;

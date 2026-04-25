@@ -217,7 +217,10 @@ def ismember(a, s):  # {{{
             for i, item in enumerate(a.flat):
                 b[i] = item in s
         else:
-            b = np.in1d(a.flat, s.flat).reshape(a.shape)
+            if hasattr(np, 'isin'): #Numpy 2017+
+                b = np.isin(a.flat, s.flat).reshape(a.shape)
+            else: #For backward compatibility
+                b = np.in1d(a.flat, s.flat).reshape(a.shape)
     return b
 # }}}
 

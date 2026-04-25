@@ -50,15 +50,25 @@ classdef local
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
 			% Which executable are we calling?
 			executable='issm.exe'; % default
-
-			if isdakota,
+			if isdakota
 				executable='issm_dakota.exe';
 			end
 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!%s\n',cluster.shell);
 			fprintf(fid,'mpiexec -np %i %s/%s %s %s %s \n',cluster.np,cluster.codepath,executable,solution,'./',modelname);
 			fclose(fid);
@@ -69,7 +79,6 @@ classdef local
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
 			system(['source ' modelname '.queue']);
-
 		end %}}}
 		function Download(cluster,dirname,filelist)% {{{
 		end %}}}

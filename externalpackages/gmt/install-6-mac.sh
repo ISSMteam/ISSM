@@ -4,7 +4,7 @@ set -e
 
 ## Constants
 #
-VER="6.5.0"
+VER="6.6.0"
 
 PREFIX="${ISSM_DIR}/externalpackages/gmt/install"
 

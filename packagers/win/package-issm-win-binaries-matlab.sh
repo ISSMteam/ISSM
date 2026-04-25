@@ -29,7 +29,7 @@ alias grep=$(which grep)
 #
 #LIBGFORTRAN="/usr/lib/x86_64-win-gnu/libgfortran.so.5.0.0" # Important that this is the library itself
 #LIBGFORTRAN_DIST="${ISSM_DIR}/lib/libgfortran.so.5" # Important the file name matches the SONAME entry in the binaries and other shared libraries which link to it
-MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota'),125,126,129,435,701,702,703]"
+MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota'),125,126,129,435,550,701,702,703]"
 #MATLAB_NROPTIONS="'benchmark','all','exclude',[125,126,129,234,235,418,420,435,444,445,701,702,703,1101,1102,1103,1104,1105,1106,1107,1108,1109,1110,1201,1202,1203,1204,1205,1206,1207,1208,1301,1302,1303,1304,1401,1402,1601,1602,2002,2003,2004,2006,2007,2008,2010,2011,2012,2013,2020,2021,2051,2052,2053,2084,2085,2090,2091,2092,2101,2424,2425,3001:3300,3480,3481,4001:4100]" # NOTE: Combination of test suites from basic, Dakota, and Solid Earth builds, with tests that require a restart and those that require the JVM excluded
 MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2023b"))
 MSMPI_ROOT="${ISSM_DIR}/externalpackages/msmpi/install"

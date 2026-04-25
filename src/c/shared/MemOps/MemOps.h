@@ -91,7 +91,7 @@ template <class T> void xDelete(T**& aT_pp) {/*{{{*/
     delete [](*aT_pp);
     delete [](aT_pp);
 #else
-    free((void*)*aT_pp)
+    free((void*)*aT_pp);
     free((void**)aT_pp);
 #endif
   }

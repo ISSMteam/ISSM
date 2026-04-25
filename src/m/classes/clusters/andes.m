@@ -58,13 +58,24 @@ classdef andes
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildKrigingQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			fprintf(fid,'#SBATCH --account=ice\n'); %Make sure we use the ICE account for this run
@@ -90,13 +101,25 @@ classdef andes
 			fclose(fid);
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+
+			if(isvalgrind); disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof);    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash -l\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			fprintf(fid,'#SBATCH --account=ice\n'); %Make sure we use the ICE account for this run
@@ -143,18 +166,18 @@ classdef andes
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']});
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && hostname && sbatch ' modelname '.queue '];
 			else
 				launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-					' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && hostname && sbatch ' modelname '.queue '];
+					' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && sbatch ' modelname '.queue '];
 			end
 			issmssh(cluster.name,cluster.login,0,launchcommand);
 		end %}}}
@@ -162,7 +185,7 @@ classdef andes
 
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,0,directory,filelist);
+			issmscpin(cluster.name,cluster.login,0,directory,filelist, 2); %use {} and not \{\}
 
 		end %}}}
 	end

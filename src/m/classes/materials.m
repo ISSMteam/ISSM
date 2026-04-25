@@ -254,7 +254,9 @@ classdef materials < dynamicprops
 						md = checkfield(md,'fieldname','materials.ebm_taul','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
 						md = checkfield(md,'fieldname','materials.ebm_tauh','Inf',1,'size',[md.materials.numlayers 1],'>=',0);
 					end
-
+                    if any(diff(md.materials.radius)<=0)
+							error('materials checkconsistency error message: radius should be monotonously increasing');                        
+                    end
 					for i=1:md.materials.numlayers,
 						if md.materials.rheologymodel(i)==1 & (isnan(md.materials.burgers_viscosity(i) | isnan(md.materials.burgers_mu(i)))),
 							error('materials checkconsistency error message: Litho burgers_viscosity or burgers_mu has NaN values, inconsistent with rheologymodel choice');

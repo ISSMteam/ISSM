@@ -13,6 +13,10 @@
 
 /*ControlParam constructors and destructor*/
 ControlParam::ControlParam(){/*{{{*/
+	this->value = NULL;
+	this->minvalue = NULL;
+	this->maxvalue = NULL;
+	this->gradient = NULL; 
 	return;
 }
 /*}}}*/

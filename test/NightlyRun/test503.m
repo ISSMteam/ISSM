@@ -2,7 +2,7 @@
 md=triangle(model(),'../Exp/Pig.exp',20000.);
 md=setmask(md,'../Exp/PigShelves.exp','../Exp/PigIslands.exp');
 md=parameterize(md,'../Par/Pig.par');
-md=extrude(md,3,0.9);
+md=extrude(md,4,0.9);
 md=setflowequation(md,'FS','all');
 md.cluster=generic('name',oshostname(),'np',3);
 md=solve(md,'Stressbalance');

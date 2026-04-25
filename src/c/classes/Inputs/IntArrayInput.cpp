@@ -32,7 +32,7 @@ IntArrayInput::IntArrayInput(int nbe_in){/*{{{*/
 IntArrayInput::~IntArrayInput(){/*{{{*/
 	if(this->values){
 		for(int i=0;i<this->numberofelements_local;i++) if(this->values[i]) xDelete<int>(this->values[i]);
-		xDelete<int>(this->values);
+		xDelete<int*>(this->values);
 	}
 	if(this->N) xDelete<int>(this->N);
 }
@@ -78,17 +78,39 @@ void IntArrayInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	int object_enum = IntArrayInputEnum;
 	marshallhandle->call(object_enum);
 	marshallhandle->call(this->numberofelements_local);
+
+	/*Allocate memory if reading restart file*/
+	if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
+		_assert_(this->numberofelements_local>0);
+		_assert_(this->numberofelements_local<1e11);
+		if(this->numberofelements_local){
+			this->N                      = xNewZeroInit<int>(this->numberofelements_local);
+			this->values                 = xNewZeroInit<int*>(this->numberofelements_local);
+		}
+		else{
+			this->N      = NULL;
+			this->values = NULL;
+		}
+	}
+	/*Marshall N*/
 	if(this->numberofelements_local){
 		marshallhandle->call(this->N,this->numberofelements_local);
+	}
+
+	/*Marshall individual arrays*/
+	if(this->numberofelements_local){
+
 		for(int i=0;i<this->numberofelements_local;i++){
-			if(this->values[i]){
+			if(this->N[i]){
+
+				/*Allocate if reading restart*/
+				if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
+					this->values[i] = xNew<int>(this->N[i]);
+				}
+				_assert_(this->values[i]);
 				marshallhandle->call(this->values[i],this->N[i]);
 			}
 		}
-	}
-	else{
-		this->N      = NULL;
-		this->values = NULL;
 	}
 
 }

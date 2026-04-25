@@ -61,21 +61,6 @@ int Results::AddResult(ExternalResult* in_result){/*{{{*/
 	return 1;
 }
 /*}}}*/
-int Results::DeleteResult(int result_enum,int result_step){/*{{{*/
-
-	for(Object* &object : this->objects){
-		ExternalResult* result=xDynamicCast<ExternalResult*>(object);
-		if(result->GetStep()==result_step){
-			if(strcmp(result->GetResultName(),EnumToStringx(result_enum))==0){
-				this->DeleteObject(result);
-				break;
-			}
-		}
-	}
-
-	return 1;
-}
-/*}}}*/
 ExternalResult* Results::FindResult(int result_enum){/*{{{*/
 
 	for(Object* &object : this->objects){

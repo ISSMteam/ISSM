@@ -45,8 +45,8 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
     isunit  = options.getfieldvalue('unit',1)
 
     #Get xlim, and ylim
-    xlim=options.getfieldvalue('xlim',np.array([min(x2d),max(x2d)]))/isunit
-    ylim=options.getfieldvalue('ylim',np.array([min(y2d),max(y2d)]))/isunit
+    xlim=np.array(options.getfieldvalue('xlim',[min(x2d),max(x2d)]))/isunit
+    ylim=np.array(options.getfieldvalue('ylim',[min(y2d),max(y2d)]))/isunit
 
     pwr = md.radaroverlay.pwr
     xm  = md.radaroverlay.x
@@ -113,8 +113,17 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
         if np.ndim(pwr) != 3:
             raise Exception('Error: Check np.ndim(md.radaroverlay.pwr) should be equal to 3.')
 
+        if np.any(np.diff(xm) < 0):
+            print('WARNING: md.radaroverlay.x should be increasing order.')
+            xm = np.flip(xm)
+            pwr= np.flip(pwr,axis=0)
+        if np.any(np.diff(md.radaroverlay.y) < 0):
+            print('WARNING: md.radaroverlay.y should be increasing order.')
+            ym = np.flip(ym)
+            pwr= np.flip(pwr,axis=1)
+
         #Check image size
-        #shape of image should be (ny, nx, band)
+        #shape of image should be (nx, ny, band)
         nx = len(xm)
         ny = len(ym)
         if (np.shape(pwr)[0]==nx) & (np.shape(pwr)[1]==ny):
@@ -146,11 +155,19 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
     else:
        data_min=np.nanmin(data_grid)
        data_max=np.nanmax(data_grid)
+       caxis_opt=[data_min, data_max] # Back-up caxis for 'applyoptions'
 
     options.addfielddefault('colormap',plt.cm.viridis)
     cmap = getcolormap(copy.deepcopy(options))
     #TODO: Matlab version
     #image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(colorm)/(data_max-data_min))),colorm);
+    #Set log scale
+    if options.exist('log'):
+        #NOTE: Tricy part for log scale dataset. "log" scale option does not rely on "processdata.py" function.
+        data_grid=np.log(data_grid)/np.log(options.getfieldvalue('log'))
+        data_min =np.log(data_min)/np.log(options.getfieldvalue('log'))
+        data_max =np.log(data_max)/np.log(options.getfieldvalue('log'))
+
     #NOTE: Python version for ind2rgb
     image_rgb = cmap((data_grid-data_min)/(data_max-data_min))
 
@@ -167,6 +184,7 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
     xmax = max(xm)/isunit
     ymin = min(ym)/isunit
     ymax = max(ym)/isunit
+
     #Draw RGB image
     h=ax.imshow(final, extent=[xmin, xmax, ymin, ymax], origin='lower')
 
@@ -179,6 +197,6 @@ def plot_landsat(md,data,options,fig,axgrid,gridindex):
 
     #Apply options
     if ~np.isnan(data_min):
-        options.changefieldvalue('caxis',[data_min, data_max]) # force caxis so that the colorbar is ready
+        options.changefieldvalue('caxis',caxis_opt) # force caxis so that the colorbar is ready
     options.addfielddefault('axis','xy equal off') # default axis
     applyoptions(md,data,options,fig,axgrid,gridindex)

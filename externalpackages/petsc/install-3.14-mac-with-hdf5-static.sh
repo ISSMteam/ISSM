@@ -10,7 +10,7 @@ PETSC_DIR=${ISSM_DIR}/externalpackages/petsc/src # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/petsc-lite-${VER}.tar.gz" "petsc-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-${VER}.tar.gz" "petsc-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf petsc-${VER}.tar.gz

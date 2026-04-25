@@ -134,6 +134,17 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 		iomodel->FetchDataToInput(inputs,elements,"md.initialization.vy",VyBaseEnum);
 	}
 
+	/*Initialize requested outputs in case they are not defined later for this partition*/
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyBasalFluxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyWaterVxEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyWaterVyEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,DegreeOfChannelizationEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyMeltRateEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyFrictionHeatEnum,P0Enum);
+	iomodel->ConstantToInput(inputs,elements,0.,HydrologyDissipationEnum,P0Enum);
+	/* FIXME: 'EffectivePressure' in md.hydrology.requested_outputs sometimes causes an error indicating that ISSM cannot write EffectivePressure. Therefore, this line was added to resolve this issue. This line should be tracked to determine whether it remains necessary in the future. */
+	iomodel->ConstantToInput(inputs,elements,0.,EffectivePressureEnum,P1Enum);
+
 	/*Friction*/
 	FrictionUpdateInputs(elements, inputs, iomodel);
 }/*}}}*/
@@ -152,6 +163,7 @@ void HydrologyShaktiAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
    parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.relaxation",HydrologyRelaxationEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.gap_height_min",HydrologyGapHeightMinEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.gap_height_max",HydrologyGapHeightMaxEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.melt_flag",HydrologyMeltFlagEnum));
 
   /*Requested outputs*/
   iomodel->FindConstant(&requestedoutputs,&numoutputs,"md.hydrology.requested_outputs");
@@ -275,6 +287,7 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 	IssmDouble  alpha2,frictionheat;
    IssmDouble  PMPheat,dissipation,dpressure_water[2],dbed[2];	
 	IssmDouble* xyz_list = NULL;
+	int         meltflag;
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = basalelement->GetNumberOfNodes();
@@ -301,6 +314,7 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 	Input* br_input             = basalelement->GetInput(HydrologyBumpHeightEnum);        _assert_(br_input);
    Input* headold_input        = basalelement->GetInput(HydrologyHeadOldEnum);           _assert_(headold_input);
 	Input* storage_input        = basalelement->GetInput(HydrologyStorageEnum);           _assert_(storage_input);
+	Input* meltrate_input       = basalelement->GetInput(BasalforcingsGroundediceMeltingRateEnum); _assert_(meltrate_input);
 
 	/*Get conductivity from inputs*/
 	IssmDouble conductivity = GetConductivity(basalelement);
@@ -308,6 +322,7 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Get Params*/
 	IssmDouble dt;
    basalelement->FindParam(&dt,TimesteppingTimeStepEnum);
+	basalelement->FindParam(&meltflag,HydrologyMeltFlagEnum);
 
 	/*Build friction basalelement, needed later: */
 	Friction* friction=new Friction(basalelement,2);
@@ -360,7 +375,17 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 		dpressure_water[0] = rho_water*g*(dh[0] - dbed[0]);
 		dpressure_water[1] = rho_water*g*(dh[1] - dbed[1]);
 
-		meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
+		if (meltflag == 0){
+			meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
+		}else if (meltflag == 1){
+			meltrate_input->GetInputValue(&meltrate,gauss);
+			/*Unit conversion: ice m s-1 to kg m-2 s-1*/
+			meltrate = meltrate*rho_ice;
+			/*NOTE: Add dissipation melting due to subglacial flow*/
+			//meltrate += dissipation;
+		}else{
+			_error_("Not implemented yet.");
+		}
 
 		IssmDouble factor = Jdet*gauss->weight*
 		 (meltrate*(1/rho_water-1/rho_ice)
@@ -493,9 +518,8 @@ void           HydrologyShaktiAnalysis::UpdateConstraints(FemModel* femmodel){/*
 				node->Activate(); //Not sure if we need this!
 			}
 			else{
-				IssmDouble phi =  rho_ice*g*thickness[in] + rho_water*g*bed[in]; //FIXME this is correct!
-				node->Deactivate();// Not sure if we need this
-				node->ApplyConstraint(0,phi);
+			   node->Deactivate();// node should be inactive
+            node->ApplyConstraint(0,0.0); // set head (dof 0) to 0.0 m
 			}
 		}
 		xDelete<IssmDouble>(mask);
@@ -552,12 +576,16 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	IssmDouble  alpha2,frictionheat;
 	IssmDouble* xyz_list = NULL;
 	IssmDouble  dpressure_water[3],dbed[3],PMPheat,dissipation;
-	IssmDouble q = 0.;
-	IssmDouble channelization = 0.;
+	IssmDouble  q = 0.;
+	IssmDouble  qx = 0.;
+	IssmDouble  qy = 0.;
+	IssmDouble  channelization = 0.;
+	int         meltflag;
 
 	/*Retrieve all inputs and parameters*/
 	basalelement->GetVerticesCoordinates(&xyz_list);
 	basalelement->FindParam(&dt,TimesteppingTimeStepEnum);
+	basalelement->FindParam(&meltflag,HydrologyMeltFlagEnum);
 	IssmDouble  latentheat      = basalelement->FindParam(MaterialsLatentheatEnum);
 	IssmDouble  g               = basalelement->FindParam(ConstantsGEnum);
 	IssmDouble  rho_ice         = basalelement->FindParam(MaterialsRhoIceEnum);
@@ -573,6 +601,7 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	Input* n_input              = basalelement->GetInput(MaterialsRheologyNEnum);         _assert_(n_input);
 	Input* lr_input             = basalelement->GetInput(HydrologyBumpSpacingEnum);       _assert_(lr_input);
 	Input* br_input             = basalelement->GetInput(HydrologyBumpHeightEnum);        _assert_(br_input);
+	Input* meltrate_input       = basalelement->GetInput(BasalforcingsGroundediceMeltingRateEnum); _assert_(meltrate_input);
 
 	/*Get conductivity from inputs*/
 	IssmDouble conductivity = GetConductivity(basalelement);
@@ -625,7 +654,17 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 		dpressure_water[1] = rho_water*g*(dh[1] - dbed[1]);
 		dissipation=rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]);
 
-		meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
+		if (meltflag == 0){
+			meltrate = 1/latentheat*(G+frictionheat+rho_water*g*conductivity*(dh[0]*dh[0]+dh[1]*dh[1]));
+		}else if (meltflag == 1){
+			meltrate_input->GetInputValue(&meltrate,gauss);
+			/*Unit conversion: ice m s-1 to kg m-2 s-1*/
+			meltrate = meltrate*rho_ice;
+			/*NOTE: Add dissipation melting due to subglacial flow*/
+			//meltrate += dissipation;
+		}else{
+			_error_("Not implemented yet.");
+		}
 
 		element->AddBasalInput(HydrologyMeltRateEnum,&meltrate,P0Enum);
 		element->AddBasalInput(HydrologyFrictionHeatEnum,&frictionheat,P0Enum);
@@ -641,7 +680,9 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 		totalweights +=gauss->weight*Jdet;
 
 		/* Compute basal water flux */
-		q += gauss->weight*Jdet*(conductivity*sqrt(dh[0]*dh[0]+dh[1]*dh[1]));
+		q +=  gauss->weight*Jdet*(conductivity*sqrt(dh[0]*dh[0]+dh[1]*dh[1]));
+		qx+= -gauss->weight*Jdet*(conductivity*dh[0]);
+		qy+= -gauss->weight*Jdet*(conductivity*dh[1]);
 
 		/* Compute "degree of channelization" (ratio of melt opening to opening by sliding) */
 		channelization += gauss->weight*Jdet*(meltrate/rho_ice/(meltrate/rho_ice+beta*sqrt(vx*vx+vy*vy)));
@@ -657,7 +698,11 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 
 	/*Divide by connectivity, add basal flux as an input*/
 	q = q/totalweights;
+	qx= qx/totalweights;
+	qy= qy/totalweights;
 	element->AddBasalInput(HydrologyBasalFluxEnum,&q,P0Enum);
+	element->AddBasalInput(HydrologyWaterVxEnum,&qx,P0Enum);
+	element->AddBasalInput(HydrologyWaterVyEnum,&qy,P0Enum);
 
 	/* Divide by connectivity, add degree of channelization as an input */
 	channelization = channelization/totalweights;
@@ -708,6 +753,14 @@ void HydrologyShaktiAnalysis::UpdateEffectivePressure(Element* element){/*{{{*/
 
 		N[i] = rho_ice*g*thickness - rho_water*g*(head-bed);
 	}
+
+	/*Set to 0 if inactive element*/
+   if(element->IsAllFloating() || !element->IsIceInElement()){
+      for(int iv=0;iv<numnodes;iv++) N[iv] = 0.;
+      element->AddInput(EffectivePressureEnum,N,P1Enum);
+      xDelete<IssmDouble>(N);
+      return;
+   }
 
 	/*Add new gap as an input*/
 	element->AddBasalInput(EffectivePressureEnum,N,element->GetElementType());

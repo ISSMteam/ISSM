@@ -185,6 +185,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 			X[index] = X[index]*scaling_factors[c];
 			if(X[index]>XU[index]) X[index]=XU[index];
 			if(X[index]<XL[index]) X[index]=XL[index];
+			_assert_(!xIsNan(X[index]));
 		}
 		offset += M[c]*N[c];
 	}
@@ -202,29 +203,24 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 		/*Start Tracing*/
 		simul_starttrace(femmodel);
 		/*Set X as our new control input and as INDEPENDENT*/
-#ifdef _HAVE_AD_
+		#ifdef _HAVE_AD_
 		IssmDouble* aX=xNew<IssmDouble>(intn,"t");
-#else
+		#else
 		IssmDouble* aX=xNew<IssmDouble>(intn);
-#endif
+		#endif
 
-		#if defined(_HAVE_ADOLC_)
 		if(my_rank==0){
 			for(int i=0;i<intn;i++){
-				aX[i]<<=X[i];
+				#if defined(_HAVE_ADOLC_)
+					aX[i]<<=X[i];
+				#elif defined(_HAVE_CODIPACK_)
+					aX[i]=X[i];
+					codi_global.registerInput(aX[i]);
+				#else
+					_error_("not suppoted");
+				#endif
 			}
 		}
-		#elif defined(_HAVE_CODIPACK_)
-
-		if(my_rank==0){
-			for (int i=0;i<intn;i++) {
-				aX[i]=X[i];
-				codi_global.registerInput(aX[i]);
-			}
-		}
-		#else
-		_error_("not suppoted");
-		#endif
 
 		ISSM_MPI_Bcast(aX,intn,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
 		SetControlInputsFromVectorx(femmodel,aX);
@@ -374,7 +370,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 
 		xDelete<IssmPDouble>(dependents);
 		xDelete<IssmPDouble>(totalgradient);
-	  } /*====????*/
+	  }
 
 	/*Constrain Gradient*/
 	IssmDouble  Gnorm = 0.;

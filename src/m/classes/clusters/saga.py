@@ -91,7 +91,18 @@ class saga(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         executable = 'issm.exe'
         if isdakota:
             version = IssmConfig('_DAKOTA_VERSION_')[0:2]
@@ -107,8 +118,8 @@ class saga(object):
         h, m = divmod(m, 60)
         d, h = divmod(h, 24)
         timestring = "%02d-%02d:%02d:%02d" % (d, h, m, s)
-        print('timestring')
-        fid = open(modelname + '.queue', 'w')
+
+        fid = open(filename, 'w')
         fid.write('#!/bin/bash -l\n')
         fid.write('#SBATCH --job-name=%s \n' % shortname)
         if self.queue in ['devel']:
@@ -145,6 +156,7 @@ class saga(object):
         fid.close()
 
     # }}}
+
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
         # Compress the files into one zip
         compressstring = 'tar -zcf %s.tar.gz ' % dirname
@@ -152,12 +164,12 @@ class saga(object):
             compressstring += ' {}'.format(file)
         subprocess.call(compressstring, shell=True)
 
-        print('uploading input file and queuing script')
+        #upload input files
         issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
-        print('launching solution sequence on remote cluster')
+        #Execute Queue job
         if not isempty(restart):
             launchcommand = 'cd %s && cd %s && sbatch %s.queue' % (self.executionpath, dirname, modelname)
         else:

@@ -39,6 +39,9 @@ template <class doubletype> class Vector;
 class ElementMatrix;
 class ElementVector;
 class BarystaticContributions;
+#if _HAVE_PyBind11_
+class EmulatorParam;
+#endif
 /*}}}*/
 
 class Element: public Object{
@@ -54,6 +57,9 @@ class Element: public Object{
 		Parameters  *parameters;
 		bool         isonsurface;
 		bool         isonbase;
+		#ifdef _HAVE_PyBind11_
+		EmulatorParam* smbemulator;
+		#endif
 
 		int* element_type_list;
 		int  element_type;
@@ -95,7 +101,7 @@ class Element: public Object{
 		IssmDouble         FindParam(int paramenum);
 		void               FindParam(int** pvalues,int* psize,int paramenum);
 		IssmDouble         FloatingArea(IssmDouble* mask, bool scaled);
-		void	             GetDofList(int** pdoflist,int approximation_enum,int setenum);
+		void	             GetDofList(int** pdoflist,int approximation_enum,int setenum, bool hideclones=0);
 		void	             GetDofListPressure(int** pdoflist,int setenum);
 		void	             GetDofListVelocity(int** pdoflist,int setenum);
 		void	             GetDofListLocal(int** pdoflist,int approximation_enum,int setenum);
@@ -130,6 +136,7 @@ class Element: public Object{
 		IssmDouble         GetZcoord(IssmDouble* xyz_list,Gauss* gauss);
 		void               GradientIndexing(int* indexing,int control_index);
 		IssmDouble         GroundedArea(IssmDouble* mask, bool scaled);
+		IssmDouble         GroundinglineMassFlux(IssmDouble* mask, bool scaled);
 		bool               HasNodeOnBase();
 		bool               HasNodeOnSurface();
 		IssmDouble         IceMass(bool scaled);
@@ -159,6 +166,7 @@ class Element: public Object{
 		bool		   IsAllMinThicknessInElement();
 		bool               IsLandInElement();
 		void               Ismip6FloatingiceMeltingRate();
+        void               Ismip7FloatingiceMeltingRate();
 		void               LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation);
 		void               LinearFloatingiceMeltingRate();
 		void               SpatialLinearFloatingiceMeltingRate();
@@ -178,7 +186,11 @@ class Element: public Object{
 		void               PicoComputeBasalMelt();
 		void               PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDouble signorm,bool ismungsm,bool issetpddfac);
 		void               PositiveDegreeDaySicopolis(bool isfirnwarming);
+		void               PositiveDegreeDayFast(bool isfirnwarming);
 		void               PositiveDegreeDayGCM();
+		#ifdef _HAVE_PyBind11_
+		void               SmbEmulator(IssmDouble timeinputs);
+		#endif
 		void               ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum);
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();
@@ -205,6 +217,7 @@ class Element: public Object{
 		void               SubglacialWaterPressure(int output_enum);
 		IssmDouble         TotalFloatingBmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalGroundedBmb(IssmDouble* mask, bool scaled);
+		IssmDouble         TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbMelt(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbRefreeze(IssmDouble* mask, bool scaled);
@@ -277,7 +290,7 @@ class Element: public Object{
 		virtual Element*   GetBasalElement(void)=0;
 		virtual int        GetElementType(void)=0;
 		virtual IssmDouble GetHorizontalSurfaceArea(void){_error_("not implemented");};
-		virtual void       GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating,int distance_enum, IssmDouble intrusion_distance)=0;
+		virtual void       GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance)=0;
 		virtual IssmDouble GetGroundedPortion(IssmDouble* xyz_list)=0;
 		virtual void        GetFractionGeometry(IssmDouble* weights, IssmDouble* pphi, int* ppoint1,IssmDouble* pfraction1,IssmDouble* pfraction2, bool* ptrapezeisnegative, IssmDouble* gl)=0;
 		virtual void       GetNodalWeightsAndAreaAndCentroidsFromLeveset(IssmDouble* loadweights, IssmDouble* ploadarea, IssmDouble* platbar, IssmDouble* plongbar, IssmDouble late, IssmDouble longe, IssmDouble area,  int levelsetenum)=0;
@@ -394,6 +407,7 @@ class Element: public Object{
 		virtual IssmDouble TotalCalvingMeltingFluxLevelset(bool scaled){_error_("not implemented");};
 		virtual IssmDouble TotalFloatingBmb(bool scaled)=0;
 		virtual IssmDouble TotalGroundedBmb(bool scaled)=0;
+		virtual IssmDouble TotalHydrologyBasalFlux(bool scaled)=0;
 		virtual IssmDouble TotalSmb(bool scaled)=0;
 		virtual IssmDouble TotalSmbMelt(bool scaled)=0;
 		virtual IssmDouble TotalSmbRefreeze(bool scaled)=0;

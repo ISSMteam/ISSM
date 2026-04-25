@@ -11,7 +11,7 @@ from solve import *
 md = triangle(model(), '../Exp/Pig.exp', 20000.)
 md = setmask(md, '../Exp/PigShelves.exp', '../Exp/PigIslands.exp')
 md = parameterize(md, '../Par/Pig.py')
-md.extrude(3, 0.9)
+md.extrude(4, 0.9)
 md = setflowequation(md, 'HO', 'all')
 md.cluster = generic('name', gethostname(), 'np', 3)
 md = solve(md, 'Stressbalance')

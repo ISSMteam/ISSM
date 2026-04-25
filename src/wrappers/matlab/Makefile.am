@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @SCOTCHINCL@ @SHAPELIBINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @MATLABINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@ @PyBind11INCL@
 AUTOMAKE_OPTIONS = subdir-objects
 
 EXEEXT=$(MATLABWRAPPEREXT)
@@ -47,8 +47,8 @@ lib_LTLIBRARIES += \
 	ElementConnectivity_matlab.la \
 	ExpSimplify_matlab.la \
 	ExpToLevelSet_matlab.la \
+	InterpFromGrid_matlab.la \
 	InterpFromGridToMesh_matlab.la \
-	InterpFromGrid.la \
 	InterpFromMesh2d_matlab.la \
 	InterpFromMeshToGrid_matlab.la \
 	InterpFromMeshToMesh2d_matlab.la \
@@ -60,7 +60,6 @@ lib_LTLIBRARIES += \
 	PointCloudFindNeighbors_matlab.la \
 	ProcessRifts_matlab.la \
 	PropagateFlagsFromConnectivity_matlab.la \
-	Scotch_matlab.la \
 	Triangle_matlab.la
 
 if CHACO
@@ -71,9 +70,6 @@ lib_LTLIBRARIES += Kriging_matlab.la
 endif
 if PROJ
 lib_LTLIBRARIES += CoordTransform_matlab.la
-endif
-if SHP
-lib_LTLIBRARIES += ShpRead_matlab.la
 endif
 #}}}
 
@@ -178,7 +174,7 @@ if !MSYS2
 libISSMMatlab_la_LDFLAGS += -static
 libISSMApi_matlab_la_LDFLAGS += -static
 endif
-deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(OSLIBS) ${LIBADD_FOR_MEX}
+deps += $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(TRIANGLELIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MPILIB) $(NEOPZLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(OSLIBS) ${LIBADD_FOR_MEX}
 endif
 
 libISSMApi_matlab_la_LIBADD = $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(MPILIB) $(NEOPZLIB) $(GSLLIB) $(MATHLIB) $(MEXLIB)
@@ -232,9 +228,9 @@ ExpSimplify_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 ExpSimplify_matlab_la_LIBADD = ${deps}
 
 #Very specific case for this mex: do not compile like other modules
-InterpFromGrid_la_SOURCES = ../InterpFromGrid/InterpFromGrid.cpp
-InterpFromGrid_la_CXXFLAGS = ${MEXLIB}
-InterpFromGrid_la_LIBADD = 
+InterpFromGrid_matlab_la_SOURCES = ../InterpFromGrid/InterpFromGrid.cpp
+InterpFromGrid_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
+InterpFromGrid_matlab_la_LIBADD =  ${LIBADD_FOR_MEX}
 
 InterpFromGridToMesh_matlab_la_SOURCES = ../InterpFromGridToMesh/InterpFromGridToMesh.cpp
 InterpFromGridToMesh_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
@@ -283,14 +279,6 @@ PointCloudFindNeighbors_matlab_la_LIBADD = ${deps}
 PropagateFlagsFromConnectivity_matlab_la_SOURCES = ../PropagateFlagsFromConnectivity/PropagateFlagsFromConnectivity.cpp
 PropagateFlagsFromConnectivity_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
 PropagateFlagsFromConnectivity_matlab_la_LIBADD = ${deps}
-
-Scotch_matlab_la_SOURCES = ../Scotch/Scotch.cpp
-Scotch_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-Scotch_matlab_la_LIBADD = ${deps}
-
-ShpRead_matlab_la_SOURCES = ../ShpRead/ShpRead.cpp
-ShpRead_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}
-ShpRead_matlab_la_LIBADD = ${deps} $(SHAPELIBLIB)
 
 Triangle_matlab_la_SOURCES = ../Triangle/Triangle.cpp
 Triangle_matlab_la_CXXFLAGS = ${AM_CXXFLAGS}

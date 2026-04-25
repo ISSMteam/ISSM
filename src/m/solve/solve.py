@@ -86,23 +86,8 @@ def solve(md, solutionstring, *args):
         raise ValueError('solutionstring {} not supported!'.format(solutionstring))
     options = pairoptions('solutionstring', solutionstring, *args)
 
-    # Recover some fields
-    md.private.solution = solutionstring
-    cluster = md.cluster
-    if options.getfieldvalue('batch', 'no') == 'yes':
-        batch = 1
-    else:
-        batch = 0
-
-    # Check model consistency
-    if options.getfieldvalue('checkconsistency', 'yes') == 'yes':
-        if md.verbose.solution:
-            print('checking model consistency')
-        ismodelselfconsistent(md)
-
     # If we are restarting, actually use the provided runtime name
     restart = options.getfieldvalue('restart', '')
-    # First, build a runtime name that is unique
     if restart == 1:
         pass # Leave the runtimename as is
     else:
@@ -115,20 +100,35 @@ def solve(md, solutionstring, *args):
             else:
                 md.private.runtimename = md.miscellaneous.name
 
-    # If running QMU analysis, some preprocessing of Dakota files using model 
-    # fields needs to be carried out
-    if md.qmu.isdakota:
-        md = preqmu(md, options)
-
     # Do we load results only?
     if options.getfieldvalue('loadonly', False):
         md = loadresultsfromcluster(md)
         return md
 
+    # Recover some fields
+    cluster = md.cluster
+    if options.getfieldvalue('batch', 'no') == 'yes':
+        batch = 1
+    else:
+        batch = 0
+
+    # Check model consistency
+    if options.getfieldvalue('checkconsistency', 'yes') == 'yes':
+        md.private.solution = solutionstring
+        if md.verbose.solution:
+            print('checking model consistency')
+        ismodelselfconsistent(md)
+
+
+    # If running QMU analysis, some preprocessing of Dakota files using model 
+    # fields needs to be carried out
+    if md.qmu.isdakota:
+        md = preqmu(md, options)
+
     # Write all input files
-    marshall(md) # bin file
-    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits') # toolkits file
-    cluster.BuildQueueScript(md.private.runtimename, md.miscellaneous.name, md.private.solution, md.settings.io_gather, md.debug.valgrind, md.debug.gprof, md.qmu.isdakota, md.transient.isoceancoupling) # queue file
+    marshall(md, md.miscellaneous.name + '.bin')                   # bin file
+    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits')  # toolkits file
+    cluster.BuildQueueScript(md, md.miscellaneous.name + '.queue') # queue file
 
     # Upload all required files
     modelname = md.miscellaneous.name
@@ -143,26 +143,28 @@ def solve(md, solutionstring, *args):
         filelist.append(modelname + '.qmu.in')
 
     if isempty(restart):
+        print('uploading input files')
         cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, filelist)
 
     # Launch job
+    print('launching solution sequence')
     cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, filelist, restart, batch)
 
     # Return if batch
     if batch:
-        if md.verbose.solution:
-            print('batch mode requested: not launching job interactively')
-            print('launch solution sequence on remote cluster by hand')
+        print('batch mode requested: not launching job interactively')
+        print('launch solution sequence on remote cluster by hand')
         return md
 
     # Wait on lock
     if md.settings.waitonlock > 0:
-        # Wait for done file
         done = waitonlock(md)
-        if md.verbose.solution:
-            print('loading results from cluster')
-        md = loadresultsfromcluster(md)
+
     elif md.settings.waitonlock == 0:
         print('Model results must be loaded manually with md = loadresultsfromcluster(md).')
+        return md
 
+    #load results
+    if md.verbose.solution: print('loading results from cluster')
+    md = loadresultsfromcluster(md)
     return md

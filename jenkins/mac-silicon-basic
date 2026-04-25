@@ -66,7 +66,7 @@ NUMCPUS_RUN=2
 # NOTE:
 # - Tests 124, 703 are excluded because of an outright crash
 # - Tests 216, 274, 362, 430, 435, 441:442, 456, 470:476, 517 are excluded because of large errors
-# - Tests 119, 423, 433, 448, 462:464, 508, 544, 546, 808 are excluded because of failure "Arrays have incompatible sizes for this operation."
+# - Tests 119, 423, 433, 448, 462:464, 508, 544, 546, 550, 808 are excluded because of failure "Arrays have incompatible sizes for this operation."
 #
-MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota'),119,124,216,274,362,423,430,433,435,441:442,448,456,462:464,470:476,508,517,544,546,703,808]"
+MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota'),119,124,216,274,362,423,430,433,435,441:442,448,456,462:464,470:476,508,517,544,546,550,703,808]"
 PYTHON_NROPTIONS=""

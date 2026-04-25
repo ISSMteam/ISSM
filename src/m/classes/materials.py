@@ -252,8 +252,6 @@ class materials(object):
                 if md.materials.issolid[0] == 0 or md.materials.lame_mu[0] == 0:
                     raise RuntimeError('First layer must be solid (issolid[0] > 0 AND lame_mu[0] > 0). Add a weak inner core if necessary.')
                 ind = np.where(md.materials.issolid == 0)[0]
-                #if np.sum(np.in1d(np.diff(ind),1) >= 1): # If there are at least two consecutive indices that contain issolid = 0
-                #    raise RuntimeError('Fluid layers detected at layers #' + indices + ', but having 2 or more adjacent fluid layers is not supported yet. Consider merging them.')
 
             elif nat == 'hydro':
                 md = checkfield(md, 'fieldname', 'materials.rho_ice', '>', 0)

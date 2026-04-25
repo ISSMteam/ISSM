@@ -1,0 +1,11 @@
+--- ./src/cmake/modules/ConfigCMake.cmake	2024-01-07 01:32:40
++++ ./ConfigCMake.cmake	2024-03-23 11:21:06
+@@ -195,7 +195,7 @@
+ 			# CMP0042: CMake 3.0: MACOSX_RPATH is enabled by default
+ 			set (CMAKE_MACOSX_RPATH ON)
+ 			set (CMAKE_INSTALL_NAME_DIR @rpath)
+-			set (CMAKE_INSTALL_RPATH "@rpath;@executable_path/${_rpath}")
++			set (CMAKE_INSTALL_RPATH "@rpath;@executable_path/${_rpath};${LIBGFORTRAN_ROOT}")
+ 		else (APPLE)
+ 			# relative RPATH on Linux, Solaris, etc.
+ 			set (CMAKE_INSTALL_RPATH "\$ORIGIN/${_rpath}")

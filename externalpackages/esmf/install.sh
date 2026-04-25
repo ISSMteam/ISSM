@@ -1,21 +1,30 @@
 #!/bin/bash
 set -eu
 
-#DOC: https://earthsystemmodeling.org/docs/nightly/develop/ESMC_crefdoc/node5.html#SECTION05063000000000000000
-# https://cpp.hotexamples.com/examples/-/-/ESMC_MeshAddNodes/cpp-esmc_meshaddnodes-function-examples.html
+## Sources
+# - https://earthsystemmodeling.org/docs/nightly/develop/ESMC_crefdoc/node5.html#SECTION05063000000000000000
+# - https://cpp.hotexamples.com/examples/-/-/ESMC_MeshAddNodes/cpp-esmc_meshaddnodes-function-examples.html
 
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://issm.ess.uci.edu/files/externalpackages/ESMF_8_0_1.tar.gz" "ESMF_8_0_1.tar.gz"
-tar -zxvf ESMF_8_0_1.tar.gz
-mv ESMF_8_0_1 esmf
-export ESMF_DIR=$ISSM_DIR/externalpackages/esmf/esmf
-export ESMF_INSTALL_PREFIX=$ISSM_DIR/externalpackages/esmf/install
+## Constants
+#
+PREFIX="${ISSM_DIR}/externalpackages/math77/install" # Set to location where external package should be installed
 
-#Compile and install esmf
-cd esmf
-if [ $# -eq 0 ]; then
-	make
-	make install
-else
-	make -j $1
-	make -j $1 install
-fi
+VER="8_0_1"
+
+export ESMF_DIR="${ISSM_DIR}/externalpackages/esmf/src"
+export ESMF_INSTALL_PREFIX="${PREFIX}"
+
+# Cleanup
+rm -rf ${PREFIX} src
+
+# Download source
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/esmf-org/esmf/archive/refs/tags/ESMF_${VER}.tar.gz" "ESMF_${VER}.tar.gz"
+
+# Unpack source
+tar -zxvf ESMF_${VER}.tar.gz
+mv esmf-ESMF_${VER} ${ESMF_DIR}
+
+# Compile and install
+cd ${ESMF_DIR}
+make
+make install

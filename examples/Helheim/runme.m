@@ -21,6 +21,7 @@ if perform(org,'Mesh'),% {{{
 
 	[velx vely]=interpJoughinCompositeGreenland(md.mesh.x,md.mesh.y);
 	vel  = sqrt(velx.^2+vely.^2);
+	vel(isnan(vel)) = 0;
 
 	% Refine mesh based on surface velocities
 	md=bamg(md,'hmin',100,'hmax',1500,'field',vel,'err',5);

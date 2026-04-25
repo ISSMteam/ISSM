@@ -45,18 +45,29 @@ classdef castor
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.np,cluster.time)
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind); disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof);    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/sh\n');
 			fprintf(fid,'#PBS -l walltime=%i\n',cluster.time*60); %walltime is in seconds.
 			fprintf(fid,'#PBS -N %s\n',modelname);
 			fprintf(fid,'#PBS -l ncpus=%i\n',cluster.np);
-			if ~isempty(queue),
+			if ~isempty(cluster.queue)
 				fprintf(fid,'#PBS -q %s\n',cluster.queue);
 			end
 			fprintf(fid,'#PBS -o %s.outlog \n',modelname);
@@ -66,7 +77,6 @@ classdef castor
 			fprintf(fid,'export OMP_NUM_THREADS=1\n');
 			fprintf(fid,'dplace -s1 -c0-%i mpiexec -np %i %s/issm.exe %s %s %s',cluster.np-1,cluster.np,cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 			fclose(fid);
-
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
@@ -81,13 +91,13 @@ classdef castor
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && qsub ' modelname '.queue '];
 			else

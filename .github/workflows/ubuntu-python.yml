@@ -61,7 +61,7 @@ jobs:
         --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
         --with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
         --with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install"
-      ext_install_command: |
+      ext_pkg_build_command: |
         cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
         cd $ISSM_DIR/externalpackages/petsc    && ./install-3.22-linux.sh

@@ -110,7 +110,7 @@ int   Krigingx(double** ppredictions,double **perror,double* obs_x, double* obs_
 
 		/*launch the thread manager with Krigingxt as a core: */
 		LaunchThread(NearestNeighbort,(void*)&gate,num);
-		printf("\r      interpolation progress: 100%%\n");
+		printf("\r      interpolation progress: 100%%   \n");
 		xDelete<int>(gate.numdone);
 	}
 	else if(strcmp(output,"idw")==0){ //Inverse distance weighting
@@ -132,7 +132,7 @@ int   Krigingx(double** ppredictions,double **perror,double* obs_x, double* obs_
 
 		/*launch the thread manager with Krigingxt as a core: */
 		LaunchThread(idwt,(void*)&gate,num);
-		printf("\r      interpolation progress: 100%%\n");
+		printf("\r      interpolation progress: 100%%   \n");
 		xDelete<int>(gate.numdone);
 	}
 	else if(strcmp(output,"v4")==0){ //Inverse distance weighting
@@ -154,7 +154,7 @@ int   Krigingx(double** ppredictions,double **perror,double* obs_x, double* obs_
 
 		/*launch the thread manager with Krigingxt as a core: */
 		LaunchThread(v4t,(void*)&gate,num);
-		printf("\r      interpolation progress: 100%%\n");
+		printf("\r      interpolation progress: 100%%   \n");
 		xDelete<int>(gate.numdone);
 	}
 	else if(strcmp(output,"prediction")==0){
@@ -177,7 +177,7 @@ int   Krigingx(double** ppredictions,double **perror,double* obs_x, double* obs_
 
 		/*launch the thread manager with Krigingxt as a core: */
 		LaunchThread(Krigingxt,(void*)&gate,num);
-		printf("\r      interpolation progress: 100%%\n");
+		printf("\r      interpolation progress: 100%%   \n");
 		xDelete<int>(gate.numdone);
 	}
 	else{
@@ -229,7 +229,7 @@ void* Krigingxt(void* vpthread_handle){/*{{{*/
 		if(my_thread==0){
 			int alldone=numdone[0];
 			for(int i=1;i<num_threads;i++) alldone+=numdone[i];
-			printf("\r      interpolation progress: %6.2g%%",double(alldone)/double(n_interp)*100.);
+			printf("\r      interpolation progress: %6.2g%%   ",double(alldone)/double(n_interp)*100.);
 		}
 
 		/*Kriging interpolation*/
@@ -275,7 +275,7 @@ void* NearestNeighbort(void* vpthread_handle){/*{{{*/
 		if(my_thread==0){
 			int alldone=numdone[0];
 			for(int i=1;i<num_threads;i++) alldone+=numdone[i];
-			printf("\r      interpolation progress: %6.2g%%",double(alldone)/double(n_interp)*100.);
+			printf("\r      interpolation progress: %6.2g%%   ",double(alldone)/double(n_interp)*100.);
 		}
 
 		observations->InterpolationNearestNeighbor(&predictions[idx],x_interp[idx],y_interp[idx],radius);
@@ -321,7 +321,7 @@ void* idwt(void* vpthread_handle){/*{{{*/
 		if(my_thread==0){
 			int alldone=numdone[0];
 			for(int i=1;i<num_threads;i++) alldone+=numdone[i];
-			printf("\r      interpolation progress: %6.2g%%",double(alldone)/double(n_interp)*100.);
+			printf("\r      interpolation progress: %6.2g%%   ",double(alldone)/double(n_interp)*100.);
 		}
 
 		observations->InterpolationIDW(&predictions[idx],x_interp[idx],y_interp[idx],radius,mindata,maxdata,power);
@@ -365,7 +365,7 @@ void* v4t(void* vpthread_handle){/*{{{*/
 		if(my_thread==0){
 			int alldone=numdone[0];
 			for(int i=1;i<num_threads;i++) alldone+=numdone[i];
-			printf("\r      interpolation progress: %6.2g%%",double(alldone)/double(n_interp)*100.);
+			printf("\r      interpolation progress: %6.2g%%   ",double(alldone)/double(n_interp)*100.);
 		}
 
 		observations->InterpolationV4(&predictions[idx],x_interp[idx],y_interp[idx],radius,mindata,maxdata);

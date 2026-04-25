@@ -46,6 +46,8 @@ function mask = gmtmask(lat,long,varargin)
 	gmt_select_options='-Ve -h0 -Df -R0/360/-90/90 -A0 -JQ180/200 -Nk/s/s/k/s';
 	[status,result]=system(['gmt select ./' filename_all ' ' gmt_select_options ' > ./' filename_oce]);
 	if status~=0,
+		disp(['gmt select failed with: ' result]);
+		disp(['trying again with gmtselect']);
 		%assume we are working with GMT 6.0.0
 		gmt_select_options='-h0 -Df -R0/360/-90/90 -A0 -JQ180/200 -Nk/s/s/k/s';
 		[status,result] = system(['gmtselect ./' filename_all ' ' gmt_select_options ' > ./' filename_oce]);

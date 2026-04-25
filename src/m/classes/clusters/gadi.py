@@ -22,19 +22,13 @@ class gadi(object):
     """
 
     def __init__(self, *args):  # {{{
-        self.name           = 'gadi.nci.org.au'
+        self.name           = oshostname()
         self.login          = ''
-        # Adjust modules for Gadi as needed:
-        self.modules        = [
-            # Example modules or spack loads:
-            'openmpi/4.1.2', 
-            # 'python3/3.9.2',
-            # or just keep them empty if you handle externally:
-        ]
-        # For Gadi, you usually specify the total ncpus. But if you still want
-        # to specify by numnodes & cpuspernode, that’s fine. Adjust as needed:
+        self.moduleload     = []
+        self.moduleuse      = []
         self.numnodes       = 1
         self.cpuspernode    = 4
+        self.memory         = 40  # e.g. '40GB'
         self.port           = ''  # typical SSH port
         self.queue          = 'normal'  # or "hugemem", "express", etc.
         self.time           = 60  # total minutes of walltime, e.g. 60 => 1 hour
@@ -43,7 +37,8 @@ class gadi(object):
         self.extpkgpath     = ''
         self.codepath       = ''
         self.executionpath  = ''
-        self.project        = ''  # Gadi uses -P <PROJECT>
+        self.project        = ''
+        self.storage        = ''
         self.interactive    = 0
         self.bbftp          = 0
         self.numstreams     = 8
@@ -68,12 +63,14 @@ class gadi(object):
     # }}}
 
     def __repr__(self):  # {{{
-        s = 'class Gadi object\n'
+        s = 'class gadi object\n'
         s += '    name: {}\n'.format(self.name)
         s += '    login: {}\n'.format(self.login)
-        s += '    modules: {}\n'.format(strjoin(self.modules, ', '))
+        s += '    moduleuse: {}\n'.format(', '.join(self.moduleuse) if getattr(self, 'moduleuse', None) else '')
+        s += '    moduleload: {}\n'.format(', '.join(self.moduleload) if getattr(self, 'moduleload', None) else '')
         s += '    numnodes: {}\n'.format(self.numnodes)
         s += '    cpuspernode: {}\n'.format(self.cpuspernode)
+        s += '    memory: {}GB\n'.format(self.memory)
         s += '    np: {}\n'.format(self.nprocs())
         s += '    port: {}\n'.format(self.port)
         s += '    queue: {}\n'.format(self.queue)
@@ -84,6 +81,7 @@ class gadi(object):
         s += '    codepath: {}\n'.format(self.codepath)
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    project: {}\n'.format(self.project)
+        s += '    storage: {}\n'.format(self.storage)
         s += '    interactive: {}\n'.format(self.interactive)
         s += '    bbftp: {}\n'.format(self.bbftp)
         s += '    numstreams: {}\n'.format(self.numstreams)
@@ -114,13 +112,14 @@ class gadi(object):
             md = md.checkmessage('executionpath is empty')
         if not self.project:
             md = md.checkmessage('project (PBS -P) is empty')
+        if not self.storage:
+            md = md.checkmessage('storage is empty')
+        if len(self.moduleload) != len(self.moduleuse):
+            raise ValueError("moduleload and moduleuse must have the same length")
         return self
     # }}}
 
-    def BuildQueueScript(
-        self, dirname, modelname, solution,
-        io_gather, isvalgrind, isgprof, isdakota, isoceancoupling
-    ):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
         """
         Create a PBS script for Gadi. 
         Gadi typically uses #PBS lines like:
@@ -130,6 +129,16 @@ class gadi(object):
          - #PBS -l wd
          - #PBS -j oe
         """
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
 
         if isgprof:
             print('gprof not typically used on Gadi via this script, ignoring...')
@@ -150,25 +159,26 @@ class gadi(object):
         walltime_str = '{:02d}:{:02d}:00'.format(hours, minutes)
 
         # Write queue script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('#!/bin/bash\n')
         fid.write('#PBS -P {}\n'.format(self.project))
         fid.write('#PBS -q {}\n'.format(self.queue))
         fid.write('#PBS -l ncpus={}\n'.format(self.nprocs()))
-        # Optionally request memory (example: 4GB x nprocs):
-        # fid.write('#PBS -l mem={}GB\n'.format(4 * self.nprocs()))
+        fid.write('#PBS -l mem={}GB\n'.format(self.memory))
         fid.write('#PBS -l walltime={}\n'.format(walltime_str))
         fid.write('#PBS -l wd\n')  
         fid.write('#PBS -j oe\n')
-        fid.write('#PBS -l storage=scratch/{0}+gdata/{0}\n'.format(self.project))
+        fid.write('#PBS -l storage={}\n'.format(self.storage))
         fid.write('#PBS -m bea\n')
         fid.write('#PBS -o {}/{}/{}.outlog \n'.format(self.executionpath, dirname, modelname))
         fid.write('#PBS -e {}/{}/{}.errlog \n\n'.format(self.executionpath, dirname, modelname))   
 
         fid.write('\n# Load modules as needed:\n')
         fid.write('module purge\n')
-        for m in self.modules:
-            fid.write('module load {}\n'.format(m))
+        # Print alternating lines
+        for x, y in zip(self.moduleuse, self.moduleload):
+            fid.write(f"module use {x}\n")
+            fid.write(f"module load {y}\n")
 
         # Optionally source environment scripts if needed:
         # fid.write('source /g/data/...someSpackOrCondaEnv...\n')

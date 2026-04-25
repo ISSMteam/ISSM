@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @SHAPELIBINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @SCOTCHINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @ADJOINTPETSCINCL@ @GSLINCL@ @BOOSTINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @ADJOINTPETSCINCL@ @GSLINCL@ @BOOSTINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@ @PyBind11INCL@
 AM_FCFLAGS = @SEMICINCL@
 
 AUTOMAKE_OPTIONS = subdir-objects
@@ -182,6 +182,7 @@ issm_sources += \
 	./shared/Elements/PrintArrays.cpp \
 	./shared/Elements/PddSurfaceMassBalance.cpp \
 	./shared/Elements/PddSurfaceMassBalanceSicopolis.cpp \
+	./shared/Elements/PddSurfaceMassBalanceFast.cpp \
 	./shared/Elements/ComputeDelta18oTemperaturePrecipitation.cpp \
 	./shared/Elements/ComputeMungsmTemperaturePrecipitation.cpp \
 	./shared/Elements/ComputeD18OTemperaturePrecipitationFromPD.cpp \
@@ -492,6 +493,9 @@ endif
 if HYDROLOGYARMAPW
 issm_sources += ./analyses/HydrologyArmapwAnalysis.cpp
 endif
+if HYDROLOGYPRESCRIBE
+issm_sources += ./analyses/HydrologyPrescribeAnalysis.cpp
+endif
 if L2PROJECTIONEPL
 issm_sources += ./analyses/L2ProjectionEPLAnalysis.cpp
 endif
@@ -579,6 +583,11 @@ endif
 # Ocean sources {{{
 if OCEAN
 issm_sources += ./modules/OceanExchangeDatax/OceanExchangeDatax.cpp
+endif
+#}}}
+# PyBind11{{{
+if PyBind11
+issm_sources += ./classes/Params/EmulatorParam.cpp
 endif
 #}}}
 # Sampling sources {{{
@@ -672,9 +681,6 @@ modules_sources += \
 	./modules/Chacox/chaco_seconds.cpp \
 	./modules/Chacox/user_params.cpp
 endif
-if SCOTCH
-modules_sources += ./modules/Scotchx/Scotchx.cpp
-endif
 #}}}
 
 # Kriging (wrapper and executable)
@@ -707,7 +713,7 @@ endif
 libISSMCore_la_SOURCES  = $(issm_sources)
 libISSMCore_la_CXXFLAGS = $(ALL_CXXFLAGS)
 libISSMCore_la_FFLAGS = $(AM_FFLAGS)
-libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(PROJLIB) $(ADJOINTPETSCLIB)
+libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(M1QN3LIB) $(SEMICLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(PROJLIB) $(ADJOINTPETSCLIB)
 if FORTRAN
 libISSMCore_LIB_ADD += $(FLIBS) $(FORTRANLIB)
 endif
@@ -853,7 +859,7 @@ LDADD += ./libISSMModules.la $(TRIANGLELIB)
 endif
 
 # External packages
-LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(SCOTCHLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADOLCLIB) $(MPILIB) $(ESMFLIB)
+LDADD += $(DAKOTALIB) $(SEMICLIB) $(M1QN3LIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADOLCLIB) $(MPILIB) $(ESMFLIB)
 
 if FORTRAN
 LDADD += $(FLIBS) $(FORTRANLIB)
@@ -863,28 +869,37 @@ LDADD += $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
 issm_CXXFLAGS= $(CXXFLAGS)
+issm_DEPENDENCIES = libISSMCore.la libISSMModules.la
 
 issm_slc_SOURCES = main/issm_slc.cpp
 issm_slc_CXXFLAGS= $(CXXFLAGS)
+issm_slc_DEPENDENCIES = libISSMCore.la libISSMModules.la
 
 if OCEAN
 bin_PROGRAMS += issm_ocean
 issm_ocean_SOURCES = main/issm_ocean.cpp
 issm_ocean_CXXFLAGS= $(CXXFLAGS)
+issm_ocean_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 
 if KRIGING
 bin_PROGRAMS += kriging
 kriging_SOURCES = main/kriging.cpp
 kriging_CXXFLAGS= $(CXXFLAGS)
+kriging_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 
 if ISSM_DAKOTA
 bin_PROGRAMS += issm_dakota
 issm_dakota_SOURCES = main/issm_dakota.cpp
 issm_dakota_CXXFLAGS= $(CXXFLAGS)
+issm_dakota_DEPENDENCIES = libISSMCore.la libISSMModules.la
 bin_PROGRAMS += issm_post
 issm_post_SOURCES = main/issm_post.cpp
 issm_post_CXXFLAGS= $(CXXFLAGS)
+issm_post_DEPENDENCIES = libISSMCore.la libISSMModules.la
 endif
 #}}}
+
+# Ensure install does not run before build completes
+install-exec-local: $(lib_LTLIBRARIES) $(bin_PROGRAMS)

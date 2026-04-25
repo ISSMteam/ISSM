@@ -378,7 +378,7 @@ end
 
 %upload both files to cluster
 disp('uploading input file,  queuing script and variables script');
-eval(['!scp ModelList.tar.gz ' name '.queue '  cluster ':' executionpath]);
+system(['scp ModelList.tar.gz ' name '.queue '  cluster ':' executionpath]);
 
 disp('launching solution sequence on remote cluster');
 issmssh(cluster,login,['"cd ' executionpath ' && source ' name '.queue "']);

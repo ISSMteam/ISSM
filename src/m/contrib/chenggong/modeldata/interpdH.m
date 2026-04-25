@@ -1,5 +1,7 @@
 function dH = interpdH(X, Y, time, ncdata)
 %INTERPDH - interpolate monthly reconstructed dH onto X and Y, within the given time period
+% The dataset is from https://doi.org/10.5061/dryad.s4mw6m9dh 
+% and the corresponding paper is: https://essd.copernicus.org/articles/17/3047/2025/
 %
 %	 Usage:
 %		dH = interpdH(md.mesh.x, md.mesh.y, [md.timestepping.start_time, md.timestepping.final_time]);
@@ -10,12 +12,13 @@ function dH = interpdH(X, Y, time, ncdata)
 %
 
 if nargin < 4
-	ncdata = '/totten_1/ModelData/Greenland/DHKhan/dHdt_monthly_1km.nc';
+	ncdata = '/totten_1/ModelData/Greenland/DHKhan/Greenland_dhdt_icevol_1kmgrid_DB.nc';
 end
 
-x = ncread(ncdata, 'x');
-y = ncread(ncdata, 'y');
-t = ncread(ncdata, 'time');
+x = double(ncread(ncdata, 'x'));
+y = double(ncread(ncdata, 'y'));
+t = double(ncread(ncdata, 'time')); % 'days since 2003-01-01'
+t =  date2decyear(datenum('2003-01-01') + t);
 
 offset=2;
 
@@ -39,7 +42,7 @@ idt_max = min([find(t>=time(end), 1, 'first'), length(t)]);
 t = t(idt_min:idt_max);
 
 % load dH
-data = ncread(ncdata, 'dHdt', [idx_min, idy_min, idt_min], [idx_max-idx_min+1, idy_max-idy_min+1, idt_max-idt_min+1], [1,1,1]);
+data = ncread(ncdata, 'dhdt_vol', [idx_min, idy_min, idt_min], [idx_max-idx_min+1, idy_max-idy_min+1, idt_max-idt_min+1], [1,1,1]);
 
 % Convert to ice_levelset values
 dH = zeros(numel(X)+1, numel(t));

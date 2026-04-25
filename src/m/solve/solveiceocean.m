@@ -41,12 +41,12 @@ options=pairoptions(varargin{:},'solutionstring',solutionstring);
 md.private.solution=solutionstring;
 cluster=md.cluster;
 if strcmpi(getfieldvalue(options,'batch','no'),'yes') batch=1; else batch=0; end
-if ~isa(cluster,'localpfe') & ~isa(cluster,'generic'),
+if ~isa(cluster,'localpfe') & ~isa(cluster,'generic')
 	error('cannot run ice/ocean simulation on any other cluster than localpfe');
 end
 
 %check model consistency
-if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes'),
+if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
 	if md.verbose.solution,
 		disp('checking model consistency');
 	end
@@ -59,9 +59,9 @@ restart=getfieldvalue(options,'restart','');
 if restart==1 
 	%Leave the runtimename as is
 else
-	if ~isempty(restart),
+	if ~isempty(restart)
 		md.private.runtimename=restart;
-	elseif getfieldvalue(options,'runtimename',true),
+	elseif getfieldvalue(options,'runtimename',true)
 		c=clock;
 		md.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',md.miscellaneous.name,c(2),c(3),c(1),c(4),c(5),floor(c(6)),feature('GetPid'));
 	else
@@ -71,7 +71,7 @@ end
 
 %if running qmu analysis, some preprocessing of dakota files using models
 %fields needs to be carried out. 
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	md=preqmu(md,options);
 end
 
@@ -89,7 +89,7 @@ BuildQueueScriptIceOcean(cluster,md.private.runtimename,md.miscellaneous.name,md
 %Upload all required files
 modelname = md.miscellaneous.name;
 filelist  = {[modelname '.bin'] [modelname '.toolkits']};
-if ispc,
+if ispc
 	filelist{end+1}=[modelname '.bat'];
 else
 	filelist{end+1}=[modelname '.queue'];
@@ -99,11 +99,12 @@ if md.qmu.isdakota,
 	filelist{end+1} = [modelname '.qmu.in'];
 end
 
-if isempty(restart),
+if isempty(restart)
 	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist);
 end
 
 %launch queue job: 
+disp('launching solution sequence')
 LaunchQueueJobIceOcean(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
 %return if batch: 
@@ -115,7 +116,7 @@ if batch,
 	return;
 end
 %wait on lock
-if isnan(md.settings.waitonlock),
+if isnan(md.settings.waitonlock)
 	%load when user enters 'y'
 	disp('solution launched on remote cluster. log in to detect job completion.');
 	choice=input('Is the job successfully completed? (y/n)','s');
@@ -124,13 +125,13 @@ if isnan(md.settings.waitonlock),
 	else
 		md=loadresultsfromcluster(md);
 	end
-elseif md.settings.waitonlock>0,
+elseif md.settings.waitonlock>0
 	%we wait for the done file
 	done=waitonlock(md);
 	if md.verbose.solution,
 		disp('loading results from cluster');
 	end
 	md=loadresultsfromcluster(md,'runtimename','');
-elseif md.settings.waitonlock==0,
+elseif md.settings.waitonlock==0
 	 disp('Model results must be loaded manually with md=loadresultsfromcluster(md);');
 end

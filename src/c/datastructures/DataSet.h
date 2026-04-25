@@ -8,8 +8,7 @@
 class Object;
 class MarshallHandle;
 
-/*! \brief Declaration of DataSet class
- *
+/*
  * Declaration of DataSet class.  A DataSet is a Container of Objects.
  */
 class DataSet{

@@ -387,6 +387,20 @@ fi
 AM_CONDITIONAL([HYDROLOGYARMAPW], [test x$HAVE_HYDROLOGYARMAPW = xyes])
 AC_MSG_RESULT($HAVE_HYDROLOGYARMAPW)
 dnl }}}
+dnl with-HydrologyPrescribe{{{
+AC_ARG_WITH([HydrologyPrescribe],
+	AS_HELP_STRING([--with-HydrologyPrescribe = YES], [compile with HydrologyPrescribe capabilities (default is yes)]),
+	[HYDROLOGYPRESCRIBE=$withval],[HYDROLOGYPRESCRIBE=yes])
+AC_MSG_CHECKING(for HydrologyPrescribe capability compilation)
+
+HAVE_HYDROLOGYPRESCRIBE=no 
+if test "x$HYDROLOGYPRESCRIBE" = "xyes"; then
+	HAVE_HYDROLOGYPRESCRIBE=yes
+	AC_DEFINE([_HAVE_HYDROLOGYPRESCRIBE_],[1],[with HydrologyPrescribe capability])
+fi
+AM_CONDITIONAL([HYDROLOGYPRESCRIBE], [test x$HAVE_HYDROLOGYPRESCRIBE = xyes])
+AC_MSG_RESULT($HAVE_HYDROLOGYPRESCRIBE)
+dnl }}}
 dnl with-L2ProjectionBase{{{
 AC_ARG_WITH([L2ProjectionBase],
 	AS_HELP_STRING([--with-L2ProjectionBase = YES], [compile with L2ProjectionBase capabilities (default is yes)]),

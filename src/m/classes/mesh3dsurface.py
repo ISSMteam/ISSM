@@ -103,7 +103,11 @@ class mesh3dsurface(object):
         md = checkfield(md, 'fieldname', 'mesh.r', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices])
         md = checkfield(md, 'fieldname', 'mesh.elements', 'NaN', 1, 'Inf', 1, '>', 0, 'values', np.arange(1, md.mesh.numberofvertices + 1))
         md = checkfield(md, 'fieldname', 'mesh.elements', 'size', [md.mesh.numberofelements, 3])
-        if np.any(np.logical_not(np.in1d(np.arange(1, md.mesh.numberofvertices + 1), md.mesh.elements.flat))):
+        if hasattr(np, 'isin'): #Numpy 2017+
+            tmp = np.isin(np.arange(1, md.mesh.numberofvertices + 1), md.mesh.elements.flat)
+        else: #For backward compatibility
+            tmp = np.in1d(np.arange(1, md.mesh.numberofvertices + 1), md.mesh.elements.flat)
+        if np.any(np.logical_not(tmp)):
             md = md.checkmessage('orphan nodes have been found; check the mesh outline')
 
         md = checkfield(md, 'fieldname', 'mesh.numberofelements', '>', 0)

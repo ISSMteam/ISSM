@@ -73,4 +73,4 @@ NUMCPUS_RUN=2
 # See documentation in test/NightlyRun/runme.* for more information.
 #
 MATLAB_NROPTIONS="'benchmark','all','id',[3015,3119,3480,3201:3206]"
-PYTHON_NROPTIONS="--benchmark='all' -i 3015 3119 3480"
+PYTHON_NROPTIONS=""

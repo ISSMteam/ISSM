@@ -2,7 +2,7 @@
 md=triangle(model(),'../Exp/Pig.exp',20000.);
 md=setmask(md,'../Exp/PigShelves.exp','../Exp/PigIslands.exp');
 md=parameterize(md,'../Par/Pig.par');
-md=extrude(md,3,1.);
+md=extrude(md,4,1.);
 md=setflowequation(md,'HO','all');
 
 %control parameters

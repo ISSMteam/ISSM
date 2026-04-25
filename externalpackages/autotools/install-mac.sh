@@ -4,10 +4,10 @@ set -eu
 
 ## Constants
 #
-AUTOCONF_VER="2.69"
-AUTOMAKE_VER="1.16.1"
-LIBTOOL_VER="2.4.6"
-M4_VER="1.4.19"
+AUTOCONF_VER="2.73"
+AUTOMAKE_VER="1.18.1"
+LIBTOOL_VER="2.5.4"
+M4_VER="1.4.21"
 
 PREFIX="${ISSM_DIR}/externalpackages/autotools/install" # Set to location where external package should be installed
 

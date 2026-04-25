@@ -52,6 +52,8 @@ def gmtmask(lat, long, *args):
     subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
     outs, errs = subproc.communicate()
     if errs != '':
+        print('gmt select failed with: ' + result);
+        print('trying again with gmtselect');
         # Assume we are working with GMT 6.0.0
         gmt_select_options = '-h0 -Df -R0/360/-90/90 -A0 -JQ180/200 -Nk/s/s/k/s'
         subproc_cmd = 'gmtselect ./all_vertices.txt ' + gmt_select_options + ' > ./oce_vertices.txt'

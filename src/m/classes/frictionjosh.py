@@ -14,13 +14,13 @@ class frictionjosh(object):
     """
 
     def __init__(self):  # {{{
-        self.coefficient = np.nan
+        self.coefficient                   = np.nan
         self.pressure_adjusted_temperature = np.nan
-        self.gamma = 0
-        self.effective_pressure_limit = 0
+        self.gamma                         = 0.
+        self.effective_pressure_limit      = 0.
+        self.coefficient_max               = 0.
 
         self.setdefaultparameters()
-        #self.requested_outputs = []
     # }}}
 
     def __repr__(self):  # {{{
@@ -30,7 +30,7 @@ class frictionjosh(object):
         s += '{}\n'.format(fielddisplay(self, 'pressure_adjusted_temperature', 'friction pressure_adjusted_temperature (T - Tpmp) [K]'))
         s += '{}\n'.format(fielddisplay(self, 'gamma', '(T - Tpmp)/gamma [K]'))
         s += '{}\n'.format(fielddisplay(self, 'effective_pressure_limit', 'Neff do not allow to fall below a certain limit: effective_pressure_limit * rho_ice * g * thickness (default 0)'))
-        #s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
+        s += '{}\n'.format(fielddisplay(self, 'coefficient_max', 'effective friction C = min(coefficient_max, sqrt(exp(T_b(modern) - T_b(t))/gamma) * coefficient)'))
         return s
     # }}}
 
@@ -41,34 +41,41 @@ class frictionjosh(object):
     # }}}
 
     def setdefaultparameters(self):  # {{{
+
+        #Default gamma: 1
         self.gamma = 1.
-        #self.requested_outputs = ['default']
-        self.effective_pressure_limit = 0
+
+        #Default 0.
+        self.effective_pressure_limit = 0.0
+
+        #Default max friction coefficient: 300
+        self.coefficient_max = 300.
+
         return self
     # }}}
 
-    def defaultoutputs(self, md):  # {{{
-        list = []
-        return list
-    # }}}
-
     def checkconsistency(self, md, solution, analyses):  # {{{
+
         # Early return
         if 'StressbalanceAnalysis' not in analyses and 'ThermalAnalysis' not in analyses:
             return md
+
         md = checkfield(md, 'fieldname', 'friction.coefficient', 'timeseries', 1, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'friction.pressure_adjusted_temperature','NaN',1,'Inf',1)
         md = checkfield(md, 'fieldname', 'friction.gamma','numel',1,'NaN',1,'Inf',1,'>',0.)
         md = checkfield(md, 'fieldname', 'friction.effective_pressure_limit', 'numel', [1], '>=', 0)
+        md = checkfield(md,'fieldname', 'friction.coefficient_max', 'numel', 1, 'NaN', 1, 'Inf', 1, '>', 0.)
+
         # Check that temperature is provided
         md = checkfield(md,'fieldname','initialization.temperature','NaN',1,'Inf',1,'size','universal')
         return md
     # }}}
 
     def marshall(self, prefix, md, fid):  # {{{
-        WriteData(fid,prefix,'name','md.friction.law','data',9,'format','Integer')
-        WriteData(fid,prefix,'class','friction','object',self,'fieldname','coefficient','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
-        WriteData(fid,prefix,'class','friction','object',self,'fieldname','pressure_adjusted_temperature','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
-        WriteData(fid,prefix,'class','friction','object',self,'fieldname','gamma','format','Double')
-        WriteData(fid,prefix,'object',self,'class','friction','fieldname','effective_pressure_limit','format','Double')
+        WriteData(fid,prefix, 'name', 'md.friction.law', 'data',9, 'format', 'Integer')
+        WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'coefficient', 'format', 'DoubleMat', 'mattype',1, 'timeserieslength',md.mesh.numberofvertices+1, 'yts',md.constants.yts)
+        WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'pressure_adjusted_temperature', 'format', 'DoubleMat', 'mattype',1, 'timeserieslength',md.mesh.numberofvertices+1, 'yts',md.constants.yts)
+        WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'gamma', 'format', 'Double')
+        WriteData(fid,prefix, 'object',self, 'class', 'friction', 'fieldname', 'effective_pressure_limit', 'format', 'Double')
+        WriteData(fid,prefix, 'class', 'friction', 'object',self, 'fieldname', 'coefficient_max', 'format', 'Double')
     # }}}

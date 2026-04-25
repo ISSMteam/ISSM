@@ -10,7 +10,7 @@ def issmscpin(host, login, port, path, packages=1):
     Usage:
         issmscpin(host, packages, path)
 
-        bracketstyle:   1 - \{\}    (escaped; default)
+        bracketstyle:   1 - \\{\\}    (escaped; default)
                         2 - {}      (not escaped)
     """
 
@@ -28,9 +28,9 @@ def issmscpin(host, login, port, path, packages=1):
         if len(packages) == 1:
             fileliststr = packages[0]
         else:
-            fileliststr = '\{'
+            fileliststr = r'\{'
             fileliststr += ','.join([package for package in packages])
-            fileliststr += '\}'
+            fileliststr += r'\}'
 
             # Remove backslashes if bracketstyle is 2
             if bracketstyle == 2:

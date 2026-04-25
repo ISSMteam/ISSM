@@ -16,16 +16,16 @@
 
 /*IntMatParam constructors and destructor*/
 IntMatParam::IntMatParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/
 IntMatParam::IntMatParam(int in_enum_type,int* in_value, int in_M,int in_N){/*{{{*/
 
-	enum_type=in_enum_type;
-	M=in_M;
-	N=in_N;
-
-	value=xNew<int>(M*N);
+	this->enum_type=in_enum_type;
+	this->M=in_M;
+	this->N=in_N;
+	this->value=xNew<int>(M*N);
 	xMemCpy<int>(value,in_value,M*N);
 }
 /*}}}*/

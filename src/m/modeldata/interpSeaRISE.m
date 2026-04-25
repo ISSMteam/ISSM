@@ -53,7 +53,7 @@ else
 			elseif hemisphere==-1,
 				searisenc='/home/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
 			end
-		case {'thwaites','larsen','murdo','astrid'}
+		case {'thwaites','larsen','murdo','astrid','wilkins.jpl.nasa.gov'}
 			if hemisphere==1,
 				searisenc='/u/astrid-r1b/ModelData/SeaRISE/Greenland5km_v1.2/Greenland_5km_dev1.2.nc';
 			elseif hemisphere==-1,

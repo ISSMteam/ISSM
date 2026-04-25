@@ -2,7 +2,7 @@
 md=triangle(model(),'../Exp/Square.exp',180000.);
 md=setmask(md,'','');
 md=parameterize(md,'../Par/SquareSheetConstrained.par');
-md=extrude(md,4,2.);
+md=extrude(md,3,1.);
 md=setflowequation(md,'SIA','../Exp/SquareHalfRight.exp','fill','SSA');
 md.cluster=generic('name',oshostname(),'np',3);
 md=solve(md,'Stressbalance');

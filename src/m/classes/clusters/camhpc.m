@@ -70,14 +70,24 @@ classdef camhpc
 
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+			%Get variables from md
+			dirname         = md.private.runtimename;
+			modelname       = md.miscellaneous.name;
+			solution        = md.private.solution;
+			io_gather       = md.settings.io_gather;
+			isvalgrind      = md.debug.valgrind;
+			isgprof         = md.debug.gprof;
+			isdakota        = md.qmu.isdakota;
+			isoceancoupling = md.transient.isoceancoupling;
+
+			%checks
+			if(isvalgrind); disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof);    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script
-			disp(modelname)
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			fprintf(fid,'#SBATCH -p %s \n',cluster.partition);
@@ -98,7 +108,7 @@ classdef camhpc
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.run'],'w');
 				fprintf(fid,'mpirun -np %i %s/issm.exe %s %s %s\n',cluster.nprocs(),cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
 				if ~io_gather, %concatenate the output files:
@@ -123,13 +133,13 @@ classdef camhpc
 			end
 			system(compressstring);
 
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
-			disp('launching solution sequence on remote cluster');
+			%Execute Queue job
              %
              % qsub replaced by sbatch for csd3 system NSA 28/3/18
 			if ~isempty(restart)

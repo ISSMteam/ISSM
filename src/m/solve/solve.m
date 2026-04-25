@@ -83,8 +83,28 @@ else
 end
 options=pairoptions(varargin{:},'solutionstring',solutionstring);
 
+%If we are restarting, actually use the provided runtime name:
+restart=getfieldvalue(options,'restart','');
+if restart==1 
+	%Leave the runtimename as is
+else
+	if ~isempty(restart)
+		md.private.runtimename=restart;
+	elseif getfieldvalue(options,'runtimename',true)
+		c=clock;
+		md.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',md.miscellaneous.name,c(2),c(3),c(1),c(4),c(5),floor(c(6)),feature('GetPid'));
+	else
+		md.private.runtimename=md.miscellaneous.name;
+	end
+end
+
+%Do we load results only?
+if getfieldvalue(options,'loadonly',false)
+	md=loadresultsfromcluster(md);
+	return;
+end
+
 %recover some fields
-md.private.solution=solutionstring;
 cluster=md.cluster;
 if strcmpi(getfieldvalue(options,'batch','no'),'yes')
 	batch=1;
@@ -93,49 +113,30 @@ else
 end
 
 %check model consistency
-if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes'),
-	if md.verbose.solution,
+if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
+	md.private.solution=solutionstring;
+	if md.verbose.solution
 		disp('checking model consistency');
 	end
-	ismodelselfconsistent(md),
-end
-
-%If we are restarting, actually use the provided runtime name:
-restart=getfieldvalue(options,'restart','');
-%First, build a runtime name that is unique
-if restart==1 
-	%Leave the runtimename as is
-else
-	if ~isempty(restart),
-		md.private.runtimename=restart;
-	elseif getfieldvalue(options,'runtimename',true),
-		c=clock;
-		md.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',md.miscellaneous.name,c(2),c(3),c(1),c(4),c(5),floor(c(6)),feature('GetPid'));
-	else
-		md.private.runtimename=md.miscellaneous.name;
-	end
+	ismodelselfconsistent(md);
 end
 
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out. 
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	md=preqmu(md,options);
 end
 
-%Do we load results only?
-if getfieldvalue(options,'loadonly',false),
-	md=loadresultsfromcluster(md);
-	return;
-end
+%Prepare directory in execution
 
 %Write all input files
-marshall(md);                                          % bin file
-ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']); % toolkits file
-BuildQueueScript(cluster,md.private.runtimename,md.miscellaneous.name,md.private.solution,md.settings.io_gather,md.debug.valgrind,md.debug.gprof,md.qmu.isdakota,md.transient.isoceancoupling); % queue file
+marshall(md, [md.miscellaneous.name '.bin']);                    % bin file
+ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']);   % toolkits file
+BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue']); % queue file
 
 %Upload all required files
 modelname = md.miscellaneous.name;
 filelist  = {[modelname '.bin'] [modelname '.toolkits']};
-if ispc,
+if ispc
 	filelist{end+1}=[modelname '.bat'];
 else
 	filelist{end+1}=[modelname '.queue'];
@@ -145,39 +146,39 @@ if md.qmu.isdakota,
 	filelist{end+1} = [modelname '.qmu.in'];
 end
 
-if isempty(restart),
+if isempty(restart)
+	disp('uploading input files')
 	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist);
 end
 
 %launch queue job: 
+disp('launching solution sequence')
 LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
-%return if batch: 
-if batch,
-	if md.verbose.solution,
-		disp('batch mode requested: not launching job interactively');
-		disp('launch solution sequence on remote cluster by hand');
-	end
+%return if batch:
+if batch
+	disp('batch mode requested: not launching job interactively');
+	disp('launch solution sequence on remote cluster by hand');
 	return;
 end
 
 %wait on lock
-if isnan(md.settings.waitonlock),
-	%load when user enters 'y'
-	disp('solution launched on remote cluster. log in to detect job completion.');
+if md.settings.waitonlock==0
+	disp('Model results must be loaded manually with md=loadresultsfromcluster(md);');
+	return
+elseif isnan(md.settings.waitonlock)
+	disp('solution launched on remote cluster. Log in to detect job completion.');
 	choice=input('Is the job successfully completed? (y/n)','s');
-	if ~strcmp(choice,'y'), 
+	if ~strcmp(choice,'y')
 		disp('Results not loaded... exiting'); 
+		return;
 	else
-		md=loadresultsfromcluster(md);
 	end
-elseif md.settings.waitonlock>0,
-	%wait for done file
-	done=waitonlock(md);
-	if md.verbose.solution,
-		disp('loading results from cluster');
-	end
-	md=loadresultsfromcluster(md);
-elseif md.settings.waitonlock==0,
-	 disp('Model results must be loaded manually with md=loadresultsfromcluster(md);');
+elseif md.settings.waitonlock>0
+	done = waitonlock(md);
+else
+	error('not supported');
 end
+
+if md.verbose.solution; disp('loading results from cluster'); end
+md=loadresultsfromcluster(md);

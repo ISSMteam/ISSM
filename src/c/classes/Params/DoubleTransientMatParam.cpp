@@ -15,5 +15,6 @@
 /*}}}*/
 
 DoubleTransientMatParam::DoubleTransientMatParam(int in_enum_type,IssmDouble* in_value, int in_M,int in_N):DoubleMatParam(in_enum_type,in_value,in_M,in_N){/*{{{*/
+	_error_("not supported, is this actually used??");
 }
 /*}}}*/

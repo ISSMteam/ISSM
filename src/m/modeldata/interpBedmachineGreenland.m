@@ -25,8 +25,7 @@ if nargin<5
 	ncdate='2022-03-17';
 	ncdate='2022-05-18';
 	ncdate='2022-07-28';
-	ncdate='v6.0';
-	ncdate='v6.1';
+	ncdate='v6.6'; %BedMachine v6
 end
 if nargin<4
 	if strcmp(string,'mask') | strcmp(string,'source')

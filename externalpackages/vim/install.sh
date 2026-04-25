@@ -1,31 +1,31 @@
 #!/bin/bash
 set -eu
 
-#Some cleanup
-rm -rf install src
-rm -rf vim72
-mkdir install src
 
-#Download from ISSM server
-$ISSM_DIR/scripts/DownloadExternalPackage.sh 'https://issm.ess.uci.edu/files/externalpackages/vim-7.2.tar.bz2' 'vim-7.2.tar.bz2'
+## Constants
+#
+PREFIX="${ISSM_DIR}/externalpackages/vim/install" # Set to location where external package should be installed
 
-#Untar 
-bzip2 -d -k vim-7.2.tar.bz2
-tar -xvf vim-7.2.tar
-rm vim-7.2.tar
+VER="9.1.1943"
 
-#Move vim into install directory
-mv vim72/* src
-rm -rf vim72
+# Cleanup
+rm -rf ${PREFIX} src
 
-#Configure vim (icc seems to have issues with wctype.h)
+# Download source
+${ISSM_DIR}/scripts/DownloadExternalPackage.sh "https://github.com/vim/vim/archive/refs/tags/v${VER}.tar.gz" "v${VER}.tar.gz"
+
+# Unpack source
+tar -zxvf v${VER}.tar.gz
+mv vim-${VER} src
+
+# Configure (icc seems to have issues with wctype.h)
 export CC=gcc
-cd src/src 
+cd src/src
 ./configure \
-	--prefix="$ISSM_DIR/externalpackages/vim/install" \
+	--prefix="${PREFIX}" \
 	--with-gcc="/usr/bin/gcc" \
 	--with-tlib="/lib/"
 
-#Compile vim
+# Compile and install
 make
-make  install
+make install

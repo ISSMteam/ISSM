@@ -47,10 +47,20 @@ classdef cloud
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'source %s%s\n',cluster.codepath,'/../etc/environment.sh');
 			fprintf(fid,'cd %s\n',[cluster.executionpath '/' dirname]);
@@ -69,7 +79,7 @@ classdef cloud
 			if isempty(cluster.login),
 				error('cloud BuildQueueScript: login should be supplied!');
 			end
-			disp('uploading input file and queuing script');
+			%upload input files
 			issmstscpout(cluster.name,cluster.executionpath,cluster.login,{[dirname '.tar.gz']});
 
 		end %}}}
@@ -84,7 +94,7 @@ classdef cloud
 						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz'];
 				end
 			else
-				disp('launching solution sequence on remote cluster');
+				%Execute Queue job
 				if ~isempty(restart)
 					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && qsub ' modelname '.queue'];
 				else

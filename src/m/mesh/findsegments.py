@@ -55,7 +55,11 @@ def findsegments(md, *args):  # {{{
             flag = intersect(md.mesh.elements[els2[0] - 1, :], md.mesh.elements[els2[1] - 1, :])[0] # NOTE: Throwing away second- and third- position values returned from call
 
             # Get the vertices on the boundary and build segment
-            nods1 = np.delete(nods1, np.where(np.in1d(nods1, flag, assume_unique=True)))
+            if hasattr(np, 'isin'): #Numpy 2017+
+                tmp = np.isin(nods1, flag, assume_unique=True)
+            else: #For backward compatibility
+                tmp = np.in1d(nods1, flag, assume_unique=True)
+            nods1 = np.delete(nods1, np.where())
             segments[count, :] = np.append(nods1, el1 + 1)
 
             # Swap segment nodes if necessary
@@ -79,7 +83,11 @@ def findsegments(md, *args):  # {{{
             for j in range(3):
                 nods = nods1
                 nods = np.delete(nods, j)
-                if np.any(np.in1d(flag, nods)):
+                if hasattr(np, 'isin'): #Numpy 2017+
+                    tmp = np.isin(flag, nods)
+                else: #For backward compatibility
+                    tmp = np.in1d(flag, nods)
+                if np.any(tmp):
                     segments[count, :] = np.append(nods, el1 + 1)
 
                     # Swap segment nodes if necessary

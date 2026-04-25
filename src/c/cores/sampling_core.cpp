@@ -30,7 +30,6 @@ void sampling_core(FemModel* femmodel){
 	if(VerboseSolution()) _printf0_("   Generating random samples\n");
 
 	/*Generate random sample*/
-	if(VerboseSolution()) _printf0_("   call computational core\n");
 	SamplingAnalysis* analysis = new SamplingAnalysis();
 	femmodel->SetCurrentConfiguration(SamplingAnalysisEnum);
 

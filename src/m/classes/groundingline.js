@@ -28,8 +28,8 @@ function groundingline (){
 
 			checkfield(md,'fieldname','groundingline.migration','values',['None', 'AggressiveMigration', 'SoftMigration', 'Contact', 'GroundingOnly']);
 			checkfield(md,'fieldname','groundingline.friction_interpolation','values',['NoFrictionOnPartiallyFloating', 'SubelementFriction1', 'SubelementFriction2']);
-			checkfield(md,'fieldname','groundingline.melt_interpolation','values',['NoMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt', 'FullMeltOnPartiallyFloating']);
-			checkfield(md,'fieldname','groundingline.intrusion_distance','>=',0)
+			checkfield(md,'fieldname','groundingline.melt_interpolation','values',['NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt']);
+			checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'>=',0);
 
 			if (this.migration !='None'){
 				if (isNaN(md.geometry.bed)){
@@ -51,7 +51,7 @@ function groundingline (){
 			WriteData(fid,prefix,'data',this.migration,'name','md.groundingline.migration','format','String');
 			WriteData(fid,prefix,'data',this.friction_interpolation,'name','md.groundingline.friction_interpolation','format','String');
 			WriteData(fid,prefix,'data',this.melt_interpolation,'name','md.groundingline.melt_interpolation','format','String');
-			WriteData(fid,prefix,'object',self,'fieldname','intrusion_distance','format','Double');
+			WriteData(fid,prefix,'object',self,'fieldname','intrusion_distance','format','DoubleMat','mattype',1);
 
 		}//}}}
 		this.fix=function() { //{{{

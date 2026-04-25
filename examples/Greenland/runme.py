@@ -17,6 +17,8 @@ from ll2xy import ll2xy
 from BamgTriangulate import BamgTriangulate
 from InterpFromMeshToMesh2d import InterpFromMeshToMesh2d
 from scipy.interpolate import griddata
+import matplotlib.pyplot as plt
+import numpy as np
 
 steps = [1]
 
@@ -152,7 +154,7 @@ if 5 in steps:
               'title', 'Surface (m)')
 
     #Line Plots
-    figure
+    plt.figure
 
     #Plot surface mass balance, velocity and volume
     surfmb = []
@@ -190,7 +192,7 @@ if 6 in steps:
     t = np.arange(years_of_simulation[0], years_of_simulation[-1] + 11 / 12, 1 / 12)
     #Area of grid for 5km box
     area_of_grid = 5000 * 5000
-    totalsmb = reshape(np.nansum(smbbox / 1000, axis=(-2, -1)), (len(t), 1)) * area_of_grid
+    totalsmb = np.reshape(np.nansum(smbbox / 1000, axis=(-2, -1)), (len(t), 1)) * area_of_grid
 
     #save surface mass balance mat dataset
     smbmean = np.nanmean(smbbox, axis=(0, 1))

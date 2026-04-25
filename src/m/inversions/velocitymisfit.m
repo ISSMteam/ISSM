@@ -1,12 +1,12 @@
-function J=misfit(md)
+function J=velocitymisfit(md)
 %MISFIT - compute misfit
 %
 %   Usage:
-%      J=misfit(md)
+%      J = velocitymisfit(md)
 %
-%   Example:
-%      J=misfit(md)
-%
+%   - modeled  velocities will be pulled from md.initialization.vx/vy
+%   - observed velocities will be pulled from md.inversion.vx_obs/vy_obs
+
 
 if dimension(md.mesh)==2,
 	elements=md.mesh.elements;

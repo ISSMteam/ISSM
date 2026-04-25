@@ -20,16 +20,14 @@ class independent(object):
         self.nods = 0
         self.min_parameters = np.nan
         self.max_parameters = np.nan
-        self.control_scaling_factor = np.nan
+        self.control_scaling_factor = 0.0
         self.control_size = 0
-
-        # Set defaults
-        self.setdefaultparameters()
 
         # Use provided options to change fields
         options = pairoptions(*args)
 
         # Get other fields
+        self.setdefaultparameters()
         self = options.AssignObjectFields(self)
 
         if self.control_size == 0:
@@ -55,7 +53,10 @@ class independent(object):
     # }}}
 
     def setdefaultparameters(self):  # {{{
-        # Do nothing
+
+        # Set default scaling factor to 1 (i.e., do not scale)
+        self.control_scaling_factor = 1.0
+
         return self
     # }}}
 
@@ -72,6 +73,8 @@ class independent(object):
             if self.nods == 0:
                 raise TypeError('independent checkconsistency error: nods should be set to the size of the independent variable')
             md = checkfield(md, 'fieldname', 'autodiff.independents[%d].fov_forward_indices' % i, '>=', 1, '<=', self.nods)
+
+        md = checkfield(md, 'fieldname', 'autodiff.independents[%d].control_scaling_factor' % i, 'size', [1, 1], '>', 0., 'NaN', 1, 'Inf', 1)
 
         return md
     # }}}

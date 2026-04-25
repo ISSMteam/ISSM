@@ -37,7 +37,6 @@ void debris_core(FemModel* femmodel){ /*{{{*/
 	surfaceslope_core(femmodel);
 
 	/*Transport Debris*/
-	if(VerboseSolution()) _printf0_("   call computational core\n");
 	femmodel->inputs->DuplicateInput(VxEnum,VxDebrisEnum);
 	if(domaintype!=Domain2DverticalEnum){
 		femmodel->inputs->DuplicateInput(VyEnum,VyDebrisEnum);	

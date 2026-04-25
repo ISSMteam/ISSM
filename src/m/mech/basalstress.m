@@ -8,23 +8,22 @@ function [bx by b]=basalstress(md)
 %
 %   See also: plot_basaldrag
 
-%Check md.friction class
-if ~isa(md.friction,'friction')
-	error('Error: md.friction only supports "friction.m" class.');
+%Compute effective pressure
+g         = md.constants.g;
+rho_ice   = md.materials.rho_ice;
+rho_water = md.materials.rho_water;
+
+sealevel = 0;
+p_ice = g*rho_ice*md.geometry.thickness;
+
+if isprop(md.friction, 'coupling')
+	coupling = md.friction.coupling;
+else
+	warning(sprintf('md.friction.coupling is not found. Default coupling is set to 0.'));
+	coupling = 0;
 end
 
-%compute exponents
-s=averaging(md,1./md.friction.p,0);
-r=averaging(md,md.friction.q./md.friction.p,0);
-
-%Compute effective pressure
-g        =md.constants.g;
-rho_ice  =md.materials.rho_ice;
-rho_water=md.materials.rho_water;
-
-sealevel=0;
-p_ice=g*rho_ice*md.geometry.thickness;
-switch(md.friction.coupling)
+switch(coupling)
    case 0
 		p_water=g*rho_water*(sealevel-md.geometry.base);
       N = p_ice-p_water;
@@ -48,7 +47,34 @@ ubx=md.initialization.vx/md.constants.yts;
 uby=md.initialization.vy/md.constants.yts;
 
 %compute basal drag (S.I.)
-alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+switch(class(md.friction))
+	case 'friction'
+		%compute exponents
+		s=averaging(md,1./md.friction.p,0);
+		r=averaging(md,md.friction.q./md.friction.p,0);
+
+		alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+
+	case 'frictionschoof'
+		if any(N < 0)
+			%NOTE: Sometimes, negative value of effective pressure N gives image number in alpha2. To prevent the image value in alpha2, we use small values.
+			warning('Find effective pressure value < 0. Treating minimum effective value with 0.1');
+			N = max(N, 0.1);
+		end
+		m=averaging(md,md.friction.m,0);
+		C=averaging(md,md.friction.C,0);
+		Cmax=averaging(md,md.friction.Cmax,0);
+		
+		alpha2 = (C.^2 .* ub.^(m-1))./(1 + (C.^2./(Cmax.*N)).^(1./m).*ub).^(m);
+
+	case 'frictionweertman'
+		m = averaging(md,md.friction.m,0);
+		C = md.friction.C;
+		alpha2 = C.^2 .* ub.^(1./m-1);
+
+	otherwise
+		error('friction class not supported yet');
+end
 b  =  alpha2.*ub;
 bx = -alpha2.*ubx;
 by = -alpha2.*uby;

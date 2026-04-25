@@ -588,6 +588,7 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 					stepinput->Pow(-1);
 					this->current_input->AXPY(stepinput,dt);
 				}
+				break;
 			default:
 				_error_("averaging method is not recognised");
 		}

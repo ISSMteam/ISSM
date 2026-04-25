@@ -16,6 +16,7 @@
 
 /*DoubleVecParam constructors and destructor*/
 DoubleVecParam::DoubleVecParam(){/*{{{*/
+	this->values = NULL;
 	return;
 }
 /*}}}*/
@@ -87,8 +88,11 @@ void  DoubleVecParam::GetParameterValue(IssmDouble** poutput,int* pM){/*{{{*/
 /*}}}*/
 void  DoubleVecParam::GetParameterValue(IssmDouble** poutput,int* pM,int* pN){/*{{{*/
 
-	IssmDouble* output=xNew<IssmDouble>(this->M);
-	xMemCpy<IssmDouble>(output,values,M);
+	IssmDouble* output = NULL;
+	if(this->M){
+		output=xNew<IssmDouble>(this->M);
+		xMemCpy<IssmDouble>(output,values,M);
+	}
 
 	/*Assign output pointers:*/
 	if(pM) *pM=this->M;

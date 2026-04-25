@@ -24,6 +24,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts;
+	bool       save_final_results;
 	bool       iscontrol,isautodiff;
 	int        timestepping;
 	int        output_frequency,checkpoint_frequency;
@@ -48,6 +49,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&amr_frequency,TransientAmrFrequencyEnum);
 	femmodel->parameters->FindParam(&iscontrol,InversionIscontrolEnum);
 	femmodel->parameters->FindParam(&isautodiff,AutodiffIsautodiffEnum);
+	femmodel->parameters->FindParam(&save_final_results,SaveFinalResultsEnum);
 
 	/*call modules that are not dependent on time stepping:*/
 	transient_precore(femmodel);
@@ -78,13 +80,14 @@ void transient_core(FemModel* femmodel){/*{{{*/
 		femmodel->parameters->SetParam(step,StepEnum);
 
 		if(VerboseSolution()){
-			_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
-			//_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
-			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
+			//_printf0_("iteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+			//			"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << " (time step: " << dt/yts << ")\n");
+			_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
+						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
 		}
-		bool save_results=false;
-		if(step%output_frequency==0 || (time >= finaltime - (yts*DBL_EPSILON)) || step==1) save_results=true;
+		const bool save_results = step==1 //save first step
+		                       || step%output_frequency==0 //save at regular intervals
+		                       || (save_final_results && time >= finaltime - (yts*DBL_EPSILON)); //save last step (optional)
 		femmodel->parameters->SetParam(save_results,SaveResultsEnum);
 
 		/*Run transient step!*/
@@ -174,13 +177,13 @@ void transient_step(FemModel* femmodel){/*{{{*/
 			femmodel->parameters->FindParam(&isenthalpy,ThermalIsenthalpyEnum);
 			femmodel->parameters->FindParam(&smb_model,SmbEnum);
 			if(isenthalpy){
-				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum){
+				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum || smb_model==SMBpddFastEnum){
 					femmodel->SetCurrentConfiguration(EnthalpyAnalysisEnum);
 					ResetBoundaryConditions(femmodel,EnthalpyAnalysisEnum);
 				}
 			}
 			else{
-				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum){
+				if(smb_model==SMBpddEnum || smb_model==SMBd18opddEnum || smb_model==SMBpddSicopolisEnum || smb_model==SMBpddFastEnum){
 					femmodel->SetCurrentConfiguration(ThermalAnalysisEnum);
 					ResetBoundaryConditions(femmodel,ThermalAnalysisEnum);
 				}
@@ -304,10 +307,9 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts,time;
-	int       isoceancoupling;
-	int       step,timestepping;
-	int       checkpoint_frequency,num_responses;
-	int		 *M = NULL;
+	int        isoceancoupling;
+	int        step,timestepping;
+	int        checkpoint_frequency,num_responses;
 	int		 *control_enum;
 
 	/*Get rank*/
@@ -322,7 +324,6 @@ double transient_ad(FemModel* femmodel, double* G, double* Jlist){/*{{{*/
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&checkpoint_frequency,SettingsCheckpointFrequencyEnum); _assert_(checkpoint_frequency>0);
 	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
-	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 
 	std::vector<IssmDouble> time_all;
 	std::vector<IssmDouble> dt_all;

@@ -1,0 +1,90 @@
+--- src/cmake/modules/FindNETCDF.cmake	2024-01-07 01:32:40
++++ FindNETCDF.cmake	2024-03-31 15:12:47
+@@ -67,6 +67,23 @@
+                     OUTPUT_VARIABLE NETCDF_PREFIX_DIR
+                     ERROR_QUIET
+                     OUTPUT_STRIP_TRAILING_WHITESPACE)
++    execute_process(COMMAND ${NC_CONFIG} --libs
++                    RESULT_VARIABLE nc_res
++                    OUTPUT_VARIABLE NETCDF_LIBS
++                    ERROR_QUIET
++                    OUTPUT_STRIP_TRAILING_WHITESPACE)
++    if (NETCDF_LIBS)
++        # Ensure -l is preceded by whitespace to not match
++        # '-l' in '-L/usr/lib/x86_64-linux-gnu/hdf5/serial'
++        string (REGEX MATCHALL "(^| )-l[^ ]+" _netcdf_dashl ${NETCDF_LIBS})
++        string (REGEX REPLACE "(^| )-l" "" _netcdf_lib "${_netcdf_dashl}")
++        string (REGEX MATCHALL "(^| )-L[^ ]+" _netcdf_dashL ${NETCDF_LIBS})
++        string (REGEX REPLACE "(^| )-L" "" _netcdf_libpath "${_netcdf_dashL}")
++        if (_netcdf_lib)
++            list (REMOVE_DUPLICATES _netcdf_lib)
++            list (REMOVE_ITEM _netcdf_lib netcdf)
++        endif (_netcdf_lib)
++    endif (NETCDF_LIBS)
+ endif()
+ 
+ find_path(NETCDF_INCLUDE_DIR netcdf.h
+@@ -78,6 +95,54 @@
+               "${NETCDF_INCLUDE_DIR}/../lib"
+         HINTS "${NETCDF_PREFIX_DIR}/lib")
+ 
++# find all libs that nc-config reports
++foreach (_extralib ${_netcdf_lib})
++    find_library (_found_lib_${_extralib}
++        NAMES ${_extralib}
++        HINTS
++        ${HDF5_ROOT}
++        $ENV{HDF5_ROOT}
++        ${ZLIB_ROOT}
++        $ENV{ZLIB_ROOT}
++        ${CURL_ROOT}
++        $ENV{CURL_ROOT}
++        PATH_SUFFIXES lib
++        PATHS 
++        ${_netcdf_libpath}
++    )
++    list (APPEND NETCDF_LIBRARY ${_found_lib_${_extralib}})
++endforeach (_extralib)
++
++# find all manually-supplied libs
++if (NETCDF_EXTRA_LIBS)
++    # Ensure -l is preceded by whitespace to not match
++    # '-l' in '-L/usr/lib/x86_64-linux-gnu/hdf5/serial'
++    string (REGEX MATCHALL "(^| )-l[^ ]+" _netcdf_extra_lib_dashl ${NETCDF_EXTRA_LIBS})
++    string (REGEX REPLACE "(^| )-l" "" _netcdf_extra_shared_lib "${_netcdf_extra_lib_dashl}")
++    string (REGEX MATCHALL "(^| )-L[^ ]+" _netcdf_extra_lib_dashL ${NETCDF_EXTRA_LIBS})
++    string (REGEX REPLACE "(^| )-L" "" _netcdf_extra_libpath "${_netcdf_extra_lib_dashL}")
++    foreach (_extralib ${_netcdf_extra_shared_lib})
++        find_library (_found_lib_${_extralib}
++            NAMES ${_extralib}
++            PATH_SUFFIXES lib
++            PATHS 
++            ${_netcdf_extra_libpath}
++        )
++        list (APPEND NETCDF_LIBRARY ${_found_lib_${_extralib}})
++    endforeach (_extralib)
++    # Retrieve static library names
++    string(REGEX MATCHALL "[-_/a-zA-Z0-9]+\\.a" _netcdf_extra_static_lib "${NETCDF_EXTRA_LIBS}")
++    foreach (_extralib ${_netcdf_extra_static_lib})
++        find_library (${_extralib}
++            NAMES ${_extralib}
++            PATH_SUFFIXES lib
++            PATHS 
++            ${_netcdf_extra_libpath}
++        )
++        list (APPEND NETCDF_LIBRARY ${_extralib})
++    endforeach (_extralib)
++endif (NETCDF_EXTRA_LIBS)
++
+ if(NETCDF_INCLUDE_DIR AND NETCDF_LIBRARY)
+     set (NETCDF_C_INCLUDE_DIRS ${NETCDF_INCLUDE_DIR})
+     set (NETCDF_C_LIBRARIES ${NETCDF_LIBRARY})
+@@ -181,6 +246,8 @@
+     NetCDF_check_interface (F77 netcdf.inc  netcdff)
+     NetCDF_check_interface (F90 netcdf.mod  netcdff)
+ 
++
++
+     #export accumulated results to internal vars that rest of project can depend on
+     list (APPEND NetCDF_libs "${NETCDF_C_LIBRARIES}")
+     set (NETCDF_LIBRARIES ${NetCDF_libs})

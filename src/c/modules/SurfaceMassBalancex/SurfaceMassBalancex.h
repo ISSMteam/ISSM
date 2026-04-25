@@ -18,7 +18,11 @@ void MungsmtpParameterizationx(FemModel* femmodel);
 void Delta18opdParameterizationx(FemModel* femmodel);
 void PositiveDegreeDayx(FemModel* femmodel);
 void PositiveDegreeDaySicopolisx(FemModel* femmodel);
+void PositiveDegreeDayFastx(FemModel* femmodel);
 void PositiveDegreeDayGCMx(FemModel* femmodel);
+#ifdef _HAVE_PyBind11_
+void SmbEmulatorx(FemModel* femmodel);
+#endif
 void SmbHenningx(FemModel* femmodel);
 void SmbComponentsx(FemModel* femmodel);
 void SmbMeltComponentsx(FemModel* femmodel);

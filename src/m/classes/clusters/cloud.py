@@ -54,9 +54,20 @@ class cloud(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
 
         fid.write('#/bin/bash\n')
         fid.write('source {}{}\n'.format(self.codepath, '/../etc/environment.sh'))
@@ -74,7 +85,7 @@ class cloud(object):
         if isempty(self.login):
             raise Exception('cloud BuildQueueScript: login should be supplied!')
 
-        print('uploading input file and queuing script')
+        #upload input files
         issmstscpout(self.name, self.executionpath, self.login, '{}.tar.gz'.format(dirname))
     # }}}
 
@@ -86,7 +97,7 @@ class cloud(object):
             else:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
         else:
-            print('launching solution sequence on remote cluster')
+            #Execute Queue job
             if not isempty(restart):
                 launchcommand = 'cd {} && cd {} && qsub {}.queue'.format(self.executionpath, dirname, modelname)
             else:
