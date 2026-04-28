@@ -93,7 +93,7 @@ classdef damage
 				md = checkfield(md,'fieldname','damage.spcdamage','Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','damage.max_damage','<',1,'>=',0);
 				md = checkfield(md,'fieldname','damage.stabilization','numel',[1],'values',[0 1 2 4]);
-				md = checkfield(md,'fieldname','damage.maxiter','>=0',0);
+				md = checkfield(md,'fieldname','damage.maxiter','>=',0);
 				md = checkfield(md,'fieldname','damage.elementinterp','values',{'P1','P2'});
 				md = checkfield(md,'fieldname','damage.stress_threshold','>=',0);
 				md = checkfield(md,'fieldname','damage.stress_ubound','>=',0);

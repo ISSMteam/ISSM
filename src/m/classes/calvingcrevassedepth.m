@@ -32,8 +32,8 @@ classdef calvingcrevassedepth
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 			
-			crevasse_threshold      = 1.;
-			crevasse_opening_stress = 1;
+			self.crevasse_threshold      = 1.;
+			self.crevasse_opening_stress = 1;
          self.water_height       = 0.;
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{

@@ -24,7 +24,6 @@ classdef frictionweertman
 			end
 		end % }}}
 		function self = extrude(self,md) % {{{
-			disp('-------------- file: frictionweertman.m line: 27'); 
 			self.C=project3d(md,'vector',self.C,'type','node','layer',1);
 			self.m=project3d(md,'vector',self.m,'type','element');
 		end % }}}

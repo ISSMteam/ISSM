@@ -54,10 +54,10 @@ classdef SMBdebrisEvatt
 			self.airhumidity=project3d(md,'vector',self.airhumidity,'type','node');
 			self.temperature_anomaly=project3d(md,'vector',self.temperature_anomaly,'type','node');
                         self.precipitation_anomaly=project3d(md,'vector',self.precipitation_anomaly,'type','node');
-			self.dsradiation_anomaly=project3d(md,'vector',self.temperature_anomaly,'type','node');
-	                self.dlradiation_anomaly=project3d(md,'vector',self.temperature_anomaly,'type','node');
-         	        self.windspeed_anomaly=project3d(md,'vector',self.temperature_anomaly,'type','node');
-                	self.airhumidity_anomaly=project3d(md,'vector',self.temperature_anomaly,'type','node');
+			self.dsradiation_anomaly=project3d(md,'vector',self.dsradiation_anomaly,'type','node');
+	                self.dlradiation_anomaly=project3d(md,'vector',self.dlradiation_anomaly,'type','node');
+         	        self.windspeed_anomaly=project3d(md,'vector',self.windspeed_anomaly,'type','node');
+                	self.airhumidity_anomaly=project3d(md,'vector',self.airhumidity_anomaly,'type','node');
 
 			self.s0t=project3d(md,'vector',self.s0t,'type','node');
 			self.snowheight=project3d(md,'vector',self.snowheight,'type','node');

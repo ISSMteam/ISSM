@@ -114,7 +114,7 @@ class thermal(object):
             md = checkfield(md, 'fieldname', 'thermal.isenthalpy', 'numel', [1], 'values', [0, 1])
             md = checkfield(md, 'fieldname', 'thermal.isdynamicbasalspc', 'numel', [1], 'values', [0, 1])
             if(md.thermal.isenthalpy):
-                if np.isnan(md.stressbalance.reltol):
+                if np.isnan(md.thermal.reltol):
                     md.checkmessage("for a steadystate computation, thermal.reltol (relative convergence criterion) must be defined!")
                 md = checkfield(md, 'fieldname', 'thermal.reltol', '>', 0., 'message', "reltol must be larger than zero")
         return md

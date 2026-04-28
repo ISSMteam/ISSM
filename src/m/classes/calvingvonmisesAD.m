@@ -12,7 +12,7 @@ classdef calvingvonmisesAD
 		min_thickness = 0.;
 	end
 	methods
-		function self = calvingvonmises(varargin) % {{{
+		function self = calvingvonmisesAD(varargin) % {{{
 			switch nargin
 				case 0
 					self=setdefaultparameters(self);
@@ -35,7 +35,7 @@ classdef calvingvonmisesAD
 		function self = setdefaultparameters(self) % {{{
 
 			self.basin_id             = NaN;
-			num_basins           = 0;
+			self.num_basins           = 0;
 			
 			%Default sigma max
 			self.stress_threshold_groundedice = 1e6;

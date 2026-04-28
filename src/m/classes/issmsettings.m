@@ -127,7 +127,7 @@ classdef issmsettings
 			writejsstring(fid,[modelname '.settings.upload_login'],self.upload_login);
 			writejsdouble(fid,[modelname '.settings.upload_port'],self.upload_port);
 			writejsstring(fid,[modelname '.settings.upload_filename'],self.upload_filename);
-			writejsstring(fid,[modelname '.settings.solver_residue_threshold'],self.solver_residue_threshold);
+			writejsdouble(fid,[modelname '.settings.solver_residue_threshold'],self.solver_residue_threshold);
 		end % }}}
 	end
 end

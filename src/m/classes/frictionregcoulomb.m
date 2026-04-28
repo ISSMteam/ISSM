@@ -38,7 +38,7 @@ classdef frictionregcoulomb
 			md = checkfield(md,'fieldname','friction.m','NaN',1,'Inf',1,'>',0.,'size',[md.mesh.numberofelements,1]);
 		end % }}}
 		function disp(self) % {{{
-			%See Joughin et al. 2019 (equivalent form by Matt Trevers, poster at AGU 2022) https://agupubs.onlinelåibrary.wiley.com/doi/full/10.1029/2019GL082526
+			%See Joughin et al. 2019 (equivalent form by Matt Trevers, poster at AGU 2022) https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019GL082526
 			disp('Regularized Coulomb friction law (Joughin et al., 2019) parameters:');
 			disp('   Regularized Coulomb friction law reads:');
 			disp('                       C^2 |u|^(1/m)         ');

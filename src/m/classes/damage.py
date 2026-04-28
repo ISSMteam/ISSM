@@ -118,7 +118,7 @@ class damage(object):
             md = checkfield(md, 'fieldname', 'damage.law', 'numel', [1], 'values', [0, 1, 2, 3])
             md = checkfield(md, 'fieldname', 'damage.spcdamage', 'Inf', 1, 'timeseries', 1)
             md = checkfield(md, 'fieldname', 'damage.stabilization', 'numel', [1], 'values', [0, 1, 2, 4])
-            md = checkfield(md, 'fieldname', 'damage.maxiter', ' >= 0', 0)
+            md = checkfield(md, 'fieldname', 'damage.maxiter', '>=', 0)
             md = checkfield(md, 'fieldname', 'damage.elementinterp', 'values', ['P1', 'P2'])
             md = checkfield(md, 'fieldname', 'damage.stress_threshold', '>=', 0)
             md = checkfield(md, 'fieldname', 'damage.stress_ubound', '>=', 0)

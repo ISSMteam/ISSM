@@ -108,7 +108,7 @@ classdef transient
 			md = checkfield(md,'fieldname','transient.issampling','numel',[1],'values',[0 1]);  
 			md = checkfield(md,'fieldname','transient.amr_frequency','numel',[1],'>=',0,'NaN',1,'Inf',1);
 
-			if (~strcmp(solution,'TransientSolution') & md.transient.iscoupling==1), 
+			if (~strcmp(solution,'TransientSolution') & md.transient.isoceancoupling==1),
 				md = checkmessage(md,['Coupling with ocean model can only be performed for transient simulations!']);
 			end
 			if (md.transient.isdamageevolution & ~isa(md.materials,'matdamageice')), 

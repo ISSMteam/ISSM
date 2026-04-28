@@ -200,8 +200,8 @@ classdef flowequation
 			writejsdouble(fid,[modelname '.flowequation.isMOLHO'],self.isMOLHO);
 			writejsdouble(fid,[modelname '.flowequation.isHO'],self.isHO);
 			writejsdouble(fid,[modelname '.flowequation.isFS'],self.isFS);
-         writejsstring(fid,[modelname '.flowequation.isNitscheBC'],self.isNitscheBC);
-         writejsstring(fid,[modelname '.flowequation.FSNitscheGamma'],self.FSNitscheGamma);
+         writejsdouble(fid,[modelname '.flowequation.isNitscheBC'],self.isNitscheBC);
+         writejsdouble(fid,[modelname '.flowequation.FSNitscheGamma'],self.FSNitscheGamma);
          writejsstring(fid,[modelname '.flowequation.fe_SSA'],self.fe_SSA);
 			writejsstring(fid,[modelname '.flowequation.fe_HO'],self.fe_HO);
 			writejsstring(fid,[modelname '.flowequation.fe_FS'],self.fe_FS);
