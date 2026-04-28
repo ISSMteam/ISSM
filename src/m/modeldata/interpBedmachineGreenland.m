@@ -15,17 +15,14 @@ function output = interpBedmachineGreenland(X,Y,string,method,ncdate)
 %             Supported interpolation methos: 'linear','cubic','nearest'
 %   - optional 5th input argument: path to dataset.
 %
-% Version 11/30/2018 Mathieu Morlighem mmorligh@uci.edu
+% Version 11/30/2018 Mathieu Morlighem mmorligh@dartmouth.edu
 
 if nargin<5
-	%ncdate='2015-04-27'; %BedMachine v2
+	ncdate='2015-04-27'; %BedMachine v2
 	ncdate='2017-09-25'; %BedMachine v3
-	ncdate='2020-04-14';
-	ncdate='2021-08-27';
-	ncdate='2022-03-17';
-	ncdate='2022-05-18';
-	ncdate='2022-07-28';
-	ncdate='v6.6'; %BedMachine v6
+	ncdate='2021-01-09'; %BedMachine v4
+	ncdate='2022-07-28'; %BedMachine v5
+	ncdate='v6.6';       %BedMachine v6
 end
 if nargin<4
 	if strcmp(string,'mask') | strcmp(string,'source')

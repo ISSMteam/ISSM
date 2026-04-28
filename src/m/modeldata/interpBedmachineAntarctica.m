@@ -15,7 +15,7 @@ function output = interpBedmachineAntarctica(X,Y,string,method,ncdate)
 %             Supported interpolation methos: 'linear','cubic','nearest'
 %   - optional 5th input argument: path to dataset.
 %
-% Version 11/30/2018 Mathieu Morlighem mmorligh@uci.edu
+% Version 11/30/2018 Mathieu Morlighem mmorligh@dartmouth.edu
 
 if nargin<3, string = 'bed'; end
 if nargin<4
@@ -26,8 +26,10 @@ if nargin<4
 	end
 end
 if nargin<5
+	ncdate='2019-11-05'; %BedMachine v1
 	ncdate='2020-07-15'; %BedMachine v2
-	ncdate='v3.5';       %Official v3 release
+	ncdate='v3.5';       %BedMachine v3 
+	ncdate='v4.1';       %BedMachine v4
 end
 basename = 'BedMachineAntarctica';
 
