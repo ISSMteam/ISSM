@@ -12,7 +12,7 @@ function [bx by b]=basalstress(md)
 	%   by		y component of basal stress
 	%   b			scalar magnitude of basal stress
 	%
-	%   See also: plot_basaldrag
+	%   See also: EFFECTIVEPRESSURE, PLOT_BASALDRAG
 
 	if isprop(md.friction, 'coupling')
 		coupling = md.friction.coupling;
@@ -21,25 +21,8 @@ function [bx by b]=basalstress(md)
 		coupling = 0;
 	end
 
-	% calculate effective pressure using coupling definition in md.friction (Pa)
-	sealevel= 0; % reference sea level (m)
-	p_ice   = md.constants.g * md.materials.rho_ice * md.geometry.thickness; % ice pressure (Pa)
-	p_water = md.constants.g * md.materials.rho_water * (sealevel-md.geometry.base); % water pressure (Pa)
-	switch(coupling)
-		case 0 % uniform sheet (negative water pressure ok, default)
-			N = p_ice-p_water;
-		case 1 % effective pressure is equal to the overburden pressure
-			N = p_ice;
-		case 2 % uniform sheet (water pressure >= 0)
-			p_water=max(p_water,0.0);
-			N = p_ice-p_water;
-		case 3 % Use effective pressure prescrived in md.friction.effective_pressure
-			N = max(md.friction.effective_pressure, 0);
-		case 4 % Use effective pressure dynamically calculated by the hydrology model (i.e., fully coupled)
-			error('md.friction.coupling=4 is not supported yet.');
-		otherwise
-			error('not supported yet');
-	end
+	% calculate effective pressure using coupling definition in md.friction
+	N = effectivepressure(md); % effective pressure (Pa)
 
 	% compute sliding velocity
 	ub  = sqrt(md.initialization.vx.^2+md.initialization.vy.^2)/md.constants.yts; % horizontal vel (m/s)
