@@ -11,7 +11,9 @@ AC_MSG_NOTICE(=      AC_PACKAGE_NAME AC_PACKAGE_VERSION configuration    =)
 AC_MSG_NOTICE(============================================================================)
 
 #Make sure options were provided
-AS_IF([test "x$prefix" = "xNONE"],[AC_MSG_ERROR([--prefix is not provided. Did you run ./configure without any option?])])
+AS_IF([test "x$prefix" = "xNONE"],[AC_MSG_ERROR([--prefix is not provided.
+		 Did you run ./configure without any option?
+		 Maybe you meant to run ./configure.sh?])])
 
 #Determine System type and OS
 AC_CANONICAL_TARGET

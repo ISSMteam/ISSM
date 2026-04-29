@@ -40,9 +40,9 @@ AC_DEFUN([ISSM_OPTIONS],[
 		user_name="$USER"
 	else
 		if test -n "$LOGNAME"; then
-			user_name ="$LOGNAME"
+			user_name="$LOGNAME"
 		else
-			user_name =`(whoami) 2>/dev/null` || user_name=unknown
+			user_name=`(whoami) 2>/dev/null` || user_name=unknown
 		fi
 	fi
 	AC_DEFINE_UNQUOTED([USER_NAME], "${user_name}", [user name])
@@ -237,7 +237,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 		;;
 		*)
-			AC_MSG_ERROR([unsupported operating system type)])
+			AC_MSG_ERROR([unsupported operating system type])
 		;;
 	esac
 
@@ -523,7 +523,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		else
 			DAKOTA_VERSION_OUTPUT=`${DAKOTA_ROOT}/bin/dakota -v`
 			if test -n "${DAKOTA_VERSION_OUTPUT}"; then
-				DAKOTA_VERSION=`echo ${DAKOTA_VERSION_OUTPUT} grep "Dakota version" | sed 's/Dakota version //' | sed 's/ .*//'`
+				DAKOTA_VERSION=`echo ${DAKOTA_VERSION_OUTPUT} | grep "Dakota version" | sed 's/Dakota version //' | sed 's/ .*//'`
 			elif test -f "${DAKOTA_ROOT}/../src/src/CommandLineHandler.C"; then
 				DAKOTA_VERSION=`cat ${DAKOTA_ROOT}/../src/src/CommandLineHandler.C | grep 'DAKOTA version' | grep 'release' | grep -v // | sed 's/.*DAKOTA version //' | sed 's/ .*//' `
 			elif test -f "${DAKOTA_ROOT}/../src/src/CommandLineHandler.cpp"; then
@@ -608,7 +608,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 							DAKOTAFLAGS="-DDISABLE_DAKOTA_CONFIG_H -DBOOST_MULTI_INDEX_DISABLE_SERIALIZATION -DDAKOTA_PLUGIN -DBOOST_DISABLE_ASSERTS -DDAKOTA_HAVE_BOOST_FS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DDAKOTA_UTILIB -DHAVE_ADAPTIVE_SAMPLING -DHAVE_CONMIN -DDAKOTA_DDACE -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
 							DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldream -lfsudace -lddace -lnomad -lpecos_src -llhs -llhs_mods -loptpp -lsurfpack -lconmin -ldakota_src_fortran -llhs_mod -lncsuopt -lsurfpack_fortran -lteuchos -lamplsolver -lcport -ldfftpack -lfsudace -lhopspack -lnidr -lpecos -lpsuade -lsparsegrid -L$BOOST_ROOT/lib -lboost_serialization -lboost_signals -lboost_regex -lboost_filesystem -lboost_system ${BLASLAPACKLIB}"
 						elif test "${BOOST_VERSION_MINOR}" == "72"; then
-							DAKOTAFLAGS="-DHAVE_CONFIG_H -DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
+							DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
 							DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchosremainder -lteuchosnumerics -lteuchoscomm -lteuchosparameterlist -lteuchosparser -lteuchoscore -lpecos_util -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lapproxnn -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system ${BLASLAPACKLIB}"
 						fi
 					fi
@@ -650,7 +650,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([DAKOTAFLAGS])
 		AC_SUBST([DAKOTALIB])
 	fi
-	AM_CONDITIONAL([ISSM_DAKOTA], [test "x${DAKOTA_MAJOR}" == "x6"])
+	AM_CONDITIONAL([ISSM_DAKOTA], [test "x${HAVE_DAKOTA}" == "xyes" && test "x${DAKOTA_MAJOR}" == "x6"])
 	dnl }}}
 	dnl Python{{{
 	AC_MSG_CHECKING([for Python])
@@ -689,7 +689,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_CHECKING([for Python include directory])
 		PYTHONINCL=$(${PYTHON_PATH} -c "import sys; import sysconfig; sys.stdout.write(sysconfig.get_config_var('INCLUDEPY'))")
 		if ! test -f "${PYTHONINCL}/Python.h"; then
-			PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['include']])")
+			PYTHONINCL=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()['include'])")
 			if ! test -f "${PYTHONINCL}/Python.h"; then
 				AC_MSG_ERROR([Python.h not found! Please locate this file and contact ISSM developers via forum or email.]);
 			fi
@@ -704,7 +704,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		elif ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
 			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
 		else
-			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['stdlib']])")
+			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()['stdlib'])")
 			if ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
 				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}m"
 			elif ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
@@ -744,7 +744,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_DEFINE([_HAVE_PYTHON_NUMPY_], [1], [with NumPy in ISSM src])
 		AC_SUBST([PYTHON_NUMPYINCL])
 	fi
-	AM_CONDITIONAL([PYTHON3], [test "xyes" == "xyes"])
+	AM_CONDITIONAL([PYTHON3], [test "x${PYTHON_MAJOR}" == "x3"])
 	dnl }}}
 	dnl Python-OLD{{{
 	if test "x${HAVE_PYTHON}" != "xyes"; then
@@ -995,7 +995,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([CODIPACKINCL])
 	fi
 	AM_CONDITIONAL([CODIPACK], [test "x${HAVE_CODIPACK}" == "xyes"])
-	AM_COND_IF(CODIPACK, [CXXFLAGS+=" -std=c++17"])
+	AM_COND_IF(CODIPACK, [CXXFLAGS="${CXXFLAGS} -std=c++17"])
 	dnl }}}
 	dnl Tape Allocation {{{
 	AC_MSG_CHECKING(for tape allocation)
@@ -1039,7 +1039,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([ADOLCLIB])
 	fi
 	AM_CONDITIONAL([ADOLC], [test "x${HAVE_ADOLC}" == "xyes"])
-	AM_COND_IF(ADOLC, [CXXFLAGS+=" -std=c++11"])
+	AM_COND_IF(ADOLC, [CXXFLAGS="${CXXFLAGS} -std=c++11"])
 	dnl }}}
 	dnl ADOL-C version{{{
 	AC_MSG_CHECKING(for ADOL-C version)
@@ -2453,7 +2453,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_MSG_ERROR([Number of threads must be at least 1!]);
 	fi
 	MULTITHREADING=no
-	MULTITHREADINLIB=""
+	MULTITHREADINGLIB=""
 	if test "x${NUMTHREADS_VALUE}" != "x1"; then
 		MULTITHREADINGLIB="-lpthread -lrt"
 		case "${host_os}" in
@@ -2500,12 +2500,12 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 
 	dnl Check that we have MATLAB and/or Python support if we compile the modules
-	if test "x${MODULES_VALUE}" == "xyes" && test "${HAVE_MATLAB}" == "xno" && test "${HAVE_PYTHON}" == "xno"; then
+	if test "x${MODULES_VALUE}" == "xyes" && test "x${HAVE_MATLAB}" == "xno" && test "x${HAVE_PYTHON}" == "xno"; then
 		AC_MSG_ERROR([need at least MATLAB and/or Python support to compile modules! (or use --with-modules=no)]);
 	fi
 
 	dnl Check that Fortran is provided if Gia is on
-	if test "x${HAVE_GIA}" == "xyes" &&  test "${HAVE_FORTRAN}" == "xno"; then
+	if test "x${HAVE_GIA}" == "xyes" &&  test "x${HAVE_FORTRAN}" == "xno"; then
 		AC_MSG_ERROR([need Fortran compiler to compile Gia! (or use --without-Gia)]);
 	fi
 
@@ -2520,7 +2520,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 
 	dnl Check that if we run ADOL-C, we don't compile kriging.exe
-	if test "x${HAVE_ADOLC}" == "xyes" && test "${HAVE_KRIGING}" == "xyes"; then
+	if test "x${HAVE_ADOLC}" == "xyes" && test "x${HAVE_KRIGING}" == "xyes"; then
 		AC_MSG_ERROR([cannot compile kriging.exe under ADOL-C conditions!]);
 	fi
 
@@ -2567,21 +2567,14 @@ dnl  ISSM_ENABLE_AD – Automatic-Differentiation (CoDiPack + MediPack)
 dnl =====================================================================
 AC_DEFUN([ISSM_ENABLE_AD], [
   # --- command-line switches ------------------------------------------
+  dnl NOTE: --with-codipack-dir and --with-medipack-dir are already declared
+  dnl in ISSM_OPTIONS above; do not re-declare them here to avoid duplicate
+  dnl AC_ARG_WITH warnings from autoconf.
   AC_ARG_ENABLE([ad],
     AS_HELP_STRING([--enable-ad],
       [Build ISSM with CoDiPack+MediPack automatic differentiation (disables PETSc)]),
     [enable_ad=$enableval],
     [enable_ad=no])
-
-  AC_ARG_WITH([codipack-dir],
-    AS_HELP_STRING([--with-codipack-dir=DIR],
-      [Prefix of CoDiPack install]),
-    [CODIPACK_ROOT=$withval], [CODIPACK_ROOT=])
-
-  AC_ARG_WITH([medipack-dir],
-    AS_HELP_STRING([--with-medipack-dir=DIR],
-      [Prefix of MediPack install]),
-    [MEDIPACK_ROOT=$withval], [MEDIPACK_ROOT=])
 
   # --- validation & flag injection ------------------------------------
   if test "x$enable_ad" = "xyes"; then
