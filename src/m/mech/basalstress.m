@@ -14,16 +14,6 @@ function [bx by b]=basalstress(md)
 	%
 	%   See also: EFFECTIVEPRESSURE, PLOT_BASALDRAG
 
-	if isprop(md.friction, 'coupling')
-		coupling = md.friction.coupling;
-	else
-		warning(sprintf('md.friction.coupling is not found. Default coupling is set to 0.'));
-		coupling = 0;
-	end
-
-	% calculate effective pressure using coupling definition in md.friction
-	N = effectivepressure(md); % effective pressure (Pa)
-
 	% compute sliding velocity
 	ub  = sqrt(md.initialization.vx.^2+md.initialization.vy.^2)/md.constants.yts; % horizontal vel (m/s)
 	ubx = md.initialization.vx/md.constants.yts; % vx (m/s)
@@ -32,6 +22,9 @@ function [bx by b]=basalstress(md)
 	%compute basal drag (S.I.)
 	switch(class(md.friction))
 		case 'friction'
+			% calculate effective pressure using coupling definition in md.friction
+			N = effectivepressure(md); % effective pressure (Pa)
+
 			%compute exponents
 			s=averaging(md,1./md.friction.p,0);
 			r=averaging(md,md.friction.q./md.friction.p,0);
@@ -39,11 +32,15 @@ function [bx by b]=basalstress(md)
 			alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
 
 		case 'frictionschoof'
+			% calculate effective pressure using coupling definition in md.friction
+			N = effectivepressure(md); % effective pressure (Pa)
 			if any(N < 0)
 				%NOTE: Negative values of effective pressure N return a complex number in alpha2. Treated here with minimum threshold.
 				warning('Find effective pressure value N < 0. Enforcing minimum effective pressure of N_min = 0.1');
 				N = max(N, 0.1);
 			end
+
+			% compute parameters
 			m=averaging(md,md.friction.m,0);
 			C=averaging(md,md.friction.C,0);
 			Cmax=averaging(md,md.friction.Cmax,0);
