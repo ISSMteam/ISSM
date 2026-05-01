@@ -478,6 +478,9 @@
 	SealevelchangeViscousNumStepsEnum
 	SealevelchangeViscousTimesEnum
 	SealevelchangeViscousIndexEnum
+	SealevelchangeViscousSamplingEnum
+	SealevelchangeViscousSamplingLengthEnum
+	SealevelchangeViscousSamplingIndexEnum
 	SealevelchangeViscousPolarMotionEnum
 	SealevelchangeRunCountEnum
 	SealevelchangeTransitionsEnum
@@ -4300,6 +4303,9 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SealevelchangeViscousNumStepsEnum) return "SealevelchangeViscousNumSteps" end
 	if(enum==SealevelchangeViscousTimesEnum) return "SealevelchangeViscousTimes" end
 	if(enum==SealevelchangeViscousIndexEnum) return "SealevelchangeViscousIndex" end
+	if(enum==SealevelchangeViscousSamplingEnum) return "SealevelchangeViscousSampling" end
+	if(enum==SealevelchangeViscousSamplingLengthEnum) return "SealevelchangeViscousSamplingLength" end
+	if(enum==SealevelchangeViscousSamplingIndexEnum) return "SealevelchangeViscousSamplingIndex" end
 	if(enum==SealevelchangeViscousPolarMotionEnum) return "SealevelchangeViscousPolarMotion" end
 	if(enum==SealevelchangeRunCountEnum) return "SealevelchangeRunCount" end
 	if(enum==SealevelchangeTransitionsEnum) return "SealevelchangeTransitions" end
@@ -8122,6 +8128,9 @@ function StringToEnum(name::String)
 	if(name=="SealevelchangeViscousNumSteps") return SealevelchangeViscousNumStepsEnum  end
 	if(name=="SealevelchangeViscousTimes") return SealevelchangeViscousTimesEnum  end
 	if(name=="SealevelchangeViscousIndex") return SealevelchangeViscousIndexEnum  end
+	if(name=="SealevelchangeViscousSampling") return SealevelchangeViscousSamplingEnum  end
+	if(name=="SealevelchangeViscousSamplingLength") return SealevelchangeViscousSamplingLengthEnum  end
+	if(name=="SealevelchangeViscousSamplingIndex") return SealevelchangeViscousSamplingIndexEnum  end
 	if(name=="SealevelchangeViscousPolarMotion") return SealevelchangeViscousPolarMotionEnum  end
 	if(name=="SealevelchangeRunCount") return SealevelchangeRunCountEnum  end
 	if(name=="SealevelchangeTransitions") return SealevelchangeTransitionsEnum  end

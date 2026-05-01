@@ -491,6 +491,9 @@ const char* EnumToStringx(int en){
 		case SealevelchangeViscousNumStepsEnum : return "SealevelchangeViscousNumSteps";
 		case SealevelchangeViscousTimesEnum : return "SealevelchangeViscousTimes";
 		case SealevelchangeViscousIndexEnum : return "SealevelchangeViscousIndex";
+		case SealevelchangeViscousSamplingEnum : return "SealevelchangeViscousSampling";
+		case SealevelchangeViscousSamplingLengthEnum : return "SealevelchangeViscousSamplingLength";
+		case SealevelchangeViscousSamplingIndexEnum : return "SealevelchangeViscousSamplingIndex";
 		case SealevelchangeViscousPolarMotionEnum : return "SealevelchangeViscousPolarMotion";
 		case SealevelchangeRunCountEnum : return "SealevelchangeRunCount";
 		case SealevelchangeTransitionsEnum : return "SealevelchangeTransitions";

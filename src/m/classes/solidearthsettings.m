@@ -20,6 +20,7 @@ classdef solidearthsettings
 		compute_bp_grd         = 0; %will GRD patterns for bottom pressures be computed? 
 		degacc                 = 0; %degree increment for resolution of Green tables.
 		timeacc                = 1; %time step accuracy required to compute Green tables
+		viscoussampling       = 8; %number of samples kept before doubling spacing in the viscous memory time grid
 		horiz                  = 0; %compute horizontal deformation
 		grdmodel               = 1; %grd model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
 		cross_section_shape    = 0; %cross section only used when grd model is Ivins
@@ -77,6 +78,7 @@ classdef solidearthsettings
 			%numerical discretization accuracy
 			self.degacc=.01;
 			self.timeacc=1; 
+			self.viscoussampling=8;
 
 			%how many time steps we skip before we run solidearthsettings solver during transient
 			self.runfrequency=1;
@@ -107,6 +109,7 @@ classdef solidearthsettings
 			disp(sprintf('      resolution:'));
 			fielddisplay(self,'degacc','spatial accuracy (default: .01 deg) for numerical discretization of the Green''s functions');
 			fielddisplay(self,'timeacc','time accuracy (default: 1 yr) for numerical discretization of the Green''s functions');
+			fielddisplay(self,'viscoussampling','number of samples kept at each spacing before doubling the spacing in the viscous memory time grid (default: 100)');
 			disp(sprintf('      sea-level equation:'));
 			fielddisplay(self,'grdocean','does this planet have an ocean, if set to 1: global water mass is conserved in GRD module (default: 1)'); 
 			fielddisplay(self,'sealevelloading','enables surface loading from sea-level change (default: 1)');
@@ -127,6 +130,7 @@ classdef solidearthsettings
 			md = checkfield(md,'fieldname','solidearth.settings.runfrequency','size',[1 1],'>=',1);
 			md = checkfield(md,'fieldname','solidearth.settings.degacc','size',[1 1],'>=',1e-10);
 			md = checkfield(md,'fieldname','solidearth.settings.timeacc','size',[1 1],'>',0);
+			md = checkfield(md,'fieldname','solidearth.settings.viscoussampling','size',[1 1],'>=',1);
 			md = checkfield(md,'fieldname','solidearth.settings.horiz','NaN',1,'Inf',1,'values',[0 1]);
 			md = checkfield(md,'fieldname','solidearth.settings.grdmodel','>=',0,'<=',2);
 			md = checkfield(md,'fieldname','solidearth.settings.cross_section_shape','numel',[1],'values',[1,2]);
@@ -175,6 +179,7 @@ classdef solidearthsettings
 			WriteData(fid,prefix,'object',self,'fieldname','runfrequency','name','md.solidearth.settings.runfrequency','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','degacc','name','md.solidearth.settings.degacc','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','timeacc','name','md.solidearth.settings.timeacc','format','Double','scale',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','viscoussampling','name','md.solidearth.settings.viscoussampling','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','horiz','name','md.solidearth.settings.horiz','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','sealevelloading','name','md.solidearth.settings.sealevelloading','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','isgrd','name','md.solidearth.settings.isgrd','format','Integer');
@@ -201,6 +206,7 @@ classdef solidearthsettings
 			writejsdouble(fid,[modelname '.solidearth.settings.compute_bp_grd'],self.compute_bp_grd);
 			writejsdouble(fid,[modelname '.solidearth.settings.degacc'],self.degacc);
 			writejsdouble(fid,[modelname '.solidearth.settings.timeacc'],self.timeacc);
+			writejsdouble(fid,[modelname '.solidearth.settings.viscoussampling'],self.viscoussampling);
 			writejsdouble(fid,[modelname '.solidearth.settings.horiz'],self.horiz);
 			writejsdouble(fid,[modelname '.solidearth.settings.grdmodel'],self.grdmodel);
 			writejsdouble(fid,[modelname '.solidearth.settings.cross_section_shape'],self.cross_section_shape);

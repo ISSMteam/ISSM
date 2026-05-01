@@ -489,6 +489,9 @@ syn keyword cConstant SealevelchangeGeometryDoneEnum
 syn keyword cConstant SealevelchangeViscousNumStepsEnum
 syn keyword cConstant SealevelchangeViscousTimesEnum
 syn keyword cConstant SealevelchangeViscousIndexEnum
+syn keyword cConstant SealevelchangeViscousSamplingEnum
+syn keyword cConstant SealevelchangeViscousSamplingLengthEnum
+syn keyword cConstant SealevelchangeViscousSamplingIndexEnum
 syn keyword cConstant SealevelchangeViscousPolarMotionEnum
 syn keyword cConstant SealevelchangeRunCountEnum
 syn keyword cConstant SealevelchangeTransitionsEnum
