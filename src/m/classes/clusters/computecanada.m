@@ -70,17 +70,24 @@ classdef computecanada
 			 if ~(cluster.memory > 0), md = checkmessage(md,'memory must be > 0'); end
 		 end
 		 %}}}
-		 function BuildKrigingQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
-			 error('not implemented yet');
-		 end
-		 %}}}
-		 function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		 function BuildQueueScript(cluster, md, filename) % {{{
 
-			 if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			 if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			 if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			 if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			 %write queuing script 
-			 fid=fopen([modelname '.queue'],'w');
+			 fid=fopen(filename, 'w');
 			 fprintf(fid,'#!/bin/bash\n');
 			 fprintf(fid,'#SBATCH --job-name=%s\n',modelname);
 			 fprintf(fid,'#SBATCH --account=%s \n',cluster.projectaccount);
@@ -97,7 +104,6 @@ classdef computecanada
 			 fprintf(fid,'srun -n %i %s/issm.exe %s %s %s\n',cluster.np(),cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname); 
 			 if ~io_gather, %concatenate the output files:
 				 fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-			 end
 			 fclose(fid);
 		 end %}}}
 		 function UploadQueueJob(cluster,modelname,dirname,filelist)% {{{
@@ -110,7 +116,7 @@ classdef computecanada
 			 system(compressstring);
 
 			 %upload input files
-			 issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']}, 0, 2);
+			 issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']}, 2);
 
 		 end %}}}
 		 function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{

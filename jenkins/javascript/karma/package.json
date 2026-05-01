@@ -9,7 +9,7 @@
     "karma-junit-reporter": "^1.0.0",
     "karma-phantomjs-launcher": "^1.0.1",
     "karma-requirejs": "^1.0.0",
-    "mathjs": "^13.0.0",
+    "mathjs": "^15.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "requirejs": "^2.2.0"
   }

@@ -211,7 +211,7 @@ bool TransientFileInput::IsFileInputUpdate(IssmDouble time){/*{{{*/
 	/*Check if we are less than */
 	_assert_(this->timesteps);
 	_assert_(this->loading_period>0.);
-	if(time - this->timesteps[this->numtimesteps-1] < this->loading_period){
+	if(this->timesteps[this->numtimesteps-1] - time< this->loading_period){
 		return true;
 	}
 

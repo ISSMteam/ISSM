@@ -16,6 +16,7 @@
 
 /*StringParam constructors and destructor*/
 StringParam::StringParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/

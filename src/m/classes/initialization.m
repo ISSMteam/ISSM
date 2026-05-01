@@ -212,8 +212,8 @@ classdef initialization
 			self.bottompressure=project3d(md,'vector',self.bottompressure,'type','node','layer',1);
 			self.dsl=project3d(md,'vector',self.dsl,'type','node','layer',1);
 			self.str=project3d(md,'vector',self.str,'type','node','layer',1);
-			self.str=project3d(md,'vector',self.debris,'type','node','layer',1);
-			self.str=project3d(md,'vector',self.age,'type','node','layer',1);
+			self.debris=project3d(md,'vector',self.debris,'type','node','layer',1);
+			self.age=project3d(md,'vector',self.age,'type','node','layer',1);
 
 			%Lithostatic pressure by default
 			self.pressure=md.constants.g*md.materials.rho_ice*(md.geometry.surface-md.mesh.z);

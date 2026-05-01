@@ -85,6 +85,10 @@ syn keyword cConstant BasalforcingsIsmip6Gamma0Enum
 syn keyword cConstant BasalforcingsIsmip6IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip6NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip6TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7DeltaTEnum
+syn keyword cConstant BasalforcingsIsmip7TfDepthsEnum
+syn keyword cConstant BasalforcingsIsmip7NumBasinsEnum
+syn keyword cConstant BasalforcingsIsmip7GammaEnum
 syn keyword cConstant BasalforcingsLinearNumBasinsEnum
 syn keyword cConstant BasalforcingsLinearNumBreaksEnum
 syn keyword cConstant BasalforcingsLinearNumParamsEnum
@@ -221,6 +225,7 @@ syn keyword cConstant FrictionFEnum
 syn keyword cConstant FrictionGammaEnum
 syn keyword cConstant FrictionLawEnum
 syn keyword cConstant FrictionLinearizeEnum
+syn keyword cConstant FrictionMaxCoefficientEnum
 syn keyword cConstant FrictionPseudoplasticityExponentEnum
 syn keyword cConstant FrictionU0Enum
 syn keyword cConstant FrictionThresholdSpeedEnum
@@ -433,6 +438,8 @@ syn keyword cConstant OutputBufferSizePointerEnum
 syn keyword cConstant OutputFileNameEnum
 syn keyword cConstant OutputFilePointerEnum
 syn keyword cConstant OutputdefinitionEnum
+syn keyword cConstant PddfacIceEnum
+syn keyword cConstant PddfacSnowEnum
 syn keyword cConstant QmuErrNameEnum
 syn keyword cConstant QmuInNameEnum
 syn keyword cConstant QmuIsdakotaEnum
@@ -463,6 +470,7 @@ syn keyword cConstant SamplingRequestedOutputsEnum
 syn keyword cConstant SamplingRobinEnum
 syn keyword cConstant SamplingSeedEnum
 syn keyword cConstant SaveResultsEnum
+syn keyword cConstant SaveFinalResultsEnum
 syn keyword cConstant SolidearthPartitionIceEnum
 syn keyword cConstant SolidearthPartitionHydroEnum
 syn keyword cConstant SolidearthPartitionOceanEnum
@@ -748,6 +756,8 @@ syn keyword cConstant YyeEnum
 syn keyword cConstant ZzeEnum
 syn keyword cConstant AreaeEnum
 syn keyword cConstant WorldCommEnum
+syn keyword cConstant FrictionEmulatorEnum
+syn keyword cConstant SmbEmulatorEnum
 syn keyword cConstant ParametersENDEnum
 syn keyword cConstant InputsSTARTEnum
 syn keyword cConstant AccumulatedDeltaBottomPressureEnum
@@ -771,6 +781,7 @@ syn keyword cConstant BalancethicknessOmegaEnum
 syn keyword cConstant BalancethicknessSpcthicknessEnum
 syn keyword cConstant BalancethicknessThickeningRateEnum
 syn keyword cConstant BasalCrevasseEnum
+syn keyword cConstant BasalforcingsCoriolisFEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRatearmaEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateNoiseEnum
 syn keyword cConstant BasalforcingsDeepwaterMeltingRateValuesAutoregressionEnum
@@ -790,6 +801,11 @@ syn keyword cConstant BasalforcingsIsmip6BasinIdEnum
 syn keyword cConstant BasalforcingsIsmip6TfEnum
 syn keyword cConstant BasalforcingsIsmip6TfShelfEnum
 syn keyword cConstant BasalforcingsIsmip6MeltAnomalyEnum
+syn keyword cConstant BasalforcingsIsmip7BasinIdEnum
+syn keyword cConstant BasalforcingsIsmip7TfEnum
+syn keyword cConstant BasalforcingsIsmip7TfShelfEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityEnum
+syn keyword cConstant BasalforcingsIsmip7SalinityShelfEnum
 syn keyword cConstant BasalforcingsMeltrateFactorEnum
 syn keyword cConstant BasalforcingsOceanSalinityEnum
 syn keyword cConstant BasalforcingsOceanTempEnum
@@ -1185,6 +1201,7 @@ syn keyword cConstant SmbHrefEnum
 syn keyword cConstant SmbIsInitializedEnum
 syn keyword cConstant SmbMAddEnum
 syn keyword cConstant SmbMappedforcingpointEnum
+syn keyword cConstant SmbMappedforcingprecipscalingEnum
 syn keyword cConstant SmbMassBalanceEnum
 syn keyword cConstant SmbMassBalanceSnowEnum
 syn keyword cConstant SmbMassBalanceIceEnum
@@ -1269,6 +1286,16 @@ syn keyword cConstant SmbZMaxEnum
 syn keyword cConstant SmbZMinEnum
 syn keyword cConstant SmbZTopEnum
 syn keyword cConstant SmbZYEnum
+syn keyword cConstant SmbElevEnum
+syn keyword cConstant SmbAlEnum
+syn keyword cConstant SmbStEnum
+syn keyword cConstant SmbTtEnum
+syn keyword cConstant SmbSwdEnum
+syn keyword cConstant SmbLwdEnum
+syn keyword cConstant SmbSwuEnum
+syn keyword cConstant SmbLwuEnum
+syn keyword cConstant SmbShfEnum
+syn keyword cConstant SmbLhfEnum
 syn keyword cConstant SolidearthExternalDisplacementEastRateEnum
 syn keyword cConstant SolidearthExternalDisplacementNorthRateEnum
 syn keyword cConstant SolidearthExternalDisplacementUpRateEnum
@@ -3389,6 +3416,7 @@ syn keyword cConstant BalancethicknessSolutionEnum
 syn keyword cConstant BalancevelocityAnalysisEnum
 syn keyword cConstant BalancevelocitySolutionEnum
 syn keyword cConstant BasalforcingsIsmip6Enum
+syn keyword cConstant BasalforcingsIsmip7Enum
 syn keyword cConstant BasalforcingsPicoEnum
 syn keyword cConstant BeckmannGoosseFloatingMeltRateEnum
 syn keyword cConstant BedSlopeSolutionEnum
@@ -3462,6 +3490,7 @@ syn keyword cConstant DoubleVecParamEnum
 syn keyword cConstant ElementEnum
 syn keyword cConstant ElementHookEnum
 syn keyword cConstant ElementSIdEnum
+syn keyword cConstant EmulatorParamEnum
 syn keyword cConstant EnthalpyAnalysisEnum
 syn keyword cConstant EsaAnalysisEnum
 syn keyword cConstant EsaSolutionEnum
@@ -3518,6 +3547,7 @@ syn keyword cConstant HydrologyGlaDSEnum
 syn keyword cConstant HydrologyPismAnalysisEnum
 syn keyword cConstant HydrologyShaktiAnalysisEnum
 syn keyword cConstant HydrologyShreveAnalysisEnum
+syn keyword cConstant HydrologyPrescribeAnalysisEnum
 syn keyword cConstant HydrologySolutionEnum
 syn keyword cConstant HydrologySubstepsEnum
 syn keyword cConstant HydrologySubTimeEnum
@@ -3525,6 +3555,7 @@ syn keyword cConstant HydrologydcEnum
 syn keyword cConstant HydrologypismEnum
 syn keyword cConstant HydrologyshaktiEnum
 syn keyword cConstant HydrologyshreveEnum
+syn keyword cConstant HydrologyprescribeEnum
 syn keyword cConstant IceMassEnum
 syn keyword cConstant IceMassScaledEnum
 syn keyword cConstant IceVolumeAboveFloatationEnum
@@ -3686,7 +3717,9 @@ syn keyword cConstant SMBmeltcomponentsEnum
 syn keyword cConstant SMBpddEnum
 syn keyword cConstant SMBpddSicopolisEnum
 syn keyword cConstant SMBpddGCMEnum
+syn keyword cConstant SMBpddFastEnum
 syn keyword cConstant SMBsemicEnum
+syn keyword cConstant SMBmariaEnum
 syn keyword cConstant SSAApproximationEnum
 syn keyword cConstant SSAFSApproximationEnum
 syn keyword cConstant SSAHOApproximationEnum
@@ -3745,6 +3778,7 @@ syn keyword cConstant TotalFloatingBmbEnum
 syn keyword cConstant TotalFloatingBmbScaledEnum
 syn keyword cConstant TotalGroundedBmbEnum
 syn keyword cConstant TotalGroundedBmbScaledEnum
+syn keyword cConstant TotalHydrologyBasalFluxEnum
 syn keyword cConstant TotalSmbEnum
 syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum
@@ -3805,6 +3839,7 @@ syn keyword cType Cfsurfacelogvel
 syn keyword cType Cfsurfacesquare
 syn keyword cType Cfsurfacesquaretransient
 syn keyword cType Channel
+syn keyword cType classes
 syn keyword cType Constraint
 syn keyword cType Constraints
 syn keyword cType Contour
@@ -3812,8 +3847,8 @@ syn keyword cType Contours
 syn keyword cType ControlInput
 syn keyword cType ControlParam
 syn keyword cType Covertree
-syn keyword cType DataSetParam
 syn keyword cType DatasetInput
+syn keyword cType DataSetParam
 syn keyword cType Definition
 syn keyword cType DependentObject
 syn keyword cType DoubleInput
@@ -3826,19 +3861,21 @@ syn keyword cType Element
 syn keyword cType ElementHook
 syn keyword cType ElementInput
 syn keyword cType ElementMatrix
-syn keyword cType ElementVector
 syn keyword cType Elements
+syn keyword cType ElementVector
+syn keyword cType EmulatorParam
 syn keyword cType ExponentialVariogram
 syn keyword cType ExternalResult
 syn keyword cType FemModel
 syn keyword cType FileParam
 syn keyword cType Friction
 syn keyword cType Gauss
+syn keyword cType GaussianVariogram
+syn keyword cType gaussobjects
 syn keyword cType GaussPenta
 syn keyword cType GaussSeg
 syn keyword cType GaussTetra
 syn keyword cType GaussTria
-syn keyword cType GaussianVariogram
 syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
@@ -3855,6 +3892,7 @@ syn keyword cType IntVecParam
 syn keyword cType IoModel
 syn keyword cType IssmDirectApplicInterface
 syn keyword cType IssmParallelDirectApplicInterface
+syn keyword cType krigingobjects
 syn keyword cType Load
 syn keyword cType Loads
 syn keyword cType Masscon
@@ -3865,6 +3903,7 @@ syn keyword cType Materials
 syn keyword cType Matestar
 syn keyword cType Matice
 syn keyword cType Matlitho
+syn keyword cType matrixobjects
 syn keyword cType MatrixParam
 syn keyword cType Misfit
 syn keyword cType Moulin
@@ -3891,13 +3930,13 @@ syn keyword cType Quadtree
 syn keyword cType Radar
 syn keyword cType Regionaloutput
 syn keyword cType Results
-syn keyword cType RiftStruct
 syn keyword cType Riftfront
+syn keyword cType RiftStruct
 syn keyword cType SealevelGeometry
 syn keyword cType Seg
 syn keyword cType SegInput
-syn keyword cType SegRef
 syn keyword cType Segment
+syn keyword cType SegRef
 syn keyword cType SpcDynamic
 syn keyword cType SpcStatic
 syn keyword cType SpcTransient
@@ -3918,10 +3957,6 @@ syn keyword cType Variogram
 syn keyword cType VectorParam
 syn keyword cType Vertex
 syn keyword cType Vertices
-syn keyword cType classes
-syn keyword cType gaussobjects
-syn keyword cType krigingobjects
-syn keyword cType matrixobjects
 syn keyword cType AdjointBalancethickness2Analysis
 syn keyword cType AdjointBalancethicknessAnalysis
 syn keyword cType AdjointHorizAnalysis
@@ -3948,6 +3983,7 @@ syn keyword cType HydrologyDCEfficientAnalysis
 syn keyword cType HydrologyDCInefficientAnalysis
 syn keyword cType HydrologyGlaDSAnalysis
 syn keyword cType HydrologyPismAnalysis
+syn keyword cType HydrologyPrescribeAnalysis
 syn keyword cType HydrologyShaktiAnalysis
 syn keyword cType HydrologyShreveAnalysis
 syn keyword cType HydrologyTwsAnalysis

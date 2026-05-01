@@ -1,84 +1,65 @@
 function [bx by b]=basalstress(md)
-%BASALSTRESS - compute basal stress from basal drag and geometric information. 
-%
-%      Computes basal stress from geometric information and ice velocity in md.initialization. Follows the basal stress definition in "src/c/classes/Loads/Friction.cpp", lines 1102-1136.
-%
-%   Usage:
-%      [bx by b]=basalstress(md);
-%
-%   See also: plot_basaldrag
+	% BASALSTRESS - compute basal stress from friction law and geometric information. 
+	% Computes basal stress from basal sliding parametrization in md.friction and geometry and ice velocity in md.initialization. Follows the basal stress definition in "src/c/classes/Loads/Friction.cpp", lines 1102-1136. 
+	%
+	% USEAGE:
+	%      b         = basalstress(md); % one argout returns the scalar magnitude				
+	%      [bx by b] = basalstress(md); % multiple argout returns the horizontal vector components
+	% INPUT:
+	%   md		ISSM model from which to take md.friction and md.initialization.
+	% OUTPUT:
+	%   bx		x component of basal stress
+	%   by		y component of basal stress
+	%   b			scalar magnitude of basal stress
+	%
+	%   See also: EFFECTIVEPRESSURE, PLOT_BASALDRAG
 
-%Compute effective pressure
-g         = md.constants.g;
-rho_ice   = md.materials.rho_ice;
-rho_water = md.materials.rho_water;
+	% compute sliding velocity
+	ub  = sqrt(md.initialization.vx.^2+md.initialization.vy.^2)/md.constants.yts; % horizontal vel (m/s)
+	ubx = md.initialization.vx/md.constants.yts; % vx (m/s)
+	uby = md.initialization.vy/md.constants.yts; % vy (m/s)
 
-sealevel = 0;
-p_ice = g*rho_ice*md.geometry.thickness;
+	%compute basal drag (S.I.)
+	switch(class(md.friction))
+		case 'friction'
+			% calculate effective pressure using coupling definition in md.friction
+			N = effectivepressure(md); % effective pressure (Pa)
 
-if isfield(md.friction, 'coupling')
-	coupling = md.friction.coupling;
-else
-	coupling = 0;
-end
+			% compute exponents
+			s=averaging(md,1./md.friction.p,0);
+			r=averaging(md,md.friction.q./md.friction.p,0);
 
-switch(coupling)
-   case 0
-		p_water=g*rho_water*(sealevel-md.geometry.base);
-      N = p_ice-p_water;
-   case 1
-      N = p_ice;
-   case 2
-		p_water=g*rho_water*(sealevel-md.geometry.base);
-		p_water=max(p_water,0.0);
-		N = p_ice-p_water;
-   case 3
-      N = max(md.friction.effective_pressure, 0);
-   case 4
-      error('md.friction.coupling=4 is not supported yet.');
-   otherwise
-      error('not supported yet');
-end
+			alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
 
-%compute sliding velocity
-ub=sqrt(md.initialization.vx.^2+md.initialization.vy.^2)/md.constants.yts;
-ubx=md.initialization.vx/md.constants.yts;
-uby=md.initialization.vy/md.constants.yts;
+		case 'frictionschoof'
+			% calculate effective pressure using coupling definition in md.friction
+			N = effectivepressure(md); % effective pressure (Pa)
+			if any(N < 0)
+				%NOTE: Negative values of effective pressure N return a complex number in alpha2. Treated here with minimum threshold.
+				warning('Find effective pressure value N < 0. Enforcing minimum effective pressure of N_min = 0.1');
+				N = max(N, 0.1);
+			end
 
-%compute basal drag (S.I.)
-switch(class(md.friction))
-	case 'friction'
-		%compute exponents
-		s=averaging(md,1./md.friction.p,0);
-		r=averaging(md,md.friction.q./md.friction.p,0);
+			% compute parameters
+			m=averaging(md,md.friction.m,0);
+			C=averaging(md,md.friction.C,0);
+			Cmax=averaging(md,md.friction.Cmax,0);
 
-		alpha2 = (N.^r).*(md.friction.coefficient.^2).*(ub.^(s-1));
+			alpha2 = (C.^2 .* ub.^(m-1))./(1 + (C.^2./(Cmax.*N)).^(1./m).*ub).^(m);
 
-	case 'frictionschoof'
-		if any(N < 0)
-			%NOTE: Sometimes, negative value of effective pressure N gives image number in alpha2. To prevent the image value in alpha2, we use small values.
-			warning('Find effective pressure value < 0. Treating minimum effective value with 0.1');
-			N = max(N, 0.1);
-		end
-		m=averaging(md,md.friction.m,0);
-		C=averaging(md,md.friction.C,0);
-		Cmax=averaging(md,md.friction.Cmax,0);
-		
-		alpha2 = (C.^2 .* ub.^(m-1))./(1 + (C.^2./(Cmax.*N)).^(1./m).*ub).^(m);
+		case 'frictionweertman'
+			m = averaging(md,md.friction.m,0);
+			C = md.friction.C;
+			alpha2 = C.^2 .* ub.^(1./m-1);
 
-	case 'frictionweertman'
-		m = averaging(md,md.friction.m,0);
-		C = md.friction.C;
-		alpha2 = C.^2 .* ub.^(1./m-1);
+		otherwise
+			error('friction class not supported yet');
+	end
+	b  =  alpha2.*ub;
+	bx = -alpha2.*ubx;
+	by = -alpha2.*uby;
 
-	otherwise
-		error('friction class not supported yet');
-end
-b  =  alpha2.*ub;
-bx = -alpha2.*ubx;
-by = -alpha2.*uby;
-
-%return magnitude of only one output is requested
-if nargout==1
-	bx = b;
-end
+	%return magnitude of only one output is requested
+	if nargout==1
+		bx = b;
+	end

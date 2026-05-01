@@ -84,7 +84,7 @@ classdef mask
 
 			if isa(self.ocean_levelset,'cell'),
 				for i=1:length(self.ocean_levelset),
-					md = checkfield(md,'field',self.ocean_levelset{i},'NaN',0,'Inf',1,'timeserieslength',1,'Inf',1);
+					md = checkfield(md,'field',self.ocean_levelset{i},'NaN',0,'Inf',1,'timeserieslength',1);
 				end
 			else
 				md = checkfield(md,'fieldname','mask.ocean_levelset','timeseries',1,'NaN',1);
@@ -92,7 +92,7 @@ classdef mask
 			
 			if isa(self.ice_levelset,'cell'),
 				for i=1:length(self.ice_levelset),
-					md = checkfield(md,'field',self.ice_levelset{i},'NaN',0,'Inf',1,'timeserieslength',1,'Inf',1);
+					md = checkfield(md,'field',self.ice_levelset{i},'NaN',0,'Inf',1,'timeserieslength',1);
 				end
 			else
 				md = checkfield(md,'fieldname','mask.ice_levelset','timeseries',1,'NaN',1);

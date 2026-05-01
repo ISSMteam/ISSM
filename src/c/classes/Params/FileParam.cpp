@@ -16,6 +16,7 @@
 
 /*FileParam constructors and destructor*/
 FileParam::FileParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/

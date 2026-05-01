@@ -179,7 +179,6 @@ classdef matice
 			writejsdouble(fid,[modelname '.materials.beta'],self.beta);
 			writejsdouble(fid,[modelname '.materials.mixed_layer_capacity'],self.mixed_layer_capacity);
 			writejsdouble(fid,[modelname '.materials.thermal_exchange_velocity'],self.thermal_exchange_velocity);
-			writejsdouble(fid,[modelname '.materials.mixed_layer_capacity'],self.mixed_layer_capacity);
 			writejs1Darray(fid,[modelname '.materials.rheology_B'],self.rheology_B);
 			writejs1Darray(fid,[modelname '.materials.rheology_n'],self.rheology_n);
 			writejsstring(fid,[modelname '.materials.rheology_law'],self.rheology_law);

@@ -158,6 +158,7 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		IssmDouble  TotalCalvingMeltingFluxLevelset(bool scaled);
 		IssmDouble  TotalFloatingBmb(bool scaled);
 		IssmDouble  TotalGroundedBmb(bool scaled);
+		IssmDouble  TotalHydrologyBasalFlux(bool scaled);
 		IssmDouble  TotalSmb(bool scaled);
 		IssmDouble  TotalSmbMelt(bool scaled);
 		IssmDouble  TotalSmbRefreeze(bool scaled);

@@ -14,7 +14,7 @@
 void ApiPrintf(const char* string){
 
 	/*use mexPrintf in matlab: */
-	mexPrintf(string); /*Messes up percentages (like "interpolation progress: 100.00%")*/
+	mexPrintf("%s", string); /*WARNING: MATLAB's MEX API is not thread-safe, do not use with pthread*/
 	//printf("%s",string);
 	return;
 }

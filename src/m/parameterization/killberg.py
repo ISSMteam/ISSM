@@ -24,6 +24,12 @@ def killberg_fast(md):
 
     ice_ls   = md.mask.ice_levelset
     ocean_ls = md.mask.ocean_levelset
+    if np.ndim(ice_ls) == 2: # Maybe levelset dimension with (nV, 1)
+        ice_ls = np.ravel(ice_ls)
+    if np.ndim(ocean_ls) == 2:
+        ocean_ls = np.ravel(ocean_ls)
+    assert np.shape(ice_ls) == (nV,)
+    assert np.shape(ocean_ls) == (nV,)
 
     print("Looking for isolated patches of floating ice (icebergs) [fast]")
 

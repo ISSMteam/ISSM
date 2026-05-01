@@ -150,7 +150,7 @@ classdef mesh2d
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','vertexonboundary','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','segments','format','DoubleMat','mattype',3);
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','scale_factor','format','DoubleMat','mattype',1);
-			if md.transient.isoceancoupling, %Need to add lat/long coordinates to couple with ocean as they rely on lat/long coordinate system
+			if md.transient.isoceancoupling | isa(md.smb,'SMBemulator'), %Need to add lat/long coordinates to couple with ocean as they rely on lat/long coordinate system
 				WriteData(fid,prefix,'object',self,'class','mesh','fieldname','lat','format','DoubleMat','mattype',1);
 				WriteData(fid,prefix,'object',self,'class','mesh','fieldname','long','format','DoubleMat','mattype',1);
 			end

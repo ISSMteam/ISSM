@@ -32,7 +32,7 @@ ArrayInput::ArrayInput(int nbe_in){/*{{{*/
 ArrayInput::~ArrayInput(){/*{{{*/
 	if(this->values){
 		for(int i=0;i<this->numberofelements_local;i++) if(this->values[i]) xDelete<IssmDouble>(this->values[i]);
-		xDelete<IssmDouble>(this->values);
+		xDelete<IssmDouble*>(this->values);
 	}
 	if(this->N) xDelete<int>(this->N);
 }

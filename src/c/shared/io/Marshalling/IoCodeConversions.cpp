@@ -268,6 +268,8 @@ int IoCodeToEnumSMB(int enum_in){/*{{{*/
 		case 13: return SMBarmaEnum;
 		case 14: return SMBdebrisEvattEnum;
 		case 15: return SMBpddGCMEnum;
+		case 16: return SMBpddFastEnum;
+      case 20: return SMBmariaEnum;
 		default: _error_("Marshalled SMB code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/
@@ -282,6 +284,7 @@ int IoCodeToEnumBasal(int enum_in){/*{{{*/
 		case 7: return BasalforcingsIsmip6Enum;
 		case 8: return BeckmannGoosseFloatingMeltRateEnum;
 		case 9: return LinearFloatingMeltRatearmaEnum;
+        case 10: return BasalforcingsIsmip7Enum;
 		default: _error_("Marshalled Basal Forcings code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/
@@ -319,6 +322,7 @@ int IoCodeToEnumHydrology(int enum_in){/*{{{*/
 		case 5: return HydrologyGlaDSEnum;
 		case 6: return HydrologyTwsEnum;
 		case 7: return HydrologyarmapwEnum;
+		case 10: return HydrologyprescribeEnum;
 		default: _error_("Marshalled hydrology code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/

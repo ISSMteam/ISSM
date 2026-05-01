@@ -46,13 +46,14 @@ else
 		[status]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
 		if status ~= 0
 			%List expansion is a bashism. Try again with '-OT'.
+			disp('issmscp info: standard scp command did not work, trying again with -OT flag');
 			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
 		end
 	end
 
 	%check scp worked
 	if status ~= 0
-		error(['issmscpin error message: ' cmdout])
+		error(['scp error message: ' cmdout])
 	end
 	for i=1:numel(packages),
 		if ~exist(['./' packages{i}]),

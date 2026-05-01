@@ -50,7 +50,9 @@ Vertex::Vertex(int vertex_id, int vertex_sid,bool vertex_clone, IoModel* iomodel
 		switch(iomodel->domaintype){
 			case Domain3DEnum:
 				_assert_(iomodel->Data("md.geometry.base") && iomodel->Data("md.geometry.thickness"));
+				_assert_(iomodel->Data("md.geometry.thickness")[vertex_sid]>0.);
 				this->sigma = (iomodel->Data("md.mesh.z")[vertex_sid]-iomodel->Data("md.geometry.base")[vertex_sid])/(iomodel->Data("md.geometry.thickness")[vertex_sid]);
+				_assert_(!xIsNan(this->sigma));
 				break;
 			case Domain3DsurfaceEnum:
 				_assert_(iomodel->Data("md.mesh.lat") && iomodel->Data("md.mesh.long") && iomodel->Data("md.mesh.r"));
@@ -186,7 +188,7 @@ void       Vertex::UpdatePosition(Vector<IssmDouble>* vx,Vector<IssmDouble>* vy,
 			return;
 		case Domain2DverticalEnum:
 			oldy = this->y;
-			newy = bed[this->pid]+sigma*(surface[this->pid] - bed[this->pid]);
+			newy = bed[this->pid]+this->sigma*(surface[this->pid] - bed[this->pid]);
 			vely = (newy-oldy)/dt;
 			this->y = newy;
 			vy->SetValue(this->pid,vely,INS_VAL);
@@ -194,7 +196,7 @@ void       Vertex::UpdatePosition(Vector<IssmDouble>* vx,Vector<IssmDouble>* vy,
 			return;
 		case Domain3DEnum:
 			oldz = this->z;
-			newz = bed[this->pid]+sigma*(surface[this->pid] - bed[this->pid]);
+			newz = bed[this->pid]+this->sigma*(surface[this->pid] - bed[this->pid]);
 			velz = (newz-oldz)/dt;
 			this->z = newz;
 			vz->SetValue(this->pid,velz,INS_VAL);

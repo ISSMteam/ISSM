@@ -101,7 +101,7 @@ class solidearth(object):
     # }}}
 
     def defaultoutputs(self, md):  # {{{
-        return ['Sealevel']
+        return ['Sealevel', 'Bed']
     # }}}
 
     def marshall(self, prefix, md, fid):  # {{{

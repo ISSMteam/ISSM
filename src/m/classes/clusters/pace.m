@@ -51,15 +51,26 @@ classdef pace
 		
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			executable = 'issm.exe';
 
-			if(isvalgrind), disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
-
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/sh\n');
 
 			fprintf(fid,'#SBATCH -t%i\n',cluster.time);
@@ -77,9 +88,7 @@ classdef pace
          fprintf(fid,'cd $SLURM_SUBMIT_DIR\n');
          fprintf(fid,'export LD_LIBRARY_PATH=/opt/slurm/current/lib:/opt/pmix/current/lib:$LD_LIBRARY_PATH \n');
          fprintf(fid,'srun --mpi=pmi2 -n %i %s/%s %s %s %s \n',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
-
 			fclose(fid);
-
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{

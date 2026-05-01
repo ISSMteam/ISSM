@@ -103,7 +103,8 @@ void TriaInput::Echo(void){/*{{{*/
 	if(isserved){
 		_printf_("   current values:      ");
 		_printf_("[ ");
-		for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) _printf_(" "<<this->element_values[i]);
+		int numnodes = TriaRef::NumberofNodes(this->interpolation);
+		for(int i=0;i<numnodes;i++) _printf_(" "<<this->element_values[i]);
 		_printf_("] ("<<EnumToStringx(this->interpolation)<<")\n");
 	}
 }
@@ -361,14 +362,17 @@ int  TriaInput::GetResultNumberOfNodes(void){/*{{{*/
 /*}}}*/
 void TriaInput::Scale(IssmDouble alpha){/*{{{*/
 
+	int numnodes = TriaRef::NumberofNodes(this->interpolation);
+
 	for(int i=0;i<this->M*this->N;i++) this->values[i] = alpha*this->values[i];
-	for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) this->element_values[i] = alpha*this->element_values[i];
+	for(int i=0;i<numnodes;i++) this->element_values[i] = alpha*this->element_values[i];
 }
 /*}}}*/
 void TriaInput::Pow(IssmDouble alpha){/*{{{*/
 
+	int numnodes = TriaRef::NumberofNodes(this->interpolation);
 	for(int i=0;i<this->M*this->N;i++) this->values[i] = pow(this->values[i],alpha);
-	for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) this->element_values[i] = pow(this->element_values[i],alpha);
+	for(int i=0;i<numnodes;i++) this->element_values[i] = pow(this->element_values[i],alpha);
 }
 /*}}}*/
 void TriaInput::AXPY(Input* xinput,IssmDouble alpha){/*{{{*/
@@ -379,15 +383,17 @@ void TriaInput::AXPY(Input* xinput,IssmDouble alpha){/*{{{*/
 	if(xtriainput->GetInterpolation()!=this->interpolation) _error_("Operation not permitted because xinput is of type " << EnumToStringx(xinput->ObjectEnum()));
 
 	/*Carry out the AXPY operation depending on type:*/
+	int numnodes = TriaRef::NumberofNodes(this->interpolation);
 	for(int i=0;i<this->M*this->N;i++) this->values[i] = alpha*xtriainput->values[i] + this->values[i];
-	for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) this->element_values[i] = alpha*xtriainput->element_values[i] + this->element_values[i];
+	for(int i=0;i<numnodes;i++) this->element_values[i] = alpha*xtriainput->element_values[i] + this->element_values[i];
 }
 /*}}}*/
 void TriaInput::Shift(IssmDouble alpha){/*{{{*/
 
 	/*Carry out the shift operation:*/
+	int numnodes = TriaRef::NumberofNodes(this->interpolation);
 	for(int i=0;i<this->M*this->N;i++) this->values[i] +=alpha;
-	for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) this->element_values[i] += alpha;
+	for(int i=0;i<numnodes;i++) this->element_values[i] += alpha;
 }
 /*}}}*/
 void TriaInput::PointWiseMult(Input* xinput){/*{{{*/
@@ -401,8 +407,9 @@ void TriaInput::PointWiseMult(Input* xinput){/*{{{*/
 	if(xtriainput->M!=this->M||xtriainput->N!=this->N) _error_("Operation not permitted because the inputs have different sizes");
 
 	/*Carry out the AXPY operation depending on type:*/
+	int numnodes = TriaRef::NumberofNodes(this->interpolation);
 	for(int i=0;i<this->M*this->N;i++) this->values[i] = xtriainput->values[i] * this->values[i];
-	for(int i=0;i<TriaRef::NumberofNodes(this->interpolation);i++) this->element_values[i] = xtriainput->element_values[i] * this->element_values[i];
+	for(int i=0;i<numnodes;i++) this->element_values[i] = xtriainput->element_values[i] * this->element_values[i];
 }
 /*}}}*/
 void TriaInput::AverageAndReplace(void){/*{{{*/

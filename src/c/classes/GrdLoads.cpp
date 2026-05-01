@@ -158,7 +158,7 @@ void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, 
 }; /*}}}*/ 
 void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 
-	int e,l, nbar, ae;
+	int e, l, nbar, ae;
 	//Determine loads /*{{{*/
 	nactiveloads=0;
 
@@ -225,7 +225,7 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 		ae=0;
 		if(subsealevelloads && l==SLGEOM_OCEAN){
 			for (e=0;e<nbar;e++){
-				if (subloads[l][e]+sealevelloads[e]!=0){
+				if(subloads[l][e]+subsealevelloads[e]!=0){
 					combined_subloads[l][ae]=subloads[l][e]+subsealevelloads[e];
 					combined_subloads_index[l][ae]=e;
 					ae++;

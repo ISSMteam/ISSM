@@ -16,18 +16,18 @@
 
 /*DataSetParam constructors and destructor*/
 DataSetParam::DataSetParam(){/*{{{*/
-	value=NULL;
+	this->value = NULL;
 	return;
 }
 /*}}}*/
 DataSetParam::DataSetParam(int in_enum_type,DataSet* in_value){/*{{{*/
 
-	enum_type=in_enum_type;
-	value=in_value->Copy();
+	this->enum_type=in_enum_type;
+	this->value=in_value->Copy();
 }
 /*}}}*/
 DataSetParam::~DataSetParam(){/*{{{*/
-	delete value;
+	delete this->value;
 }
 /*}}}*/
 
@@ -75,6 +75,11 @@ void DataSetParam::GetParameterValue(DataSet** pdataset){/*{{{*/
 }
 /*}}}*/
 void DataSetParam::SetValue(DataSet* dataset){/*{{{*/
+
+	/*Delete existing dataset*/
+	delete this->value;
+
+	/*Replace by what's provided*/
 	this->value=dataset;
 }
 /*}}}*/

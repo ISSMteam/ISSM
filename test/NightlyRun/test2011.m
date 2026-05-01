@@ -80,6 +80,8 @@ md.solidearth.settings.sealevelloading=1;
 md.solidearth.settings.isgrd=1;
 md.solidearth.settings.ocean_area_scaling=0;
 md.solidearth.settings.grdmodel=1;
+md.solidearth.settings.maxiter=6;
+
 
 %Physics: 
 md.transient.issmb=0; 
@@ -95,6 +97,8 @@ md.solidearth.settings.selfattraction=1;
 md.solidearth.settings.elastic=1;
 md.solidearth.settings.rotation=0;
 md.solidearth.settings.viscous=0;
+
+md.verbose.convergence = 1;
 md=solve(md,'tr');
 
 %recover barystatic: 

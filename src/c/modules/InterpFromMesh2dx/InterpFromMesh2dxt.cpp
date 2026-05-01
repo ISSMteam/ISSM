@@ -20,7 +20,6 @@ void* InterpFromMesh2dxt(void* vpthread_handle){
 
 	/*recover parameters :*/
 	int     interpolation_type      = gate->interpolation_type;
-	bool    debug                   = gate->debug;
 	int     nels_data               = gate->nels_data;
 	int    *index_data              = gate->index_data;
 	double *x_data                  = gate->x_data;
@@ -43,10 +42,6 @@ void* InterpFromMesh2dxt(void* vpthread_handle){
 
 	/*Loop over the elements*/
 	for(i=i0;i<i1;i++){
-
-		/*display current iteration*/
-		if (debug && my_thread==0 && fmod((double)i,(double)100)==0)
-		 _printf_("\r      interpolation progress: "<<setw(6)<<setprecision(2)<<double(i-i0)/double(i1-i0)*100<<"%   ");
 
 		/*if there is no point inside the domain, go to next iteration*/
 		if ( (x_data[index_data[3*i+0]-1]<xmin) && (x_data[index_data[3*i+1]-1]<xmin) && (x_data[index_data[3*i+2]-1]<xmin)) continue;
@@ -97,7 +92,5 @@ void* InterpFromMesh2dxt(void* vpthread_handle){
 			}
 		}
 	}
-	if(debug && my_thread==0)
-	 _printf_("\r      interpolation progress: "<<fixed<<setw(6)<<setprecision(2)<<100.<<"%  \n");
 	return NULL;
 }

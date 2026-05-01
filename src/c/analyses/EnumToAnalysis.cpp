@@ -94,6 +94,9 @@ Analysis* EnumToAnalysis(int analysis_enum){
 		#ifdef _HAVE_HYDROLOGYSHREVE_
 		case HydrologyShreveAnalysisEnum : return new HydrologyShreveAnalysis();
 		#endif
+		#ifdef _HAVE_HYDROLOGYPRESCRIBE_
+		case HydrologyPrescribeAnalysisEnum: return new HydrologyPrescribeAnalysis();
+		#endif
 		#ifdef _HAVE_L2PROJECTIONBASE_
 		case L2ProjectionBaseAnalysisEnum : return new L2ProjectionBaseAnalysis();
 		#endif

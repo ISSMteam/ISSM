@@ -16,6 +16,10 @@
 
 /*TransientArrayParam constructors and destructor*/
 TransientArrayParam::TransientArrayParam(){/*{{{*/
+	this->M = 0;
+	this->N = 0;
+	this->values    = NULL;
+	this->timesteps = NULL;
 	return;
 }
 /*}}}*/
@@ -101,7 +105,7 @@ int  TransientArrayParam::ObjectEnum(void){/*{{{*/
 void  TransientArrayParam::GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time){/*{{{*/
 
 	IssmDouble output;
-	bool       found;
+	bool       found = false;
 	_assert_(row>=0 && row<this->M); 
 
 	if(this->cycle) _error_("not implemented yet");

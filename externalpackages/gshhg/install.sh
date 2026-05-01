@@ -4,7 +4,7 @@ set -eu
 
 ## Constants
 #
-VER="2.3.4"
+VER="2.3.7"
 
 PREFIX="${ISSM_DIR}/externalpackages/gshhg/install" # Set to location where external package should be installed
 
@@ -13,7 +13,7 @@ rm -rf ${PREFIX}
 mkdir -p ${PREFIX}
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://www.ngdc.noaa.gov/mgg/shorelines/data/gshhg/oldversions/version${VER}/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "http://www.soest.hawaii.edu/pwessel/gshhg/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gshhg-gmt-${VER}.tar.gz

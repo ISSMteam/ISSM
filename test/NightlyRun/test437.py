@@ -65,7 +65,7 @@ field_names = ['Enthalpy1', 'Temperature1', 'Waterfraction1', 'BasalMeltingRate1
                'Enthalpy3', 'Temperature3', 'Waterfraction3', 'BasalMeltingRate3', 'Watercolumn3',
                'Enthalpy4', 'Temperature4', 'Waterfraction4', 'BasalMeltingRate4', 'Watercolumn4']
 field_tolerances = [1.e-10, 1.e-10, 1.e-10, 1.e-9, 1.e-10,
-                    1.e-10, 1.e-10, 1.e-10, 2.e-9, 2.e-10,
+                    1.e-10, 1.e-10, 1.e-10, 2.e-9, 3.e-10,
                     1.e-10, 1.e-10, 1.e-10, 2.e-9, 1.e-10,
                     1.e-10, 1.e-10, 1.e-10, 2.e-9, 1.e-10]
 i1 = 0

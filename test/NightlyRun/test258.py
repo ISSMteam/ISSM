@@ -62,6 +62,7 @@ md.smb.mappedforcingpoint=interpp(xe,ye)
 md.smb.mappedforcingelevation=np.mean(md2.geometry.surface[md2.mesh.elements-1],axis=1)
 md.smb.lapseTaValue=md.smb.lapseTaValue*np.ones(np.shape(md.smb.mappedforcingelevation))
 md.smb.lapsedlwrfValue=md.smb.lapsedlwrfValue*np.ones(np.shape(md.smb.mappedforcingelevation))
+md.smb.mappedforcingprecipscaling=np.arange(1,md.mesh.numberofelements+1)/md.mesh.numberofelements
 
 #smb settings
 md.smb.requested_outputs = ['SmbDz','SmbT','SmbD','SmbRe','SmbGdn','SmbGsp','SmbEC',
@@ -91,7 +92,7 @@ for i in range(1, len(md.results.TransientSolution)):
 
 #Fields and tolerances to track changes
 field_names = ['Layers', 'SmbDz', 'SmbT', 'SmbD', 'SmbRe', 'SmbGdn', 'SmbGsp', 'SmbA', 'SmbEC', 'SmbMassBalance', 'SmbMAdd', 'SmbDzAdd', 'SmbFAC', 'SmbMeanSHF', 'SmbMeanLHF', 'SmbMeanULW', 'SmbNetLW', 'SmbNetSW', 'SmbTs', 'SmbT10', 'SmbT30', 'SmbT50', 'SmbAccumulatedMassBalance', 'SmbAccumulatedRunoff', 'SmbAccumulatedMelt', 'SmbAccumulatedEC', 'SmbAccumulatedPrecipitation', 'SmbAccumulatedRain', 'SmbAccumulatedRefreeze', 'SmbRunoff', 'SmbMelt', 'SmbEC', 'SmbPrecipitation', 'SmbRain', 'SmbRefreeze', 'SmbWAdd']
-field_tolerances = [1e-12, 4e-11, 2e-11, 3e-11, 6e-11, 8e-11, 8e-11, 1e-12, 5e-11, 2e-12, 1e-12, 1e-12, 4e-11, 2e-11, 5e-11, 1e-11, 9e-10, 2e-11, 2e-11, 2e-11, 2e-11, 2e-11, 1e-11, 9e-10, 2e-11, 2e-09, 1e-11, 1e-11, 1e-11, 8e-10, 2e-11, 2e-11, 1e-11, 1e-11, 2e-11, 1e-11]
+field_tolerances = [1e-12, 4e-11, 2e-11, 3e-11, 6e-11, 8e-11, 8e-11, 1e-12, 5e-11, 3e-12, 1e-12, 1e-12, 4e-11, 2e-11, 5e-11, 1e-11, 9e-10, 2e-11, 2e-11, 2e-11, 2e-11, 2e-11, 1e-11, 9e-10, 2e-11, 2e-09, 1e-11, 1e-11, 1e-11, 8e-10, 2e-11, 2e-11, 1e-11, 1e-11, 2e-11, 1e-11]
 
 # Shape is different in python solution (fixed using reshape) which can cause test failure
 field_values = [

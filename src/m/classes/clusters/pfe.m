@@ -153,23 +153,34 @@ classdef pfe
 
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isgprof) disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
 				if (version>=6),
 					executable='issm_dakota.exe';
 				end
 			end
-			if isoceancoupling,
+			if isoceancoupling
 				executable='issm_ocean.exe';
 			end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#PBS -S /bin/bash\n');
 %			fprintf(fid,'#PBS -N %s\n',modelname);
 			fprintf(fid,'#PBS -l select=%i:ncpus=%i:model=%s\n',cluster.numnodes,cluster.cpuspernode,cluster.processor);
@@ -190,53 +201,54 @@ classdef pfe
 			end
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
 			fprintf(fid,'cd %s/%s/\n\n',cluster.executionpath,dirname);
-			if ~isvalgrind,
+			if ~isvalgrind
 				%fprintf(fid,'/u/scicon/tools/bin/several_tries mpiexec -np %i mbind.x -cs -n%i %s/%s %s %s/%s %s\n',cluster.nprocs(),cluster.cpuspernode,cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname);
 				fprintf(fid,'mpiexec -np %i %s/%s %s %s/%s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname);
 			else
 				fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			end
-			if ~io_gather, %concatenate the output files:
+			if ~io_gather %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 			end
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
-				fid=fopen([modelname '.run'],'w');
+			if cluster.interactive
+				fid=fopen([filename '.run'],'w');
 				if cluster.interactive==10,
 						fprintf(fid,'module unload mpi-mvapich2/1.4.1/gcc\n');
 						fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[pwd() '/run'],modelname);
 				else
-					if ~isvalgrind,
+					if ~isvalgrind
 						fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/Interactive' num2str(cluster.interactive)],modelname);
 					else
 						fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/Interactive' num2str(cluster.interactive)],modelname);
 					end
 				end
-				if ~io_gather, %concatenate the output files:
+				if ~io_gather %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end %}}}
-		function BuildQueueScriptMultipleModels(cluster,dirname,modelname,solution,dirnames,modelnames,nps) % {{{
+		function BuildQueueScriptMultipleModels(cluster, slm, dirnames, modelnames, nps, filename) % {{{
+
+         %Get variables from slm
+         dirname         = slm.private.runtimename;
+         modelname       = slm.miscellaneous.name;
+         solution        = slm.private.solution;
 
 			%some checks: 
-			if isempty(modelname), error('BuildQueueScriptMultipleModels error message: need a non empty model name!');end
+			if isempty(modelname) error('BuildQueueScriptMultipleModels error message: need a non empty model name!');end
 
 			%what is the executable being called? 
 			executable='issm_slc.exe';
-
-			if ispc & ~ismingw, error('BuildQueueScriptMultipleModels not support yet on windows machines');end;
+			if ispc && ~ismingw, error('BuildQueueScriptMultipleModels not support yet on windows machines');end;
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
-
+			fid=fopen(filename,'w');
 			fprintf(fid,'#PBS -S /bin/bash\n');
 			fprintf(fid,'#PBS -N %s\n',modelname);
 			fprintf(fid,'#PBS -l select=%i:ncpus=%i:model=%s\n',cluster.numnodes,cluster.cpuspernode,cluster.processor);
@@ -278,8 +290,8 @@ classdef pfe
 			fprintf(fid,mpistring);
 			fclose(fid);
 
-			if cluster.interactive,
-				fid=fopen([modelname '.run'],'w');
+			if cluster.interactive
+				fid=fopen([filename '.run'],'w');
 
 				%number of cpus: 
 				mpistring=sprintf('mpiexec -np %i ',cluster.numnodes*cluster.cpuspernode);
@@ -297,7 +309,7 @@ classdef pfe
 				mpistring=[mpistring sprintf(' %i ',length(dirnames))];
 
 				%icecaps, glaciers and earth location, names and number of processors associated:
-				for i=1:length(dirnames),
+				for i=1:length(dirnames)
 					mpistring=[mpistring sprintf(' %s/Interactive%i %s %i ',cluster.executionpath,cluster.interactive,modelnames{i},nps{i})];
 				end
 
@@ -305,19 +317,28 @@ classdef pfe
 				fprintf(fid,mpistring);
 				fclose(fid);
 
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,modelname,solution,io_gather,isvalgrind,isgprof) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
 
-			if(isgprof),    disp('gprof not supported by cluster, ignoring...'); end
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
+
+         %checks
+			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#PBS -S /bin/bash\n');
 			%			fprintf(fid,'#PBS -N %s\n',modelname);
 			fprintf(fid,'#PBS -l select=%i:ncpus=%i:model=%s\n',cluster.numnodes,cluster.cpuspernode,cluster.processor);
@@ -358,10 +379,20 @@ classdef pfe
 				fclose(fid);
 			end
 		end %}}}
-		function BuildOceanQueueScript(np,cluster,modelname) % {{{
+		function BuildOceanQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#PBS -S /bin/bash\n');
 			fprintf(fid,'#PBS -l select=1:ncpus=%i:model=%s\n',np,cluster.processor);
 			fprintf(fid,'#PBS -l walltime=%i\n',cluster.time*60); %walltime is in seconds.
@@ -385,16 +416,14 @@ classdef pfe
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.run'],'w');
 				fprintf(fid,'module load mpi-sgi/mpt.2.15r20\n');
 				fprintf(fid,['mpiexec -np %i ./mitgcmuv \n'],np);
 				fprintf(fid,['touch ' modelname '.lock %s\n']);
 				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
+				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
+				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 
 		end %}}}

@@ -83,7 +83,7 @@ classdef timestepping
 			writejsdouble(fid,[modelname '.timestepping.final_time'],self.final_time);
 			writejsdouble(fid,[modelname '.timestepping.time_step'],self.time_step);
 			writejsdouble(fid,[modelname '.timestepping.interp_forcing'],self.interp_forcing);
-			writejsdouble(fid,[modelname '.timestepping.average_forcing'],self.interp_forcing);
+			writejsdouble(fid,[modelname '.timestepping.average_forcing'],self.average_forcing);
 			writejsdouble(fid,[modelname '.timestepping.cycle_forcing'],self.cycle_forcing);
 
 		end % }}}

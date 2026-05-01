@@ -36,6 +36,8 @@ class BarystaticContributions {
 		~BarystaticContributions();
 
 		/*routines:*/
+		void Assemble();
+		void CumAssemble();
 		IssmDouble Total();
 		IssmDouble CumTotal();
 		void Cumulate(Parameters* parameters);

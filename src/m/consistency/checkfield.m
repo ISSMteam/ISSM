@@ -19,6 +19,7 @@ function md = checkfield(md,varargin)
 %      - numel: list of acceptable number of elements
 %      - cell: 1 if check that is cell
 %      - empty: 1 if check that non empty
+%      - filepath: 1 if check file exists
 %      - message: overloaded error message
 %
 %   Usage:
@@ -306,5 +307,29 @@ if getfieldvalue(options,'mappedtimeseries',0)
 	if any(field(end,1:end-1)==field(end,2:end))
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' columns must not contain duplicate timesteps']));
+	end
+end
+
+%Check filepath
+if getfieldvalue(options,'filepath',0)
+	if ~ischar(field)
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' should be a file path (char)']));
+	else
+		if ~exist(field, 'file')
+			md = checkmessage(md,getfieldvalue(options,'message',...
+				['field ''' fieldname ''' file does not exist']));
+		end
+	end
+end
+
+%Check scalar string
+if getfieldvalue(options,'string',0)
+	if ~ischar(field)
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' should be a string']));
+	elseif size(field,1)~=1
+		md = checkmessage(md,getfieldvalue(options,'message',...
+			['field ''' fieldname ''' should have only one row']));
 	end
 end

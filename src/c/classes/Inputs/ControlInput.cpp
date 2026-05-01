@@ -19,7 +19,6 @@
 ControlInput::ControlInput(){/*{{{*/
 	control_id  = 0;
 	values      = NULL;
-	savedvalues = NULL;
 	minvalues   = NULL;
 	maxvalues   = NULL;
 	gradient    = NULL;
@@ -33,14 +32,12 @@ ControlInput::ControlInput(int nbe, int nbv,int input_layout_enum,int interp,int
 	switch(this->layout_enum){
 		case TriaInputEnum:
 			this->values     =new TriaInput(nbe,nbv,interp);
-			this->savedvalues=new TriaInput(nbe,nbv,interp);
 			this->minvalues  =new TriaInput(nbe,nbv,interp);
 			this->maxvalues  =new TriaInput(nbe,nbv,interp);
 			this->gradient   =new TriaInput(nbe,nbv,interp);
 			break;
 		case PentaInputEnum:
 			this->values     =new PentaInput(nbe,nbv,interp);
-			this->savedvalues=new PentaInput(nbe,nbv,interp);
 			this->minvalues  =new PentaInput(nbe,nbv,interp);
 			this->maxvalues  =new PentaInput(nbe,nbv,interp);
 			this->gradient   =new PentaInput(nbe,nbv,interp);
@@ -57,7 +54,6 @@ ControlInput::ControlInput(int enum_in,int nbe, int nbv,int id,IssmDouble* times
 	this->layout_enum = TransientInputEnum; /*Tria or Penta?*/
 
 	this->values     =new TransientInput(enum_in,nbe,nbv,times,numtimes);
-	this->savedvalues=new TransientInput(enum_in,nbe,nbv,times,numtimes);
 	this->minvalues  =new TransientInput(enum_in,nbe,nbv,times,numtimes);
 	this->maxvalues  =new TransientInput(enum_in,nbe,nbv,times,numtimes);
 	this->gradient   =new TransientInput(enum_in,nbe,nbv,times,numtimes);
@@ -65,7 +61,6 @@ ControlInput::ControlInput(int enum_in,int nbe, int nbv,int id,IssmDouble* times
 /*}}}*/
 ControlInput::~ControlInput(){/*{{{*/
 	delete values;
-	delete savedvalues;
 	delete minvalues;
 	delete maxvalues;
 	delete gradient;
@@ -83,7 +78,6 @@ Input* ControlInput::copy() {/*{{{*/
 	output->layout_enum = this->layout_enum;
 
 	if(values)      output->values      = this->values->copy();
-	if(savedvalues) output->savedvalues = this->savedvalues->copy();
 	if(minvalues)   output->minvalues   = this->minvalues->copy();
 	if(maxvalues)   output->maxvalues   = this->maxvalues->copy();
 	if(gradient)    output->gradient    = this->gradient->copy();
@@ -93,7 +87,6 @@ Input* ControlInput::copy() {/*{{{*/
 /*}}}*/
 void ControlInput::Configure(Parameters* params){/*{{{*/
 	this->values->Configure(params);
-	this->savedvalues->Configure(params);
 	this->minvalues->Configure(params);
 	this->maxvalues->Configure(params);
 	this->gradient->Configure(params);
@@ -105,7 +98,6 @@ void ControlInput::DeepEcho(void){/*{{{*/
 	_printf_(setw(15)<<"   ControlInput "<<setw(25)<<left<<EnumToStringx(this->enum_type)<<"\n");
 	_printf_(setw(15)<<"   Layout       "<<setw(25)<<left<<EnumToStringx(this->layout_enum)<<"\n");
 	_printf_("---values: \n");     if (values)      values->Echo();
-	_printf_("---savedvalues: \n");if (savedvalues) savedvalues->Echo();
 	_printf_("---minvalues: \n");  if (minvalues)   minvalues->Echo();
 	_printf_("---maxvalues: \n");  if (maxvalues)   maxvalues->Echo();
 	_printf_("---gradient: \n");   if (gradient){    gradient->Echo();} else{_printf_("     Not set yet\n");}
@@ -131,21 +123,18 @@ void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		switch(this->layout_enum){
 			case TriaInputEnum:
 				this->values     =new TriaInput();
-				this->savedvalues=new TriaInput();
 				this->minvalues  =new TriaInput();
 				this->maxvalues  =new TriaInput();
 				this->gradient   =new TriaInput();
 				break;
 			case PentaInputEnum:
 				this->values     =new PentaInput();
-				this->savedvalues=new PentaInput();
 				this->minvalues  =new PentaInput();
 				this->maxvalues  =new PentaInput();
 				this->gradient   =new PentaInput();
 				break;
 			case TransientInputEnum:
 				this->values     =new TransientInput();
-				this->savedvalues=new TransientInput();
 				this->minvalues  =new TransientInput();
 				this->maxvalues  =new TransientInput();
 				this->gradient   =new TransientInput();
@@ -156,7 +145,6 @@ void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	}
 
 	this->values->Marshall(marshallhandle);
-	this->savedvalues->Marshall(marshallhandle);
 	this->minvalues->Marshall(marshallhandle);
 	this->maxvalues->Marshall(marshallhandle);
 	this->gradient->Marshall(marshallhandle);
@@ -243,10 +231,6 @@ ElementInput* ControlInput::GetInput(const char* data){/*{{{*/
 			_assert_(values);
 			return xDynamicCast<ElementInput*>(values);
 		}
-		else if(strcmp(data,"savedvalues")==0){
-			_assert_(savedvalues);
-			return xDynamicCast<ElementInput*>(values);
-		}
 		else if (strcmp(data,"lowerbound")==0){
 			_assert_(minvalues);
 			return xDynamicCast<ElementInput*>(minvalues);
@@ -275,10 +259,6 @@ TransientInput* ControlInput::GetTransientInput(const char* data){/*{{{*/
 	if(this->values->ObjectEnum()==TransientInputEnum){
 		if(strcmp(data,"value")==0){
 			_assert_(values);
-			return xDynamicCast<TransientInput*>(values);
-		}
-		else if(strcmp(data,"savedvalues")==0){
-			_assert_(savedvalues);
 			return xDynamicCast<TransientInput*>(values);
 		}
 		else if (strcmp(data,"lowerbound")==0){

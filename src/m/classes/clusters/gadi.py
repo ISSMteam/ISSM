@@ -119,10 +119,7 @@ class gadi(object):
         return self
     # }}}
 
-    def BuildQueueScript(
-        self, dirname, modelname, solution,
-        io_gather, isvalgrind, isgprof, isdakota, isoceancoupling
-    ):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
         """
         Create a PBS script for Gadi. 
         Gadi typically uses #PBS lines like:
@@ -132,6 +129,16 @@ class gadi(object):
          - #PBS -l wd
          - #PBS -j oe
         """
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
 
         if isgprof:
             print('gprof not typically used on Gadi via this script, ignoring...')
@@ -152,7 +159,7 @@ class gadi(object):
         walltime_str = '{:02d}:{:02d}:00'.format(hours, minutes)
 
         # Write queue script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('#!/bin/bash\n')
         fid.write('#PBS -P {}\n'.format(self.project))
         fid.write('#PBS -q {}\n'.format(self.queue))

@@ -62,7 +62,7 @@ def loadresultsfromdisk(md, filename):
             setattr(getattr(md.results, structure[0].SolutionType)[0], 'outlog', '')
 
         if getattr(md.results, structure[0].SolutionType)[0].errlog:
-            print('loadresultsfromdisk info message: error during solution. Check your errlog and outlog model fields.')
+            print('WARNING: possible error during solution. Check the errlog and outlog')
 
         # If only one solution, extract it from list for user friendliness
         if len(structure) == 1 and structure[0].SolutionType != 'TransientSolution':

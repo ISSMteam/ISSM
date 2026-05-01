@@ -19,7 +19,6 @@ int InterpFromMesh2dx(IssmSeqVec<IssmPDouble>** pdata_prime,
 	/*Intermediary*/
 	int    i;
 	int    interpolation_type;
-	bool   debug;
 	double xmin,xmax;
 	double ymin,ymax;
 
@@ -30,9 +29,6 @@ int InterpFromMesh2dx(IssmSeqVec<IssmPDouble>** pdata_prime,
 	if (nels_data<1 || nods_data<3 || nods_prime==0){
 		_error_("nothing to be done according to the mesh given in input");
 	}
-
-	/*Set debug to 1 if there are lots of elements*/
-	debug=(bool)((double)nels_data*(double)nods_prime >= pow((double)10,(double)9));
 
 	/*figure out what kind of interpolation is needed*/
 	if (data_length==nods_data){
@@ -77,7 +73,6 @@ int InterpFromMesh2dx(IssmSeqVec<IssmPDouble>** pdata_prime,
 	/*initialize thread parameters: */
 	InterpFromMesh2dxThreadStruct gate;
 	gate.interpolation_type = interpolation_type;
-	gate.debug              = debug;
 	gate.nels_data          = nels_data;
 	gate.index_data         = index_data;
 	gate.x_data             = x_data;

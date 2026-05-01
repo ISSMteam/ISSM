@@ -117,7 +117,8 @@ class IoModel {
 		void        FindConstant(IssmDouble* pvalue,const char* constant_name);
 		void        FindConstant(char **pvalue,const char* constant_name);
 		void        FindConstant(char ***pvalue,int* psize,const char* constant_name);
-		int         NumIndependents();
+		int         NumIndependents(void);
+		void        PrintDebugMessage(void);
 
 		/*Input/Output*/
 		void        CheckFile(void);

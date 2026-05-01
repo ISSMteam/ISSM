@@ -70,10 +70,22 @@ class cyclone(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         executable = 'issm.exe'
+
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('export ISSM_DIR="%s/../ "\n' % self.codepath)
         fid.write('source $ISSM_DIR/etc/environment.sh\n')
         fid.write('INTELLIBS = "/opt/intel/intelcompiler-12.04/composerxe-2011.4.191/compiler/lib/intel64"\n')
@@ -85,6 +97,7 @@ class cyclone(object):
         fid.write('mpiexec -np %i %s/%s %s %s %s>%s.outlog 2>%s.errlog\n' % (self.np, self.codepath, executable, str(solution), rundir, modelname, runfile, runfile))
         fid.close()
     # }}}
+
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
         #compress the files into one zip.
         compressstring = 'tar -zcf %s.tar.gz ' % dirname
@@ -95,6 +108,7 @@ class cyclone(object):
         #upload input files
         issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
     # }}}
+
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
         #Execute Queue job
         if not isempty(restart):
@@ -103,6 +117,7 @@ class cyclone(object):
             launchcommand = 'cd %s && rm -rf ./%s && mkdir %s && cd %s && mv ../%s.tar.gz ./ && tar -zxf %s.tar.gz  && chmod +x ./%s.queue && ./%s.queue' % (self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname, modelname)
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
+
     def Download(self, dirname, filelist):  # {{{
         # Copy files from cluster to current directory
         directory = '%s/%s/' % (self.executionpath, dirname)

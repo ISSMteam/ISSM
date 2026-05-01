@@ -166,6 +166,7 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 
 	/*retrieve more parameters:*/
 	femmodel->parameters->FindParam(&iscoupling,IsSlcCouplingEnum);
+	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
 
@@ -222,7 +223,7 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 }; /*}}}*/
 void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{*/
 
-	/*variables:{{{*/
+	/*variables:*/
 	int nel;
 	BarystaticContributions* barycontrib=NULL;
 	GenericParam<BarystaticContributions*>* barycontribparam=NULL;
@@ -234,6 +235,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	IssmDouble             totaloceanarea;
 	Vector<IssmDouble>*    subelementoceanareas=NULL;
 	IssmDouble             oceanaverage;
+	IssmDouble             barystatictotal;
 	bool                   scaleoceanarea=false;
 	IssmDouble             rho_water;
 
@@ -250,16 +252,14 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	int  grd=0;
 	int  grdmodel; 
 	int  sealevelloading=0;
-	bool sal=false;
-	bool viscous=false;
-	bool rotation=false;
-	bool planethasocean=false;
-	bool computefuture=false;
-	IssmDouble*           sealevelpercpu=NULL;
+	bool        sal            = false;
+	bool        viscous        = false;
+	bool        rotation       = false;
+	bool        planethasocean = false;
+	bool        computefuture  = false;
+	IssmDouble *sealevelpercpu = NULL;
 
-	/*}}}*/
-
-	/*retrieve parameters:{{{*/
+	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&grd,SolidearthSettingsGRDEnum); 
 	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
@@ -271,7 +271,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	femmodel->parameters->FindParam(&viscous,SolidearthSettingsViscousEnum);
 	femmodel->parameters->FindParam(&rotation,SolidearthSettingsRotationEnum);
 	femmodel->parameters->FindParam(&planethasocean,SolidearthSettingsGrdOceanEnum);
-	/*}}}*/
 
 	/*only run if grd was requested, if we are the earth, and we have reached
 	 * the necessary number of time steps dictated by :*/
@@ -292,7 +291,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing GRD patterns\n");
 
-	/*retrieve parameters: {{{*/ 
+	/*retrieve parameters:*/ 
 	femmodel->parameters->FindParam(&scaleoceanarea,SolidearthSettingsOceanAreaScalingEnum);
 	barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
 	barycontrib=barycontribparam->GetParameterValue();
@@ -301,7 +300,6 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	femmodel->parameters->FindParam(&eps_abs,SolidearthSettingsAbstolEnum);
 	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	femmodel->parameters->FindParam(&sal,SolidearthSettingsSelfAttractionEnum);
-	/*}}}*/
 
 	/*initialize loads and sea level loads:*/
 	femmodel->parameters->FindParam(&nel,MeshNumberofelementsEnum);
@@ -321,6 +319,8 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		Element* element = xDynamicCast<Element*>(object);
 		element->SealevelchangeBarystaticLoads(loads, barycontrib,slgeom); 
 	}
+	barycontrib->Assemble();
+	barystatictotal=barycontrib->Total();
 
 	//broadcast loads 
 	loads->BroadcastLoads();
@@ -330,69 +330,70 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		loads->sealevelloads=xNewZeroInit<IssmDouble>(nel);
 		loads->subsealevelloads=xNewZeroInit<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
 		PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
-		goto deformation;
 	}
+	else{
+		if(VerboseSolution()) _printf0_("	  converging GRD convolutions\n");
+		for(;;){
 
-	if(VerboseSolution()) _printf0_("	  converging GRD convolutions\n");
-	for(;;){
+			//compute polar motion:
+			PolarMotion(&polarmotionvector[0],femmodel,loads,slgeom,computefuture=false);
 
-		//compute polar motion:
-		PolarMotion(&polarmotionvector[0],femmodel,loads,slgeom,computefuture=false);
+			oldsealevelloads=xNewZeroInit<IssmDouble>(nel);
+			if(loads->sealevelloads){
+				xMemCpy<IssmDouble>(oldsealevelloads,loads->sealevelloads,nel);
+			}
 
-		oldsealevelloads=xNewZeroInit<IssmDouble>(nel);
-		if (loads->sealevelloads){
-			xMemCpy<IssmDouble>(oldsealevelloads,loads->sealevelloads,nel);
+			/*convolve load and sealevel loads on oceans:*/
+			loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
+			for(Object* & object : femmodel->elements->objects){
+				Element* element = xDynamicCast<Element*>(object);
+				element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
+			}
+
+			/*retrieve sea level average  and ocean area:*/
+			for(Object* & object : femmodel->elements->objects){
+				Element* element = xDynamicCast<Element*>(object);
+				element->SealevelchangeOceanAverage(loads, oceanareas, subelementoceanareas, sealevelpercpu, slgeom);
+			}
+
+			loads->AssembleSealevelLoads();
+
+			/*compute ocean areas:*/
+			if(!loads->sealevelloads){ //first time in the loop
+				oceanareas->Assemble(); 
+				subelementoceanareas->Assemble();
+				oceanareas->Sum(&totaloceanarea); _assert_(totaloceanarea>0.);
+				if(scaleoceanarea) totaloceanarea=3.619e+14; // use true ocean area, m^2
+			}
+
+			//Conserve ocean mass: 
+			oceanaverage=SealevelloadsOceanAverage(loads, oceanareas,subelementoceanareas, totaloceanarea);
+			ConserveOceanMass(femmodel,loads,barystatictotal/totaloceanarea -oceanaverage,slgeom);
+
+			//broadcast sea level loads 
+			loads->BroadcastSealevelLoads();
+
+			if(!sal){
+				xDelete<IssmDouble>(oldsealevelloads); break;
+			}
+
+			//convergence?
+			if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
+				xDelete<IssmDouble>(oldsealevelloads); break;
+			}
+
+			xDelete<IssmDouble>(oldsealevelloads);
+
+			//early return?
+			iterations++;	//slc_geometry_cleanup(slgeom, femmodel);
+			if(iterations>=max_nonlinear_iterations){
+				break;
+			}
 		}
 
-		/*convolve load and sealevel loads on oceans:*/
-		loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
-		for(Object* & object : femmodel->elements->objects){
-			Element* element = xDynamicCast<Element*>(object);
-			element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
-		}
-
-		/*retrieve sea level average  and ocean area:*/
-		for(Object* & object : femmodel->elements->objects){
-			Element* element = xDynamicCast<Element*>(object);
-			element->SealevelchangeOceanAverage(loads, oceanareas, subelementoceanareas, sealevelpercpu, slgeom);
-		}
-
-		loads->AssembleSealevelLoads();
-
-		/*compute ocean areas:*/
-		if(!loads->sealevelloads){ //first time in the loop
-			oceanareas->Assemble(); 
-			subelementoceanareas->Assemble();
-			oceanareas->Sum(&totaloceanarea); _assert_(totaloceanarea>0.);
-			if(scaleoceanarea) totaloceanarea=3.619e+14; // use true ocean area, m^2
-		}
-
-		//Conserve ocean mass: 
-		oceanaverage=SealevelloadsOceanAverage(loads, oceanareas,subelementoceanareas, totaloceanarea);
-		ConserveOceanMass(femmodel,loads,barycontrib->Total()/totaloceanarea -oceanaverage,slgeom);
-
-		//broadcast sea level loads 
-		loads->BroadcastSealevelLoads();
-
-		if (!sal) {xDelete<IssmDouble>(oldsealevelloads); break;}
-
-		//convergence?
-		if(slcconvergence(loads->sealevelloads,oldsealevelloads,eps_rel,eps_abs,totaloceanarea,femmodel)){
-			xDelete<IssmDouble>(oldsealevelloads); break;
-		}
-
-		//early return?
-		if(iterations>=max_nonlinear_iterations){
-			xDelete<IssmDouble>(oldsealevelloads); break;
-		}
-		iterations++;
-		xDelete<IssmDouble>(oldsealevelloads);
+		/*recompute polar motion one final time, this time updating viscous stacks for future time steps*/
+		if (viscous)	PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
 	}
-
-	//recompute polar motion one final time, this time updating viscous stacks for future time steps
-	if (viscous)	PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
-
-	deformation:
 
 	if(VerboseSolution()) _printf0_("	  deformation GRD convolutions\n");
 
@@ -424,13 +425,15 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 			//Conserve ocean mass
 			//Note that here we create sea-level loads but they will not generate GRD as we have already run all the convolutions
 			oceanaverage=SealevelloadsOceanAverage(loads, oceanareas,subelementoceanareas, totaloceanarea);
-			ConserveOceanMass(femmodel,loads,barycontrib->Total()/totaloceanarea - oceanaverage,slgeom);
+			ConserveOceanMass(femmodel,loads,barystatictotal/totaloceanarea - oceanaverage,slgeom);
 		}
+	//slc_geometry_cleanup(slgeom, femmodel);
 
-		femmodel->inputs->Shift(SealevelGRDEnum,barycontrib->Total()/rho_water/totaloceanarea- oceanaverage/rho_water);
+		femmodel->inputs->Shift(SealevelGRDEnum,barystatictotal/rho_water/totaloceanarea- oceanaverage/rho_water);
 
 		//cumulate barystatic contributions and save to results: 
 		barycontrib->Cumulate(femmodel->parameters);
+		barycontrib->CumAssemble();
 		barycontrib->Save(femmodel->results,femmodel->parameters,totaloceanarea);
 		barycontrib->Reset();
 	}
@@ -465,6 +468,7 @@ void              dynstr_core(FemModel* femmodel){ /*{{{*/
 
 	/*parameters: */
 	int  step;
+	int  gsize;
 	bool isocean=false;
 	IssmDouble time;
 
@@ -493,7 +497,9 @@ void              dynstr_core(FemModel* femmodel){ /*{{{*/
 	femmodel->parameters->FindParam(&cumgmtslc,CumGmtslcEnum); 
 	femmodel->parameters->FindParam(&cumbslc,CumBslcEnum); 
 
-	gmtslc=deltastr->Norm(NORM_TWO);
+	deltastr->Sum(&gmtslc);
+	deltastr->GetSize(&gsize);
+	gmtslc/=reCast<IssmDouble,int>(gsize);
 	cumgmtslc+=gmtslc;
 	cumgmslc=cumbslc+cumgmtslc;
 
@@ -531,6 +537,7 @@ void              coupleroutput_core(FemModel* femmodel){  /*{{{*/
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 
 	count++;
+	if(count>frequency) count=1;
 	femmodel->parameters->SetParam(count,SealevelchangeRunCountEnum); 
 
 	if(iscoupling){
@@ -581,7 +588,6 @@ void              ivins_deformation_core(FemModel* femmodel){ /*{{{*/
 	}
 
 	/*Assemble parallel vector:*/
-	beduprate->Assemble();
 	bedup->Assemble();
 
 	/*Save results:*/
@@ -608,18 +614,10 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	int* lids=NULL;
 	int* n_activevertices=NULL;
 	int  grdmodel=0;
-	bool geometrydone;
 
 	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
 	nel=femmodel->elements->NumberOfElements();
-
-	/*did we already do this? if so, skip :*/
-	femmodel->parameters->FindParam(&geometrydone,SealevelchangeGeometryDoneEnum);
-	if (geometrydone){
-		if(VerboseSolution()) _printf0_("	  initial sea level geometrical already computed, skipping.\n");
-		return;
-	}
 
 	/*early return?:*/
 	if(grdmodel!=ElasticEnum) return;
@@ -633,13 +631,14 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	/*Compute element ids, used to speed up computations in convolution phase:{{{*/
 	lids=xNew<int>(femmodel->vertices->Size());
 	n_activevertices = xNew<int>(nel);
-	//initialize lids to -1, vertex count to 3
+	//initialize lids to -1, vertex count to 0
 	for (int v=0; v<femmodel->vertices->Size();v++) lids[v]=-1;
-	for (int e=0; e<nel;e++) n_activevertices[e]=3;
+	for (int e=0; e<nel;e++) n_activevertices[e]=0;
 
 	for(Object* & object : femmodel->elements->objects){
 		Element*   element=xDynamicCast<Element*>(object);
-		for(int i=0;i<3;i++){
+		n_activevertices[element->lid]=element->GetNumberOfVertices();
+		for(int i=0;i<element->GetNumberOfVertices();i++){
 			// if lids where we are looking points to an element id (.i.e. not -1) then we are about to claim that element's vertex
 			// and need to lower the number of vertices it is in charge of
 			if (lids[element->vertices[i]->lid] !=-1){
@@ -668,9 +667,6 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,ZzeEnum,zze,nel,1,1,1));
 	femmodel->results->AddResult(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,AreaeEnum,areae,nel,1,1,1));
 	#endif
-	
-	geometrydone=true;
-	femmodel->parameters->SetParam(geometrydone,SealevelchangeGeometryDoneEnum);
 
 	xDelete<IssmDouble>(xxe);
 	xDelete<IssmDouble>(yye);
@@ -694,7 +690,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	IssmDouble* areae  = NULL;
 
 	int nel;
-	int grdmodel=0;
+	int  grdmodel=0;
 	int isgrd=0;
 	int count, frequency;
 	SealevelGeometry* slgeom=NULL;
@@ -705,7 +701,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
 	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
 	if(grdmodel!=ElasticEnum || !isgrd) return NULL;
-	if(count!=frequency) return NULL;
+	if(count!=frequency)return NULL;
 
 	/*retrieve parameters:*/
 	femmodel->parameters->FindParam(&xxe,&nel,XxeEnum);
@@ -746,11 +742,6 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	/*Compute spherical harmonic functions for spatial integrations of the loads*/
 	slgeom->BuildSphericalHarmonics();
 
-	femmodel->parameters->AddObject(new DoubleVecParam(XxeEnum,xxe,nel));
-	femmodel->parameters->AddObject(new DoubleVecParam(YyeEnum,yye,nel));
-	femmodel->parameters->AddObject(new DoubleVecParam(ZzeEnum,zze,nel));
-	femmodel->parameters->AddObject(new DoubleVecParam(AreaeEnum,areae,nel));
-
 	/*Free resources:*/
 	xDelete<IssmDouble>(xxe);
 	xDelete<IssmDouble>(yye);
@@ -761,43 +752,52 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 
 }/*}}}*/
 void              sealevelchange_finalize(FemModel* femmodel) {  /*{{{*/
-
 	bool isuq=false;
-	
+
 	BarystaticContributions* barycontrib=NULL;
 	GenericParam<BarystaticContributions*>* barycontribparam=NULL;
-	
+
 	femmodel->parameters->FindParam(&isuq,QmuIsdakotaEnum);
 
+	barycontribparam=xDynamicCast<GenericParam<BarystaticContributions*>*>(
+		femmodel->parameters->FindParamObject(BarystaticContributionsEnum)
+	);
+	if(!barycontribparam) return;
+
+	barycontrib=barycontribparam->GetParameterValue();
+	if(!barycontrib) return;
+
 	if(isuq){
-		//reset barycontrib object:
-		barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
-		barycontrib=barycontribparam->GetParameterValue(); 
 		barycontrib->Finalize();
 	}
-	else {
-		/*Erase barycontrib object: */
-		barycontribparam = xDynamicCast<GenericParam<BarystaticContributions*>*>(femmodel->parameters->FindParamObject(BarystaticContributionsEnum));
-		barycontrib=barycontribparam->GetParameterValue();
+	else{
+		femmodel->parameters->AddObject(
+			new GenericParam<BarystaticContributions*>((BarystaticContributions*)NULL,BarystaticContributionsEnum)
+		);
 		delete barycontrib;
 	}
-
-	return;
-
 }/*}}}*/
 void              slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel){  /*{{{*/
+	int  grdmodel=0;
+	int isgrd=0;
+	int horiz=0;
+	int count, frequency;
 
 	/*early return?:*/
-	if(slgeom==NULL) return;
-
-	int horiz;
+	femmodel->parameters->FindParam(&grdmodel,GrdModelEnum);
+	femmodel->parameters->FindParam(&isgrd,SolidearthSettingsGRDEnum);
 	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
+	femmodel->parameters->FindParam(&count,SealevelchangeRunCountEnum);
+	femmodel->parameters->FindParam(&frequency,SolidearthSettingsRunFrequencyEnum);
+	if(grdmodel!=ElasticEnum || !isgrd) return;
+	if(count!=frequency)return;
+
 	for (int l=0;l<SLGEOM_NUMLOADS;l++){
 		femmodel->inputs->DeleteInput(slgeom->AlphaIndexEnum(l));
-		if(horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
+		if (horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
 	}
 
-	delete slgeom;
+	if (slgeom) delete slgeom;
 } /*}}}*/
 
 /*subroutines:*/
@@ -805,19 +805,17 @@ bool       slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_r
 
 	int nel;
 	bool converged=true;
-	IssmDouble ndS,nS, nS_old; 
-	IssmDouble* dRSLg    = NULL;
-	IssmDouble rho_water =0;
+	IssmDouble rho_water;
 
 	femmodel->parameters->FindParam(&nel,MeshNumberofelementsEnum);
 	femmodel->parameters->FindParam(&rho_water,MaterialsRhoSeawaterEnum);
 
 	//compute norm(du) and norm(u) if requested
-	dRSLg=xNewZeroInit<IssmDouble>(nel);
+	IssmDouble* dRSLg=xNewZeroInit<IssmDouble>(nel);
 
-	ndS=0;
-	nS=0;
-	nS_old=0;
+	IssmDouble ndS=0;
+	IssmDouble nS=0;
+	IssmDouble nS_old=0;
 
 	for (int e=0;e<nel;e++){
 		dRSLg[e]=(RSLg[e]-RSLg_old[e])/rho_water/totaloceanarea;
@@ -839,7 +837,16 @@ bool       slcconvergence(IssmDouble* RSLg,IssmDouble* RSLg_old,IssmDouble eps_r
 
 	//print
 	if(!xIsNan<IssmDouble>(eps_rel)){
-		if((ndS/nS)<eps_rel){
+		if(nS==0.){
+			if(ndS==0.){
+				if(VerboseConvergence()) _printf0_(setw(50) << left << "              convergence criterion: norm(dS)/norm(S)" << 0. << " < " << eps_rel*100 << " %\n");
+			}
+			else{
+				if(VerboseConvergence()) _printf0_(setw(50) << left << "              convergence criterion: norm(dS)/norm(S)" << "undefined (norm(S)=0)" << " > " << eps_rel*100 << " %\n");
+				converged=false;
+			}
+		}
+		else if((ndS/nS)<eps_rel){
 			if(VerboseConvergence()) _printf0_(setw(50) << left << "              convergence criterion: norm(dS)/norm(S)" << ndS/nS*100 << " < " << eps_rel*100 << " %\n");
 		}
 		else{ 
@@ -951,19 +958,23 @@ void       PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoad
 		// 3*: subtract from viscous stack PM that has already been accounted for so we don't add it again at the next time step
 		if(computefuture){ 
 			if(viscoustimes[viscousindex]<final_time){
-				lincoeff=(viscoustimes[viscousindex+1]-viscoustimes[viscousindex])/timeacc;
-				for(int t=viscousindex;t<nt;t++){ //we resynchronize m from the relative time above to the absolute time where t=0 <=> beginning of the simulation
-					if(t==viscousindex){
-						m1interp[t]=  m1[0];
-						m2interp[t]=  m2[0];
-						m3interp[t]=  m3[0];
-					}
-					else{ //we reinterpolate PM on viscoustimes, so we can handle the case where we are running with adaptative/uneven time steps
-						int tprime=t-viscousindex-1;
-						m1interp[t]=  (1.0-lincoeff)*m1[tprime]+lincoeff*m1[tprime+1];
-						m2interp[t]=  (1.0-lincoeff)*m2[tprime]+lincoeff*m2[tprime+1];
-						m3interp[t]=  (1.0-lincoeff)*m3[tprime]+lincoeff*m3[tprime+1];
-					}
+				m1interp[viscousindex]=m1[0];
+				m2interp[viscousindex]=m2[0];
+				m3interp[viscousindex]=m3[0];
+				int t;
+				for(t=viscousindex+1;t<nt;t++){ //we resynchronize m from the relative time above to the absolute time where t=0 <=> beginning of the simulation
+					IssmDouble elapsedtime=viscoustimes[t]-viscoustimes[viscousindex];
+					int tprime=reCast<int,IssmDouble>(elapsedtime/timeacc);
+					if(tprime>=nt-1) break;
+					lincoeff=(elapsedtime-timeacc*tprime)/timeacc;
+					m1interp[t]=  (1.0-lincoeff)*m1[tprime]+lincoeff*m1[tprime+1];
+					m2interp[t]=  (1.0-lincoeff)*m2[tprime]+lincoeff*m2[tprime+1];
+					m3interp[t]=  (1.0-lincoeff)*m3[tprime]+lincoeff*m3[tprime+1];
+				}
+				for(;t<nt;t++){
+					m1interp[t]=m1[nt-1];
+					m2interp[t]=m2[nt-1];
+					m3interp[t]=m3[nt-1];
 				}
 			}
 		}
@@ -1029,13 +1040,17 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 		femmodel->parameters->FindParam(&currenttime,TimeEnum);
 		if (rotation) 	femmodel->parameters->FindParam(&viscouspolarmotion,NULL,NULL,SealevelchangeViscousPolarMotionEnum);
 
+		if(currenttime<viscoustimes[viscousindex]){
+			_error_("current time (" << currenttime << ") is earlier than the current viscous stack time (" << viscoustimes[viscousindex] << "). Check timestepping.start_time, current model time, and SealevelchangeViscousIndex.");
+		}
+
 		bool foundtime=false;
 		int offset=1; //handles the egde case where time found = max time in viscoustimes
 		lincoeff=0;
 		newindex=viscousnumsteps-2;
 
 		for(int t=viscousindex;t<viscousnumsteps;t++){
-			if (viscoustimes[t]>=currenttime){
+			if (viscoustimes[t]>currenttime){
 				newindex=t-1;
 				foundtime=true;
 				lincoeff=(currenttime-viscoustimes[newindex])/(viscoustimes[t]-viscoustimes[newindex]);
@@ -1087,7 +1102,7 @@ IssmDouble* CombineLoads(IssmDouble* load,IssmDouble* subload,FemModel* femmodel
 	for(int i=0;i<nel;i++)indices[i]=i;
 
 	Vector<IssmDouble>* vloadcopy=new Vector<IssmDouble>(nel);
-	IssmDouble* loadcopy=xNew<IssmDouble>(nel);
+	IssmDouble* loadcopy=NULL;
 
 	vloadcopy->SetValues(nel,indices,load,INS_VAL);
 	vloadcopy->Assemble();
@@ -1105,6 +1120,9 @@ IssmDouble* CombineLoads(IssmDouble* load,IssmDouble* subload,FemModel* femmodel
 	vloadcopy->Assemble();
 	loadcopy=vloadcopy->ToMPISerial();
 
+	xDelete<int>(indices);
+	delete vloadcopy;
+
 	return loadcopy;
 
 } /*}}}*/
@@ -1118,7 +1136,6 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 	Vector<IssmDouble>* forcingglobal=NULL; 
 	IssmDouble* transfercount=NULL; 
 	int*         nvs=NULL;
-   int modelid,earthid,nummodels;
 
 	/*transition vectors:*/
 	IssmDouble** transitions=NULL;
@@ -1129,18 +1146,18 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 	int          existforcing=0;         
 
 	/*communicators:*/
-	ISSM_MPI_Comm    tocomm;
-	ISSM_MPI_Comm   *fromcomms = NULL;
-	ISSM_MPI_Status  status;
-	ISSM_MPI_Request send_request_1=ISSM_MPI_REQUEST_NULL;
-   ISSM_MPI_Request send_request_2=ISSM_MPI_REQUEST_NULL;
-	ISSM_MPI_Request send_request_3=ISSM_MPI_REQUEST_NULL;
+	ISSM_MPI_Comm tocomm;
+	ISSM_MPI_Comm* fromcomms=NULL;
+	ISSM_MPI_Status status;
+	int         my_rank;
+	int         modelid,earthid;
+	int         nummodels;
 
 	/*Recover some parameters: */
 	femmodel->parameters->FindParam(&modelid,ModelIdEnum);
 	femmodel->parameters->FindParam(&earthid,EarthIdEnum);
 	femmodel->parameters->FindParam(&nummodels,NumModelsEnum);
-	int my_rank=IssmComm::GetRank();
+	my_rank=IssmComm::GetRank();
 
 	/*retrieve the inter communicators that will be used to send data from each ice cap to the earth: */
 	if(modelid==earthid){
@@ -1165,7 +1182,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		}
 	}
 
-	/*Send the forcing to the earth model*/
+	/*Send the forcing to the earth model:{{{*/
 	if(my_rank==0){
 		if(modelid==earthid){
 			forcings=xNew<IssmDouble*>(nummodels-1);
@@ -1184,13 +1201,14 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 
 		}
 		else{
-			ISSM_MPI_Isend(&existforcing, 1, ISSM_MPI_INT, 0, modelid, tocomm,&send_request_1);
+			ISSM_MPI_Send(&existforcing, 1, ISSM_MPI_INT, 0, modelid, tocomm);
 			if(existforcing){
-				ISSM_MPI_Isend(&nv, 1, ISSM_MPI_INT, 0, modelid, tocomm, &send_request_2);
-				ISSM_MPI_Isend(forcing, nv, ISSM_MPI_DOUBLE, 0, modelid, tocomm, &send_request_3);
+				ISSM_MPI_Send(&nv, 1, ISSM_MPI_INT, 0, modelid, tocomm);
+				ISSM_MPI_Send(forcing, nv, ISSM_MPI_DOUBLE, 0, modelid, tocomm);
 			}
 		}
 	}
+	/*}}}*/
 
 	/*On the earth model, consolidate all the forcings into one, and update the elements dataset accordingly*/
 	if(modelid==earthid){
@@ -1200,7 +1218,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		nv=femmodel->vertices->NumberOfVertices();
 		GetVectorFromInputsx(&forcingglobal,femmodel,forcingenum,VertexSIdEnum);
 
-		forcingglobal->Set(0.);
+		forcingglobal->Set(0.0);
 
 		/*Retrieve transition vectors, used to plug from each ice cap into the global forcing:*/
 		femmodel->parameters->FindParam(&transitions,&ntransitions,&transitions_m,&transitions_n,SealevelchangeTransitionsEnum);
@@ -1217,7 +1235,7 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 					int         M=transitions_m[i];
 
 					/*build index to plug values: */
-					int* index=xNew<int>(M); for(int i=0;i<M;i++)index[i]=reCast<int>(transition[i])-1; //matlab indexing!
+					int*        index=xNew<int>(M); for(int i=0;i<M;i++)index[i]=reCast<int>(transition[i])-1; //matlab indexing!
 
 					/*We are going to plug this vector into the earth model, at the right vertices corresponding to this particular 
 					 * ice cap: */
@@ -1234,21 +1252,17 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		/*Plug into elements:*/
 		InputUpdateFromVectorx(femmodel,forcingglobal,forcingenum,VertexSIdEnum);
 	} 
+	/*}}}*/
 
-	/*Free resources:*/
-	if(my_rank==0 && modelid!=earthid){
-		ISSM_MPI_Wait(&send_request_1,&status);
-		if(existforcing){
-			ISSM_MPI_Wait(&send_request_2,&status);
-			ISSM_MPI_Wait(&send_request_3,&status);
-		}
-	}
+	/*Free resources:{{{*/
 	if(forcings){
-		for(int i=0;i<nummodels-1;i++) xDelete<IssmDouble>(forcings[i]);
+		for(int i=0;i<nummodels-1;i++){
+			IssmDouble* temp=forcings[i]; 
+			if(temp)xDelete<IssmDouble>(temp);
+		}
 		xDelete<IssmDouble*>(forcings);
 	}
 	if(forcing)xDelete<IssmDouble>(forcing);
-	if(transfercount) xDelete<IssmDouble>(transfercount);
 	if(forcingglobal)delete forcingglobal;
 	if(transitions){
 		for(int i=0;i<earthid;i++){
@@ -1259,11 +1273,15 @@ void TransferForcing(FemModel* femmodel,int forcingenum){ /*{{{*/
 		xDelete<int>(transitions_m);
 		xDelete<int>(transitions_n);
 	}
+	if(transfercount) xDelete<IssmDouble>(transfercount);
 	if(nvs)xDelete<int>(nvs);
+	/*}}}*/
+
 } /*}}}*/
 void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 
 	/*forcing being transferred from earth to ice caps: */
+	IssmDouble** forcings=NULL;
 	IssmDouble*  forcing=NULL; 
 	IssmDouble*  forcingglobal=NULL; 
 
@@ -1272,9 +1290,7 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 	int          ntransitions; 
 	int*         transitions_m=NULL;
 	int*         transitions_n=NULL;
-	int  nv;
-	int  modelid,earthid,nummodels;
-	int  numcoms;
+	int          nv;
 
 	/*communicators:*/
 	ISSM_MPI_Comm fromcomm;
@@ -1282,26 +1298,26 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 	ISSM_MPI_Status status;
 	ISSM_MPI_Request* send_requests_1=NULL;
 	ISSM_MPI_Request* send_requests_2=NULL;
-
+	int         my_rank;
+	int         modelid,earthid;
+	int         nummodels;
 
 	/*Recover some parameters: */
 	femmodel->parameters->FindParam(&modelid,ModelIdEnum);
 	femmodel->parameters->FindParam(&earthid,EarthIdEnum);
 	femmodel->parameters->FindParam(&nummodels,NumModelsEnum);
-	int my_rank=IssmComm::GetRank();
+	my_rank=IssmComm::GetRank();
 
 	/*retrieve the inter communicators that will be used to send data from earth to ice caps:*/
 	if(modelid==earthid){
 		GenericParam<ISSM_MPI_Comm*>* parcoms = dynamic_cast<GenericParam<ISSM_MPI_Comm*>*>(femmodel->parameters->FindParamObject(IcecapToEarthCommEnum));
 		if(!parcoms)_error_("TransferSealevel error message: could not find IcecapToEarthComm communicator");
 		tocomms=parcoms->GetParameterValue();
-		//femmodel->parameters->FindParam((int**)(&tocomms),&numcoms,IcecapToEarthCommEnum);
 	}
 	else{
 		GenericParam<ISSM_MPI_Comm>* parcom = dynamic_cast<GenericParam<ISSM_MPI_Comm>*>(femmodel->parameters->FindParamObject(IcecapToEarthCommEnum));
 		if(!parcom)_error_("TransferSealevel error message: could not find IcecapToEarthComm communicator");
 		fromcomm=parcom->GetParameterValue();
-		//femmodel->parameters->FindParam((int*)(&fromcomm), IcecapToEarthCommEnum);
 	}
 
 	/*Retrieve sea-level on earth model: */
@@ -1317,26 +1333,28 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 
 			/*Retrieve transition vectors, used to figure out global forcing contribution to each ice cap's own elements: */
 			femmodel->parameters->FindParam(&transitions,&ntransitions,&transitions_m,&transitions_n,SealevelchangeTransitionsEnum);
-			if(ntransitions!=earthid) _error_("TransferSealevel error message: number of transition vectors is not equal to the number of icecaps!");
 
-			/*Prepare requests*/
-			send_requests_1 = xNew<ISSM_MPI_Request>(earthid);
-			send_requests_2 = xNew<ISSM_MPI_Request>(earthid);
-			for(int i=0;i<earthid;i++){
-				send_requests_1[i] = ISSM_MPI_REQUEST_NULL;
-				send_requests_2[i] = ISSM_MPI_REQUEST_NULL;
+			if(ntransitions!=nummodels-1)_error_("TransferSealevel error message: number of transition vectors is not equal to the number of icecaps!");
+			if(earthid!=nummodels-1)_error_("TransferSealevel error message: earth model must be last in model ordering");
+
+			forcings=xNew<IssmDouble*>(nummodels-1);
+			send_requests_1=xNew<ISSM_MPI_Request>(nummodels-1);
+			send_requests_2=xNew<ISSM_MPI_Request>(nummodels-1);
+			for(int i=0;i<nummodels-1;i++){
+				forcings[i]=NULL;
+				send_requests_1[i]=ISSM_MPI_REQUEST_NULL;
+				send_requests_2[i]=ISSM_MPI_REQUEST_NULL;
 			}
 
-			for(int i=0;i<earthid;i++){
+			for(int i=0;i<nummodels-1;i++){
 				nv=transitions_m[i];
-				forcing=xNew<IssmDouble>(nv);
+				forcings[i]=xNew<IssmDouble>(nv);
 				IssmDouble* transition=transitions[i];
 				for(int j=0;j<nv;j++){
-					forcing[j]=forcingglobal[reCast<int>(transition[j])-1];
+					forcings[i][j]=forcingglobal[reCast<int>(transition[j])-1];
 				}
-				ISSM_MPI_Isend(&nv, 1, ISSM_MPI_INT, 0, i, tocomms[i], &send_requests_1[i]);
-				ISSM_MPI_Isend(forcing, nv, ISSM_MPI_DOUBLE, 0, i, tocomms[i], &send_requests_2[i]);
-				xDelete<IssmDouble>(forcing);
+				ISSM_MPI_Isend(&transitions_m[i], 1, ISSM_MPI_INT, 0, i, tocomms[i], &send_requests_1[i]);
+				ISSM_MPI_Isend(forcings[i], nv, ISSM_MPI_DOUBLE, 0, i, tocomms[i], &send_requests_2[i]);
 			}
 		}
 		else{
@@ -1357,14 +1375,16 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 		InputUpdateFromVectorx(femmodel,forcing,forcingenum,VertexSIdEnum);
 	} 
 
-	/*Free resources:*/
+	/*Free resources:{{{*/
 	if(my_rank==0 && modelid==earthid){
-		for(int i=0;i<earthid;i++){
+		for(int i=0;i<nummodels-1;i++){
 			ISSM_MPI_Wait(&send_requests_1[i],&status);
 			ISSM_MPI_Wait(&send_requests_2[i],&status);
+			xDelete<IssmDouble>(forcings[i]);
 		}
 		xDelete<ISSM_MPI_Request>(send_requests_1);
 		xDelete<ISSM_MPI_Request>(send_requests_2);
+		xDelete<IssmDouble*>(forcings);
 	}
 	if(forcingglobal)xDelete<IssmDouble>(forcingglobal);
 	if(forcing)xDelete<IssmDouble>(forcing);
@@ -1377,5 +1397,6 @@ void TransferSealevel(FemModel* femmodel,int forcingenum){ /*{{{*/
 		xDelete<int>(transitions_m);
 		xDelete<int>(transitions_n);
 	}
+	/*}}}*/
 
 } /*}}}*/

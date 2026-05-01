@@ -65,7 +65,19 @@ class generic_static(object):
 
         return md
     # }}}
-    def BuildQueueScript(self, dirname, modelname, solution, io_gather, isvalgrind, isgprof, isdakota, isoceancoupling):  # {{{
+
+    def BuildQueueScript(self, md, filename):  # {{{
+
+        # Get variables from md
+        dirname         = md.private.runtimename
+        modelname       = md.miscellaneous.name
+        solution        = md.private.solution
+        io_gather       = md.settings.io_gather
+        isvalgrind      = md.debug.valgrind
+        isgprof         = md.debug.gprof
+        isdakota        = md.qmu.isdakota
+        isoceancoupling = md.transient.isoceancoupling
+
         # Which executable are we calling?
         executable = 'issm.exe' # default
 
@@ -85,44 +97,9 @@ class generic_static(object):
         codepath = self.codepath.replace(' ', r'\ ')
 
         # Write queuing script
-        fid = open(modelname + '.queue', 'w')
+        fid = open(filename, 'w')
         fid.write('#!{}'.format(self.shell) + '\n')
         fid.write('{}/mpiexec -np {} {}/{} {} {} {}'.format(codepath, self.np, codepath, executable, solution, './', modelname))
-        fid.close()
-
-        # Set permissions on queue script so that it can be run
-        subprocess.call(['chmod', '0755', modelname + '.queue'])
-
-        # Create an errlog and outlog file
-        fid = open(modelname + '.errlog', 'w')
-        fid.close()
-        fid = open(modelname + '.outlog', 'w')
-        fid.close()
-    # }}}
-
-    def BuildKrigingQueueScript(self, modelname, solution, io_gather, isvalgrind, isgprof):  # {{{
-        # Which executable are we calling?
-        executable = 'kriging.exe' # default
-
-        if isdakota:
-            version = IssmConfig('_DAKOTA_VERSION_')
-            version = float(version[0])
-            if version >= 6:
-                executable = 'issm_dakota.exe'
-        if isoceancoupling:
-            executable = 'issm_ocean.exe'
-
-        # Check that executable exists at the right path
-        if not os.path.isfile(self.codepath + '/' + executable):
-            raise RuntimeError('File ' + self.codepath + '/' + executable + ' does not exist')
-
-        # Process codepath and prepend empty spaces with \ to avoid errors in queuing script
-        codepath = self.codepath.replace(' ', r'\ ')
-
-        # Write queuing script
-        fid = open(modelname + '.queue', 'w')
-        fid.write('#!{}'.format(self.shell) + '\n')
-        fid.write('{}/mpiexec -np {} {}/{} {} {} {}'.format(codepath, self.np, codepath, executable, solution, './', modelname) + '\n')
         fid.close()
 
         # Set permissions on queue script so that it can be run

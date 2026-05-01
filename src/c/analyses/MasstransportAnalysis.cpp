@@ -239,6 +239,43 @@ void MasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoM
 			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.basin_id",BasalforcingsLinearBasinIdEnum);
 			if(isstochastic) iomodel->FetchDataToInput(inputs,elements,"md.stochasticforcing.default_id",StochasticForcingDefaultIdEnum);
 			break;
+		case BasalforcingsIsmip7Enum:{
+			/*TODO: Update for ISMIP7*/
+			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.basin_id",BasalforcingsIsmip7BasinIdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.basalforcings.coriolis_f",BasalforcingsCoriolisFEnum);
+			
+			/*Deal with tf...*/
+			IssmDouble* array2d = NULL; int M,N,K; IssmDouble* temp = NULL;
+			iomodel->FetchData(&temp,&M,&K,"md.basalforcings.tf_depths"); xDelete<IssmDouble>(temp);
+			_assert_(M==1); _assert_(K>=1);
+			for(int kk=0;kk<K;kk++){
+
+				/*Fetch TF for this depth*/
+				iomodel->FetchData(&array2d, &M, &N, kk, "md.basalforcings.tf");
+				if(!array2d) _error_("md.basalforcings.tf not found in binary file");
+				for(Object* & object : elements->objects){
+					Element*  element = xDynamicCast<Element*>(object);
+					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
+					element->DatasetInputAdd(BasalforcingsIsmip7TfEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7TfEnum,kk);
+				}
+				xDelete<IssmDouble>(array2d);
+			}
+			
+			/*Deal with salinity...*/
+			for(int kk=0;kk<K;kk++){
+
+				/*Fetch Salinity for this depth*/
+				iomodel->FetchData(&array2d, &M, &N, kk, "md.basalforcings.salinity");
+				if(!array2d) _error_("md.basalforcings.salinity not found in binary file");
+				for(Object* & object : elements->objects){
+					Element*  element = xDynamicCast<Element*>(object);
+					if(iomodel->domaintype!=Domain2DhorizontalEnum && !element->IsOnBase()) continue;
+					element->DatasetInputAdd(BasalforcingsIsmip7SalinityEnum,array2d,inputs,iomodel,M,N,1,BasalforcingsIsmip7SalinityEnum,kk);
+				}
+				xDelete<IssmDouble>(array2d);
+			}
+												}
+			break;
 		default:
 			_error_("Basal forcing model "<<EnumToStringx(basalforcing_model)<<" not supported yet");
 	}
@@ -872,15 +909,23 @@ ElementVector* MasstransportAnalysis::CreatePVectorDG(Element* element){/*{{{*/
 	  	else if(melt_style==IntrusionMeltEnum){
 			Input* gldistance_input = element->GetInput(DistanceToGroundinglineEnum);              	_assert_(gldistance_input); 
 			gldistance_input->GetInputValue(&gldistance,gauss);
-			if (intrusiondist_avg==0)
-				if(gllevelset>0.) mb=gmb;
-				else mb=fmb;
-	        else if(gldistance>intrusiondist_avg) 
+			if(intrusiondist_avg==0){
+				if(gllevelset>0.){
+					mb=gmb;
+				}
+				else{
+					mb=fmb;
+				}
+			}
+			else if(gldistance>intrusiondist_avg){
 				mb=gmb;
-			else if(gldistance<=intrusiondist_avg && gldistance>0) 
+			}
+			else if(gldistance<=intrusiondist_avg && gldistance>0) {
 				mb=fmb*(1-gldistance/intrusiondist_avg); 
-			else
+			}
+			else{
 				mb=fmb;
+			}
     	}
       	else  _error_("melt interpolation "<<EnumToStringx(melt_style)<<" not implemented yet");
 
@@ -937,7 +982,6 @@ void           MasstransportAnalysis::InputUpdateFromSolution(IssmDouble* soluti
 	}
 	element->AddBasalInput(ThicknessEnum,newthickness,element->GetElementType());
 	element->AddBasalInput(ThicknessResidualEnum,thicknessresidual,element->GetElementType());
-
 	xDelete<int>(doflist);
 	xDelete<IssmDouble>(newthickness);
  	xDelete<IssmDouble>(thicknessresidual);
@@ -1020,7 +1064,6 @@ void           MasstransportAnalysis::InputUpdateFromSolution(IssmDouble* soluti
 	xDelete<IssmDouble>(phi);
 	xDelete<IssmDouble>(sealevel);
 	xDelete<IssmDouble>(bed);
-	xDelete<int>(doflist);
 	if(basalelement->IsSpawnedElement()){basalelement->DeleteMaterials(); delete basalelement;};
 }/*}}}*/
 void           MasstransportAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
@@ -1047,7 +1090,6 @@ ElementMatrix* MasstransportAnalysis::CreateFctKMatrix(Element* element){/*{{{*/
 	ElementMatrix* Ke     = element->NewElementMatrix();
 	IssmDouble*    basis  = xNew<IssmDouble>(numnodes);
 	IssmDouble*    dbasis = xNew<IssmDouble>(dim*numnodes);
-	IssmDouble*    D      = xNewZeroInit<IssmDouble>(dim*dim);
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
@@ -1081,7 +1123,6 @@ ElementMatrix* MasstransportAnalysis::CreateFctKMatrix(Element* element){/*{{{*/
 
 	/*Clean up and return*/
 	xDelete<IssmDouble>(xyz_list);
-	xDelete<IssmDouble>(D);
 	xDelete<IssmDouble>(basis);
 	xDelete<IssmDouble>(dbasis);
 	delete gauss;
@@ -1156,7 +1197,6 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Initialize Element vector and other vectors*/
 	ElementVector* pe    = element->NewElementVector();
 	IssmDouble*    basis = xNew<IssmDouble>(numnodes);
-	IssmDouble*    dbasis= xNew<IssmDouble>(dim*numnodes);
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
@@ -1216,7 +1256,6 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Clean up and return*/
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(basis);
-	xDelete<IssmDouble>(dbasis);
 	delete gauss;
 	return pe;
 }/*}}}*/

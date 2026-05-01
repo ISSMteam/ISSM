@@ -16,6 +16,7 @@
 
 /*IntVecParam constructors and destructor*/
 IntVecParam::IntVecParam(){/*{{{*/
+	this->values = NULL;
 	return;
 }
 /*}}}*/

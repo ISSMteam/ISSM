@@ -72,11 +72,11 @@ function [analyses]=AnalysisConfiguration(solutiontype), % {{{
 	elseif strcmp(solutiontype,'EsaSolution')
 		analyses={'EsaAnalysis'};
 	elseif strcmp(solutiontype,'TransientSolution')
-		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','ThermalAnalysis','MeltingAnalysis','EnthalpyAnalysis','MasstransportAnalysis','OceantransportAnalysis','HydrologyShaktiAnalysis','HydrologyGladsAnalysis','HydrologyShreveAnalysis','HydrologyTwsAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','SealevelchangeAnalysis','AgeAnalysis','HydrologyArmapwAnalysis','AgeAnalysis','DebrisAnalysis'};
+		analyses={'StressbalanceAnalysis','StressbalanceVerticalAnalysis','StressbalanceSIAAnalysis','L2ProjectionBaseAnalysis','ThermalAnalysis','MeltingAnalysis','EnthalpyAnalysis','MasstransportAnalysis','OceantransportAnalysis','HydrologyShaktiAnalysis','HydrologyGladsAnalysis','HydrologyShreveAnalysis','HydrologyTwsAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyPrescribeAnalysis','SealevelchangeAnalysis','AgeAnalysis','HydrologyArmapwAnalysis','AgeAnalysis','DebrisAnalysis'};
 	elseif strcmp(solutiontype,'SealevelchangeSolution')
 		analyses={'SealevelchangeAnalysis'};
 	elseif strcmp(solutiontype,'HydrologySolution')
-		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis'};
+		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis','HydrologyPrescribeAnalysis'};
 	elseif strcmp(solutiontype,'DamageEvolutionSolution')
 		analyses={'DamageEvolutionAnalysis'};
     elseif strcmp(solutiontype,'SamplingSolution')

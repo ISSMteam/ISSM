@@ -1,7 +1,7 @@
 function [bedout thicknessout] = interpBamber2001(X,Y),
 
 switch oshostname(),
-	case {'murdo','thwaites','astrid'}
+	case {'murdo','thwaites','astrid','wilkins.jpl.nasa.gov'}
 		bamber2001bedpath ='/u/astrid-r1b/ModelData/BamberDEMGreenland5km/bedrock.mat';
 		bamber2001thxpath ='/u/astrid-r1b/ModelData/BamberDEMGreenland5km/thickness.mat';
 	case {'ronne'}

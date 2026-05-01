@@ -259,8 +259,8 @@ classdef stressbalance
 			writejs2Darray(fid,[modelname '.stressbalance.loadingforce'],self.loadingforce);
 			writejscellstring(fid,[modelname '.stressbalance.requested_outputs'],self.requested_outputs);
 
-			writejs1Darray(fid,[modelname '.stressbalance.spcvx_base'],self.spcvx_shear);
-			writejs1Darray(fid,[modelname '.stressbalance.spcvy_base'],self.spcvy_shear);
+			writejs1Darray(fid,[modelname '.stressbalance.spcvx_base'],self.spcvx_base);
+			writejs1Darray(fid,[modelname '.stressbalance.spcvy_base'],self.spcvy_base);
 			writejs1Darray(fid,[modelname '.stressbalance.spcvx_shear'],self.spcvx_shear);
 			writejs1Darray(fid,[modelname '.stressbalance.spcvy_shear'],self.spcvy_shear);
 		end % }}}

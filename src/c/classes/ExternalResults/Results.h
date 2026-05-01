@@ -21,7 +21,6 @@ class Results: public DataSet{
 
 		/*Mehthos*/
 		int AddResult(ExternalResult* result);
-		int DeleteResult(int result_enum,int result_step);
 		ExternalResult* FindResult(int result_enum);
 		void Write(Parameters* parameters);
 };

@@ -54,6 +54,8 @@ Input* DatasetInput::copy() {/*{{{*/
 			output->inputs[i] = this->inputs[i]->copy();
 		}
 	}
+	output->numberofelements_local = this->numberofelements_local;
+	output->numberofvertices_local = this->numberofvertices_local;
 
 	return output;
 }

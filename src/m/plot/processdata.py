@@ -158,9 +158,9 @@ def processdata(md, data, options):
 
         # }}}
 
-    # layer procesiong? {{{
+    # layer processing? {{{
     if options.getfieldvalue('layer',0)>=1:
-        procdata=project2d(md,data,options.getfieldvalue('layer'))
+        procdata=project2d(md,procdata,options.getfieldvalue('layer'))
 
     if options.getfieldvalue('depthaverage',0):
         raise Exception('Error: "depthaverage" option is not supported in Python.')

@@ -16,6 +16,7 @@
 
 /*MatrixParam constructors and destructor*/
 MatrixParam::MatrixParam(){/*{{{*/
+	this->value = NULL;
 	return;
 }
 /*}}}*/

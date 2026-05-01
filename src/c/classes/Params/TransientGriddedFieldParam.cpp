@@ -16,6 +16,8 @@
 
 /*TransientGriddedFieldParam constructors and destructor*/
 TransientGriddedFieldParam::TransientGriddedFieldParam(){/*{{{*/
+	this->values = NULL;
+	this->timesteps = NULL;
 	return;
 }
 /*}}}*/
@@ -112,8 +114,8 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int* index,int row,int column,IssmDouble time){/*{{{*/
 
 	IssmDouble output;
-	int output_id;
-	bool       found;
+	int        output_id;
+	bool       found = false;
 	_assert_(row>=0 && row<this->M); 
 	_assert_(column>=0 && column<this->N); 
 

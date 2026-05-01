@@ -385,17 +385,17 @@ int  Node::GetDof(int dofindex,int setenum){/*{{{*/
 
 } /*}}}*/
 void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum,bool hideclones){/*{{{*/
+
 	_assert_(!this->indexingupdate);
-	int i;
 
 	int* doflistpointer = NULL;
-	if(setenum==GsetEnum) doflistpointer = gdoflist;
-	else if(setenum==FsetEnum)for(i=0;i<this->gsize;i++) doflistpointer = fdoflist;
-	else if(setenum==SsetEnum)for(i=0;i<this->gsize;i++) doflistpointer = sdoflist;
+	if(setenum==GsetEnum)      doflistpointer = gdoflist;
+	else if(setenum==FsetEnum) doflistpointer = fdoflist;
+	else if(setenum==SsetEnum) doflistpointer = sdoflist;
 	else _error_("not supported");
 
 	if(approximation_enum==NoneApproximationEnum){
-		for(i=0;i<this->gsize;i++){
+		for(int i=0;i<this->gsize;i++){
 			if(hideclones && this->IsClone()){
 				outdoflist[i]=-1;
 			}
@@ -407,14 +407,14 @@ void Node::GetDofList(int* outdoflist,int approximation_enum,int setenum,bool hi
 	else{
 		if(doftype){
 			int count = 0;
-			for(i=0;i<this->gsize;i++){
+			for(int i=0;i<this->gsize;i++){
 				if(doftype[i]==approximation_enum){
 					outdoflist[count++]=doflistpointer[i];
 				}
 			}
 		}
 		else{
-			for(i=0;i<this->gsize;i++){
+			for(int i=0;i<this->gsize;i++){
 				if(hideclones && this->IsClone()){
 					outdoflist[i]=-1;
 				}

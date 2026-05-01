@@ -1,14 +1,19 @@
 
 #Initializing configure
-AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[2026.1],[https://github.com/ISSMteam/ISSM/],[issm],[https://issmteam.github.io/ISSM-Documentation/])
+AC_INIT([Ice-sheet and Sea-level System Model (ISSM)],[2026.2],[https://github.com/ISSMteam/ISSM/],[issm],[https://issmteam.github.io/ISSM-Documentation/])
 AC_CONFIG_AUX_DIR([./aux-config]) # Put config files in aux-config
 AC_CONFIG_MACRO_DIR([m4])         # m4 macros are located in m4
 m4_include([m4/issm_options.m4])
 
 #print header
 AC_MSG_NOTICE(============================================================================)
-AC_MSG_NOTICE(=      AC_PACKAGE_NAME AC_PACKAGE_VERSION configuration      =)
+AC_MSG_NOTICE(=      AC_PACKAGE_NAME AC_PACKAGE_VERSION configuration    =)
 AC_MSG_NOTICE(============================================================================)
+
+#Make sure options were provided
+AS_IF([test "x$prefix" = "xNONE"],[AC_MSG_ERROR([--prefix is not provided.
+		 Did you run ./configure without any option?
+		 Maybe you meant to run ./configure.sh?])])
 
 #Determine System type and OS
 AC_CANONICAL_TARGET

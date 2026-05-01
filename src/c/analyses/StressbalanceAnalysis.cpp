@@ -451,8 +451,6 @@ void StressbalanceAnalysis::CreateConstraints(Constraints* constraints,IoModel* 
 	xDelete<IssmDouble>(timesx);
 	xDelete<IssmDouble>(timesy);
 	xDelete<IssmDouble>(timesz);
-	xDelete<IssmDouble>(values);
-
 }/*}}}*/
 void StressbalanceAnalysis::CreateLoads(Loads* loads, IoModel* iomodel){/*{{{*/
 
@@ -2188,8 +2186,8 @@ void StressbalanceAnalysis::ComputeHydrologySlope(IssmDouble* hydrologyslope,Gau
 	}
 	switch(point1){//{{{
 		case 0:
-			Hl_f1=H[0]+(Hl[1]-Hl[0])*fraction1;
-			Hl_f2=H[0]+(Hl[2]-Hl[0])*fraction2;
+			Hl_f1=Hl[0]+(Hl[1]-Hl[0])*fraction1;
+			Hl_f2=Hl[0]+(Hl[2]-Hl[0])*fraction2;
 			break;
 		case 1:
 			Hl_f1=Hl[1]+(Hl[2]-Hl[1])*fraction1;
@@ -2282,7 +2280,6 @@ void StressbalanceAnalysis::ComputeHydrologySlope(IssmDouble* hydrologyslope,Gau
 	xDelete<IssmDouble>(h);
 	xDelete<IssmDouble>(Hl);
 	xDelete<IssmDouble>(h_r);
-	xDelete<IssmDouble>(Sl_subelem);
 
 }/*}}}*/
 void StressbalanceAnalysis::NodalFunctionsDerivativesRGB(IssmDouble* dbasis_subelem,Gauss* gauss_DG,Gauss* gauss_CG,int point1,IssmDouble fraction1,IssmDouble fraction2,int ig,int dim,Element* element){/*{{{*/
@@ -3651,7 +3648,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHO(Element* element){/*{{{*/
 		forcex=fx(x_coord,y_coord,z_coord,FSANALYTICAL);
 		forcey=fy(x_coord,y_coord,z_coord,FSANALYTICAL);
 
-		IssmDouble Jdet*gauss->weight;
+		IssmDouble factor = Jdet*gauss->weight;
 		for(int i=0;i<numnodes;i++){
 			pe->values[i*(dim-1)+0]+=forcex*factor*basis[i];
 			pe->values[i*(dim-1)+1]+=forcey*factor*basis[i];
@@ -4772,7 +4769,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscousXTH(Element* element
 	element->FindParam(&FSreconditioning,StressbalanceFSreconditioningEnum);
 	Input* vx_input=element->GetInput(VxEnum);     _assert_(vx_input);
 	Input* vy_input=element->GetInput(VyEnum);     _assert_(vy_input);
-	Input* vz_input;
+	Input* vz_input=NULL;
 	if(dim==3){vz_input=element->GetInput(VzEnum); _assert_(vz_input);}
 
 	/* Start  looping on the number of gaussian points: */
@@ -4886,7 +4883,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFS(Element* element){/*{{{*/
 
 	ElementVector* pe1=CreatePVectorFSViscous(element);
 	ElementVector* pe2=CreatePVectorFSFriction(element);
-	ElementVector* pe3=CreatePVectorFSStress(element);
 	pe =new ElementVector(pe1,pe2,pe3);
 	delete pe1;
 	delete pe2;
@@ -4935,65 +4931,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSFriction(Element* element){
 			pe->values[i*dim+1] += factor*vbasis[i]*bed_normal[0];
 			if(dim==3){
 				pe->values[i*dim+2]+= factor*vbasis[i];
-			}
-		}
-
-	}
-
-	/*DO NOT Transform Coordinate System: this stiffness matrix is already expressed in tangential coordinates*/
-
-	/*Clean up and return*/
-	delete gauss;
-	xDelete<IssmDouble>(xyz_list_base);
-	xDelete<IssmDouble>(vbasis);
-	return pe;
-}/*}}}*/
-ElementVector* StressbalanceAnalysis::CreatePVectorFSStress(Element* element){/*{{{*/
-
-	/*Skipping for now*/
-	return NULL;
-	if(!element->IsOnBase()) return NULL;
-
-	/*Intermediaries*/
-	int         dim;
-	IssmDouble  sigmann,sigmant,Jdet,bedslope,beta;
-	IssmDouble *xyz_list_base = NULL;
-	Gauss*      gauss         = NULL;
-
-	/*Get problem dimension*/
-	element->FindParam(&dim,DomainDimensionEnum);
-
-	/*Fetch number of nodes and dof for this finite element*/
-	int vnumnodes = element->NumberofNodesVelocity();
-
-	/*Initialize Element matrix and vectors*/
-	ElementVector* pe = element->NewElementVector(FSvelocityEnum);
-	IssmDouble*    vbasis = xNew<IssmDouble>(vnumnodes);
-
-	/*Retrieve all inputs and parameters*/
-	element->GetVerticesCoordinatesBase(&xyz_list_base);
-	Input*  sigmann_input=element->GetInput(VzEnum); _assert_(sigmann_input);
-	Input*  sigmant_input=element->GetInput(TemperatureEnum); _assert_(sigmant_input);
-	Input*  bedslope_input=element->GetInput(BedSlopeXEnum);     _assert_(bedslope_input);
-
-	/* Start  looping on the number of gaussian points: */
-	gauss=element->NewGaussBase(3);
-	while(gauss->next()){
-
-		sigmann_input->GetInputValue(&sigmann, gauss);
-		sigmant_input->GetInputValue(&sigmant, gauss);
-		bedslope_input->GetInputValue(&bedslope, gauss);
-		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
-		element->NodalFunctionsVelocity(vbasis,gauss);
-
-		beta=sqrt(1+bedslope*bedslope);
-		IssmDouble factor = - (1./beta)*gauss->weight*Jdet;
-		for(int i=0;i<vnumnodes;i++){
-			pe->values[i*dim+0] += factor*(-bedslope*sigmann + sigmant)*vbasis[i];
-			pe->values[i*dim+1] += factor*(sigmann + bedslope*sigmant)*vbasis[i];
-			if(dim==3){
-				//pe->values[i*dim+2]+= alpha2*gauss->weight*Jdet*vbasis[i];
-				_error_("3d not supported yet");
 			}
 		}
 
@@ -6484,7 +6421,7 @@ void           StressbalanceAnalysis::InitializeXTH(Elements* elements,Parameter
 		element->GetVerticesCoordinates(&xyz_list);
 		Input* vx_input=element->GetInput(VxEnum); _assert_(vx_input);
 		Input* vy_input=element->GetInput(VyEnum); _assert_(vy_input);
-		Input* vz_input;
+		Input* vz_input=NULL;
 		if(dim==3){vz_input=element->GetInput(VzEnum); _assert_(vz_input);}
 
 		/*Allocate new inputs*/

@@ -10,24 +10,21 @@
 
 /*threading: */
 typedef struct{
-
-	int                 interpolation_type;
-	bool                debug;
-	int                 nels_data;
-	int                *index_data;
-	double              *x_data;
-	double              *y_data;
-	double              *data;
-	double              xmin,xmax;
-	double              ymin,ymax;
-	int                 nods_prime;
+	int       interpolation_type;
+	int       nels_data;
+	int      *index_data;
+	double   *x_data;
+	double   *y_data;
+	double   *data;
+	double    xmin,xmax;
+	double    ymin,ymax;
+	int       nods_prime;
 	IssmSeqVec<IssmPDouble> *data_prime;
-	double              *x_prime;
-	double              *y_prime;
-	double              *default_values;
-	int                 num_default_values;
-	double              *incontour;
-
+	double   *x_prime;
+	double   *y_prime;
+	double   *default_values;
+	int       num_default_values;
+	double   *incontour;
 } InterpFromMesh2dxThreadStruct;
 
 int InterpFromMesh2dx(IssmSeqVec<IssmPDouble>** pdata_prime,int* index_data, double* x_data, double* y_data, int nods_data,int nels_data, double* data, int data_length, double* x_prime, double* y_prime, int nods_prime,

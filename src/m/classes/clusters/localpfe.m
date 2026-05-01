@@ -74,7 +74,17 @@ classdef localpfe
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota,isoceancoupling) % {{{
+		function BuildQueueScript(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script 
 			%what is the executable being called? 
@@ -86,26 +96,26 @@ classdef localpfe
 				end
 			end
 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!%s\n',cluster.shell);
 			fprintf(fid,'mpiexec -np %i %s/%s %s %s %s \n',cluster.np,cluster.codepath,executable,solution,cluster.executionpath,modelname);
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
-				fid=fopen([modelname '.run'],'w');
-				if cluster.interactive==10,
+			if cluster.interactive
+				fid=fopen([filename '.run'],'w');
+				if cluster.interactive==10
 						fprintf(fid,'module unload mpi-mvapich2/1.4.1/gcc\n');
 						fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,[pwd() '/run'],modelname);
 				else
-					if ~isvalgrind,
+					if ~isvalgrind
 						fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,cluster.executionpath,modelname);
 						%fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/Interactive' num2str(cluster.interactive)],modelname);
 					else
 						fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/Interactive' num2str(cluster.interactive)],modelname);
 					end
 				end
-				if ~io_gather, %concatenate the output files:
+				if ~io_gather %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end
 				fclose(fid);
@@ -115,7 +125,12 @@ classdef localpfe
 			end
 		end
 		%}}}
-		function BuildQueueScriptMultipleModels(cluster,dirname,modelname,solution,dirnames,modelnames,nps) % {{{
+		function BuildQueueScriptMultipleModels(cluster, slm, dirnames, modelnames, nps, filename) % {{{
+
+			%Get variables from slm
+			dirname         = slm.private.runtimename;
+			modelname       = slm.miscellaneous.name;
+			solution        = slm.private.solution;
 		
 			%some checks: 
 			if isempty(modelname), error('BuildQueueScriptMultipleModels error message: need a non empty model name!');end
@@ -126,11 +141,8 @@ classdef localpfe
 			if ispc & ~ismingw, error('BuildQueueScriptMultipleModels not support yet on windows machines');end;
 			
 			%write queuing script 
-			fid=fopen([modelname '.queue'],'w');
-			
+			fid=fopen(filename,'w');
 			fprintf(fid,'#!%s\n',cluster.shell);
-
-			%number of cpus: 
 			mpistring=sprintf('mpiexec -np %i ',cluster.np);
 
 			%executable: 
@@ -147,11 +159,11 @@ classdef localpfe
 			
 			%icecaps, glaciers and earth location, names and number of processors associated:
 			for i=1:length(dirnames),
-			mpistring=[mpistring sprintf(' %s/%s %s %i ',cluster.executionpath,dirnames{i},modelnames{i},nps{i})];
+				mpistring=[mpistring sprintf(' %s/%s %s %i ',cluster.executionpath,dirnames{i},modelnames{i},nps{i})];
 			end
 
 			%log files: 
-			if ~cluster.interactive,
+			if ~cluster.interactive
 				mpistring=[mpistring sprintf('2> %s.errlog> %s.outlog',modelname,modelname)];
 			end
 
@@ -160,78 +172,82 @@ classdef localpfe
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildQueueScriptIceOcean(cluster,dirname,modelname,solution,io_gather,isvalgrind,isgprof,isdakota) % {{{
+		function BuildQueueScriptIceOcean(cluster, md, filename) % {{{
+
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script 
 			%what is the executable being called? 
 			executable='issm_ocean.exe';
 
-			fid=fopen([modelname '.queue'],'w');
+			fid=fopen(filename, 'w');
 			fprintf(fid,'#!%s\n',cluster.shell);
 			fprintf(fid,'mpiexec -np %i %s/%s %s %s %s : -np %i ./mitgcmuv\n',cluster.np,cluster.codepath,executable,solution,cluster.executionpath,modelname,cluster.npocean);
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
-		function BuildKrigingQueueScript(cluster,modelname,solution,io_gather,isvalgrind,isgprof) % {{{
+		function BuildKrigingQueueScript(cluster, md, filename) % {{{
 
-			%write queuing script 
-			if ~ispc,
+         %Get variables from md
+         dirname         = md.private.runtimename;
+         modelname       = md.miscellaneous.name;
+         solution        = md.private.solution;
+         io_gather       = md.settings.io_gather;
+         isvalgrind      = md.debug.valgrind;
+         isgprof         = md.debug.gprof;
+         isdakota        = md.qmu.isdakota;
+         isoceancoupling = md.transient.isoceancoupling;
 
-				fid=fopen([modelname '.queue'],'w');
-				fprintf(fid,'#!/bin/sh\n');
-				if ~isvalgrind,
-					if cluster.interactive
-						fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname);
-					else
-						fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
-					end
-				elseif isgprof,
-					fprintf(fid,'\n gprof %s/kriging.exe gmon.out > %s.performance',cluster.codepath,modelname);
-				else
-					%Add --gen-suppressions=all to get suppression lines
-					fprintf(fid,'LD_PRELOAD=%s \\\n',cluster.valgrindlib);
-					fprintf(fid,'mpiexec -np %i %s --leak-check=full --suppressions=%s %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',...
-						cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
-				end
-				if ~io_gather, %concatenate the output files:
-					fprintf(fid,'\ncat %s.outbin.* > %s.outbin',modelname,modelname);
-				end
-				fclose(fid);
-
-			else % Windows
-
-				fid=fopen([modelname '.bat'],'w');
-				fprintf(fid,'@echo off\n');
+			fid=fopen(filename, 'w');
+			fprintf(fid,'#!/bin/sh\n');
+			if ~isvalgrind
 				if cluster.interactive
-					fprintf(fid,'"%s/issm.exe" %s "%s" %s ',cluster.codepath,solution,[cluster.executionpath '/' modelname],modelname);
+					fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname);
 				else
-					fprintf(fid,'"%s/issm.exe" %s "%s" %s 2> %s.errlog >%s.outlog',...
-						cluster.codepath,solution,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
+					fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
 				end
-				fclose(fid);
+			elseif isgprof
+				fprintf(fid,'\n gprof %s/kriging.exe gmon.out > %s.performance',cluster.codepath,modelname);
+			else
+				%Add --gen-suppressions=all to get suppression lines
+				fprintf(fid,'LD_PRELOAD=%s \\\n',cluster.valgrindlib);
+				fprintf(fid,'mpiexec -np %i %s --leak-check=full --suppressions=%s %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',...
+					cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
 			end
+			if ~io_gather, %concatenate the output files:
+				fprintf(fid,'\ncat %s.outbin.* > %s.outbin',modelname,modelname);
+			end
+			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist)% {{{
-			if ~ispc | ismingw,
+			if ~ispc || ismingw
 
 				%compress the files into one zip.
 				compressstring=['tar -zcf ' dirname '.tar.gz '];

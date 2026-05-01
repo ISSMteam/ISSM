@@ -356,6 +356,17 @@ void PositiveDegreeDaySicopolisx(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
+void PositiveDegreeDayFastx(FemModel* femmodel){/*{{{*/
+
+	bool isfirnwarming;
+	femmodel->parameters->FindParam(&isfirnwarming,SmbIsfirnwarmingEnum);
+
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->PositiveDegreeDayFast(isfirnwarming);
+	}
+
+}/*}}}*/
 void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	IssmDouble* x = NULL;
 	IssmDouble* y = NULL;
@@ -404,6 +415,24 @@ void PositiveDegreeDayGCMx(FemModel* femmodel){/*{{{*/
 	xDelete<IssmDouble>(annualtemp);
 	xDelete<IssmDouble>(precepitation);
 }/*}}}*/
+#ifdef _HAVE_PyBind11_
+void SmbEmulatorx(FemModel* femmodel){/*{{{*/
+
+	if(!femmodel->parameters->Exist(SmbEmulatorEnum)) _error_("SmbEmulatorEnum not found; SMB emulator was not initialized");
+	Param* emulator_param = femmodel->parameters->FindParamObject(SmbEmulatorEnum);
+	if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Parameter should be EmulatorParam");
+	EmulatorParam* smbemulator = xDynamicCast<EmulatorParam*>(emulator_param);
+
+	IssmDouble timeinputs;
+	femmodel->parameters->FindParam(&timeinputs,TimeEnum);
+
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->SmbEmulator(timeinputs, smbemulator);
+	}
+
+}/*}}}*/
+#endif
 void SmbHenningx(FemModel* femmodel){/*{{{*/
 
 	/*Intermediaries*/

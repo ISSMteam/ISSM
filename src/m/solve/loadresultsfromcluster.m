@@ -18,12 +18,12 @@ md.private.runtimename = getfieldvalue(options,'runtimename',md.private.runtimen
 cluster=md.cluster;
 
 %Download outputs from the cluster
-if ~nolog,
+if ~nolog
 	filelist={[md.miscellaneous.name '.outlog'],[md.miscellaneous.name '.errlog']};
 else
 	filelist={};
 end
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	filelist{end+1}=[md.miscellaneous.name '.qmu.err'];
 	filelist{end+1}=[md.miscellaneous.name '.qmu.out'];
 	if isfield(md.qmu.params,'tabular_graphics_data'),
@@ -56,7 +56,7 @@ for i=1:numel(filelist)
 		delete(filename)
 	end
 end
-if exist([md.private.runtimename '.tar.gz']) & ~ispc(),
+if exist([md.private.runtimename '.tar.gz']) & ~ispc()
 	delete([md.private.runtimename '.tar.gz']);
 end
 
@@ -68,7 +68,7 @@ if strcmpi(hostname,cluster.name),
 	if md.qmu.isdakota
 		delete([md.miscellaneous.name '.qmu.in']);
 	end
-	if ~ispc(),
+	if ~ispc()
 		delete([md.miscellaneous.name '.queue']);
 	else
 		delete([md.miscellaneous.name '.bat']);

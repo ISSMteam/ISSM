@@ -136,7 +136,7 @@ class transient(object):
         md = checkfield(md, 'fieldname', 'transient.isoceancoupling', 'numel', [1], 'values', [0, 1, 2])
         md = checkfield(md, 'fieldname', 'transient.amr_frequency', 'numel', [1], '>=', 0, 'NaN', 1, 'Inf', 1)
 
-        if solution != 'TransientSolution' and md.transient.iscoupling:
+        if solution != 'TransientSolution' and md.transient.isoceancoupling:
             md.checkmessage("Coupling with ocean can only be done in transient simulations!")
         if md.transient.isdamageevolution and not hasattr(md.materials, 'matdamageice'):
             md.checkmessage("requesting damage evolution but md.materials is not of class matdamageice")

@@ -39,6 +39,9 @@ template <class doubletype> class Vector;
 class ElementMatrix;
 class ElementVector;
 class BarystaticContributions;
+#if _HAVE_PyBind11_
+class EmulatorParam;
+#endif
 /*}}}*/
 
 class Element: public Object{
@@ -160,6 +163,7 @@ class Element: public Object{
 		bool		   IsAllMinThicknessInElement();
 		bool               IsLandInElement();
 		void               Ismip6FloatingiceMeltingRate();
+        void               Ismip7FloatingiceMeltingRate();
 		void               LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation);
 		void               LinearFloatingiceMeltingRate();
 		void               SpatialLinearFloatingiceMeltingRate();
@@ -179,7 +183,11 @@ class Element: public Object{
 		void               PicoComputeBasalMelt();
 		void               PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDouble signorm,bool ismungsm,bool issetpddfac);
 		void               PositiveDegreeDaySicopolis(bool isfirnwarming);
+		void               PositiveDegreeDayFast(bool isfirnwarming);
 		void               PositiveDegreeDayGCM();
+		#ifdef _HAVE_PyBind11_
+		void               SmbEmulator(IssmDouble timeinputs, EmulatorParam* emulator);
+		#endif
 		void               ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum);
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();
@@ -206,6 +214,7 @@ class Element: public Object{
 		void               SubglacialWaterPressure(int output_enum);
 		IssmDouble         TotalFloatingBmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalGroundedBmb(IssmDouble* mask, bool scaled);
+		IssmDouble         TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbMelt(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbRefreeze(IssmDouble* mask, bool scaled);
@@ -395,6 +404,7 @@ class Element: public Object{
 		virtual IssmDouble TotalCalvingMeltingFluxLevelset(bool scaled){_error_("not implemented");};
 		virtual IssmDouble TotalFloatingBmb(bool scaled)=0;
 		virtual IssmDouble TotalGroundedBmb(bool scaled)=0;
+		virtual IssmDouble TotalHydrologyBasalFlux(bool scaled)=0;
 		virtual IssmDouble TotalSmb(bool scaled)=0;
 		virtual IssmDouble TotalSmbMelt(bool scaled)=0;
 		virtual IssmDouble TotalSmbRefreeze(bool scaled)=0;
