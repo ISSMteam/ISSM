@@ -32,6 +32,7 @@ class SMBgemb(object):
         self.isconstrainsurfaceT = 0
         self.isdeltaLWup         = 0
         self.ismappedforcing     = 0
+        self.ismappingusingneighbors = 0
         self.isprecipforcingremapped = 0
         self.iscompressedforcing = 0
 
@@ -55,7 +56,16 @@ class SMBgemb(object):
         self.teValue                = np.nan    # Outward longwave radiation thermal emissivity forcing at every element (default in code is 1), Used only if eIdx== 0, or effective grain radius exceeds teThresh
         self.dulwrfValue            = np.nan    #Delta with which to perturb the long wave radiation upwards. Use if isdeltaLWup is true.
         self.mappedforcingpoint     = np.nan    #Mapping of which forcing point will map to each mesh element (integer). Of size number of elements. Use if ismappedforcing is true.
+        self.mappedforcingneighbors = np.nan    #Which forcing points should be used, along with mappedforcing point, to interpolate
+                                                # forcing between points, onto the element grid. Should be the the next three nearest points after
+                                                # mappedforcingpoint, which together surround the element in question. Used with the ismappedforcing
+                                                # and the ismappingusingneighbors options set true (integer). Size number of elements x 3.');
+
         self.mappedforcingelevation = np.nan    #The elevation of each mapped forcing location (m above sea level). Of size number of forcing points. Use if ismappedforcing is true.
+        self.lat_mappedforcing = np.nan    #The latitude coordinate of each mapped forcing location (m). Of size number
+                                           # of forcing points. Use if ismappedforcing is true.
+        self.lon_mappedforcing = np.nan    #The longitude coordinate of each mapped forcing location (m). Of size number
+                                           # of forcing points. Use if ismappedforcing is true.
         self.mappedforcingprecipscaling = np.nan #Map of a precipitation multiplier correction term to be applied to forcing P. Of size number of elements. Use if ismappedforcing is true and isprecipforcingremapped is true. (Default value is 1)
 
         self.lapseTaValue           = np.nan    #Temperature lapse rate if forcing has different grid and should be remapped. Use if ismappedforcing is true. (Default value is -0.006 K m-1., vector of mapping points)
@@ -183,6 +193,7 @@ class SMBgemb(object):
         s += '{}\n'.format(fielddisplay(self, 'isconstrainsurfaceT', 'constrain surface temperatures to air temperature, turn off EC and surface flux contribution to surface temperature change (default false)'))
         s += '{}\n'.format(fielddisplay(self, 'isdeltaLWup', 'set to true to invoke a bias in the long wave upward spatially, specified by dulwrfValue (default false)'))
         s += '{}\n'.format(fielddisplay(self,'ismappedforcing','set to true if forcing grid does not match model mesh, mapping specified by mappedforcingpoint (default false)'))
+        s += '{}\n'.format(fielddisplay(self,'ismappingusingneighbors','set to true if forcing when ismappedforcing is true, forcing should be interpolated instead of using mappedforcingpoint value (default false)'))
         s += '{}\n'.format(fielddisplay(self,'isprecipforcingremapped','set to true if ismappedforcing is true and precip should be downscaled from native grid (Default value is true)'))
         s += '{}\n'.format(fielddisplay(self,'iscompressedforcing','set to true to compress the input matrices when writing to binary (default false)'))
         s += '{}\n'.format(fielddisplay(self, 'Ta', '2 m air temperature, in Kelvin'))
@@ -229,7 +240,10 @@ class SMBgemb(object):
             '2: after Calonne et al., 2011']))
 
         s += '{}\n'.format(fielddisplay(self,'mappedforcingpoint','Mapping of which forcing point will map to each mesh element for ismappedforcing option (integer). Size number of elements.'))
+        s += '{}\n'.format(fielddisplay(self,'mappedforcingneighbors','Which forcing points should be used, along with mappedforcing point, to interpolate forcing between points, onto the element grid. Should be the the next three nearest points after mappedforcingpoint, which together surround the element in question. Used with the ismappedforcing and the ismappingusingneighbors options set true (integer). Set all columns to 0 to use nearest neighbor for that element. Size number of elements x 3.'))
         s += '{}\n'.format(fielddisplay(self,'mappedforcingelevation','The elevation of each mapped forcing location (m above sea level) for ismappedforcing option. Size number of forcing points.'))
+        s += '{}\n'.format(fielddisplay(self,'lat_mappedforcing','The latitude coordinate of each mapped forcing location (m) for ismappedforcing option. Size number of forcing points.'))
+        s += '{}\n'.format(fielddisplay(self,'lon_mappedforcing','The longitude coordinate of each mapped forcing location (m) for ismappedforcing option. Size number of forcing points.'))
         s += '{}\n'.format(fielddisplay(self,'mappedforcingprecipscaling','Map of a precipitation multiplier correction term to be applied to forcing P when ismappedforcing and isprecipforcingremapped options are true. Size number of elements. (Default is 1)'))
         s += '{}\n'.format(fielddisplay(self,'lapseTaValue','Temperature lapse rate of each mapped forcing location, if forcing has different grid and should be remapped for ismappedforcing option. (Default value is -0.006 K m-1, vector of mapping points)'))
         s += '{}\n'.format(fielddisplay(self,'lapsedlwrfValue','Longwave down lapse rate of each mapped forcing location if forcing has different grid and should be remapped for ismappedforcing option. Where set to 0, dlwrf will scale with a constant effective atmospheric emissivity. (Default value is -0.032 W m-2 m-1., vector of mapping points)'))
@@ -359,6 +373,7 @@ class SMBgemb(object):
         self.isconstrainsurfaceT = 0
         self.isdeltaLWup = 0
         self.ismappedforcing = 0
+        self.ismappingusingneighbors = 0
         self.isprecipforcingremapped = 1
         self.iscompressedforcing = 0
 
@@ -437,6 +452,7 @@ class SMBgemb(object):
         md = checkfield(md, 'fieldname', 'smb.isdeltaLWup', 'values',[0, 1])
         md = checkfield(md, 'fieldname', 'smb.isconstrainsurfaceT', 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'smb.ismappedforcing', 'values',[0, 1])
+        md = checkfield(md, 'fieldname', 'smb.ismappingusingneighbors', 'values',[0, 1])
         md = checkfield(md, 'fieldname', 'smb.isprecipforcingremapped', 'values',[0, 1])
         md = checkfield(md, 'fieldname', 'smb.iscompressedforcing', 'values',[0, 1])
 
@@ -461,6 +477,8 @@ class SMBgemb(object):
         if self.ismappedforcing:
             md = checkfield(md, 'fieldname', 'smb.mappedforcingpoint', 'size',[md.mesh.numberofelements], 'NaN', 1, 'Inf', 1, '>', 0, '<=' ,sizeta[0]-1)
             md = checkfield(md, 'fieldname', 'smb.mappedforcingelevation', 'size', [sizeta[0]-1], 'NaN', 1, 'Inf', 1)
+            md = checkfield(md, 'fieldname', 'smb.lat_mappedforcing', 'size', [sizeta[0]-1], 'NaN', 1, 'Inf' ,1)
+            md = checkfield(md, 'fieldname', 'smb.lon_mappedforcing', 'size', [sizeta[0]-1], 'NaN', 1, 'Inf' ,1)
             if np.prod(np.shape(self.lapseTaValue))==1:
                 print("WARNING:smb.lapseTaValue is now a vector of mapped elements. Set to md.smb.lapseTaValue*ones.np(np.shape(md.smb.mappedforcingelevation)).")
 
@@ -469,6 +487,12 @@ class SMBgemb(object):
 
             md = checkfield(md, 'fieldname', 'smb.lapseTaValue', 'size',[sizeta[0]-1],'NaN',1,'Inf',1);
             md = checkfield(md, 'fieldname', 'smb.lapsedlwrfValue', 'size',[sizeta[0]-1], 'NaN',1,'Inf',1);
+
+            if self.ismappingusingneighbors:
+                md = checkfield(md,'fieldname','smb.mappedforcingneighbors','size',[md.mesh.numberofelements, 3],'NaN',1,'Inf',1,'>=',0)
+                if np.prod(np.shape(self.mappedforcingneighbors))==1:
+                    print("WARNING:smb.mappedforcingneighbors is now a matrix of size [number_of_elements 3]. If ismappingusingneighbors is true, this matrix mush specify the mapping points, that along with mappedforcing point, surround each element.")
+
             if self.isprecipforcingremapped:
                 md = checkfield(md,'fieldname','smb.mappedforcingprecipscaling','size',[md.mesh.numberofelements],'NaN',1,'Inf',1,'>',0)
                 if np.prod(np.shape(self.mappedforcingprecipscaling))==1:
@@ -534,6 +558,7 @@ class SMBgemb(object):
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'isconstrainsurfaceT', 'format', 'Boolean')
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'isdeltaLWup', 'format', 'Boolean')
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'ismappedforcing', 'format', 'Boolean')
+        WriteData(fid,prefix,'object',self,'class','smb','fieldname','ismappingusingneighbors','format','Boolean')
         WriteData(fid, prefix, 'object', self, 'class', 'smb', 'fieldname', 'isprecipforcingremapped', 'format', 'Boolean')
 
         if self.iscompressedforcing:
@@ -607,8 +632,13 @@ class SMBgemb(object):
         if self.ismappedforcing:
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingpoint','format','IntMat','mattype',2)
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingelevation','format','DoubleMat','mattype',3)
+            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lat_mappedforcing','format','DoubleMat','mattype',3)
+            WriteData(fid,prefix,'object',self,'class','smb','fieldname','lon_mappedforcing','format','DoubleMat','mattype',3)
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','DoubleMat','mattype',3)
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','DoubleMat','mattype',3)
+            if self.ismappingusingneighbors:
+                WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','DoubleMat','mattype',3)
+
             if self.isprecipforcingremapped:
                 WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingprecipscaling','format','DoubleMat','mattype',2)
 

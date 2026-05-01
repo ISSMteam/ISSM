@@ -1207,6 +1207,8 @@
 	SmbMassBalanceSubstepEnum
 	SmbMassBalanceTransientEnum
 	SmbMaskEnum
+	SmbMaxXEnum
+	SmbMaxYEnum
 	SmbMeanLHFEnum
 	SmbMeanSHFEnum
 	SmbMeanULWEnum
@@ -5030,6 +5032,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbMassBalanceSubstepEnum) return "SmbMassBalanceSubstep" end
 	if(enum==SmbMassBalanceTransientEnum) return "SmbMassBalanceTransient" end
 	if(enum==SmbMaskEnum) return "SmbMask" end
+	if(enum==SmbMaxXEnum) return "SmbMaxX" end
+	if(enum==SmbMaxYEnum) return "SmbMaxY" end
 	if(enum==SmbMeanLHFEnum) return "SmbMeanLHF" end
 	if(enum==SmbMeanSHFEnum) return "SmbMeanSHF" end
 	if(enum==SmbMeanULWEnum) return "SmbMeanULW" end
@@ -8853,6 +8857,8 @@ function StringToEnum(name::String)
 	if(name=="SmbMassBalanceSubstep") return SmbMassBalanceSubstepEnum  end
 	if(name=="SmbMassBalanceTransient") return SmbMassBalanceTransientEnum  end
 	if(name=="SmbMask") return SmbMaskEnum  end
+	if(name=="SmbMaxX") return SmbMaxXEnum  end
+	if(name=="SmbMaxY") return SmbMaxYEnum  end
 	if(name=="SmbMeanLHF") return SmbMeanLHFEnum  end
 	if(name=="SmbMeanSHF") return SmbMeanSHFEnum  end
 	if(name=="SmbMeanULW") return SmbMeanULWEnum  end

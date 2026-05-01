@@ -461,6 +461,8 @@ SmbMassBalanceIce
 SmbMassBalanceSubstep
 SmbMassBalanceTransient
 SmbMask
+SmbMaxX
+SmbMaxY
 SmbMeanLHF
 SmbMeanSHF
 SmbMeanULW

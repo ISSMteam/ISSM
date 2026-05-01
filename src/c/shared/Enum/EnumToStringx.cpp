@@ -1220,6 +1220,8 @@ const char* EnumToStringx(int en){
 		case SmbMassBalanceSubstepEnum : return "SmbMassBalanceSubstep";
 		case SmbMassBalanceTransientEnum : return "SmbMassBalanceTransient";
 		case SmbMaskEnum : return "SmbMask";
+		case SmbMaxXEnum : return "SmbMaxX";
+		case SmbMaxYEnum : return "SmbMaxY";
 		case SmbMeanLHFEnum : return "SmbMeanLHF";
 		case SmbMeanSHFEnum : return "SmbMeanSHF";
 		case SmbMeanULWEnum : return "SmbMeanULW";
