@@ -14,6 +14,10 @@ md2=parameterize(md2,'../Par/SquareShelf.par');
 md.smb = SMBgemb(md.mesh);
 md.smb.dsnowIdx = 1;
 md.smb.swIdx = 1;
+md.smb.aIdx = 0;
+md.smb.eIdx = 3;
+md.smb.teValue(:) = 0.95;
+md.smb.teDefault = 0.97;
 
 %load hourly surface forcing date from 1979 to 2009:
 inputs=load('../Data/gemb_input.mat');
@@ -37,6 +41,7 @@ ye=mean(md.mesh.y(md.mesh.elements),2);
 xe2=mean(md2.mesh.x(md2.mesh.elements),2);
 ye2=mean(md2.mesh.y(md2.mesh.elements),2);
 mpoints=1:md2.mesh.numberofelements;
+[md.smb.lat_mappedforcing md.smb.lon_mappedforcing]=xy2ll(xe2,ye2,+1);
 
 md.smb.ismappedforcing=1;
 md.smb.isprecipforcingremapped=0;

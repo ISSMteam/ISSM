@@ -1208,6 +1208,8 @@ syn keyword juliaConstC SmbMassBalanceIceEnum
 syn keyword juliaConstC SmbMassBalanceSubstepEnum
 syn keyword juliaConstC SmbMassBalanceTransientEnum
 syn keyword juliaConstC SmbMaskEnum
+syn keyword juliaConstC SmbMaxXEnum
+syn keyword juliaConstC SmbMaxYEnum
 syn keyword juliaConstC SmbMeanLHFEnum
 syn keyword juliaConstC SmbMeanSHFEnum
 syn keyword juliaConstC SmbMeanULWEnum

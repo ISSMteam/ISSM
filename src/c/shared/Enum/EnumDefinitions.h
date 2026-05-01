@@ -1211,6 +1211,8 @@ enum definitions{
    SmbMassBalanceSubstepEnum,
    SmbMassBalanceTransientEnum,
 	SmbMaskEnum,
+	SmbMaxXEnum,
+	SmbMaxYEnum,
 	SmbMeanLHFEnum,
 	SmbMeanSHFEnum,
 	SmbMeanULWEnum,

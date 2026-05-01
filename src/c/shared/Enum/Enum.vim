@@ -1215,6 +1215,8 @@ syn keyword cConstant SmbMassBalanceIceEnum
 syn keyword cConstant SmbMassBalanceSubstepEnum
 syn keyword cConstant SmbMassBalanceTransientEnum
 syn keyword cConstant SmbMaskEnum
+syn keyword cConstant SmbMaxXEnum
+syn keyword cConstant SmbMaxYEnum
 syn keyword cConstant SmbMeanLHFEnum
 syn keyword cConstant SmbMeanSHFEnum
 syn keyword cConstant SmbMeanULWEnum
