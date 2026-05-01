@@ -2,6 +2,7 @@
  * \brief: core of the control solution
  */
 #include <ctime>
+#include <limits>
 #include <config.h>
 #include "./cores.h"
 #include "../toolkits/toolkits.h"
@@ -35,6 +36,9 @@ typedef struct{
 	int          M;
 	int          N;
 	int*         i;
+	int*         imin;
+	double*      Jmin;
+	Issmdouble*  Xmin;
 } m1qn3_struct;
 /*}}}*/
 
@@ -152,12 +156,14 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	/*we need to make sure we do not modify femmodel at each iteration, make a copy*/
 	femmodel = input_struct->femmodel->copy();
 
-	IssmPDouble*  Jlist  = input_struct->Jlist;
-	int           JlistM = input_struct->M;
-	int           JlistN = input_struct->N;
-	int*          Jlisti = input_struct->i;
-	int           intn   = (int)*n;
-
+	IssmPDouble*  Jlist     = input_struct->Jlist;
+	int           JlistM    = input_struct->M;
+	int           JlistN    = input_struct->N;
+	int*          Jlisti    = input_struct->i;
+	int*          Jlistimin = input_struct->imin;
+	double*       Jmin      = input_struct->Jmin;
+	IssmDouble*   Xmin      = input_struct->Xmin;	
+	int           intn   = (int)*n;	
 	/*Recover some parameters*/
 	double *scaling_factors = NULL;
 	int    *M = NULL;
@@ -256,6 +262,13 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 			J+=output_value;
 		}
 
+		/* save control field and iteration if the minimum so far */
+		if (J < *Jmin){
+		  *Jmin = J;
+		  *Jlistimin = *Jlisti;
+		  *Xmin = aX;
+		}		
+		
 		#if defined(_HAVE_CODIPACK_)
 		// TODO: Registration of output values is more fine grained for ADOL-c.
 		codi_global.registerOutput(J);
@@ -430,7 +443,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
 	femmodel->parameters->SetParam(false,SaveResultsEnum);
 	femmodel->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
-   femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
+	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 
 	/*Initialize M1QN3 parameters*/
 	if(VerboseControl())_printf0_("   Initialize M1QN3 parameters\n");
@@ -479,8 +492,12 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	mystruct.femmodel = femmodel;
 	mystruct.M        = maxiter;
 	mystruct.N        = num_cost_functions+1;
-	mystruct.Jlist    = xNewZeroInit<IssmPDouble>(mystruct.M*mystruct.N);
+	mystruct.Jlist    = xNewZeroInit<IssmPDouble>(mystruct.M*mystruct.N);	
 	mystruct.i        = xNewZeroInit<int>(1);
+	mystruct.imin     = xNewZeroInit<int>(1);
+	mystruct.Jmin     = xNewZeroInit<int>(1);
+	*(mystruct.Jmin)  = std::numeric_limits<double>::infinity();
+	mystruct.Xmin     = xNewZeroInit<IssmDouble>(nint);
 	/*Initialize Gradient and cost function of M1QN3*/
 	indic = 4; /*gradient required*/
 	simul_ad(&indic,&n,X,&f,G,izs,rzs,(void*)&mystruct);
@@ -509,23 +526,27 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		case 7:  _printf0_(": <g,d> > 0  or  <y,s> <0\n"); break;
 		default: _printf0_(": Unknown end condition\n");
 	}
-
+	_printf0_("   Cost function minimum occured on iteration "<<int(mystruct.imin));
+	
 	/*Constrain solution vector*/
 	double  *XL = NULL;
 	double  *XU = NULL;
 	GetPassiveVectorFromControlInputsx(&XL,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"lowerbound");
 	GetPassiveVectorFromControlInputsx(&XU,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"upperbound");
 
-   offset = 0;
-   for (int c=0;c<num_controls;c++){
-      for(int i=0;i<M[c]*N[c];i++){
-         int index = offset+i;
-         X[index] = X[index]*scaling_factors[c];
-         if(X[index]>XU[index]) X[index]=XU[index];
-         if(X[index]<XL[index]) X[index]=XL[index];
-      }
-      offset += M[c]*N[c];
-   }
+	/* retrive controls corresponding to minimum cost function value */
+	X = mystruct.Xmin;
+	
+	offset = 0;
+	for (int c=0;c<num_controls;c++){
+	  for(int i=0;i<M[c]*N[c];i++){
+	    int index = offset+i;
+	    X[index] = X[index]*scaling_factors[c];
+	    if(X[index]>XU[index]) X[index]=XU[index];
+	    if(X[index]<XL[index]) X[index]=XL[index];
+	  }
+	  offset += M[c]*N[c];
+	}
 
 	/*Set X as our new control*/
 	IssmDouble* aX=xNew<IssmDouble>(intn);
