@@ -129,6 +129,10 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 	bool istime=true;
 	IssmDouble start_time,final_time;
 	int  nt,precomputednt;
+	int i, j, k, n, viscoussampling;
+	int* viscoussamplingindex =NULL;
+	IssmDouble* viscoustimes=NULL;
+	IssmDouble* viscouspolarmotion=NULL;
 
 	int     numoutputs;
 	char**  requestedoutputs = NULL;
@@ -301,25 +305,61 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 
 			// AD performance is sensitive to calls to ensurecontiguous.
 			// // Providing "t" will cause ensurecontiguous to be called.
-			if(viscous){
-				IssmDouble* viscoustimes=NULL;
-				ntimesteps=precomputednt; 
-				nt=reCast<int,IssmDouble>((final_time-start_time)/timeacc)+1;
+			if(viscous){ /*Initialize viscous stack times:*/
+				ntimesteps=precomputednt;
+				iomodel->FetchData(&viscoussampling,"md.solidearth.settings.viscoussampling");
 
-				parameters->AddObject(new IntParam(SealevelchangeViscousNumStepsEnum,nt));
-				/*Initialize viscous stack times:*/
+				parameters->AddObject(new IntParam(SealevelchangeViscousSamplingEnum,viscoussampling));
+				parameters->AddObject(new IntParam(SealevelchangeViscousIndexEnum,0));
+
+				/*Compute time indices to be used in the convolution:{{{*/
+				/* These samples are spaced by intervals that double into the future.
+				 * This captures fast evolving rates right after loading, then the
+				 * slower relaxation times. */
+				nt=reCast<int>((final_time-start_time)/timeacc)+1; /*initial estimate, we may have to go further*/
+				int* viscoussamplingindex2=NULL;
+				if(viscoussampling>=nt){
+					n=nt;
+					viscoussamplingindex2=xNewZeroInit<int>(n);
+					for(i=0;i<n;i++) viscoussamplingindex2[i]=i;
+				}
+				else{
+					i=0;
+					j=1;
+					k=0;
+					n=1;
+					viscoussamplingindex=xNewZeroInit<int>(nt+1);
+					viscoussamplingindex[0]=0;
+					while (k<nt) {
+						k+=j;
+						viscoussamplingindex[n]=k;
+						i+=1;
+						n+=1;
+						if (i==viscoussampling){
+							i=0;
+							j*=2;
+						}
+					}
+					viscoussamplingindex2=xNewZeroInit<int>(n);
+					for (i=0;i<n;i++) viscoussamplingindex2[i]=viscoussamplingindex[i];
+
+					nt=nt+viscoussamplingindex2[n-1]-viscoussamplingindex2[n-2]; /*compute Green functions up to index of final_time + size of largest interval*/
+				}
+				parameters->AddObject(new IntParam(SealevelchangeViscousSamplingLengthEnum,n));
+				parameters->AddObject(new IntVecParam(SealevelchangeViscousSamplingIndexEnum,viscoussamplingindex2,n));
+
+				xDelete<int>(viscoussamplingindex2);
+				/*}}}*/
+
 				viscoustimes=xNew<IssmDouble>(nt);
 				for(int t=0;t<nt;t++){
 					viscoustimes[t]=start_time+timeacc*t;
 				}
+				parameters->AddObject(new IntParam(SealevelchangeViscousNumStepsEnum,nt));
 				parameters->AddObject(new DoubleVecParam(SealevelchangeViscousTimesEnum,viscoustimes,nt));
-				parameters->AddObject(new IntParam(SealevelchangeViscousIndexEnum,0));
-				xDelete<IssmDouble>(viscoustimes);
 				if (rotation){
-					IssmDouble* viscouspolarmotion=NULL;
 					viscouspolarmotion=xNewZeroInit<IssmDouble>(3*nt);
 					parameters->AddObject(new DoubleMatParam(SealevelchangeViscousPolarMotionEnum,viscouspolarmotion,3,nt));
-					xDelete<IssmDouble>(viscouspolarmotion);
 				}
 			}
 #ifdef _HAVE_AD_
@@ -463,7 +503,6 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 			/*Reinterpolate viscoelastic green kernels onto a regular gridded time 
 			 *with steps equal to timeacc:*/
 			if(viscous){
-				nt=reCast<int,IssmDouble>((final_time-start_time)/timeacc)+1;
 #ifdef _HAVE_AD_
 				G_viscoelastic_interpolated=xNew<IssmDouble>(M*nt,"t");
 				U_viscoelastic_interpolated=xNew<IssmDouble>(M*nt,"t");
@@ -627,6 +666,11 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 					xDelete<IssmDouble>(Love_tk2_interpolated);
 					xDelete<IssmDouble>(Love_th2_interpolated);
 					if (horiz) xDelete<IssmDouble>(Love_tl2_interpolated);
+				}
+				if (viscous){
+					xDelete<int>(viscoussamplingindex);
+					xDelete<IssmDouble>(viscoustimes);
+					if (rotation) xDelete<IssmDouble>(viscouspolarmotion);
 				}
 			}
 		} /*}}}*/

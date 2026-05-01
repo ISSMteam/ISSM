@@ -482,6 +482,9 @@ syn keyword juliaConstC SealevelchangeGeometryDoneEnum
 syn keyword juliaConstC SealevelchangeViscousNumStepsEnum
 syn keyword juliaConstC SealevelchangeViscousTimesEnum
 syn keyword juliaConstC SealevelchangeViscousIndexEnum
+syn keyword juliaConstC SealevelchangeViscousSamplingEnum
+syn keyword juliaConstC SealevelchangeViscousSamplingLengthEnum
+syn keyword juliaConstC SealevelchangeViscousSamplingIndexEnum
 syn keyword juliaConstC SealevelchangeViscousPolarMotionEnum
 syn keyword juliaConstC SealevelchangeRunCountEnum
 syn keyword juliaConstC SealevelchangeTransitionsEnum

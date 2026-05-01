@@ -7108,6 +7108,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	IssmDouble timeacc=0.;
 	IssmDouble start_time,final_time;
 	int  nt,precomputednt;
+	int  viscousnumsteps=1;
 	int grd, grdmodel;
 
 	/*Rotational:*/
@@ -7194,6 +7195,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 		this->parameters->FindParam(&timeacc,SolidearthSettingsTimeAccEnum);
 		this->parameters->FindParam(&start_time,TimesteppingStartTimeEnum);
 		this->parameters->FindParam(&final_time,TimesteppingFinalTimeEnum);
+		this->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
 		nt=reCast<int,IssmDouble>((final_time-start_time)/timeacc)+1;
 	}
 	else{
@@ -7250,22 +7252,24 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	/*}}}*/
 	/*Compute rotation kernel:{{{*/
 	if(computerotation){
+		int ntrot = computeviscous ? viscousnumsteps : nt;
+
 		//initialization
-		LoveRotRSL  = xNewZeroInit<IssmDouble>(nt);
-		LoveRotU    = xNewZeroInit<IssmDouble>(nt);
-		if(horiz)LoveRothoriz= xNewZeroInit<IssmDouble>(nt);
-		Grot        = xNewZeroInit<IssmDouble>(3*3*nt); //3 polar motion components * 3 vertices * number of time steps
-		GUrot       = xNewZeroInit<IssmDouble>(3*3*nt);
+		LoveRotRSL  = xNewZeroInit<IssmDouble>(ntrot);
+		LoveRotU    = xNewZeroInit<IssmDouble>(ntrot);
+		if(horiz)LoveRothoriz= xNewZeroInit<IssmDouble>(ntrot);
+		Grot        = xNewZeroInit<IssmDouble>(3*3*ntrot); //3 polar motion components * 3 vertices * number of time steps
+		GUrot       = xNewZeroInit<IssmDouble>(3*3*ntrot);
 
 		if (horiz){
-			GErot=xNewZeroInit<IssmDouble>(3*3*nt);
-			GNrot=xNewZeroInit<IssmDouble>(3*3*nt);
+			GErot=xNewZeroInit<IssmDouble>(3*3*ntrot);
+			GNrot=xNewZeroInit<IssmDouble>(3*3*ntrot);
 		}
 
 		/*What is the gravity at planet's surface: */
 		g=4.0/3.0*M_PI*rho_earth*NewtonG*planetradius;
 		cent_scaling=pow(omega*planetradius,2.0); //centrifugal potential dimensioning constant
-		for(int t=0;t<nt;t++){
+		for(int t=0;t<ntrot;t++){
 			//Amplitude of the rotational feedback
 			//to speed up calculation we include the dimension constant r^2*Omega^2/g, so all 3 of these are in meters
 			LoveRotRSL[t]=((1.0+tide_love_k[t]-tide_love_h[t])/g)*cent_scaling;
@@ -7307,36 +7311,36 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 				//dY20_dlon=0.;
 			}
 
-			for(int t=0;t<nt;t++){
+			for(int t=0;t<ntrot;t++){
 
-				Grot[0*3*nt+i*nt+t]= LoveRotRSL[t]*Y21cos; //x component of polar motion
-				Grot[1*3*nt+i*nt+t]= LoveRotRSL[t]*Y21sin; //y
-				Grot[2*3*nt+i*nt+t]= LoveRotRSL[t]*Y20;    //z
+				Grot[0*3*ntrot+i*ntrot+t]= LoveRotRSL[t]*Y21cos; //x component of polar motion
+				Grot[1*3*ntrot+i*ntrot+t]= LoveRotRSL[t]*Y21sin; //y
+				Grot[2*3*ntrot+i*ntrot+t]= LoveRotRSL[t]*Y20;    //z
 
 				if (computeelastic){
-					GUrot[0*3*nt+i*nt+t]= LoveRotU[t]*Y21cos;
-					GUrot[1*3*nt+i*nt+t]= LoveRotU[t]*Y21sin;
-					GUrot[2*3*nt+i*nt+t]= LoveRotU[t]*Y20;
+					GUrot[0*3*ntrot+i*ntrot+t]= LoveRotU[t]*Y21cos;
+					GUrot[1*3*ntrot+i*ntrot+t]= LoveRotU[t]*Y21sin;
+					GUrot[2*3*ntrot+i*ntrot+t]= LoveRotU[t]*Y20;
 					if (horiz){
 						//bed_N = Love_l * d(Y)/dlat ;
-						GNrot[0*3*nt+i*nt+t]= LoveRothoriz[t]*dY21cos_dlat;
-						GNrot[1*3*nt+i*nt+t]= LoveRothoriz[t]*dY21sin_dlat;
-						GNrot[2*3*nt+i*nt+t]= LoveRothoriz[t]*dY20_dlat;
+						GNrot[0*3*ntrot+i*ntrot+t]= LoveRothoriz[t]*dY21cos_dlat;
+						GNrot[1*3*ntrot+i*ntrot+t]= LoveRothoriz[t]*dY21sin_dlat;
+						GNrot[2*3*ntrot+i*ntrot+t]= LoveRothoriz[t]*dY20_dlat;
 
 						//bed_E = Love_l * 1/cos(lat) * d(Y)/dlon ;
-						GErot[0*3*nt+i*nt+t]= LoveRothoriz[t]*dY21cos_dlon;
-						GErot[1*3*nt+i*nt+t]= LoveRothoriz[t]*dY21sin_dlon;
-						GErot[2*3*nt+i*nt+t]= 0.0;
+						GErot[0*3*ntrot+i*ntrot+t]= LoveRothoriz[t]*dY21cos_dlon;
+						GErot[1*3*ntrot+i*ntrot+t]= LoveRothoriz[t]*dY21sin_dlon;
+						GErot[2*3*ntrot+i*ntrot+t]= 0.0;
 					}
 				}
 			}
 		}
-		this->inputs->SetArrayInput(SealevelchangeGrotEnum,this->lid,Grot,3*3*nt);
+		this->inputs->SetArrayInput(SealevelchangeGrotEnum,this->lid,Grot,3*3*ntrot);
 		if (computeelastic){
-			this->inputs->SetArrayInput(SealevelchangeGUrotEnum,this->lid,GUrot,3*3*nt);
+			this->inputs->SetArrayInput(SealevelchangeGUrotEnum,this->lid,GUrot,3*3*ntrot);
 			if(horiz){
-				this->inputs->SetArrayInput(SealevelchangeGNrotEnum,this->lid,GNrot,3*3*nt);
-				this->inputs->SetArrayInput(SealevelchangeGErotEnum,this->lid,GErot,3*3*nt);
+				this->inputs->SetArrayInput(SealevelchangeGNrotEnum,this->lid,GNrot,3*3*ntrot);
+				this->inputs->SetArrayInput(SealevelchangeGErotEnum,this->lid,GErot,3*3*ntrot);
 			}
 		}
 		/*Free resources:*/
@@ -7347,17 +7351,17 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	/*}}}*/
 	/*Initialize viscous stacks: {{{*/
 	if(computeviscous){
-		viscousRSL=xNewZeroInit<IssmDouble>(3*nt);
-		viscousU=xNewZeroInit<IssmDouble>(3*nt);
+		viscousRSL=xNewZeroInit<IssmDouble>(3*viscousnumsteps);
+		viscousU=xNewZeroInit<IssmDouble>(3*viscousnumsteps);
 
-		this->inputs->SetArrayInput(SealevelchangeViscousRSLEnum,this->lid,viscousRSL,3*nt);
-		this->inputs->SetArrayInput(SealevelchangeViscousUEnum,this->lid,viscousU,3*nt);
+		this->inputs->SetArrayInput(SealevelchangeViscousRSLEnum,this->lid,viscousRSL,3*viscousnumsteps);
+		this->inputs->SetArrayInput(SealevelchangeViscousUEnum,this->lid,viscousU,3*viscousnumsteps);
 		this->parameters->SetParam(0,SealevelchangeViscousIndexEnum);
 		if(horiz){
-			viscousN=xNewZeroInit<IssmDouble>(3*nt);
-			viscousE=xNewZeroInit<IssmDouble>(3*nt);
-			this->inputs->SetArrayInput(SealevelchangeViscousNEnum,this->lid,viscousN,3*nt);
-			this->inputs->SetArrayInput(SealevelchangeViscousEEnum,this->lid,viscousE,3*nt);
+			viscousN=xNewZeroInit<IssmDouble>(3*viscousnumsteps);
+			viscousE=xNewZeroInit<IssmDouble>(3*viscousnumsteps);
+			this->inputs->SetArrayInput(SealevelchangeViscousNEnum,this->lid,viscousN,3*viscousnumsteps);
+			this->inputs->SetArrayInput(SealevelchangeViscousEEnum,this->lid,viscousE,3*viscousnumsteps);
 		}
 	}
 	/*}}}*/
@@ -8146,7 +8150,7 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 	int* AlphaIndexsub[SLGEOM_NUMLOADS];
 	int* activevertices=NULL;
 	IssmDouble* grdfield=NULL;
-	int i,e,l,t,a, index, nbar, size, av,ae,b,c;
+	int i,e,l,t,it,a, index, nbar, size, av,ae,b,c;
 	bool rotation=false;
 	int nt=1; //important, ensures there is a defined value if computeviscous is false
 	int n_activevertices=0;
@@ -8155,6 +8159,10 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 	bool computeviscous=false;
 	int viscousindex=0; //important
 	int viscousnumsteps=1; //important
+	int viscoussamplinglength=1;
+	int* viscoussamplingindex=NULL;
+	IssmDouble* viscoustimes=NULL;
+	IssmDouble final_time;
 
 	this->parameters->FindParam(&computeviscous,SolidearthSettingsViscousEnum);
 	this->parameters->FindParam(&rotation,SolidearthSettingsRotationEnum);
@@ -8167,17 +8175,31 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 	if(computeviscous){
 		this->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
 		this->parameters->FindParam(&viscousindex,SealevelchangeViscousIndexEnum);
+		this->parameters->FindParam(&viscoussamplinglength,SealevelchangeViscousSamplingLengthEnum);
+		this->parameters->FindParam(&viscoussamplingindex,NULL,SealevelchangeViscousSamplingIndexEnum);
 		if(computefuture) {
-			nt=viscousnumsteps-viscousindex+2; //number of time steps remaining to reach final_time, +1 is sufficient with no adaptative time stepping, +2 necessary otherwise; we assume the safe choice here for the sake of simplicity
-			if (nt>viscousnumsteps) nt=viscousnumsteps;
+			this->parameters->FindParam(&viscoustimes,NULL,SealevelchangeViscousTimesEnum);
+			this->parameters->FindParam(&final_time,TimesteppingFinalTimeEnum);
+			nt=1;
+			while (nt<viscoussamplinglength && viscoustimes[viscoussamplingindex[nt-1]+viscousindex]<final_time) nt+=1;
 		}
 		else nt=1;
 	}
+	else {
+		viscoussamplingindex=xNewZeroInit<int>(1);
+	}
+
 	//allocate
 	grdfield=xNewZeroInit<IssmDouble>(3*nt);
 
 	//early return
-	if (n_activevertices==0) return grdfield;
+	if (n_activevertices==0){
+		xDelete<int>(viscoussamplingindex);
+		if(computeviscous){
+			if(computefuture) xDelete<IssmDouble>(viscoustimes);
+		}
+		return grdfield;
+	}
 
 	if(rotation){ //add rotational feedback
 		for(av=0;av<n_activevertices;av++) { //vertices
@@ -8185,9 +8207,10 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 			//if(slgeom->lids[this->vertices[i]->lid]!=this->lid)continue;
 			b=i*nt;
 			for (int m=0;m<3;m++){ //polar motion components
-				for(t=0;t<nt;t++){ //time
+				for(it=0;it<nt;it++){ //time
+					t=viscoussamplingindex[it];
 					int index=m*3*viscousnumsteps+i*viscousnumsteps+t;
-					grdfield[b+t]+=Grot[index]*polarmotionvector[m];
+					grdfield[b+it]+=Grot[index]*polarmotionvector[m];
 				}
 			}
 		}
@@ -8202,8 +8225,9 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 		for(ae=0;ae<loads->nactiveloads;ae++){
 			e=loads->combined_loads_index[ae];
 			a=AlphaIndex[c+e]*viscousnumsteps;
-			for(t=0;t<nt;t++){
-				grdfield[b+t]+=G[a+t]*loads->combined_loads[ae];
+			for(it=0;it<nt;it++){ //time
+				t=viscoussamplingindex[it];
+				grdfield[b+it]+=G[a+t]*loads->combined_loads[ae];
 			}
 		}
 		for(l=0;l<SLGEOM_NUMLOADS;l++){
@@ -8212,13 +8236,19 @@ IssmDouble*       Tria::SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLo
 			for (ae=0;ae<loads->nactivesubloads[l];ae++){
 				e=loads->combined_subloads_index[l][ae];
 				a=AlphaIndexsub[l][c+e]*viscousnumsteps;
-				for(t=0;t<nt;t++){
-					grdfield[b+t]+=G[a+t]*loads->combined_subloads[l][ae];
+				for(it=0;it<nt;it++){ //time
+					t=viscoussamplingindex[it];
+					grdfield[b+it]+=G[a+t]*loads->combined_subloads[l][ae];
 				}
 			}
 		}
 		//av+=1;
 	} /*}}}*/
+
+	xDelete<int>(viscoussamplingindex);
+	if(computeviscous){
+		if(computefuture) xDelete<IssmDouble>(viscoustimes);
+	}
 
 	return grdfield;
 
@@ -8232,7 +8262,7 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	int* AzimIndexsub[SLGEOM_NUMLOADS];
 	int* activevertices = NULL;
 	IssmDouble* grdfield=NULL;
-	int i,e,l,t,a,b,c, index, nbar, av, ae,n_activevertices, size;
+	int i,e,l,t,it,a,b,c, index, nbar, av, ae,n_activevertices, size;
 	bool rotation=false;
 	IssmDouble* projected_loads=NULL;
 	IssmDouble* projected_subloads[SLGEOM_NUMLOADS];
@@ -8244,6 +8274,10 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	bool computeviscous=false;
 	int viscousindex=0; //important
 	int viscousnumsteps=1; //important
+	int viscoussamplinglength=1;
+	int* viscoussamplingindex=NULL;
+	IssmDouble* viscoustimes=NULL;
+	IssmDouble final_time;
 
 	//Get green functions indexing & geometry
 	this->inputs->GetIntArrayPtr(SealevelchangeConvolutionVerticesEnum,this->lid,&activevertices,&n_activevertices);
@@ -8258,24 +8292,38 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	if(computeviscous){
 		this->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
 		this->parameters->FindParam(&viscousindex,SealevelchangeViscousIndexEnum);
+		this->parameters->FindParam(&viscoussamplinglength,SealevelchangeViscousSamplingLengthEnum);
+		this->parameters->FindParam(&viscoussamplingindex,NULL,SealevelchangeViscousSamplingIndexEnum);
 		if(computefuture) {
-			nt=viscousnumsteps-viscousindex+2; //number of time steps remaining to reach final_time, +1 is sufficient with no adaptative time stepping, +2 necessary otherwise; we assume the safe choice here for the sake of simplicity
-			if (nt>viscousnumsteps) nt=viscousnumsteps;
+			this->parameters->FindParam(&viscoustimes,NULL,SealevelchangeViscousTimesEnum);
+			this->parameters->FindParam(&final_time,TimesteppingFinalTimeEnum);
+			nt=1;
+			while (nt<viscoussamplinglength && viscoustimes[viscoussamplingindex[nt-1]+viscousindex]<final_time) nt+=1;
 		}
 		else nt=1;
 	}
+	else {
+		viscoussamplingindex=xNewZeroInit<int>(1);
+	}
 	//allocate
 	grdfield=xNewZeroInit<IssmDouble>(3*nt);
-	if (n_activevertices==0) return grdfield;
+	if (n_activevertices==0){ 
+		xDelete<int>(viscoussamplingindex);
+		if(computeviscous){
+			if(computefuture) xDelete<IssmDouble>(viscoustimes);
+		}
+		return grdfield;
+	}
 
 	if(rotation){ //add rotational feedback
 		for(av=0;av<n_activevertices;av++) { //vertices
 			i=activevertices[av];
 			//if(slgeom->lids[this->vertices[i]->lid]!=this->lid)continue;
 			for (int m=0;m<3;m++){ //polar motion components
-				for(t=0;t<nt;t++){ //time
+				for(it=0;it<nt;it++){ //time
+					t=viscoussamplingindex[it];
 					int index=m*3*viscousnumsteps+i*viscousnumsteps+t;
-					grdfield[i*nt+t]+=Grot[index]*polarmotionvector[m];
+					grdfield[i*nt+it]+=Grot[index]*polarmotionvector[m];
 				}
 			}
 			//}
@@ -8345,8 +8393,9 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 		for(ae=0;ae<loads->nactiveloads;ae++){
 			e=loads->combined_loads_index[ae];
 			a=AlphaIndex[c+e]*viscousnumsteps;
-			for(t=0;t<nt;t++){
-				grdfield[b+t]+=G[a+t]*projected_loads[ae];
+			for(it=0;it<nt;it++){ //time
+				t=viscoussamplingindex[it];
+				grdfield[b+it]+=G[a+t]*projected_loads[ae];
 			}
 		}
 		for(l=0;l<SLGEOM_NUMLOADS;l++){
@@ -8355,8 +8404,9 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 			for(ae=0;ae<loads->nactivesubloads[l];ae++){
 				e=loads->combined_subloads_index[l][ae];
 				a=AlphaIndexsub[l][c+e]*viscousnumsteps;
-				for(t=0;t<nt;t++){
-					grdfield[b+t]+=G[a+t]*projected_subloads[l][ae];
+				for(it=0;it<nt;it++){ //time
+					t=viscoussamplingindex[it];
+					grdfield[b+it]+=G[a+t]*projected_subloads[l][ae];
 				}
 			}
 		}
@@ -8366,6 +8416,10 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	//free resources
 	xDelete<IssmDouble>(horiz_projection);
 	xDelete<IssmDouble>(projected_loads);
+	xDelete<int>(viscoussamplingindex);
+	if(computeviscous){
+		if(computefuture) xDelete<IssmDouble>(viscoustimes);
+	}
 	for(l=0;l<SLGEOM_NUMLOADS;l++) {
 		xDelete<IssmDouble>(projected_subloads[l]);
 		xDelete<IssmDouble>(horiz_projectionsub[l]);
@@ -8384,13 +8438,15 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 	bool computeviscous=false;
 	int viscousindex=0; //important
 	int viscousnumsteps=1; //important
+	int viscousfieldsize=0;
+	int viscoussamplinglength=1;
 	int* activevertices = NULL;
 	IssmDouble* viscousfield=NULL;
 	IssmDouble* grdfieldinterp=NULL;
 	IssmDouble* viscoustimes=NULL;
 	IssmDouble  final_time;
 	IssmDouble  lincoeff;
-	IssmDouble  timeacc;
+	int* viscoussamplingindex=NULL;
 
 	//parameters & initialization
 	this->parameters->FindParam(&computeviscous,SolidearthSettingsViscousEnum);
@@ -8399,13 +8455,15 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 	if(computeviscous){
 		this->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
 		this->parameters->FindParam(&viscousindex,SealevelchangeViscousIndexEnum);
+		this->parameters->FindParam(&viscoussamplinglength,SealevelchangeViscousSamplingLengthEnum);
 		this->parameters->FindParam(&viscoustimes,NULL,SealevelchangeViscousTimesEnum);
 		this->parameters->FindParam(&final_time,TimesteppingFinalTimeEnum);
-		this->parameters->FindParam(&timeacc,SolidearthSettingsTimeAccEnum);
-		this->inputs->GetArrayPtr(viscousenum,this->lid,&viscousfield,NULL);
+		this->inputs->GetArrayPtr(viscousenum,this->lid,&viscousfield,&viscousfieldsize);
+		_assert_(viscousfieldsize==3*viscousnumsteps);
+		this->parameters->FindParam(&viscoussamplingindex,NULL,SealevelchangeViscousSamplingIndexEnum);
 		if(computefuture) {
-			nt=viscousnumsteps-viscousindex+2; //number of time steps remaining to reach final_time, +1 is sufficient with no adaptative time stepping, +2 necessary otherwise; we assume the safe choice here for the sake of simplicity
-			if (nt>viscousnumsteps) nt=viscousnumsteps;
+			nt=1;
+			while (nt<viscoussamplinglength && viscoustimes[viscoussamplingindex[nt-1]+viscousindex]<final_time) nt+=1;
 			grdfieldinterp=xNewZeroInit<IssmDouble>(3*viscousnumsteps); 
 		}
 		else nt=1;
@@ -8452,16 +8510,25 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 			}
 			if(viscoustimes[viscousindex]<final_time){
 				//And interpolate the rest of the points in the future
-				lincoeff=(viscoustimes[viscousindex+1]-viscoustimes[viscousindex])/timeacc;
 				for(av=0;av<n_activevertices;av++) { //vertices
 					i=activevertices[av];
 					//if(slgeom->lids[this->vertices[i]->lid]!=this->lid)continue;
-					int i_time1= i*nt-viscousindex;
+					int i_time1= i*nt;
 					int i_time2= i*viscousnumsteps;
+					int itB=0;
 					for(int t=viscousindex+1;t<viscousnumsteps;t++){
-						grdfieldinterp[i_time2+t] = (1-lincoeff)*grdfield[i_time1+t-1]
-									  +    lincoeff *grdfield[i_time1+t]
+						if(viscoustimes[t]<=final_time){
+							int tB1=viscoussamplingindex[itB+1]+viscousindex;
+							while (viscoustimes[tB1]<viscoustimes[t]) {
+								itB+=1;
+								tB1=viscoussamplingindex[itB+1]+viscousindex;
+							}
+							int tB0=viscoussamplingindex[itB]+viscousindex;
+							lincoeff=(viscoustimes[t]-viscoustimes[tB0])/(viscoustimes[tB1]-viscoustimes[tB0]);
+							grdfieldinterp[i_time2+t] = (1-lincoeff)*grdfield[i_time1+itB]
+									  +    lincoeff *grdfield[i_time1+itB+1]
 									  +          viscousfield[i_time2+t];
+						}
 						/*update viscous stack with future deformation from present load: */
 						viscousfield[i_time2+t]=grdfieldinterp[i_time2+t]
 								       -grdfieldinterp[i_time2+viscousindex];
@@ -8487,6 +8554,7 @@ void       Tria::SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDoub
 		//free resources
 		xDelete<IssmDouble>(grdfield);
 		xDelete<IssmDouble>(viscoustimes);
+		xDelete<int>(viscoussamplingindex);
 		if (computefuture){
 			xDelete<IssmDouble>(grdfieldinterp);
 		}
