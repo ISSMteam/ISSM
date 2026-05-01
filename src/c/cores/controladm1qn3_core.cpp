@@ -38,7 +38,8 @@ typedef struct{
 	int*         i;
 	int*         imin;
 	double*      Jmin;
-	Issmdouble*  Xmin;
+	IssmDouble*  Xmin;
+	IssmDouble*  Gmin;
 } m1qn3_struct;
 /*}}}*/
 
@@ -162,7 +163,8 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	int*          Jlisti    = input_struct->i;
 	int*          Jlistimin = input_struct->imin;
 	double*       Jmin      = input_struct->Jmin;
-	IssmDouble*   Xmin      = input_struct->Xmin;	
+	IssmDouble*   Xmin      = input_struct->Xmin;
+	IssmDouble*   Gmin      = input_struct->Gmin;	
 	int           intn   = (int)*n;	
 	/*Recover some parameters*/
 	double *scaling_factors = NULL;
@@ -264,9 +266,10 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 
 		/* save control field and iteration if the minimum so far */
 		if (J < *Jmin){
-		  *Jmin = J;
+		  *Jmin = reCast<double>(J);
 		  *Jlistimin = *Jlisti;
-		  *Xmin = aX;
+		  Xmin = reCast<IssmDouble*>(aX);
+		  Gmin = reCast<IssmDouble*>(G);
 		}		
 		
 		#if defined(_HAVE_CODIPACK_)
@@ -495,9 +498,10 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	mystruct.Jlist    = xNewZeroInit<IssmPDouble>(mystruct.M*mystruct.N);	
 	mystruct.i        = xNewZeroInit<int>(1);
 	mystruct.imin     = xNewZeroInit<int>(1);
-	mystruct.Jmin     = xNewZeroInit<int>(1);
+	mystruct.Jmin     = xNewZeroInit<double>(1);
 	*(mystruct.Jmin)  = std::numeric_limits<double>::infinity();
-	mystruct.Xmin     = xNewZeroInit<IssmDouble>(nint);
+	mystruct.Xmin     = xNewZeroInit<IssmDouble>(n);
+	mystruct.Gmin     = xNewZeroInit<IssmDouble>(n);
 	/*Initialize Gradient and cost function of M1QN3*/
 	indic = 4; /*gradient required*/
 	simul_ad(&indic,&n,X,&f,G,izs,rzs,(void*)&mystruct);
@@ -526,7 +530,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		case 7:  _printf0_(": <g,d> > 0  or  <y,s> <0\n"); break;
 		default: _printf0_(": Unknown end condition\n");
 	}
-	_printf0_("   Cost function minimum occured on iteration "<<int(mystruct.imin));
+	_printf0_("   Cost function minimum occured on iteration "<<int(*mystruct.imin));
 	
 	/*Constrain solution vector*/
 	double  *XL = NULL;
@@ -534,33 +538,22 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	GetPassiveVectorFromControlInputsx(&XL,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"lowerbound");
 	GetPassiveVectorFromControlInputsx(&XU,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"upperbound");
 
-	/* retrive controls corresponding to minimum cost function value */
-	X = mystruct.Xmin;
-	
+	IssmDouble *Xmin = mystruct.Xmin;
 	offset = 0;
 	for (int c=0;c<num_controls;c++){
 	  for(int i=0;i<M[c]*N[c];i++){
 	    int index = offset+i;
-	    X[index] = X[index]*scaling_factors[c];
-	    if(X[index]>XU[index]) X[index]=XU[index];
-	    if(X[index]<XL[index]) X[index]=XL[index];
+	    Xmin[index] = Xmin[index]*scaling_factors[c];
+	    if(Xmin[index]>XU[index]) Xmin[index]=XU[index];
+	    if(Xmin[index]<XL[index]) Xmin[index]=XL[index];
 	  }
 	  offset += M[c]*N[c];
 	}
 
-	/*Set X as our new control*/
-	IssmDouble* aX=xNew<IssmDouble>(intn);
-	IssmDouble* aG=xNew<IssmDouble>(intn);
-
-	for(int i=0;i<intn;i++) {
-		aX[i] = reCast<IssmDouble>(X[i]);
-		aG[i] = reCast<IssmDouble>(G[i]);
-	}
-
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
-	SetControlInputsFromVectorx(femmodel,aX);
-	xDelete(aX);
-
+	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,mystruct.Gmin);
+	SetControlInputsFromVectorx(femmodel, Xmin);
+	xDelete(Xmin);
+	
 	if (solution_type == TransientSolutionEnum){
 		int step = 1;
 		femmodel->parameters->SetParam(step,StepEnum);
@@ -591,7 +584,6 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	}
 	femmodel->results->AddObject(new GenericExternalResult<int>(femmodel->results->Size()+1,InversionStopFlagEnum,int(omode)));
 
-	xDelete(aG);
 
 	/*Add last cost function to results*/
 
