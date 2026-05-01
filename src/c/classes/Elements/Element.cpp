@@ -5783,9 +5783,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
 				mappedforcingpoints[0]=Mappedpoint;
-				mappedforcingpoints[1]=(int)mappedforcingneighbors[0];
-				mappedforcingpoints[2]=(int)mappedforcingneighbors[1];
-				mappedforcingpoints[3]=(int)mappedforcingneighbors[2];
+				mappedforcingpoints[1]=static_cast<int>(mappedforcingneighbors[0]);
+				mappedforcingpoints[2]=static_cast<int>(mappedforcingneighbors[1]);
+				mappedforcingpoints[3]=static_cast<int>(mappedforcingneighbors[2]);
 				xinterp[0]=lon_mappingpoint[mappedforcingpoints[0]-1];
 				xinterp[1]=lon_mappingpoint[mappedforcingpoints[1]-1];
 				xinterp[2]=lon_mappingpoint[mappedforcingpoints[2]-1];
@@ -5800,7 +5800,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
 				int latlon = 0;
-				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, (int)(fabs(yinterp[0])/yinterp[0])); _assert_(latlon>0);
+				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, static_cast<int>((fabs(yinterp[0])/yinterp[0]))); _assert_(latlon>0);
 				lat = latelem[0];
 				lon = lonelem[0];
 				if(lon>180) lon=lon-360;
