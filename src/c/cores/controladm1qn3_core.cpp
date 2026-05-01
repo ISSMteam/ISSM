@@ -2,7 +2,6 @@
  * \brief: core of the control solution
  */
 #include <ctime>
-#include <limits>
 #include <config.h>
 #include "./cores.h"
 #include "../toolkits/toolkits.h"
@@ -499,7 +498,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	mystruct.i        = xNewZeroInit<int>(1);
 	mystruct.imin     = xNewZeroInit<int>(1);
 	mystruct.Jmin     = xNewZeroInit<double>(1);
-	*(mystruct.Jmin)  = std::numeric_limits<double>::infinity();
+	*(mystruct.Jmin)  = 1e+50;
 	mystruct.Xmin     = xNewZeroInit<IssmDouble>(n);
 	mystruct.Gmin     = xNewZeroInit<IssmDouble>(n);
 	/*Initialize Gradient and cost function of M1QN3*/
