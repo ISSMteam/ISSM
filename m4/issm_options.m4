@@ -704,7 +704,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 		elif ls ${PYTHONLIBDIR}/libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
 			PYTHONLIB="-L${PYTHONLIBDIR} -lpython${PYTHON_VERSION}"
 		else
-			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp()[['stdlib']])")
+			PYTHONLIBDIR=$(${PYTHON_PATH} -c "from sysconfig import get_paths as gp; print(gp().get('stdlib'))")
 			if ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}m.* 1> /dev/null 2>&1; then
 				PYTHONLIB="-L${PYTHONLIBDIR}/.. -lpython${PYTHON_VERSION}m"
 			elif ls ${PYTHONLIBDIR}/../libpython${PYTHON_VERSION}.* 1> /dev/null 2>&1; then
