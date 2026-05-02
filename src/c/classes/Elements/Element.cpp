@@ -5782,10 +5782,13 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				yelem[0]=this->GetYcoord(xyz_list,gauss);
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
+				int neighbor1 = (int)static_cast<double>(mappedforcingneighbors[0]);
+				int neighbor2 = (int)static_cast<double>(mappedforcingneighbors[1]);
+				int neighbor3 = (int)static_cast<double>(mappedforcingneighbors[2]);
 				mappedforcingpoints[0]=Mappedpoint;
-				mappedforcingpoints[1]=static_cast<int>(mappedforcingneighbors[0]);
-				mappedforcingpoints[2]=static_cast<int>(mappedforcingneighbors[1]);
-				mappedforcingpoints[3]=static_cast<int>(mappedforcingneighbors[2]);
+				mappedforcingpoints[1]=neighbor1;
+				mappedforcingpoints[2]=neighbor2;
+				mappedforcingpoints[3]=neighbor3;
 				xinterp[0]=lon_mappingpoint[mappedforcingpoints[0]-1];
 				xinterp[1]=lon_mappingpoint[mappedforcingpoints[1]-1];
 				xinterp[2]=lon_mappingpoint[mappedforcingpoints[2]-1];
@@ -5800,7 +5803,8 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
 				int latlon = 0;
-				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, static_cast<int>((fabs(yinterp[0])/yinterp[0]))); _assert_(latlon>0);
+				int sign = (int)static_cast<double>(fabs(yinterp[0])/yinterp[0]);
+				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, sign); _assert_(latlon>0);
 				lat = latelem[0];
 				lon = lonelem[0];
 				if(lon>180) lon=lon-360;
