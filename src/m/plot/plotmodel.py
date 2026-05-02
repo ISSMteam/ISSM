@@ -91,6 +91,12 @@ def plotmodel(md, *args):
                 axgrid = [axgrid] # make axgrid iterable contents.
             axgrid = axgrid.flatten() # flattening...
 
+            # Control axes vertical and horizontal spaces.
+            if options.list[0].exist('axes_pad'):
+                axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)
+                if len(axes_pad) == 1: axes_pad = 2*axes_pad
+                fig.subplots_adjust(wspace=axes_pad[0],hspace=axes_pad[1])
+
             for ax in axgrid:
                 ax.set_aspect('equal')
 
