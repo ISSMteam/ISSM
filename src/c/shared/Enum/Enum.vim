@@ -86,6 +86,7 @@ syn keyword cConstant BasalforcingsIsmip6IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip6NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip6TfDepthsEnum
 syn keyword cConstant BasalforcingsIsmip7DeltaTEnum
+syn keyword cConstant BasalforcingsIsmip7IsLocalEnum
 syn keyword cConstant BasalforcingsIsmip7TfDepthsEnum
 syn keyword cConstant BasalforcingsIsmip7NumBasinsEnum
 syn keyword cConstant BasalforcingsIsmip7GammaEnum
