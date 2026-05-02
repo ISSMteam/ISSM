@@ -5782,9 +5782,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				yelem[0]=this->GetYcoord(xyz_list,gauss);
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
-				int neighbor1 = (int)static_cast<double>(mappedforcingneighbors[0]);
-				int neighbor2 = (int)static_cast<double>(mappedforcingneighbors[1]);
-				int neighbor3 = (int)static_cast<double>(mappedforcingneighbors[2]);
+				int neighbor1 = mappedforcingneighbors[0];
+				int neighbor2 = mappedforcingneighbors[1];
+				int neighbor3 = mappedforcingneighbors[2];
 				mappedforcingpoints[0]=Mappedpoint;
 				mappedforcingpoints[1]=neighbor1;
 				mappedforcingpoints[2]=neighbor2;
