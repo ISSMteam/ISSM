@@ -669,7 +669,7 @@ classdef SMBgemb
 				WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','DoubleMat','mattype',3);
 				WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','DoubleMat','mattype',3);
 				if (self.ismappingusingneighbors)
-					WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','DoubleMat','mattype',3);
+					WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','IntMat','mattype',3);
 				end
 				if (self.isprecipforcingremapped)
 					WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingprecipscaling','format','DoubleMat','mattype',2);
