@@ -80,6 +80,7 @@ enum definitions{
 	BasalforcingsIsmip6NumBasinsEnum,
 	BasalforcingsIsmip6TfDepthsEnum,
 	BasalforcingsIsmip7DeltaTEnum,
+	BasalforcingsIsmip7IsLocalEnum,
 	BasalforcingsIsmip7TfDepthsEnum,
 	BasalforcingsIsmip7NumBasinsEnum,
 	BasalforcingsIsmip7GammaEnum,

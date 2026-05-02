@@ -88,6 +88,7 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6NumBasinsEnum : return "BasalforcingsIsmip6NumBasins";
 		case BasalforcingsIsmip6TfDepthsEnum : return "BasalforcingsIsmip6TfDepths";
 		case BasalforcingsIsmip7DeltaTEnum : return "BasalforcingsIsmip7DeltaT";
+		case BasalforcingsIsmip7IsLocalEnum : return "BasalforcingsIsmip7IsLocal";
 		case BasalforcingsIsmip7TfDepthsEnum : return "BasalforcingsIsmip7TfDepths";
 		case BasalforcingsIsmip7NumBasinsEnum : return "BasalforcingsIsmip7NumBasins";
 		case BasalforcingsIsmip7GammaEnum : return "BasalforcingsIsmip7Gamma";
