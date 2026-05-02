@@ -5759,12 +5759,12 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 
 				IssmDouble* lat_mappingpoint=NULL;
 				IssmDouble* lon_mappingpoint=NULL;
-				IssmDouble* mappedforcingneighbors=NULL;
+				int* mappedforcingneighbors=NULL;
 
 				parameters->FindParam(&lon_mappingpoint,&N,SmbLonMappedforcingEnum);
 				parameters->FindParam(&lat_mappingpoint,&N,SmbLatMappedforcingEnum);
 
-				this->inputs->GetArray(SmbMappedforcingneighborsEnum,this->lid,&mappedforcingneighbors,&N2); _assert_(N2==3);
+				this->inputs->GetIntArray(SmbMappedforcingneighborsEnum,this->lid,&mappedforcingneighbors,&N2); _assert_(N2==3);
 
 				Qinterp = xNew<int>(4);
 				IssmDouble* xinterp = xNew<IssmDouble>(4);
@@ -5782,10 +5782,13 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				yelem[0]=this->GetYcoord(xyz_list,gauss);
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
+				int neighbor1 = mappedforcingneighbors[0];
+				int neighbor2 = mappedforcingneighbors[1];
+				int neighbor3 = mappedforcingneighbors[2];
 				mappedforcingpoints[0]=Mappedpoint;
-				mappedforcingpoints[1]=(int)mappedforcingneighbors[0];
-				mappedforcingpoints[2]=(int)mappedforcingneighbors[1];
-				mappedforcingpoints[3]=(int)mappedforcingneighbors[2];
+				mappedforcingpoints[1]=neighbor1;
+				mappedforcingpoints[2]=neighbor2;
+				mappedforcingpoints[3]=neighbor3;
 				xinterp[0]=lon_mappingpoint[mappedforcingpoints[0]-1];
 				xinterp[1]=lon_mappingpoint[mappedforcingpoints[1]-1];
 				xinterp[2]=lon_mappingpoint[mappedforcingpoints[2]-1];
@@ -5800,7 +5803,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
 				int latlon = 0;
-				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, (int)(fabs(yinterp[0])/yinterp[0])); _assert_(latlon>0);
+				int signlat = 1;
+				if (yinterp[0]<0) signlat = -1;
+				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat); _assert_(latlon>0);
 				lat = latelem[0];
 				lon = lonelem[0];
 				if(lon>180) lon=lon-360;
@@ -5850,7 +5855,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				xDelete<IssmDouble>(lonelem);
 				xDelete<IssmDouble>(lat_mappingpoint);
 				xDelete<IssmDouble>(lon_mappingpoint);
-				xDelete<IssmDouble>(mappedforcingneighbors);
+				xDelete<int>(mappedforcingneighbors);
 
 			} else {
 				// Get Qinterp for this element, set Q12, Q21, Q11, Q22 locally
