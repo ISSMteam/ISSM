@@ -26,7 +26,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	%	Examples:
 	%		# Get observation dataset
 	%		md.basalforcings = interpISMIP7AntarcticaOcn(md,'obs')
-    %
+	%
 	%		md.basalforcings = interpISMIP7AntarcticaOcn(md,'cesm2-waccm','ssp126');
 	%
 	%  TODO:
@@ -143,8 +143,8 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	clear temp_matrix_tf, temp_matrix_so;
 	clear so_data, tf_data;
 
-    % TODO:
-    % Wait calibrated dataset
+	% TODO:
+	% Wait calibrated dataset
 	%load Delta and gamma data
 	%deltatnc_median = fullfile(datadir,'parameterizations/coeff_gamma0_DeltaT_quadratic_non_local_median.nc');
 	%deltaT_median   = double(ncread(deltatnc_median,'deltaT_basin'));
@@ -176,7 +176,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	disp(['Info: forcings cover ' num2str(start_time),' to ', num2str(end_time)]);
 end
 
-function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, start_time, end_time)
+function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, start_time, end_time) % {{{
 	%{
 	%Explain
 	%-------
@@ -196,7 +196,7 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 	%scenario: str
 	%	Scenarios in CMIP6 (ssp126, ssp585, ssp370)
 	%
-    %start_time, end_time: int
+	%start_time, end_time: int
 	%	Start and final year for searching files
 	%
 	%Returns
@@ -287,9 +287,9 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 		otherwise
 			error('Error: not implemented yet.');
 	end
-end
+end % }}}
 
-function [Kt,delta_t_basin]=calibrated_parameters_ismip7
+function [Kt,delta_t_basin]=calibrated_parameters_ismip7 % {{{
 	%Explain
 	%-------
 	%Hard-coded optimized parameters for ismip7.
@@ -308,4 +308,4 @@ function [Kt,delta_t_basin]=calibrated_parameters_ismip7
 							0.65, -0.2, -0.15, 0.8 ,  2.0,...
 							0.55, -0.2,   0.5, 0.05, -0.2,...
 							0.15];
-end
+end % }}}
