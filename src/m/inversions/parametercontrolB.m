@@ -3,7 +3,7 @@ function md=parametercontrolB(md,varargin),
 %
 %   It is possible to specify the number of steps, values for the
 %   minimum and maximum values of B, the 
-%   kind of cm_responses to use or the the optscal.
+%   kind of cm_responses to use or the optscal.
 %   
 %   Usage:
 %       md=parametercontrolB(md,varargin)

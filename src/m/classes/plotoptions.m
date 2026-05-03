@@ -77,7 +77,7 @@ classdef plotoptions
 			 numberofplots=fieldoccurrences(rawoptions,'data');
 			 opt.numberofplots=numberofplots;
 
-			 %figure out wether alloptions flog is on
+			 %figure out whether alloptions flag is on
 			 if strcmpi(getfieldvalue(rawoptions,'alloptions','off'),'on')
 				 allflag=1;
 			 else

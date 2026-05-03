@@ -68,7 +68,7 @@ classdef thermal
 			%will basal boundary conditions be set dynamically
 			self.isdynamicbasalspc=0;
 		
-			%wether waterfraction drainage is enabled
+			%whether waterfraction drainage is enabled
 			self.isdrainicecolumn=1;
 
 			%set an upper limit for local stored watercolumn
@@ -124,7 +124,7 @@ classdef thermal
 			fielddisplay(self,'penalty_factor','scaling exponent (default is 3)');
 			fielddisplay(self,'isenthalpy','use an enthalpy formulation to include temperate ice (default is 0)');
 			fielddisplay(self,'isdynamicbasalspc','enable dynamic setting of basal forcing. required for enthalpy formulation (default is 0)');
-			fielddisplay(self,'isdrainicecolumn','wether waterfraction drainage is enabled for enthalpy formulation (default is 1)'); 
+			fielddisplay(self,'isdrainicecolumn','whether waterfraction drainage is enabled for enthalpy formulation (default is 1)'); 
 			fielddisplay(self,'watercolumn_upperlimit','upper limit of basal watercolumn for enthalpy formulation (default is 1000m)');
 			fielddisplay(self,'fe','Finite Element type: ''P1'' (default), ''P1xP2''');
 			fielddisplay(self,'requested_outputs','additional outputs requested');
