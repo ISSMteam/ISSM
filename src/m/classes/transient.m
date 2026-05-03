@@ -108,10 +108,10 @@ classdef transient
 			md = checkfield(md,'fieldname','transient.issampling','numel',[1],'values',[0 1]);  
 			md = checkfield(md,'fieldname','transient.amr_frequency','numel',[1],'>=',0,'NaN',1,'Inf',1);
 
-			if (~strcmp(solution,'TransientSolution') & md.transient.isoceancoupling==1),
+			if (~strcmp(solution,'TransientSolution') & md.transient.isoceancoupling==1)
 				md = checkmessage(md,['Coupling with ocean model can only be performed for transient simulations!']);
 			end
-			if (md.transient.isdamageevolution & ~isa(md.materials,'matdamageice')), 
+			if (md.transient.isdamageevolution & ~isa(md.materials,'matdamageice')) 
 				md = checkmessage(md,['requesting damage evolution but md.materials is not of class matdamageice']);
 			end
 		end % }}}
@@ -160,7 +160,7 @@ classdef transient
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

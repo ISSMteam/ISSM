@@ -23,7 +23,7 @@ disp('   -- Jakobsson2012: interpolating bed');
 bedout = InterpFromGrid(xdata,ydata,data,x0075,y0075);
 bedout = reshape(bedout,size(X,1),size(X,2));
 
-if nargout==2,
+if nargout==2
 	ncpath ='/home/ModelData/Greenland/IBCAO/IBCAO_V3_SID_500m.grd';
 	disp('   -- Jakobsson2012: loading source');
 	xdata = double(ncread(ncpath,'x'));

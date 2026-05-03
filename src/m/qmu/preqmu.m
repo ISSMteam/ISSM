@@ -32,15 +32,15 @@ responses=expandresponses(md,responses);
 %go through variables and responses, and check they don't have more than the number of partitions. Also determine numvariables and numresponses
 numvariables=0;
 variable_fieldnames=fieldnames(variables);
-for i=1:length(variable_fieldnames),
+for i=1:length(variable_fieldnames)
 	field_name=variable_fieldnames{i};
 	fieldvariables=variables.(field_name);
 	for j=1:numel(fieldvariables)
-		if strncmpi(fieldvariables(j).descriptor,'scaled_',7),
+		if strncmpi(fieldvariables(j).descriptor,'scaled_',7)
 			npart=qmupart2npart(fieldvariables(j).partition);
 			nt=fieldvariables(j).nsteps;
-			if nt==1,
-				if str2int(fieldvariables(j).descriptor,'last')>npart,
+			if nt==1
+				if str2int(fieldvariables(j).descriptor,'last')>npart
 					error('preqmu error message: one of the expanded variables has more values than the number of partitions ');
 				end
 			end
@@ -51,13 +51,13 @@ end
 
 numresponses=0;
 response_fieldnames=fieldnames(responses);
-for i=1:length(response_fieldnames),
+for i=1:length(response_fieldnames)
 	field_name=response_fieldnames{i};
 	fieldresponses=responses.(field_name);
 	for j=1:numel(fieldresponses)
-		if strncmpi(fieldresponses(j).descriptor,'scaled_',7),
+		if strncmpi(fieldresponses(j).descriptor,'scaled_',7)
 			npart=partition_npart(fieldresponses(j).partition);
-			if str2int(fieldresponses(j).descriptor,'last')>npart,
+			if str2int(fieldresponses(j).descriptor,'last')>npart
 				error('preqmu error message: one of the expanded responses has more values than the number of partitions');
 			end
 		end
@@ -71,7 +71,7 @@ dakota_in_data(md.qmu.method(imethod),variables,responses,md.qmu.params(iparams)
 %build a list of variables and responses descriptors. the list is not expanded.
 variabledescriptors={};
 variable_fieldnames=fieldnames(md.qmu.variables(ivar));
-for i=1:length(variable_fieldnames),
+for i=1:length(variable_fieldnames)
 	field_name=variable_fieldnames{i};
 	fieldvariables=md.qmu.variables(ivar).(field_name);
 	for j=1:numel(fieldvariables)
@@ -81,7 +81,7 @@ end
 
 responsedescriptors={};
 response_fieldnames=fieldnames(md.qmu.responses(iresp));
-for i=1:length(response_fieldnames),
+for i=1:length(response_fieldnames)
 	field_name=response_fieldnames{i};
 	fieldresponses=md.qmu.responses(iresp).(field_name);
 	for j=1:numel(fieldresponses)
@@ -94,13 +94,13 @@ variablepartitions={};
 variablepartitions_npart=[];
 variablepartitions_nt=[];
 variable_fieldnames=fieldnames(md.qmu.variables(ivar));
-for i=1:length(variable_fieldnames),
+for i=1:length(variable_fieldnames)
 	field_name=variable_fieldnames{i};
 	fieldvariable=md.qmu.variables(ivar).(field_name);
 	if fieldvariable.isscaled() | fieldvariable.isdistributed();
 		variablepartitions{end+1}=fieldvariable.partition;
 		variablepartitions_npart(end+1)=qmupart2npart(fieldvariable.partition);
-		if isprop(fieldvariable,'nsteps'),
+		if isprop(fieldvariable,'nsteps')
 			variablepartitions_nt(end+1)=fieldvariable.nsteps;
 		else
 			variablepartitions_nt(end+1)=1;
@@ -116,7 +116,7 @@ end
 responsepartitions={};
 responsepartitions_npart=[];
 response_fieldnames=fieldnames(md.qmu.responses(iresp));
-for i=1:length(response_fieldnames),
+for i=1:length(response_fieldnames)
 	field_name=response_fieldnames{i};
 	fieldresponse=md.qmu.responses(iresp).(field_name);
 	if fieldresponse.isscaled();

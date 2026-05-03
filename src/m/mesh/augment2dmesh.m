@@ -22,13 +22,13 @@ bandsegments=mhband.segments; %keep  a copy around for when user requests this b
 %The innner segments of mhband and the outer segments of mh are identical. Go into  the elements of 
 %mhband and set them to their md1 equivalent: 
 tol=getfieldvalue(options,'tolerance',1); %1 meter 
-for i=1:length(mhband.segments),
+for i=1:length(mhband.segments)
 	node2=mhband.segments(i,1);
 	%this node2 has an equivalent on the segments  of mdh: 
-	for j=1:length(mh.segments),
+	for j=1:length(mh.segments)
 		node1=mh.segments(j,1);
 		%if mhband.x(node2-mh.numberofvertices) == mh.x(node1) &&  mhband.y(node2-mh.numberofvertices) == mh.y(node1),
-		if sqrt((mhband.x(node2-mh.numberofvertices) - mh.x(node1))^2 + (mhband.y(node2-mh.numberofvertices) - mh.y(node1))^2)<tol,
+		if sqrt((mhband.x(node2-mh.numberofvertices) - mh.x(node1))^2 + (mhband.y(node2-mh.numberofvertices) - mh.y(node1))^2)<tol
 			%go into the mesh of mhband, and replace by node1.
 			pos=find(mhband.elements==node2); mhband.elements(pos)=node1;
 			segs=mhband.segments(:,1:2); pos=find(segs==node2); segs(pos)=node1; mhband.segments(:,1:2)=segs; bandsegments(:,1:2)=segs;
@@ -49,7 +49,7 @@ if ~isnan(mh.long), mh.long=[mh.long;mhband.long];  end
 mh.segments=[mhband.segments]; 
 
 %segments that are internal mght have been requested: 
-if strcmpi(getfieldvalue(options,'internalsegments','off'),'on'),
+if strcmpi(getfieldvalue(options,'internalsegments','off'),'on')
 	pos=find(isnan(mh.segments(:,3)));
 	internalsegments=bandsegments(pos,:);
 end
@@ -62,7 +62,7 @@ mh.segments=mh.segments(pos,:);
 x=mh.x; y=mh.y; lat=mh.lat; long=mh.long; 
 elements=mh.elements; segments=mh.segments;
 orphan=find(~ismember([1:length(x)],sort(unique(elements(:)))));
-for i=1:length(orphan),
+for i=1:length(orphan)
 	%disp('WARNING: removing orphans');
 	%get rid of the orphan node i
 	%update x and y
@@ -98,12 +98,12 @@ mh.vertexconnectivity=NodeConnectivity(mh.elements,mh.numberofvertices);
 mh.elementconnectivity=ElementConnectivity(mh.elements,mh.vertexconnectivity);
 
 %return: 
-if nargout==1,
+if nargout==1
 	varargout{1}=mh;
-elseif nargout==2,
+elseif nargout==2
 	varargout{1}=mh;
 	varargout{2}=internalsegments;
-elseif nargout==3,
+elseif nargout==3
 	varargout{1}=mh;
 	varargout{2}=internalsegments;
 	varargout{3}=internalelements;

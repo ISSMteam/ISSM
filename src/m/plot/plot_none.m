@@ -11,7 +11,7 @@ options=addfielddefault(options,'colorbar','none');
 options=addfielddefault(options,'map','none');
 options=addfielddefault(options,'axis','equal');
 
-if exist(options,'overlay'),
+if exist(options,'overlay')
 	plot_overlay(md,'none',options,nlines,ncols,i);
 	return;
 end

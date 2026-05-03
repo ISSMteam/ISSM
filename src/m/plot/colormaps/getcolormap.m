@@ -5,7 +5,7 @@ function map = getcolormap(options)
 %      map = getcolormap(options)
 
 %default is turbo
-if ~exist(options,'colormap'),
+if ~exist(options,'colormap')
 	map = turbo();
 	return
 end
@@ -19,39 +19,39 @@ end
 %OK this is an in-house colormap
 if ~ischar(map), error('colormap format not supported'); end
 
-if strcmpi(map,'Ala'),
+if strcmpi(map,'Ala')
 	map = jet(256);
 	map = map(128:end,:);
-elseif strcmpi(map,'damage'),
+elseif strcmpi(map,'damage')
 	v=ver;
-	if any(strcmp('Image Processing Toolbox',{v.Name})),
+	if any(strcmp('Image Processing Toolbox',{v.Name}))
 		map = color_scale(256,0,70,'ccw');
 		map = flipud(map);
 		map(1:2,:)=[0.7476    1.0000    1.0000; 0.7476    1.0000    1.0000];
 	else
 		error('damage colormap requires Image Processing Toolbox, please try another colormap');
 	end
-elseif strcmpi(map,'redblue'),
+elseif strcmpi(map,'redblue')
 	map = hsv(128);
 	map = rgb2hsv(map);
 	map(:,2)       = max(min( abs(map(:,1)-0.5)/0.5 ,1),0);
 	map(1:64,1)   = 0.7;
 	map(65:end,1) = 1;
 	map = hsv2rgb(map);
-elseif strcmpi(map,'Rignot'),
+elseif strcmpi(map,'Rignot')
 	alpha=getfieldvalue(options,'alpha',1);
 	map = hsv(128);
 	map = rgb2hsv(map);
 	map(:,2) = max(min( (0.1+map(:,1)).^(1/alpha) ,1),0);
 	map = hsv2rgb(map);
-elseif strcmpi(map,'Rignot2'),
+elseif strcmpi(map,'Rignot2')
 	alpha=getfieldvalue(options,'alpha',1);
 	map = hsv;
 	map = rgb2hsv(map);
 	map(:,2) = max(min( (0.1+map(:,1)).^(1/alpha) ,1),0);
 	map = hsv2rgb(map);
 	map=flipud(map);
-elseif strcmpi(map,'Seroussi'),
+elseif strcmpi(map,'Seroussi')
 	alpha=getfieldvalue(options,'alpha',1);
 	map = hsv;
 	map = flipud(map);

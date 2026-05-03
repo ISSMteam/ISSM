@@ -9,7 +9,7 @@ function new_flags=PropagateFlagsUntilDistance(md,flags,distance)
 new_flags=flags;
 
 %make 3d work in 2d: 
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	md.mesh.x=md.mesh.x2d;
 	md.mesh.y=md.mesh.y2d;
 	md.mesh.elements=md.mesh.elements2d;
@@ -26,7 +26,7 @@ border_elements=flag_elements(find(sum_conn>=1));
 x_elem=md.mesh.x(md.mesh.elements)*[1;1;1]/3;
 y_elem=md.mesh.y(md.mesh.elements)*[1;1;1]/3;
 
-while 1,
+while 1
 
 	%keep copy of new_flags for this loop: 
 	new_flags_bak=new_flags;
@@ -40,13 +40,13 @@ while 1,
 
 	%get new elements: 
 	new_elements=find(new_flags & ~new_flags_bak);
-	if ~length(new_elements),
+	if ~length(new_elements)
 		%we are done!
 		break;
 	end
 
 	%check which of these new elements are more than distance away from the border elements
-	for i=1:length(new_elements),
+	for i=1:length(new_elements)
 		dist=sqrt(     (x_elem(border_elements)-x_elem(new_elements(i))).^2 + (y_elem(border_elements)-y_elem(new_elements(i))).^2)-distance;
 		if ~any(dist<0)
 			%none of the border elements are within distance, this element is outside out area of interest.

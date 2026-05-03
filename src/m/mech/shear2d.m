@@ -18,6 +18,6 @@ sxy=(uy+vx)/2;
 s=sqrt(sx.^2+sy.^2+sxy.^2+sx.*sy);
 
 %if user requested only one output, it must be the norm
-if nargout==1,
+if nargout==1
 	sx=s;
 end

@@ -49,6 +49,6 @@ vxout = InterpFromGrid(xdata,ydata,vxdata,double(X),double(Y));
 vyout = InterpFromGrid(xdata,ydata,vydata,double(X),double(Y));
 
 %return vel if only one output is requested
-if nargout==1,
+if nargout==1
 	vxout = sqrt(vxout.^2+vyout.^2);
 end

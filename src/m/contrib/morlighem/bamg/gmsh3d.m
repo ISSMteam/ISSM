@@ -12,11 +12,11 @@ fid=fopen('model.geo','w');
 fprintf(fid,['// Gmsh input file, created by ISSM on ' date '\n']);
 
 %Lower points
-for i=1:nbv,
+for i=1:nbv
 	fprintf(fid,'Point(%i) = {%8g, %8g, %8g};\n',i,x(i),y(i),0.);
 end
 %Upper points
-for i=1:nbv,
+for i=1:nbv
 	fprintf(fid,'Point(%i) = {%8g, %8g, %8g};\n',nbv+i,x(i),y(i),1.);
 end
 
@@ -58,7 +58,7 @@ ps(2)=counter+1;
 fprintf(fid,['Plane Surface(' num2str(counter+1) ') = {' num2str(counter) '};\n']);
 counter = counter+2;
 %Sides surfaces
-for i=1:nbv-1,
+for i=1:nbv-1
 	fprintf(fid,['Line Loop(' num2str(counter) ') = {' num2str(i) ',' num2str(2*nbv+i+1) ',-' num2str(nbv+i) ',-' num2str(2*nbv+i) '};\n']);
 	fprintf(fid,['Plane Surface(' num2str(counter+1) ') = {' num2str(counter) '};\n']);
 	ps(2+i)=counter+1;

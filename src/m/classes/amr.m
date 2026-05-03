@@ -30,7 +30,7 @@ classdef amr
          % This function is directly called by matlab when a model object is
          % loaded. Update old properties here
 
-         if verLessThan('matlab','7.9'),
+         if verLessThan('matlab','7.9')
             disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
             disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -43,7 +43,7 @@ classdef amr
          end
 
          %2017 September 15th
-         if isstruct(self),
+         if isstruct(self)
             disp('WARNING: updating amr. Now the default is amr with bamg');
             disp('         some old fields were not converted');
             disp('         see the new fields typing md.amr and modify them properly');

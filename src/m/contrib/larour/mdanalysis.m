@@ -22,7 +22,7 @@ function varargout = mdanalysis(varargin)
 %variables: }}}
 %global variables:  %{{{
 global md  modelname
-if strcmpi(class(varargin{1}),'model') | strcmpi(class(varargin{1}),'sealevelmodel'), 
+if strcmpi(class(varargin{1}),'model') | strcmpi(class(varargin{1}),'sealevelmodel') 
 	md=varargin{1};
 	modelname=inputname(1);
 end
@@ -160,12 +160,12 @@ global md grounded ice  logvalue
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 if issealevel(), if isearth, results=md.earth.results; else results=md.icecaps{1}.results; end; else results=md.results; end;
-if isfield(results,'TransientSolution'),
+if isfield(results,'TransientSolution')
 	strings=cell(length(results.TransientSolution),1);
-	for i=1:length(results.TransientSolution),
+	for i=1:length(results.TransientSolution)
 		strings{i}=sprintf('%4.2f     (%i)',results.TransientSolution(i).time,i);
 	end
-	if length(strings)>40,
+	if length(strings)>40
 		%too many strings, reduce!
 		lt=length(strings);
 		modlt=floor(lt/40);
@@ -221,9 +221,9 @@ global md
 strings=get(hObject,'String'); value=get(hObject,'Value');
 string=strings(value); 
 
-if strcmpi(string,'IceVolume') | strcmpi(string,'IceVolumeAboveFloatation'),
+if strcmpi(string,'IceVolume') | strcmpi(string,'IceVolumeAboveFloatation')
 	plotv();
-elseif strcmpi(string,'SealevelRSLEustatic'),
+elseif strcmpi(string,'SealevelRSLEustatic')
 	%display directly: 
 	displayscalar();
 else
@@ -242,15 +242,15 @@ global md
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 if issealevel(), if isearth, results=md.earth.results; else results=md.icecaps{1}.results; end; else results=md.results; end;
-if isfield(results,'TransientSolution'),
+if isfield(results,'TransientSolution')
 	fields=listfields(results,'TransientSolution');
 	set(hObject,'String',fields);
-	for i=1:length(fields), 
-		if ~issealevel & strcmpi(fields{i},'Vel'),
+	for i=1:length(fields) 
+		if ~issealevel & strcmpi(fields{i},'Vel')
 			set(hObject,'Value',i);
 			break;
 		end
-		if issealevel & isearth & strcmpi(fields{i},'Sealevel'),
+		if issealevel & isearth & strcmpi(fields{i},'Sealevel')
 			set(hObject,'Value',i);
 			break;
 		end
@@ -307,8 +307,8 @@ global modelname
 %figure out how many models are in the workspace!
 whores=evalin('base','whos');
 flags=zeros(length(whores),1);
-for i=1:length(whores),
-	if strcmpi(whores(i).class,'model') | strcmpi(whores(i).class,'sealevelmodel'),
+for i=1:length(whores)
+	if strcmpi(whores(i).class,'model') | strcmpi(whores(i).class,'sealevelmodel')
 		flags(i)=1;
 	end
 end
@@ -316,19 +316,19 @@ pos=find(flags);
 whores=whores(pos);
 
 strings={};
-for i=1:length(whores),
+for i=1:length(whores)
 	strings{end+1}=[whores(i).name ' (' whores(i).class ')'];
 end
 
 %match with varargin{1}'s name: 
 counter=-1;
-for i=1:length(strings),
-	if strcmpi(modelname,whores(i).name),
+for i=1:length(strings)
+	if strcmpi(modelname,whores(i).name)
 		counter=i;
 		break;
 	end
 end
-if counter==-1, 
+if counter==-1 
 	error('could not find input model name matching base workspace names!');
 end
 
@@ -487,7 +487,7 @@ global md
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 if issealevel, if isearth, results=md.earth.results; else results=md.icecaps{1}.results; end; else results=md.results; end;
-if isfield(results,'TransientSolution'),
+if isfield(results,'TransientSolution')
 	set(hObject,'String',sprintf('%4.2f',results.TransientSolution(1).time));
 else
 	set(hObject,'String',sprintf('%4.2f',0));
@@ -521,8 +521,8 @@ global md
 % hObject    handle to Masque (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-if issealevel, 
-	if isearth, 
+if issealevel 
+	if isearth 
 		mv=md.earth.mask; 
 	else 
 		mv=md.icecaps{1}.mask; 
@@ -557,12 +557,12 @@ global md ;
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 if issealevel, if isearth, results=md.earth.results; else results=md.icecaps{1}.results; end; else results=md.results; end;
-if isfield(results,'TransientSolution'),
+if isfield(results,'TransientSolution')
 	strings=cell(length(results.TransientSolution),1);
-	for i=1:length(results.TransientSolution),
+	for i=1:length(results.TransientSolution)
 		strings{i}=sprintf('%4.2f     (%i)',results.TransientSolution(i).time,i);
 	end
-	if length(strings)>20,
+	if length(strings)>20
 		%too many strings, reduce!
 		lt=length(strings);
 		modlt=floor(lt/20);
@@ -633,8 +633,8 @@ fields={'geometry.thickness',...
 		 'slr.deltathickness'...
 		 };
 
- if issealevel(),
-	 if isearth,
+ if issealevel()
+	 if isearth
 		 mask=md.earth.mask;
 	 else
 		 mask=md.icecaps{1}.mask;
@@ -643,7 +643,7 @@ fields={'geometry.thickness',...
 	 mask=md.mask;
  end
 
- if  strcmpi(class(mask),'maskpsl'),
+ if  strcmpi(class(mask),'maskpsl')
 	 fields{end+1}='mask.ocean_levelset';
 	 fields{end+1}='mask.land_levelset';
  end
@@ -690,8 +690,8 @@ global md solutiontype
 % hObject    handle to popupmenu10 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-if issealevel,
-	if isearth,
+if issealevel
+	if isearth
 		resultfields=fieldnames(md.earth.results);
 	else
 		resultfields=fieldnames(md.icecaps{1}.results);
@@ -699,17 +699,17 @@ if issealevel,
 else
 	resultfields=fieldnames(md.results);
 end
-if isempty(resultfields),
+if isempty(resultfields)
 	resultfields={'None'};
 end
 
 %default solution: 
-for i=1:length(resultfields),
+for i=1:length(resultfields)
 	solutiontype=resultfields{i};
-	if strcmpi(solutiontype,'StressbalanceSolution'),
+	if strcmpi(solutiontype,'StressbalanceSolution')
 		i0=i;
 		break;
-	elseif strcmpi(solutiontype,'StressbalanceSolution'),
+	elseif strcmpi(solutiontype,'StressbalanceSolution')
 		i0=i;
 		break;
 	else
@@ -755,7 +755,7 @@ function popupmenu11_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 global md range;
 
-if issealevel(),
+if issealevel()
 	strings=md.continents();
 	set(hObject,'String',strings);
 	set(hObject,'Value',1);
@@ -790,7 +790,7 @@ global md
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-if issealevel(),
+if issealevel()
 
 	%need the continent name:  default first one.
 	continents=md.continents();
@@ -833,7 +833,7 @@ earth=get(hObject,'value');
 %Change Field: 
 if issealevel, if isearth, results=md.earth.results; else results=md.icecaps{1}.results; end; else results=md.results; end;
 fieldHandle=findobj('Tag', 'Field');
-if isfield(results,'TransientSolution'),
+if isfield(results,'TransientSolution')
 	fieldss=listfields(results,'TransientSolution');
 	set(fieldHandle,'String',fieldss);
 	set(fieldHandle,'Value',1);
@@ -843,8 +843,8 @@ else
 end
 
 %Change Masque: 
-if issealevel, 
-	if isearth, 
+if issealevel 
+	if isearth 
 		mv=md.earth.mask; 
 	else 
 		mv=md.icecaps{1}.mask; 
@@ -914,22 +914,22 @@ function plotv() % {{{
 	%}}}
 		%lock limits:  % {{{
 		lockHandle=findobj('Tag', 'Lock'); lockvalue=get(lockHandle,'Value');
-		if lockvalue,
+		if lockvalue
 			xl=xlim; yl=ylim;
 		end
 		 %}}}
 	
 	cla, reset(gca);
 	hold on ;
-	if issealevel,
-		if isearth,
+	if issealevel
+		if isearth
 			%do nothing. no ice volume.
 		else
 			dt=md.earth.timestepping.time_step*md.earth.settings.output_frequency;
-			for j=1:length(range),
+			for j=1:length(range)
 				i=range(j);
 				vols=resultstomatrix(md.icecaps{i},'TransientSolution',field);
-				if j==1,
+				if j==1
 					volst=vols;
 				else
 					volst(1,:)=volst(1,:)+vols(1,:);
@@ -979,7 +979,7 @@ function displayscalar() % {{{
 	stepHandle=findobj('Tag', 'Step'); 
 	stepstrings=get(stepHandle,'String');
 	stepvalue=get(stepHandle,'Value');
-	if ~isempty(stepstrings),
+	if ~isempty(stepstrings)
 		stepstring=stepstrings{stepvalue};
 		%grab second integer: 
 		A=sscanf(stepstring,'%g (%i)'); counter=A(2);
@@ -989,9 +989,9 @@ function displayscalar() % {{{
 	%}}}
 			
 
-	if issealevel,
-		if isearth,
-		if strcmpi(field,'SealevelRSLEustatic'),
+	if issealevel
+		if isearth
+		if strcmpi(field,'SealevelRSLEustatic')
 			dt=md.earth.timestepping.time_step*md.earth.slr.geodetic_run_frequency;
 			eus=md.earth.results.TransientSolution(counter-1).(field)/dt*1000; %in mm/yr
 			scalarHandle=findobj('Tag', 'Scalar'); 
@@ -1009,18 +1009,18 @@ function plotm() % {{{
 	strings=get(hObject,'String'); value=get(hObject,'Value');
 
 	string='';
-	if value, 
-		if ~isempty(strings),
+	if value 
+		if ~isempty(strings)
 			string=strings(value); 
 		end
 	end
 
-	if strcmpi(string,'IceVolume') | strcmpi(string,'IceVolumeAboveFloatation'),
+	if strcmpi(string,'IceVolume') | strcmpi(string,'IceVolumeAboveFloatation')
 		plotv();
-	elseif strcmpi(string,'SealevelRSLEustatic'),
+	elseif strcmpi(string,'SealevelRSLEustatic')
 		displayscalar();
 	else
-		if issealevel(),
+		if issealevel()
 			plotsl();
 		else 
 			plotmd();
@@ -1034,7 +1034,7 @@ function plotm() % {{{
 		stepHandle=findobj('Tag', 'Step'); 
 		stepstrings=get(stepHandle,'String');
 		stepvalue=get(stepHandle,'Value');
-		if ~isempty(stepstrings),
+		if ~isempty(stepstrings)
 			stepstring=stepstrings{stepvalue};
 			%grab second integer: 
 			A=sscanf(stepstring,'%g (%i)'); counter=A(2);
@@ -1049,11 +1049,11 @@ function plotm() % {{{
 		interpHandle=findobj('Tag', 'Interp'); interpvalue=get(interpHandle,'Value');
 		flatHandle=findobj('Tag', 'Flat'); flatvalue=get(flatHandle,'Value');
 		facetedHandle=findobj('Tag', 'Faceted'); facetedvalue=get(facetedHandle,'Value');
-		if interpvalue,
+		if interpvalue
 			shadingv='interp';
-		elseif flatvalue,
+		elseif flatvalue
 			shadingv='flat';
-		elseif facetedvalue,
+		elseif facetedvalue
 			shadingv='faceted';
 		else 
 			shadingv='interp';
@@ -1065,23 +1065,23 @@ function plotm() % {{{
 		maskfieldvalue=get(maskfieldHandle,'Value');
 		maskfield=maskfieldstrings(maskfieldvalue); 
 		maskfield=maskfield{:};
-		if strcmpi(maskfield,'all'),
+		if strcmpi(maskfield,'all')
 			maskv=ones(md.mesh.numberofvertices,1);
 		else
 			maskv=md.mask.(maskfield);
 		end
-		if strcmpi(maskfield,'all'),
+		if strcmpi(maskfield,'all')
 			%do nothing; 
-		elseif strcmpi(maskfield,'groundedice_levelset'),
+		elseif strcmpi(maskfield,'groundedice_levelset')
 			maskv=maskv>=0;
-		elseif strcmpi(maskfield,'ice_levelset'),
+		elseif strcmpi(maskfield,'ice_levelset')
 			maskv=maskv<=0;
-		elseif strcmpi(maskfield,'ocean_levelset'),
+		elseif strcmpi(maskfield,'ocean_levelset')
 			maskv=maskv==1;
-		elseif strcmpi(maskfield,'land_levelset'),
+		elseif strcmpi(maskfield,'land_levelset')
 			maskv=maskv==1;
-		elseif strcmpi(maskfield,'glacier_levelset'),
-			if isnan(maskv),
+		elseif strcmpi(maskfield,'glacier_levelset')
+			if isnan(maskv)
 				maskv=ones(md.mesh.numberofvertices,1);
 			else
 				maskv=maskv==1;
@@ -1091,7 +1091,7 @@ function plotm() % {{{
 		%}}}
 		%lock limits:  % {{{
 		lockHandle=findobj('Tag', 'Lock'); lockvalue=get(lockHandle,'Value');
-		if lockvalue,
+		if lockvalue
 			xl=xlim; yl=ylim;
 		else
 			xl=[min(md.mesh.x) max(md.mesh.x)];
@@ -1099,7 +1099,7 @@ function plotm() % {{{
 		end %}}}
 		%time: {{{	
 		timeHandle=findobj('Tag','Time');
-		if strcmpi(solutiontype,'TransientSolution'),
+		if strcmpi(solutiontype,'TransientSolution')
 			set(timeHandle,'String',sprintf('%4.2f',md.results.TransientSolution(counter).time));
 		else
 			set(timeHandle,'String',sprintf('%4.2f',0));
@@ -1109,7 +1109,7 @@ function plotm() % {{{
 		stepHandle=findobj('Tag', 'DiffStep'); 
 		stepstrings=get(stepHandle,'String');
 		stepvalue=get(stepHandle,'Value');
-		if ~isempty(stepstrings),
+		if ~isempty(stepstrings)
 			stepstring=stepstrings{stepvalue};
 			%grab second integer: 
 			A=sscanf(stepstring,'%g (%i)'); diffcounter=A(2);
@@ -1123,39 +1123,39 @@ function plotm() % {{{
 		fieldHandle=findobj('Tag', 'Field'); 
 		fieldstrings=get(fieldHandle,'String');
 		fieldvalue=get(fieldHandle,'Value');
-		if ~isempty(fieldstrings),
+		if ~isempty(fieldstrings)
 			fieldv=fieldstrings{fieldvalue};
 		else
 			fieldv=NaN;
 		end
 		mfHandle=findobj('Tag', 'Mf'); 
 		mf=get(mfHandle,'Value');
-		if mf | strcmpi(solutiontype,'None'),
+		if mf | strcmpi(solutiontype,'None')
 			fieldHandle=findobj('Tag', 'ModelFields'); 
 			fieldstrings=get(fieldHandle,'String');
 			fieldvalue=get(fieldHandle,'Value');
 			fieldv=fieldstrings{fieldvalue};
 			eval(['field=md.' fieldv ';']);
-			if isnan(field),
+			if isnan(field)
 				field='mesh';
 			end
 		else
-			if strcmpi(solutiontype,'TransientSolution'),
+			if strcmpi(solutiontype,'TransientSolution')
 				field=md.results.TransientSolution(counter).(fieldv);
 				dfield=md.results.TransientSolution(diffcounter).(fieldv);
-			elseif strcmpi(solutiontype,'StressbalanceSolution'),
+			elseif strcmpi(solutiontype,'StressbalanceSolution')
 				field=md.results.StressbalanceSolution.(fieldv);
 				dfield=NaN;
 			else 
 				error('unknown solution type!');
 			end
 		end
-		if comparison, 
-			if strcmpi(solutiontype,'None'),
+		if comparison 
+			if strcmpi(solutiontype,'None')
 				error('cannot compare a solution field to model as no solution was run or selected!');
 			end
 			%figure out second field:
-			if strcmpi(fieldv,'Vel'),
+			if strcmpi(fieldv,'Vel')
 				field2=md.inversion.vel_obs;
 			end
 		end
@@ -1166,7 +1166,7 @@ function plotm() % {{{
 		cmaxHandle=findobj('Tag','Cmax'); cmax=str2num(get(cmaxHandle,'String'));
 
 		if isnan(cmin)
-			if logvalue,
+			if logvalue
 				cmin=.1;
 			else
 				pos=find(maskv);
@@ -1181,14 +1181,14 @@ function plotm() % {{{
 		%}}}
 
 		cla;
-		if logvalue,
+		if logvalue
 			plotmodel(md,'data',field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'log',10,'xlim',xl,'ylim',yl,'shading',shadingv);
 		else
-			if ~diff,
-				if comparison,
+			if ~diff
+				if comparison
 					plotmodel(md,'data',field,'data',field2,'figurestatement','off','clf','off','mask#all',maskv,'caxis#all',colaxis,'xlim#all',xl,'ylim#all',yl,'shading#all',shadingv,'nlines',2,'ncols',1);
 				else
-					if ischar(field) & strcmpi(field,'mesh'),
+					if ischar(field) & strcmpi(field,'mesh')
 						plotmodel(md,'data','mesh','figurestatement','off','clf','off','xlim',xl,'ylim',yl);
 					else
 						plotmodel(md,'data',field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'xlim',xl,'ylim',yl,'shading',shadingv); 
@@ -1208,7 +1208,7 @@ function plotsl() % {{{
 	stepHandle=findobj('Tag', 'Step'); 
 	stepstrings=get(stepHandle,'String');
 	stepvalue=get(stepHandle,'Value');
-	if ~isempty(stepstrings),
+	if ~isempty(stepstrings)
 		stepstring=stepstrings{stepvalue};
 		%grab second integer: 
 		A=sscanf(stepstring,'%g (%i)'); counter=A(2);
@@ -1223,11 +1223,11 @@ function plotsl() % {{{
 	interpHandle=findobj('Tag', 'Interp'); interpvalue=get(interpHandle,'Value');
 	flatHandle=findobj('Tag', 'Flat'); flatvalue=get(flatHandle,'Value');
 	facetedHandle=findobj('Tag', 'Faceted'); facetedvalue=get(facetedHandle,'Value');
-	if interpvalue,
+	if interpvalue
 		shadingv='interp';
-	elseif flatvalue,
+	elseif flatvalue
 		shadingv='flat';
-	elseif facetedvalue,
+	elseif facetedvalue
 		shadingv='faceted';
 	else 
 		shadingv='interp';
@@ -1235,8 +1235,8 @@ function plotsl() % {{{
 	%}}}
 	%time: {{{	
 	timeHandle=findobj('Tag','Time');
-	if strcmpi(solutiontype,'TransientSolution'),
-		if isearth,
+	if strcmpi(solutiontype,'TransientSolution')
+		if isearth
 			set(timeHandle,'String',sprintf('%4.2f',md.earth.results.TransientSolution(counter).time));
 		else
 			set(timeHandle,'String',sprintf('%4.2f',md.icecaps{1}.results.TransientSolution(counter).time));
@@ -1249,7 +1249,7 @@ function plotsl() % {{{
 	stepHandle=findobj('Tag', 'DiffStep'); 
 	stepstrings=get(stepHandle,'String');
 	stepvalue=get(stepHandle,'Value');
-	if ~isempty(stepstrings),
+	if ~isempty(stepstrings)
 		stepstring=stepstrings{stepvalue};
 		%grab second integer: 
 		A=sscanf(stepstring,'%g (%i)'); diffcounter=A(2);
@@ -1260,46 +1260,46 @@ function plotsl() % {{{
 	diff=get(diffHandle,'Value');
 	%}}}
 
-	if isearth, 
+	if isearth 
 		%Earth plotting: {{{
 		%field:  % {{{ 
 		fieldHandle=findobj('Tag', 'Field'); 
 		fieldstrings=get(fieldHandle,'String');
 		fieldvalue=get(fieldHandle,'Value');
-		if ~isempty(fieldstrings),
+		if ~isempty(fieldstrings)
 			fieldv=fieldstrings{fieldvalue};
 		else
 			fieldv=NaN;
 		end
 		colorbartitle={fieldv,''};
-		if strcmpi(fieldv,'SealevelRSLRate'),
+		if strcmpi(fieldv,'SealevelRSLRate')
 			colorbartitle={'SealevelRSLRate (mm/yr)',''};
 		end
 
 		mfHandle=findobj('Tag', 'Mf'); 
 		mf=get(mfHandle,'Value');
-		if mf | strcmpi(solutiontype,'None'),
+		if mf | strcmpi(solutiontype,'None')
 			fieldHandle=findobj('Tag', 'ModelFields'); 
 			fieldstrings=get(fieldHandle,'String');
 			fieldvalue=get(fieldHandle,'Value');
 			fieldv=fieldstrings{fieldvalue};
 			eval(['field=md.earth.' fieldv ';']);
-			if isnan(field),
+			if isnan(field)
 				field='mesh';
 			end
 		else
-			if strcmpi(solutiontype,'TransientSolution'),
+			if strcmpi(solutiontype,'TransientSolution')
 				field=md.earth.results.TransientSolution(counter).(fieldv);
 				dfield=md.earth.results.TransientSolution(diffcounter).(fieldv);
-			elseif strcmpi(solutiontype,'StressbalanceSolution'),
+			elseif strcmpi(solutiontype,'StressbalanceSolution')
 				field=md.earth.results.StressbalanceSolution.(fieldv);
 				dfield=NaN;
 			else 
 				error('unknown solution type!');
 			end
 		end
-		if comparison, 
-			if strcmpi(solutiontype,'None'),
+		if comparison 
+			if strcmpi(solutiontype,'None')
 				error('cannot compare a solution field to model as no solution was run or selected!');
 			end
 			%figure out second field:
@@ -1313,23 +1313,23 @@ function plotsl() % {{{
 		maskfieldvalue=get(maskfieldHandle,'Value');
 		maskfield=maskfieldstrings(maskfieldvalue); 
 		maskfield=maskfield{:};
-		if strcmpi(maskfield,'all'),
+		if strcmpi(maskfield,'all')
 			maskv=ones(md.earth.mesh.numberofvertices,1);
 		else
 			maskv=md.earth.mask.(maskfield);
 		end
-		if strcmpi(maskfield,'all'),
+		if strcmpi(maskfield,'all')
 			%do nothing; 
-		elseif strcmpi(maskfield,'groundedice_levelset'),
+		elseif strcmpi(maskfield,'groundedice_levelset')
 			maskv=maskv>=0;
-		elseif strcmpi(maskfield,'ice_levelset'),
+		elseif strcmpi(maskfield,'ice_levelset')
 			maskv=maskv<=0;
-		elseif strcmpi(maskfield,'ocean_levelset'),
+		elseif strcmpi(maskfield,'ocean_levelset')
 			maskv=maskv==1;
-		elseif strcmpi(maskfield,'land_levelset'),
+		elseif strcmpi(maskfield,'land_levelset')
 			maskv=maskv==1;
-		elseif strcmpi(maskfield,'glacier_levelset'),
-			if isnan(maskv),
+		elseif strcmpi(maskfield,'glacier_levelset')
+			if isnan(maskv)
 				maskv=ones(md.earth.mesh.numberofvertices,1);
 			else
 				maskv=maskv==1;
@@ -1338,12 +1338,12 @@ function plotsl() % {{{
 		maskvalue=0;
 		%}}}
 		%color limits:  % {{{
-		if ~ischar(field),
+		if ~ischar(field)
 			cminHandle=findobj('Tag','Cmin'); cmin=str2num(get(cminHandle,'String'));
 			cmaxHandle=findobj('Tag','Cmax'); cmax=str2num(get(cmaxHandle,'String'));
 
 			if isnan(cmin)
-				if logvalue,
+				if logvalue
 					cmin=.1;
 				else
 					pos=find(maskv);
@@ -1355,7 +1355,7 @@ function plotsl() % {{{
 				cmax=max(field(pos));
 			end
 
-			if cmin==cmax,
+			if cmin==cmax
 				colaxis=[cmin-eps,cmax+eps];
 			else
 				colaxis=[cmin,cmax];
@@ -1365,7 +1365,7 @@ function plotsl() % {{{
 		%}}}
 		%lock limits:  % {{{
 		lockHandle=findobj('Tag', 'Lock'); lockvalue=get(lockHandle,'Value');
-		if lockvalue,
+		if lockvalue
 			xl=xlim; yl=ylim; zl=zlim;
 			[az,el]=view; v=[az,el];
 		else
@@ -1377,14 +1377,14 @@ function plotsl() % {{{
 
 		%some quirks: 
 		cla;
-		if logvalue,
+		if logvalue
 			plotmodel(md.earth,'data',field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'log',10,'xlim',xl,'ylim',yl,'zlim',zl,'shading',shadingv,'colorbar','on','view',v,'colorbartitle',colorbartitle);
 		else
-			if ~diff, 
-				if comparison,
+			if ~diff 
+				if comparison
 					plotmodel(md.earth,'data',field,'data',field2,'figurestatement','off','clf','off','mask#all',maskv,'caxis#all',colaxis,'xlim#all',xl,'ylim#all',yl,'zlim#all',zl,'shading#all',shadingv,'nlines',2,'ncols',1,'view#all',v,'colorbartitle',colorbartitle);
 				else
-					if ischar(field) & strcmpi(field,'mesh'),
+					if ischar(field) & strcmpi(field,'mesh')
 						plotmodel(md.earth,'data','mesh','figurestatement','off','clf','off','xlim',xl,'ylim',yl,'zlim',zl,'view#all',v,'colorbartitle',colorbartitle);
 					else
 						plotmodel(md.earth,'data',field,'figurestatement','off','clf','off','mask',maskv,'maskvalue',maskvalue,'caxis',colaxis,'xlim',xl,'ylim',yl,'zlim',zl,'shading',shadingv,'axes','equal','colorbarpos',[.95 .5 .01 .15],'view#all',v,'colorbartitle',colorbartitle);
@@ -1413,7 +1413,7 @@ function plotsl() % {{{
 		stepHandle=findobj('Tag', 'Step'); 
 		stepstrings=get(stepHandle,'String');
 		stepvalue=get(stepHandle,'Value');
-		if ~isempty(stepstrings),
+		if ~isempty(stepstrings)
 			stepstring=stepstrings{stepvalue};
 			%grab second integer: 
 			A=sscanf(stepstring,'%g (%i)'); counter=A(2);
@@ -1428,11 +1428,11 @@ function plotsl() % {{{
 		interpHandle=findobj('Tag', 'Interp'); interpvalue=get(interpHandle,'Value');
 		flatHandle=findobj('Tag', 'Flat'); flatvalue=get(flatHandle,'Value');
 		facetedHandle=findobj('Tag', 'Faceted'); facetedvalue=get(facetedHandle,'Value');
-		if interpvalue,
+		if interpvalue
 			shadingv='interp';
-		elseif flatvalue,
+		elseif flatvalue
 			shadingv='flat';
-		elseif facetedvalue,
+		elseif facetedvalue
 			shadingv='faceted';
 		else 
 			shadingv='interp';
@@ -1440,7 +1440,7 @@ function plotsl() % {{{
 		%}}}
 		%time: {{{	
 		timeHandle=findobj('Tag','Time');
-		if strcmpi(solutiontype,'TransientSolution'),
+		if strcmpi(solutiontype,'TransientSolution')
 			set(timeHandle,'String',sprintf('%4.2f',md.icecaps{1}.results.TransientSolution(counter).time));
 		else
 			set(timeHandle,'String',sprintf('%4.2f',0));
@@ -1450,7 +1450,7 @@ function plotsl() % {{{
 		stepHandle=findobj('Tag', 'DiffStep'); 
 		stepstrings=get(stepHandle,'String');
 		stepvalue=get(stepHandle,'Value');
-		if ~isempty(stepstrings),
+		if ~isempty(stepstrings)
 			stepstring=stepstrings{stepvalue};
 			%grab second integer: 
 			A=sscanf(stepstring,'%g (%i)'); diffcounter=A(2);
@@ -1462,7 +1462,7 @@ function plotsl() % {{{
 		%}}}
 		%range:  % {{{
 		basins=getbasins();
-		if strcmpi(basins,'All'),
+		if strcmpi(basins,'All')
 			range=md.basinindx('continent',{getcontinent()});
 		else
 			range=md.basinindx('basin',basins);
@@ -1470,7 +1470,7 @@ function plotsl() % {{{
 
 		%}}}
 		cla;
-		for j=1:length(range), 
+		for j=1:length(range) 
 			i=range(j);
 			%mask:  %{{{
 			maskfieldHandle=findobj('Tag', 'Masque'); 
@@ -1478,23 +1478,23 @@ function plotsl() % {{{
 			maskfieldvalue=get(maskfieldHandle,'Value');
 			maskfield=maskfieldstrings(maskfieldvalue); 
 			maskfield=maskfield{:};
-			if strcmpi(maskfield,'all'),
+			if strcmpi(maskfield,'all')
 				maskv=ones(md.icecaps{i}.mesh.numberofvertices,1);
 			else
 				maskv=md.icecaps{i}.mask.(maskfield);
 			end
-			if strcmpi(maskfield,'all'),
+			if strcmpi(maskfield,'all')
 				%do nothing; 
-			elseif strcmpi(maskfield,'groundedice_levelset'),
+			elseif strcmpi(maskfield,'groundedice_levelset')
 				maskv=maskv>=0;
-			elseif strcmpi(maskfield,'ice_levelset'),
+			elseif strcmpi(maskfield,'ice_levelset')
 				maskv=maskv<=0;
-			elseif strcmpi(maskfield,'ocean_levelset'),
+			elseif strcmpi(maskfield,'ocean_levelset')
 				maskv=maskv==1;
-			elseif strcmpi(maskfield,'land_levelset'),
+			elseif strcmpi(maskfield,'land_levelset')
 				maskv=maskv==1;
-			elseif strcmpi(maskfield,'glacier_levelset'),
-				if isnan(maskv),
+			elseif strcmpi(maskfield,'glacier_levelset')
+				if isnan(maskv)
 					maskv=ones(md.icecaps{i}.mesh.numberofvertices,1);
 				else
 					maskv=maskv==1;
@@ -1504,15 +1504,15 @@ function plotsl() % {{{
 			%}}}
 			%lock limits:  % {{{
 			lockHandle=findobj('Tag', 'Lock'); lockvalue=get(lockHandle,'Value');
-			if lockvalue,
+			if lockvalue
 				xl=xlim; yl=ylim;
 			else
-				if j==1,
+				if j==1
 					xl=[min(md.icecaps{i}.mesh.x) max(md.icecaps{i}.mesh.x)];
 				else
 					xl=[min([md.icecaps{i}.mesh.x;xl(1)]) max([md.icecaps{i}.mesh.x;xl(2)])];
 				end
-				if j==1,
+				if j==1
 					yl=[min(md.icecaps{i}.mesh.y) max(md.icecaps{i}.mesh.y)];
 				else
 					yl=[min([md.icecaps{i}.mesh.y; yl(1)]) max([md.icecaps{i}.mesh.y; yl(2)])];
@@ -1522,35 +1522,35 @@ function plotsl() % {{{
 			fieldHandle=findobj('Tag', 'Field'); 
 			fieldstrings=get(fieldHandle,'String');
 			fieldvalue=get(fieldHandle,'Value');
-			if ~isempty(fieldstrings),
+			if ~isempty(fieldstrings)
 				fieldv=fieldstrings{fieldvalue};
 			else
 				fieldv=NaN;
 			end
 			mfHandle=findobj('Tag', 'Mf'); 
 			mf=get(mfHandle,'Value');
-			if mf | strcmpi(solutiontype,'None'),
+			if mf | strcmpi(solutiontype,'None')
 				fieldHandle=findobj('Tag', 'ModelFields'); 
 				fieldstrings=get(fieldHandle,'String');
 				fieldvalue=get(fieldHandle,'Value');
 				fieldv=fieldstrings{fieldvalue};
 				eval(['field=md.icecaps{' num2str(i) '}.' fieldv ';']);
-				if isnan(field),
+				if isnan(field)
 					field='mesh';
 				end
 			else
-				if strcmpi(solutiontype,'TransientSolution'),
+				if strcmpi(solutiontype,'TransientSolution')
 					field=md.icecaps{i}.results.TransientSolution(counter).(fieldv);
 					dfield=md.icecaps{i}.results.TransientSolution(diffcounter).(fieldv);
-				elseif strcmpi(solutiontype,'StressbalanceSolution'),
+				elseif strcmpi(solutiontype,'StressbalanceSolution')
 					field=md.icecaps{i}.results.StressbalanceSolution.(fieldv);
 					dfield=NaN;
 				else 
 					error('unknown solution type!');
 				end
 			end
-			if comparison, 
-				if strcmpi(solutiontype,'None'),
+			if comparison 
+				if strcmpi(solutiontype,'None')
 					error('cannot compare a solution field to model as no solution was run or selected!');
 				end
 				%figure out second field:
@@ -1567,11 +1567,11 @@ function plotsl() % {{{
 			cmaxHandle=findobj('Tag','Cmax'); cmaxfield=str2num(get(cmaxHandle,'String'));
 
 			if isnan(cminfield)
-				if logvalue,
+				if logvalue
 					cmin=.1;
 				else
 					pos=find(maskv);
-					if j==1,
+					if j==1
 						cmin=min(field(pos));
 					else
 						cmin=min(min(field(pos)),cmin);
@@ -1590,40 +1590,40 @@ function plotsl() % {{{
 			else
 				cmax=cmaxfield;
 			end
-			if cmin==cmax,
+			if cmin==cmax
 				cmin=cmin-1e-10; cmax=cmax+1e-10;
 			end
 			colaxis=[cmin,cmax];
 			%}}}
 			%contour levels? {{{
 			contourlevels=0;
-			if strncmpi(fieldv,'Mask',4),
+			if strncmpi(fieldv,'Mask',4)
 				contourexp=[tempname '.exp'];
 				isoline(md.icecaps{i},field,'output',contourexp);
 				contourlevels=1;
 
-				if diff,
+				if diff
 					contourdiffexp=[tempname '.exp'];
 					isoline(md.icecaps{i},dfield,'output',contourdiffexp);
 				end
 			end
 			%}}}
 			%display : {{{ 
-			if logvalue,
+			if logvalue
 				plotmodel(md.icecaps{i},'data',field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'log',10,'xlim',xl,'ylim',yl,'shading',shadingv);
 			else
-				if ~diff,
-					if comparison,
+				if ~diff
+					if comparison
 						plotmodel(md.icecaps{i},'data',field,'data',field2,'figurestatement','off','clf','off','mask#all',maskv,'caxis#all',colaxis,'xlim#all',xl,'ylim#all',yl,'shading#all',shadingv,'nlines',2,'ncols',1);
 					else
-						if ischar(field) & strcmpi(field,'mesh'),
+						if ischar(field) & strcmpi(field,'mesh')
 							plotmodel(md.icecaps{i},'data','mesh','figurestatement','off','clf','off','xlim',xl,'ylim',yl);
 						else
 							plotmodel(md.icecaps{i},'data',field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'xlim',xl,'ylim',yl,'shading',shadingv); 
-							if contourlevels,
+							if contourlevels
 								contour=expread(contourexp);
 								hold on; 
-								for k=1:length(contour),
+								for k=1:length(contour)
 									plot(contour(k).x,contour(k).y,'r-');
 								end
 							end
@@ -1631,15 +1631,15 @@ function plotsl() % {{{
 					end
 				else
 					plotmodel(md.icecaps{i},'data',dfield-field,'figurestatement','off','clf','off','mask',maskv,'caxis',colaxis,'xlim',xl,'ylim',yl,'shading',shadingv);
-					if contourlevels,
+					if contourlevels
 						contour=expread(contourexp);
 						hold on; 
-						for k=1:length(contour),
+						for k=1:length(contour)
 							plot(contour(k).x,contour(k).y,'k-');
 						end
 						dcontour=expread(contourdiffexp);
 						hold on; 
-						for k=1:length(dcontour),
+						for k=1:length(dcontour)
 							plot(dcontour(k).x,dcontour(k).y,'r-');
 						end
 					end
@@ -1649,7 +1649,7 @@ function plotsl() % {{{
 
 		end %end for
 
-		if ~comparison,
+		if ~comparison
 			set(gca,'Position',[0.2300    0.1100    0.7750    0.8150]); 
 		end % }}}
 	end 
@@ -1660,7 +1660,7 @@ function result=isearth() % {{{
 %}}}
 function result=issealevel() % {{{
 	global md;
-	if strcmpi(class(md),'sealevelmodel'),
+	if strcmpi(class(md),'sealevelmodel')
 		result=1;
 	else 
 		result=0;

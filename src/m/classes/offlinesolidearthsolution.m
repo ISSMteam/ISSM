@@ -20,7 +20,7 @@ classdef offlinesolidearthsolution < solidearthsolution
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==1), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==1) 
 				error('offlinesolidearthsolution.m::checkconsistency: trying to run GRD patterns while supplying an offline solution for those patterns!'); 
 			end
 			self.checkconsistency@solidearthsolution(md,solution,analyses);

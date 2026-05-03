@@ -22,7 +22,7 @@ for i=1:length(fields)
 	field=fields{i};
 
 	%Some properties do not need to be marshalled
-	if ismember(field,{'results' 'radaroverlay' 'toolkits' 'cluster' 'private'}),
+	if ismember(field,{'results' 'radaroverlay' 'toolkits' 'cluster' 'private'})
 		continue;
 	end
 

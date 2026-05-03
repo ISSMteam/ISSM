@@ -38,11 +38,11 @@ classdef plumebasalforcings
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
-			if isnan(self.floatingice_melting_rate),
+			if isnan(self.floatingice_melting_rate)
 				self.floatingice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.floatingice_melting_rate specified: values set as zero');
 			end
@@ -65,15 +65,15 @@ classdef plumebasalforcings
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0),
+			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.floatingice_melting_rate','NaN',1,'timeseries',1);
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','basalforcings.floatingice_melting_rate','NaN',1,'size',[md.mesh.numberofvertices 1]);
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0),
+			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.floatingice_melting_rate','NaN',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.mantleconductivity','>=',0,'numel',1);

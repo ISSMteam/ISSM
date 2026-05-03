@@ -79,7 +79,7 @@ classdef lovenumbers
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
 
@@ -98,7 +98,7 @@ classdef lovenumbers
 			md = checkfield(md,'fieldname','solidearth.lovenumbers.istime','NaN',1,'Inf',1,'values',[0 1]);
 
 			%check that love numbers are provided at the same level of accuracy: 
-			if (size(self.h,1)~=size(self.k,1) | size(self.h,1)~=size(self.l,1)),
+			if (size(self.h,1)~=size(self.k,1) | size(self.h,1)~=size(self.l,1))
 				error('lovenumbers error message: love numbers should be provided at the same level of accuracy');
 			end
 
@@ -128,7 +128,7 @@ classdef lovenumbers
 			WriteData(fid,prefix,'object',self,'fieldname','pmtf_ortho','name','md.solidearth.lovenumbers.pmtf_ortho','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'data',self.tk2secular,'fieldname','lovenumbers.tk2secular','format','Double');
 
-			if self.istime,
+			if self.istime
 				scale=md.constants.yts; 
 			else
 				scale=1.0/md.constants.yts;

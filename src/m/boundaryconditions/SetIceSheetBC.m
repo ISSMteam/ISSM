@@ -36,7 +36,7 @@ md.basalforcings = initialize(md.basalforcings,md);
 md.dsl = initialize(md.dsl,md);
 
 %Deal with other boundary conditions
-if isnan(md.balancethickness.thickening_rate),
+if isnan(md.balancethickness.thickening_rate)
 	md.balancethickness.thickening_rate=zeros(md.mesh.numberofvertices,1);
 	disp('      no balancethickness.thickening_rate specified: values set as zero');
 end
@@ -44,13 +44,13 @@ md.masstransport.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
 md.balancethickness.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
 md.damage.spcdamage=NaN*ones(md.mesh.numberofvertices,1);
 
-if (length(md.initialization.temperature)==md.mesh.numberofvertices),
+if (length(md.initialization.temperature)==md.mesh.numberofvertices)
 	md.thermal.spctemperature=NaN*ones(md.mesh.numberofvertices,1);
 	if isprop(md.mesh,'vertexonsurface')
 		pos=find(md.mesh.vertexonsurface);
 		md.thermal.spctemperature(pos)=md.initialization.temperature(pos); %impose observed temperature on surface
 	end
-	if (length(md.basalforcings.geothermalflux)~=md.mesh.numberofvertices),
+	if (length(md.basalforcings.geothermalflux)~=md.mesh.numberofvertices)
 		md.basalforcings.geothermalflux=50.*10^-3*ones(md.mesh.numberofvertices,1); %50 mW/m^2
 	end
 else

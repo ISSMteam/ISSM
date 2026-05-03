@@ -12,10 +12,10 @@ function expcoarsen(newfile,varargin)
 %       expcoarsen('DomainOutline.exp','Antarctica.exp',4000)
 
 %Some checks
-if nargin==2,
+if nargin==2
 	resolution = varargin{1};
 	oldfile= newfile;
-elseif nargin==3,
+elseif nargin==3
 	oldfile = varargin{1};
 	resolution = varargin{2};
 else
@@ -24,9 +24,9 @@ end
 
 if ~exist(oldfile)
 	error(['expcoarsen error message: file ''' oldfile ''' does not exist'])
-elseif exist(newfile),
+elseif exist(newfile)
 	choice=input(['A file ' newfile ' already exists, do you want to modify it? (y/n)'],'s');
-	if ~strcmpi(choice,'y'),
+	if ~strcmpi(choice,'y')
 		disp('no modification done ... exiting');
 		return;
 	end
@@ -39,14 +39,14 @@ numprofiles=size(A,2);
 
 %Go through the profiles
 count=1;
-while count<=numprofiles,
+while count<=numprofiles
 
 	%get number of points and initialize j
 	numpoints=length(A(count).x);
 	j=1;
 
 	%stop if we have reached end of profile (always keep the last point)
-	while j<numpoints,
+	while j<numpoints
 
 		%See whether we keep this point or not
 		distance=sqrt((A(count).x(j)-A(count).x(j+1))^2+(A(count).y(j)-A(count).y(j+1))^2);
@@ -56,7 +56,7 @@ while count<=numprofiles,
 			numpoints=numpoints-1;
 		else
 			division=floor(distance/resolution)+1;
-			if division>=2,
+			if division>=2
 				x=linspace(A(count).x(j),A(count).x(j+1),division)';
 				y=linspace(A(count).y(j),A(count).y(j+1),division)';
 				A(count).x=[A(count).x(1:j);x(2:end-1); A(count).x(j+1:end)];
@@ -71,7 +71,7 @@ while count<=numprofiles,
 			end
 		end
 	end
-	if length(A(count).x)<=1,
+	if length(A(count).x)<=1
 		A(count)=[];
 		numprofiles=numprofiles-1;
 	else

@@ -4,7 +4,7 @@ function found=qmuisdistribted(string)
 %just take last string element, and see if it is numeric.
 last=string(end);
 
-if ((double(last)<=57) & (double(last)>=48)),
+if ((double(last)<=57) & (double(last)>=48))
 	found=1;
 else
 	found=0;

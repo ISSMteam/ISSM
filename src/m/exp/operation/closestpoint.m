@@ -9,10 +9,10 @@ function [profsel indsel]=closestpoint(A,numprofiles,xi,yi)
 %     [profsel indsel]=closestpoint(A,numprofiles,xi,yi) 
 
 	%loop over the points of each profile, find the closest to (xi,yi)
-	for i=1:numprofiles,
+	for i=1:numprofiles
 		distance=(xi-A(i).x).^2+(yi-A(i).y).^2;
 		[newdistance p]=min(distance);
-		if ((i==1) | (newdistance<olddistance)),
+		if ((i==1) | (newdistance<olddistance))
 			indsel=p;
 			profsel=i;
 			olddistance=newdistance;

@@ -47,7 +47,7 @@ end
 
 %check model consistency
 if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
-	if md.verbose.solution,
+	if md.verbose.solution
 		disp('checking model consistency');
 	end
 	ismodelselfconsistent(md),
@@ -76,7 +76,7 @@ if md.qmu.isdakota
 end
 
 %Do we load results only?
-if getfieldvalue(options,'loadonly',false),
+if getfieldvalue(options,'loadonly',false)
 	md=loadresultsfromcluster(md);
 	return;
 end
@@ -95,7 +95,7 @@ else
 	filelist{end+1}=[modelname '.queue'];
 end
 
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	filelist{end+1} = [modelname '.qmu.in'];
 end
 
@@ -108,8 +108,8 @@ disp('launching solution sequence')
 LaunchQueueJobIceOcean(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
 %return if batch: 
-if batch,
-	if md.verbose.solution,
+if batch
+	if md.verbose.solution
 		disp('batch mode requested: not launching job interactively');
 		disp('launch solution sequence on remote cluster by hand');
 	end
@@ -120,7 +120,7 @@ if isnan(md.settings.waitonlock)
 	%load when user enters 'y'
 	disp('solution launched on remote cluster. log in to detect job completion.');
 	choice=input('Is the job successfully completed? (y/n)','s');
-	if ~strcmp(choice,'y'), 
+	if ~strcmp(choice,'y') 
 		disp('Results not loaded... exiting'); 
 	else
 		md=loadresultsfromcluster(md);
@@ -128,7 +128,7 @@ if isnan(md.settings.waitonlock)
 elseif md.settings.waitonlock>0
 	%we wait for the done file
 	done=waitonlock(md);
-	if md.verbose.solution,
+	if md.verbose.solution
 		disp('loading results from cluster');
 	end
 	md=loadresultsfromcluster(md,'runtimename','');

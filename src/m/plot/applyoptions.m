@@ -15,10 +15,10 @@ fontweight=getfieldvalue(options,'fontweight','normal');
 %title
 if exist(options,'title')
 	titlevalue=getfieldvalue(options,'title');
-	if iscell(titlevalue),
+	if iscell(titlevalue)
 		title(titlevalue,'FontSize',fontsize,'FontWeight',fontweight);
 	else
-		if ~isnan(titlevalue),
+		if ~isnan(titlevalue)
 			title(titlevalue,'FontSize',fontsize,'FontWeight',fontweight);
 		end
 	end
@@ -58,18 +58,18 @@ if exist(options,'axis')
 		axis(axisopts);
 	end
 else
-	if strcmp(domaintype(md.mesh),'3D'),
+	if strcmp(domaintype(md.mesh),'3D')
 		if ~(exist(options,'layer') || exist(options,'depthaverage'))
 			axis auto tight
 		else
 			axis tight equal
 		end
-	elseif strcmp(domaintype(md.mesh),'2Dvertical'),
+	elseif strcmp(domaintype(md.mesh),'2Dvertical')
 		axis auto tight
-	elseif strcmp(domaintype(md.mesh),'3Dsurface'),
+	elseif strcmp(domaintype(md.mesh),'3Dsurface')
 		axis auto tight
 
-	elseif strcmp(domaintype(md.mesh),'2Dhorizontal'),
+	elseif strcmp(domaintype(md.mesh),'2Dhorizontal')
 		axis tight equal;
 	else
 		error('type of domain not supported');
@@ -115,18 +115,18 @@ if strcmpi(getfieldvalue(options,'showbasins','off'),'on')
 end
 
 %Caxis
-if exist(options,'caxis'),
+if exist(options,'caxis')
 	caxis(getfieldvalue(options,'caxis'));
 end
 
 %shading
-if exist(options,'shading'),
+if exist(options,'shading')
 	shading(getfieldvalue(options,'shading'));
 end
 
 %grid
-if exist(options,'grid'),
-	if strcmpi(getfieldvalue(options,'grid'),'on'),
+if exist(options,'grid')
+	if strcmpi(getfieldvalue(options,'grid'),'on')
 		grid on;
 	end
 end
@@ -136,18 +136,18 @@ c = getcolormap(options);
 h = colormap(gca,c);
 
 %wrapping
-if exist(options,'wrapping'),
-	if ~exist(options,'colormap'),
+if exist(options,'wrapping')
+	if ~exist(options,'colormap')
 		h=turbo();
 	end
 	colormap(repmat(h,getfieldvalue(options,'wrapping',1),1));
 end
 
 %colorbar
-if getfieldvalue(options,'colorbar',1)==1,
-	if exist(options,'colorbarcornerposition'),
+if getfieldvalue(options,'colorbar',1)==1
+	if exist(options,'colorbarcornerposition')
 		c=colorbar(getfieldvalue(options,'colorbarcornerposition'),'peer',gca);
-	elseif exist(options,'colorbarpos') & ischar(getfieldvalue(options,'colorbarpos')),
+	elseif exist(options,'colorbarpos') & ischar(getfieldvalue(options,'colorbarpos'))
 		c=colorbar(getfieldvalue(options,'colorbarpos'));
 	else 
 		c=colorbar('peer',gca);
@@ -158,10 +158,10 @@ if getfieldvalue(options,'colorbar',1)==1,
 		lim=[lim(1) lim(1)+(lim(2)-lim(1))/getfieldvalue(options,'wrapping')];
 		set(c,'Ylim',lim);
 	end
-	if exist(options,'colorbarpos') & isnumeric(getfieldvalue(options,'colorbarpos')),
+	if exist(options,'colorbarpos') & isnumeric(getfieldvalue(options,'colorbarpos'))
 		set(c,'Position',getfieldvalue(options,'colorbarpos'));
 	end
-	if exist(options,'log'),
+	if exist(options,'log')
 		nlab=length(get(c,'YTick'));
 		logvalue=getfieldvalue(options,'log');
 
@@ -185,15 +185,15 @@ if getfieldvalue(options,'colorbar',1)==1,
  	if exist(options,'cbYLim'); 
 		set(c,'YLim',getfieldvalue(options,'cbYLim'));
 	end
-	if exist(options,'colorbartitle'),
+	if exist(options,'colorbartitle')
 		set(get(c,'title'),'FontSize',getfieldvalue(options,'colorbarfontsize',fontsize),'String',getfieldvalue(options,'colorbartitle'),...
 			'Color',getfieldvalue(options,'FontColor','k'));
 	end
-	if exist(options,'colorbarYLabel'),
+	if exist(options,'colorbarYLabel')
 		set(get(c,'Ylabel'),'FontSize',getfieldvalue(options,'colorbarfontsize',fontsize),'String',getfieldvalue(options,'colorbarYLabel'),...
 			'Color',getfieldvalue(options,'FontColor','k'));
 	end
-	if exist(options,'colorbarwidth'),
+	if exist(options,'colorbarwidth')
 		posaxes=get(gca,'Position');
 		alpha=getfieldvalue(options,'colorbarwidth',1);
 		position=get(c,'Position');
@@ -204,7 +204,7 @@ if getfieldvalue(options,'colorbar',1)==1,
 		set(c,'Position',position);
 		set(gca,'Position',posaxes);
 	end
-	if exist(options,'colorbarheight'),
+	if exist(options,'colorbarheight')
 		posaxes=get(gca,'Position');
 		alpha=getfieldvalue(options,'colorbarheight',1);
 		position=get(c,'Position');
@@ -244,26 +244,26 @@ if getfieldvalue(options,'colorbar',1)==1,
 		set(c,'YTickLabel',labels);
 	end
 
-elseif getfieldvalue(options,'colorbar',1)==0,
+elseif getfieldvalue(options,'colorbar',1)==0
 	colorbar('off');
 else
 	%do nothing
 end
 
 %area
-if exist(options,'area'),
+if exist(options,'area')
 	antzoom(getfieldvalue(options,'area'));
 end
 
 %expdisp
-if exist(options,'expdisp'),
+if exist(options,'expdisp')
 	filename=(getfieldvalue(options,'expdisp'));
 	style=(getfieldvalue(options,'expstyle'));
 	linewidth=(getfieldvalue(options,'linewidth',1));
-	for i=1:length(getfieldvalue(options,'expdisp')),
+	for i=1:length(getfieldvalue(options,'expdisp'))
 		filenamei=filename{i};
 		stylei=style{i};
-		if length(linewidth)==1,
+		if length(linewidth)==1
 			linewidthi=linewidth;
 		else
 			linewidthi=linewidth{i};
@@ -273,14 +273,14 @@ if exist(options,'expdisp'),
 end
 
 %shpdisp
-if exist(options,'shpdisp'),
+if exist(options,'shpdisp')
 	filename=(getfieldvalue(options,'shpdisp'));
 	style=(getfieldvalue(options,'shpstyle',{'r.-'}));
 	linewidth=(getfieldvalue(options,'linewidth',1));
-	for i=1:length(getfieldvalue(options,'shpdisp')),
+	for i=1:length(getfieldvalue(options,'shpdisp'))
 		filenamei=filename{i};
 		stylei=style{i};
-		if length(linewidth)==1,
+		if length(linewidth)==1
 			linewidthi=linewidth;
 		else
 			linewidthi=linewidth{i};
@@ -289,7 +289,7 @@ if exist(options,'shpdisp'),
 		shpdisp(filenamei,1,stylei,linewidthi,getfieldvalue(options,'unit',1));
 	end
 end
-if exist(options,'contours'),
+if exist(options,'contours')
 
 	hold on;
 	contours=getfieldvalue(options,'contours');
@@ -302,7 +302,7 @@ if exist(options,'contours'),
 	ratio=1+(contourheight*1000/radius);
 
 	
-	if ~isa(contours,'cell'),
+	if ~isa(contours,'cell')
 		contours={contours};
 	end
 	nc=length(contours);
@@ -310,13 +310,13 @@ if exist(options,'contours'),
 	if ~isa(linewidth,'cell'), error('contour line width should be a cell array'); end
 	if ~isa(color,'cell'), error('contour color should be a cell array'); end
 
-	for i=1:length(contours),
+	for i=1:length(contours)
 		ci=contours{i};
 		if length(style)==1, sti=style{1}; else sti=style{i}; end
 		if length(color)==1, coli=color{1}; else coli=color{i}; end
 		if length(linewidth)==1, li=linewidth{1}; else li=linewidth{i}; end
 
-		for j=1:length(ci),
+		for j=1:length(ci)
 			cijx=ci(j).x*ratio;
 			cijy=ci(j).y*ratio;
 			cijz=ci(j).z*ratio;
@@ -328,14 +328,14 @@ if exist(options,'contours'),
 end
 
 %shpdisp3d
-if exist(options,'shpdisp3d'),
+if exist(options,'shpdisp3d')
 	filename=(getfieldvalue(options,'shpdisp3d'));
 	style=(getfieldvalue(options,'shpstyle',{'r.-'}));
 	linewidth=(getfieldvalue(options,'linewidth',1));
-	for i=1:length(getfieldvalue(options,'shpdisp3d')),
+	for i=1:length(getfieldvalue(options,'shpdisp3d'))
 		filenamei=filename{i};
 		stylei=style{i};
-		if length(linewidth)==1,
+		if length(linewidth)==1
 			linewidthi=linewidth;
 		else
 			linewidthi=linewidth{i};
@@ -360,40 +360,40 @@ if exist(options,'text');
 		textcolori=textcolor{i};
 		textpositioni=textposition{i};
 		textrotationi=textrotation{i};
-		if ~text3d,
+		if ~text3d
 			h=text(textpositioni(1),textpositioni(2),textstringi,'FontSize',textsizei,'FontWeight',textweighti,'Color',textcolori,'Rotation',textrotationi);
 		else
 			h=text(textpositioni(1),textpositioni(2),textpositioni(3),textstringi,'FontSize',textsizei,'FontWeight',textweighti,'Color',textcolori,'Rotation',textrotationi);
 		end
-		if strcmpi(getfieldvalue(options,'textclip','on'),'on'),
+		if strcmpi(getfieldvalue(options,'textclip','on'),'on')
 			set(h,'Clipping','on'); %prevent text from appearing outside of the box
 		end
 	end
 end
 
 %north arrow
-if exist(options,'northarrow'),
+if exist(options,'northarrow')
 	northarrow(getfieldvalue(options,'northarrow'));
 end
 
 %curved arrow
-if exist(options,'curvedarrow'),
+if exist(options,'curvedarrow')
 	curvedoptions=getfieldvalue(options,'curvedarrow');
 	curvedarrow(curvedoptions{:});
 end
 
 %Scale ruler
-if exist(options,'scaleruler'),
+if exist(options,'scaleruler')
 	scaleruler(options);
 end
 
 %streamlines
-if exist(options,'streamlines'),
+if exist(options,'streamlines')
 	plot_streamlines(md,options);
 end
 
 %contours
-if exist(options,'contourlevels'),
+if exist(options,'contourlevels')
 	plot_contour(md,data,options);
 end
 
@@ -404,27 +404,27 @@ if (strcmpi(getfieldvalue(options,'coastlines','off'),'on') | ...
 end
 
 %YTickLabel
-if exist(options,'yticklabel'),
+if exist(options,'yticklabel')
 	set(gca,'YTickLabel',getfieldvalue(options,'YTickLabel'));
 end
 
 %XTickLabel
-if exist(options,'xticklabel'),
+if exist(options,'xticklabel')
 	set(gca,'XTickLabel',getfieldvalue(options,'XTickLabel'));
 end
 
 %xtick
-if exist(options,'xtick'),
+if exist(options,'xtick')
 	set(gca,'xtick',getfieldvalue(options,'xtick'));
 end
 
 %ytick
-if exist(options,'ytick'),
+if exist(options,'ytick')
 	set(gca,'ytick',getfieldvalue(options,'ytick'));
 end
 
 %Axis positions
-if exist(options,'offsetaxispos'),
+if exist(options,'offsetaxispos')
 	offset=getfieldvalue(options,'offsetaxispos');
 	P=get(gca,'pos');
 	P(1)=P(1)+offset(1);
@@ -433,13 +433,13 @@ if exist(options,'offsetaxispos'),
 	P(3)=P(4)+offset(4);
 	set(gca,'pos',P);
 end
-if exist(options,'axispos'),
+if exist(options,'axispos')
 	Axis=getfieldvalue(options,'axispos');
 	hold on
 	set(gca,'pos',Axis);
 end
 
-if exist(options,'datatip'),
+if exist(options,'datatip')
      datatip = getfieldvalue(options, 'datatip');
      dcm = datacursormode(gcf);
      set(dcm, 'Enable', 'on');
@@ -447,7 +447,7 @@ if exist(options,'datatip'),
 end
 
 %showregion
-if strcmpi(getfieldvalue(options,'showregion','off'),'on'),
+if strcmpi(getfieldvalue(options,'showregion','off'),'on')
 	%Keep pointer of main axis
 	maingca=gca;
 	%get inset relative position (x,y,width,height)
@@ -459,12 +459,12 @@ if strcmpi(getfieldvalue(options,'showregion','off'),'on'),
 	axes('pos',PosInset);
 	axis equal off
 	%box off
-	if md.mesh.epsg==3413,
+	if md.mesh.epsg==3413
 		A=expread('/u/astrid-r1b/ModelData/Exp/GreenlandBoxFront.exp');
 		[A.x A.y]=ll2xy(A.x,A.y,+1,45,70);
 		A.x = A.x(1:30:end);
 		A.y = A.y(1:30:end);
-	elseif md.mesh.epsg==3031,
+	elseif md.mesh.epsg==3031
 		A=expread('/u/astrid-r1b/ModelData/Exp/Antarctica.exp');
 	else
 		error('applyoptions error message: md.mesh.epsg not defined');
@@ -473,9 +473,9 @@ if strcmpi(getfieldvalue(options,'showregion','off'),'on'),
 	Ax=[min(A.x)-offset max(A.x)+offset];
 	Ay=[min(A.y)-offset max(A.y)+offset];
 	%if we are zooming on a basin, don't take the mesh for the boundaries!
-	if exist(options,'basin'),
+	if exist(options,'basin')
 		[mdx mdy]=basinzoom(options);
-	elseif exist(options,'xlim') | exist(options,'ylim'),
+	elseif exist(options,'xlim') | exist(options,'ylim')
 		mdx=getfieldvalue(options,'xlim');
 		mdy=getfieldvalue(options,'ylim');
 	else
@@ -518,7 +518,7 @@ if exist(options,'partition')
 	color=getfieldvalue(options,'partitionedgescolor','r-');
 	linewidth=getfieldvalue(options,'linewidth',1);
 	hold on;
-	for i=1:length(xsegments),
+	for i=1:length(xsegments)
 		if (isnumeric(color))
 			h=plot(xsegments(i,:),ysegments(i,:),'Color',color,'LineWidth',linewidth);
 		else
@@ -538,18 +538,18 @@ end
 set(gca,'color',getfieldvalue(options,'backgroundcolor','none'));
 
 %lighting
-if strcmpi(getfieldvalue(options,'light','off'),'on'),
+if strcmpi(getfieldvalue(options,'light','off'),'on')
 	set(gca,'FaceLighting','gouraud','FaceColor','interp','AmbientStrength',0.5);
 	light('Position',[0 0.1 0.1],'Style','infinite');
 end
 
 %cloud of points: 
-if exist(options,'cloud'),
+if exist(options,'cloud')
 	field=getfieldvalue(options,'cloud');
 	x=field(:,1);
 	y=field(:,2);
 	%unit multiplier:
-	if exist(options,'unit'),
+	if exist(options,'unit')
 		unit=getfieldvalue(options,'unit');
 		x=x*unit;
 		y=y*unit;
@@ -564,7 +564,7 @@ end
 %========================%
 %OK VERY LAST STEP: INSET|
 %========================%
-if exist(options,'inset'),
+if exist(options,'inset')
 
 	%Keep pointer of main axis
 	maingca=gca;
@@ -576,20 +576,20 @@ if exist(options,'inset'),
 	X1=getfieldvalue(options,'insetx',xlim);
 	Y1=getfieldvalue(options,'insety',ylim);
 
-	for i=1:length(getfieldvalue(options,'insetx')),
-		if length(insetpos)==4,
+	for i=1:length(getfieldvalue(options,'insetx'))
+		if length(insetpos)==4
 			insetposi=insetpos;
 		else
 			insetposi=insetpos{i};
 		end
 		PosInseti=[cplotpos(1)+insetposi(1)*cplotpos(3),cplotpos(2)+insetposi(2)*cplotpos(4), insetposi(3)*cplotpos(3), insetposi(4)*cplotpos(4)];
 		%show pos
-		if iscell(X1),
+		if iscell(X1)
 			X1i=X1{i};
 		else
 			X1i=X1;
 		end
-		if iscell(Y1),
+		if iscell(Y1)
 			Y1i=Y1{i};
 		else
 			Y1i=Y1;

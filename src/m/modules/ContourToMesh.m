@@ -25,9 +25,9 @@ if nargin~=6
 end
 
 %Some conversion of files: 
-if ischar(contourname),
+if ischar(contourname)
 	[path,name,ext]=fileparts(contourname); 
-	if strcmpi(ext,'.shp'),
+	if strcmpi(ext,'.shp')
 		%read contour from shapefile
 		contourname=shpread(contourname); 
 

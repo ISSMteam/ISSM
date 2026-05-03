@@ -40,15 +40,15 @@ classdef SMBpddGCM
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.enhance_factor),
+			if isnan(self.enhance_factor)
 				self.enhance_factor=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpddGCM.enhance_factor specified: values set as zero');
 			end
-			if isnan(self.lapserates),
+			if isnan(self.lapserates)
 				self.lapserates=0.0065*ones(md.mesh.numberofvertices,1);
 				disp('      no SMBpddGCM.lapserates specified: values set as 0.0065 °C/m');
 			end
-			if isnan(self.ref_surf),
+			if isnan(self.ref_surf)
 				self.ref_surf = 0*ones(md.mesh.numberofvertices,1);
 				disp('      no SMBpddGCM.ref_surf specified: values set as sea-level 0 m');
 			end
@@ -62,7 +62,7 @@ classdef SMBpddGCM
 
 			if (strcmp(solution,'TransientSolution') & md.transient.issmb == 0), return; end
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.x_grid','NaN',1,'Inf',1,'size',[NaN 1]);
 				md = checkfield(md,'fieldname','smb.y_grid','NaN',1,'Inf',1,'size',[NaN 1]);
 				Nx = numel(self.x_grid);
@@ -111,7 +111,7 @@ classdef SMBpddGCM
 			Ny = numel(self.y_grid);
 
 			% everything in the bin is in SI
-			if isnan(self.ref_surf),
+			if isnan(self.ref_surf)
 				% prepare ref surface for the GCM grid, using the initial md.geometry.surface
 				grid_surf = InterpFromMeshToGrid(md.mesh.elements,md.mesh.x,md.mesh.y,md.geometry.surface,self.x_grid,self.y_grid,NaN);
 				self.ref_surf = InterpFromGridToMesh(self.x_grid,self.y_grid,grid_surf,md.mesh.x,md.mesh.y,0);
@@ -134,7 +134,7 @@ classdef SMBpddGCM
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

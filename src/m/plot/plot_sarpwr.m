@@ -10,7 +10,7 @@ function plot_sarpwr(md,options,width,i)
 subplot(width,width,i); 
 
 %units
-if exist(options,'unit'),
+if exist(options,'unit')
 	unit=getfieldvalue(options,'unit');
 	md.mesh.x=md.mesh.x*unit;
 	md.mesh.y=md.mesh.y*unit;

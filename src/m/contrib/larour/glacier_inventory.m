@@ -41,7 +41,7 @@ classdef glacier_inventory < handle
 			%read the shape files and create the regions: 
 			counter=0;
 			self.regions=struct();
-			for i=1:length(region_names),
+			for i=1:length(region_names)
 				disp(['reading region: '  region_names{i}]);
 				self.regions(i).name=region_names{i};
 				self.regions(i).id=i;
@@ -55,7 +55,7 @@ classdef glacier_inventory < handle
 				CenLon=zeros(length(contours),1);
 				CenLat=zeros(length(contours),1);
 				Connectivity=zeros(length(contours),1);
-				for j=1:length(contours),
+				for j=1:length(contours)
 					O1Region(j)=str2num(contours(j).O1Region);
 					O2Region(j)=str2num(contours(j).O2Region);
 					Area(j)=contours(j).Area;
@@ -80,20 +80,20 @@ classdef glacier_inventory < handle
 			%the latlong in these contours to the local laea projection, and rewrite the shapefile
 			%we a different name extension.
 
-			for i=1:self.nregions,
+			for i=1:self.nregions
 				
 				disp(['reading shapefile for region: '  self.regions(i).name]);
 				contours=shaperead([self.root '/' self.regions(i).name '.shp']);
 
 				disp(['concatenating contours (X,Y)']);
 				count=0;
-				for j=1:length(contours),
+				for j=1:length(contours)
 					count=count+length(contours(j).X);
 				end
 				xc=zeros(count,1); 
 				yc=zeros(count,1);
 				count=0;
-				for j=1:length(contours),
+				for j=1:length(contours)
 					nj=length(contours(j).X);
 					xc((count+j):(count+j+nj-1))=contours(j).X;
 					yc((count+j):(count+j+nj-1))=contours(j).Y;
@@ -107,7 +107,7 @@ classdef glacier_inventory < handle
 
 				disp(['plugging back into contours']);
 				count=0;
-				for j=1:length(contours),
+				for j=1:length(contours)
 					nj=length(contours(j).X);
 					contours(j).X=xc((count+j):(count+j+nj-1));
 					contours(j).Y=yc((count+j):(count+j+nj-1));
@@ -125,7 +125,7 @@ classdef glacier_inventory < handle
 			contours=shaperead([self.root '/' self.regions(id).name '.laeaproj.shp']);
 			self.regions(id).contours=contours;
 
-			if nargout==1,
+			if nargout==1
 				varargout{1}=contours;
 			end
 
@@ -135,7 +135,7 @@ classdef glacier_inventory < handle
 			disp(sprintf('   Glacier inventory:')); 
 
 			disp(['   number of regions: ' num2str(self.nregions())]);
-			for i=1:self.nregions(),
+			for i=1:self.nregions()
 				disp(sprintf('      region %i: ''%s'' %i glaciers ',i,self.regions(i).name,length(self.regions(i).Area)));
 			end
 
@@ -171,9 +171,9 @@ classdef glacier_inventory < handle
 			o1=zeros(self.nglaciers(),1);
 			o2=zeros(self.nglaciers(),1);
 			counter=1;
-			for i=1:self.nregions(),
+			for i=1:self.nregions()
 				region=self.regions(i);
-				for j=1:length(region.CenLat),
+				for j=1:length(region.CenLat)
 					o1(counter)=region.O1Region(j);
 					o2(counter)=region.O2Region(j);
 					counter=counter+1;
@@ -181,7 +181,7 @@ classdef glacier_inventory < handle
 			end
 
 			%Go through O2 regions: 
-			for i=subsetregions,
+			for i=subsetregions
 			%for i=33,
 				string=self.boxes(i).RGI_CODE; 
 				disp(['progressing with region ' num2str(i) ' ' string]);
@@ -190,7 +190,7 @@ classdef glacier_inventory < handle
 				o2i=str2num(string(offset+1:end));
 				glaciers=find(o1==o1i & o2==o2i);
 
-				if ~isempty(glaciers),
+				if ~isempty(glaciers)
 					%find lat,long for laea projection: 
 					box=self.boxes(i).BoundingBox; 
 					long0=mean(box(:,1));
@@ -250,22 +250,22 @@ classdef glacier_inventory < handle
 					end % }}}
 
 					%go through lids: 
-					for j=1:length(lids),
+					for j=1:length(lids)
 						found=0;
 						x0=xlid(j); y0=ylid(j);
-						for k=1:length(elements),
+						for k=1:length(elements)
 							el=elements(k);
 							x1=x(mesh.elements(el,1)); y1=y(mesh.elements(el,1));
 							x2=x(mesh.elements(el,2)); y2=y(mesh.elements(el,2));
 							x3=x(mesh.elements(el,3)); y3=y(mesh.elements(el,3));
 
-							if isintriangle(x0,x1,x2,x3,y0,y1,y2,y3),
+							if isintriangle(x0,x1,x2,x3,y0,y1,y2,y3)
 								found=1;
 								break;
 							end
 						end
-						if ~found,
-							if errornotfound,
+						if ~found
+							if errornotfound
 								error(sprintf('could not find element for glacier %i with lid %i',j,lids(j)));
 							end
 						end
@@ -275,11 +275,11 @@ classdef glacier_inventory < handle
 			end 
 
 			%build element connectivity table: 
-			for j=1:length(self.glacier_connectivity),
+			for j=1:length(self.glacier_connectivity)
 				el=self.glacier_connectivity(j);
 				if ~el,continue; end;
 				count=self.element_connectivity(el,ny);
-				if count>ny,
+				if count>ny
 					error('need to enlarge connectivity table to at least');
 				end
 				self.element_connectivity(el,count+1)=j;
@@ -310,7 +310,7 @@ classdef glacier_inventory < handle
 			[lat0,long0]=projlatlong(proj);
 		
 			[mpartition,npartition]=self.partition();
-			for i=subsetregions,
+			for i=subsetregions
 				region=self.regions(i);
 				disp(sprintf(' progress for region: %s',region.name));
 
@@ -328,11 +328,11 @@ classdef glacier_inventory < handle
 			end
 
 			%build element connectivity table: 
-			for j=1:length(self.glacier_connectivity),
+			for j=1:length(self.glacier_connectivity)
 				el=self.glacier_connectivity(j);
 				if ~el,continue; end;
 				count=self.element_connectivity(el,ny);
-				if count>ny,
+				if count>ny
 					error('need to enlarge connectivity table to at least');
 				end
 				self.element_connectivity(el,count+1)=j;
@@ -349,7 +349,7 @@ classdef glacier_inventory < handle
 
 			vector=find(self.element_connectivity(:,end));
 
-			for i=1:length(vector),
+			for i=1:length(vector)
 				el=vector(i);
 
 				flags=zeros(mesh.numberofelements,1);
@@ -361,7 +361,7 @@ classdef glacier_inventory < handle
 				[lids,rids]=self.gidtolid(glaciers);
 				lat=zeros(length(glaciers),1);
 				long=zeros(length(glaciers),1);
-				for j=1:nglaciers,
+				for j=1:nglaciers
 					lat(j)=self.regions(rids(j)).CenLat(lids(j));
 					long(j)=self.regions(rids(j)).CenLon(lids(j));
 				end
@@ -381,12 +381,12 @@ classdef glacier_inventory < handle
 		function totalarea=area(self,varargin) % {{{
 			region=-1;
 			totalarea=0;
-			if nargin==2,
+			if nargin==2
 				region=varargin{1};
 			end
-			if region==-1,
+			if region==-1
 				%figure out the areas of everybody: 
-				for i=1:self.nregions(),
+				for i=1:self.nregions()
 					totalarea=totalarea+sum(self.regions(i).Area);
 				end
 			else
@@ -398,7 +398,7 @@ classdef glacier_inventory < handle
 			mpartition=zeros(self.nregions(),1);
 			npartition=zeros(self.nregions(),1);
 			counter=0;
-			for i=1:self.nregions(),
+			for i=1:self.nregions()
 				mpartition(i)=counter+1;
 				npartition(i)=counter+self.nglaciers(i);
 				counter=counter+self.nglaciers(i);
@@ -411,15 +411,15 @@ classdef glacier_inventory < handle
 		%}}}
 		function counter = nglaciers(self,varargin) % {{{
 
-			if nargin==1,
+			if nargin==1
 				region=-1; %all regions.
 			else
 				region=varargin{1}; %only one.
 			end
 
-			if region==-1,
+			if region==-1
 				counter=0;
-				for i=1:self.nregions(),
+				for i=1:self.nregions()
 					counter=counter+length(self.regions(i).Area);
 				end
 			else
@@ -441,7 +441,7 @@ classdef glacier_inventory < handle
 			[mpartition,npartition]=self.partition();
 			lid=zeros(length(gid),1);
 			rid=zeros(length(gid),1);
-			for i=1:self.nregions(),
+			for i=1:self.nregions()
 				pos=find(gid>=mpartition(i) & gid<=npartition(i)); 
 				rid(pos)=i;
 				lid(pos)=gid(pos)-mpartition(i)+1;
@@ -457,7 +457,7 @@ classdef glacier_inventory < handle
 		%}}}
 		function listboxes(self) % {{{
 
-			for i=1:length(self.boxes),
+			for i=1:length(self.boxes)
 				b=self.boxes(i);
 				disp(sprintf('Region #%i: %s (%s)',i,b.FULL_NAME,b.RGI_CODE));
 			end

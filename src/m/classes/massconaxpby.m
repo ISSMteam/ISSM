@@ -25,7 +25,7 @@ classdef massconaxpby
 		function self = extrude(self,md) % {{{
 		end % }}}
 		function self = massconaxpby(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields

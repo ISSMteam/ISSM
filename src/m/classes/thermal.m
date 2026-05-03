@@ -22,7 +22,7 @@ classdef thermal
 	methods
 		function self = extrude(self,md) % {{{
 			self.spctemperature=project3d(md,'vector',self.spctemperature,'type','node','layer',md.mesh.numberoflayers,'padding',NaN);
-			if (length(md.initialization.temperature)==md.mesh.numberofvertices),
+			if (length(md.initialization.temperature)==md.mesh.numberofvertices)
 				self.spctemperature=NaN(md.mesh.numberofvertices,1);
 				pos=find(md.mesh.vertexonsurface);
 				self.spctemperature(pos)=md.initialization.temperature(pos); %impose observed temperature on surface
@@ -38,7 +38,7 @@ classdef thermal
 		end % }}}
 		function list = defaultoutputs(self,md) % {{{
 
-			if self.isenthalpy,
+			if self.isenthalpy
 				list = {'Enthalpy','Temperature','Waterfraction','Watercolumn','BasalforcingsGroundediceMeltingRate'};
 			else
 				list = {'Temperature','BasalforcingsGroundediceMeltingRate'};
@@ -88,7 +88,7 @@ classdef thermal
 			md = checkfield(md,'fieldname','thermal.stabilization','numel',[1],'values',[0 1 2 3]);
 			md = checkfield(md,'fieldname','thermal.spctemperature','Inf',1,'timeseries',1,'>=',0);
 			md = checkfield(md,'fieldname','thermal.fe','values',{'P1','P1xP2','P1xP3'});
-			if (ismember('EnthalpyAnalysis',analyses) & md.thermal.isenthalpy & dimension(md.mesh)==3),
+			if (ismember('EnthalpyAnalysis',analyses) & md.thermal.isenthalpy & dimension(md.mesh)==3)
 				md = checkfield(md,'fieldname','thermal.isdrainicecolumn','numel',[1],'values',[0 1]);
 				md = checkfield(md,'fieldname','thermal.watercolumn_upperlimit','>=',0);
 
@@ -103,7 +103,7 @@ classdef thermal
 				md = checkfield(md,'fieldname','thermal.isenthalpy','numel',[1],'values',[0 1]);
 				md = checkfield(md,'fieldname','thermal.isdynamicbasalspc','numel', [1],'values',[0 1]);
 				if(md.thermal.isenthalpy)
-					if isnan(md.thermal.reltol),
+					if isnan(md.thermal.reltol)
 						md = checkmessage(md,['for a steadystate computation, thermal.reltol (relative convergence criterion) must be defined!']);
 					end 
 					md = checkfield(md,'fieldname','thermal.reltol','>',0.,'message','reltol must be larger than zero');
@@ -147,7 +147,7 @@ classdef thermal
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

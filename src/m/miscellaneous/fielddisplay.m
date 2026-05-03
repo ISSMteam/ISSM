@@ -15,7 +15,7 @@ end %function
 function parsedisplay(offset,name,field,comment) % {{{
 
 	%string
-	if ischar(field),
+	if ischar(field)
 
 		displayunit(offset,name,['''' field ''''],comment)
 
@@ -23,7 +23,7 @@ function parsedisplay(offset,name,field,comment) % {{{
 	elseif isnumeric(field)
 
 		%double
-		if numel(field)==1,
+		if numel(field)==1
 			displayunit(offset,name,num2str(field),comment)
 		%matrix
 		else
@@ -43,7 +43,7 @@ function parsedisplay(offset,name,field,comment) % {{{
 		fieldsize=size(field);
 
 		%single value
-		if max(fieldsize)==1,
+		if max(fieldsize)==1
 			if (field)
 				displayunit(offset,name,'true',comment)
 			else
@@ -55,11 +55,11 @@ function parsedisplay(offset,name,field,comment) % {{{
 		end
 
 	%structure
-	elseif isstruct(field),
+	elseif isstruct(field)
 		struct_display(offset,name,field,comment)
 
 	%cell
-	elseif iscell(field),
+	elseif iscell(field)
 		cell_display(offset,name,field,comment)
 
 	else
@@ -76,7 +76,7 @@ function struct_display(offset,name,field,comment) % {{{
 
 		structure_fields=fieldnames(field);
 
-		for i=1:length(structure_fields),
+		for i=1:length(structure_fields)
 
 			%get current field
 			sfield=field.(structure_fields{i});
@@ -97,8 +97,8 @@ function cell_display(offset,name,field,comment) % {{{
 
 	%go through the cell and fill string
 	if length(field)<5;
-		for i=1:length(field),
-			if ischar(field{i}),
+		for i=1:length(field)
+			if ischar(field{i})
 				string=[string ''''  field{i} ''','];
 			elseif (isnumeric(field{i}) & length(field{i})==1)
 				string=[string num2str(field{i}) ',' ];
@@ -108,7 +108,7 @@ function cell_display(offset,name,field,comment) % {{{
 			end
 		end
 	end
-	if strcmp(string,'{'),
+	if strcmp(string,'{')
 		string=['(' num2str(size(field,1)) 'x' num2str(size(field,2)) ')'];
 	else
 		string=[string(1:end-1) '}'];
@@ -120,15 +120,15 @@ end% }}}
 function displayunit(offset,name,characterization,comment)% {{{
 
 	%take care of name
-	if length(name)>23,
+	if length(name)>23
 		name=[name(1:20) '...'];
 	end
 
 	%take care of characterization
-	if (strcmp(characterization,['''' '''']) | strcmp(characterization,'NaN')),
+	if (strcmp(characterization,['''' '''']) | strcmp(characterization,'NaN'))
 		characterization='N/A';
 	end
-	if length(characterization)>15,
+	if length(characterization)>15
 		characterization=[characterization(1:12) '...'];
 	end
 
@@ -136,11 +136,11 @@ function displayunit(offset,name,characterization,comment)% {{{
 	if isempty(comment)
 		disp(sprintf('%s%-23s: %-15s',offset,name,characterization));
 	else
-		if ischar(comment),
+		if ischar(comment)
 			disp(sprintf('%s%-23s: %-15s -- %s',offset,name,characterization,comment));
-		elseif iscell(comment),
+		elseif iscell(comment)
 			disp(sprintf('%s%-23s: %-15s -- %s',offset,name,characterization,comment{1}));
-			for i=2:length(comment),
+			for i=2:length(comment)
 				disp(sprintf('%s%-23s  %-15s    %s',offset,'','',comment{i}));
 			end
 		else

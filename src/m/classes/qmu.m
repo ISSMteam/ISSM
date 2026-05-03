@@ -35,7 +35,7 @@ classdef qmu
 			% old fields must be recovered (make sure they are in the deprecated
 			% model properties)
 
-			if verLessThan('matlab','7.9'),
+			if verLessThan('matlab','7.9')
 				disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
 				disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -79,29 +79,29 @@ classdef qmu
 
 			version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
 
-			if version < 6,
-				if md.qmu.params.evaluation_concurrency~=1,
+			if version < 6
+				if md.qmu.params.evaluation_concurrency~=1
 					md = checkmessage(md,['concurrency should be set to 1 when running dakota in library mode']);
 				end
 			else
-				if ~strcmpi(self.params.evaluation_scheduling,'master'),
+				if ~strcmpi(self.params.evaluation_scheduling,'master')
 					md = checkmessage(md,['evaluation_scheduling in qmu.params should be set to ''master''']);
 				end
-				if md.cluster.nprocs()<=1,
+				if md.cluster.nprocs()<=1
 					md = checkmessage(md,['in parallel library mode, Dakota needs to run on at least 2 cpus, 1 cpu for the master, 1 cpu for the slave. Modify md.cluster.np accordingly.']);
 				end
 
-				if self.params.processors_per_evaluation<1,
+				if self.params.processors_per_evaluation<1
 					md = checkmessage(md,['in parallel library mode, Dakota needs to run at least one slave on one cpu (md.qmu.params.processors_per_evaluation >=1)!']);
 				end
-				if mod(md.cluster.nprocs()-1,self.params.processors_per_evaluation),
+				if mod(md.cluster.nprocs()-1,self.params.processors_per_evaluation)
 					%md = checkmessage(md,['in parallel library mode, the requirement is for md.cluster.np = md.qmu.params.processors_per_evaluation * number_of_slaves, where number_of_slaves will automatically be determined by Dakota. Modify md.cluster.np accordingly']);
 				end
 			end
 
 			%go through variables and check for consistency: 
 			fv=fieldnames(self.variables);
-			for i=1:length(fv),
+			for i=1:length(fv)
 				self.variables.(fv{i}).checkconsistency(md,solution,analyses);
 			end
 
@@ -110,20 +110,20 @@ classdef qmu
 			%partitions for scaled variables, they better show up in the order dakota is feeding them to us 
 			%in InputUpdateFromDakotax!
 			fv=fieldnames(self.variables); classlist={};
-			for i=1:length(fv),
+			for i=1:length(fv)
 				classlist{i}=class(self.variables.(fv{i}));
 			end
 			n=0; u=0; h=0;
-			for i=1:length(classlist),
+			for i=1:length(classlist)
 				if strcmpi(classlist{i},'normal_uncertain')
-					if (u~=0 | h~=0),
+					if (u~=0 | h~=0)
 						error('normal_uncertain variables should be declared before uniform and histogram_bin uncertain variables');
 					else
 						n=1;
 					end
 				end
 				if strcmpi(classlist{i},'uniform_uncertain')
-					if (h~=0),
+					if (h~=0)
 						error('uniform_uncertain variables should be declared before histogram_bin uncertain variables');
 					else
 						u=1;
@@ -221,11 +221,11 @@ classdef qmu
 		function marshall(self,prefix,md,fid) % {{{
 			WriteData(fid,prefix,'object',self,'fieldname','isdakota','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','output','format','Boolean');
-			if ~self.isdakota,
+			if ~self.isdakota
 				WriteData(fid,prefix,'data',false,'name','md.qmu.mass_flux_segments_present','format','Boolean');
 				return;
 			end
-			if strcmpi(self.method.method,'nond_sampling'),
+			if strcmpi(self.method.method,'nond_sampling')
 				WriteData(fid,prefix,'data',self.method.params.samples,'name','md.qmu.method.params.samples','format','Integer');
 			end
 			WriteData(fid,prefix,'object',self,'fieldname','numberofresponses','format','Integer');
@@ -236,7 +236,7 @@ classdef qmu
 			WriteData(fid,prefix,'object',self,'fieldname','responsedescriptors','format','StringArray');
 			WriteData(fid,prefix,'object',self,'fieldname','responsepartitions','format','MatArray');
 			WriteData(fid,prefix,'object',self,'fieldname','responsepartitions_npart','format','IntMat','mattype',3);
-			if ~isempty(self.mass_flux_segments),
+			if ~isempty(self.mass_flux_segments)
 				WriteData(fid,prefix,'data',self.mass_flux_segments,'name','md.qmu.mass_flux_segments','format','MatArray');
 				flag=true;
 			else
@@ -248,7 +248,7 @@ classdef qmu
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 
-			if self.isdakota,
+			if self.isdakota
 				error('qmu savemodeljs error message: not supported yet!');
 			end
 

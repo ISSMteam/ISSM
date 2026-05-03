@@ -17,7 +17,7 @@ end% }}}
 [x y z elements is2d isplanet]=processmesh(md,[],options);
 
 %check is2d
-if ~is2d,
+if ~is2d
    error('buildgridded error message: gridded not supported for 3d meshes, project on a layer');
 end
 
@@ -65,7 +65,7 @@ if md.mesh.epsg == 3031 % Antarctica region {{{
 				if exist(limapath{ii}), pos(ii) = 1; end
 			end
 			
-			if sum(pos) == 0,
+			if sum(pos) == 0
 				fprintf('download website : https://lima.usgs.gov/fullcontinent.php\n');
 				error('Landsat image at Antarctic region should be downloaded at above website');
 			end
@@ -102,7 +102,7 @@ if md.mesh.epsg == 3031 % Antarctica region {{{
 				if exist(limapath{ii}), pos(ii) = 1; end
 			end
 			
-			if sum(pos) == 0,
+			if sum(pos) == 0
 				fprintf('download website : https://lima.usgs.gov/fullcontinent.php\n');
 				error('Landsat image at Antarctic region should be downloaded at above website');
 			end

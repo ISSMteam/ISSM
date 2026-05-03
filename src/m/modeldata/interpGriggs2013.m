@@ -9,7 +9,7 @@ error('interpBamber2013 should now be used');
 griggs2013nc='/u/astrid-r1b/morlighe/issmjpl/proj-morlighem/DatasetGreenland/Data/Griggs2012/Greenland_bedrock_topography_and_geometry_062012_JGriggs.nc';
 verbose = 0;
 
-if nargout==2,
+if nargout==2
 	string = 'BedrockElevation';
 end
 

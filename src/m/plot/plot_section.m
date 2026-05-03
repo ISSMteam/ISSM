@@ -40,19 +40,19 @@ profiles=expread(getfieldvalue(options,'sectionvalue'));
 numprofiles=length(profiles);
 
 %Loop over number of profiles: 
-for profile_i=1:numprofiles,
+for profile_i=1:numprofiles
 	profile=profiles(profile_i);
 
 	%Loop over number of curves
-	for i=1:numcurves,
+	for i=1:numcurves
 
 		[datai datatype]=processdata(md3d,data(:,i),options);
 
 		%resolution
-		if exist(options,'resolution'),
+		if exist(options,'resolution')
 			resolution=getfieldvalue(options,'resolution');
 		else %Default resolution
-			if is2d,
+			if is2d
 				resolution=[1000 1];
 			else
 				resolution=[1000 10*md.mesh.numberoflayers];
@@ -63,14 +63,14 @@ for profile_i=1:numprofiles,
 		%Compute section value
 		[elements,x,y,z,s,data_s]=SectionValues(md,datai,profile,resolution);
 
-		if getfieldvalue(options,'sectionmean',0)==1,
+		if getfieldvalue(options,'sectionmean',0)==1
 			disp(['Mean value of data along section: ' num2str(mean(data_s))])
 			disp(['Median value of data along section: ' num2str(median(data_s))])
 			disp(['Standard deviation of data along section: ' num2str(std(data_s))])
 		end
 
 		%units
-		if exist(options,'unit'),
+		if exist(options,'unit')
 			unit=getfieldvalue(options,'unit');
 			x=x*unit;
 			y=y*unit;
@@ -79,7 +79,7 @@ for profile_i=1:numprofiles,
 		end
 
 		%2D
-		if is2d,
+		if is2d
 %		%plot section value
 %		hold on;
 %		subplot(nlines,ncols,index1)

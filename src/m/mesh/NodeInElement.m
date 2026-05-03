@@ -21,7 +21,7 @@ delta=x(elements(:,2)).*y(elements(:,3))-y(elements(:,2)).*x(elements(:,3))-x(el
 max_connectivity=max(nodeconnectivity(:,end));
 node_in_element=zeros(length(newx),max_connectivity+1); %last column is the number of elements to which the row node is connected.
 
-for i=1:length(newx),
+for i=1:length(newx)
 	x0=newx(i);
 	y0=newy(i);
 

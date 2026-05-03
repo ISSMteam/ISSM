@@ -14,7 +14,7 @@ function archwrite(filename,varargin) % {{{
 		error('Error: Invalid number of arguments provided. Please check the usage above.');
 	end
 
-	if ~exist(filename,'file'),
+	if ~exist(filename,'file')
 		fid=fopen(filename,'wb');	% create new file
 	else
 		fid=fopen(filename,'ab+');	% append to file
@@ -22,7 +22,7 @@ function archwrite(filename,varargin) % {{{
 
 	numfields=nvarargs/2;
 	% Generate data to write
-	for i=1:numfields,
+	for i=1:numfields
 		% write field name
 		name=varargin{2*i-1};
 		write_field_name(fid,name);

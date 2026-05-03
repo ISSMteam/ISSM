@@ -55,7 +55,7 @@ classdef generic_static
 			if cluster.np<1
 				md = checkmessage(md,['number of processors should be at least 1']);
 			end
-			if isnan(cluster.np),
+			if isnan(cluster.np)
 				md = checkmessage(md,'number of processors should not be NaN!');
 			end
 		end

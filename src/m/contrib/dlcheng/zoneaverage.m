@@ -10,7 +10,7 @@ function avg=zoneaverage(md,field,parameter,width,distweight,areaweight,iter)
 
 %TODO: HANDLE NARGINS/PAIROPTION STYLE ARGS FOR WIDTH, DISTWEIGHT, AREAWEIGHT, ITER
 
-if (dimension(md.mesh)==2),
+if (dimension(md.mesh)==2)
 	numberofelements=md.mesh.numberofelements;
 	numberofnodes=md.mesh.numberofvertices;
 	index=md.mesh.elements;
@@ -23,7 +23,7 @@ else
 end
 
 %node
-if numel(field)==numberofnodes,
+if numel(field)==numberofnodes
     areas=GetAreas(md.mesh.elements,md.mesh.x,md.mesh.y);
 
     %calculate distances between nodes and reshape into addressable matrix
@@ -39,8 +39,8 @@ if numel(field)==numberofnodes,
     %calculate average area per node
     nodeareas=zeros(numberofnodes,1);
     elementspernode=zeros(numberofnodes,1);
-    for i=1:numberofelements,
-        for j=1:3,
+    for i=1:numberofelements
+        for j=1:3
             node=index(i,j);
             nodeareas(node)=nodeareas(node)+areas(i);
             elementspernode(node)=elementspernode(node)+1;
@@ -53,9 +53,9 @@ if numel(field)==numberofnodes,
     totalweight=distweight+areaweight;
     distweight=distweight/totalweight;
     areaweight=areaweight/totalweight;
-    for iter=1:iter,
+    for iter=1:iter
 %     for iter=1:1,
-        for i=1:numberofnodes,
+        for i=1:numberofnodes
             %distance weighting
             distsum = sum(dist(i,flags(i,:))) + eps;
             distmax = max(dist(i,flags(i,:)));

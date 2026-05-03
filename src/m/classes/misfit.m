@@ -38,7 +38,7 @@ classdef misfit
 			end
 		end % }}}
 		function self = misfit(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields
@@ -63,7 +63,7 @@ classdef misfit
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ischar(self.name),
+			if ~ischar(self.name)
 				error('misfit error message: ''name'' field should be a string!');
 			end
 			OutputdefinitionStringArray={};
@@ -72,7 +72,7 @@ classdef misfit
 			end
 			md = checkfield(md,'fieldname','self.definitionstring','field',self.definitionstring,'values',OutputdefinitionStringArray);
 
-			if ~ischar(self.timeinterpolation),
+			if ~ischar(self.timeinterpolation)
 				error('misfit error message: ''timeinterpolation'' field should be a string!');
 			end
 			md = checkfield(md,'fieldname','self.observation','field',self.observation,'timeseries',1,'NaN',1,'Inf',1);

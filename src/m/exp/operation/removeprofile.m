@@ -44,7 +44,7 @@ function [A,numprofiles,numpoints,closed]=removeprofile(A,numprofiles,numpoints,
 		else
 			%remove the profiles
 			selection=sort(selection);
-			for i=1:length(selection),
+			for i=1:length(selection)
 				numprofiles=numprofiles-1;
 				numpoints=numpoints-length(A(selection(i)-(i-1)).x);
 				A(selection(i)-(i-1))=[];

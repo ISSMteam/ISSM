@@ -10,7 +10,7 @@ switch oshostname(),
 end
 
 usemap = 0;
-if license('test','map_toolbox')==0,
+if license('test','map_toolbox')==0
 	disp('WARNING: map toolbox not installed, trying house code');
 	usemap = 0;
 elseif license('checkout','map_toolbox')==0
@@ -18,7 +18,7 @@ elseif license('checkout','map_toolbox')==0
 	usemap = 0;
 end
 
-if usemap,
+if usemap
 	[data,R] = geotiffread(howatpath);
 	data=double(flipud(data));
 	xdata=R.XLimWorld(1):R.DeltaX:R.XLimWorld(2); xdata=xdata(:);
@@ -48,7 +48,7 @@ else
 	id1x=max(1,find(xdata>=xmin,1)-offset);
 	id2x=min(numel(xdata),posx(end)+offset);
 
-	if 0,
+	if 0
 		ymin=min(Y(:)); ymax=max(Y(:));
 		posy=find(ydata<=ymax);
 		id1y=max(1,find(ydata>=ymin,1)-offset);

@@ -39,16 +39,16 @@ classdef groundingline
 			md = checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'>=',0);
 			md = checkfield(md,'fieldname','groundingline.requested_outputs','stringrow',1);
 
-			if ~strcmp(self.migration,'None') & strcmp(solution,'TransientSolution') & md.transient.isgroundingline==1,
-				if isnan(md.geometry.bed),
+			if ~strcmp(self.migration,'None') & strcmp(solution,'TransientSolution') & md.transient.isgroundingline==1
+				if isnan(md.geometry.bed)
 					md = checkmessage(md,['requesting grounding line migration, but bathymetry is absent!']);
 				end
 				pos=find(md.mask.ocean_levelset>0. & md.mask.ice_levelset<=0);
-				if any(abs(md.geometry.base(pos)-md.geometry.bed(pos))>10^-10),
+				if any(abs(md.geometry.base(pos)-md.geometry.bed(pos))>10^-10)
 					md = checkmessage(md,['base not equal to bed on grounded ice!']);
 				end
 				pos=find(md.mask.ocean_levelset<=0. & md.mask.ice_levelset<=0);
-				if any(md.geometry.bed(pos) - md.geometry.base(pos) > 10^-9),
+				if any(md.geometry.bed(pos) - md.geometry.base(pos) > 10^-9)
 					md = checkmessage(md,['bed superior to base on floating ice!']);
 				end
 			end
@@ -77,7 +77,7 @@ classdef groundingline
 			%process requested outputs
          outputs = self.requested_outputs;
          pos  = find(ismember(outputs,'default'));
-         if ~isempty(pos),
+         if ~isempty(pos)
             outputs(pos) = [];                         %remove 'default' from outputs
             outputs      = [outputs defaultoutputs(self,md)]; %add defaults
          end

@@ -69,11 +69,11 @@ classdef aws_issm_solution_server
 		%}}}
 		function md = checkconsistency(cluster,md,solution,analyses) % {{{
 
-			if ((cluster.numnodes>1 ) | (cluster.numnodes<1)),
+			if ((cluster.numnodes>1 ) | (cluster.numnodes<1))
 				md = checkmessage(md,'only 1 node is currently available');
 			end
 
-			if ((cluster.cpuspernode>8 ) | (cluster.cpuspernode<1)),
+			if ((cluster.cpuspernode>8 ) | (cluster.cpuspernode<1))
 				md = checkmessage(md,'cpuspernode should be between 1 and 8');
 			end
 
@@ -102,7 +102,7 @@ classdef aws_issm_solution_server
 			if(isgprof) disp('gprof not supported by cluster, ignoring...'); end
 
 			executable='issm.exe';
-			if isdakota,
+			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
 				if (version>=6)
 					executable='issm_dakota.exe';
@@ -124,13 +124,13 @@ classdef aws_issm_solution_server
 			end
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n\n');
 			if cluster.interactive
-				if IssmConfig('_HAVE_MPI_'),
+				if IssmConfig('_HAVE_MPI_')
 					fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 				else
 					fprintf(fid,'%s/%s %s %s %s\n',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 				end
 			else
-				if IssmConfig('_HAVE_MPI_'),
+				if IssmConfig('_HAVE_MPI_')
 					fprintf(fid,'mpiexec -np %i %s/%s %s %s %s 2> %s.errlog > %s.outlog &\n',cluster.nprocs(),cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
 				else
 					fprintf(fid,'%s/%s %s %s %s 2> %s.errlog > %s.outlog &\n',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
@@ -142,7 +142,7 @@ classdef aws_issm_solution_server
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
 				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
@@ -151,7 +151,7 @@ classdef aws_issm_solution_server
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz'];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
 			if cluster.interactive
@@ -160,9 +160,9 @@ classdef aws_issm_solution_server
 			system(compressstring);
 
 			%upload input files
-			if cluster.interactive==10,
+			if cluster.interactive==10
 				directory=[pwd() '/run/'];
-			elseif cluster.interactive,
+			elseif cluster.interactive
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 			else 
 				directory=cluster.executionpath;
@@ -171,7 +171,7 @@ classdef aws_issm_solution_server
 			%NOTE: Replacement for issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
 			uploadstring=['scp -i ' cluster.idfile ' ' dirname '.tar.gz ' cluster.login '@' cluster.name ':' directory];
 			[status,result]=system(uploadstring);
-			if status, 
+			if status 
 				error(['cluster.UploadQueueJob error message: ' status]);
 			end
 		end
@@ -179,11 +179,11 @@ classdef aws_issm_solution_server
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
 			%launch command, to be executed via ssh
-			if cluster.interactive,
+			if cluster.interactive
 				if ~isempty(restart)
 					launchcommand=['cd ' cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 				else
-					if cluster.interactive==10,
+					if cluster.interactive==10
 						launchcommand=['cd ' pwd() '/run && tar -zxf ' dirname '.tar.gz'];
 					else
 						launchcommand=['cd ' cluster.executionpath '/Interactive' num2str(cluster.interactive) ' && tar -zxf ' dirname '.tar.gz'];
@@ -202,7 +202,7 @@ classdef aws_issm_solution_server
 			%NOTE: Replacement for issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 			launchstring=['ssh -l ' cluster.login ' -i ' cluster.idfile ' ' cluster.name ' "' launchcommand '"'];
 			[status,result]=system(launchstring);
-			if status,
+			if status
 				error(['cluster.LaunchQueueJob error message: ' status]);
 			end
 		end
@@ -210,20 +210,20 @@ classdef aws_issm_solution_server
 		function Download(cluster,dirname,filelist) % {{{
 
 			%copy files from cluster to current directory
-			if cluster.interactive==10,
+			if cluster.interactive==10
 				directory=[pwd() '/run/'];
-			elseif ~cluster.interactive,
+			elseif ~cluster.interactive
 				directory=[cluster.executionpath '/' dirname '/'];
 			else
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive) '/'];
 			end
 
 			%NOTE: Replacement for issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
-			if numel(filelist)==1,
+			if numel(filelist)==1
 				filestring=filelist{1};
 			else
 				filestring='\{';
-				for i=1:numel(filelist)-1,
+				for i=1:numel(filelist)-1
 					filestring=[filestring filelist{i} ','];
 				end
 				filestring=[filestring filelist{end} '\}'];
@@ -231,13 +231,13 @@ classdef aws_issm_solution_server
 
 			downloadstring=['scp -i ' cluster.idfile ' ' cluster.login '@' cluster.name ':' directory '/' filestring ' ./'];
 			[status,result]=system(downloadstring);
-			if status, 
+			if status 
 				error(['cluster.Download error message: ' status]);
 			end
 
 			%check scp worked
-			for i=1:numel(filelist),
-				if ~exist(['./' filelist{i}]),
+			for i=1:numel(filelist)
+				if ~exist(['./' filelist{i}])
 					warning(['cluster.Download error message: could not scp ' filelist{i}]);
 				end
 			end

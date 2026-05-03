@@ -10,7 +10,7 @@ function [dataout] = interpBedmap(X,Y,string),
 
 path=[jplsvn() '/proj-morlighem/DatasetAntarctica/Data/BedMap/gridded/'];
 
-if strcmp(string,'bed'),
+if strcmp(string,'bed')
 	path = [path '/bed.mat'];
 	load(path);
 	x_m =(x_m(2:end)+x_m(1:end-1))/2.;

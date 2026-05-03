@@ -28,7 +28,7 @@ classdef glaciermip < handle
 	methods
 		function self = glaciermip(varargin) % {{{
 
-			if nargin==0, 
+			if nargin==0 
 				self=setdefaultparameters(self);
 			else 
 				self=setdefaultparameters(self);
@@ -40,7 +40,7 @@ classdef glaciermip < handle
 
 
 				%read variables:
-				if self.version==1,
+				if self.version==1
 					self.region=ncread(self.ncfile,'region');
 					self.time=ncread(self.ncfile,'time');
 					self.run=ncread(self.ncfile,'run');
@@ -50,7 +50,7 @@ classdef glaciermip < handle
 					self.realization=ncread(self.ncfile,'realization');
 					self.area=ncread(self.ncfile,'area');
 					self.volume=ncread(self.ncfile,'volume');
-				elseif self.version==2,
+				elseif self.version==2
 					self.area=ncread(self.ncfile,'Area');
 					self.mass=ncread(self.ncfile,'Mass');
 					self.region=ncread(self.ncfile,'Region');
@@ -86,22 +86,22 @@ classdef glaciermip < handle
 			unit=getfieldvalue(options,'unit','Gt');
 			sumregion=getfieldvalue(options,'sumregion',0);
 
-			if self.version==1,
+			if self.version==1
 				error(sprintf('getmass not supported yet for Glacier MIP version %i',self.version));
 			end
 
 			%serialize: 
-			if sumregion,
-				for i=rg,
+			if sumregion
+				for i=rg
 					masses_regioni=[];
-					for j=cm,
-						for k=gm,
-							for l=sc,
+					for j=cm
+						for k=gm
+							for l=sc
 								masses_regioni=[masses_regioni; squeeze(self.mass(i,:,j,k,l))];
 							end
 						end
 					end
-					if i==1, 
+					if i==1 
 						masses=masses_regioni;
 					else
 						masses=masses+masses_regioni;
@@ -109,20 +109,20 @@ classdef glaciermip < handle
 				end
 			else
 				masses=[];
-				for i=rg,
-					for j=cm,
-						for k=gm,
-							for l=sc,
+				for i=rg
+					for j=cm
+						for k=gm
+							for l=sc
 								masses=[masses; squeeze(self.mass(i,:,j,k,l))];
 							end
 						end
 					end
 				end
 			end
-			if zerostonan,
+			if zerostonan
 				masses(find(masses==0))=NaN;
 			end
-			if strcmpi(unit,'mmSLE'),
+			if strcmpi(unit,'mmSLE')
 				masses=masses/sletogt();
 			end
 
@@ -142,11 +142,11 @@ classdef glaciermip < handle
 			dm=diff(masses,1,2);
 
 			massrates=dm;
-			for i=1:size(massrates,1),
+			for i=1:size(massrates,1)
 				massrates(i,:)= massrates(i,:)./dt';
 			end
 
-			if strcmpi(unit,'mmSLE/yr'),
+			if strcmpi(unit,'mmSLE/yr')
 				massrates=massrates/sletogt();
 			end
 
@@ -154,7 +154,7 @@ classdef glaciermip < handle
 		function disp(self) % {{{
 			disp(sprintf('   Glacier MIP (version %i):',self.version)); 
 
-			if self.version==1,
+			if self.version==1
 				fielddisplay(self,'ncfile','netcdf file for GlacierMIP results');
 				fielddisplay(self,'time','time scale in yr');
 				fielddisplay(self,'region','region');
@@ -166,7 +166,7 @@ classdef glaciermip < handle
 				fielddisplay(self,'area','area');
 				fielddisplay(self,'volume','volume');
 			end 
-			if self.version==2,
+			if self.version==2
 				fielddisplay(self,'ncfile','netcdf file for GlacierMIP results');
 				fielddisplay(self,'time','time');
 				fielddisplay(self,'region','region');
@@ -179,7 +179,7 @@ classdef glaciermip < handle
 		end % }}}
 		function part=partition(self,md,rgi2mesh,part,value) % {{{
 
-			for i=1:size(rgi2mesh,2),
+			for i=1:size(rgi2mesh,2)
 				dh=rgi2mesh(:,i);
 				pos=find(dh);
 				part(pos)=value;

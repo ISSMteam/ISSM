@@ -3,7 +3,7 @@ function md=qmuname(md,varargin)
 %Pick up the number from a file, or get it directly from the Dakota structure.  Then modify the name of this 
 %model to reflect this new number.
 
-if nargin==1,
+if nargin==1
 	fid=fopen('number','r');
 	number=fscanf(fid,'%i',1)
 	fclose(fid);

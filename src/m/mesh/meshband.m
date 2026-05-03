@@ -19,24 +19,24 @@ function band=meshband(mh,outerdomain,varargin)
 
 	%create domain outine from inner and outer domain
 	inner=expread([temproot '/innerdomain.exp']);
-	if inner.closed==0,
+	if inner.closed==0
 		inner.nods=inner.nods+1;
 		inner.x(end+1)=inner.x(1);
 		inner.y(end+1)=inner.y(1);
 		inner.closed=1;
-		if getfieldvalue(options,'invert',0),
+		if getfieldvalue(options,'invert',0)
 			inner.x=flipud(inner.x);
 			inner.y=flipud(inner.y);
 		end
 	end
 
 	[path,name,ext]=fileparts(outerdomain);
-	if strcmpi(ext,'.shp'),
+	if strcmpi(ext,'.shp')
 		outer=shpread(outerdomain);
 	else
 		outer=expread(outerdomain);
 	end
-	if outer.closed==0,
+	if outer.closed==0
 		outer.nods=outer.nods+1;
 		outer.x(end+1)=outer.x(1);
 		outer.y(end+1)=outer.y(1);
@@ -59,7 +59,7 @@ function band=meshband(mh,outerdomain,varargin)
 
 	expwrite(domain,[temproot '/Band.exp']);
 	
-	if getfieldvalue(options,'plot',0),
+	if getfieldvalue(options,'plot',0)
 		figure(1),clf,hold on,axis image;
 		expdisp([temproot '/Band.exp'],'linestyle','k-*');
 	end
@@ -67,18 +67,18 @@ function band=meshband(mh,outerdomain,varargin)
 	%mesh: 
 	md=bamg(model(),'domain',[temproot '/Band.exp'],'MaxCornerAngle',1e-15,'gradation',10000); band=md.mesh; clear md;
 
-	if getfieldvalue(options,'plot',0),
+	if getfieldvalue(options,'plot',0)
 		figure(2),clf,trisurf(band.elements,band.x,band.y,band.x),view(2),shading faceted;
 		hold on,expdisp([temproot '/Band.exp'],'linestyle','k-*');
 	end
 
 	%check that the domain vertices = the number of segments: 
-	if abs(length(band.segments) - (length(domain(1).x)+length(domain(2).x)-2))>=2,
+	if abs(length(band.segments) - (length(domain(1).x)+length(domain(2).x)-2))>=2
 		disp(sprintf('band mesh not consistent: %i!=%i+%i\n',length(band.segments), length(domain(1).x), length(domain(2).x)));
 
 		figure(3),clf,expdisp([temproot '/Band.exp'],'linestyle','r*');
 		hold on; 
-		for i=1:length(band.segments),
+		for i=1:length(band.segments)
 			i1=band.segments(i,1); i2=band.segments(i,2);
 			plot([band.x(i1) band.x(i2)],[band.y(i1) band.y(i2)],'k*-');
 			plot([band.x(i1)+ band.x(i2)]/2,[band.y(i1)+ band.y(i2)]/2,'g*');

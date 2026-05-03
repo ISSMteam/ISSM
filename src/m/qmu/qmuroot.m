@@ -3,7 +3,7 @@ function root=qmuroot(string)
 
 root='';
 found=0;
-for i=1:length(string),
+for i=1:length(string)
 	if ((49<=double(string(i))) && (double(string(i)<=57)))
 		break;
 	else

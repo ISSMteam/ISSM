@@ -1,7 +1,7 @@
 function md = importgmsh(filename,dim)
 
 %some checks
-if ~exist(filename),
+if ~exist(filename)
 	error(['expread error message: file ' filename ' not found!']);
 end
 
@@ -10,18 +10,18 @@ fid=fopen(filename,'r');
 
 %Get Mesh format
 A=fscanf(fid,'%s',1);
-if ~strcmp(A,'$MeshFormat'), 
+if ~strcmp(A,'$MeshFormat') 
 	error(['Expecting $MeshFormat (' A ')']);
 end
 A=fscanf(fid,'%f %i %i',[1 3]);
 A=fscanf(fid,'%s',1);
-if ~strcmp(A,'$EndMeshFormat'), 
+if ~strcmp(A,'$EndMeshFormat') 
 	error(['Expecting $EndMeshFormat (' A ')']);
 end
 
 %Nodes
 A=fscanf(fid,'%s',1);
-if ~strcmp(A,'$Nodes'), 
+if ~strcmp(A,'$Nodes') 
 	error(['Expecting $Nodes (' A ')']);
 end
 nbv=fscanf(fid,'%i',1);
@@ -32,23 +32,23 @@ y = A(3,:)';
 z = A(4,:)';
 
 A=fscanf(fid,'%s',1);
-if ~strcmp(A,'$EndNodes'), 
+if ~strcmp(A,'$EndNodes') 
 	error(['Expecting $EndNodes (' A ')']);
 end
 
 %Elements
 A=fscanf(fid,'%s',1);
-if ~strcmp(A,'$Elements'), 
+if ~strcmp(A,'$Elements') 
 	error(['Expecting $Elements (' A ')']);
 end
 nbt=fscanf(fid,'%i',1);
 disp(['Number of elements: ' num2str(nbt) ]);
 counter = 0;
-if (dim==2),
+if (dim==2)
 	index   = zeros(0,3);
 	segments       = zeros(0,2);
 	segmentmarkers = zeros(0,1);
-elseif (dim==3),
+elseif (dim==3)
 	index   = zeros(0,4);
 	segments       = zeros(0,3);
 	segmentmarkers = zeros(0,1);
@@ -106,17 +106,17 @@ while(counter<nbt);
 end
 
 %recreate segments
-if dim==2,
+if dim==2
 	nbs = size(segments,1);
 	segments = [segments zeros(nbs,1)];
-	for i=1:nbs,
+	for i=1:nbs
 		E = find(sum(ismember(index,segments(i,:)),2)>1);
 		segments(i,3)=E;
 	end
 else
 	nbs = size(segments,1);
 	segments = [segments zeros(nbs,1)];
-	for i=1:nbs,
+	for i=1:nbs
 		E = find(sum(ismember(index,segments(i,:)),2)>2);
 		segments(i,4)=E;
 	end

@@ -2,13 +2,13 @@
 lastwarn(''); 
 
 %Recover ISSM_DIR , or if on a Windows machine, ISSM_DIR_WIN
-if ispc,
+if ispc
 	ISSM_DIR=getenv('ISSM_DIR_WIN');
 else
 	ISSM_DIR=getenv('ISSM_DIR');
 end
 
-if (isempty(ISSM_DIR)),
+if (isempty(ISSM_DIR))
 	error('''ISSM_DIR'' environment variable is empty. You should define ISSM_DIR in your .zshrc or .bashrc');
 end
 
@@ -31,7 +31,7 @@ addpath(recursivepath([ISSM_DIR '/externalpackages/mealpix']));
 addpath(recursivepath([ISSM_DIR '/externalpackages/pcatool']));
 
 %Check on any warning messages that might indicate that the paths were not correct. 
-if ~isempty(lastwarn),
+if ~isempty(lastwarn)
 	fprintf('\n  Error trying to setup ''ISSM'' code paths. Try and update the ISSM_DIR variable in your .zshrc or .bashrc\n');
 	fprintf('  ''ISSM'' will not  work at all until this is resolved\n\n');
 else

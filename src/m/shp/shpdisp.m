@@ -19,7 +19,7 @@ if ~nargin | nargin>5
 end
 
 %parse input
-if nargin<=1,
+if nargin<=1
 	figurenumber=1;
 else
 	figurenumber=varargin{1};
@@ -43,7 +43,7 @@ end
 domain=shpread(domainoutline);
 
 figure(figurenumber),hold on
-for i=1:length(domain),
+for i=1:length(domain)
 	if(isfield(domain,'nods'))
 		if (isnumeric(linestyle))
 			plot(domain(i).x*unitmultiplier,domain(i).y*unitmultiplier,'Color',linestyle,'linewidth',linewidth);

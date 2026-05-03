@@ -4,7 +4,7 @@ function level=confidenceintervals(x,h,threshold)
 	nods=size(h,1); nbins=size(h,2);
 
 	%make sure h is one column smaller than x
-	if size(x,2) ~= (size(h,2)+1),
+	if size(x,2) ~= (size(h,2)+1)
 		error('x should be one column larger than the histogram');
 	end
 

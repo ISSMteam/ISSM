@@ -18,20 +18,20 @@ options=removefield(options,'colormap',0); %back to default colormap
 
 %Get coordinates
 location=getfieldvalue(options,'profile');
-if ~isnumeric(location) | numel(location)~=2,
+if ~isnumeric(location) | numel(location)~=2
 	error('location provided not supported (should be [x y])');
 end
 xprof=location(1);
 yprof=location(2);
 
 %Loop over number of curves
-for i=1:numcurves,
+for i=1:numcurves
 
 	%Process data
 	[datai datatype]=processdata(md,data(:,i),options);
 
 	%resolution[z,data_interp]=ProfileValues(md,datai,xprof,yprof,resolution);
-	if exist(options,'resolution'),
+	if exist(options,'resolution')
 		resolution=getfieldvalue(options,'resolution');
 	else %Default resolution
 		resolution=[100];

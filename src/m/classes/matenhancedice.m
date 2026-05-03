@@ -43,7 +43,7 @@ classdef matenhancedice
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -111,7 +111,7 @@ classdef matenhancedice
 			md = checkfield(md,'fieldname','materials.rheology_law','values',{'None' 'BuddJacka' 'Cuffey' 'CuffeyTemperate' 'Paterson' 'Arrhenius' 'LliboutryDuval'});
 			md = checkfield(md,'fieldname','materials.effectiveconductivity_averaging','numel',[1],'values',[0 1 2]);
             
-			if ismember('SealevelchangeAnalysis',analyses),
+			if ismember('SealevelchangeAnalysis',analyses)
 				md = checkfield(md,'fieldname','materials.earth_density','>',0,'numel',1);
 			end
 

@@ -14,12 +14,12 @@ function expxy2shpll(expfilename,shpfilename,geometry)
 
 %check file extensions
 [pathstr,name,ext] = fileparts(shpfilename);
-if ~strcmp(ext,'.shp'),
+if ~strcmp(ext,'.shp')
    error(['Shapefile ' shpfilename ' does not have an extension .shp']);
 end
 
 [pathstr,name,ext] = fileparts(expfilename);
-if ~strcmp(ext,'.exp'),
+if ~strcmp(ext,'.exp')
    error(['Exp file ' expfilename ' does not have an extension .exp']);
 end
 
@@ -32,7 +32,7 @@ shp.y = lat;
 count=1;
 
 contours=struct([]);
-for i=1:length(shp),
+for i=1:length(shp)
    if nargin < 3
 
       %TEMP
@@ -50,7 +50,7 @@ for i=1:length(shp),
       elseif length(shp(i).x) < 3
          geometry = 'Line';
       else
-         if (shp(i).x(end)==shp(i).x(1) && shp(i).y(end)==shp(i).y(1)),
+         if (shp(i).x(end)==shp(i).x(1) && shp(i).y(end)==shp(i).y(1))
             geometry = 'Polygon';
          else
             geometry = 'Line';

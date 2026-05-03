@@ -13,7 +13,7 @@ options=checkplotoptions(md,options);
 data=getfieldvalue(options,'data');
 
 %figure out if this is a special plot
-if ischar(data),
+if ischar(data)
 	switch data,
 		case 'boundaries',
 			plot_boundaries(md,options,subplotwidth,i);
@@ -70,7 +70,7 @@ if ischar(data),
 			plot_mesh(md,options,nlines,ncols,i);
 			return;
 		case 'none',
-			if ~exist(options,'overlay'),
+			if ~exist(options,'overlay')
 				plot_none(md,options,nlines,ncols,i);
 				return;
 			end
@@ -136,7 +136,7 @@ if ischar(data),
 		if isfield(md.results,'TransientSolution') && isfield(md.results.TransientSolution,data)
 			plot_transient_movie(md,options,subplotwidth,i);
 			return
-		elseif ismember(data,properties('model')),
+		elseif ismember(data,properties('model'))
 			data=eval(['md.' data ';']);
 		else
 			error('plot error message: data provided not supported yet. Type plotdoc for help');
@@ -145,25 +145,25 @@ if ischar(data),
 end
 
 %Figure out if this is a semi-transparent plot.
-if exist(options,'overlay'),
+if exist(options,'overlay')
 	plot_overlay(md,data,options,nlines,ncols,i);
 	return;
 end
 
 %Figure out if this is a Google Maps plot.
-if exist(options,'googlemaps'),
+if exist(options,'googlemaps')
 	plot_googlemaps(md,data,options,nlines,ncols,i);
 	return;
 end
 
 %Figure out if this is a landsat plot.
-if getfieldvalue(options,'landsat',0),
+if getfieldvalue(options,'landsat',0)
 	plot_landsat(md,data,options,nlines,ncols,i);
 	return;
 end
 
 %Figure out if this is a gridded plot.
-if exist(options,'gridded'),
+if exist(options,'gridded')
 	plot_gridded(md,data,options,nlines,ncols,i);
 	return;
 end
@@ -201,9 +201,9 @@ end
 plot_unit(x,y,z,elements,data2,is2d,isplanet,datatype,options);
 
 %apply all options
-if datatype==3,
+if datatype==3
 	options=changefieldvalue(options,'colorbar',2);
-	if exist(options,'contourlevels'),
+	if exist(options,'contourlevels')
 		data2=data;
 	end
 end
@@ -211,8 +211,8 @@ end
 applyoptions(md,data2,options);
 
 %do ground overlay on kml plot_unit? 
-if (strcmpi(getfieldvalue(options,'kmlgroundoverlay','off'),'on')),
-	if ((nlines*ncols~=1) | (i~=1)),
+if (strcmpi(getfieldvalue(options,'kmlgroundoverlay','off'),'on'))
+	if ((nlines*ncols~=1) | (i~=1))
 		error('cannot kmlgroundoverlay on multi-plots');
 	end
 

@@ -1,10 +1,10 @@
 function edges=projectedges(edges,shppath,epsg)
 %Gothrough edges (shapefiles), and project them in the epsg reference frame. 
 
-for i=1:length(edges)/3, 
+for i=1:length(edges)/3 
 	shpname=[shppath '/' edges{3*(i-1)+1}];
 	shpepsg=edges{3*(i-1)+2};
-	if shpepsg==epsg,
+	if shpepsg==epsg
 		%do nothing; 
 	else
 		%use CoordTransform to reproject the shp file: and give it another name.

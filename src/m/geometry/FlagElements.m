@@ -12,8 +12,8 @@ function flag=FlagElements(md,region),
 %      flag=FlagElements(md,'Domain.exp');
 %      flag=FlagElements(md,'~Domain.exp');
 
-	if ischar(region),
-		if isempty(region),
+	if ischar(region)
+		if isempty(region)
 			flag=zeros(md.mesh.numberofelements,1);
 			invert=0;
 		elseif strcmpi(region,'all')
@@ -21,7 +21,7 @@ function flag=FlagElements(md,region),
 			invert=0;
 		else
 			%make sure that we actually don't want the elements outside the domain outline!
-			if strcmpi(region(1),'~'),
+			if strcmpi(region(1),'~')
 				region=region(2:length(region));
 				invert=1;
 			else
@@ -29,8 +29,8 @@ function flag=FlagElements(md,region),
 			end
 
 			%does the region domain outline exist or do we have to look for xlim,ylim in basinzoom?
-			if ~exist(region,'file'),
-				if (length(region)>3 & ~strcmp(region(end-3),'.exp')),
+			if ~exist(region,'file')
+				if (length(region)>3 & ~strcmp(region(end-3),'.exp'))
 					error(['Error: File ' region ' not found!']);
 				end
 				[xlim,ylim]=basinzoom('basin',region);
@@ -41,13 +41,13 @@ function flag=FlagElements(md,region),
 				flag=ContourToMesh(md.mesh.elements(:,1:3),md.mesh.x,md.mesh.y,region,'element',1);
 			end
 		end
-		if invert,
+		if invert
 			flag=~flag;
 		end
-	elseif isfloat(region) | islogical(region),
-		if size(region,1)==md.mesh.numberofelements,
+	elseif isfloat(region) | islogical(region)
+		if size(region,1)==md.mesh.numberofelements
 			flag=region;
-		elseif size(region,1)==md.mesh.numberofvertices,
+		elseif size(region,1)==md.mesh.numberofvertices
 			flag=logical(sum(region(md.mesh.elements)>0,2)==size(md.mesh.elements,2));
 		else
 			help FlagElements

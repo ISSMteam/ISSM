@@ -13,13 +13,13 @@ variablenamelength=length(variablename);
 %go through all response functions and find the one corresponding to the correct responsename
 responsefunctions=md.qmu.results.dresp_out;
 found=0;
-for i=1:length(responsefunctions),
-	if strcmpi(responsefunctions(i).descriptor,responsename),
+for i=1:length(responsefunctions)
+	if strcmpi(responsefunctions(i).descriptor,responsename)
 		found=i;
 		break;
 	end
 end
-if ~found,
+if ~found
 	error('importancefactors error message: could not find correct response function');
 end
 responsefunctions=responsefunctions(found);
@@ -28,15 +28,15 @@ nfun=size(responsefunctions.var,1);
 %Now recover response to the correct design variable
 importancefactors=zeros(1,0);
 count=0;
-for i=1:nfun,
+for i=1:nfun
 	desvar=responsefunctions.var{i};
-	if strncmpi(desvar,variablename,variablenamelength),
+	if strncmpi(desvar,variablename,variablenamelength)
 		importancefactors(end+1)=responsefunctions.impfac(i);
 		count=count+1;
 	end
 end
 
-if count==0,
+if count==0
 	error('importancefactors error message: either response does not exist, or importancefactors are empty');
 end
 

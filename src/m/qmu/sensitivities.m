@@ -13,13 +13,13 @@ variablenamelength=length(variablename);
 %go through all response functions and find the one corresponding to the correct responsename
 responsefunctions=md.qmu.results.dresp_out;
 found=0;
-for i=1:length(responsefunctions),
-	if strcmpi(responsefunctions(i).descriptor,responsename),
+for i=1:length(responsefunctions)
+	if strcmpi(responsefunctions(i).descriptor,responsename)
 		found=i;
 		break;
 	end
 end
-if ~found,
+if ~found
 	error('importancefactors error message: could not find correct response function');
 end
 responsefunctions=responsefunctions(found);
@@ -28,16 +28,16 @@ nfun=size(responsefunctions.var,1);
 %Now recover response to the correct design variable
 rawsens=zeros(0,1);
 count=0;
-for i=1:nfun,
+for i=1:nfun
 	desvar=responsefunctions.var{i};
-	if strncmpi(desvar,variablename,variablenamelength),
+	if strncmpi(desvar,variablename,variablenamelength)
 		rawsens(end+1,1)=responsefunctions.sens(i);
 		count=count+1;
 	end
 end
 
 %Now, if this was a distributed variable, the sensitivities need to be scaled by means of the input variable.
-if IsScaled(variablename),
+if IsScaled(variablename)
 
 	%ipick up the variable in the model
 	switch variablename,
@@ -49,13 +49,13 @@ if IsScaled(variablename),
 	average_variable=AreaAverageOntoPartition(md,variable);
 
 	%scale the sensitivities: only where the average_variable is not 0 
-	if ~isempty(rawsens),
+	if ~isempty(rawsens)
 		pos=find(average_variable);
 		rawsens(pos)=rawsens(pos)./average_variable(pos);
 	end
 end
 
-if count==0,
+if count==0
 	error('sensitivities error message: either response does not exist, or sensitivities are empty');
 end
 

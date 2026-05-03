@@ -39,15 +39,15 @@ classdef basalforcingsbeckmanngoosse
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
-			if isnan(self.ocean_temp),
+			if isnan(self.ocean_temp)
 				self.ocean_temp=-1.7*ones(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.ocean_temp specified: values set as -1.7degC');
 			end
-			if isnan(self.ocean_salinity),
+			if isnan(self.ocean_salinity)
 				self.ocean_salinity=35.0*ones(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.ocean_salinity specified: values set as 35 psu');
 			end
@@ -79,7 +79,7 @@ classdef basalforcingsbeckmanngoosse
 			end
 
 
-			if ismember('MasstransportAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.ismasstransport==0),
+			if ismember('MasstransportAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.ismasstransport==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.isthermalforcing','values',[0 1]);
@@ -90,7 +90,7 @@ classdef basalforcingsbeckmanngoosse
 					md = checkfield(md,'fieldname','basalforcings.ocean_thermalforcing','NaN',1,'Inf',1,'timeseries',1);	
 				end
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','basalforcings.isthermalforcing','values',[0 1]);
@@ -101,7 +101,7 @@ classdef basalforcingsbeckmanngoosse
 					md = checkfield(md,'fieldname','basalforcings.ocean_thermalforcing','NaN',1,'Inf',1,'timeseries',1);	
 				end
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.isthermal==0),
+			if ismember('ThermalAnalysis',analyses) & ~(solution=='TransientSolution' & md.transient.isthermal==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.geothermalflux','NaN',1,'Inf',1,'timeseries',1,'>=',0);
 				md = checkfield(md,'fieldname','basalforcings.meltrate_factor','>=',0,'size','universal','NaN',1,'Inf',1);

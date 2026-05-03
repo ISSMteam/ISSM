@@ -2,7 +2,7 @@ function comparemodels(md1,md2);
 
 	%loop over model fields
 	model_fields=fieldnames(md1);
-	for i=1:length(model_fields),
+	for i=1:length(model_fields)
 		field1=md1.(model_fields{i});
 		field2=md2.(model_fields{i});
 		if isobject(field1), %recursive call
@@ -11,7 +11,7 @@ function comparemodels(md1,md2);
 				continue;
 			end
 			object_fields=fieldnames(md1.(model_fields{i}));
-			for j=1:length(object_fields),
+			for j=1:length(object_fields)
 				field1=md1.(model_fields{i}).(object_fields{j});
 				field2=md2.(model_fields{i}).(object_fields{j});
 				compare([model_fields{i} '.' object_fields{j}],field1,field2);
@@ -24,16 +24,16 @@ function comparemodels(md1,md2);
 end
 
 function compare(fieldname,field1,field2),
-	if any(size(field1)~=size(field2)),
+	if any(size(field1)~=size(field2))
 		disp([fieldname ' do not have the same size']);
 	elseif isnumeric(field1)
-		if numel(field1)==1 & isnan(field1) & isnan(field2),
+		if numel(field1)==1 & isnan(field1) & isnan(field2)
 			%Do not do anything
 		elseif any(field1(:)~=field2(:))
 			%Deal with NaN...
 			pos1=find(isnan(field1));
 			pos2=find(isnan(field2));
-			if numel(pos1)==numel(pos2) & all(pos1==pos2),
+			if numel(pos1)==numel(pos2) & all(pos1==pos2)
 				field1(pos1)=0; field2(pos2)=0;
 				if any(field1(:)~=field2(:))
 					disp([fieldname ' differs']);

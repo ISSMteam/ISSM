@@ -138,9 +138,9 @@ function c = colorstr2rgb(c)
   if isempty(k)
     error('MATLAB:InvalidColorString','Unknown color string.');
   end
-  if k~=3 || length(c)==1,
+  if k~=3 || length(c)==1
     c = rgbspec(k,:);
-  elseif length(c)>2,
+  elseif length(c)>2
     if strcmpi(c(1:3),'bla')
       c = [0 0 0];
     elseif strcmpi(c(1:3),'blu')

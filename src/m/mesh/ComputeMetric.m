@@ -45,7 +45,7 @@ metric(pos,:)=repmat([1./hmax^2 0. 1./hmax^2],length(pos),1);
 
 %take care of NaNs if any (use Matlab eig in a loop)
 [pos posj]=find(isnan(metric)); clear posj;
-if ~isempty(pos),
+if ~isempty(pos)
 	fprintf(' %i %s',length(pos),'NaN found in the metric. Use Matlab routine...');
 	for i=1:length(pos)
 		H=[hessian(pos(i),1) hessian(pos(i),2)
@@ -61,6 +61,6 @@ if ~isempty(pos),
 	end
 end
 
-if any(isnan(metric)),
+if any(isnan(metric))
 	error('ComputeMetric error message: NaN in the metric despite our efforts...')
 end

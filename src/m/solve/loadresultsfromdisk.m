@@ -12,7 +12,7 @@ function md=loadresultsfromdisk(md,filename)
 %      md         the returned model() object with the results loaded into md.results
 
 %check number of inputs/outputs
-if ((nargin~=2) | (nargout~=1)),
+if ((nargin~=2) | (nargout~=1))
 	help loadresultsfromdisk;
 	error('loadresultsfromdisk: nargin and nargout strictly enforced. See ''Useage'' above.');
 end
@@ -41,7 +41,7 @@ if ~md.qmu.isdakota
 	if isempty(fieldnames(structure))
 		error(['No result found in binary file ' filename '. Check for solution crash.']);
 	end
-	if isempty(structure(1).SolutionType),
+	if isempty(structure(1).SolutionType)
 		if ~isempty(structure(end).SolutionType)
 			structure(1).SolutionType=structure(end).SolutionType;
 		else

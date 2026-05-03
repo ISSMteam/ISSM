@@ -328,14 +328,14 @@ if exist('ymax1','var')
 end
 ylim(ylims)
 
-if exist('FontSize','var'),
+if exist('FontSize','var')
 	fontsize=FontSize;
 else
 	fontsize=12;
 end
 
 %  add the annotation
-if exist('titleplt','var'),
+if exist('titleplt','var')
 	title(titleplt,'FontSize',fontsize);
 else
 	if exist('cdfplt','var') && ...
@@ -346,18 +346,18 @@ else
 	end
 end
 
-if exist('xlabelplt','var'),
+if exist('xlabelplt','var')
 	xlabel(xlabelplt,'FontSize',fontsize);
 else
 	xlabel('Interval Edge Value');
 end
-if exist('ylabelplt','var'),
+if exist('ylabelplt','var')
 	ylabel(ylabelplt,'FontSize',fontsize);
 else
 	ylabel('Relative Frequency');
 end
 if exist('descr','var')
-	if ~strncmpi(cdfleg,'off',3),
+	if ~strncmpi(cdfleg,'off',3)
 		hleg1=legend(ax1,descr(1:length(hl1)),'Location','Best','Color','none','Interpreter','none');
 	end
 else

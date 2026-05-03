@@ -129,25 +129,25 @@ function code=FormatToCode(format) % {{{
 	%This routine takes the format string, and hardcodes it into an integer, which
 	%is passed along the record, in order to identify the nature of the dataset being
 	%sent.
-	if     strcmpi(format,'Boolean'),
+	if     strcmpi(format,'Boolean')
 		code=1;
-	elseif strcmpi(format,'Integer'),
+	elseif strcmpi(format,'Integer')
 		code=2;
-	elseif strcmpi(format,'Double'),
+	elseif strcmpi(format,'Double')
 		code=3;
-	elseif strcmpi(format,'String'),
+	elseif strcmpi(format,'String')
 		code=4;
-	elseif strcmpi(format,'BooleanMat'),
+	elseif strcmpi(format,'BooleanMat')
 		code=5;
-	elseif strcmpi(format,'IntMat'),
+	elseif strcmpi(format,'IntMat')
 		code=6;
-	elseif strcmpi(format,'DoubleMat'),
+	elseif strcmpi(format,'DoubleMat')
 		code=7;
-	elseif strcmpi(format,'MatArray'),
+	elseif strcmpi(format,'MatArray')
 		code=8;
-	elseif strcmpi(format,'StringArray'),
+	elseif strcmpi(format,'StringArray')
 		code=9;
-	elseif strcmpi(format,'CompressedMat'),
+	elseif strcmpi(format,'CompressedMat')
 		code=10;
 	else
 		error('FormatToCode error message: data type not supported yet!');

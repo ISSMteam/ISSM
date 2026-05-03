@@ -13,7 +13,7 @@ function projection_value=project2d(md3d,value,layer)
 %      returns the velocity of the second layer (1 is the base)
 
 %some checks on list of arguments
-if ((nargin~=3) ),
+if ((nargin~=3) )
 	help project2d
 	error('project2d error message');
 end
@@ -22,13 +22,13 @@ if ~strcmp(md3d.mesh.domaintype,'3D');
 	error('wrong model type ... should be ''3d''');
 end
 
-if ((layer<1) | (layer>md3d.mesh.numberoflayers)),
+if ((layer<1) | (layer>md3d.mesh.numberoflayers))
 	error(['layer must be between 1 and ' num2str(md3d.mesh.numberoflayers)]);
 end
 
 if numel(value)==1
 	projection_value=value;
-elseif size(value,1)==md3d.mesh.numberofvertices,
+elseif size(value,1)==md3d.mesh.numberofvertices
 	projection_value=value((layer-1)*md3d.mesh.numberofvertices2d+1:layer*md3d.mesh.numberofvertices2d,:);
 elseif size(value,1)==md3d.mesh.numberofvertices+1
 	projection_value=[value((layer-1)*md3d.mesh.numberofvertices2d+1:layer*md3d.mesh.numberofvertices2d,:); value(end,:)];

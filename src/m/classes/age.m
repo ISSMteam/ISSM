@@ -16,7 +16,7 @@ classdef age
 			% old fields must be recovered (make sure they are in the deprecated
 			% model properties)
 
-			if verLessThan('matlab','7.9'),
+			if verLessThan('matlab','7.9')
 				disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
 				disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -45,7 +45,7 @@ classdef age
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -98,7 +98,7 @@ classdef age
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

@@ -50,8 +50,8 @@ classdef miscellaneous
 
 			writejsstring(fid,[modelname '.miscellaneous.notes'],regexprep(self.notes,newline,';'));
 			writejsstring(fid,[modelname '.miscellaneous.name'],self.name);
-			if strcmpi(class(self.dummy),'double'),
-				if size(self.dummy,2)==1,
+			if strcmpi(class(self.dummy),'double')
+				if size(self.dummy,2)==1
 					writejs1Darray(fid,[modelname '.miscellaneous.dummy'],self.dummy);
 				else
 					writejs2Darray(fid,[modelname '.miscellaneous.dummy'],self.dummy);

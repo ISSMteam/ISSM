@@ -43,7 +43,7 @@ if (exist(options.list{1},'subplot'))
 end
 
 %go through subplots
-if numberofplots,
+if numberofplots
 
 	%Create figure 
 	if (strcmpi(getfieldvalue(options.list{1},'figurestatement','on'),'on'))
@@ -51,45 +51,45 @@ if numberofplots,
 	else
 		f=gcf;
 	end
-	if strcmpi(getfieldvalue(options.list{1},'clf','on'),'on'),
+	if strcmpi(getfieldvalue(options.list{1},'clf','on'),'on')
 		clf;
 	end
-	if strcmpi(getfieldvalue(options.list{1},'visible','on'),'off'),
+	if strcmpi(getfieldvalue(options.list{1},'visible','on'),'off')
 		set(f,'Visible','Off');
 	end
 
 	if exist(options.list{1},'figposition'), % {{{
 		figposition=getfieldvalue(options.list{1},'figposition');
-		if ischar(figposition),
-			if strcmpi(figposition,'larour'),
+		if ischar(figposition)
+			if strcmpi(figposition,'larour')
 				set(gcf,'Position',[1604 4 1594 1177]);
-			elseif strcmpi(figposition,'larour2'),
+			elseif strcmpi(figposition,'larour2')
 				set(gcf,'Position',[756    62   827   504]);
-			elseif strcmpi(figposition,'mathieu'),
+			elseif strcmpi(figposition,'mathieu')
 				set(gcf,'Position',[300 1 1580 1150]);
-			elseif strcmpi(figposition,'byron'),
+			elseif strcmpi(figposition,'byron')
 				set(gcf,'Position',[40 1580 560*1.25 420*1.25]);  %left, bottom, width, height; W=560 H=420 is default
-			elseif strcmpi(figposition,'fullscreen'),
+			elseif strcmpi(figposition,'fullscreen')
 				set(gcf,'Position',get(0,'ScreenSize'));
-			elseif strcmpi(figposition,'halfright'),
+			elseif strcmpi(figposition,'halfright')
 				screen=get(0,'ScreenSize');
 				left=screen(1); bott=screen(2); widt=screen(3); heig=screen(4)-25;
 				set(gcf,'Position',fix([left+widt/2 bott widt/2 heig]));
-			elseif strcmpi(figposition,'halfleft'),
+			elseif strcmpi(figposition,'halfleft')
 				screen=get(0,'ScreenSize');
 				left=screen(1); bott=screen(2); widt=screen(3); heig=screen(4)-25;
 				set(gcf,'Position',fix([left bott widt/2 heig]));
-			elseif strcmpi(figposition,'square'),
+			elseif strcmpi(figposition,'square')
 				screen=get(0,'ScreenSize');
 				left=screen(1); bott=screen(2); widt=min(screen(3)-25,screen(4)-25);
 				set(gcf,'Position',fix([left+(screen(3)-widt) bott widt widt]));
-			elseif strcmpi(figposition,'portrait'),
+			elseif strcmpi(figposition,'portrait')
 				%reformat with letter paper size (8.5" x 11")
 				screen=get(0,'ScreenSize');
 				left=screen(1); bott=screen(2); widt=screen(3); heig=screen(4)-25;
 				portrait=fix([left+widt-(heig*8.5/11) bott heig*8.5/11 heig]);
 				set(gcf,'Position',portrait)
-			elseif strcmpi(figposition,'landscape'),
+			elseif strcmpi(figposition,'landscape')
 				%reformat with letter paper size (8.5" x 11")
 				screen=get(0,'ScreenSize');
 				left=screen(1); bott=screen(2); widt=screen(3); heig=screen(4)-25;
@@ -110,14 +110,14 @@ if numberofplots,
 
 	%Go through all data plottable and close window if an error occurs
 	try,
-		for i=1:numberofplots,
+		for i=1:numberofplots
             if subindex
                 plot_manager(getfieldvalue(options.list{i},'model',md),options.list{i},subplotwidth,nlines,ncols,subindex);
             else
                 plot_manager(getfieldvalue(options.list{i},'model',md),options.list{i},subplotwidth,nlines,ncols,i);
             end
             %List all unused options
-			if getfieldvalue(options.list{i},'displayunused',1),
+			if getfieldvalue(options.list{i},'displayunused',1)
 				displayunused(options.list{i})
 			end
 		end

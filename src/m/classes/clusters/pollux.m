@@ -67,7 +67,7 @@ classdef pollux
 			fprintf(fid,'#PBS -l walltime=%i\n',cluster.time*60); %walltime is in seconds.
 			fprintf(fid,'#PBS -N %s\n',modelname);
 			fprintf(fid,'#PBS -l ncpus=%i\n',cluster.np);
-			if ~isempty(queue),
+			if ~isempty(queue)
 				fprintf(fid,'#PBS -q %s\n',cluster.queue);
 			end
 			fprintf(fid,'#PBS -o %s.outlog \n',modelname);
@@ -94,10 +94,10 @@ classdef pollux
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);
