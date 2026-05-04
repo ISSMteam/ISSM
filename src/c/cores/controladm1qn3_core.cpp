@@ -37,8 +37,8 @@ typedef struct{
 	int*         i;
 	int*         imin;
 	double*      Jmin;
-	IssmDouble*  Xmin;
-	IssmDouble*  Gmin;
+	double*  Xmin;
+	double*  Gmin;
 } m1qn3_struct;
 /*}}}*/
 
@@ -162,15 +162,14 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	int*          Jlisti    = input_struct->i;
 	int*          Jlistimin = input_struct->imin;
 	double*       Jmin      = input_struct->Jmin;
-	IssmDouble*   Xmin      = input_struct->Xmin;
-	IssmDouble*   Gmin      = input_struct->Gmin;	
-	int           intn   = (int)*n;	
+	int           intn      = (int)*n;	
 	/*Recover some parameters*/
 	double *scaling_factors = NULL;
 	int    *M = NULL;
 	int    *N = NULL;
 	int    *control_enum    = NULL;
 	int     checkpoint_frequency;
+	IssmDouble   J = 0.;
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
 	femmodel->parameters->FindParamAndMakePassive(&scaling_factors,NULL,InversionControlScalingFactorsEnum);
@@ -241,7 +240,6 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 		/*Get Dependents*/
 		int          num_dependents;
 		IssmPDouble *dependents;
-		IssmDouble   J = 0.;
 		DataSet     *dependent_objects = ((DataSetParam*)femmodel->parameters->FindParamObject(AutodiffDependentObjectsEnum))->value;
 		femmodel->parameters->FindParam(&num_dependents,AutodiffNumDependentsEnum);
 
@@ -263,13 +261,6 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 			J+=output_value;
 		}
 
-		/* save control field and iteration if the minimum so far */
-		if (J < *Jmin){
-		  *Jmin = reCast<double>(J);
-		  *Jlistimin = *Jlisti;
-		  Xmin = reCast<IssmDouble*>(aX);
-		  Gmin = reCast<IssmDouble*>(G);
-		}		
 		
 		#if defined(_HAVE_CODIPACK_)
 		// TODO: Registration of output values is more fine grained for ADOL-c.
@@ -405,6 +396,16 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsNan(Gnorm));
 	_assert_(!xIsInf(Gnorm));
 
+	/* save control field and iteration if the minimum so far */
+	if (J < *Jmin){
+	  *Jmin = reCast<double>(J);
+	  *Jlistimin = *Jlisti;
+	  for (int i = 0; i < intn; i++){
+	    input_struct->Xmin[i] = X[i];
+	    input_struct->Gmin[i] = G[i];
+	  }
+	}		
+	
 	/*Print info*/
 	InversionStatsIter( (*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
 
@@ -499,8 +500,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	mystruct.imin     = xNewZeroInit<int>(1);
 	mystruct.Jmin     = xNewZeroInit<double>(1);
 	*(mystruct.Jmin)  = 1e+50;
-	mystruct.Xmin     = xNewZeroInit<IssmDouble>(n);
-	mystruct.Gmin     = xNewZeroInit<IssmDouble>(n);
+	mystruct.Xmin     = xNewZeroInit<double>(n);
+	mystruct.Gmin     = xNewZeroInit<double>(n);
 	/*Initialize Gradient and cost function of M1QN3*/
 	indic = 4; /*gradient required*/
 	simul_ad(&indic,&n,X,&f,G,izs,rzs,(void*)&mystruct);
@@ -529,7 +530,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		case 7:  _printf0_(": <g,d> > 0  or  <y,s> <0\n"); break;
 		default: _printf0_(": Unknown end condition\n");
 	}
-	_printf0_("   Cost function minimum occured on iteration "<<int(*mystruct.imin));
+	
+	_printf0_("   Cost function minimum occured on iteration "<<int((*mystruct.imin) + 1) << "\n");
 	
 	/*Constrain solution vector*/
 	double  *XL = NULL;
@@ -537,21 +539,20 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	GetPassiveVectorFromControlInputsx(&XL,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"lowerbound");
 	GetPassiveVectorFromControlInputsx(&XU,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"upperbound");
 
-	IssmDouble *Xmin = mystruct.Xmin;
 	offset = 0;
 	for (int c=0;c<num_controls;c++){
 	  for(int i=0;i<M[c]*N[c];i++){
 	    int index = offset+i;
-	    Xmin[index] = Xmin[index]*scaling_factors[c];
-	    if(Xmin[index]>XU[index]) Xmin[index]=XU[index];
-	    if(Xmin[index]<XL[index]) Xmin[index]=XL[index];
+	    mystruct.Xmin[index] = mystruct.Xmin[index]*scaling_factors[c];
+	    if(mystruct.Xmin[index]>XU[index]) mystruct.Xmin[index]=XU[index];
+	    if(mystruct.Xmin[index]<XL[index]) mystruct.Xmin[index]=XL[index];
 	  }
 	  offset += M[c]*N[c];
 	}
 
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,mystruct.Gmin);
-	SetControlInputsFromVectorx(femmodel, Xmin);
-	xDelete(Xmin);
+	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,reCast<IssmDouble*>(mystruct.Gmin));
+	SetControlInputsFromVectorx(femmodel, mystruct.Xmin);
+
 	
 	if (solution_type == TransientSolutionEnum){
 		int step = 1;
@@ -562,8 +563,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		for(int i=0;i<num_controls;i++){
 
 			/*Disect results*/
-			GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
-			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X[offset],N[i],M[i]);
+		        GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&mystruct.Gmin[offset],N[i],M[i]);
+			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&mystruct.Xmin[offset],N[i],M[i]);
 
 			/*transpose for consistency with MATLAB's formating*/
 			G_output->Transpose();
@@ -603,6 +604,10 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	xDelete<double>(scaling_factors);
 	xDelete<IssmPDouble>(mystruct.Jlist);
 	xDelete<int>(mystruct.i);
+	xDelete<int>(mystruct.imin);
+	xDelete<double>(mystruct.Jmin);
+	xDelete<double>(mystruct.Xmin);
+	xDelete<double>(mystruct.Gmin);
 	xDelete<int>(control_enum);
 	xDelete<int>(M);
 	xDelete<int>(N);
