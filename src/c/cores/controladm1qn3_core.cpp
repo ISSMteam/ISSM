@@ -169,7 +169,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	int    *N = NULL;
 	int    *control_enum    = NULL;
 	int     checkpoint_frequency;
-	IssmDouble   J = 0.;
+
 	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
 	femmodel->parameters->FindParamAndMakePassive(&scaling_factors,NULL,InversionControlScalingFactorsEnum);
@@ -245,6 +245,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 
 		/*Go through our dependent variables, and compute the response:*/
 		dependents=xNew<IssmPDouble>(num_dependents);
+		IssmDouble   J = 0.;
 		int i=-1;
 		for(Object* & object:dependent_objects->objects){
 			i++;
@@ -397,8 +398,8 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsInf(Gnorm));
 
 	/* save control field and iteration if this is the minimum so far*/
-	if (J < *Jmin){
-	  *Jmin = reCast<double>(J);
+	if (*pf < *Jmin){
+	  *Jmin = *pf;
 	  *Jlistimin = *Jlisti;
 	  for (int i = 0; i < intn; i++){
 	    input_struct->Xmin[i] = X[i];
