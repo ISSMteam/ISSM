@@ -290,17 +290,17 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		#ifdef _HAVE_PyBind11_
 		case SMBmariaEnum:
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",SmbMassBalanceEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",SmbElevEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",SmbAlEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",SmbStEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",SmbTtEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",SmbSwdEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",SmbLwdEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",SmbSwuEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",SmbLwuEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",SmbShfEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",SmbLhfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",MariaSmbEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",MariaElevEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",MariaAlEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",MariaStEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",MariaTtEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",MariaSwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",MariaLwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",MariaSwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",MariaLwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",MariaShfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",MariaLhfEnum);
 			break;
 		#endif
 		default:

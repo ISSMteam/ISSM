@@ -4229,15 +4229,15 @@ void       Element::SmbEmulator(IssmDouble timeinputs, EmulatorParam* emulator){
 	IssmDouble* lhf  = xNew<IssmDouble>(numvertices);
 
 	Input* elev_input = this->GetInput(SurfaceEnum);             _assert_(elev_input);
-	Input* al_input   = this->GetInput(SmbAlEnum,timeinputs);    _assert_(al_input);
-	Input* st_input   = this->GetInput(SmbStEnum,timeinputs);    _assert_(st_input);
-	Input* tt_input   = this->GetInput(SmbTtEnum,timeinputs);    _assert_(tt_input);
-	Input* swd_input  = this->GetInput(SmbSwdEnum,timeinputs);   _assert_(swd_input);
-	Input* lwd_input  = this->GetInput(SmbLwdEnum,timeinputs);   _assert_(lwd_input);
-	Input* swu_input  = this->GetInput(SmbSwuEnum,timeinputs);   _assert_(swu_input);
-	Input* lwu_input  = this->GetInput(SmbLwuEnum,timeinputs);   _assert_(lwu_input);
-	Input* shf_input  = this->GetInput(SmbShfEnum,timeinputs);   _assert_(shf_input);
-	Input* lhf_input  = this->GetInput(SmbLhfEnum,timeinputs);   _assert_(lhf_input);
+	Input* al_input   = this->GetInput(MariaAlEnum,timeinputs);    _assert_(al_input);
+	Input* st_input   = this->GetInput(MariaStEnum,timeinputs);    _assert_(st_input);
+	Input* tt_input   = this->GetInput(MariaTtEnum,timeinputs);    _assert_(tt_input);
+	Input* swd_input  = this->GetInput(MariaSwdEnum,timeinputs);   _assert_(swd_input);
+	Input* lwd_input  = this->GetInput(MariaLwdEnum,timeinputs);   _assert_(lwd_input);
+	Input* swu_input  = this->GetInput(MariaSwuEnum,timeinputs);   _assert_(swu_input);
+	Input* lwu_input  = this->GetInput(MariaLwuEnum,timeinputs);   _assert_(lwu_input);
+	Input* shf_input  = this->GetInput(MariaShfEnum,timeinputs);   _assert_(shf_input);
+	Input* lhf_input  = this->GetInput(MariaLhfEnum,timeinputs);   _assert_(lhf_input);
 
 	for(int iv=0;iv<numvertices;iv++){
 		lon[iv] = this->vertices[iv]->GetLongitude();

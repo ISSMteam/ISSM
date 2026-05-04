@@ -1291,16 +1291,17 @@
 	SmbZMinEnum
 	SmbZTopEnum
 	SmbZYEnum
-	SmbElevEnum
-	SmbAlEnum
-	SmbStEnum
-	SmbTtEnum
-	SmbSwdEnum
-	SmbLwdEnum
-	SmbSwuEnum
-	SmbLwuEnum
-	SmbShfEnum
-	SmbLhfEnum
+	MariaSmbEnum
+	MariaElevEnum
+	MariaAlEnum
+	MariaStEnum
+	MariaTtEnum
+	MariaSwdEnum
+	MariaLwdEnum
+	MariaSwuEnum
+	MariaLwuEnum
+	MariaShfEnum
+	MariaLhfEnum
 	SolidearthExternalDisplacementEastRateEnum
 	SolidearthExternalDisplacementNorthRateEnum
 	SolidearthExternalDisplacementUpRateEnum
@@ -5117,16 +5118,17 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbZMinEnum) return "SmbZMin" end
 	if(enum==SmbZTopEnum) return "SmbZTop" end
 	if(enum==SmbZYEnum) return "SmbZY" end
-	if(enum==SmbElevEnum) return "SmbElev" end
-	if(enum==SmbAlEnum) return "SmbAl" end
-	if(enum==SmbStEnum) return "SmbSt" end
-	if(enum==SmbTtEnum) return "SmbTt" end
-	if(enum==SmbSwdEnum) return "SmbSwd" end
-	if(enum==SmbLwdEnum) return "SmbLwd" end
-	if(enum==SmbSwuEnum) return "SmbSwu" end
-	if(enum==SmbLwuEnum) return "SmbLwu" end
-	if(enum==SmbShfEnum) return "SmbShf" end
-	if(enum==SmbLhfEnum) return "SmbLhf" end
+	if(enum==MariaSmbEnum) return "MariaSmb" end
+	if(enum==MariaElevEnum) return "MariaElev" end
+	if(enum==MariaAlEnum) return "MariaAl" end
+	if(enum==MariaStEnum) return "MariaSt" end
+	if(enum==MariaTtEnum) return "MariaTt" end
+	if(enum==MariaSwdEnum) return "MariaSwd" end
+	if(enum==MariaLwdEnum) return "MariaLwd" end
+	if(enum==MariaSwuEnum) return "MariaSwu" end
+	if(enum==MariaLwuEnum) return "MariaLwu" end
+	if(enum==MariaShfEnum) return "MariaShf" end
+	if(enum==MariaLhfEnum) return "MariaLhf" end
 	if(enum==SolidearthExternalDisplacementEastRateEnum) return "SolidearthExternalDisplacementEastRate" end
 	if(enum==SolidearthExternalDisplacementNorthRateEnum) return "SolidearthExternalDisplacementNorthRate" end
 	if(enum==SolidearthExternalDisplacementUpRateEnum) return "SolidearthExternalDisplacementUpRate" end
@@ -8943,16 +8945,17 @@ function StringToEnum(name::String)
 	if(name=="SmbZMin") return SmbZMinEnum  end
 	if(name=="SmbZTop") return SmbZTopEnum  end
 	if(name=="SmbZY") return SmbZYEnum  end
-	if(name=="SmbElev") return SmbElevEnum  end
-	if(name=="SmbAl") return SmbAlEnum  end
-	if(name=="SmbSt") return SmbStEnum  end
-	if(name=="SmbTt") return SmbTtEnum  end
-	if(name=="SmbSwd") return SmbSwdEnum  end
-	if(name=="SmbLwd") return SmbLwdEnum  end
-	if(name=="SmbSwu") return SmbSwuEnum  end
-	if(name=="SmbLwu") return SmbLwuEnum  end
-	if(name=="SmbShf") return SmbShfEnum  end
-	if(name=="SmbLhf") return SmbLhfEnum  end
+	if(name=="MariaSmb") return MariaSmbEnum  end
+	if(name=="MariaElev") return MariaElevEnum  end
+	if(name=="MariaAl") return MariaAlEnum  end
+	if(name=="MariaSt") return MariaStEnum  end
+	if(name=="MariaTt") return MariaTtEnum  end
+	if(name=="MariaSwd") return MariaSwdEnum  end
+	if(name=="MariaLwd") return MariaLwdEnum  end
+	if(name=="MariaSwu") return MariaSwuEnum  end
+	if(name=="MariaLwu") return MariaLwuEnum  end
+	if(name=="MariaShf") return MariaShfEnum  end
+	if(name=="MariaLhf") return MariaLhfEnum  end
 	if(name=="SolidearthExternalDisplacementEastRate") return SolidearthExternalDisplacementEastRateEnum  end
 	if(name=="SolidearthExternalDisplacementNorthRate") return SolidearthExternalDisplacementNorthRateEnum  end
 	if(name=="SolidearthExternalDisplacementUpRate") return SolidearthExternalDisplacementUpRateEnum  end
