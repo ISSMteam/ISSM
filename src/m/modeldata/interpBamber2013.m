@@ -28,7 +28,7 @@ switch oshostname(),
 end
 verbose = 0;
 
-if nargin==2,
+if nargin==2
 	string = 'BedrockElevation';
 end
 

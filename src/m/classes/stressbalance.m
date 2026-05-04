@@ -54,7 +54,7 @@ classdef stressbalance
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -109,28 +109,28 @@ classdef stressbalance
 			md = checkfield(md,'fieldname','stressbalance.referential','size',[md.mesh.numberofvertices 6]);
 			md = checkfield(md,'fieldname','stressbalance.loadingforce','size',[md.mesh.numberofvertices 3]);
 			md = checkfield(md,'fieldname','stressbalance.requested_outputs','stringrow',1);
-			if ~any(isnan(md.stressbalance.vertex_pairing)),
+			if ~any(isnan(md.stressbalance.vertex_pairing))
 				md = checkfield(md,'fieldname','stressbalance.vertex_pairing','>',0);
 			end
 			%singular solution
-			if ((~(any(~isnan(md.stressbalance.spcvx)) | any(~isnan(md.stressbalance.spcvy)))) & ~any(md.mask.ocean_levelset>0)),
+			if ((~(any(~isnan(md.stressbalance.spcvx)) | any(~isnan(md.stressbalance.spcvy)))) & ~any(md.mask.ocean_levelset>0))
 				disp(sprintf('\n !!! Warning: no spc applied, model might not be well posed if no basal friction is applied, check for solution crash\n'));
 			end
 			%CHECK THAT EACH LINE CONTAINS ONLY NAN VALUES OR NO NAN VALUES
-			if any(sum(isnan(md.stressbalance.referential),2)~=0 & sum(isnan(md.stressbalance.referential),2)~=6),
+			if any(sum(isnan(md.stressbalance.referential),2)~=0 & sum(isnan(md.stressbalance.referential),2)~=6)
 				md = checkmessage(md,['Each line of stressbalance.referential should contain either only NaN values or no NaN values']);
 			end
 			%CHECK THAT THE TWO VECTORS PROVIDED ARE ORTHOGONAL
-			if any(sum(isnan(md.stressbalance.referential),2)==0),
+			if any(sum(isnan(md.stressbalance.referential),2)==0)
 				pos=find(sum(isnan(md.stressbalance.referential),2)==0);
-				if any(abs(dot(md.stressbalance.referential(pos,1:3),md.stressbalance.referential(pos,4:6),2))>eps),
+				if any(abs(dot(md.stressbalance.referential(pos,1:3),md.stressbalance.referential(pos,4:6),2))>eps)
 					md = checkmessage(md,['Vectors in stressbalance.referential (columns 1 to 3 and 4 to 6) must be orthogonal']);
 				end
 			end
 			%CHECK THAT NO rotation specified for FS Grounded ice at base
-			if strcmp(domaintype(md.mesh),'3D') & md.flowequation.isFS,
+			if strcmp(domaintype(md.mesh),'3D') & md.flowequation.isFS
 				pos=find(md.mask.ocean_levelset>0. & md.mesh.vertexonbase);
-				if any(~isnan(md.stressbalance.referential(pos,:))),
+				if any(~isnan(md.stressbalance.referential(pos,:)))
 					md = checkmessage(md,['no referential should be specified for basal vertices of grounded ice']);
 				end
 				md = checkfield(md,'fieldname','stressbalance.FSreconditioning','>',0);
@@ -145,9 +145,9 @@ classdef stressbalance
 		end % }}}
 		function list=defaultoutputs(self,md) % {{{
 
-			if dimension(md.mesh)==3,
+			if dimension(md.mesh)==3
 				list = {'Vx','Vy','Vz','Vel','Pressure'};
-			elseif dimension(md.mesh)==2,
+			elseif dimension(md.mesh)==2
 				list = {'Vx','Vy','Vel','Pressure'};
 			else
 				error('mesh type not supported yet');
@@ -217,7 +217,7 @@ classdef stressbalance
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','rift_penalty_threshold','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','referential','format','DoubleMat','mattype',1);
 
-			if size(self.loadingforce,2)==3,
+			if size(self.loadingforce,2)==3
 				WriteData(fid,prefix,'data',self.loadingforce(:,1),'format','DoubleMat','mattype',1,'name','md.stressbalance.loadingforcex');
 				WriteData(fid,prefix,'data',self.loadingforce(:,2),'format','DoubleMat','mattype',1,'name','md.stressbalance.loadingforcey');
 				WriteData(fid,prefix,'data',self.loadingforce(:,3),'format','DoubleMat','mattype',1,'name','md.stressbalance.loadingforcez');
@@ -226,7 +226,7 @@ classdef stressbalance
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

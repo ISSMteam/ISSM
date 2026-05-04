@@ -11,7 +11,7 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 	[data datatype]=processdata(md,data,options);
 
 	%check is2d
-	if ~is2d,
+	if ~is2d
 		error('buildgridded error message: gridded not supported for 3d meshes, project on a layer');
 	end
 
@@ -30,7 +30,7 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 	ny  = numel(ym);
 
 	if md.mesh.epsg == 3031 & (isempty(md.radaroverlay.pwr) | isempty(md.radaroverlay.x) | isempty(md.radaroverlay.y) | length(size(md.radaroverlay.pwr)) < 3), % Antarctica region {{{
-		if highres, 
+		if highres 
 			disp('   LIMA with geotiff'), % {{{
 			disp('WARNING : this image shoud be collected with geocoded tif file');
 			% find merged mosaic landsat image {{{
@@ -65,7 +65,7 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 				if exist(limapath{ii}), pos(ii) = 1; end
 			end
 			
-			if sum(pos) == 0,
+			if sum(pos) == 0
 				fprintf('download website : https://lima.usgs.gov/fullcontinent.php\n');
 				error('Landsat image at Antarctic region should be downloaded at above website');
 			end
@@ -119,7 +119,7 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 	final = double(pwr)/double(max(md.radaroverlay.pwr(:))); %rescale between 0 and 1
 
 	%Prepare grid
-	if size(md.radaroverlay.x,1)==1 | size(md.radaroverlay.x,2)==1,
+	if size(md.radaroverlay.x,1)==1 | size(md.radaroverlay.x,2)==1
 		data_grid=InterpFromMeshToGrid(elements2d,x2d/getfieldvalue(options,'unit',1),y2d/getfieldvalue(options,'unit',1),data,xm,ym,NaN);
 		%data_grid=InterpFromMeshToGrid(md.mesh.elements,md.mesh.x/getfieldvalue(options,'unit',1),md.mesh.y/getfieldvalue(options,'unit',1),data,x_m,y_m,NaN);
 	else
@@ -131,7 +131,7 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 	end
 
 	data_nan=isnan(data_grid);
-	if exist(options,'caxis'),
+	if exist(options,'caxis')
 		caxis_opt=getfieldvalue(options,'caxis');
 		data_grid(find(data_grid<caxis_opt(1)))=caxis_opt(1);
 		data_grid(find(data_grid>caxis_opt(2)))=caxis_opt(2);
@@ -156,13 +156,13 @@ function plot_landsat(md,data,options,plotlines,plotcols,i),
 	h=imagesc(xm*getfieldvalue(options,'unit',1),ym*getfieldvalue(options,'unit',1),final);
 
 	%last step: mesh gridded?
-	if exist(options,'edgecolor'),
+	if exist(options,'edgecolor')
 		A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 		patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
 	end
 
 	%Apply options
-	if ~isnan(data_min),
+	if ~isnan(data_min)
 		options=changefieldvalue(options,'caxis',[data_min data_max]); % force caxis so that the colorbar is ready
 	end
 	options=addfielddefault(options,'axis','xy equal off'); % default axis

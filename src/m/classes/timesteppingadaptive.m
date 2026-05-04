@@ -54,7 +54,7 @@ classdef timesteppingadaptive
 			md = checkfield(md,'fieldname','timestepping.average_forcing','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','timestepping.cycle_forcing','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','timestepping.coupling_time','numel',[1],'>=',md.timestepping.coupling_time,'NaN',1,'Inf',1);
-			if self.final_time-self.start_time<0,
+			if self.final_time-self.start_time<0
 				md = checkmessage(md,'timestepping.final_time should be larger than timestepping.start_time');
 			end
 		end % }}}

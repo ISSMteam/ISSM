@@ -71,7 +71,7 @@ if nargin==3
 		error('Size of input T not supported!');
 	end
 	T=T(:);
-	if size(T,2)==1 & any(T(:,1)==1973),
+	if size(T,2)==1 & any(T(:,1)==1973)
 		disp(' ');
 		disp('   Found year=1973 in T (array). Please, specify the data series using a second index.');
 		disp('   Data available for 1973:');
@@ -85,7 +85,7 @@ if nargin==3
 		error('   Change input T before continuing.');
 	end %}}}
 	pos = [];
-	for i=1:size(T,1),
+	for i=1:size(T,1)
 		flag = (T(i,1)==year1);
 		if size(T,2)==2, % ok, check both indexes (year1 and year2)
 			flag = (T(i,1)==year1).*(T(i,2)==year2);
@@ -93,11 +93,11 @@ if nargin==3
 		pos = [pos; find(flag)];
 	end
 	% check again {{{
-	if length(pos)~=size(T,1) | length(unique(pos))~=length(pos),
+	if length(pos)~=size(T,1) | length(unique(pos))~=length(pos)
 		disp(' ');
 		disp('   Time resquested does not exist in data set or is repeated!');
 		disp('   Data resquested:');
-		for i=1:length(T(:,1)),
+		for i=1:length(T(:,1))
 			str = ['      ' int2str(T(i,1)) '   '];
 			if size(T,2)==2, % ok, check both indexes (year1 and year2)
 				str = [str int2str(T(i,2))];
@@ -106,7 +106,7 @@ if nargin==3
 		end
 		disp(' ');
 		disp('   Data available (24 series):');
-		for i=1:length(year1),
+		for i=1:length(year1)
 			str = ['      ' int2str(year1(i)) '   ' int2str(year2(i))];
 			disp(str);
 		end
@@ -118,7 +118,7 @@ if nargin==3
 		disp(' ');
 		error('   Change input T before continuing.');
 	end%}}}
-elseif nargin<3,
+elseif nargin<3
 	pos = 1:24; % all available data		
 else
 	error('nargin not supported yet!');
@@ -150,7 +150,7 @@ if nargout==6 % it includes ERRX, ERRY, STDX and STDY
 	stdxdata = [];
 	stdydata = [];
 end
-for i=1:length(pos), 
+for i=1:length(pos) 
 	disp(['      step = ' int2str(i) '/' int2str(length(pos)) ', position = ' int2str(pos(i)) ', year = '  int2str(year1(pos(i))) ' - ' int2str(year2(pos(i)))]);
 	vx = double(ncread(nc,'VX',[id1x id1y pos(i)],[id2x-id1x+1 id2y-id1y+1 1],[1 1 1]));
 	vy = double(ncread(nc,'VY',[id1x id1y pos(i)],[id2x-id1x+1 id2y-id1y+1 1],[1 1 1]));
@@ -179,7 +179,7 @@ if nargout==6 % it includes ERRX, ERRY, STDX and STDY
 	stdxout = [];
 	stdyout = [];
 end
-for i=1:length(pos),
+for i=1:length(pos)
 	disp(['      step = ' int2str(i) '/' int2str(length(pos)) ', position = ' int2str(pos(i)) ', year = '  int2str(year1(pos(i))) ' - ' int2str(year2(pos(i)))]);
 	vxout = [vxout InterpFromGrid(xdata,ydata,vxdata(:,:,i),double(X),double(Y))];
 	vyout = [vyout InterpFromGrid(xdata,ydata,vydata(:,:,i),double(X),double(Y))];
@@ -192,6 +192,6 @@ for i=1:length(pos),
 end
 
 %return vel if only one output is requested
-if nargout==1,
+if nargout==1
 	vxout = sqrt(vxout.^2+vyout.^2);
 end

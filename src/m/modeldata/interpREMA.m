@@ -10,7 +10,7 @@ switch oshostname(),
 end
 
 usemap = 0;
-if license('test','map_toolbox')==0,
+if license('test','map_toolbox')==0
 	disp('WARNING: map toolbox not installed, trying house code');
 	usemap = 0;
 elseif license('checkout','map_toolbox')==0
@@ -18,7 +18,7 @@ elseif license('checkout','map_toolbox')==0
 	usemap = 0;
 end
 
-if usemap,
+if usemap
 	[data,R] = geotiffread(remapath);
 	data=double(flipud(data));
 	xdata=R.XLimWorld(1):R.DeltaX:R.XLimWorld(2); xdata=xdata(:);

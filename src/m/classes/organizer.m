@@ -83,7 +83,7 @@ classdef organizer < handle
 			if isempty(org.steps)
 				disp('   no step');
 			else
-				for i=1:length(org.steps),
+				for i=1:length(org.steps)
 					disp(sprintf('   step #%2i: ''%s''',org.steps(i).id,org.steps(i).string));
 				end
 			end
@@ -96,16 +96,16 @@ classdef organizer < handle
 			path=[org.repository '/' org.prefix string];
 
 			%Skip if requested
-			if org.skipio,
+			if org.skipio
 				disp(['WARNING: Skipping loading ' path]);
 				md = evalin('base', 'md');
 				return;
 			end
 
 			%figure out if the model is there
-			if exist(path,'file'),
+			if exist(path,'file')
 				path=path;
-			elseif exist([path '.mat'],'file'),
+			elseif exist([path '.mat'],'file')
 				path=[path '.mat'];
 			else
 				error(['Could not find ' path ]);
@@ -114,7 +114,7 @@ classdef organizer < handle
 			struc=load(path,'-mat');
 			name=char(fieldnames(struc));
 			md=struc.(name);
-			if nargout,
+			if nargout
 				varargout{1}=md;
 			end
 		end%}}}
@@ -125,14 +125,14 @@ classdef organizer < handle
 			path=[org.repository '/' org.prefix string];
 
 			%Skip if requested
-			if org.skipio,
+			if org.skipio
 				disp(['WARNING: Skipping loading ' path]);
 				md = evalin('base', 'md');
 				return;
 			end
 
 			%figure out if the model is there, otherwise, we have to use the default path supplied by user.
-			if exist(path,'file') | exist([path '.mat'],'file'),
+			if exist(path,'file') | exist([path '.mat'],'file')
 				md=loadmodel(path);
 				return;
 			end
@@ -147,9 +147,9 @@ classdef organizer < handle
 			path=[org.repository '/' org.prefix string];
 
 			%figure out if the data is there, otherwise, we have to use the default path supplied by user.
-			if exist(path,'file'),
+			if exist(path,'file')
 				path=path;
-			elseif exist([path '.mat'],'file'),
+			elseif exist([path '.mat'],'file')
 				path=[path '.mat'];
 			else
 				error(['Could not find ' path ]);
@@ -169,9 +169,9 @@ classdef organizer < handle
 			path=[org.repository '/' string];
 
 			%figure out if the data is there, otherwise, we have to use the default path supplied by user.
-			if exist(path,'file'),
+			if exist(path,'file')
 				path=path;
-			elseif exist([path '.mat'],'file'),
+			elseif exist([path '.mat'],'file')
 				path=[path '.mat'];
 			else
 				error(['Could not find ' path ]);
@@ -189,9 +189,9 @@ classdef organizer < handle
 			bool=false;
 			
 			%group,string are the variable arguments length: 
-			if nargin==2,
+			if nargin==2
 				string=varargin{1};
-			elseif nargin==3,
+			elseif nargin==3
 				string=sprintf('%s.%s',varargin{1},varargin{2});
 			end
 
@@ -208,16 +208,16 @@ classdef organizer < handle
 			org.currentstep=org.currentstep+1;
 
 			%if requestedsteps = 0, print all steps in org 
-			if any(org.requestedsteps==0),
-				if org.currentstep==1,
+			if any(org.requestedsteps==0)
+				if org.currentstep==1
 					disp(sprintf('   prefix: %s',org.prefix));
 				end
 				disp(sprintf('   step #%2i : %s',org.steps(org.currentstep).id,org.steps(org.currentstep).string));
 			end
 
 			%Ok, now if currentstep is a member of steps, return true
-			if ismember(org.currentstep,org.requestedsteps),
-				if usejava('desktop'),
+			if ismember(org.currentstep,org.requestedsteps)
+				if usejava('desktop')
 					disp(sprintf('\n   step #%i : %s\n',org.steps(org.currentstep).id,org.steps(org.currentstep).string));
 				else
 					%Print on a red background
@@ -227,8 +227,8 @@ classdef organizer < handle
 
 				%last check: is this step locked? 
 				string=org.steps(org.currentstep).string; 
-				if length(string)>7,
-					if strcmpi(string(end-5:end),'Locked'),
+				if length(string)>7
+					if strcmpi(string(end-5:end),'Locked')
 						error('organizer: you are  trying to run a locked step! Unlock it first!');
 					end
 				end
@@ -279,7 +279,7 @@ classdef organizer < handle
 			disp(['saving data in: ' name]);
 
 			%Skip if requested
-			if org.skipio,
+			if org.skipio
 				disp(['WARNING: Skipping saving ' name]);
 				return;
 			end
@@ -289,7 +289,7 @@ classdef organizer < handle
 
 			%list of variable names: 
 			variables='';
-			for i=2:nargin, 
+			for i=2:nargin 
 				variables=[variables ',' '''' inputname(i) ''''];
 				eval([inputname(i) '= varargin{' num2str(i-1) '};']);
 			end
@@ -305,7 +305,7 @@ classdef organizer < handle
 			disp(['saving data in: ' name]);
 
 			%Skip if requested
-			if org.skipio,
+			if org.skipio
 				disp(['WARNING: Skipping saving ' name]);
 				return;
 			end
@@ -315,7 +315,7 @@ classdef organizer < handle
 
 			%list of variable names: 
 			variables='';
-			for i=2:nargin, 
+			for i=2:nargin 
 				variables=[variables ',' '''' inputname(i) ''''];
 				eval([inputname(i) '= varargin{' num2str(i-1) '};']);
 			end

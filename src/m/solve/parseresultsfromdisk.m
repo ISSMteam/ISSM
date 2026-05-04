@@ -1,6 +1,6 @@
 function results=parseresultsfromdisk(md,filename,iosplit) % {{{
 
-if iosplit,
+if iosplit
 	results=parseresultsfromdiskiosplit(md,filename);
 else
 	results=parseresultsfromdiskioserial(md,filename);
@@ -19,11 +19,11 @@ results=struct();
 %if we have done split I/O, ie, we have results that are fragmented across patches,
 %do a first pass, and figure out the structure of results
 result=ReadDataDimensions(fid);
-while ~isempty(result),
+while ~isempty(result)
 
 	%Get time and step
 	results(result.step).step=result.step;
-	if result.time~=-9999,
+	if result.time~=-9999
 		results(result.step).time=result.time;
 	end
 
@@ -37,7 +37,7 @@ end
 %do a second pass, and figure out the size of the patches
 fseek(fid,0,-1); %rewind
 result=ReadDataDimensions(fid);
-while ~isempty(result),
+while ~isempty(result)
 	%read next result
 	result=ReadDataDimensions(fid);
 end
@@ -45,11 +45,11 @@ end
 %third pass, this time to read the real information
 fseek(fid,0,-1); %rewind
 result=ReadData(fid,md);
-while ~isempty(result),
+while ~isempty(result)
 
 	%Get time and step
 	results(result.step).step=result.step;
-	if result.time~=-9999,
+	if result.time~=-9999
 		results(result.step).time=result.time;
 	end
 
@@ -91,7 +91,7 @@ while(true)
 	end
 
 	%Have we reached the end of the file?
-	if isempty(result),
+	if isempty(result)
 		if counter==1
 			error(['no results found in binary file ' filename]);
 		else
@@ -139,12 +139,12 @@ end
 
 %first pass to figure out the steps we have: 
 steps=[];
-while  1, 
+while  1 
 	result  = ReadDataDimensions(fid);
-	if isempty(result),
+	if isempty(result)
 		break;
 	end
-	if result.step~=-9999,
+	if result.step~=-9999
 		steps=[steps result.step];
 	end
 end
@@ -156,18 +156,18 @@ results=struct('step',num2cell(steps));
 
 %second pass to fill the steps we have: 
 fseek(fid,0,-1); %rewind
-while  1, 
+while  1 
 	result  = ReadData(fid,md);
-	if isempty(result),
+	if isempty(result)
 		break;
 	end
-	if result.step==-9999,
+	if result.step==-9999
 		result.step=1;
 		result.time=0;
 	end
 	%find where we are putting this step: 
 	ind=find(steps==result.step);
-	if isempty(ind),
+	if isempty(ind)
 		error('could not find a step in our pre-structure! Something is very off!');
 	end
 
@@ -182,7 +182,7 @@ function result=ReadData(fid,md) % {{{
 %read field
 [length,count]=fread(fid,1,'int');
 
-if count==0,
+if count==0
 	result=struct([]);
 else
 	fieldname=fread(fid,length,'char');
@@ -193,15 +193,15 @@ else
 
 	type=fread(fid,1,'int');
 	M=fread(fid,1,'int');
-	if type==1,
+	if type==1
 		field=fread(fid,M,'double');
-	elseif type==2,
+	elseif type==2
 		field=fread(fid,M,'char');
 		field=char(field(1:end-1)');
-	elseif type==3,
+	elseif type==3
 		N=fread(fid,1,'int');
 		field=fread(fid,[N M],'double')';
-	elseif type==4,
+	elseif type==4
 		N=fread(fid,1,'int');
 		field=fread(fid,[N M],'int')';
 	else
@@ -210,103 +210,103 @@ else
 
 	%Process units here FIXME: this should not be done here!
 	yts=md.constants.yts;
-	if strcmp(fieldname,'BalancethicknessThickeningRate'),
+	if strcmp(fieldname,'BalancethicknessThickeningRate')
 		field = field*yts;
-	elseif strcmp(fieldname,'HydrologyWaterVx'),
+	elseif strcmp(fieldname,'HydrologyWaterVx')
 		field = field*yts;
-	elseif strcmp(fieldname,'HydrologyWaterVy'),
+	elseif strcmp(fieldname,'HydrologyWaterVy')
 		field = field*yts;
-	elseif strcmp(fieldname,'Vx'),
+	elseif strcmp(fieldname,'Vx')
 		field = field*yts;
-	elseif strcmp(fieldname,'Vy'),
+	elseif strcmp(fieldname,'Vy')
 		field = field*yts;
-	elseif strcmp(fieldname,'Vz'),
+	elseif strcmp(fieldname,'Vz')
 		field = field*yts;
-	elseif strcmp(fieldname,'Vel'),
+	elseif strcmp(fieldname,'Vel')
 		field = field*yts;
-	elseif strcmp(fieldname,'VxShear'),
+	elseif strcmp(fieldname,'VxShear')
 		field = field*yts;
-	elseif strcmp(fieldname,'VyShear'),
+	elseif strcmp(fieldname,'VyShear')
 		field = field*yts;
-	elseif strcmp(fieldname,'VxBase'),
+	elseif strcmp(fieldname,'VxBase')
 		field = field*yts;
-	elseif strcmp(fieldname,'VyBase'),
+	elseif strcmp(fieldname,'VyBase')
 		field = field*yts;
-	elseif strcmp(fieldname,'VxSurface'),
+	elseif strcmp(fieldname,'VxSurface')
 		field = field*yts;
-	elseif strcmp(fieldname,'VySurface'),
+	elseif strcmp(fieldname,'VySurface')
 		field = field*yts;
-	elseif strcmp(fieldname,'VxAverage'),
+	elseif strcmp(fieldname,'VxAverage')
 		field = field*yts;
-	elseif strcmp(fieldname,'VyAverage'),
+	elseif strcmp(fieldname,'VyAverage')
 		field = field*yts;
-	elseif strcmp(fieldname,'VxDebris'),
+	elseif strcmp(fieldname,'VxDebris')
 		field = field*yts;
-	elseif strcmp(fieldname,'VyDebris'),
+	elseif strcmp(fieldname,'VyDebris')
 		field = field*yts;
-	elseif strcmp(fieldname,'BasalforcingsGroundediceMeltingRate'),
+	elseif strcmp(fieldname,'BasalforcingsGroundediceMeltingRate')
 		field = field*yts;
-	elseif strcmp(fieldname,'BasalforcingsFloatingiceMeltingRate'),
+	elseif strcmp(fieldname,'BasalforcingsFloatingiceMeltingRate')
 		field = field*yts;
-	elseif strcmp(fieldname,'BasalforcingsSpatialDeepwaterMeltingRate'),
+	elseif strcmp(fieldname,'BasalforcingsSpatialDeepwaterMeltingRate')
 		field = field*yts;
-	elseif strcmp(fieldname,'BasalforcingsSpatialUpperwaterMeltingRate'),
+	elseif strcmp(fieldname,'BasalforcingsSpatialUpperwaterMeltingRate')
 		field = field*yts;
-	elseif strcmp(fieldname,'TotalFloatingBmb'),
+	elseif strcmp(fieldname,'TotalFloatingBmb')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalFloatingBmbScaled'),
+	elseif strcmp(fieldname,'TotalFloatingBmbScaled')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalGroundedBmb'),
+	elseif strcmp(fieldname,'TotalGroundedBmb')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalGroundedBmbScaled'),
+	elseif strcmp(fieldname,'TotalGroundedBmbScaled')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalSmb'),
+	elseif strcmp(fieldname,'TotalSmb')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalSmbScaled'),
+	elseif strcmp(fieldname,'TotalSmbScaled')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalSmbMelt'),
+	elseif strcmp(fieldname,'TotalSmbMelt')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalSmbRefreeze'),
+	elseif strcmp(fieldname,'TotalSmbRefreeze')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'GroundinglineMassFlux'),
+	elseif strcmp(fieldname,'GroundinglineMassFlux')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'IcefrontMassFlux'),
+	elseif strcmp(fieldname,'IcefrontMassFlux')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'IcefrontMassFluxLevelset'),
+	elseif strcmp(fieldname,'IcefrontMassFluxLevelset')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'SmbMassBalance'),
+	elseif strcmp(fieldname,'SmbMassBalance')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbPrecipitation'),
+	elseif strcmp(fieldname,'SmbPrecipitation')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbRain'),
+	elseif strcmp(fieldname,'SmbRain')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbRunoff'),
+	elseif strcmp(fieldname,'SmbRunoff')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbRunoffSubstep'),
+	elseif strcmp(fieldname,'SmbRunoffSubstep')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbEvaporation'),
+	elseif strcmp(fieldname,'SmbEvaporation')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbRefreeze'),
+	elseif strcmp(fieldname,'SmbRefreeze')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbEC'),
+	elseif strcmp(fieldname,'SmbEC')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbAccumulation'),
+	elseif strcmp(fieldname,'SmbAccumulation')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbMelt'),
+	elseif strcmp(fieldname,'SmbMelt')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbMAdd'),
+	elseif strcmp(fieldname,'SmbMAdd')
 		field = field*yts;
-	elseif strcmp(fieldname,'SmbWAdd'),
+	elseif strcmp(fieldname,'SmbWAdd')
 		field = field*yts;
-	elseif strcmp(fieldname,'CalvingCalvingrate'),
+	elseif strcmp(fieldname,'CalvingCalvingrate')
 		field = field*yts;
-	elseif strcmp(fieldname,'Calvingratex'),
+	elseif strcmp(fieldname,'Calvingratex')
 		field = field*yts;
-	elseif strcmp(fieldname,'Calvingratey'),
+	elseif strcmp(fieldname,'Calvingratey')
 		field = field*yts;
-	elseif strcmp(fieldname,'CalvingMeltingrate'),
+	elseif strcmp(fieldname,'CalvingMeltingrate')
 		field = field*yts;
-	elseif (strcmp(fieldname,'LoveKernelsReal') | strcmp(fieldname,'LoveKernelsImag')),
+	elseif (strcmp(fieldname,'LoveKernelsReal') | strcmp(fieldname,'LoveKernelsImag'))
 		nlayer = md.materials.numlayers; 
 		degmax = md.love.sh_nmax; 
 		nfreq  = md.love.nfreq; 
@@ -349,7 +349,7 @@ else
 		field=temp_field; 
 	end
 
-	if time~=-9999,
+	if time~=-9999
 		time=time/yts;
 	end
 
@@ -368,7 +368,7 @@ function result=ReadDataDimensions(fid) % {{{
 %read field
 [length,count]=fread(fid,1,'int');
 
-if count==0,
+if count==0
 	result=struct([]);
 else
 	fieldname=fread(fid,length,'char');
@@ -380,11 +380,11 @@ else
 	type=fread(fid,1,'int');
 	M=fread(fid,1,'int');
 	N=1; %default
-	if type==1,
+	if type==1
 		fseek(fid,M*8,0);
-	elseif type==2,
+	elseif type==2
 		fseek(fid,M,0);
-	elseif type==3,
+	elseif type==3
 		N=fread(fid,1,'int');
 		fseek(fid,N*M*8,0);
 	else

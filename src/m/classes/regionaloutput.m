@@ -29,7 +29,7 @@ classdef regionaloutput
 			end
 		end % }}}
 		function self = regionaloutput(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields
@@ -65,10 +65,10 @@ classdef regionaloutput
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ischar(self.name),
+			if ~ischar(self.name)
 				error('regionaloutput error message: ''name'' field should be a string!');
 			end
-			if ~ischar(self.outputnamestring),
+			if ~ischar(self.outputnamestring)
 				error('regionaloutput error message: ''outputnamestring'' field should be a string!');
 			end
 			

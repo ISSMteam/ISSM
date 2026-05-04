@@ -49,7 +49,7 @@ classdef hydrologyshreve
 			WriteData(fid,prefix,'object',self,'fieldname','stabilization','format','Double');
 			outputs = self.requested_outputs;
 			pos = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = []; %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

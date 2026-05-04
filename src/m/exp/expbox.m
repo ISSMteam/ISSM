@@ -8,9 +8,9 @@ function expbox(filename)
 %      expbox(filename)
 
 %check
-if exist(filename,'file'),
+if exist(filename,'file')
 	choice=input(['A file ' filename ' already exists, do you want to modify it? (y/n)'],'s');
-	if ~strcmpi(choice,'y'),
+	if ~strcmpi(choice,'y')
 		disp('no modification done ... exiting');
 		return
 	end

@@ -48,23 +48,23 @@ classdef SMBpddFast
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.s0p),
+			if isnan(self.s0p)
 				self.s0p=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpddFast.s0p specified: values set as zero');
 			end
-			if isnan(self.s0t),
+			if isnan(self.s0t)
 				self.s0t=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpddFast.s0t specified: values set as zero');
 			end
-			if isnan(self.temperature_anomaly),
+			if isnan(self.temperature_anomaly)
 				self.temperature_anomaly=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpddFast.temperature_anomaly specified: values set as zero');
 			end
-			if isnan(self.precipitation_anomaly),
+			if isnan(self.precipitation_anomaly)
 				self.precipitation_anomaly=ones(md.mesh.numberofvertices,1);
 				disp('      no SMBpddFast.precipitation_anomaly specified: values set as ones');
 			end
-			if isnan(self.smb_corr),
+			if isnan(self.smb_corr)
 				self.smb_corr=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpddFast.smb_corr specified: values set as zero');
 			end
@@ -84,7 +84,7 @@ classdef SMBpddFast
 
 			if (strcmp(solution,'TransientSolution') & md.transient.issmb == 0), return; end
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.desfac','<=',1,'numel',1);
 				md = checkfield(md,'fieldname','smb.s0p','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.s0t','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
@@ -148,7 +148,7 @@ classdef SMBpddFast
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

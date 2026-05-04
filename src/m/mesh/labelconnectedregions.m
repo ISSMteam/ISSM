@@ -4,7 +4,7 @@ function labels = labelconnectedregions(md)
 %   Usage:
 %      labels = labelconnectedregions(md)
 
-if size(md.mesh.elements,2)~=3,
+if size(md.mesh.elements,2)~=3
 	error('not suppored yet (but easy to extend :)');
 end
 

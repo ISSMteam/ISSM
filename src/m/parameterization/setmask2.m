@@ -13,10 +13,10 @@ y=md.mesh.y;
 elements=md.mesh.elements;
 
 %recover elements and nodes on land.
-if ischar(landname),
+if ischar(landname)
 	[vertexonland,elementonland]=ContourToMesh(elements,x,y,landname,'element and node',2);
-elseif isfloat(landname),
-	if size(landname,1)~=md.mesh.numberofelements,
+elseif isfloat(landname)
+	if size(landname,1)~=md.mesh.numberofelements
 		error('Landname for area must be of same size as number of elements in model');
 	end
 	elementonland=landname;
@@ -27,10 +27,10 @@ else
 end
 
 %Now, build the connectivity tables for this mesh.
-if size(md.mesh.vertexconnectivity,1)~=md.mesh.numberofvertices,
+if size(md.mesh.vertexconnectivity,1)~=md.mesh.numberofvertices
 	md.mesh.vertexconnectivity=NodeConnectivity(md.mesh.elements,md.mesh.numberofvertices);
 end
-if size(md.mesh.elementconnectivity,1)~=md.mesh.numberofelements,
+if size(md.mesh.elementconnectivity,1)~=md.mesh.numberofelements
 	md.mesh.elementconnectivity=ElementConnectivity(md.mesh.elements,md.mesh.vertexconnectivity);
 end
 
@@ -41,9 +41,9 @@ wrongelements=elementsonwater(find(( vertexonland(md.mesh.elements(elementsonwat
 elementonland(wrongelements)=1;
 
 %any element with its barycentre on land should be on land: (only if landname is an expfile)
-if ischar(landname),
+if ischar(landname)
 weights={[1;1;1],[2;1;1],[1;2;1],[1;1;2]};
-	for i=1:length(weights),
+	for i=1:length(weights)
 		xelem=x(md.mesh.elements)*weights{i}/sum(weights{i});
 		yelem=y(md.mesh.elements)*weights{i}/sum(weights{i});
 	end

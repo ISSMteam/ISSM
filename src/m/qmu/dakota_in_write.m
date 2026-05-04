@@ -77,7 +77,7 @@ params=dakota_in_params(params);
 
 %  write the strategy section
 
-if IssmConfig('_DAKOTA_VERSION_') < 6,
+if IssmConfig('_DAKOTA_VERSION_') < 6
 	strategy_write(fidi,params);
 else
 	environment_write(fidi,params);
@@ -195,10 +195,10 @@ for i=1:length(dmeth.lcspec)
 end
 
 % write correlation matrix: 
-if ~isempty(corrin),
+if ~isempty(corrin)
 	fprintf(fidi,'uncertain_correlation_matrix\n');
-	for i=1:size(corrin,1),
-		for j=1:size(corrin,2),
+	for i=1:size(corrin,1)
+		for j=1:size(corrin,2)
 			fprintf(fidi,'%g ',corrin(i,j));
 		end
 		fprintf(fidi,'\n');
@@ -257,7 +257,7 @@ elseif params.direct
     param_write(fidi,'\t','algebraic_mappings',' = ','\n',params);
     param_write(fidi,'\t','direct','','\n',params);
     param_write(fidi,'\t  ','analysis_driver','     = ''','''\n',params);
-    if IssmConfig('_DAKOTA_VERSION_') < 6,
+    if IssmConfig('_DAKOTA_VERSION_') < 6
 		param_write(fidi,'\t  ','evaluation_static_scheduling','','\n',params);
 	else
 		param_write(fidi,'\t  ','evaluation_scheduling',' ','\n',params);

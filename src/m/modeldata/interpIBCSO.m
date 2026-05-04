@@ -24,7 +24,7 @@ data  = reshape(data,[numel(xdata) numel(ydata)])';
 disp('   -- IBCSO: interpolating bed');
 bedout = InterpFromGrid(xdata,fliplr(ydata),data,double(X),double(Y));
 
-if nargout==2,
+if nargout==2
 	disp('   -- IBCSO: bathymetry sid');
 	xdata = ncread(sidpath,'x');
 	ydata = ncread(sidpath,'y');

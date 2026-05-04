@@ -12,7 +12,7 @@ classdef pairoptions < matlab.mixin.Copyable
 		function self = pairoptions(varargin) % {{{
 
 			%initialize list
-			if nargin==0,
+			if nargin==0
 				%Do nothing,
 			else
 				self=buildlist(self,varargin{:});
@@ -45,7 +45,7 @@ classdef pairoptions < matlab.mixin.Copyable
 			end
 		end % }}}
 		function self = addfield(self,field,value) % {{{
-			if ischar(field),
+			if ischar(field)
 				self.list{end+1,1} = field;
 				self.list{end,2}   = value;
 				self.list{end,3}   = false;
@@ -53,8 +53,8 @@ classdef pairoptions < matlab.mixin.Copyable
 		end % }}}
 		function self = addfielddefault(self,field,value) % {{{
 		%ADDFIELDDEFAULT - add a field to an options list if it does not exist
-			if ischar(field),
-				if ~exist(self,field),
+			if ischar(field)
+				if ~exist(self,field)
 					self.list{end+1,1} = field;
 					self.list{end,2}   = value;
 					self.list{end,3}   = true;  %It is a default so user will not be notified if not used
@@ -64,10 +64,10 @@ classdef pairoptions < matlab.mixin.Copyable
 		function obj2 = AssignObjectFields(options,obj2) % {{{
 		%ASSIGNOBJECTFIELDS - assign object fields from options
 			listproperties=properties(obj2);
-			for i=1:size(options.list,1),
+			for i=1:size(options.list,1)
 				fieldname=options.list{i,1};
 				fieldvalue=options.list{i,2};
-				if ismember(fieldname,listproperties),
+				if ismember(fieldname,listproperties)
 					obj2.(fieldname)=fieldvalue;
 				else
 					disp(['WARNING: ''' fieldname ''' is not a property of ''' class(obj2) '''']);
@@ -81,12 +81,12 @@ classdef pairoptions < matlab.mixin.Copyable
 			lines=find(strcmpi(self.list(:,1),field));
 
 			%replace value
-			if isempty(lines),
+			if isempty(lines)
 				%add new field if not found
 				self=addfield(self,field,newvalue);
 				self.list{end,3}=true; % do not notify user if unused
 			else
-				for i=1:length(lines),
+				for i=1:length(lines)
 					self.list{lines(i),2}=newvalue;
 				end
 			end
@@ -99,10 +99,10 @@ classdef pairoptions < matlab.mixin.Copyable
 			clear dummy
 
 			%warn user if requested
-			if warn,
+			if warn
 				numoptions=size(self.list,1);
-				for i=1:numoptions,
-					if ~ismember(i,lines),
+				for i=1:numoptions
+					if ~ismember(i,lines)
 						disp(['WARNING: option ' self.list{i,1} ' appeared more than once. Only its first occurrence will be kept'])
 					end
 				end
@@ -115,21 +115,21 @@ classdef pairoptions < matlab.mixin.Copyable
 			%DISPLAYUNUSED - display unused options
 
 			numoptions=size(self.list,1);
-			for i=1:numoptions,
-				if ~self.list{i,3},
+			for i=1:numoptions
+				if ~self.list{i,3}
 					disp(['WARNING: option ' self.list{i,1} ' was not used'])
 				end
 			end
 		end % }}}
 		function disp(self) % {{{
-			if ~isempty(self.list),
+			if ~isempty(self.list)
 				disp(sprintf('   list: (%ix%i)\n',size(self.list,1),size(self.list,2)));
-				for i=1:size(self.list,1),
-					if ischar(self.list{i,2}),
+				for i=1:size(self.list,1)
+					if ischar(self.list{i,2})
 						disp(sprintf('     field: %-10s value: ''%s''',self.list{i,1},self.list{i,2}));
-					elseif isnumeric(self.list{i,2}) & length(self.list{i,2})==1,
+					elseif isnumeric(self.list{i,2}) & length(self.list{i,2})==1
 						disp(sprintf('     field: %-10s value: %g',self.list{i,1},self.list{i,2}));
-					elseif isnumeric(self.list{i,2}) & length(self.list{i,2})==2,
+					elseif isnumeric(self.list{i,2}) & length(self.list{i,2})==2
 						disp(sprintf('     field: %-10s value: [%g %g]',self.list{i,1},self.list{i,2}));
 					else
 						disp(sprintf('     field: %-10s value: (%ix%i)',self.list{i,1},size(self.list{i,2},1),size(self.list{i,2},2)));
@@ -143,16 +143,16 @@ classdef pairoptions < matlab.mixin.Copyable
 		%EXIST - check if the option exists
 
 			%some argument checking: 
-			if ((nargin~=2) | (nargout~=1)),
+			if ((nargin~=2) | (nargout~=1))
 				error('exist error message: bad usage');
 			end
-			if ~ischar(field),
+			if ~ischar(field)
 				error('exist error message: field should be a string');
 			end
 
 			%Recover option
 			pos=find(strcmpi(field,self.list(:,1)));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				bool=true;
 				self.list{pos,3}   = true;  %It is a default so user will not be notified if not used
 			else
@@ -163,7 +163,7 @@ classdef pairoptions < matlab.mixin.Copyable
 		%FIELDOCCURRENCES - get number of occurrence of a field
 
 			%check input 
-			if ~ischar(field),
+			if ~ischar(field)
 				error('fieldoccurrences error message: field should be a string');
 			end
 
@@ -184,25 +184,25 @@ classdef pairoptions < matlab.mixin.Copyable
 		%      value=getfieldvalue(options,'caxis',[0 2]);
 
 			%some argument checking: 
-			if nargin~=2 && nargin~=3,
+			if nargin~=2 && nargin~=3
 				help getfieldvalue
 				error('getfieldvalue error message: bad usage');
 			end
 
-			if ~ischar(field),
+			if ~ischar(field)
 				error('getfieldvalue error message: field should be a string');
 			end
 
 			%Recover option
 			pos=find(strcmpi(self.list(:,1),field));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				value=self.list{pos(1),2}; % ignore extra entry
 				self.list{pos(1),3}=true;  % option used
 				return;
 			end
 
 			%The option has not been found, output default if provided
-			if nargin==3,
+			if nargin==3
 				value=varargin{1};
 			else
 				error(['error message: field ' field ' has not been provided by user (and no default value has been specified)'])
@@ -222,20 +222,20 @@ classdef pairoptions < matlab.mixin.Copyable
 		%      values=getfieldvalues(options,'caxis',{[0 2],[3 4]});
 
 			%some argument checking: 
-			if nargin~=2 && nargin~=3,
+			if nargin~=2 && nargin~=3
 				help getfieldvalues
 				error('getfieldvalues error message: bad usage');
 			end
 
-			if ~ischar(field),
+			if ~ischar(field)
 				error('getfieldvalues error message: field should be a string');
 			end
 
 			%Recover options
 			pos=find(strcmpi(self.list(:,1),field));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				values={};
-				for i=1:length(pos),
+				for i=1:length(pos)
 					values{i}=self.list{pos(i),2};
 					self.list{pos(i),3}=true; % option used
 				end
@@ -243,7 +243,7 @@ classdef pairoptions < matlab.mixin.Copyable
 			end
 
 			%The option has not been found, output default if provided
-			if nargin==3,
+			if nargin==3
 				values=varargin{1};
 			else
 				error(['error message: field ' field ' has not been provided by user (and no default value has been specified)'])
@@ -259,7 +259,7 @@ classdef pairoptions < matlab.mixin.Copyable
 		%   some of their options have been removed.
 
 			%check is field exist
-			if exist(self,field),
+			if exist(self,field)
 
 				%find where the field is located
 				lines=find(~strcmpi(self.list(:,1),field));
@@ -275,14 +275,14 @@ classdef pairoptions < matlab.mixin.Copyable
 		end % }}}
 		function marshall(self,fid)% {{{
 
-			for i=1:size(self.list,1),
+			for i=1:size(self.list,1)
 				name  = self.list{i,1};
 				value = self.list{i,2};
 
 				%Write option value
-				if (isnumeric(value) & numel(value)==1),
+				if (isnumeric(value) & numel(value)==1)
 					WriteData(fid,'','name',['md.' name],'data',value,'format','Double');
-				elseif ischar(value),
+				elseif ischar(value)
 					WriteData(fid,'','name',['md.' name],'data',value,'format','String');
 				else
 					error(['Cannot marshall option ' name ': format not supported yet']);

@@ -1,6 +1,6 @@
 function mdOut = remesh(md,parfile,time_step)
 %Set the new mesh (refined) into the model md
-if nargin<3,
+if nargin<3
 	time_step=length(md.results.TransientSolution);
 end
 
@@ -21,15 +21,15 @@ segments			= zeros(nsegments,3);
 segments(:,1)	= k(1:nsegments);
 segments(:,2)	= k(2:(nsegments+1));
 disp('Building segments: searching boundary elements...');
-for s=1:nsegments,
-	for e=1:nelements,
+for s=1:nsegments
+	for e=1:nelements
 		if any(NewModel.mesh.elements(e,:)==segments(s,1)) && any(NewModel.mesh.elements(e,:)==segments(s,2))
 			segments(s,3)=e;
 			break;
 		end
 	end
 
-	if segments(s,3)==0,
+	if segments(s,3)==0
 		%error('Element not found!');
 	end
 end

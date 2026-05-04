@@ -10,7 +10,7 @@ function levelsetnew = reinitializelevelset(md,levelset)
 % if md is 3d, levelset should be projected on a 2d mesh 
 
 if isempty(levelset), error('levelset provided is empty'); end
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
    if length(levelset)~=md.mesh.numberofvertices2d, error('levelset provided should be specified at the 2d vertices of the mesh'); end
 else
    if length(levelset)~=md.mesh.numberofvertices, error('levelset provided should be specified at the vertices of the mesh'); end

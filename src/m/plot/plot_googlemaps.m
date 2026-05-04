@@ -11,7 +11,7 @@ function plot_googlemaps(md,data,options,plotlines,plotcols,i)
 [data datatype]=processdata(md,data,options);
 
 %check is2d
-if ~is2d, 
+if ~is2d 
 	error('buildgridded error message: gridded not supported for 3d meshes, project on a layer');
 end
 
@@ -39,7 +39,7 @@ else
 			[linspace(xlim(1),xlim(2),100) linspace(xlim(2),xlim(2),100) linspace(xlim(2),xlim(1),100) linspace(xlim(1),xlim(1),100)],...
 			[linspace(ylim(1),ylim(1),100) linspace(ylim(1),ylim(2),100) linspace(ylim(2),ylim(2),100) linspace(ylim(2),ylim(1),100)],...
 			6);
-	elseif numel(md.mesh.lat)==numel(md.mesh.x),
+	elseif numel(md.mesh.lat)==numel(md.mesh.x)
 		latlist = md.mesh.lat; %That might work?
 		lonlist = md.mesh.long;
 	else
@@ -60,7 +60,7 @@ final = double(md.radaroverlay.pwr)/double(max(md.radaroverlay.pwr(:))); %rescal
 transparency = getfieldvalue(options,'transparency',.3);
 
 %Prepare grid
-if size(md.radaroverlay.x,1)==1 | size(md.radaroverlay.x,2)==1,
+if size(md.radaroverlay.x,1)==1 | size(md.radaroverlay.x,2)==1
 	x_m = md.radaroverlay.x;
 	y_m = md.radaroverlay.y;
 	data_grid=InterpFromMeshToGrid(elements,x/getfieldvalue(options,'unit',1),y/getfieldvalue(options,'unit',1),data,x_m,y_m,NaN);
@@ -71,7 +71,7 @@ else
 	x_m=X(1,:); y_m=Y(:,1);
 end
 data_nan=isnan(data_grid);
-if exist(options,'caxis'),
+if exist(options,'caxis')
 	caxis_opt=getfieldvalue(options,'caxis');
 	data_grid(find(data_grid<caxis_opt(1)))=caxis_opt(1);
 	data_grid(find(data_grid>caxis_opt(2)))=caxis_opt(2);
@@ -84,7 +84,7 @@ end
 colorm = getcolormap(options);
 image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(colorm)/(data_max-data_min))),colorm);
 
-if exist(options,'shaded'),
+if exist(options,'shaded')
 	a    = -45;
 	scut = 0.2;
 	c    = 1;
@@ -118,13 +118,13 @@ subplotmodel(plotlines,plotcols,i,options);
 h=imagesc(x_m*getfieldvalue(options,'unit',1),y_m*getfieldvalue(options,'unit',1),final);
 
 %last step: mesh gridded?
-if exist(options,'edgecolor'),
+if exist(options,'edgecolor')
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 	patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
 end
 
 %Apply options
-if ~isnan(data_min),
+if ~isnan(data_min)
 	options=changefieldvalue(options,'caxis',[data_min data_max]); % force caxis so that the colorbar is ready
 end
 options=addfielddefault(options,'axis','xy equal off'); % default axis

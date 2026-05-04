@@ -31,7 +31,7 @@ classdef linearbasalforcings
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
@@ -53,21 +53,21 @@ classdef linearbasalforcings
 				md = checkfield(md,'fieldname','basalforcings.perturbation_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 			end
 
-			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0),
+			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','>=',0,'singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_melting_rate','>=',0,'singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_elevation','<','basalforcings.upperwater_elevation','singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_elevation','<=',0,'singletimeseries',1);
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','>=',0,'singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_melting_rate','>=',0,'singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_elevation','<','basalforcings.upperwater_elevation','singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_elevation','<=',0,'singletimeseries',1);
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0),
+			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','>=',0,'singletimeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_melting_rate','>=',0,'singletimeseries',1);

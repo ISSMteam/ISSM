@@ -47,13 +47,13 @@ if (nargin<4)
 	help ThomasParams
 	error('bad usage');
 end
-if isempty(fieldnames(md.results)),
+if isempty(fieldnames(md.results))
 	error(['md.results.strainrate is not present.  Calculate using md=mechanicalproperties(md,vx,vy)'])
 end
-if dimension(md.mesh)~=2,
+if dimension(md.mesh)~=2
 	error('only 2d model supported currently');
 end
-if any(md.flowequation.element_equation~=2),
+if any(md.flowequation.element_equation~=2)
 	disp('Warning: the model has some non SSA elements. These will be treated like SSA elements');
 end
 
@@ -130,7 +130,7 @@ end
 % a < -1 in areas of strong lateral compression or longitudinal compression and
 % theta flips sign at a = -2
 pos=find(abs((abs(a)-2))<1e-3);
-if length(pos)>0,
+if length(pos)>0
 	disp(['Warning: ', num2str(length(pos)), ' vertices have alpha within 1e-3 of -2'])
 end
 a(pos)=-2+1e-3;

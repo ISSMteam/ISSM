@@ -7,7 +7,7 @@ function npart=partition_npart(vector)
 
 	%ok, so now we should have a vector from 0 to npart-1:
 	npart=max(uvec)+1;
-	if npart~=length(uvec),
+	if npart~=length(uvec)
 		error('partition vector should be in the range 0 to numberofpartitions, with -1 values for vertices or elements not belonging to any partition');
 	end
 

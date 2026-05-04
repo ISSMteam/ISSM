@@ -63,19 +63,19 @@ classdef hydrologydc
 		end% }}}
 		function list = defaultoutputs(self,md) % {{{
 			list = {'SedimentHead','SedimentHeadResidual','EffectivePressure'};
-			if self.isefficientlayer,
+			if self.isefficientlayer
 				list=[list,{'EplHead','HydrologydcMaskEplactiveNode','HydrologydcMaskEplactiveElt','EplHeadSlopeX','EplHeadSlopeY','HydrologydcEplThickness'}];
 			end
-			if self.steps_per_step>1 | self.step_adapt,
+			if self.steps_per_step>1 | self.step_adapt
 				list = [list,'EffectivePressureSubstep','SedimentHeadSubstep'];
-				if self.isefficientlayer,
+				if self.isefficientlayer
 					list = [list,'EplHeadSubstep','HydrologydcEplThicknessSubstep'];
 				end
 			end
 		end % }}}
 		function self = initialize(self,md) % {{{
 			self.epl_colapse_thickness = self.sediment_transmitivity/self.epl_conductivity;
-			if isnan(self.basal_moulin_input),
+			if isnan(self.basal_moulin_input)
 				self.basal_moulin_input=zeros(md.mesh.numberofvertices,1);
 				disp('      no hydrology.basal_moulin_input specified: values set as zero');
 			end
@@ -116,7 +116,7 @@ classdef hydrologydc
 		end  % }}}
 		function md = checkconsistency(self,md,solution,analyses)% {{{
 		%Early return
-			if ~ismember('HydrologyDCInefficientAnalysis',analyses) & ~ismember('HydrologyDCEfficientAnalysis',analyses),
+			if ~ismember('HydrologyDCInefficientAnalysis',analyses) & ~ismember('HydrologyDCEfficientAnalysis',analyses)
 				return;
 			end
 
@@ -133,10 +133,10 @@ classdef hydrologydc
 			md = checkfield(md,'fieldname','hydrology.transfer_flag','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','hydrology.unconfined_flag','numel',[1],'values',[0 1]);
 			md = checkfield(md,'fieldname','hydrology.requested_outputs','stringrow',1);
-			if self.sedimentlimit_flag==1,
+			if self.sedimentlimit_flag==1
 				md = checkfield(md,'fieldname','hydrology.sedimentlimit','>',0,'numel',1);
 			end
-			if self.transfer_flag==1,
+			if self.transfer_flag==1
 				md = checkfield(md,'fieldname','hydrology.leakage_factor','>',0,'numel',1);
 			end
 			md = checkfield(md,'fieldname','hydrology.basal_moulin_input','NaN',1,'Inf',1,'timeseries',1);
@@ -148,7 +148,7 @@ classdef hydrologydc
 			md = checkfield(md,'fieldname','hydrology.sediment_transmitivity','>=',0,'size',[md.mesh.numberofvertices 1]);
 			md = checkfield(md,'fieldname','hydrology.mask_thawed_node','size',[md.mesh.numberofvertices 1],'values',[0 1]);
 
-			if self.isefficientlayer==1,
+			if self.isefficientlayer==1
 				md = checkfield(md,'fieldname','hydrology.spcepl_head','Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','hydrology.mask_eplactive_node','size',[md.mesh.numberofvertices 1],'values',[0 1]);
 				md = checkfield(md,'fieldname','hydrology.epl_compressibility','>',0,'numel',1);
@@ -159,7 +159,7 @@ classdef hydrologydc
 				md = checkfield(md,'fieldname','hydrology.epl_max_thickness','>',0,'numel',1);
 				md = checkfield(md,'fieldname','hydrology.epl_conductivity','>',0,'numel',1);
 				md = checkfield(md,'fieldname','hydrology.eplflip_lock','>=',0,'numel',1);
-				if (self.epl_colapse_thickness>self.epl_initial_thickness),
+				if (self.epl_colapse_thickness>self.epl_initial_thickness)
 					md = checkmessage(md,'Colapsing thickness for EPL larger than initial thickness');
 				end
 			end
@@ -184,13 +184,13 @@ classdef hydrologydc
 			disp(sprintf('%55s  1: user defined: %s',' ','sedimentlimit'));
 			disp(sprintf('%55s  2: hydrostatic pressure',' '));
 			disp(sprintf('%55s  3: normal stress',' '));
-			if self.sedimentlimit_flag==1,
+			if self.sedimentlimit_flag==1
 				fielddisplay(self,'sedimentlimit','user defined upper limit for the inefficient layer [m]');
 			end
 			fielddisplay(self,'transfer_flag','what kind of transfer method is applied between the layers');
 			disp(sprintf('%55s  0: no transfer',' '));
 			disp(sprintf('%55s  1: constant leakage factor: %s',' ','leakage_factor'));
-			if self.transfer_flag==1,
+			if self.transfer_flag==1
 				fielddisplay(self,'leakage_factor','user defined leakage factor [m]');
 			end
 			fielddisplay(self,'unconfined_flag','Do you want unconfined scheme to be used (transitory)');
@@ -206,7 +206,7 @@ classdef hydrologydc
 			fielddisplay(self,'sediment_transmitivity','sediment transmitivity [m^2/s]');
       fielddisplay(self,'mask_thawed_node','deactivate (0) hydrology on frozen nodes');
 
-			if self.isefficientlayer==1,
+			if self.isefficientlayer==1
 				disp(sprintf('   - for the epl layer'));
 				fielddisplay(self,'spcepl_head','epl water head constraints (NaN means no constraint) [m above MSL]');
 				fielddisplay(self,'mask_eplactive_node','active (1) or not (0) EPL');
@@ -234,10 +234,10 @@ classdef hydrologydc
 			WriteData(fid,prefix,'object',self,'fieldname','sedimentlimit_flag','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','transfer_flag','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','unconfined_flag','format','Integer');
-			if self.sedimentlimit_flag==1,
+			if self.sedimentlimit_flag==1
 				WriteData(fid,prefix,'object',self,'fieldname','sedimentlimit','format','Double');
 			end
-			if self.transfer_flag==1,
+			if self.transfer_flag==1
 				WriteData(fid,prefix,'object',self,'fieldname','leakage_factor','format','Double');
 			end
 			WriteData(fid,prefix,'object',self,'fieldname','basal_moulin_input','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
@@ -248,7 +248,7 @@ classdef hydrologydc
 			WriteData(fid,prefix,'object',self,'fieldname','sediment_thickness','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','sediment_transmitivity','format','DoubleMat','mattype',1');
 			WriteData(fid,prefix,'object',self,'fieldname','mask_thawed_node','format','DoubleMat','mattype',1);
-			if self.isefficientlayer==1,
+			if self.isefficientlayer==1
 				WriteData(fid,prefix,'object',self,'fieldname','spcepl_head','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 				WriteData(fid,prefix,'object',self,'fieldname','mask_eplactive_node','format','DoubleMat','mattype',1);
 				WriteData(fid,prefix,'object',self,'fieldname','epl_compressibility','format','Double');
@@ -262,7 +262,7 @@ classdef hydrologydc
 			end
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];  %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

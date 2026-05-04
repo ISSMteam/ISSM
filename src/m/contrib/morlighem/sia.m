@@ -13,7 +13,7 @@ n=3;
 
 rhog = (md.materials.rho_ice*md.constants.g);
 
-if md.mesh.dimension==2,
+if md.mesh.dimension==2
 	%Get slope
 	[sx,sy,s]=slope(md);
 

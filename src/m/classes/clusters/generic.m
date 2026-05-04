@@ -78,7 +78,7 @@ classdef generic
 			if cluster.np<1
 				md = checkmessage(md,['number of processors should be at least 1']);
 			end
-			if isnan(cluster.np),
+			if isnan(cluster.np)
 				md = checkmessage(md,'number of processors should not be NaN!');
 			end
 		end
@@ -109,7 +109,7 @@ classdef generic
 
 			if ~ispc()
 				% Check that executable exists at the right path
-				if ~exist([cluster.codepath '/' executable],'file'),
+				if ~exist([cluster.codepath '/' executable],'file')
 					error(['File ' cluster.codepath '/' executable ' does not exist']);
 				end
 
@@ -131,7 +131,7 @@ classdef generic
 							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname], modelname,modelname,modelname);
 						end
 					else
-						if IssmConfig('_HAVE_MPI_'),
+						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s --leak-check=full --error-limit=no --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
 							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
 						else
@@ -139,17 +139,17 @@ classdef generic
 							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
 						end
 					end
-				elseif isgprof,
+				elseif isgprof
 					fprintf(fid,'\n gprof %s/issm.exe gmon.out > %s.performance',cluster.codepath,modelname);
 				else
 					if cluster.interactive
-						if IssmConfig('_HAVE_MPI_'),
+						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 						else
 							fprintf(fid,'%s/%s %s %s %s',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 						end
 					else
-						if IssmConfig('_HAVE_MPI_'),
+						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
 						else
 							fprintf(fid,'%s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
@@ -165,7 +165,7 @@ classdef generic
 				fid=fopen([modelname '.bat'],'w');
 				fprintf(fid,'@echo off\n');
 
-				if cluster.np>1,
+				if cluster.np>1
 					fprintf(fid,'"C:\\Program Files\\Microsoft MPI\\Bin\\mpiexec.exe" -n %i "%s/%s" %s ./ %s',cluster.np,cluster.codepath,executable,solution,modelname);
 				else
 					fprintf(fid,'"%s\\%s" %s ./ %s',cluster.codepath,executable,solution,modelname);
@@ -215,7 +215,7 @@ classdef generic
 			mpistring=[mpistring sprintf(' %i ',length(dirnames))];
 
 			%icecaps, glaciers and earth location, names and number of processors associated:
-			for i=1:length(dirnames),
+			for i=1:length(dirnames)
 			mpistring=[mpistring sprintf(' %s/%s %s %i ',cluster.executionpath,dirnames{i},modelnames{i},nps{i})];
 			end
 
@@ -285,13 +285,13 @@ classdef generic
 
 				fid=fopen(filename, 'w');
 				fprintf(fid,'#!/bin/sh\n');
-				if ~isvalgrind,
+				if ~isvalgrind
 					if cluster.interactive
 						fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname);
 					else
 						fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s 2> %s.errlog >%s.outlog ',cluster.np,cluster.codepath,[cluster.executionpath '/' modelname],modelname,modelname,modelname);
 					end
-				elseif isgprof,
+				elseif isgprof
 					fprintf(fid,'\n gprof %s/kriging.exe gmon.out > %s.performance',cluster.codepath,modelname);
 				else
 					%Add --gen-suppressions=all to get suppression lines
@@ -317,13 +317,13 @@ classdef generic
 
 				%compress the files into one zip.
 				compressstring=['tar -zcf ' dirname '.tar.gz '];
-				for i=1:numel(filelist),
+				for i=1:numel(filelist)
 					if ~exist(filelist{i},'file')
 						error(['File ' filelist{i} ' not found']);
 					end
 					compressstring = [compressstring ' ' filelist{i}];
 				end
-				if cluster.interactive,
+				if cluster.interactive
 					compressstring = [compressstring ' ' modelname '.errlog ' modelname '.outlog '];
 				end
 				system(compressstring);
@@ -335,7 +335,7 @@ classdef generic
 
 			if ~ispc
 				%figure out what shell extension we will use:
-				if isempty(strfind(cluster.shell,'csh')),
+				if isempty(strfind(cluster.shell,'csh'))
 					shellext='sh';
 				else
 					shellext='csh';
@@ -363,7 +363,7 @@ classdef generic
 			if ~ispc
 
 				%figure out what shell extension we will use:
-				if isempty(strfind(cluster.shell,'csh')),
+				if isempty(strfind(cluster.shell,'csh'))
 					shellext='sh';
 				else
 					shellext='csh';
@@ -372,7 +372,7 @@ classdef generic
 				if ~isempty(restart)
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
 				else
-					if ~batch,
+					if ~batch
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && tar -zxf ' dirname '.tar.gz  && source  ' modelname '.queue '];
 					else
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...

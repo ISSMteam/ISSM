@@ -40,7 +40,7 @@ classdef damage
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -87,7 +87,7 @@ classdef damage
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 			
 			md = checkfield(md,'fieldname','damage.isdamage','values',[1,0]);
-			if self.isdamage,
+			if self.isdamage
 				md = checkfield(md,'fieldname','damage.law','numel',[1],'values',[0,1,2,3]);
 				md = checkfield(md,'fieldname','damage.D','>=',0,'<=',self.max_damage,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','damage.spcdamage','Inf',1,'timeseries',1);
@@ -105,15 +105,15 @@ classdef damage
 				md = checkfield(md,'fieldname','damage.c4','>=',0);
 				md = checkfield(md,'fieldname','damage.equiv_stress','numel',[1],'values',[0 1]);
 				md = checkfield(md,'fieldname','damage.requested_outputs','stringrow',1);
-			elseif (self.law~=0),
-				if (strcmp(solution,'DamageEvolutionSolution')),
+			elseif (self.law~=0)
+				if (strcmp(solution,'DamageEvolutionSolution'))
 					error('Invalid evolution law (md.damage.law) for a damage solution');
 				end
 			end
 		end % }}}
 		function list=defaultoutputs(self,md) % {{{
 
-			if strcmp(domaintype(md.mesh),'2Dhorizontal'),
+			if strcmp(domaintype(md.mesh),'2Dhorizontal')
             list = {'DamageDbar'};
          else
             list = {'DamageD'};
@@ -123,7 +123,7 @@ classdef damage
 			disp(sprintf('   Damage:\n'));
 
 			fielddisplay(self,'isdamage','is damage mechanics being used? {true,false}');
-			if self.isdamage,
+			if self.isdamage
 				fielddisplay(self,'law','damage law {''0: analytical'',''1: pralong''}');
 				fielddisplay(self,'D','damage tensor (scalar)');
 				fielddisplay(self,'spcdamage','damage constraints (NaN means no constraint)');
@@ -148,7 +148,7 @@ classdef damage
 		function marshall(self,prefix,md,fid) % {{{
 		
 			WriteData(fid,prefix,'object',self,'fieldname','isdamage','format','Boolean');
-			if self.isdamage,
+			if self.isdamage
 				WriteData(fid,prefix,'object',self,'fieldname','law','format','Integer');
 				WriteData(fid,prefix,'object',self,'fieldname','D','format','DoubleMat','mattype',1);
 				WriteData(fid,prefix,'object',self,'fieldname','spcdamage','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
@@ -171,11 +171,11 @@ classdef damage
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end
-			if self.isdamage,
+			if self.isdamage
 				WriteData(fid,prefix,'data',outputs,'name','md.damage.requested_outputs','format','StringArray');
 			end
 
@@ -183,7 +183,7 @@ classdef damage
 		function savemodeljs(self,fid,modelname) % {{{
 		
 			writejsdouble(fid,[modelname '.damage.isdamage'],self.isdamage);
-			if self.isdamage,
+			if self.isdamage
 				error('savemodeljs error message: not implemented  yet!');
 			end
 

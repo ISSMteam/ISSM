@@ -18,7 +18,7 @@ function legendd(varargin)
 	rectangle('Position',[x,y,w,h],'FaceColor',facecolor,'EdgeColor',edgecolor);
 	
 	nl=length(strings);
-	for i=1:nl,
+	for i=1:nl
 		l=line([x+w/6 x+w/3],[y+(nl+1-i)*h/(nl+1) y+(nl+1-i)*h/(nl+1)]);
 		set(l,'Color',colors{i});
 		set(l,'LineWidth',linewidth);

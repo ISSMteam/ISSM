@@ -14,9 +14,9 @@ PosInset=[cplotpos(1)+insetpos(1)*cplotpos(3),cplotpos(2)+insetpos(2)*cplotpos(4
 axes('pos',PosInset);
 axis equal off
 %box off
-if md.mesh.epsg==3413,
+if md.mesh.epsg==3413
 	A=expread(['/u/astrid-r1b/ModelData/Exp/Greenland.exp']);
-elseif md.mesh.epsg==3031,
+elseif md.mesh.epsg==3031
 	A=expread(['/u/astrid-r1b/ModelData/Exp/Antarctica.exp']);
 else
 	error('md.mesh.epsg not supported yet');

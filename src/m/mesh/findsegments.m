@@ -14,8 +14,8 @@ options=pairoptions(varargin{:});
 mesh.elementconnectivity=getfieldvalue(options,'mesh.elementconnectivity',md.mesh.elementconnectivity);
 
 %Now, build the connectivity tables for this mesh if not correctly done
-if size(md.mesh.elementconnectivity,1)~=md.mesh.numberofelements,
-	if exist(options,'mesh.elementconnectivity'),
+if size(md.mesh.elementconnectivity,1)~=md.mesh.numberofelements
+	if exist(options,'mesh.elementconnectivity')
 		error('''mesh.elementconnectivity'' option does not have thge right size.');
 	else
 		mesh.elementconnectivity=ElementConnectivity(md.mesh.elements,md.mesh.vertexconnectivity);
@@ -30,7 +30,7 @@ segments=zeros(num_segments,3);
 count=1;
 
 %loop over the segments
-for i=1:num_segments,
+for i=1:num_segments
 
 	%get current element on boundary
 	el1=pos(i);
@@ -42,7 +42,7 @@ for i=1:num_segments,
 	nods1=md.mesh.elements(el1,:);
 
 	%'el1' is connected to 2 other elements
-	if length(els2)>1,
+	if length(els2)>1
 
 		%find the common vertices to the two elements connected to el1 (1 or 2)
 		flag=intersect(md.mesh.elements(els2(1),:),md.mesh.elements(els2(2),:));
@@ -55,7 +55,7 @@ for i=1:num_segments,
 		ord1=find(nods1(1)==md.mesh.elements(el1,:));
 		ord2=find(nods1(2)==md.mesh.elements(el1,:));
 
-		if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) ),
+		if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) )
 			temp=segments(count,1);
 			segments(count,1)=segments(count,2);
 			segments(count,2)=temp;
@@ -68,17 +68,17 @@ for i=1:num_segments,
 		%find the vertex that 'el1' does not share with 'els2'
 		flag=setdiff(nods1,md.mesh.elements(els2,:));
 
-		for j=1:3,
+		for j=1:3
 			nods=nods1;
 			nods(j)=[];
-			if any(ismember(flag,nods)),
+			if any(ismember(flag,nods))
 
 				segments(count,:)=[nods el1];
 
 				%swap segment nodes if necessary
 				ord1=find(nods(1)==md.mesh.elements(el1,:));
 				ord2=find(nods(2)==md.mesh.elements(el1,:));
-				if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) ),
+				if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) )
 					temp=segments(count,1);
 					segments(count,1)=segments(count,2);
 					segments(count,2)=temp;

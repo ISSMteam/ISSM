@@ -19,7 +19,7 @@ classdef SMBdebrisML
 						list2 = fieldnames(inputstruct);
 						for i=1:length(list1)
 							fieldname = list1{i};
-							if ismember(fieldname,list2),
+							if ismember(fieldname,list2)
 								self.(fieldname) = inputstruct.(fieldname);
 							end
 						end
@@ -62,7 +62,7 @@ classdef SMBdebrisML
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

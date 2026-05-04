@@ -11,7 +11,7 @@ function kmlgroundoverlay(md,options)
 %
 
 %first figure out if lat and long were computed!
-if (isempty(md.mesh.lat) | isempty(md.mesh.long)),
+if (isempty(md.mesh.lat) | isempty(md.mesh.long))
 	error('kmlgroundoverlay error message: project x,y onto lat,long fields of model!');
 end
 
@@ -27,7 +27,7 @@ kmlgroundoverlayname=getfieldvalue(options,'kmlgroundoverlayname','');
 kmlgroundoverlaydescription=getfieldvalue(options,'kmlgroundoverlaydescription','');
 
 %figure out  min and max for lat and long of this image:
-if strcmpi(getfieldvalue(options,'coord',''),'latlon'),
+if strcmpi(getfieldvalue(options,'coord',''),'latlon')
 	%need to plot with option 'coord','latlon'
 	XLIM=xlim();
 	YLIM=ylim();

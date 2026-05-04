@@ -78,33 +78,33 @@ function export_gl(md,varargin)
 	
 	%Deal with data: 
 	results=struct([]);
-	for i=1:length(optionslist),
+	for i=1:length(optionslist)
 		options=optionslist{i}; options=checkplotoptions(md,options);
 		data=getfieldvalue(options,'data');
 		results(i).data=data;
 		results(i).caxis=getfieldvalue(options,'caxis',[min(data(:)) max(data(:))]);
 
 		label=getfieldvalue(options,'label','');
-		if strcmpi(label,''),
+		if strcmpi(label,'')
 			%create generic label: 
 			label=['data' num2str(i)];
 		end
 		results(i).label=label;
 
 		shortlabel=getfieldvalue(options,'shortlabel','');
-		if strcmpi(shortlabel,''),
+		if strcmpi(shortlabel,'')
 			%create generic short label: 
 			shortlabel=['data' num2str(i)];
 		end
 		results(i).shortlabel=shortlabel;
 		
-		if size(data,2)>1,
+		if size(data,2)>1
 			time_range=getfieldvalue(options,'time_range',[0 100]);
 			results(i).time_range=time_range;
 		end
 
 		unit=getfieldvalue(options,'unit','');
-		if strcmpi(unit,''),
+		if strcmpi(unit,'')
 			%create generic unit: 
 			unit='SI';
 		end

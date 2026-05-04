@@ -76,7 +76,7 @@ classdef m1qn3inversion
 			%Early return
 			if ~self.iscontrol, return; end
 
-			if ~IssmConfig('_HAVE_M1QN3_'),
+			if ~IssmConfig('_HAVE_M1QN3_')
 				md = checkmessage(md,['M1QN3 has not been installed, ISSM needs to be reconfigured and recompiled with M1QN3']);
 			end
 			num_controls=numel(md.inversion.control_parameters);
@@ -103,7 +103,7 @@ classdef m1qn3inversion
 				md = checkfield(md,'fieldname','inversion.thickness_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			else
 				md = checkfield(md,'fieldname','inversion.vx_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
-				if ~strcmp(domaintype(md.mesh),'2Dvertical'),
+				if ~strcmp(domaintype(md.mesh),'2Dvertical')
 					md = checkfield(md,'fieldname','inversion.vy_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 				end
 			end

@@ -1,12 +1,11 @@
-function vers = issmversion(),
+function vers = issmversion()
 %ISSMVERSION - display ISSM version
 %
 %   Usage:
 %      issmversion()
 %      version = issmversion()
 
-
-if exist('IssmConfig_matlab')~=3,
+if exist('IssmConfig_matlab')~=3
 	error('ISSM not correctly installed. "IssmConfig_matlab" not found');
 end
 

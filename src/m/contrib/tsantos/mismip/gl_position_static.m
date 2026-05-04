@@ -67,7 +67,7 @@ function [glx gly] = gl_position(md,step,level),
 		numelems=length(poselem);
 
 		%if no element has been flagged, skip to the next level
-		if numelems==0,
+		if numelems==0
 			return,
 		end
 
@@ -78,7 +78,7 @@ function [glx gly] = gl_position(md,step,level),
 		y2=zeros(numelems,1);
 		edge_l=zeros(numelems,2);
 
-		for j=1:numelems,
+		for j=1:numelems
 
 			weight1=(level-Data1(poselem(j),1))/(Data1(poselem(j),2)-Data1(poselem(j),1));
 			weight2=(level-Data2(poselem(j),1))/(Data2(poselem(j),2)-Data2(poselem(j),1));
@@ -93,7 +93,7 @@ function [glx gly] = gl_position(md,step,level),
 				edge_l(j,1)=Seg1_num(poselem(j));
 				edge_l(j,2)=Seg2_num(poselem(j));
 
-			elseif poselem13(poselem(j)),
+			elseif poselem13(poselem(j))
 
 				x1(j)=x(Seg1(poselem(j),1))+weight1*(x(Seg1(poselem(j),2))-x(Seg1(poselem(j),1)));
 				x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -102,7 +102,7 @@ function [glx gly] = gl_position(md,step,level),
 				edge_l(j,1)=Seg1_num(poselem(j));
 				edge_l(j,2)=Seg3_num(poselem(j));
 
-			elseif poselem23(poselem(j)),
+			elseif poselem23(poselem(j))
 
 				x1(j)=x(Seg2(poselem(j),1))+weight2*(x(Seg2(poselem(j),2))-x(Seg2(poselem(j),1)));
 				x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -119,7 +119,7 @@ function [glx gly] = gl_position(md,step,level),
 
 		%loop over the subcontours
 		indice=0;
-		while ~isempty(edge_l),
+		while ~isempty(edge_l)
 			indice=indice+1;
 
 			%take the right edge of the second segment and connect it to the next segments if any
@@ -135,7 +135,7 @@ function [glx gly] = gl_position(md,step,level),
 
 			while ~isempty(ro1)
 
-				if co1==1,
+				if co1==1
 					xc=[x2(ro1);xc]; yc=[y2(ro1);yc];
 
 					%next edge:
@@ -162,7 +162,7 @@ function [glx gly] = gl_position(md,step,level),
 
 			while ~isempty(ro2)
 
-				if co2==1,
+				if co2==1
 					xc=[xc;x2(ro2)]; yc=[yc;y2(ro2)];
 
 					%next edge:

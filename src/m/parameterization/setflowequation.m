@@ -19,7 +19,7 @@ function md=setflowequation(md,varargin)
 %      md=setflowequation(md,'HO','HO.exp',fill','SIA','coupling','tiling');
 
 %some checks on list of arguments
-if ((nargin<2) | (nargout~=1)),
+if ((nargin<2) | (nargout~=1))
 	error('setflowequation error message');
 end
 
@@ -29,7 +29,7 @@ options=deleteduplicates(options,1);
 
 %Find_out what kind of coupling to use
 coupling_method=getfieldvalue(options,'coupling','tiling');
-if (~strcmpi(coupling_method,'tiling') & ~strcmpi(coupling_method,'penalties')),
+if (~strcmpi(coupling_method,'tiling') & ~strcmpi(coupling_method,'penalties'))
 	error('coupling type can only be: tiling or penalties');
 end
 
@@ -44,21 +44,21 @@ filltype = getfieldvalue(options,'fill','none');
 displayunused(options);
 
 %Flag the elements that have not been flagged as filltype
-if strcmpi(filltype,'SIA'),
+if strcmpi(filltype,'SIA')
 	SIAflag(find(~(SSAflag | HOflag)))=1;
-elseif strcmpi(filltype,'SSA'),
+elseif strcmpi(filltype,'SSA')
 	SSAflag(find(~(SIAflag | HOflag | FSflag)))=1;
-elseif strcmpi(filltype,'HO'),
+elseif strcmpi(filltype,'HO')
 	HOflag(find(~(SIAflag | SSAflag | FSflag)))=1;
 end
 
 %check that each element has at least one flag
-if any(SIAflag+SSAflag+HOflag+L1L2flag+MOLHOflag+FSflag==0),
+if any(SIAflag+SSAflag+HOflag+L1L2flag+MOLHOflag+FSflag==0)
 	error('elements type not assigned, supported models are ''SIA'',''SSA'',''HO'',''MOLHO'' and ''FS''')
 end
 
 %check that each element has only one flag
-if any(SIAflag+SSAflag+HOflag+L1L2flag+MOLHOflag+FSflag>1),
+if any(SIAflag+SSAflag+HOflag+L1L2flag+MOLHOflag+FSflag>1)
 	disp('setflowequation.m: Warning: some elements have several types, higher order type is used for them')
 	SIAflag(find(SIAflag & SSAflag))=0;
 	SIAflag(find(SIAflag & HOflag))=0;
@@ -81,7 +81,7 @@ if strcmp(domaintype(md.mesh),'2Dhorizontal')
 end
 
 %FS can only be used alone for now:
-if any(FSflag) &any(SIAflag),
+if any(FSflag) &any(SIAflag)
 	error('FS cannot be used with any other model for now, put FS everywhere')
 end
 
@@ -95,7 +95,7 @@ nodeonFS=zeros(md.mesh.numberofvertices,1);
 noneflag=zeros(md.mesh.numberofelements,1);
 
 %First modify FSflag to get rid of elements contrained everywhere (spc + border with HO or SSA)
-if any(FSflag),
+if any(FSflag)
 	fullspcnodes=double((~isnan(md.stressbalance.spcvx)+~isnan(md.stressbalance.spcvy)+~isnan(md.stressbalance.spcvz))==3 | (nodeonHO & nodeonFS));         %find all the nodes on the boundary of the domain without icefront
 	fullspcelems=double(sum(fullspcnodes(md.mesh.elements),2)==6);         %find all the nodes on the boundary of the domain without icefront
 	FSflag(find(fullspcelems))=0;
@@ -103,7 +103,7 @@ if any(FSflag),
 end
 
 %Then complete with NoneApproximation or the other model used if there is no FS
-if any(FSflag), 
+if any(FSflag) 
 	if any(HOflag), %fill with HO
 		HOflag(~FSflag)=1;
 		nodeonHO(md.mesh.elements(find(HOflag),:))=1;
@@ -116,7 +116,7 @@ if any(FSflag),
 end
 
 %Now take care of the coupling between SSA and HO
-if strcmpi(coupling_method,'penalties'),
+if strcmpi(coupling_method,'penalties')
 	md.stressbalance.vertex_pairing=[];
 end
 nodeonSSAHO=zeros(md.mesh.numberofvertices,1);
@@ -125,21 +125,21 @@ nodeonSSAFS=zeros(md.mesh.numberofvertices,1);
 SSAHOflag=zeros(md.mesh.numberofelements,1);
 SSAFSflag=zeros(md.mesh.numberofelements,1);
 HOFSflag=zeros(md.mesh.numberofelements,1);
-if strcmpi(coupling_method,'penalties'),
+if strcmpi(coupling_method,'penalties')
 	%Create the border nodes between HO and SSA and extrude them
 	numnodes2d=md.mesh.numberofvertices2d;
 	numlayers=md.mesh.numberoflayers;
 	bordernodes2d=find(nodeonHO(1:numnodes2d) & nodeonSSA(1:numnodes2d)); %Nodes connected to two different types of elements
 
 	%initialize and fill in penalties structure
-	if ~isnan(bordernodes2d),
+	if ~isnan(bordernodes2d)
 		penalties=[];
-		for	i=1:numlayers-1,
+		for	i=1:numlayers-1
 			penalties=[penalties; [bordernodes2d bordernodes2d+md.mesh.numberofvertices2d*(i)]];
 		end
 		md.stressbalance.vertex_pairing=penalties;
 	end
-elseif strcmpi(coupling_method,'tiling'),
+elseif strcmpi(coupling_method,'tiling')
 	if any(SSAflag) & any(HOflag), %coupling SSA HO
 		%Find node at the border
 		nodeonSSAHO(find(nodeonSSA & nodeonHO))=1;
@@ -204,7 +204,7 @@ elseif strcmpi(coupling_method,'tiling'),
 		nodeonHOFS(:)=0;
 		nodeonHOFS(md.mesh.elements(find(HOFSflag),:))=1;
 
-	elseif any(FSflag) & any(SSAflag),
+	elseif any(FSflag) & any(SSAflag)
 		%Find node at the border
 		nodeonSSAFS(find(nodeonSSA & nodeonFS))=1;
 		%FS elements in contact with this layer become SSAFS elements
@@ -236,7 +236,7 @@ elseif strcmpi(coupling_method,'tiling'),
 		nodeonSSAFS(:)=0;
 		nodeonSSAFS(md.mesh.elements(find(SSAFSflag),:))=1;
 
-	elseif any(FSflag) & any(SIAflag),
+	elseif any(FSflag) & any(SIAflag)
 		error('type of coupling not supported yet');
 	end
 end
@@ -269,7 +269,7 @@ pos=find(nodeonFS);   md.flowequation.vertex_equation(pos)=6;
 %DO SIA LAST! Otherwise spcs might not be set up correctly (SIA should have priority)
 pos=find(nodeonSIA);
 md.flowequation.vertex_equation(pos)=1;
-if any(FSflag),
+if any(FSflag)
 	pos=find(~nodeonFS);
 	if(~any(HOflag) & ~any(SSAflag)),
 		md.flowequation.vertex_equation(pos)=0;
@@ -293,12 +293,12 @@ md.flowequation.isFS   = double(any(md.flowequation.element_equation == 6));
 return
 
 %Check that tiling can work:
-if any(md.flowequation.borderSSA) & any(md.flowequation.borderHO) & any(md.flowequation.borderHO + md.flowequation.borderSSA ~=1),
+if any(md.flowequation.borderSSA) & any(md.flowequation.borderHO) & any(md.flowequation.borderHO + md.flowequation.borderSSA ~=1)
 	error('error coupling domain too irregular');
 end
-if any(md.flowequation.borderSSA) & any(md.flowequation.borderFS) & any(md.flowequation.borderFS + md.flowequation.borderSSA ~=1),
+if any(md.flowequation.borderSSA) & any(md.flowequation.borderFS) & any(md.flowequation.borderFS + md.flowequation.borderSSA ~=1)
 	error('error coupling domain too irregular');
 end
-if any(md.flowequation.borderFS) & any(md.flowequation.borderHO) & any(md.flowequation.borderHO + md.flowequation.borderFS~=1),
+if any(md.flowequation.borderFS) & any(md.flowequation.borderHO) & any(md.flowequation.borderHO + md.flowequation.borderFS~=1)
 	error('error coupling domain too irregular');
 end

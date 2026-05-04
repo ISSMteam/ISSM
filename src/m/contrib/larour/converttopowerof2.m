@@ -4,7 +4,7 @@ function converttopowerof2(tiffname,pngname)
 %  Usage:    converttopowerof2('temp.tif','temp.png')
 %
 
-	if ismac,
+	if ismac
 		dyld_library_path_old=getenv('DYLD_LIBRARY_PATH');
 		setenv('DYLD_LIBRARY_PATH','/opt/local/lib:/usr/lib');
 	end

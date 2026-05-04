@@ -64,12 +64,12 @@ Names=VelFindVarNames(velocities);
 Vel=load(velocities);
 
 %start mesh adaptation
-for i=1:nsteps,
+for i=1:nsteps
 	disp(['Iteration #' num2str(i) '/' num2str(nsteps)]);
 
 	%interpolate velocities onto mesh
 	disp('   interpolating velocities...');
-	if strcmpi(Names.interp,'node'),
+	if strcmpi(Names.interp,'node')
 		vx_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vxname),md.mesh.x,md.mesh.y,0);
 		vy_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vyname),md.mesh.x,md.mesh.y,0);
 	else
@@ -84,7 +84,7 @@ for i=1:nsteps,
 
 	%if we have rifts, we just messed them up, we need to recreate the segments that constitute those 
 	%rifts, because the segments are used in YamsCall to freeze the rifts elements during refinement.
-	if md.rifts.numrifts, 
+	if md.rifts.numrifts 
 		md.mesh.vertexconnectivity=NodeConnectivity(md.mesh.elements,md.mesh.numberofvertices);
 		md.mesh.elementconnectivity=ElementConnectivity(md.mesh.elements,md.mesh.vertexconnectivity);
 		md.mesh.segments=findsegments(md);
@@ -107,7 +107,7 @@ md.mesh.vertexonboundary=zeros(md.mesh.numberofvertices,1); md.mesh.vertexonboun
 md.mesh.z=zeros(md.mesh.numberofvertices,1);
 md.mesh.vertexonbase=ones(md.mesh.numberofvertices,1);
 md.mesh.vertexonsurface=ones(md.mesh.numberofvertices,1);
-if strcmpi(Names.interp,'node'),
+if strcmpi(Names.interp,'node')
 	md.inversion.vx_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vxname),md.mesh.x,md.mesh.y,0);
 	md.inversion.vy_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vyname),md.mesh.x,md.mesh.y,0);
 else
@@ -117,12 +117,12 @@ end
 md.inversion.vel_obs=sqrt(md.inversion.vx_obs.^2+md.inversion.vy_obs.^2);
 
 %deal with rifts 
-if md.rifts.numrifts,
+if md.rifts.numrifts
 	%first, recreate rift segments
 	md=meshyamsrecreateriftsegments(md);
 
 	%using the segments, recreate the penaltypairs
-	for j=1:md.rifts.numrifts,
+	for j=1:md.rifts.numrifts
 		rift=md.rifts.riftstruct(j);
 
 		%build normals and lengths of segments:
@@ -134,7 +134,7 @@ if md.rifts.numrifts,
 		numpenaltypairs=length(rift.segments)/2-1;
 		rift.penaltypairs=zeros(numpenaltypairs,7);
 
-		for i=1:numpenaltypairs,
+		for i=1:numpenaltypairs
 			rift.penaltypairs(i,1)=rift.segments(i,2);
 			rift.penaltypairs(i,2)=rift.segments(end-i,2);
 			rift.penaltypairs(i,3)=rift.segments(i,3);

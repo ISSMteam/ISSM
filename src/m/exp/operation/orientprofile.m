@@ -44,7 +44,7 @@ function [A,numprofiles,numpoints,closed]=orientprofile(A,numprofiles,numpoints,
 		else
 			%reorient profiles
 			selection=sort(selection);
-			for i=1:length(selection),
+			for i=1:length(selection)
 				A(selection(i)).x=flipud(A(selection(i)).x);
 				A(selection(i)).y=flipud(A(selection(i)).y);
 			end

@@ -6,10 +6,10 @@ function writejsfield(fid,name,variable,nods)
 %
 
 	%write array:
-	if size(variable,2)==1,
+	if size(variable,2)==1
 		fprintf(fid,'<!-- %s{{{-->\n',name);
 		fprintf(fid,'%s=[',name);
-		for i=1:nods-1,
+		for i=1:nods-1
 			fprintf(fid,'%g,',variable(i));
 		end
 		fprintf(fid,'%g];\n',variable(end));
@@ -18,9 +18,9 @@ function writejsfield(fid,name,variable,nods)
 		%multi-sized array: 
 		fprintf(fid,'<!-- %s{{{-->\n',name);
 		fprintf(fid,'%s=[]\n',name);
-		for i=1:size(variable,2),
+		for i=1:size(variable,2)
 			fprintf(fid,'%s["%i"]=[',name,i);
-			for j=1:nods-1,
+			for j=1:nods-1
 				fprintf(fid,'%g,',variable(j,i));
 			end
 			fprintf(fid,'%g];\n',variable(end,i));

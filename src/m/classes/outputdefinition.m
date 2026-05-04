@@ -30,7 +30,7 @@ classdef outputdefinition
 
 			md = checkfield(md,'fieldname','outputdefinition.definitions','cell',1);
 
-			for i=1:length(self.definitions),
+			for i=1:length(self.definitions)
 				md=checkconsistency(self.definitions{i},md,solution,analyses);
 			end
 
@@ -54,7 +54,7 @@ classdef outputdefinition
 		function savemodeljs(self,fid,modelname) % {{{
 
 			fprintf(fid,'%s.outputdefinition.definitions=[];\n',modelname);
-			if ~isempty(self.definitions),
+			if ~isempty(self.definitions)
 				error('outputdefinition savemodeljs error message: not supported yet!');
 			end
 

@@ -14,8 +14,8 @@ L=sqrt(lx.^2+ly.^2);
 Nx=lx./L;
 Ny=ly./L;
 
-if nargin==1,
-	if dimension(md.mesh)==3,
+if nargin==1
+	if dimension(md.mesh)==3
 		vxa=DepthAverage(md,md.initialization.vx);
 		vya=DepthAverage(md,md.initialization.vy);
 	else
@@ -27,7 +27,7 @@ if nargin==1,
 	H=(md.geometry.thickness(A)+md.geometry.thickness(B))/2;
 else
 	step=varargin{1};
-	if dimension(md.mesh)==3,
+	if dimension(md.mesh)==3
 		vxa=DepthAverage(md,md.results.TransientSolution(step).Vx);
 		vya=DepthAverage(md,md.results.TransientSolution(step).Vy);
 	else

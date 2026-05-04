@@ -30,7 +30,7 @@ classdef qmustatistics
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -53,24 +53,24 @@ classdef qmustatistics
 
 			%Checks:
 			md = checkfield(md,'fieldname','qmu.statistics.nfiles_per_directory','>=',1);
-			if self.ndirectories>md.cluster.np, 
+			if self.ndirectories>md.cluster.np 
 				error('qmustatistics consistency check: number of cluster CPUs should be > number of output directories');
 			end
-			if (self.ndirectories*self.nfiles_per_directory)~=md.qmu.method.params.samples,
+			if (self.ndirectories*self.nfiles_per_directory)~=md.qmu.method.params.samples
 				error('qmustatistics consistency check: number of directories x number of files per directory should be == to number of samples requested!');
 			end
-			for i=1:length(self.method),
+			for i=1:length(self.method)
 				m=self.method(i);
-				if strcmpi(m.name,'Histogram'),
+				if strcmpi(m.name,'Histogram')
 					md = checkfield(md,'fieldname',sprintf('qmu.statistics.method(%i).nbins',i),'>=',1,'<=',md.qmu.method.params.samples);
 				end
-				for f=1:length(m.fields),
-					if ~ischar(m.fields{f}),
+				for f=1:length(m.fields)
+					if ~ischar(m.fields{f})
 						error(sprintf('qmustatistics consistency check error: qmu.statistics.method(%i).fields{%i} is not a string!',i,f));
 					end
 				end
-				for s=1:length(m.steps),
-					if m.steps(s)<=0,
+				for s=1:length(m.steps)
+					if m.steps(s)<=0
 						error(sprintf('qmustatistics consistency check error: qmu.statistics.method(%i).steps(%i) should be > 0!',i,s));
 					end
 					if m.steps(s)> md.mesh.numberofvertices
@@ -93,7 +93,7 @@ classdef qmustatistics
 			fielddisplay(self,'nfiles_per_directory','number of files per output directory');
 			fielddisplay(self,'ndirectories','number of output directories; should be < numcpus');
 
-			for i=1:length(self.method),
+			for i=1:length(self.method)
 				disp(['   method #' num2str(i)]);
 				disp(self.method(i));
 			end
@@ -101,7 +101,7 @@ classdef qmustatistics
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
-			if strcmpi(self.method(1).name,'None'), 
+			if strcmpi(self.method(1).name,'None') 
 				WriteData(fid,prefix,'name','md.qmu.statistics','data',0,'format','Boolean');
 				statistics=0; 
 				return;
@@ -110,21 +110,21 @@ classdef qmustatistics
 				statistics=1;
 			end
 
-			if statistics,
+			if statistics
 				WriteData(fid,prefix,'name','md.qmu.statistics.nfiles_per_directory','data',self.nfiles_per_directory,'format','Integer');
 				WriteData(fid,prefix,'name','md.qmu.statistics.ndirectories','data',self.ndirectories,'format','Integer');
 				WriteData(fid,prefix,'name','md.qmu.statistics.numstatistics','data',length(self.method),'format','Integer');
-				for i=1:length(self.method),
+				for i=1:length(self.method)
 					m=self.method(i); 
 					WriteData(fid,prefix,'name',sprintf('md.qmu.statistics.method(%i).name',i),'data',m.name,'format','String');
 					WriteData(fid,prefix,'data',m.fields,'name',sprintf('md.qmu.statistics.method(%i).fields',i),'format','StringArray');
 					WriteData(fid,prefix,'data',m.steps,'name',sprintf('md.qmu.statistics.method(%i).steps',i),'format','IntMat','mattype',3);
 
-					if strcmpi(m.name,'Histogram'),
+					if strcmpi(m.name,'Histogram')
 						WriteData(fid,prefix,'name',sprintf('md.qmu.statistics.method(%i).nbins',i),'data',m.nbins,'format','Integer');
-					elseif strcmpi(m.name,'MeanVariance'),
+					elseif strcmpi(m.name,'MeanVariance')
 						%do nothing
-					elseif strcmpi(m.name,'SampleSeries'),
+					elseif strcmpi(m.name,'SampleSeries')
 						WriteData(fid,prefix,'data',m.indices,'name',sprintf('md.qmu.statistics.method(%i).indices',i),'format','IntMat','mattype',3);
 					else 
 						error(sprintf('qmustatistics marshall error message: unknown type ''%s'' for qmu.statistics.method(%i)',m.name,i));

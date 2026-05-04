@@ -9,7 +9,7 @@ function archdisp(filename) % {{{
 		error('Error: Invalid number of arguments, only one file can be displayed at a time');
 	end
 
-	if ~exist(filename,'file'),
+	if ~exist(filename,'file')
 		error('Error: File does not exist!');
 	end
 	

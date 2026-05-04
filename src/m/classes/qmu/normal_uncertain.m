@@ -33,20 +33,20 @@ classdef normal_uncertain
 			%if the variable is scaled,  a partition vector should have been 
 			%supplied, and that partition vector should have as many partitions 
 			%as the mean and stddev vectors:
-			if self.isscaled(),
+			if self.isscaled()
 				self.partition=getfieldvalue(options,'partition');
 				self.nsteps=getfieldvalue(options,'nsteps',1);
 				npart=qmupart2npart(self.partition);
-				if npart~=size(self.mean,1),
+				if npart~=size(self.mean,1)
 					error(['normal_uncertain constructor: for the scaled variable ' self.descriptor ' the row size of the mean field should be identical to the number of partitions']);
 				end
-				if npart~=size(self.stddev,1),
+				if npart~=size(self.stddev,1)
 					error(['normal_uncertain constructor: for the scaled variable ' self.descriptor ' the row size of the stddev field should be identical to the number of partitions']);
 				end
-				if self.nsteps~=size(self.mean,2),
+				if self.nsteps~=size(self.mean,2)
 					error(['normal_uncertain constructor: for the scaled variable ' self.descriptor ' the col size of the mean field should be identical to the number of time steps']);
 				end
-				if self.nsteps~=size(self.stddev,2),
+				if self.nsteps~=size(self.stddev,2)
 					error(['normal_uncertain constructor: for the scaled variable ' self.descriptor ' the col size of the stddev field should be identical to the number of time steps']);
 				end
 
@@ -58,7 +58,7 @@ classdef normal_uncertain
 			fielddisplay(self,'descriptor','name tag');
 			fielddisplay(self,'mean','pdf mean');
 			fielddisplay(self,'stddev','pdf standard deviation');
-			if ~isempty(self.partition),
+			if ~isempty(self.partition)
 				fielddisplay(self,'partition','partition vector defining where sampling will occur');
 			end
 			fielddisplay(self,'nsteps','number of time steps');
@@ -68,37 +68,37 @@ classdef normal_uncertain
 
 			md = checkfield(md,'field',self.mean,'fieldname','normal_uncertain.mean','NaN',1,'Inf',1,'>=',0);
 			md = checkfield(md,'field',self.stddev,'fieldname','normal_uncertain.stddev','NaN',1,'Inf',1,'>=',0);
-			if self.isscaled(),
-				if isempty(self.partition),
+			if self.isscaled()
+				if isempty(self.partition)
 					error('normal_uncertain is a scaled variable, but it''s missing a partition vector');
 				end
 				%better have a partition vector that has as many partitions as stddev's size:
-				if size(self.stddev,1)~=partition_npart(self.partition),
+				if size(self.stddev,1)~=partition_npart(self.partition)
 					error('normal_uncertain error message: row size of stddev and partition size should be identical');
 				end
-				if size(self.mean,1)~=partition_npart(self.partition),
+				if size(self.mean,1)~=partition_npart(self.partition)
 					error('normal_uncertain error message: row size of mean and partition size should be identical');
 				end
 				%we need as steps in stddev and mean as there are time steps: 
-				if size(self.stddev,2)~=self.nsteps,
+				if size(self.stddev,2)~=self.nsteps
 					error('normal_uncertain error message: col size of stddev and number of time steps should be identical');
 				end
-				if size(self.mean,2)~=self.nsteps,
+				if size(self.mean,2)~=self.nsteps
 					error('normal_uncertain error message: col size of mean and number of time steps should be identical');
 				end
 
 				md = checkfield(md,'field',self.partition,'fieldname','normal_uncertain.partition','NaN',1,'Inf',1,'>=',-1,'numel',[md.mesh.numberofvertices,md.mesh.numberofelements]);
-				if size(self.partition,2)>1,
+				if size(self.partition,2)>1
 					error('normal_uncertain error message: partition should be a column vector');
 				end
 				partcheck=unique(self.partition);
 				partmin=min(partcheck);
 				partmax=max(partcheck);
-				if partmax<-1,
+				if partmax<-1
 					error('normal_uncertain error message: partition vector''s min value should be -1 (for no partition), or start at 0');
 				end
 				nmax=max(md.mesh.numberofelements,md.mesh.numberofvertices);
-				if partmax>nmax,
+				if partmax>nmax
 					error('normal_uncertain error message: partition vector''s values cannot go over the number of vertices or elements');
 				end
 			end
@@ -161,14 +161,14 @@ classdef normal_uncertain
 		end % }}}
 		%new methods:
 		function distributed=isdistributed(self) % {{{
-			if strncmp(self.descriptor,'distributed_',12),
+			if strncmp(self.descriptor,'distributed_',12)
 				distributed=1;
 			else
 				distributed=0;
 			end
 		end % }}}
 		function scaled=isscaled(self) % {{{
-			if strncmp(self.descriptor,'scaled_',7),
+			if strncmp(self.descriptor,'scaled_',7)
 				scaled=1;
 			else
 				scaled=0;

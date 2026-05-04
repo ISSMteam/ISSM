@@ -21,7 +21,7 @@ classdef masstransport
 			% old fields must be recovered (make sure they are in the deprecated
 			% model properties)
 
-			if verLessThan('matlab','7.9'),
+			if verLessThan('matlab','7.9')
 				disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
 				disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -50,7 +50,7 @@ classdef masstransport
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -94,7 +94,7 @@ classdef masstransport
 			md = checkfield(md,'fieldname','masstransport.stabilization','values',[0 1 2 3 4 5]);
 			md = checkfield(md,'fieldname','masstransport.min_thickness','>',0);
 			md = checkfield(md,'fieldname','masstransport.requested_outputs','stringrow',1);
-			if ~any(isnan(md.stressbalance.vertex_pairing)),
+			if ~any(isnan(md.stressbalance.vertex_pairing))
 				md = checkfield(md,'fieldname','stressbalance.vertex_pairing','>',0);
 			end
 		end % }}}
@@ -127,7 +127,7 @@ classdef masstransport
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

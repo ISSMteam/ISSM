@@ -41,7 +41,7 @@ classdef linearbasalforcingsarma
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
@@ -75,7 +75,7 @@ classdef linearbasalforcingsarma
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0),
+			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0)
 				nbas = md.basalforcings.num_basins;
 				nprm = md.basalforcings.num_params;
 				nbrk = md.basalforcings.num_breaks;
@@ -109,10 +109,10 @@ classdef linearbasalforcingsarma
 					error('md.basalforcings.num_breaks is 0 but md.basalforcings.datebreaks is not empty');
          end
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				error('not implemented yet!');
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0),
+			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0)
 				error('not implemented yet!');
 			end
 			if numel(md.basalforcings.geothermalflux)>1

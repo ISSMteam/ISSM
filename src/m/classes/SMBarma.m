@@ -68,7 +68,7 @@ classdef SMBarma
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				nbas = md.smb.num_basins;
 				nprm = md.smb.num_params;
 				nbrk = md.smb.num_breaks;
@@ -265,7 +265,7 @@ classdef SMBarma
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];											%remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)];	%add defaults
 			end

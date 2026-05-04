@@ -17,7 +17,7 @@ separator=filesep;
 mkdir(filename);
 
 %get the element related variables
-if dimension(model.mesh)==2,
+if dimension(model.mesh)==2
 	points=[model.mesh.x model.mesh.y zeros(model.mesh.numberofvertices,1)];
 else
 	error('Dimension not supported yet \n');
@@ -173,7 +173,7 @@ for step=1:num_of_timesteps;
 				%also checking for verry small value that mess up
 				smallval=(abs(res_struct.(fieldnames{k}))<1.0e-20);
 				res_struct.(fieldnames{k})(smallval)=0.0;
-				if (size(res_struct.(fieldnames{k}),2)==num_of_timesteps),
+				if (size(res_struct.(fieldnames{k}),2)==num_of_timesteps)
 					fprintf(fid,'SCALARS %s float 1 \n',fieldnames{k});
 					fprintf(fid,'LOOKUP_TABLE default\n');
 					s='%e\n';
@@ -200,9 +200,9 @@ for step=1:num_of_timesteps;
 		      end
 					lowtime=res_struct.(fieldnames{k})(end,index);
 					lowlim=res_struct.(fieldnames{k})(1:end-1,index);
-					if uptime==currenttime,
+					if uptime==currenttime
 						interp=uplim;
-					elseif lowtime==currenttime,
+					elseif lowtime==currenttime
 						interp=lowlim;
 					else
 						interp=lowlim+(uplim-lowlim)*((currenttime-lowtime)/(uptime-lowtime));

@@ -41,7 +41,7 @@ classdef love
 			% This function is directly called by matlab when a model object is
 			% loaded. Update old properties here
 
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(love(),oldself);

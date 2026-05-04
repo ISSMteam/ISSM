@@ -40,7 +40,7 @@ switch oshostname(),
       error('machine not supported yet');
 end
 
-if nargin==3,
+if nargin==3
    method='linear';% default
 else
    method=varargin{1};

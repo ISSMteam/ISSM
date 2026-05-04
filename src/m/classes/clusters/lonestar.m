@@ -126,7 +126,7 @@ classdef lonestar
 			executable='issm.exe';
 			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6),
+				if (version>=6)
 					executable='issm_dakota.exe';
 				end
 			end
@@ -145,7 +145,7 @@ classdef lonestar
 			fprintf(fid,'#SBATCH -n %i \n',cluster.numnodes*max(cluster.nprocs()/cluster.numnodes,24));
 			fprintf(fid,'#SBATCH -N %i \n',cluster.numnodes);
 			fprintf(fid,'#SBATCH -t %02i:%02i:00 \n\n',floor(cluster.time/3600),floor(mod(cluster.time,3600)/60));
-			for i=1:numel(cluster.modules),
+			for i=1:numel(cluster.modules)
 				fprintf(fid,['module load ' cluster.modules{i} '\n']);
 			end
 
@@ -187,10 +187,10 @@ classdef lonestar
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);

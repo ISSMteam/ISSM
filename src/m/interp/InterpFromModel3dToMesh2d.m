@@ -31,7 +31,7 @@ if dimension(md.mesh)~=3
 	error('Model should be 3d');
 end
 
-if (length(data)~=md.mesh.numberofelements & length(data)~=md.mesh.numberofvertices),
+if (length(data)~=md.mesh.numberofelements & length(data)~=md.mesh.numberofvertices)
    error('Data not supported yet');
 end
 
@@ -45,7 +45,7 @@ if length(x_prime)~=length(y_prime)
 end
 
 % First, check if a vertical average should be performed. If yes, perform a interpolation from a 2d mesh  
-if isnan(sigma),
+if isnan(sigma)
 	% average data and then interpolate onto the 2d mesh
 	averaged_data = DepthAverage(md,data);
 	data_prime = InterpFromMeshToMesh2d(md.mesh.elements2d,md.mesh.x2d,md.mesh.y2d,averaged_data,x_prime,y_prime,'default',default_value);
@@ -62,9 +62,9 @@ else
 	z_prime = sigma*ones(size(x_prime));
 
 	% Adjusting such that the 2d mesh is inside the 3d mesh
-	if sigma==0,
+	if sigma==0
 		z_prime = z_prime+eps;
-	elseif sigma==1,
+	elseif sigma==1
 		z_prime = z_prime-eps;
 	end
 

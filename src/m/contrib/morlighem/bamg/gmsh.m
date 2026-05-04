@@ -10,7 +10,7 @@ nbv = numel(x);
 t1=clock; fprintf('%s','      writing initial mesh files...');
 fid=fopen('model.geo','w');
 fprintf(fid,['// Gmsh input file, created by ISSM on ' date '\n']);
-for i=1:nbv,
+for i=1:nbv
 	fprintf(fid,'Point(%i) = {%8g, %8g, %8g};\n',i,x(i),y(i),0.);
 end
 for i=1:nbv-1

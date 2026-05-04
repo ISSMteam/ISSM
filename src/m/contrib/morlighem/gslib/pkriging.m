@@ -13,7 +13,7 @@ if 1
 % =========================================   MARSHALL.m =================================================
 disp(['marshalling file ' name '.bin']);
 fid=fopen([name '.bin'],'wb');
-if fid==-1,
+if fid==-1
 	error(['marshall error message: could not open ' name '.bin file for binary writing']);
 end
 

@@ -10,7 +10,7 @@ numberofnodes=50;
 rifts=expread(filename);
 
 !echo -n "" > Circles.exp
-for i=1:length(rifts),
+for i=1:length(rifts)
 	tip1=[rifts(i).x(1) rifts(i).y(1)];
 	tip2=[rifts(i).x(end) rifts(i).y(end)];
 	%create circle around tip

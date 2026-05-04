@@ -55,13 +55,13 @@ classdef giacaron
 				otherwise
 					options=pairoptions(varargin{:});
 					body=getfieldvalue(options,'body');
-					if strcmpi(body,'earth'), 
+					if strcmpi(body,'earth') 
 						self.numlayers=getfieldvalue(options,'numlayers',5);
 						self.calculate_sea_level=true;
 						%[self.radius,self.lame_mu, self.lame_lambda, self.issolid, self.density, ...
 						%self.viscosity, self.isburger, self.transient_viscosity, self.transient_mu]=...
 						%modelinit(self.numlayers);
-					elseif strcmpi(body,'europa'), 
+					elseif strcmpi(body,'europa') 
 						error('giacaron constructor error message: ''europa'' body not implemented yet!');
 					else 
 						error('giacaron constructor error message: body not implemented yet!');

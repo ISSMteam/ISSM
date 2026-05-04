@@ -33,16 +33,16 @@ switch datatype,
 			patch( 'Faces', [A B C], 'Vertices', [x y z],'CData', data,'FaceColor','flat','EdgeColor',edgecolor);
 			
 			%mask value NaN, plot white faces.
-			if getfieldvalue(options,'maskwhite',0),
+			if getfieldvalue(options,'maskwhite',0)
 				pos2=find(data==getfieldvalue(options,'maskvalue',NaN));
-				if ~isempty(pos2),
+				if ~isempty(pos2)
 					A=elements(pos(pos2),1); B=elements(pos(pos2),2); C=elements(pos(pos2),3); data=data(pos2);
 					patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceColor','w','EdgeColor',edgecolor);
 				end
 			end
 		end
 
-		if is2d,
+		if is2d
 		end
 
 	%node plot
@@ -69,7 +69,7 @@ switch datatype,
 	%quiver plot
 	case 3,
 
-		if is2d,
+		if is2d
 			plot_quiver(x,y,data(:,1),data(:,2),options);
 		else
 			plot_quiver3(x,y,z,data(:,1),data(:,2),data(:,3),options);

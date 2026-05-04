@@ -7,7 +7,7 @@ function options=checkplotoptions(md,options)
 %   See also: PLOTMODEL
 
 %units
-if exist(options,'unit'),
+if exist(options,'unit')
 	if strcmpi(getfieldvalue(options,'unit'),'km')
 		options=changefieldvalue(options,'unit',10^-3);
 	end
@@ -18,34 +18,34 @@ if exist(options,'unit'),
 end
 
 %density
-if exist(options,'density'),
+if exist(options,'density')
 	density=getfieldvalue(options,'density');
 	options=changefieldvalue(options,'density',abs(ceil(density)));
 end
 
 %Show section
-if exist(options,'showsection'),
+if exist(options,'showsection')
 	if strcmpi(getfieldvalue(options,'showsection'),'on')
 		options=changefieldvalue(options,'showsection',4);
 	end
 end
 
 %smooth values
-if exist(options,'smooth'),
+if exist(options,'smooth')
 	if strcmpi(getfieldvalue(options,'smooth'),'on')
 		options=changefieldvalue(options,'smooth',0);
 	end
 end
 
 %contouronly values
-if exist(options,'contouronly'),
+if exist(options,'contouronly')
 	if strcmpi(getfieldvalue(options,'contouronly'),'on')
 		options=changefieldvalue(options,'contouronly',1);
 	end
 end
 
 %Colorbar;
-if exist(options,'colorbar'),
+if exist(options,'colorbar')
 	if strcmpi(getfieldvalue(options,'colorbar'),'on')
 		options=changefieldvalue(options,'colorbar',1);
 	elseif strcmpi(getfieldvalue(options,'colorbar'),'off')
@@ -54,24 +54,24 @@ if exist(options,'colorbar'),
 end
 
 %text
-if exist(options,'text'),
+if exist(options,'text')
 	%1: textvalue
 	textvalues=getfieldvalue(options,'text');
 	%ischar if only one expstyle -> create a cell
-	if ischar(textvalues),
+	if ischar(textvalues)
 		textvalues={textvalues};
 		numtext=1;
-	elseif iscell(textvalues),
+	elseif iscell(textvalues)
 		numtext=length(textvalues);
 	else
 		error('plot error message: ''text'' option should be either a string or a cell');
 	end
 
 	%2: textweight
-	if exist(options,'textweight'),
+	if exist(options,'textweight')
 		textweightvalues=getfieldvalue(options,'textweight');
 		%ischar if only one textweight -> create a cell
-		if ischar(textweightvalues),
+		if ischar(textweightvalues)
 			textweightvalues={textweightvalues};
 		elseif ~iscell(textweightvalues);
 			error('plot error message: ''textweight'' option should be either a string or a cell');
@@ -82,10 +82,10 @@ if exist(options,'text'),
 	textweightvalues=repmat(textweightvalues,1,numtext); textweightvalues(numtext+1:end)=[];
 
 	%3: textsize
-	if exist(options,'textsize'),
+	if exist(options,'textsize')
 		textsizevalues=getfieldvalue(options,'textsize');
 		%ischar if only one textsize -> create a cell
-		if isnumeric(textsizevalues),
+		if isnumeric(textsizevalues)
 			textsizevalues={textsizevalues};
 		elseif ~iscell(textsizevalues);
 			error('plot error message: ''textsize'' option should be either a number or a cell');
@@ -95,10 +95,10 @@ if exist(options,'text'),
 	end
 	textsizevalues=repmat(textsizevalues,1,numtext); textsizevalues(numtext+1:end)=[];
 	%4: textcolor
-	if exist(options,'textcolor'),
+	if exist(options,'textcolor')
 		textcolorvalues=getfieldvalue(options,'textcolor');
 		%ischar if only one textcolor -> create a cell
-		if ischar(textcolorvalues),
+		if ischar(textcolorvalues)
 			textcolorvalues={textcolorvalues};
 		elseif ~iscell(textcolorvalues);
 			error('plot error message: ''textcolor'' option should be either a string or a cell');
@@ -108,10 +108,10 @@ if exist(options,'text'),
 	end
 	textcolorvalues=repmat(textcolorvalues,1,numtext); textcolorvalues(numtext+1:end)=[];
 	%5: textposition
-	if exist(options,'textposition'),
+	if exist(options,'textposition')
 		textpositionvalues=getfieldvalue(options,'textposition');
 		%ischar if only one textposition -> create a cell
-		if isnumeric(textpositionvalues),
+		if isnumeric(textpositionvalues)
 			textpositionvalues={textpositionvalues};
 		elseif ~iscell(textpositionvalues);
 			error('plot error message: ''textposition'' option should be either a string or a cell');
@@ -120,10 +120,10 @@ if exist(options,'text'),
 		error('plot error message: ''textposition'' option is missing');
 	end
 	%6: textrotation
-	if exist(options,'textrotation'),
+	if exist(options,'textrotation')
 		textrotationvalues=getfieldvalue(options,'textrotation');
 		%ischar if only one textsize -> create a cell
-		if isnumeric(textrotationvalues),
+		if isnumeric(textrotationvalues)
 			textrotationvalues={textrotationvalues};
 		elseif ~iscell(textrotationvalues);
 			error('plot error message: ''textrotation'' option should be either a number or a cell');
@@ -144,22 +144,22 @@ end
 expdispvaluesarray=cell(0,0);
 expstylevaluesarray=cell(0,0);
 expstylevalues=cell(0,0);
-if exist(options,'expstyle'),
+if exist(options,'expstyle')
 	expstylevalues=getfieldvalue(options,'expstyle');
 	%ischar if only one expstyle -> create a cell
-	if ischar(expstylevalues),
+	if ischar(expstylevalues)
 		expstylevalues={expstylevalues};
 	end
 end
-if exist(options,'expdisp'),
+if exist(options,'expdisp')
 	expdispvalues=getfieldvalue(options,'expdisp');
 	%ischar if only one expstyle -> create a cell
-	if ischar(expdispvalues),
+	if ischar(expdispvalues)
 		expdispvalues={expdispvalues};
 	end
 	for i=1:length(expdispvalues)
 		expdispvaluesarray{end+1}=expdispvalues{i};
-		if (length(expstylevalues)>=i),
+		if (length(expstylevalues)>=i)
 			expstylevaluesarray{end+1}=expstylevalues{i};
 		else
 			expstylevaluesarray{end+1}='g-';
@@ -170,14 +170,14 @@ options=changefieldvalue(options,'expstyle',expstylevaluesarray);
 options=changefieldvalue(options,'expdisp',expdispvaluesarray);
 
 %latlonnumbering
-if exist(options,'latlonclick'),
+if exist(options,'latlonclick')
 	if strcmpi(getfieldvalue(options,'latlonclick'),'on')
 		options=changefieldvalue(options,'latlonclick',1);
 	end
 end
 
 %north arrow
-if exist(options,'northarrow'),
+if exist(options,'northarrow')
 	if strcmpi(getfieldvalue(options,'northarrow'),'on')
 		%default values
 		Lx=max(md.mesh.y)-min(md.mesh.y);
@@ -188,7 +188,7 @@ if exist(options,'northarrow'),
 end
 
 %scale ruler
-if exist(options,'scaleruler'),
+if exist(options,'scaleruler')
 	if strcmpi(getfieldvalue(options,'scaleruler'),'on')
 		%default values
 		Lx=max(md.mesh.x)-min(md.mesh.x);
@@ -199,7 +199,7 @@ if exist(options,'scaleruler'),
 end
 
 %Log scale (LOTS of changes to be performed
-if exist(options,'log'),
+if exist(options,'log')
 	if exist(options,'caxis')
 		options=addfield(options,'caxis_pre',getfieldvalue(options,'caxis'));
 		options=changefieldvalue(options,'caxis',log(getfieldvalue(options,'caxis'))/log(getfieldvalue(options,'log')));

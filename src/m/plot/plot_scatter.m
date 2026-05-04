@@ -12,18 +12,18 @@ function plot_scatter(x,y,level,varargin),
 %      'Cutoff'     : cut the line if the distance between 2 points is
 %                     greater than Cutoff (default is 1000)
 
-if nargin == 4,
+if nargin == 4
 	options = varargin{1};
 else
 	options=pairoptions(varargin{:}); 
 end
 
 %check input
-if numel(x)~=numel(y) | numel(x)~=numel(level),
+if numel(x)~=numel(y) | numel(x)~=numel(level)
 	error('x, y and data should have the same size');
 end
 
-if exist(options,'subset'),
+if exist(options,'subset')
 	pos=getfieldvalue(options,'subset');
 	x=x(pos);
 	y=y(pos);
@@ -44,16 +44,16 @@ nlab=10;
 %Max=1300;
 
 %OK, should we create a new colorbar for the occasion?
-if isempty(findobj(gcf,'tag','TMW_COLORBAR')) && isempty(findobj(gcf,'Type','Colorbar')),
+if isempty(findobj(gcf,'tag','TMW_COLORBAR')) && isempty(findobj(gcf,'Type','Colorbar'))
 	alreadyplot=false;
 else
 	alreadyplot=true;
 end
 
 %generate levels
-if (alreadyplot),
+if (alreadyplot)
 	phch = get(findall(gcf,'type','image','tag','TMW_COLORBAR'),{'parent'});
-	if ~isempty(phch),
+	if ~isempty(phch)
 		h    = phch{1};
 		ylim=get(h,'YLim');
 	else
@@ -81,7 +81,7 @@ colorind(find(level>levels(end)))=numcolors;
 %loop over the number of colors
 hold on
 hp=[];
-if ~exist(options,'line'),
+if ~exist(options,'line')
 	for i=1:numcolors
 		pos=find(colorind==i);
 	%	hprime=plot3(x(pos),y(pos),ones(size(x(pos))),...
@@ -98,7 +98,7 @@ else
 	for j=1:numcolors;
 		pos=find(colorind==j);
 		if(~isempty(pos) & pos(1)==1), pos(1)=[]; end
-		if ~isempty(pos),
+		if ~isempty(pos)
 			tempx = [x(pos-1) x(pos) NaN(size(pos))]';
 			tempy = [y(pos-1) y(pos) NaN(size(pos))]';
 			line(tempx(1:end-1),tempy(1:end-1),'color',palette(j,:),'linewidth',getfieldvalue(options,'LineWidth',2));
@@ -109,7 +109,7 @@ end
 %Stop MATLAB's default interactivity
 disableDefaultInteractivity(gca);
 
-if ~alreadyplot,
+if ~alreadyplot
 	% format the colorbar
 	h    = colorbar;
 	caxis([min(levels) max(levels)]);

@@ -13,28 +13,28 @@ subplot(nlines,ncols,index);
 hold on
 
 %plot mesh boundaries
-for i=1:size(md.mesh.segments,1),
+for i=1:size(md.mesh.segments,1)
 	plot(x(md.mesh.segments(i,1:2)),y(md.mesh.segments(i,1:2)),'k-');
 end
 
 isp1=0;
 isp2=0;
 
-if isstruct(md.rifts.riftstruct),
+if isstruct(md.rifts.riftstruct)
 	%plot mesh boundaries
-	for i=1:size(md.mesh.segments,1),
+	for i=1:size(md.mesh.segments,1)
 		h1=plot(x(md.mesh.segments(i,1:2)),y(md.mesh.segments(i,1:2)),'b-');
 	end
-	for i=1:size(md.rifts.riftstruct,1),
+	for i=1:size(md.rifts.riftstruct,1)
 		penaltypairs=md.rifts.riftstruct(i).penaltypairs;
 
 		segments=md.rifts.riftstruct(i).segments;
-		for j=1:size(segments,1),
+		for j=1:size(segments,1)
 			plot(x(segments(j,1:2)),y(segments(j,1:2)),'b-');
 		end
 
 		normal=zeros(2,1);
-		for j=1:size(penaltypairs,1),
+		for j=1:size(penaltypairs,1)
 			normal(1)=penaltypairs(j,5);
 			normal(2)=penaltypairs(j,6);
 
@@ -59,7 +59,7 @@ if isstruct(md.rifts.riftstruct),
 		h2=plot(x(md.rifts.riftstruct(i).tips(1)),y(md.rifts.riftstruct(i).tips(1)),'g*');
 		plot(x(md.rifts.riftstruct(i).tips(2)),y(md.rifts.riftstruct(i).tips(2)),'g*');
 	end
-	if strcmpi(getfieldvalue(options,'legend','on'),'on'),
+	if strcmpi(getfieldvalue(options,'legend','on'),'on')
 		if isp1 & isp2
 			l=legend([h1,h2,p1,p2],'mesh boundaries','crack tips','faults','rifts');
 		elseif isp1

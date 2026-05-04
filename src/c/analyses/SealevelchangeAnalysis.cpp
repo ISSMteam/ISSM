@@ -316,7 +316,7 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 				/* These samples are spaced by intervals that double into the future.
 				 * This captures fast evolving rates right after loading, then the
 				 * slower relaxation times. */
-				nt=reCast<int>((final_time-start_time)/timeacc)+1; /*initial estimate, we may have to go further*/
+				nt=reCast<int,IssmDouble>((final_time-start_time)/timeacc)+1; /*initial estimate, we may have to go further*/
 				int* viscoussamplingindex2=NULL;
 				if(viscoussampling>=nt){
 					n=nt;

@@ -55,8 +55,8 @@ else
 	if status ~= 0
 		error(['scp error message: ' cmdout])
 	end
-	for i=1:numel(packages),
-		if ~exist(['./' packages{i}]),
+	for i=1:numel(packages)
+		if ~exist(['./' packages{i}])
 			warning(['issmscpin error message: could not scp ' packages{i}]);
 		end
 	end

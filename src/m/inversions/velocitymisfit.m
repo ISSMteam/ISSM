@@ -8,7 +8,7 @@ function J=velocitymisfit(md)
 %   - observed velocities will be pulled from md.inversion.vx_obs/vy_obs
 
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 	elements=md.mesh.elements;
 	x=md.mesh.x;
 	y=md.mesh.y;

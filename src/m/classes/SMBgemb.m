@@ -564,7 +564,7 @@ classdef SMBgemb
 
 			%check zTop is < local thickness:
 			he=sum(md.geometry.thickness(md.mesh.elements),2)/size(md.mesh.elements,2);
-			if any(he<self.zTop),
+			if any(he<self.zTop)
 				error('SMBgemb consistency check error: zTop should be smaller than local ice thickness');
 			end
 			md = checkfield(md,'fieldname','smb.steps_per_step','>=',1,'numel',[1]);
@@ -728,7 +728,7 @@ classdef SMBgemb
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

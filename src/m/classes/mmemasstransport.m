@@ -46,12 +46,12 @@ classdef mmemasstransport
 
 			nids=length(self.ids); 
 			nt=length(self.thickness);
-			if size(self.ids,1) < size(self.ids,2),
+			if size(self.ids,1) < size(self.ids,2)
 				error('mmemasstransport checkconsistency error message: ids should be a column vector');
 			end
 			md = checkfield(md,'field',self.partition,'fieldname','partition','NaN',1,'Inf',1,'>=',-1,'<=',nids-1,'size',[md.mesh.numberofelements,1]);
 			md = checkfield(md,'field',self.ids,'fieldname','ids','NaN',1,'Inf',1,'>=',1,'<=',nt);
-			for i=1:nt,
+			for i=1:nt
 				md = checkfield(md,'field',self.thickness{i},'fieldname',['self.thickness{' num2str(i) '}'],'NaN',0,'Inf',1,'timeseries',1,'timeserieslength',md.mesh.numberofelements+1); %don't check for NaN, as it's a legit value here for vertices that do not belong to the current Mme. 
 			end
 			md = checkfield(md,'fieldname','mmemasstransport.requested_outputs','stringrow',1);
@@ -76,7 +76,7 @@ classdef mmemasstransport
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

@@ -5,14 +5,14 @@ function dhdt=contourmassbalance(md,file)
 %      dhdt=contourmassbalance(md,file)
 
 %some checks
-if nargin~=2,
+if nargin~=2
 	help contourmassbalance
 	error('contourmassbalance error message: bad usage');
 end
 if ((length(md.initialization.vx)~=md.mesh.numberofvertices)|(length(md.initialization.vy)~=md.mesh.numberofvertices))
 	error(['thicknessevolution error message: vx and vy should have a length of ' num2str(md.mesh.numberofvertices)])
 end
-if ~exist(file),
+if ~exist(file)
 	error(['thicknessevolution error message: file ' file ' not found']);
 end
 

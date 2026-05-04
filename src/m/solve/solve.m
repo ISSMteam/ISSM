@@ -142,7 +142,7 @@ else
 	filelist{end+1}=[modelname '.queue'];
 end
 
-if md.qmu.isdakota,
+if md.qmu.isdakota
 	filelist{end+1} = [modelname '.qmu.in'];
 end
 

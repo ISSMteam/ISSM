@@ -49,11 +49,11 @@ fprintf(fid,'%i %i %i %i\n',[md.mesh.elements zeros(md.mesh.numberofelements,1)]
 numberofelements1=md.mesh.numberofelements;
 
 %Deal with rifts
-if ~isnan(md.rifts.riftstruct),
+if ~isnan(md.rifts.riftstruct)
 
 	%we have the list of triangles that make up the rift. keep those triangles around during refinement.
 	triangles=[];
-	for i=1:size(md.rifts.riftstruct,1),
+	for i=1:size(md.rifts.riftstruct,1)
 		triangles=[triangles md.rifts(i).riftstruct.segments(:,3)'];
 	end
 

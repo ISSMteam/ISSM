@@ -22,7 +22,7 @@ function [contours edges_tria]=isoline(md,field,varargin)
 options = pairoptions(varargin{:});
 
 %process data 
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	% error('contourlevelzero error message: routine not supported for 3d meshes, project on a layer');
 	x = md.mesh.x2d;
 	y = md.mesh.y2d;
@@ -40,14 +40,14 @@ if exist(options,'amr')
 end
 
 %Deal with z coordinate
-if isprop(md.mesh,'z'),
+if isprop(md.mesh,'z')
 	z=md.mesh.z;
 else
 	z=zeros(numel(x),1);
 end
 
 if isempty(field), error('field provided is empty'); end
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	if length(field)~=md.mesh.numberofvertices2d
 		error('field provided should be of size md.mesh.numberofvertices2d'); 
 	end
@@ -114,7 +114,7 @@ poselem=find(poselem12 | poselem13 | poselem23);
 numelems=length(poselem);
 
 %if no element has been flagged, skip to the next level
-if numelems==0,
+if numelems==0
 	warning('isoline warning message: no elements found with corresponding value');
 	contours=struct([]);
 	return;
@@ -130,7 +130,7 @@ z2=zeros(numelems,1);
 
 edge_l=zeros(numelems,2);
 
-for j=1:numelems,
+for j=1:numelems
 
 	weight1=(level-Data1(poselem(j),1))/(Data1(poselem(j),2)-Data1(poselem(j),1));
 	weight2=(level-Data2(poselem(j),1))/(Data2(poselem(j),2)-Data2(poselem(j),1));
@@ -148,7 +148,7 @@ for j=1:numelems,
 		edge_l(j,1)=Seg1_num(poselem(j));
 		edge_l(j,2)=Seg2_num(poselem(j));
 
-	elseif poselem13(poselem(j)),
+	elseif poselem13(poselem(j))
 
 		x1(j)=x(Seg1(poselem(j),1))+weight1*(x(Seg1(poselem(j),2))-x(Seg1(poselem(j),1)));
 		x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -160,7 +160,7 @@ for j=1:numelems,
 		edge_l(j,1)=Seg1_num(poselem(j));
 		edge_l(j,2)=Seg3_num(poselem(j));
 
-	elseif poselem23(poselem(j)),
+	elseif poselem23(poselem(j))
 
 		x1(j)=x(Seg2(poselem(j),1))+weight2*(x(Seg2(poselem(j),2))-x(Seg2(poselem(j),1)));
 		x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -181,7 +181,7 @@ end
 %loop over the subcontours
 contours=struct([]);
 
-while ~isempty(edge_l),
+while ~isempty(edge_l)
 
 	%take the right edge of the second segment and connect it to the next segments if any
 	e1=edge_l(1,1);   e2=edge_l(1,2);
@@ -198,7 +198,7 @@ while ~isempty(edge_l),
 
 	while ~isempty(ro1)
 
-		if co1==1,
+		if co1==1
 			xc=[x2(ro1);xc]; yc=[y2(ro1);yc];zc=[z2(ro1);zc];
 
 			%next edge:
@@ -226,7 +226,7 @@ while ~isempty(edge_l),
 
 	while ~isempty(ro2)
 
-		if co2==1,
+		if co2==1
 			xc=[xc;x2(ro2)]; yc=[yc;y2(ro2)];zc=[zc;z2(ro2)];
 
 			%next edge:

@@ -16,18 +16,18 @@ function indices=meshintersect(lat,long,lats,longs,varargin)
 	%go through lats,longs and find within tolerance, the index of the corresponding value in lat,long: 
 	indices=zeros(length(lats),1);
 	
-	for i=1:length(lats),
+	for i=1:length(lats)
 		distance=sqrt((lat-lats(i)).^2+(long-longs(i)).^2);
 		s=find(distance<tolerance);
-		if length(s)>1,
+		if length(s)>1
 			indices(i)=s(1);
 			format long
 			[lats(i) longs(i)]
-			for j=1:length(s),
+			for j=1:length(s)
 				[lat(s(j)) long(s(j))]
 			end
 			error('one or more vertices on the global mesh were duplicated!');
-		elseif isempty(s),
+		elseif isempty(s)
 			plot(distance)
 			min(distance)
 			error('could not find vertices in common, relax tolerance?');

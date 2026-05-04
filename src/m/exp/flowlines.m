@@ -19,13 +19,13 @@ function flowpath=flowlines(index,x,y,u,v,x0,y0,varargin)
 %      - 'cutoff':    velocity threshold to stop propagating flowlines (default: 0)
 
 %check input
-if (length(x)~=length(y) | length(x)~=length(u) | length(x)~=length(v)),
+if (length(x)~=length(y) | length(x)~=length(u) | length(x)~=length(v))
 	error('flowlines error message: x,y,u and v must have the same length');
 end
-if length(x)<3,
+if length(x)<3
 	error('flowlines error message: at least one element is required');
 end
-if length(x0)~=length(y0),
+if length(x0)~=length(y0)
 	error('flowlines error message: x0 and y0 do not have the same length');
 end
 
@@ -49,7 +49,7 @@ y0(pos)=[];
 N=length(x0);
 X=x0; Y=y0;
 flowpath=struct('x',cell(N,1),'y',cell(N,1),'name','','density',1);
-for i=1:N,
+for i=1:N
 	flowpath(i).x=x0(i);
 	flowpath(i).y=y0(i);
 end
@@ -64,7 +64,7 @@ length_tria=1/3*(sqrt( (x(index(:,1))-x(index(:,2))).^2+(y(index(:,1))-y(index(:
 u=u(index)*[1;1;1]/3;
 v=v(index)*[1;1;1]/3;
 
-if downstream,
+if downstream
 	%initialization:
 	counter=1;
 
@@ -85,7 +85,7 @@ if downstream,
 		tria(listnan)=[]; 
 		queue(listnan)=[];
 
-		if isempty(tria),
+		if isempty(tria)
 			break;
 		end
 
@@ -114,7 +114,7 @@ if downstream,
 end
 
 %same process but reverse (vel=-vel) to have a vcomplete flow line
-if upstream,
+if upstream
 	queue=[];
 	counter=1;
 	X=x0; Y=y0;
@@ -137,7 +137,7 @@ if upstream,
 		tria(listnan)=[]; 
 		queue(listnan)=[];
 
-		if isempty(tria),
+		if isempty(tria)
 			break;
 		end
 
