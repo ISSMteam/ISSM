@@ -396,7 +396,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsNan(Gnorm));
 	_assert_(!xIsInf(Gnorm));
 
-	/* save control field and iteration if the minimum so far */
+	/* save control field and iteration if this is the minimum so far*/
 	if (J < *Jmin){
 	  *Jmin = reCast<double>(J);
 	  *Jlistimin = *Jlisti;
@@ -497,7 +497,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	mystruct.N        = num_cost_functions+1;
 	mystruct.Jlist    = xNewZeroInit<IssmPDouble>(mystruct.M*mystruct.N);	
 	mystruct.i        = xNewZeroInit<int>(1);
-	mystruct.imin     = xNewZeroInit<int>(1);
+	mystruct.imin     = xNewZeroInit<int>(1);	
 	mystruct.Jmin     = xNewZeroInit<double>(1);
 	*(mystruct.Jmin)  = 1e+50;
 	mystruct.Xmin     = xNewZeroInit<double>(n);
@@ -539,19 +539,31 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	GetPassiveVectorFromControlInputsx(&XL,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"lowerbound");
 	GetPassiveVectorFromControlInputsx(&XU,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"upperbound");
 
+	/* recover control fields with minimum cost function*/
+	double *Xmin = NULL;
+	double *Gmin = NULL;
+	if ((*mystruct.imin) + 1 == maxiter){
+	  Xmin = X;
+	  Gmin = G;
+	}
+	else{
+	  Xmin = mystruct.Xmin;
+	  Gmin = mystruct.Gmin;
+	}
+	
 	offset = 0;
 	for (int c=0;c<num_controls;c++){
 	  for(int i=0;i<M[c]*N[c];i++){
 	    int index = offset+i;
-	    mystruct.Xmin[index] = mystruct.Xmin[index]*scaling_factors[c];
-	    if(mystruct.Xmin[index]>XU[index]) mystruct.Xmin[index]=XU[index];
-	    if(mystruct.Xmin[index]<XL[index]) mystruct.Xmin[index]=XL[index];
+	    Xmin[index] = Xmin[index]*scaling_factors[c];
+	    if(Xmin[index]>XU[index]) Xmin[index]=XU[index];
+	    if(Xmin[index]<XL[index]) Xmin[index]=XL[index];
 	  }
 	  offset += M[c]*N[c];
 	}
 
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,reCast<IssmDouble*>(mystruct.Gmin));
-	SetControlInputsFromVectorx(femmodel, mystruct.Xmin);
+	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,reCast<IssmDouble*>(Gmin));
+	SetControlInputsFromVectorx(femmodel, Xmin);
 
 	
 	if (solution_type == TransientSolutionEnum){
@@ -563,8 +575,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 		for(int i=0;i<num_controls;i++){
 
 			/*Disect results*/
-		        GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&mystruct.Gmin[offset],N[i],M[i]);
-			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&mystruct.Xmin[offset],N[i],M[i]);
+		        GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&Gmin[offset],N[i],M[i]);
+			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&Xmin[offset],N[i],M[i]);
 
 			/*transpose for consistency with MATLAB's formating*/
 			G_output->Transpose();
