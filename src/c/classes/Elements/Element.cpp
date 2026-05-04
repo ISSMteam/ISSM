@@ -5849,10 +5849,10 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				xDelete<IssmDouble>(xinterp);
 				xDelete<IssmDouble>(yinterp);
 				xDelete<int>(mappedforcingpoints);
-				xDelete<IssmDouble>(xelem);
-				xDelete<IssmDouble>(yelem);
-				xDelete<IssmDouble>(latelem);
-				xDelete<IssmDouble>(lonelem);
+				xDelete<double>(xelem);
+				xDelete<double>(yelem);
+				xDelete<double>(latelem);
+				xDelete<double>(lonelem);
 				xDelete<IssmDouble>(lat_mappingpoint);
 				xDelete<IssmDouble>(lon_mappingpoint);
 				xDelete<int>(mappedforcingneighbors);
