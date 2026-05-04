@@ -5,7 +5,7 @@ function returnvalue=isnans(array)
 %
 %  See also : ISNAN 
 
-if isstruct(array), 
+if isstruct(array) 
 	returnvalue=0;
 elseif iscell(array)
 	returnvalue=0;

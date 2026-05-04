@@ -11,7 +11,7 @@ function md=argusmesh(md,infile)
 %     md=argusmesh(md,'Domain.exp')
 
 %some argument check: 
-if nargin~=2 | nargout~=1,
+if nargin~=2 | nargout~=1
 	help argustomodel;
 	error('argustomodel error message: bad usage');
 end
@@ -24,13 +24,13 @@ disp(['   Translating argus file ''' infile ''' into matlab model object']);
 
 %open infile: 
 fileid=fopen(infile,'r');
-if fileid==-1,
+if fileid==-1
 	error(['Could not open file ' infile  ' for reading']);
 end
 
 %Read first line of the argus mesh: node and element parameters
 [buffer,bytecount]=fscanf(fileid,'%i %i %i %i',[1 4]);
-if bytecount~=4, 
+if bytecount~=4 
 	error(['Problem reading ' infile ' file at line #1']);
 end
 nel=buffer(1);
@@ -49,11 +49,11 @@ node_parameters=zeros(nods,num_node_parameters);
 
 %read nodes:
 format_string='%s %i %f %f ';
-for n=1:num_node_parameters,
+for n=1:num_node_parameters
 	format_string=[format_string ' %i '];
 end
 
-for n=1:nods,
+for n=1:nods
 	[buffer,bytecount]=fscanf(fileid,format_string,[1,num_node_parameters+4]);
 	x(n)=buffer(3);
 	y(n)=buffer(4);
@@ -62,10 +62,10 @@ end
 
 %read elements: 
 format_string='%s %i %i %i %i';
-for n=1:num_element_parameters,
+for n=1:num_element_parameters
 	format_string=[format_string ' %i '];
 end
-for n=1:nel,
+for n=1:nel
 	[buffer,bytecount]=fscanf(fileid,format_string,[1,num_element_parameters+5]);
 	elements(n,:)=buffer(3:5);
 	element_parameters(n,:)=buffer(6:length(buffer));

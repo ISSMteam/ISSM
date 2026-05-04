@@ -16,7 +16,7 @@ Max=max(Norm);
 
 %Scale data
 scalingfactor=getfieldvalue(options,'scaling',0.40);
-if strcmpi(getfieldvalue(options,'autoscale','on'),'off'),
+if strcmpi(getfieldvalue(options,'autoscale','on'),'off')
 	delta=((min(x)-max(x))^2+(min(y)-max(y))^2)/numel(x);
 	u=scalingfactor*sqrt(delta)*u./Norm;
 	v=scalingfactor*sqrt(delta)*v./Norm;
@@ -28,8 +28,8 @@ end
 
 %number of colors?
 colorlevels=getfieldvalue(options,'colorlevels',30);
-if isnumeric(colorlevels),
-	if isnan(colorlevels),
+if isnumeric(colorlevels)
+	if isnan(colorlevels)
 		numcolors=30;
 	else
 		numcolors=colorlevels;
@@ -61,7 +61,7 @@ quivers=struct('x',x,'y',y,'u',u,'v',v,'levels',levels,'colorind',colorind,'numc
 if numcolors==2;
 	%blue and red
 	palette=colormap([0 0 1;1 0 0]);
-elseif numcolors==3,
+elseif numcolors==3
 	%blue yellow and red
 	palette=colormap([0 0 1;1 1 0;1 0 0]);
 else

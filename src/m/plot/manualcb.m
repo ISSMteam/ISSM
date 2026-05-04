@@ -18,11 +18,11 @@ function h=manualcb(zmin,zmax,cmap,varargin)
 %      - 'inverttickposition' : put ticks on the left hand side for vertical cb
 
 %check inputs
-if nargin<3,
+if nargin<3
 	help manualcb
 	error('bad usage');
 end
-if zmin>zmax,
+if zmin>zmax
 	error('zmin should be smaller than zmax');
 end
 
@@ -31,7 +31,7 @@ mainaxes = gca;
 
 %process options
 options = pairoptions(varargin{:});
-if exist(options,'tick') & exist(options,'ticksep'),
+if exist(options,'tick') & exist(options,'ticksep')
 	error('only one of tick or ticksep can be specified');
 end
 fontsize  = getfieldvalue(options,'fontsize',12);
@@ -39,7 +39,7 @@ fontcolor = getfieldvalue(options,'fontcolor','k');
 smallbars = getfieldvalue(options,'smallbars',false);
 
 %Colorbar position
-if ~exist(options,'position'),
+if ~exist(options,'position')
 	position = plotboxpos;
 	xstart   = position(1)+position(3)+0.01;
 	ystart   = position(2);
@@ -57,10 +57,10 @@ xlim([0 1]);
 ylim([0 1]);
 
 %Prepare ticks
-if ~exist(options,'log'),
+if ~exist(options,'log')
 	deltaz = getfieldvalue(options,'ticksep',dtick(zmax-zmin));
 	ztick  = getfieldvalue(options,'tick',(deltaz*ceil(zmin/deltaz)):deltaz:zmax);
-	if (any(ztick>zmax) | any(ztick<zmin)),
+	if (any(ztick>zmax) | any(ztick<zmin))
 		error('one or more specified tick values falls outside of [zmin,zmax]');
 	end
 	ytick  = (ztick-zmin)/(zmax-zmin);
@@ -87,9 +87,9 @@ end
 %Display colorbar
 hold on
 numcolors=size(cmap,1);
-if 0,
+if 0
 	%disappears somtimes
-	if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical'),
+	if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical')
 		image_rgb = ind2rgb(repmat((1:numcolors)',1,10),cmap);
 	else
 		image_rgb = ind2rgb(repmat((1:numcolors),10,1),cmap);
@@ -98,12 +98,12 @@ if 0,
 	imagesc([0 1],[0 1],image_rgb);
 else
 	%Creates triangles when exported as pdf
-	if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical'),
-		for i=1:numcolors,
+	if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical')
+		for i=1:numcolors
 			patch([0,0,1,1],[(i-1)/numcolors,i/numcolors,i/numcolors,(i-1)/numcolors],0,'FaceColor',cmap(i,:),'Clipping','off','EdgeColor','none')
 		end
 	else
-		for i=1:numcolors,
+		for i=1:numcolors
 			patch([(i-1)/numcolors,i/numcolors,i/numcolors,(i-1)/numcolors],[0,0,1,1],0,'FaceColor',cmap(i,:),'Clipping','off','EdgeColor','none')
 		end
 	end
@@ -111,14 +111,14 @@ end
 patch([0,0,1,1],[0,1,1,0],fontcolor,'FaceColor','none','Clipping','off','Edgecolor',fontcolor)
 
 %Add ticks
-if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical'),
+if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical')
 	%Use FOR LOOP otherwise numbers are not correcly centered
-	if getfieldvalue(options,'inverttickposition',0)==1,
+	if getfieldvalue(options,'inverttickposition',0)==1
 		for i=1:length(ytick), text(-0.5,ytick(i),num2str(ztick(i)),'HorizontalAlignment','right','VerticalAlignment','middle','FontSize',fontsize,'Color',fontcolor); end
 	else
 		for i=1:length(ytick), text(1.5,ytick(i),num2str(ztick(i)),'HorizontalAlignment','left','VerticalAlignment','middle','FontSize',fontsize,'Color',fontcolor); end
 	end
-	if smallbars,
+	if smallbars
 		for i=1:numel(ztick)
 			patch([0.8 1.0],[ytick(i) ytick(i)],fontcolor,'Edgecolor',fontcolor)
 			patch([0.0 0.2],[ytick(i) ytick(i)],fontcolor,'Edgecolor',fontcolor)
@@ -127,7 +127,7 @@ if strcmpi(getfieldvalue(options,'orientation','vertical'),'vertical'),
 else
 	%Use FOR LOOP otherwise numbers are not correcly centered
 	for i=1:length(ytick), text(ytick(i),-0.5,num2str(ztick(i)),'HorizontalAlignment','center','VerticalAlignment','top','FontSize',fontsize,'Color',fontcolor); end
-	if smallbars,
+	if smallbars
 		for i=1:numel(ztick)
 			patch([ytick(i) ytick(i)],[0.8 1.0],[ytick(i) ytick(i)],fontcolor,'Edgecolor',fontcolor)
 			patch([ytick(i) ytick(i)],[0.0 0.2],[ytick(i) ytick(i)],fontcolor,'Edgecolor',fontcolor)
@@ -135,14 +135,14 @@ else
 	end
 end
 
-if exist(options,'title'),
+if exist(options,'title')
 	title(getfieldvalue(options,'title'),'FontSize',getfieldvalue(options,'titlefontsize',fontsize),'Color',fontcolor);
 end
-if exist(options,'ylabel'),
-	if strcmpi(getfieldvalue(options,'orientation','vertical'),'horizontal'),
+if exist(options,'ylabel')
+	if strcmpi(getfieldvalue(options,'orientation','vertical'),'horizontal')
 		th=title(getfieldvalue(options,'title'),'FontSize',fontsize,'Color',fontcolor);
 		set(th,'Position',[ytick(end)+0.075,-0.3]);
-	elseif getfieldvalue(options,'inverttickposition',0)==1,
+	elseif getfieldvalue(options,'inverttickposition',0)==1
 		text(1.9,.7,getfieldvalue(options,'ylabel'),'HorizontalAlignment','right','VerticalAlignment','middle','FontSize',fontsize,'Color',fontcolor,'rotation',90);
 	else
 		ylabel(getfieldvalue(options,'ylabel'),'FontSize',fontsize,'Color',fontcolor);
@@ -151,7 +151,7 @@ end
 	
 %Back to original axes
 h=gca;
-if getfieldvalue(options,'showregion',0)==0,
+if getfieldvalue(options,'showregion',0)==0
 	%Do it this way in order to preserve the figure visibility
 	set(gcf,'CurrentAxes',mainaxes);
 end

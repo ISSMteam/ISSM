@@ -12,7 +12,7 @@ subplot(width,width,i);
 %process data and model
 [x y z elements is2d isplanet]=processmesh(md,[],options);
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 	eval(['Vx=tensor.principalaxis' type(end) '(:,1); Vy=tensor.principalaxis' type(end) '(:,2);'])
 	eval(['value=tensor.principalvalue' type(end) ';']);
 	[Vx datatype]=processdata(md,Vx,options);
@@ -27,12 +27,12 @@ else
 end
 
 %take the center of each element if ~isonnode
-if datatype==1,
+if datatype==1
 	x=mean(x(elements'))'; y=mean(y(elements'))'; z=mean(z(elements'))';
 end
 
 %plot quivers
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 
 	%density
 	if exist(options,'density')

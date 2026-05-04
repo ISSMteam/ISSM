@@ -17,8 +17,8 @@ fontsize=getfieldvalue(options,'fontsize',16);
 
 %recover arguments (set default parameters if needed)
 %1: latlon
-if ~iscell(latlon),
-	if ischar(latlon) & strcmpi(latlon,'on'),
+if ~iscell(latlon)
+	if ischar(latlon) & strcmpi(latlon,'on')
 		%defaults
 		latstep=3; lonstep=3;
 		resolution=0.1;
@@ -35,11 +35,11 @@ else
 end
 
 %2: numbering
-if ~iscell(numbering) & isnan(numbering),
+if ~iscell(numbering) & isnan(numbering)
 	numbering=false;
 else
-	if ~iscell(numbering),
-		if strcmpi(char(numbering),'on'),
+	if ~iscell(numbering)
+		if strcmpi(char(numbering),'on')
 			%defaults
 			latgap=2; longap=2;
 			colornumber=color;
@@ -65,10 +65,10 @@ for lat=-90:latstep:90
 	longitudes=0:resolution:360;
 	latitudes =lat*ones(size(longitudes));
 
-	if md.mesh.epsg==3413,
+	if md.mesh.epsg==3413
 		if lat<0, continue; end
 		[x,y]=ll2xy(latitudes,longitudes,+1,45,70);
-	elseif md.mesh.epsg==3031,
+	elseif md.mesh.epsg==3031
 		if lat>0, continue; end
 		[x,y]=ll2xy(latitudes,longitudes,-1, 0,71);
 	else error('field md.mesh.epsg not supported yet'); end
@@ -84,7 +84,7 @@ for lat=-90:latstep:90
 		xcorner=x(ind);            ycorner=y(ind);
 		xcorner2=x(max(ind-10,1)); ycorner2=y(max(ind-10,1));
 
-		if (xcorner>xlimits(1) & xcorner<xlimits(2) & ycorner>ylimits(1) & ycorner<ylimits(2)),
+		if (xcorner>xlimits(1) & xcorner<xlimits(2) & ycorner>ylimits(1) & ycorner<ylimits(2))
 			angle=mod((180)/pi*atan2((ycorner2-ycorner),(xcorner2-xcorner))+latangle,360);
 			if lat<0, label=[num2str(abs(lat)) '^{\circ} S'];
 			else      label=[num2str(abs(lat)) '^{\circ} N']; end
@@ -104,11 +104,11 @@ end
 %lon
 for lon=-180:lonstep:180
 
-	if md.mesh.epsg==3413,
+	if md.mesh.epsg==3413
 		latitudes =0:resolution:90;
 		longitudes=lon*ones(size(latitudes));
 		[x,y]=ll2xy(latitudes,longitudes,+1,45,70);
-	elseif md.mesh.epsg==3031,
+	elseif md.mesh.epsg==3031
 		latitudes =-90:resolution:0;
 		longitudes=lon*ones(size(latitudes));
 		[x,y]=ll2xy(latitudes,longitudes,-1, 0,71);
@@ -121,13 +121,13 @@ for lon=-180:lonstep:180
 	x=x(pos);y=y(pos);
 	l=line(x,y,'Color',color);
 
-	if numbering,
+	if numbering
 		ind=length(x)-2*longap;
 		if (ind<=0), continue; end
 		xcorner=x(ind);            ycorner=y(ind);
 		xcorner2=x(max(ind-10,1)); ycorner2=y(max(ind-10,1));
 
-		if (xcorner>xlimits(1) & xcorner<xlimits(2) & ycorner>ylimits(1) & ycorner<ylimits(2)),
+		if (xcorner>xlimits(1) & xcorner<xlimits(2) & ycorner>ylimits(1) & ycorner<ylimits(2))
 			angle=mod((180)/pi*atan2((ycorner2-ycorner),(xcorner2-xcorner))+lonangle,360);
 			if lon<0, label=[num2str(abs(lon)) '^{\circ} W'];
 			else      label=[num2str(abs(lon)) '^{\circ} E']; end

@@ -40,7 +40,7 @@ class thermal(object):
         s += '{}\n'.format(fielddisplay(self, 'penalty_threshold', 'threshold to declare convergence of thermal solution (default is 0)'))
         s += '{}\n'.format(fielddisplay(self, 'isenthalpy', 'use an enthalpy formulation to include temperate ice (default is 0)'))
         s += '{}\n'.format(fielddisplay(self, 'isdynamicbasalspc', 'enable dynamic setting of basal forcing. required for enthalpy formulation (default is 0)'))
-        s += '{}\n'.format(fielddisplay(self, 'isdrainicecolumn', 'wether waterfraction drainage is enabled for enthalpy formulation (default is 1)'))
+        s += '{}\n'.format(fielddisplay(self, 'isdrainicecolumn', 'whether waterfraction drainage is enabled for enthalpy formulation (default is 1)'))
         s += '{}\n'.format(fielddisplay(self, 'watercolumn_upperlimit', 'upper limit of basal watercolumn for enthalpy formulation (default is 1000m)'))
         s += '{}\n'.format(fielddisplay(self, 'fe', 'Finite Element type: ''P1'' (default), ''P1xP2'''))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
@@ -78,7 +78,7 @@ class thermal(object):
         self.isenthalpy = 0
         #will basal boundary conditions be set dynamically
         self.isdynamicbasalspc = 0
-        #wether waterfraction drainage is enabled
+        #whether waterfraction drainage is enabled
         self.isdrainicecolumn = 1
         #set an upper limit for local stored watercolumn
         self.watercolumn_upperlimit = 1000

@@ -52,13 +52,13 @@ output   = struct('Semivariogram',[],'Covariance',[]);
 counter1 = 1;
 counter2 = 1;
 fid=fopen('gamv.out','r');
-while (~feof(fid)),
+while (~feof(fid))
 	A=fscanf(fid,'%s',1);
 	if strcmp(A,'Covariance');
 		A=fscanf(fid,'%s',4); %Read tail:Data head:Data direction  2
 		output(counter1).Covariance=fscanf(fid,'%i %g %g %i %g %g',[6 nlag+2])';
 		counter1=counter1+1;
-	elseif strcmp(A,'Semivariogram'),
+	elseif strcmp(A,'Semivariogram')
 		A=fscanf(fid,'%s',4); %Read tail:Data head:Data direction  2
 		output(counter2).Semivariogram=fscanf(fid,'%i %g %g %i %g %g',[6 nlag+2])';
 		counter2=counter2+1;

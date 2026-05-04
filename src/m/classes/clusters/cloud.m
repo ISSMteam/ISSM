@@ -19,7 +19,7 @@ classdef cloud
 		function cluster=cloud(varargin) % {{{
 
 			%initialize cluster using user settings if provided
-			if (exist('cloud_settings')==2),
+			if (exist('cloud_settings')==2)
 				cloud_settings;
 			end
 
@@ -42,7 +42,7 @@ classdef cloud
 			if cluster.np<1
 				md = checkmessage(md,['number of processors should be at least 1']);
 			end
-			if isnan(cluster.np),
+			if isnan(cluster.np)
 				md = checkmessage(md,'number of processors should not be NaN!');
 			end
 		end
@@ -71,12 +71,12 @@ classdef cloud
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
 			system(compressstring);
 
-			if isempty(cluster.login),
+			if isempty(cluster.login)
 				error('cloud BuildQueueScript: login should be supplied!');
 			end
 			%upload input files
@@ -85,7 +85,7 @@ classdef cloud
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{
 
-			if cluster.interactive, 
+			if cluster.interactive 
 				disp('sending files to remote cluster. once done, please log into cluster and launch job');
 				if ~isempty(restart)
 					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname];

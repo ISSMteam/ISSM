@@ -14,15 +14,15 @@ if getfieldvalue(options,'layer',0)
 end
 [x y z elements is2d isplanet]=processmesh(md,[],options);
 
-for i=1:size(md.mesh.segments,1),
+for i=1:size(md.mesh.segments,1)
 	plot(x(md.mesh.segments(i,1:2)),y(md.mesh.segments(i,1:2)),'k.-');hold on;
 end
 
 %plot rifts if present: 
-if isstruct(md.rifts.riftstruct),
-	for i=1:size(md.rifts.riftstruct,1),
+if isstruct(md.rifts.riftstruct)
+	for i=1:size(md.rifts.riftstruct,1)
 		segments=md.rifts.riftstruct(i).segments;
-		for j=1:size(segments,1),
+		for j=1:size(segments,1)
 			plot(x(segments(j,1:2)),y(segments(j,1:2)),'r.-');
 		end
 		text(x(segments(floor(size(segments,1)/4),1)),y(segments(floor(size(segments,1)/4),1)),['Rift #' num2str(i)]);

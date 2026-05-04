@@ -9,7 +9,7 @@ if ~exist(filename)
 	error([filename ' does not exist']);
 end
 fid   = fopen(filename);
-for i=1:6,
+for i=1:6
 	thisline = fgetl(fid);
 	dummy    = regexp(thisline,'(\S+)','match');
 	if strcmp(dummy{1},'ncols'),       ncols=str2num(dummy{2}); end

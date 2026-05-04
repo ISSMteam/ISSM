@@ -8,7 +8,7 @@ function varargout=loadmodel(path)
 %      loadmodel path
 
 %check nargout
-if nargout>1,
+if nargout>1
 	error('loadmodel usage error: md=loadmodel(path)');
 end
 
@@ -31,11 +31,11 @@ try,
 	warning on MATLAB:load:classNotFound
 
 	name=char(fieldnames(struc));
-	if size(name,1)>1,
+	if size(name,1)>1
 		error(['loadmodel error message: file ' path ' contains several variables. Only one model should be present.']); 
 	end
 	md=struc.(name);
-	if nargout,
+	if nargout
 		varargout{1}=md;
 	else
 		assignin('caller',name,md);

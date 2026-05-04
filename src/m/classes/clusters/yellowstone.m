@@ -86,7 +86,7 @@ classdef yellowstone
 			executable='issm.exe';
 			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6),
+				if (version>=6)
 					executable='issm_dakota.exe';
 				end
 			end
@@ -107,7 +107,7 @@ classdef yellowstone
 			fprintf(fid,'#BSUB -q %s\n',cluster.queue);
 
 			fprintf(fid,'module purge\n');
-			for i=1:length(cluster.modules),
+			for i=1:length(cluster.modules)
 				fprintf(fid,'module load %s\n',cluster.modules{i});
 			end
 
@@ -131,7 +131,7 @@ classdef yellowstone
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
 			system(compressstring);

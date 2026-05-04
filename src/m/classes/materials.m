@@ -17,14 +17,14 @@ classdef materials < dynamicprops
 			end
 
 			%check this is acceptable:
-			for i=1:length(self.nature),
-				if ~(strcmpi(self.nature{i},'litho') | strcmpi(self.nature{i},'ice') | strcmpi(self.nature{i},'hydro')),
+			for i=1:length(self.nature)
+				if ~(strcmpi(self.nature{i},'litho') | strcmpi(self.nature{i},'ice') | strcmpi(self.nature{i},'hydro'))
 					error('materials constructor error message: nature of the material not supported yet! (''ice'' or ''litho'' or ''hydro'')');
 				end
 			end
 
 			%start filling in the dynamic fields:
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -75,7 +75,7 @@ classdef materials < dynamicprops
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -170,7 +170,7 @@ classdef materials < dynamicprops
 		function disp(self) % {{{
 			disp(sprintf('   Materials:'));
 
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -223,7 +223,7 @@ classdef materials < dynamicprops
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -257,11 +257,11 @@ classdef materials < dynamicprops
                     if any(diff(md.materials.radius)<=0)
 							error('materials checkconsistency error message: radius should be monotonously increasing');                        
                     end
-					for i=1:md.materials.numlayers,
-						if md.materials.rheologymodel(i)==1 & (isnan(md.materials.burgers_viscosity(i) | isnan(md.materials.burgers_mu(i)))),
+					for i=1:md.materials.numlayers
+						if md.materials.rheologymodel(i)==1 & (isnan(md.materials.burgers_viscosity(i) | isnan(md.materials.burgers_mu(i))))
 							error('materials checkconsistency error message: Litho burgers_viscosity or burgers_mu has NaN values, inconsistent with rheologymodel choice');
 						end
-						if md.materials.rheologymodel(i)==2 & (isnan(md.materials.ebm_alpha(i)) | isnan(md.materials.ebm_delta(i)) | isnan(md.materials.ebm_taul(i)) | isnan(md.materials.ebm_tauh(i))),
+						if md.materials.rheologymodel(i)==2 & (isnan(md.materials.ebm_alpha(i)) | isnan(md.materials.ebm_delta(i)) | isnan(md.materials.ebm_taul(i)) | isnan(md.materials.ebm_tauh(i)))
 							error('materials checkconsistency error message: Litho ebm_alpha, ebm_delta, ebm_taul or ebm_tauh has NaN values, inconsistent with rheologymodel choice');
 						end
 					end
@@ -290,7 +290,7 @@ classdef materials < dynamicprops
 			%1: MatdamageiceEnum 2: MatestarEnum 3: MaticeEnum 4: MatenhancediceEnum 5: MaterialsEnum
 			WriteData(fid,prefix,'name','md.materials.nature','data',naturetointeger(self.nature),'format','IntMat','mattype',3);
 			WriteData(fid,prefix,'name','md.materials.type','data',5,'format','Integer'); %DANGER: this can evolve if you have classes.
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -327,7 +327,7 @@ classdef materials < dynamicprops
 					WriteData(fid,prefix,'object',self,'class','materials','fieldname','ebm_tauh','format','DoubleMat','mattype',3);
 					%compute earth density compatible with our layer density distribution: 
 					earth_density=0;
-					for i=1:self.numlayers,
+					for i=1:self.numlayers
 						earth_density=earth_density + (self.radius(i+1)^3-self.radius(i)^3)*self.density(i);
 					end
 					earth_density=earth_density/self.radius(self.numlayers+1)^3;
@@ -343,7 +343,7 @@ classdef materials < dynamicprops
 			WriteData(fid,prefix,'data',self.earth_density,'name','md.materials.earth_density','format','Double');
 		end % }}}
 		function self = extrude(self,md) % {{{
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -354,7 +354,7 @@ classdef materials < dynamicprops
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 
-			for i=1:length(self.nature),
+			for i=1:length(self.nature)
 				nat=self.nature{i};
 				switch nat
 				case 'ice'
@@ -566,7 +566,7 @@ end
 
 function intnat = naturetointeger(strnat) % {{{
 	intnat=zeros(length(strnat),1);
-	for i=1:length(strnat),
+	for i=1:length(strnat)
 		switch strnat{i},
 		case 'damageice'
 			intnat(i)=1;

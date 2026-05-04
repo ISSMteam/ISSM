@@ -24,8 +24,8 @@ scalingfactor=getfieldvalue(options,'scaling',0.40);
 
 %number of colors?
 colorlevels=getfieldvalue(options,'colorlevels',NaN);
-if isnumeric(colorlevels),
-	if isnan(colorlevels),
+if isnumeric(colorlevels)
+	if isnan(colorlevels)
 		numcolors=30;
 	else
 		numcolors=colorlevels;
@@ -46,7 +46,7 @@ end
 if numcolors==2;
 	%blue and red
 	c=[0 0 1;1 0 0];
-elseif numcolors==3,
+elseif numcolors==3
 	%blue yellow and red
 	c=[0 0 1;1 1 0;1 0 0];
 else
@@ -55,7 +55,7 @@ else
 end
 
 %Scale data
-if strcmpi(getfieldvalue(options,'autoscale','on'),'off'),
+if strcmpi(getfieldvalue(options,'autoscale','on'),'off')
 	delta=((min(x)-max(x))^2+(min(y)-max(y))^2)/numel(x);
 	u=scalingfactor*sqrt(delta)*u./Norm;
 	v=scalingfactor*sqrt(delta)*v./Norm;
@@ -75,19 +75,19 @@ for i=1:numcolors
 end
 
 %take care of colorbar
-if  ~strcmpi(getfieldvalue(options,'colorbar','on'),'off'),
+if  ~strcmpi(getfieldvalue(options,'colorbar','on'),'off')
 
 	%build ticks
 	hcb=colorbar('peer',gca,'location','EastOutside');
 	ticklabel=cell(1,length(levels));
-	for i=1:length(levels),
+	for i=1:length(levels)
 		ticklabel{i}=num2str(round_ice(levels(i),3));
 	end
 	tickpos=1:numcolors+1;
 
 	%remove ticks if to many have been created
 	proportion=round(length(levels)/10);
-	if proportion>1,
+	if proportion>1
 		ticklabel=ticklabel(1:proportion:end);
 		tickpos=tickpos(1:proportion:end);
 	end
@@ -95,7 +95,7 @@ if  ~strcmpi(getfieldvalue(options,'colorbar','on'),'off'),
 	%draw colorbar
 	set(hcb,'YTickLabel',ticklabel,'YTick',tickpos);
 	%position
-	if exist(options,'colorbarpos'),
+	if exist(options,'colorbarpos')
 		set(hcb,'Position',getfieldvalue(options,'colorbarpos'));
 	end
 	%fontsize

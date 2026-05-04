@@ -3,7 +3,7 @@ function md=parametercontrolB(md,varargin),
 %
 %   It is possible to specify the number of steps, values for the
 %   minimum and maximum values of B, the 
-%   kind of cm_responses to use or the the optscal.
+%   kind of cm_responses to use or the optscal.
 %   
 %   Usage:
 %       md=parametercontrolB(md,varargin)
@@ -86,9 +86,9 @@ end
 
 %cm_responses
 found=0;
-if exist(options,'cm_responses'),
+if exist(options,'cm_responses')
 	cm_responses=getfieldvalue(options,'cm_responses');
-	if ~any(~ismember(cm_responses,[ 101:105])),
+	if ~any(~ismember(cm_responses,[ 101:105]))
 		md.inversion.cost_functions=repmat(cm_responses(:),md.inversion.nsteps,1);
 		md.inversion.cost_functions(md.inversion.nsteps+1:end)=[];
 		found=1;
@@ -106,9 +106,9 @@ end
 
 %optscal
 found=0;
-if exist(options,'optscal'),
+if exist(options,'optscal')
 	optscal=getfieldvalue(options,'optscal');
-	if ~any(optscal<0),
+	if ~any(optscal<0)
 		md.inversion.gradient_scaling=repmat(optscal(:),md.inversion.nsteps,1);
 		md.inversion.gradient_scaling(md.inversion.nsteps+1:end)=[];
 		found=1;

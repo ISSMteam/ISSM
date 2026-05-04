@@ -14,9 +14,9 @@ loop=1;
 %Take all the tips coordinates of open profiles
 counter=1; tips=[];
 for i=1:numprofiles
-	if ~closed(i),
+	if ~closed(i)
 		%x and y coord, profile number, 1 if beginning, 2 and if end
-		if length(A(i).x)==1,
+		if length(A(i).x)==1
 			tips(counter,:)=[A(i).x(1)   A(i).y(1)   i  1];
 			counter=counter+1;
 		else
@@ -89,22 +89,22 @@ while loop
 
 			else
 
-				if tips(tip1,4)==1 & newtips(tip2,4)==1,
+				if tips(tip1,4)==1 & newtips(tip2,4)==1
 					A(numprofile1).x=[flipud(A(numprofile2).x); A(numprofile1).x];
 					A(numprofile1).y=[flipud(A(numprofile2).y); A(numprofile1).y];
 					numprofiles=numprofiles-1;
 
-				elseif tips(tip1,4)==1 & newtips(tip2,4)==2,
+				elseif tips(tip1,4)==1 & newtips(tip2,4)==2
 					A(numprofile1).x=[A(numprofile2).x; A(numprofile1).x];
 					A(numprofile1).y=[A(numprofile2).y; A(numprofile1).y];
 					numprofiles=numprofiles-1;
 
-				elseif tips(tip1,4)==2 & newtips(tip2,4)==1,
+				elseif tips(tip1,4)==2 & newtips(tip2,4)==1
 					A(numprofile1).x=[A(numprofile1).x; A(numprofile2).x];
 					A(numprofile1).y=[A(numprofile1).y; A(numprofile2).y];
 					numprofiles=numprofiles-1;
 
-				elseif tips(tip1,4)==2 & newtips(tip2,4)==2,
+				elseif tips(tip1,4)==2 & newtips(tip2,4)==2
 					A(numprofile1).x=[A(numprofile1).x; flipud(A(numprofile2).x)];
 					A(numprofile1).y=[A(numprofile1).y; flipud(A(numprofile2).y)];
 					numprofiles=numprofiles-1;
@@ -119,9 +119,9 @@ while loop
 			%update tips
 			counter=1; tips=[];
 			for i=1:numprofiles
-				if ~closed(i),
+				if ~closed(i)
 					%x and y coord, profile number, 1 if beginning, 2 and if end
-					if length(A(i).x)==1,
+					if length(A(i).x)==1
 						tips(counter,:)=[A(i).x(1)   A(i).y(1)   i  1];
 						counter=counter+1;
 					else

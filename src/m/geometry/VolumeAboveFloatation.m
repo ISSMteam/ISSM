@@ -11,7 +11,7 @@ if isa(md.mesh,'mesh3dprisms')
 	index = md.mesh.elements2d;
 	x = md.mesh.x2d;
 	y = md.mesh.y2d;
-elseif isa(md.mesh,'mesh2d'),
+elseif isa(md.mesh,'mesh2d')
 	index = md.mesh.elements;
 	x = md.mesh.x;
 	y = md.mesh.y;

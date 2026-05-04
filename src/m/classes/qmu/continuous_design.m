@@ -58,20 +58,20 @@ classdef continuous_design
 			%if the variable is scaled,  a partition vector should have been 
 			%supplied, and that partition vector should have as many partitions 
 			%as the upper and lower vectors: 
-			if self.isscaled() | self.isdistributed(),
+			if self.isscaled() | self.isdistributed()
 				self.partition=getfieldvalue(options,'partition');
 				self.nsteps=getfieldvalue(options,'nsteps',1);
 				npart=qmupart2npart(self.partition);
-				if npart~=size(self.upper,1),
+				if npart~=size(self.upper,1)
 					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the row size of the upper field should be identical to the number of partitions']);
 				end
-				if npart~=size(self.lower,1),
+				if npart~=size(self.lower,1)
 					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the row size of the lower field should be identical to the number of partitions']);
 				end
-				if self.nsteps~=size(self.upper,2),
+				if self.nsteps~=size(self.upper,2)
 					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the col size of the upper field should be identical to the number of time steps']);
 				end
-				if self.nsteps~=size(self.lower,2),
+				if self.nsteps~=size(self.lower,2)
 					error(['continuous_design constructor: for the scaled variable ' self.descriptor ' the col size of the lower field should be identical to the number of time steps']);
 				end
 
@@ -95,37 +95,37 @@ classdef continuous_design
 
 			md = checkfield(md,'field',self.upper,'fieldname','continuous_design.upper','NaN',1,'Inf',1,'>=',0);
 			md = checkfield(md,'field',self.lower,'fieldname','continuous_design.lower','NaN',1,'Inf',1,'>=',0);
-			if self.isscaled(),
-				if isempty(self.partition),
+			if self.isscaled()
+				if isempty(self.partition)
 					error('continuous_design is a scaled variable, but it''s missing a partition vector');
 				end
 				%better have a partition vector that has as many partitions as loer's size:
-				if size(self.lower,1)~=partition_npart(self.partition),
+				if size(self.lower,1)~=partition_npart(self.partition)
 					error('continuous_design error message: row size of lower and partition size should be identical');
 				end
-				if size(self.upper,1)~=partition_npart(self.partition),
+				if size(self.upper,1)~=partition_npart(self.partition)
 					error('continuous_design error message: row size of upper and partition size should be identical');
 				end
 				%we need as steps in lower and upper as there are time steps: 
-				if size(self.lower,2)~=self.nsteps,
+				if size(self.lower,2)~=self.nsteps
 					error('continuous_design error message: col size of lower and number of time steps should be identical');
 				end
-				if size(self.upper,2)~=self.nsteps,
+				if size(self.upper,2)~=self.nsteps
 					error('continuous_design error message: col size of upper and number of time steps should be identical');
 				end
 
 				md = checkfield(md,'field',self.partition,'fieldname','continuous_design.partition','NaN',1,'Inf',1,'>=',-1,'numel',[md.mesh.numberofvertices,md.mesh.numberofelements]);
-				if size(self.partition,2)>1,
+				if size(self.partition,2)>1
 					error('continuous_design error message: partition should be a column vector');
 				end
 				partcheck=unique(self.partition);
 				partmin=min(partcheck);
 				partmax=max(partcheck);
-				if partmax<-1,
+				if partmax<-1
 					error('continuous_design error message: partition vector''s min value should be -1 (for no partition), or start at 0');
 				end
 				nmax=max(md.mesh.numberofelements,md.mesh.numberofvertices);
-				if partmax>nmax,
+				if partmax>nmax
 					error('continuous_design error message: partition vector''s values cannot go over the number of vertices or elements');
 				end
 			end
@@ -200,14 +200,14 @@ classdef continuous_design
         end % }}}
 		%new methods:
 			function distributed=isdistributed(self) % {{{
-				if strncmp(self.descriptor,'distributed_',12),
+				if strncmp(self.descriptor,'distributed_',12)
 					distributed=1;
 				else
 					distributed=0;
 				end
 			end % }}}
 				function scaled=isscaled(self) % {{{
-					if strncmp(self.descriptor,'scaled_',7),
+					if strncmp(self.descriptor,'scaled_',7)
 						scaled=1;
 					else
 						scaled=0;

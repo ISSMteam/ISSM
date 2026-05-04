@@ -7,7 +7,7 @@ end %function
 function str = parsedisplay(field) % {{{
 
 	%string
-	if ischar(field),
+	if ischar(field)
 
 		if length(field)>30;
 			%str = displayunit('not displayed');
@@ -17,11 +17,11 @@ function str = parsedisplay(field) % {{{
 		end
 
 	%cell
-    elseif iscell(field),
+    elseif iscell(field)
 		str = cell_display(field),
 
     %structure
-	elseif isstruct(field),
+	elseif isstruct(field)
 		str = struct_display(field),
         
 	%numeric
@@ -31,7 +31,7 @@ function str = parsedisplay(field) % {{{
 		fieldsize=size(field);
 
 		%double
-		if max(fieldsize)==1,
+		if max(fieldsize)==1
 			str = displayunit(num2str(field)),
 			%matrix
 		else
@@ -45,7 +45,7 @@ function str = parsedisplay(field) % {{{
 		fieldsize=size(field);
 
 		%single value
-		if max(fieldsize)==1,
+		if max(fieldsize)==1
 			if (field)
 				str = displayunit('true');
 			else
@@ -67,10 +67,10 @@ end
 function str = displayunit(characterization)% {{{
 
 	%take care of characterization
-	if (strcmp(characterization,['''' '''']) || strcmp(characterization,'NaN')),
+	if (strcmp(characterization,['''' '''']) || strcmp(characterization,'NaN'))
 		characterization='N/A';
 	end
-	if length(characterization)>15,
+	if length(characterization)>15
 		characterization=[characterization(1:12) '...'];
     end
     
@@ -85,8 +85,8 @@ function str = cell_display(field)
 
 	%go through the cell and fill string
 	if length(field)<5;
-		for i=1:length(field),
-			if ischar(field{i}),
+		for i=1:length(field)
+			if ischar(field{i})
 				string=[string ''''  field{i} ''','];
 			elseif (isnumeric(field{i}) & length(field{i})==1)
 				string=[string num2str(field{i}) ',' ];
@@ -96,7 +96,7 @@ function str = cell_display(field)
 			end
 		end
 	end
-	if strcmp(string,'{'),
+	if strcmp(string,'{')
 		string=['(' num2str(size(field,1)) 'x' num2str(size(field,2)) ')'];
 	else
 		string=[string(1:end-1) '}'];
@@ -113,7 +113,7 @@ function str = struct_display(field) % {{{
 
 		structure_fields=fieldnames(field);
 
-		for i=1:length(structure_fields),
+		for i=1:length(structure_fields)
 
 			%get current field
 			sfield=field.(structure_fields{i});

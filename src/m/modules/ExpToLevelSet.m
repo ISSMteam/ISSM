@@ -23,9 +23,9 @@ end
 
 multipleShp = 0;
 
-if ischar(contourname),
+if ischar(contourname)
 	[path,name,ext]=fileparts(contourname);
-	if strcmpi(ext,'.shp'),
+	if strcmpi(ext,'.shp')
 		%read contour from shapefile
 		contourname=shpread(contourname);
 		if isstruct(contourname)

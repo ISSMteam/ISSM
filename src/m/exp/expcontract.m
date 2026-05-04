@@ -12,7 +12,7 @@ num=numel(contour.x);
 normal=zeros(num-1,2);
 normal_node=zeros(num-1,2);
 
-for i=1:num-1,
+for i=1:num-1
 	normal(i,:)=[ contour.y(i)-contour.y(i+1) contour.x(i+1)-contour.x(i)];
 	normal(i,:)=normal(i,:)/sqrt(normal(i,1)^2+normal(i,2)^2);
 end

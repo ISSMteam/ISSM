@@ -16,10 +16,10 @@ numberofnodes=length(x);
 numberofelements=size(index,1);
 
 %some checks
-if length(field)~=numberofnodes & length(field)~=numberofelements,
+if length(field)~=numberofnodes & length(field)~=numberofelements
 	error('ComputeHessian error message: the given field size not supported yet');
 end
-if ~strcmpi(type,'node') & ~strcmpi(type,'element'),
+if ~strcmpi(type,'node') & ~strcmpi(type,'element')
 	error('ComputeHessian error message: only ''node'' or ''element'' type supported yet');
 end
 
@@ -35,7 +35,7 @@ areas=GetAreas(index,x,y);
 weights=sparse(line,ones(linesize,1),repmat(areas,3,1),numberofnodes,1);
 
 %compute field on nodes if on elements
-if length(field)==numberofelements,
+if length(field)==numberofelements
 	field=sparse(line,ones(linesize,1),repmat(areas.*field,3,1),numberofnodes,1)./weights ;
 end
 

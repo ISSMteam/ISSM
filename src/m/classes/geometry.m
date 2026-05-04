@@ -17,7 +17,7 @@ classdef geometry
 			% loaded. Update old properties here
 
 			%2014 March 26th
-			if isstruct(self),
+			if isstruct(self)
 				disp('WARNING: updating geometry');
 				disp('         md.geometry.bed        is now md.geometry.base');
 				disp('         md.geometry.bathymetry is now md.geometry.bed');
@@ -45,22 +45,22 @@ classdef geometry
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if strcmpi(solution,'LoveSolution'),
+			if strcmpi(solution,'LoveSolution')
 				return; 
 			else
 				md = checkfield(md,'fieldname','geometry.surface' ,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','geometry.base'      ,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','geometry.thickness','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1],'>=',0);
-				if any(abs(self.thickness-self.surface+self.base)>10^-9),
+				if any(abs(self.thickness-self.surface+self.base)>10^-9)
 					md = checkmessage(md,['equality thickness=surface-base violated']);
 				end 
-				if strcmp(solution,'TransientSolution') & md.transient.isgroundingline,
+				if strcmp(solution,'TransientSolution') & md.transient.isgroundingline
 					md = checkfield(md,'fieldname','geometry.bed','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
-					if any(self.bed-self.base>10^-12),
+					if any(self.bed-self.base>10^-12)
 						md = checkmessage(md,['base<bed on one or more vertices']);
 					end 
 					pos = find(md.mask.ocean_levelset>0);
-					if any(abs(self.bed(pos)-self.base(pos))>10^-9),
+					if any(abs(self.bed(pos)-self.base(pos))>10^-9)
 						md = checkmessage(md,['equality base=bed on grounded ice violated']);
 					end 
 					md = checkfield(md,'fieldname','geometry.bed','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
@@ -78,9 +78,9 @@ classdef geometry
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			length_thickness=size(self.thickness,1);
-			if length_thickness==md.mesh.numberofvertices | length_thickness==md.mesh.numberofvertices+1,
+			if length_thickness==md.mesh.numberofvertices | length_thickness==md.mesh.numberofvertices+1
 				WriteData(fid,prefix,'object',self,'fieldname','thickness','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			elseif length_thickness==md.mesh.numberofelements | length_thickness==md.mesh.numberofelements+1,
+			elseif length_thickness==md.mesh.numberofelements | length_thickness==md.mesh.numberofelements+1
 				WriteData(fid,prefix,'object',self,'fieldname','thickness','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
 			else
 				error('geometry thickness time series should be a vertex or element time series');

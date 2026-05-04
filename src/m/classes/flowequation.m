@@ -34,7 +34,7 @@ classdef flowequation
 			% old fields must be recovered (make sure they are in the deprecated
 			% model properties)
 
-			if verLessThan('matlab','7.9'),
+			if verLessThan('matlab','7.9')
 				disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
 				disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -129,17 +129,17 @@ classdef flowequation
 			elseif strcmp(domaintype(md.mesh),'2Dvertical')
 				md = checkfield(md,'fieldname','flowequation.vertex_equation','size',[md.mesh.numberofvertices 1],'values',[2,5,6]);
 				md = checkfield(md,'fieldname','flowequation.element_equation','size',[md.mesh.numberofelements 1],'values',[2,5,6]);
-			elseif strcmp(domaintype(md.mesh),'3D'),
+			elseif strcmp(domaintype(md.mesh),'3D')
 				md = checkfield(md,'fieldname','flowequation.vertex_equation','size',[md.mesh.numberofvertices 1],'values',[0:9]);
 				md = checkfield(md,'fieldname','flowequation.element_equation','size',[md.mesh.numberofelements 1],'values',[0:9]);
 			else
 				error('Case not supported yet');
 			end
-			if ~(self.isSIA || self.isSSA || self.isL1L2 || self.isMOLHO || self.isHO || self.isFS),
+			if ~(self.isSIA || self.isSSA || self.isL1L2 || self.isMOLHO || self.isHO || self.isFS)
 				md = checkmessage(md,['no element types set for this model']);
 			end
-			if ismember('StressbalanceSIAAnalysis',analyses),
-				if any(self.element_equation==1),
+			if ismember('StressbalanceSIAAnalysis',analyses)
+				if any(self.element_equation==1)
 					if(self.vertex_equation & md.mask.ocean_levelset<0.),
 						disp(sprintf('\n !!! Warning: SIA''s model is not consistent on ice shelves !!!\n'));
 					end

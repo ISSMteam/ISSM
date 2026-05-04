@@ -25,7 +25,7 @@ figure(1);close;
 figure('Position',pos1); figure('Position',pos2);figure('Position',pos3);figure('Position',pos4);figure('Position',pos5);figure('Position',pos6);
 
 string='plotmodel(md';
-for i=1:length(md.results.transient),
+for i=1:length(md.results.transient)
 	string=[string ',''data'',md.results.transient(' num2str(i) ').thickness,''title'',''Thickness at time ' num2str(md.results.transient(i).time) ' a'''];
 end
 string=[string ',''figure'',1,''colorbar#all'',''on'',''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight ''');'];
@@ -33,16 +33,16 @@ eval(string);
 clear string;
 
 string='plotmodel(md';
-for i=1:length(md.results.transient),
+for i=1:length(md.results.transient)
 	string=[string ',''data'',md.results.transient(' num2str(i) ').vel,''view'',3,''title'',''Velocity at time ' num2str(md.results.transient(i).time) ' a'''];
 end
 string=[string ',''figure'',2,''colorbar#all'',''on'',''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight  ''');'];
 eval(string);
 clear string;
 
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	string='plotmodel(md';
-	for i=1:length(md.results.transient),
+	for i=1:length(md.results.transient)
 		string=[string ',''data'',md.results.transient(' num2str(i) ').temperature,''view'',3,''title'',''Temperature at time ' num2str(md.results.transient(i).time) ' a'''];
 	end
 	string=[string ',''figure'',3,''colorbar#all'',''on'',''view'',3,''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight  ''');'];
@@ -51,7 +51,7 @@ if dimension(md.mesh)==3,
 end
 
 string='plotmodel(md';
-for i=2:length(md.results.transient),
+for i=2:length(md.results.transient)
 	string=[string ',''data'',md.results.transient(' num2str(i) ').thickness-md.results.transient(' num2str(i-1) ').thickness,''title'',''Delta thickness at time ' num2str(md.results.transient(i).time) ' a'''];
 end
 string=[string ',''figure'',4,''colorbar#all'',''on'',''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight  ''');'];
@@ -59,16 +59,16 @@ eval(string);
 clear string;
 
 string='plotmodel(md';
-for i=2:length(md.results.transient),
+for i=2:length(md.results.transient)
 	string=[string ',''data'',md.results.transient(' num2str(i) ').vel-md.results.transient(' num2str(i-1) ').vel,''view'',3,''title'',''Delta velocity at time ' num2str(md.results.transient(i).time) ' a'''];
 end
 string=[string ',''figure'',5,''colorbar#all'',''on'',''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight  ''');'];
 eval(string);
 clear string;
 
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	string='plotmodel(md';
-	for i=2:length(md.results.transient),
+	for i=2:length(md.results.transient)
 		string=[string ',''data'',md.results.transient(' num2str(i) ').temperature-md.results.transient(' num2str(i-1) ').temperature,''view'',3,''title'',''Delta temperature at time ' num2str(md.results.transient(i).time) ' a'''];
 	end
 	string=[string ',''figure'',6,''colorbar#all'',''on'',''fontsize'',' num2str(fontsize) ',''fontweight'',''' fontweight  ''');'];

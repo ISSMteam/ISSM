@@ -11,7 +11,7 @@ end
 verbose = 1;
 
 
-if hemisphere==+1,
+if hemisphere==+1
 	if verbose, disp('   -- DTU19MDT: convert to lat/lon using Greenland projection'); end
 	[LAT,  LON  ] = xy2ll(double(X(:)),double(Y(:)),+1,45,70);
 elseif hemisphere==-1;

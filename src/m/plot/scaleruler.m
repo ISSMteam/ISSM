@@ -25,7 +25,7 @@ widthscale    = double(structure(4))/unitscale;
 numberofticks = double(structure(5));
 
 %If only one tick, just draw a rectangle
-if numberofticks==1,
+if numberofticks==1
 	t=text(x0+lengthscale/2,y0+2*widthscale,2,[num2str(lengthscale*unitscale/1000) ' km'],...
 		'FontSize',fontsize,'FontWeight',fontweight,'Color',fontcolor,'HorizontalAlignment','center','VerticalAlignment','bottom');
 	if ~verLessThan('matlab', '8.4')
@@ -47,7 +47,7 @@ else
 	text(xt,yt,2,num2str(Tick),'FontSize',fontsize,'FontWeight',fontweight,'Color',fontcolor,'HorizontalAlignment','center','VerticalAlignment','bottom');
 
 	%loope over the patches
-	for i=1:numberofticks-1,
+	for i=1:numberofticks-1
 		Au=Bu;
 		Ad=Bd;
 		Bu=[Au(1)+unitlength Ad(2)+widthscale];
@@ -67,14 +67,14 @@ else
 		%Text
 		xt=Bu(1);
 		yt=Bu(2)+widthscale;
-		if i~=numberofticks-1,
+		if i~=numberofticks-1
 			text(xt,yt,2,num2str(round_ice(Tick/1000,3)),'FontSize',fontsize,'FontWeight',fontweight,'Color',fontcolor,'HorizontalAlignment','center','VerticalAlignment','bottom');
 		end
 	end
 	text(xt,yt,2,num2str(round_ice(Tick/1000,3)),'FontSize',fontsize,'FontWeight',fontweight,'Color',fontcolor,'HorizontalAlignment','center','VerticalAlignment','bottom');
 	% add leading spaces depending on length of label string
 	str=' km';
-	for i=1:numel(num2str(round_ice(Tick/1000,3))),
+	for i=1:numel(num2str(round_ice(Tick/1000,3)))
 		str=[' ' str];
 	end
 	text(xt,yt,2,str,'FontSize',fontsize,'FontWeight',fontweight,'Color',fontcolor,'HorizontalAlignment','left','VerticalAlignment','bottom');

@@ -30,7 +30,7 @@ classdef ismip6 < handle
 	methods
 		function self = ismip6(varargin) % {{{
 
-			if nargin==0, 
+			if nargin==0 
 				self=setdefaultparameters(self);
 			else 
 				self=setdefaultparameters(self);
@@ -42,15 +42,15 @@ classdef ismip6 < handle
 				self.n=length(self.directories);
 
 				%verify the directories exist: 
-				for i=1:self.n,
-					if ~exist([self.root '/' self.directories{i}],'dir'),
+				for i=1:self.n
+					if ~exist([self.root '/' self.directories{i}],'dir')
 						error(['ismip6  constructor error: ' self.root '/' self.directories{i} ' does not exist']);
 					end
 				end
 
 				%figure out names of experiments: 
 				self.experiments=self.directories;
-				for i=1:self.n,
+				for i=1:self.n
 					dir=self.directories{i};
 					ind=findstr(dir,'exp');
 					name=dir(1:ind-2);
@@ -87,7 +87,7 @@ classdef ismip6 < handle
 		end % }}}
 		function listexp(self) % {{{
 			disp('ISMIP6  list of experiments:');
-			for i=1:self.n,
+			for i=1:self.n
 				disp(['   ' self.experiments{i}]);
 			end
 
@@ -95,11 +95,11 @@ classdef ismip6 < handle
 		function [output,time,timestart,calendar]=read(self,experiment,field) % {{{
 
 			%go through list of experiments and find the right one: 
-			if strcmpi(class(experiment),'double'),
+			if strcmpi(class(experiment),'double')
 				ind=experiment;
-			elseif strcmpi(class(experiment),'char'),
-				for i=1:self.n,
-					if strcmpi(experiment,self.experiments{i}),
+			elseif strcmpi(class(experiment),'char')
+				for i=1:self.n
+					if strcmpi(experiment,self.experiments{i})
 						ind=i;
 						break;
 					end
@@ -120,11 +120,11 @@ classdef ismip6 < handle
 			cd(currentdir);
 
 			%go through list of files and figure out which one starts with the field: 
-			for i=1:length(list),
+			for i=1:length(list)
 				file=list{i};
 				ind=findstr(file,'_');
 				file_field=file(1:ind-1);
-				if strcmpi(file_field,field),
+				if strcmpi(file_field,field)
 					break;
 				end
 			end
@@ -137,14 +137,14 @@ classdef ismip6 < handle
 			%figure out start time: 
 			info=ncinfo([self.root '/' dir '/' file]);
 			attributes=[];
-			for i=1:length(info.Variables),
-				if strcmpi(info.Variables(i).Name,'time'),
+			for i=1:length(info.Variables)
+				if strcmpi(info.Variables(i).Name,'time')
 					attributes=info.Variables(i).Attributes;
 					break;
 				end
 			end
-			for j=1:length(attributes),
-				if strcmpi(attributes(j).Name,'units') | strcmpi(attributes(j).Name,'unit'),
+			for j=1:length(attributes)
+				if strcmpi(attributes(j).Name,'units') | strcmpi(attributes(j).Name,'unit')
 					timestart=attributes(j).Value;
 				end
 				if strcmpi(attributes(j).Name,'calendar')
@@ -159,11 +159,11 @@ classdef ismip6 < handle
 		function info=readinfo(self,experiment,field) % {{{
 
 			%go through list of experiments and find the right one: 
-			if strcmpi(class(experiment),'double'),
+			if strcmpi(class(experiment),'double')
 				ind=experiment;
-			elseif strcmpi(class(experiment),'char'),
-				for i=1:self.n,
-					if strcmpi(experiment,self.experiments{i}),
+			elseif strcmpi(class(experiment),'char')
+				for i=1:self.n
+					if strcmpi(experiment,self.experiments{i})
 						ind=i;
 						break;
 					end
@@ -184,11 +184,11 @@ classdef ismip6 < handle
 			cd(currentdir);
 
 			%go through list of files and figure out which one starts with the field: 
-			for i=1:length(list),
+			for i=1:length(list)
 				file=list{i};
 				ind=findstr(file,'_');
 				file_field=file(1:ind-1);
-				if strcmpi(file_field,field),
+				if strcmpi(file_field,field)
 					break;
 				end
 			end
@@ -199,7 +199,7 @@ classdef ismip6 < handle
 		end % }}}
 		function interpolate(self,md,field,ismip2mesh,ismip2mesh_correction) % {{{
 
-			for i=1:self.n,
+			for i=1:self.n
 				disp(['reading and interpolating field ' field ' for model ' self.experiments{i}]);
 
 				%read field from disk: 
@@ -207,12 +207,12 @@ classdef ismip6 < handle
 
 				%map onto 1 dimension field: 
 				ht=zeros(size(h,1)*size(h,2),nt);
-				for j=1:size(h,3),
+				for j=1:size(h,3)
 					hj= h(:,:,j)'; hj=hj(:); ht(:,j)=double(hj);
 				end
 
 				%map onto mesh: correct only for thicknesses
-				if strcmpi(field,'lithk') | strcmpi(field,'orog') | strcmpi(field,'base'),
+				if strcmpi(field,'lithk') | strcmpi(field,'orog') | strcmpi(field,'base')
 					hg=ismip2mesh_correction.*(ismip2mesh*ht) ;
 					%hg=ismip2mesh*ht ;
 				else
@@ -220,30 +220,30 @@ classdef ismip6 < handle
 				end
 
 				%keep field:
-				if strcmpi(field,'lithk'),
+				if strcmpi(field,'lithk')
 					pos=find(isnan(hg)); hg(pos)=0;
 					self.thickness{i}=hg; 
 				end
-				if strcmpi(field,'orog'),
+				if strcmpi(field,'orog')
 					pos=find(isnan(hg)); hg(pos)=0;
 					self.surface{i}=hg; 
 				end
-				if strcmpi(field,'base'),
+				if strcmpi(field,'base')
 					pos=find(isnan(hg)); hg(pos)=0;
 					self.base{i}=hg; 
 				end
-				if strcmpi(field,'sftgif'),
+				if strcmpi(field,'sftgif')
 					hge=ones(md.mesh.numberofvertices,size(hg,2));
-					for j=1:size(hg,2),
+					for j=1:size(hg,2)
 						hgj=hg(:,j);
 						pos=find(hgj>0); 
 						hge(md.mesh.elements(pos,:),j)=-1;
 					end
 					self.icemask{i}=hge; 
 				end
-				if strcmpi(field,'sftgrf'),
+				if strcmpi(field,'sftgrf')
 					hgv=-ones(md.mesh.numberofvertices,size(hg,2));
-					for j=1:size(hg,2),
+					for j=1:size(hg,2)
 						hgj=hg(:,j);
 						pos=find(hgj>.99); %we want fully grounded
 						%pos=find(hgj>0); %we want slightly grounded
@@ -260,9 +260,9 @@ classdef ismip6 < handle
 		end  % }}}
 		function part=partition(self,md,part,value) % {{{
 
-			for i=1:self.n,
+			for i=1:self.n
 				dh=self.deltathickness{i}; 
-				for j=1:size(dh,2),
+				for j=1:size(dh,2)
 					dhj=dh(:,j);
 					pos=find(dhj);
 					part(pos)=value;

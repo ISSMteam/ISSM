@@ -5,12 +5,12 @@ function md=meshconvert(md,varargin)
 %      md=meshconvert(md);
 %      md=meshconvert(md,index,x,y);
 
-if nargin~=1 & nargin~=4,
+if nargin~=1 & nargin~=4
 	help meshconvert
 	error('meshconvert error message: bad usage');
 end
 
-if nargin==1,
+if nargin==1
 	index = md.mesh.elements;
 	x     = md.mesh.x;
 	y     = md.mesh.y;

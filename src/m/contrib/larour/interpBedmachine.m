@@ -1,6 +1,6 @@
 function output = interpBedmachine(X,Y,string,continent),
 
-if strcmpi(continent,'antarctica'),
+if strcmpi(continent,'antarctica')
 	ncdate='2014-09-23';
 	morlighemnc=['/Users/larour/ModelData2/MMAntarctica2013/AntarcticaMCdataset-' ncdate '.nc'];
 else
@@ -32,7 +32,7 @@ ydata=ydata(id1y:id2y);
 data(find(data==-999999))=NaN;
 
 disp(sprintf('   -- BedMachine %s : interpolating %s',continent,string));
-if strcmp(string,'mask') | strcmp(string,'source'),
+if strcmp(string,'mask') | strcmp(string,'source')
 	%Need nearest neighbor to avoid interpolation between 0 and 2
 	if strcmpi(continent,'greenland'), ydata=flipud(ydata); data=flipud(data); end
 	output = InterpFromGridToMesh(xdata,ydata,data,double(X),double(Y),0);

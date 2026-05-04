@@ -17,7 +17,7 @@ hold on
 h=[];
 for i=1:quivers.numcolors
 	pos=find(quivers.colorind==i);
-	if ~isempty(pos),
+	if ~isempty(pos)
 		hprime=quiver(quivers.x(pos),quivers.y(pos),quivers.u(pos),quivers.v(pos),...
 			'Color',palette(i,:),'ShowArrowHead','on','AutoScale','off');
 		h=[h;hprime];

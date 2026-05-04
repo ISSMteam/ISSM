@@ -17,16 +17,16 @@ switch oshostname(),
 end
 verbose = 1;
 
-if nargin==3,
+if nargin==3
 	hemisphere = varargin{1};
 else
 	hemisphere = +1;
 end
-if abs(hemisphere)~=1,
+if abs(hemisphere)~=1
 	error('hemisphere should be +/-1');
 end
 
-if hemisphere==+1,
+if hemisphere==+1
 	if verbose, disp('   -- RTopo-2: convert to lat/lon using Greenland projection'); end
 	[LAT,  LON  ] = xy2ll(double(X(:)),double(Y(:)),+1,45,70);
 else

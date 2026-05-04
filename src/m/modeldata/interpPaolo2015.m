@@ -118,7 +118,7 @@ function [dh_raw_out dh_fil_out T_out] = interpPaolo2015(X,Y,T,method)
 %      height_err   : 2-standard-error time series [m]
 %
 
-if nargin>4 | nargin<2,
+if nargin>4 | nargin<2
 	error('nargin not supported yet!');
 end
 
@@ -138,16 +138,16 @@ dh_raw_data = h5read(h5,'/height_raw');
 dh_fil_data = h5read(h5,'/height_filt');
 
 % set interpolation method
-if nargin<4,
+if nargin<4
 	method = 'linear'; % default method
 end
 
 % get the positions related to T
-if nargin<3,
+if nargin<3
 	pos = 1:length(t_data); % all available data		
 else
 	% initial check %{{{
-	if size(T,2)>1 | size(T,1)<1 | size(T,2)<1,
+	if size(T,2)>1 | size(T,1)<1 | size(T,2)<1
 		error('Size of input T not supported!');
 	end 
 	if size(X,1)>1 & size(X,2)>1
@@ -157,10 +157,10 @@ else
 	% Loop over T
 	pos = [];
 	epsilon = 5e-4;
-	for i=1:length(T),
+	for i=1:length(T)
 		% find specific time
 		flag = (T(i)-epsilon<t_data & T(i)+epsilon>t_data);
-		if ~any(flag), 
+		if ~any(flag) 
 			% ok, find the time related to the requested year
 			flag = (T(i)==floor(t_data));
 		end
@@ -171,7 +171,7 @@ else
 	end
 	% Check if there is repeated positions
 	posunique = unique(pos);
-	if length(posunique)~=length(pos),
+	if length(posunique)~=length(pos)
 		disp('   WARNING: found repeated positions in requested time');
 	end
 end
@@ -184,7 +184,7 @@ LON(posLON) =360+LON(posLON);
 disp(['   -- Paolo''s Time Series 1994 to 2012: interpolating in Lat/Long grid']);
 dh_raw_out = [];
 dh_fil_out = [];
-for i=1:length(pos),
+for i=1:length(pos)
 	disp(['      step = ' int2str(i) '/' int2str(length(pos)) ', position = ' int2str(pos(i)) ', year = '  num2str(t_data(pos(i)))]);
 	dh_raw_out = [dh_raw_out InterpFromGrid(lat_data(1,:),lon_data(:,1),dh_raw_data(:,:,pos(i)),LAT,LON,method)];
 	dh_fil_out = [dh_fil_out InterpFromGrid(lat_data(1,:),lon_data(:,1),dh_fil_data(:,:,pos(i)),LAT,LON,method)];

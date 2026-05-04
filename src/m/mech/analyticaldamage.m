@@ -40,17 +40,17 @@ function [damage,B,backstress]=analyticaldamage(md,varargin)
 %      [damage,B,backstress]=analyticaldamage(md,'eq','Weertman2D','smoothing',2,'sigmab',10e3,'coordsys','longitudinal');
 
 % check inputs
-if (nargin<1),
+if (nargin<1)
 	help analyticaldamage
 	error('bad usage');
 end
-if isempty(fieldnames(md.results)),
+if isempty(fieldnames(md.results))
 	error(['md.results.strainrate is not present.  Calculate using md=mechanicalproperties(md,vx,vy)']);
 end
-if dimension(md.mesh)~=2,
+if dimension(md.mesh)~=2
 	error('only 2d model supported currently');
 end
-if any(md.flowequation.element_equation~=2),
+if any(md.flowequation.element_equation~=2)
 	disp('Warning: the model has some non SSA elements. These will be treated like SSA elements');
 end
 
@@ -60,7 +60,7 @@ eq = getfieldvalue(options,'eq','Thomas');
 smoothing = getfieldvalue(options,'smoothing',0);
 sigmab = getfieldvalue(options,'sigmab',0);
 coordsys = getfieldvalue(options,'coordsys','longitudinal');
-if length(sigmab)==1,
+if length(sigmab)==1
 	sigmab=sigmab*ones(md.mesh.numberofvertices,1);
 end
 

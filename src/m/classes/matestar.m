@@ -43,11 +43,11 @@ classdef matestar
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
-					if strcmp(class(inputstruct),'matice'),
+					if strcmp(class(inputstruct),'matice')
 						disp('Converting materials to ESTAR, keeping a Glen type relation');
 						%Set parameters so that we still use a Glen's like flow relation
 						self.rheology_Es = ones(size(inputstruct.rheology_B));
@@ -118,7 +118,7 @@ classdef matestar
 			md = checkfield(md,'fieldname','materials.rheology_law','values',{'None' 'BuddJacka' 'Cuffey' 'CuffeyTemperate' 'Paterson' 'Arrhenius' 'LliboutryDuval'});
 			md = checkfield(md,'fieldname','materials.effectiveconductivity_averaging','numel',[1],'values',[0 1 2]);
 
-			if ismember('SealevelchangeAnalysis',analyses),
+			if ismember('SealevelchangeAnalysis',analyses)
 				md = checkfield(md,'fieldname','materials.earth_density','>',0,'numel',1);
 			end
 

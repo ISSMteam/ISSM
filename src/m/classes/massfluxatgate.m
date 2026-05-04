@@ -18,7 +18,7 @@ classdef massfluxatgate
 		function self = extrude(self,md) % {{{
 		end % }}}
 		function self = massfluxatgate(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields
@@ -34,10 +34,10 @@ classdef massfluxatgate
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 			
-			if ~ischar(self.name),
+			if ~ischar(self.name)
 				error('massfluxatgate error message: ''name'' field should be a string!');
 			end
-			if ~ischar(self.profilename),
+			if ~ischar(self.profilename)
 				error('massfluxatgate error message: ''profilename'' field should be a string!');
 			end
 		
@@ -48,7 +48,7 @@ classdef massfluxatgate
 			md = checkfield(md,'field',self.definitionstring,'values',OutputdefinitionStringArray);
 
 			%check the profilename points to a file!: 
-			if exist(self.profilename,'file')~=2,
+			if exist(self.profilename,'file')~=2
 				error('massfluxatgate error message: file name for profile corresponding to gate does not point to a legitimate file on disk!');
 			end
 		end % }}}

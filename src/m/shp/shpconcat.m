@@ -13,7 +13,7 @@ function shpconcat(domain,holes,filename)
 	merged=domain;
 	merged.Geometry='Polygon';
 
-	for i=1:length(holes),
+	for i=1:length(holes)
 		merged(end+1)=struct('x',holes(i).x,'y',holes(i).y,'Geometry','Polygon');
 	end
 

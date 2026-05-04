@@ -48,7 +48,7 @@ classdef adm1qn3inversion
 			%Early return
 			if ~self.iscontrol, return; end
 
-			if ~IssmConfig('_HAVE_M1QN3_'),
+			if ~IssmConfig('_HAVE_M1QN3_')
 				md = checkmessage(md,['M1QN3 has not been installed, ISSM needs to be reconfigured and recompiled with M1QN3']);
 			end
 

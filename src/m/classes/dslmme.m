@@ -34,17 +34,17 @@ classdef dslmme
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
 			%Early return
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc == 0) | (md.transient.isoceantransport==0),
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc == 0) | (md.transient.isoceantransport==0)
 				return;
 			end
-			for i=1:length(self.global_average_thermosteric_sea_level),
+			for i=1:length(self.global_average_thermosteric_sea_level)
 				md = checkfield(md,'field',self.global_average_thermosteric_sea_level{i},'NaN',1,'Inf',1);
 				md = checkfield(md,'field',self.sea_surface_height_above_geoid{i},'NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'field',self.sea_water_pressure_at_sea_floor{i},'NaN',1,'Inf',1,'timeseries',1);
 			end
 			md = checkfield(md,'field',self.modelid,'NaN',1,'Inf',1,'>=',1,'<=',length(self.global_average_thermosteric_sea_level));
 
-			if md.solidearth.settings.compute_bp_grd==1, 
+			if md.solidearth.settings.compute_bp_grd==1 
 				md = checkfield(md,'fieldname','dsl.sea_water_pressure_at_sea_floor','empty',1);
 			end
 
@@ -68,7 +68,7 @@ classdef dslmme
 
 		end % }}}
 		function self = extrude(self,md) % {{{
-			for i=1:length(self.global_average_thermosteric_sea_level),
+			for i=1:length(self.global_average_thermosteric_sea_level)
 				self.sea_surface_height_above_geoid{i}=project3d(md,'vector',self.sea_surface_height_above_geoid{i},'type','node','layer',1);
 				self.sea_water_pressure_at_sea_floor{i}=project3d(md,'vector',self.sea_water_pressure_at_sea_floor{i},'type','node','layer',1);
 			end

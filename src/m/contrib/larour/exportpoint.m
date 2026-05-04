@@ -1,7 +1,7 @@
 function exportpoint(x,y,shapefilename); 
 
 	contours=struct([]);
-	for i=1:length(x),
+	for i=1:length(x)
 		contours(i).id=i;
 		contours(i).Lon=x(i);
 		contours(i).Lat=y(i);

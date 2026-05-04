@@ -6,7 +6,7 @@ function md=meshprocessoutsiderifts(md,domainoutline)
 %
 
 %go through rifts, and figure out which ones touch the domain outline
-for i=1:length(md.rifts.riftstruct),
+for i=1:length(md.rifts.riftstruct)
 
 	%first, flag nodes that belong to the domain outline
 	flags=ContourToMesh(md.mesh.elements,md.mesh.x,md.mesh.y,domainoutline,'node',0);
@@ -16,13 +16,13 @@ for i=1:length(md.rifts.riftstruct),
 	outsidetips=tips(find(flags(rift.tips)==0));
 
 	%we have found outsidetips, tips that touch the domain outline. go through them
-	for j=1:length(outsidetips),
+	for j=1:length(outsidetips)
 
 		tip=outsidetips(j);
 		%find tip in the segments, take first segment (there should be 2) that holds tip, 
 		%and node_connected_to_tip is the other node on this segment:
 		tipindex=find(rift.segments(:,1)==tip); 
-		if length(tipindex),
+		if length(tipindex)
 			tipindex=tipindex(1);
 			node_connected_to_tip=rift.segments(tipindex,2);
 		else
@@ -66,11 +66,11 @@ for i=1:length(md.rifts.riftstruct),
 
 		%deal with segments
 		tipsegments=find((md.mesh.segments(:,1)==tip) | (md.mesh.segments(:,2)==tip));
-		for k=1:length(tipsegments),
+		for k=1:length(tipsegments)
 			segment_index=tipsegments(k);
 			pos=find(md.mesh.segments(segment_index,1:2)~=tip);
 			other_node=md.mesh.segments(segment_index,pos);
-			if ~isconnected(md.mesh.elements,other_node,tip),
+			if ~isconnected(md.mesh.elements,other_node,tip)
 				pos=find(md.mesh.segments(segment_index,1:2)==tip);
 				md.mesh.segments(segment_index,pos)=num;
 			end
@@ -92,7 +92,7 @@ function flag=isconnected(elements,A,B)% {{{
 	%
 
 	elements=ElementsFromEdge(elements,A,B);
-	if isempty(elements),
+	if isempty(elements)
 		flag=0;
 	else
 		flag=1;

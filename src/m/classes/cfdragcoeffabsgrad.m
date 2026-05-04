@@ -26,7 +26,7 @@ classdef cfdragcoeffabsgrad
 			end
 		end % }}}
 		function self = cfdragcoeffabsgrad(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields
@@ -44,7 +44,7 @@ classdef cfdragcoeffabsgrad
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ischar(self.name),
+			if ~ischar(self.name)
 				error('cfdragcoeffabsgrad error message: ''name'' field should be a string!');
 			end
 			OutputdefinitionStringArray={};

@@ -16,7 +16,7 @@ shppathslr=[qgispath '/Slr/'];
 if perform(org,'GenerateLandsatVV'), % {{{
     rootname = [modeldatapath '/VelHowat'];
     infos = dir([rootname '/*/*/*_vx_*.tif']);
-    for i=1:length(infos),
+    for i=1:length(infos)
         filename = infos(i).name; %Example: OPT_W70.55N_1986-05_vx_v02.1.tif
         path = [infos(i).folder '/' infos(i).name];
 

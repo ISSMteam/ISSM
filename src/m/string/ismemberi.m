@@ -18,8 +18,8 @@ end
 flag=0;
 
 %go through the list
-for i=1:length(list),
-	if strcmpi(string,list{i}),
+for i=1:length(list)
+	if strcmpi(string,list{i})
 		flag=i;
 		return
 	end

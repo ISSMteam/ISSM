@@ -27,22 +27,22 @@ classdef surfaceload
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
-			if ~isempty(self.icethicknesschange),
-				if isa(self.icethicknesschange,'cell'),
-					for i=1:length(self.icethicknesschange),
+			if ~isempty(self.icethicknesschange)
+				if isa(self.icethicknesschange,'cell')
+					for i=1:length(self.icethicknesschange)
 						md = checkfield(md,'field',self.icethicknesschange{i},'NaN',0,'Inf',1,'timeserieslength',1,'Inf',1);
 					end
 				else
 					md = checkfield(md,'field',self.icethicknesschange,'NaN',1,'Inf',1,'timeserieslength',1,'Inf',1);
 				end
 			end
-			if ~isempty(self.waterheightchange),
+			if ~isempty(self.waterheightchange)
 				md = checkfield(md,'fieldname','solidearth.surfaceload.waterheightchange','timeseries',1,'NaN',1,'Inf',1);
 			end
-			if ~isempty(self.otherchange),
+			if ~isempty(self.otherchange)
 				md = checkfield(md,'fieldname','solidearth.surfaceload.other','timeseries',1,'NaN',1,'Inf',1);
 			end
 
@@ -66,16 +66,16 @@ classdef surfaceload
 		function marshall(self,prefix,md,fid) % {{{
 
 			%deal with ice thickness change: {{{
-			if isempty(self.icethicknesschange),
+			if isempty(self.icethicknesschange)
 				self.icethicknesschange=zeros(md.mesh.numberofelements+1,1);
 			end
 
 			yts=md.constants.yts;
 
-			if isa(self.icethicknesschange,'cell'),
+			if isa(self.icethicknesschange,'cell')
 				%transform our cell array of time series into cell array of time series of rates 
 				nummodels=length(self.icethicknesschange);
-				for i=1:nummodels,
+				for i=1:nummodels
 					icethicknesschange=self.icethicknesschange{i}; 
 					time=icethicknesschange(end,:);
 					dt=diff(time,1,2);
@@ -96,14 +96,14 @@ classdef surfaceload
 			end
 			%}}}
 			%deal with water height change: {{{
-			if isempty(self.waterheightchange),
+			if isempty(self.waterheightchange)
 				self.waterheightchange=zeros(md.mesh.numberofelements+1,1);
 			end
 
-			if isa(self.waterheightchange,'cell'),
+			if isa(self.waterheightchange,'cell')
 				%transform our cell array of time series into cell array of time series of rates 
 				nummodels=length(self.waterheightchange);
-				for i=1:nummodels,
+				for i=1:nummodels
 					waterheightchange=self.waterheightchange{i}; 
 					time=waterheightchange(end,:);
 					dt=diff(time,1,2);
@@ -124,14 +124,14 @@ classdef surfaceload
 			end
 			%}}}
 			%deal with other: {{{
-			if isempty(self.otherchange),
+			if isempty(self.otherchange)
 				self.otherchange=zeros(md.mesh.numberofelements+1,1);
 			end
 
-			if isa(self.otherchange,'cell'),
+			if isa(self.otherchange,'cell')
 				%transform our cell array of time series into cell array of time series of rates 
 				nummodels=length(self.otherchange);
-				for i=1:nummodels,
+				for i=1:nummodels
 					otherchange=self.otherchange{i}; 
 					time=otherchange(end,:);
 					dt=diff(time,1,2);

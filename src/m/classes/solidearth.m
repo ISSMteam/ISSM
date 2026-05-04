@@ -60,7 +60,7 @@ classdef solidearth
 			self.settings.disp();
 			self.lovenumbers.disp();
 			self.rotational.disp();
-			if ~isempty(self.external),
+			if ~isempty(self.external)
 				self.external.disp();
 			end
 
@@ -87,7 +87,7 @@ classdef solidearth
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
 
@@ -96,8 +96,8 @@ classdef solidearth
 			self.settings.checkconsistency(md,solution,analyses);
 			self.lovenumbers.checkconsistency(md,solution,analyses);
 			self.rotational.checkconsistency(md,solution,analyses);
-			if ~isempty(self.external),
-				if ~isa(self.external,'solidearthsolution'),
+			if ~isempty(self.external)
+				if ~isa(self.external,'solidearthsolution')
 					error('solidearth consistency check: external field should be a solidearthsolution');
 				end
 				self.external.checkconsistency(md,solution,analyses);
@@ -113,18 +113,18 @@ classdef solidearth
 			WriteData(fid,prefix,'object',self,'fieldname','transitions','format','MatArray');
 			WriteData(fid,prefix,'object',self,'fieldname','transfercount','format','DoubleMat','mattype',1);
 
-			if ~isempty(self.partitionice),
+			if ~isempty(self.partitionice)
 				npartice=max(self.partitionice)+2;
 			else
 				npartice=0;
 			end
 
-			if ~isempty(self.partitionhydro),
+			if ~isempty(self.partitionhydro)
 				nparthydro=max(self.partitionhydro)+2;
 			else
 				nparthydro=0;
 			end
-			if ~isempty(self.partitionocean),
+			if ~isempty(self.partitionocean)
 				npartocean=max(self.partitionocean)+2;
 			else
 				npartocean=0;
@@ -138,7 +138,7 @@ classdef solidearth
 			WriteData(fid,prefix,'data',npartocean,'format','Integer','name','md.solidearth.npartocean');
 
 			self.settings.marshall(prefix,md,fid);
-			if ~isempty(self.external),
+			if ~isempty(self.external)
 				WriteData(fid,prefix,'data',1,'format','Integer','name','md.solidearth.isexternal');
 				self.external.marshall(prefix,md,fid);
 			else
@@ -150,7 +150,7 @@ classdef solidearth
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

@@ -20,15 +20,15 @@ classdef plotoptions
 			 disp(sprintf('\n%s = \n',inputname(1)));
 			 disp(sprintf('   numberofplots: %i',opt.numberofplots));
 			 disp(sprintf('   figurenumber: %i',opt.figurenumber));
-			 if ~isempty(opt.list),
+			 if ~isempty(opt.list)
 				 disp(sprintf('   list: (%ix%i)',size(opt.list,1),size(opt.list,2)));
-				 for i=1:size(opt.list,1),
+				 for i=1:size(opt.list,1)
 					 unit=opt.list{i};
 					 disp(sprintf('\n   options of plot number %i',i));
 					 for j=1:size(unit.list,1)
-						 if ischar(unit.list{j,2}),
+						 if ischar(unit.list{j,2})
 							 disp(sprintf('     field: %-10s value: ''%s''',unit.list{j,1},unit.list{j,2}));
-						 elseif isnumeric(unit.list{j,2}) & length(unit.list{j,2})==1,
+						 elseif isnumeric(unit.list{j,2}) & length(unit.list{j,2})==1
 							 disp(sprintf('     field: %-10s value: %g',unit.list{j,1},unit.list{j,2}));
 						 else
 							 disp(sprintf('     field: %-10s value: (%ix%i)',unit.list{j,1},size(unit.list{j,2},1),size(unit.list{j,2},2)));
@@ -43,9 +43,9 @@ classdef plotoptions
 		 function opt=buildlist(opt,varargin) % {{{
 
 			 %check length of input
-			 if mod((nargin-1),2),
+			 if mod((nargin-1),2)
 				 for i=1:2:(nargin-1)
-					 if ~ischar(varargin{i}),
+					 if ~ischar(varargin{i})
 						 disp(['Last valid option: ' varargin{i-2} ]);
 						 break;
 					 end
@@ -58,10 +58,10 @@ classdef plotoptions
 			 numoptions = (nargin-1)/2;
 			 rawlist=cell(numoptions,2);
 			 counter=1;
-			 for i=1:numoptions,
+			 for i=1:numoptions
 				 optionname = varargin{2*i-1};
 				 optionval  = varargin{2*i};
-				 if ischar(optionname),
+				 if ischar(optionname)
 					 rawlist{counter,1}=optionname;
 					 rawlist{counter,2}=optionval;
 					 counter=counter+1;
@@ -77,8 +77,8 @@ classdef plotoptions
 			 numberofplots=fieldoccurrences(rawoptions,'data');
 			 opt.numberofplots=numberofplots;
 
-			 %figure out wether alloptions flog is on
-			 if strcmpi(getfieldvalue(rawoptions,'alloptions','off'),'on'),
+			 %figure out whether alloptions flag is on
+			 if strcmpi(getfieldvalue(rawoptions,'alloptions','off'),'on')
 				 allflag=1;
 			 else
 				 allflag=0;
@@ -86,21 +86,21 @@ classdef plotoptions
 
 			 %initialize opt.list
 			 opt.list=cell(numberofplots,1);
-			 for i=1:numberofplots,
+			 for i=1:numberofplots
 				 opt.list{i}=pairoptions;
 			 end
 
 			 %process plot options
-			 for i=1:size(rawlist,1),
+			 for i=1:size(rawlist,1)
 
 				 %If alloptions flag has is on, apply to all plots
-				 if (allflag & ~strcmpi(rawlist{i,1},'data') & ~ismember('#',rawlist{i,1})),
-					 for j=1:numberofplots,
+				 if (allflag & ~strcmpi(rawlist{i,1},'data') & ~ismember('#',rawlist{i,1}))
+					 for j=1:numberofplots
 						 opt.list{j}=addfield(opt.list{j},rawlist{i,1},rawlist{i,2});
 					 end
 
 					 %option contains '#'
-				 elseif ismember('#',rawlist{i,1}),
+				 elseif ismember('#',rawlist{i,1})
 
 					 %get suplot(s) associated
 					 string=strsplit_strict(rawlist{i,1},'#');
@@ -115,12 +115,12 @@ classdef plotoptions
 						 plotnum=plotnums{k};
 
 						 %Empty
-						 if isempty(plotnum),
+						 if isempty(plotnum)
 							 continue;
 
 							 %pound all
 						 elseif strcmpi(plotnum,'all');
-							 for j=1:numberofplots,
+							 for j=1:numberofplots
 								 opt.list{j}=addfield(opt.list{j},field,rawlist{i,2});
 							 end
 
@@ -131,14 +131,14 @@ classdef plotoptions
 							 if isempty(str2num(nums{1}))|isempty(str2num(nums{2}))
 								 error(['the option #i-j is not set properly for ' field]);
 							 end
-							 for j=str2num(nums{1}):str2num(nums{2}),
+							 for j=str2num(nums{1}):str2num(nums{2})
 								 opt.list{j}=addfield(opt.list{j},field,rawlist{i,2});
 							 end
 
 							 %pound i
 						 else
 							 %assign to subplot
-							 if str2num(plotnum)>numberofplots,
+							 if str2num(plotnum)>numberofplots
 								 error(['opt error message: ' field ' cannot be assigned (' plotnum ' exceed maximum number of plot)']);
 							 end
 							 opt.list{str2num(plotnum)}=addfield(opt.list{str2num(plotnum)},field,rawlist{i,2});
@@ -150,7 +150,7 @@ classdef plotoptions
 
 					 %go through all subplot and assign to the first one free
 					 j=1;
-					 while (j<=numberofplots),
+					 while (j<=numberofplots)
 						 if ~exist(opt.list{j},rawlist{i,1});
 							 opt.list{j}=addfield(opt.list{j},rawlist{i,1},rawlist{i,2});
 							 break
@@ -158,14 +158,14 @@ classdef plotoptions
 							 j=j+1;
 						 end
 					 end
-					 if j>numberofplots,
+					 if j>numberofplots
 						 disp(['plot info message: too many ''' rawlist{i,1} ''' options']);
 					 end
 				 end
 			 end
 
 			 %check that there is no duplicates
-			 for i=1:numberofplots,
+			 for i=1:numberofplots
 				 opt.list{i}=deleteduplicates(opt.list{i},1);
 			 end
 

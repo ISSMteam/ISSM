@@ -5,7 +5,7 @@ function ha=subplotmodel(nlines,ncols,num,options)
 %      h=subplotmodel(nlines,ncols,i,options)
 
 box=getfieldvalue(options,'box','off');
-if strcmpi(box,'on'),
+if strcmpi(box,'on')
 	visible='on';
 else
 	visible='off';

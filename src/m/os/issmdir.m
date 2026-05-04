@@ -13,15 +13,15 @@ path = mfilename('fullpath');
 %issmdir might be in bin,
 slash = filesep();
 pos   = strfind(path,['bin' slash 'issmdir']);
-if ~isempty(pos),
+if ~isempty(pos)
 	ISSM_DIR=path(1:pos-1);
 else
 	pos=strfind(path,['src' slash 'm' slash 'os' slash 'issmdir']);
-	if ~isempty(pos),
+	if ~isempty(pos)
 		ISSM_DIR=path(1:pos-1);
 	end
 end
 
-if isempty(ISSM_DIR),
+if isempty(ISSM_DIR)
 	error('Could not determine the location of ISSM...');
 end

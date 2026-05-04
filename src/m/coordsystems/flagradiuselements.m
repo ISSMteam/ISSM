@@ -12,7 +12,7 @@ function outelements=flagradiuselements(elements,x,y,z,lat0,long0,radius)
 
 	%now that we know the indices, determine elements which own these indices: 
 	outelements=zeros(length(elements),1);
-	for i=1:length(indices),
+	for i=1:length(indices)
 		[pos,dummy]=find(elements==indices(i));
 		outelements(pos)=1;
 	end

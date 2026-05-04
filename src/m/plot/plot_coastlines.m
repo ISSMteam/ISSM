@@ -9876,8 +9876,8 @@ coastlat=[coast(:,1); coast(:,1)];
 coastlon=[coast(:,2); coast(:,2)-360];
 
 %}}}
-if nargin==2, 
-	if strcmpi(class(varargin{1}),'pairoptions'),
+if nargin==2 
+	if strcmpi(class(varargin{1}),'pairoptions')
 		options=varargin{1};
 	end
 else
@@ -9886,7 +9886,7 @@ else
 end
 
 %check on the type of mesh:
-if strcmpi(class(mesh),'mesh2d'),
+if strcmpi(class(mesh),'mesh2d')
 	%project: 
 	xl=getfieldvalue(options,'xlim',xlim);
 	yl=getfieldvalue(options,'ylim',ylim);
@@ -9896,7 +9896,7 @@ if strcmpi(class(mesh),'mesh2d'),
 	set(p,'Color',getfieldvalue(options,'coast_color','k'));
 	set(p,'LineWidth',getfieldvalue(options,'coast_linewidth',1));
 else
-	if ~strcmpi(getfieldvalue(options,'coord','xy'),'latlon') & ~strcmpi(getfieldvalue(options,'coord','xy'),'latlong'),
+	if ~strcmpi(getfieldvalue(options,'coord','xy'),'latlon') & ~strcmpi(getfieldvalue(options,'coord','xy'),'latlong')
 
 		[x,y,z]=AboveGround(coastlat,coastlon,mesh.r(1),1000);
 		hold on, p=plot3(x,y,z,'k-'); 
@@ -9906,7 +9906,7 @@ else
 		hold on, 
 		p=polyshape(coastlon,coastlat);
 		plot(p,'FaceColor','w','FaceAlpha',1);
-		if strcmpi(getfieldvalue(options,'coordcent','atlantic'),'pacific'),
+		if strcmpi(getfieldvalue(options,'coordcent','atlantic'),'pacific')
 			xlim(getfieldvalue(options,'xlim',[-360 0]));
 		else 
 			xlim(getfieldvalue(options,'xlim',[-180 180]));

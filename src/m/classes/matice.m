@@ -41,7 +41,7 @@ classdef matice
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -104,7 +104,7 @@ classdef matice
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if strcmpi(solution,'TransientSolution') & md.transient.isslc,
+			if strcmpi(solution,'TransientSolution') & md.transient.isslc
 				md = checkfield(md,'fieldname','materials.earth_density','>',0,'numel',1);
 			else
 				md = checkfield(md,'fieldname','materials.rho_ice','>',0);

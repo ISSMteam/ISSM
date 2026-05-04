@@ -87,14 +87,14 @@ else, %Kriging KB2D
 
 	%Read output
 	fid=fopen('kb2d.out','r');
-	while (~feof(fid)),
+	while (~feof(fid))
 		A=fscanf(fid,'%s',1);
 		if strcmp(A,'KB2D');
 			A=fscanf(fid,'%s',1); %Read output
 			params=fscanf(fid,'%i %i %i %i %g %g %g %g %g %g %1',[11 1]);
-		elseif strcmp(A,' Estimate'),
+		elseif strcmp(A,' Estimate')
 			continue;
-		elseif strcmp(A,'Estimation'),
+		elseif strcmp(A,'Estimation')
 			A=fscanf(fid,'%s',1); %Read Variance
 			A=fscanf(fid,'%g %g',[params(1) params(2)*params(3)]);
 			B=A(1,:); B=reshape(B,[params(3),params(2)])';

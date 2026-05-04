@@ -121,7 +121,7 @@ classdef solidearthsettings
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
 			md = checkfield(md,'fieldname','solidearth.settings.reltol','size',[1 1]);
@@ -135,24 +135,24 @@ classdef solidearthsettings
 			md = checkfield(md,'fieldname','solidearth.settings.grdmodel','>=',0,'<=',2);
 			md = checkfield(md,'fieldname','solidearth.settings.cross_section_shape','numel',[1],'values',[1,2]);
 
-			if self.elastic==1 & self.selfattraction==0,
+			if self.elastic==1 & self.selfattraction==0
 				error('solidearthsettings checkconsistency error message: need selfattraction on if elastic flag is set');
 			end
-			if self.viscous==1 & self.elastic==0,
+			if self.viscous==1 & self.elastic==0
 				error('solidearthsettings checkconsistency error message: need elastic on if viscous flag is set');
 			end
-			if self.rotation==1 & self.elastic==0,
+			if self.rotation==1 & self.elastic==0
 				error('solidearthsettings checkconsistency error message: need elastic on if rotation flag is set');
 			end
 
 			%a GRD computation has been requested, make some checks on the nature of the meshes provided. 
-			if self.isgrd,
-				if strcmpi(class(md.mesh),'mesh3dsurface'),
-					if self.grdmodel==2,
+			if self.isgrd
+				if strcmpi(class(md.mesh),'mesh3dsurface')
+					if self.grdmodel==2
 						error('model requires a 2D mesh to run gia Ivins computations (change mesh from mesh3dsurface to mesh2d)');
 					end
 				else
-					if self.grdmodel==1,
+					if self.grdmodel==1
 						error('model requires a 3D surface mesh to run GRD computations (change mesh from mesh2d to mesh3dsurface)');
 					end
 				end
@@ -161,7 +161,7 @@ classdef solidearthsettings
 				end
 			end
 
-			if self.compute_bp_grd==1 & md.solidearth.settings.isgrd==0,
+			if self.compute_bp_grd==1 & md.solidearth.settings.isgrd==0
 					error('solidearthsettings checkconsistency error message; if bottom pressure grd patterns are requested, solidearth settings class should have isgrd flag on');
 			end
 

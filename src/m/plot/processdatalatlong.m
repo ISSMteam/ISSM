@@ -16,12 +16,12 @@ function [data datatype] = processdatalatlong(md,data,options);
 	elements=delaunay(x,y);
 	
 	%with this mesh, interpolate data: 
-	if length(data)==length(md.mesh.long),
+	if length(data)==length(md.mesh.long)
 		datatype=2;
 
 		%interpolate data: 
 		extradata=griddata(x0,y0,data,xextra,yextra,'nearest');
 		data=[data; extradata];
-	elseif length(data)==length(md.mesh.elements),
+	elseif length(data)==length(md.mesh.elements)
 		datatype=1;
 	end

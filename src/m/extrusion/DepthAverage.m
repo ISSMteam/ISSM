@@ -13,17 +13,17 @@ if ~strcmp(md.mesh.elementtype(),'Penta');
 end
 
 %nods data
-if (length(vector)==md.mesh.numberofvertices),
+if (length(vector)==md.mesh.numberofvertices)
 	vector_average=zeros(md.mesh.numberofvertices2d,1);
-	for i=1:md.mesh.numberoflayers-1,
+	for i=1:md.mesh.numberoflayers-1
 		vector_average=vector_average+(project2d(md,vector,i)+project2d(md,vector,i+1))/2.*(project2d(md,md.mesh.z,i+1)-project2d(md,md.mesh.z,i));
 	end
 	vector_average=vector_average./project2d(md,md.geometry.thickness,1);
 
 %element data
-elseif (length(vector)==md.mesh.numberofelements),
+elseif (length(vector)==md.mesh.numberofelements)
 	vector_average=zeros(md.mesh.numberofelements2d,1);
-	for i=1:md.mesh.numberoflayers-1,
+	for i=1:md.mesh.numberoflayers-1
 		vertices_dz = (project2d(md,md.mesh.z,i+1)-project2d(md,md.mesh.z,i));
 		elements_dz = mean(vertices_dz(md.mesh.elements2d),2);
 		vector_average = vector_average+project2d(md,vector,i).*elements_dz;

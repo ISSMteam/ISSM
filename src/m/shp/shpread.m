@@ -22,7 +22,7 @@ options=pairoptions(varargin{:});
 invert=getfieldvalue(options,'invert',0);
 
 %some checks
-if ~exist(filename),
+if ~exist(filename)
 	error(['shpread error message: file ' filename ' not found!']);
 end
 
@@ -31,8 +31,8 @@ shp=shaperead(filename);
 
 Struct=struct([]);
 fields=fieldnames(shp);
-for i=1:length(shp),
-	if strcmpi(shp(i).Geometry,'Point'),
+for i=1:length(shp)
+	if strcmpi(shp(i).Geometry,'Point')
 		x=shp(i).X'; y=shp(i).Y';
 		ids=find(isnan(x));
 		x(ids)=[]; y(ids)=[];
@@ -40,18 +40,18 @@ for i=1:length(shp),
 		Struct(end+1).x=x;
 		Struct(end).y=y;
 		Struct(end).density=1;
-		if isfield(shp,'id'),
+		if isfield(shp,'id')
 			Struct(end).name=num2str(shp(i).id);
 		else
 			Struct(end).name='';
 		end
-		for j=1:length(fields),
+		for j=1:length(fields)
 			field=fields{j};
-			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id')),
+			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id'))
 				Struct(end).(field)=shp(i).(field);
 			end
 		end
-	elseif strcmpi(shp(i).Geometry,'Line'),
+	elseif strcmpi(shp(i).Geometry,'Line')
 		x=shp(i).X'; y=shp(i).Y';
 		ids=find(isnan(x));
 		x(ids)=[]; y(ids)=[];
@@ -61,18 +61,18 @@ for i=1:length(shp),
 		Struct(end).nods=length(x);
 		Struct(end).density=1;
 		Struct(end).closed=1;
-		if isfield(shp,'id'),
+		if isfield(shp,'id')
 			Struct(end).name=num2str(shp(i).id);
 		else
 			Struct(end).name='';
 		end
-		for j=1:length(fields),
+		for j=1:length(fields)
 			field=fields{j};
-			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id')),
+			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id'))
 				Struct(end).(field)=shp(i).(field);
 			end
 		end
-	elseif strcmpi(shp(i).Geometry,'Polygon'),
+	elseif strcmpi(shp(i).Geometry,'Polygon')
 		x=shp(i).X'; y=shp(i).Y';
 		ids=find(isnan(x));
 		x(ids)=[]; y(ids)=[];
@@ -82,22 +82,22 @@ for i=1:length(shp),
 		Struct(end).nods=length(x);
 		Struct(end).density=1;
 		Struct(end).closed=1;
-		if isfield(shp,'id'),
+		if isfield(shp,'id')
 			Struct(end).name=num2str(shp(i).id);
 		else
 			Struct(end).name='';
 		end
-		for j=1:length(fields),
+		for j=1:length(fields)
 			field=fields{j};
-			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id')),
+			if ~(strcmpi(field,'X') | strcmpi(field,'Y') | strcmpi(field,'id'))
 				Struct(end).(field)=shp(i).(field);
 			end
 		end
 	end
 end
 
-if invert,
-	for i=1:length(Struct),
+if invert
+	for i=1:length(Struct)
 		Struct(i).x=flipud(Struct(i).x);
 		Struct(i).y=flipud(Struct(i).y);
 	end

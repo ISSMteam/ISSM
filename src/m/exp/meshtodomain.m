@@ -17,14 +17,14 @@ function meshtodomain(mh,domainname,varargin)
 	%build domain contour: 
 	x=[];  y=[]; 
 
-	if strcmpi(getfieldvalue(options,'latlong','off'),'on'),
+	if strcmpi(getfieldvalue(options,'latlong','off'),'on')
 		if isnan(mh.lat) | isnan(mh.long), error('meshtodomain error message: requested domain be output in lat,long referential, but mesh does not contain this information!'); end
-		for i=1:nt,
+		for i=1:nt
 		   x=[x;mh.long(segments(i,1))];
 		   y=[y;mh.lat(segments(i,1))];
 		end
 	else
-		for i=1:nt,
+		for i=1:nt
 		   x=[x;mh.x(segments(i,1))];
 		   y=[y;mh.y(segments(i,1))];
 		end

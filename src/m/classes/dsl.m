@@ -40,14 +40,14 @@ classdef dsl
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
 			%Early return
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc == 0) | (md.transient.isoceantransport==0),
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc == 0) | (md.transient.isoceantransport==0)
 				return;
 			end
 			md = checkfield(md,'fieldname','dsl.global_average_thermosteric_sea_level','NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','dsl.sea_surface_height_above_geoid','NaN',1,'Inf',1,'timeseries',1);
 			md = checkfield(md,'fieldname','dsl.sea_water_pressure_at_sea_floor','NaN',1,'Inf',1,'timeseries',1);
 			
-			if md.solidearth.settings.compute_bp_grd==1, 
+			if md.solidearth.settings.compute_bp_grd==1 
 				md = checkfield(md,'fieldname','dsl.sea_water_pressure_at_sea_floor','empty',1);
 			end
 			

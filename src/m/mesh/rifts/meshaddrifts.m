@@ -17,7 +17,7 @@ contours=domains(1:2:end);
 rifts=domains(2:2:end);
 
 %now loop over rifts: 
-for rift_i=1:length(rifts),
+for rift_i=1:length(rifts)
 
 	%refine rift to desired resolution: 
 	contour=contours(rift_i);
@@ -35,7 +35,7 @@ for rift_i=1:length(rifts),
 	%create domain of md2 model: 
 	md2.mesh.segments=contourenvelope(md2.mesh,'Meshaddrifts.Contour.exp');
 	domain_index=md2.mesh.segments(1,1:2);
-	while (domain_index(end)~=domain_index(1)),
+	while (domain_index(end)~=domain_index(1))
 		pos=find(md2.mesh.segments(:,1)==domain_index(end));
 		domain_index(end+1)=md2.mesh.segments(pos,2);
 	end
@@ -60,11 +60,11 @@ for rift_i=1:length(rifts),
 	%update md2 rifts using elconv and nodeconv, and plug them into md: 
 	md2.rifts=updateriftindexing(md2.rifts,elconv2,nodeconv2);
 
-	for i=1:md.rifts.numrifts,
+	for i=1:md.rifts.numrifts
 		md.rifts.riftstruct(i)=updateriftindexing(md.rifts.riftstruct(i),elconv,nodeconv);
 	end
 
-	if md.rifts.numrifts==0,
+	if md.rifts.numrifts==0
 		md.rifts.riftstruct=md2.rifts;
 		md.rifts.numrifts=1;
 	else

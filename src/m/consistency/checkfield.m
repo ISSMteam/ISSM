@@ -107,7 +107,7 @@ end
 %Check numel
 if exist(options,'numel')
 	fieldnumel=getfieldvalue(options,'numel');
-	if ~ismember(numel(field),fieldnumel),
+	if ~ismember(numel(field),fieldnumel)
 		if length(fieldnumel)==1
 			md = checkmessage(md,getfieldvalue(options,'message',...
 				['field ''' fieldname ''' size should be ' sprintf('%g ',fieldnumel) ]));
@@ -149,8 +149,8 @@ end
 if exist(options,'values')
 	fieldvalues=getfieldvalue(options,'values');
 	if iscell(fieldvalues) %strings
-		if ischar(field) | iscell(fieldvalues),
-			if any(~ismember(field,fieldvalues)),
+		if ischar(field) | iscell(fieldvalues)
+			if any(~ismember(field,fieldvalues))
 				if length(fieldvalues)==1
 					md = checkmessage(md,getfieldvalue(options,'message',...
 						['field ''' fieldname ''' value should be ''' fieldvalues{1} '''']));
@@ -169,7 +169,7 @@ if exist(options,'values')
 	else
 		field2=field(:);
 		if isnumeric(field)
-			if any(~ismember(field2,fieldvalues)),
+			if any(~ismember(field2,fieldvalues))
 				md = checkmessage(md,getfieldvalue(options,'message',...
 					['field ''' fieldname ''' should have values in [' num2str(fieldvalues) ']']));
 			end
@@ -187,7 +187,7 @@ if exist(options,'>=')
 	if getfieldvalue(options,'timeseries',0),       field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
 	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
-	if any(field2<lowerbound),
+	if any(field2<lowerbound)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values above ' num2str(lowerbound(1,1))]));
 	end
@@ -198,7 +198,7 @@ if exist(options,'>')
 	if getfieldvalue(options,'timeseries',0),       field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
 	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
-	if any(field2<=lowerbound),
+	if any(field2<=lowerbound)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values above ' num2str(lowerbound(1,1))]));
 	end
@@ -211,7 +211,7 @@ if exist(options,'<=')
 	if getfieldvalue(options,'timeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
 	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
-	if any(field2>upperbound),
+	if any(field2>upperbound)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values below ' num2str(upperbound(1,1))]));
 	end
@@ -222,7 +222,7 @@ if exist(options,'<')
 	if getfieldvalue(options,'timeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
 	if getfieldvalue(options,'singletimeseries',0), field2=reshape(field(1,:),prod(size(field(1,:))),1); end
 	if getfieldvalue(options,'mappedtimeseries',0), field2=reshape(field(1:end-1,:),prod(size(field(1:end-1,:))),1); end
-	if any(field2>=upperbound),
+	if any(field2>=upperbound)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have values below ' num2str(upperbound(1,1))]));
 	end
@@ -234,12 +234,12 @@ if getfieldvalue(options,'stringrow',0)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should have only one row']));
 	end
-	if ~iscell(field),
+	if ~iscell(field)
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' should be a cell of strings']));
 	else
-		for i=1:size(field,2),
-			if ~ischar(field{i}),
+		for i=1:size(field,2)
+			if ~ischar(field{i})
 				md = checkmessage(md,getfieldvalue(options,'message',...
 					['field ''' fieldname ''' values should a cell of chars']));
 			end
@@ -248,7 +248,7 @@ if getfieldvalue(options,'stringrow',0)
 end
 
 %check file
-if getfieldvalue(options,'file',0),
+if getfieldvalue(options,'file',0)
 	if ~exist(field,'file')
 		md = checkmessage(md,['file provided in ''' fieldname ''': ''' field ''' does not exist']);
 	end
@@ -256,13 +256,13 @@ end
 
 %Check forcings (size and times)
 if getfieldvalue(options,'timeseries',0)
-	if (size(field,1)==md.mesh.numberofvertices | size(field,1)==md.mesh.numberofelements),
+	if (size(field,1)==md.mesh.numberofvertices | size(field,1)==md.mesh.numberofelements)
 		if size(field,2)~=1
 			md = checkmessage(md,getfieldvalue(options,'message',...
 				['field ''' fieldname ''' should have only one column as there are md.mesh.numberofvertices lines']));
 		end
 	elseif (size(field,1)==md.mesh.numberofvertices+1 | size(field,1)==md.mesh.numberofelements+1)
-		if any(field(end,:)~=sort(field(end,:))),
+		if any(field(end,:)~=sort(field(end,:)))
 			md = checkmessage(md,getfieldvalue(options,'message',...
 				['field ''' fieldname ''' columns should be sorted chronologically']));
 		end
@@ -300,7 +300,7 @@ end
 
 %Check mapped forcings (size and times)
 if getfieldvalue(options,'mappedtimeseries',0)
-	if any(field(end,:)~=sort(field(end,:))),
+	if any(field(end,:)~=sort(field(end,:)))
 		md = checkmessage(md,getfieldvalue(options,'message',...
 			['field ''' fieldname ''' columns should be sorted chronologically']));
 	end

@@ -7,7 +7,7 @@ matrix=ones(3,3);
 
 %4 neighboorhood: 
 %corners
-if neighboorhood==4,
+if neighboorhood==4
 	matrix(1,1)=0;
 	matrix(1,3)=0;
 	matrix(3,1)=0;

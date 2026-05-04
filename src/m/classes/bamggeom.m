@@ -34,7 +34,7 @@ classdef bamggeom
 				fields=fieldnames(object);
 				for i=1:length(fields)
 					field=fields{i};
-					if ismember(field,properties('bamggeom')),
+					if ismember(field,properties('bamggeom'))
 						bg.(field)=object.(field);
 					end
 				end

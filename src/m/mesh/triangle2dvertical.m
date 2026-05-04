@@ -13,7 +13,7 @@ function md=triangle(md,domainname,resolution)
 %      md=triangle(md,'DomainOutline.exp',1000);
 
 %Check that mesh was not already run, and warn user: 
-if md.mesh.numberofelements~=0,
+if md.mesh.numberofelements~=0
 	choice=input('This model already has a mesh. Are you sure you want to go ahead? (y/n)','s');
 	if ~strcmp(choice,'y')
 		disp('no meshing done ... exiting');
@@ -28,7 +28,7 @@ area=resolution^2;
 
 %check that all the created nodes belong to at least one element
 orphan=find(~ismember([1:length(x)],sort(unique(elements(:)))));
-for i=1:length(orphan),
+for i=1:length(orphan)
 	disp('WARNING: removing orphans');
 	%get rid of the orphan node i
 	%update x and y

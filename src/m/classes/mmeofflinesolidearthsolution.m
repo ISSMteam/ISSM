@@ -23,7 +23,7 @@ classdef mmeofflinesolidearthsolution < offlinesolidearthsolution
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==1), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==1) 
 				error('mmeofflinesolidearthsolution checkconsistency error message: trying to run GRD patterns while supplying an offline solution for those patterns!'); 
 			end
 			
@@ -32,21 +32,21 @@ classdef mmeofflinesolidearthsolution < offlinesolidearthsolution
 			sup=length(self.displacementup);
 			sgeoid=length(self.geoid);
 
-			if (seast-snorth)~=0,
+			if (seast-snorth)~=0
 				error('mmeofflinesolidearthsolution checkconsistency error message: displacementeast and displacementnorth should be the same size');
 			end
 
-			if (seast-sup)~=0,
+			if (seast-sup)~=0
 				error('mmeofflinesolidearthsolution checkconsistency error message: displacementeast and displacementup should be the same size');
 			end
 
-			if (seast-sgeoid)~=0,
+			if (seast-sgeoid)~=0
 				error('mmeofflinesolidearthsolution checkconsistency error message: displacementeast and geoid should be the same size');
 			end
 			
 			md = checkfield(md,'field',self.modelid,'NaN',1,'Inf',1,'>=',1,'<=',length(self.displacementeast));
 
-			for i=1:seast,
+			for i=1:seast
 				md = checkfield(md,'field',self.displacementeast{i},'NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'field',self.displacementup{i},'NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'field',self.displacementnorth{i},'NaN',1,'Inf',1,'timeseries',1);
@@ -67,7 +67,7 @@ classdef mmeofflinesolidearthsolution < offlinesolidearthsolution
 			WriteData(fid,prefix,'name','md.solidearth.external.nummodels','data',nummodels,'format','Integer');
 
 			%transform our cell array of time series into cell array of time series of rates 
-			for i=1:nummodels,
+			for i=1:nummodels
 				displacementeast=self.displacementeast{i}; 
 				displacementnorth=self.displacementnorth{i}; 
 				displacementup=self.displacementup{i}; 

@@ -24,7 +24,7 @@ end;
 %Create exp structure
 A=struct();
 if(j-1<1), error('no contour found'); end
-for i=1:j-1,
+for i=1:j-1
 	A(i).x=s(i).x;
 	A(i).y=s(i).y;
 end;

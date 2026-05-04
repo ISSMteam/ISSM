@@ -78,7 +78,7 @@ classdef inversionvalidation
 				md = checkfield(md,'fieldname','inversion.thickness_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			else
 				md = checkfield(md,'fieldname','inversion.vx_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
-				if ~strcmp(domaintype(md.mesh),'2Dvertical'),
+				if ~strcmp(domaintype(md.mesh),'2Dvertical')
 					md = checkfield(md,'fieldname','inversion.vy_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 				end
 			end

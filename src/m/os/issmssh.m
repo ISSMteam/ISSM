@@ -8,15 +8,15 @@ function issmssh(host,login,port,command)
 hostname=oshostname();
 
 %if same as host, just run the command. 
-if strcmpi(host,hostname),
+if strcmpi(host,hostname)
 	system(command);
 else
-	if ispc & ~ismingw,
+	if ispc & ~ismingw
 		%use the putty project plink.exe: it should be in the path.
 
 		%get ISSM_DIR variable
 		[status,ISSM_DIR]=system('echo [%ISSM_DIR_WIN%]');
-		if status, 
+		if status 
 			error('issmssh error message: could not find ISSM_DIR_WIN environment variable');
 		end
 		ISSM_DIR=ISSM_DIR(2:end-2);
@@ -28,7 +28,7 @@ else
 
 	else
 		%just use standard unix ssh
-		if port,
+		if port
 			eval(['!ssh -l ' login ' -p ' num2str(port) ' localhost "' command '"']);
 		else
 			eval(['!ssh -l ' login ' ' host ' "' command '"']);

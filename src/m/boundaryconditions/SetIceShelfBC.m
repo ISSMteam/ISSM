@@ -15,12 +15,12 @@ function md=SetIceShelfBC(md,varargin)
 %   See also: SETICESHEETBC, SETMARINEICESHEETBC
 
 %node on Dirichlet (boundary and ~icefront)
-if nargin==2,
+if nargin==2
 	icefrontfile=varargin{1};
 	if ~exist(icefrontfile), error(['SetIceShelfBC error message: ice front file ' icefrontfile ' not found']); end
 	nodeinsideicefront=ContourToMesh(md.mesh.elements,md.mesh.x,md.mesh.y,icefrontfile,'node',2);
 	nodeonicefront=double(md.mesh.vertexonboundary & nodeinsideicefront);
-elseif nargin==1,
+elseif nargin==1
 	nodeonicefront=zeros(md.mesh.numberofvertices,1);
 else
 	help SetIceShelfBC
@@ -37,9 +37,9 @@ md.stressbalance.loadingforce=0*ones(md.mesh.numberofvertices,3);
 md.mask.ice_levelset(find(nodeonicefront))=0;
 
 %First find segments that are not completely on the front
-if strcmp(elementtype(md.mesh),'Penta'),
+if strcmp(elementtype(md.mesh),'Penta')
 	numbernodesfront=4;
-elseif strcmp(elementtype(md.mesh),'Tria'),
+elseif strcmp(elementtype(md.mesh),'Tria')
 	numbernodesfront=2;
 else
 	error('mesh type not supported yet');
@@ -66,7 +66,7 @@ md.smb = initialize(md.smb,md);
 md.basalforcings   = initialize(md.basalforcings,md);
 
 %Deal with other boundary conditions
-if isnan(md.balancethickness.thickening_rate),
+if isnan(md.balancethickness.thickening_rate)
 	md.balancethickness.thickening_rate=zeros(md.mesh.numberofvertices,1);
 	disp('      no balancethickness.thickening_rate specified: values set as zero');
 end
@@ -74,13 +74,13 @@ md.masstransport.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
 md.balancethickness.spcthickness=NaN*ones(md.mesh.numberofvertices,1);
 md.damage.spcdamage=NaN*ones(md.mesh.numberofvertices,1);
 
-if (length(md.initialization.temperature)==md.mesh.numberofvertices),
+if (length(md.initialization.temperature)==md.mesh.numberofvertices)
 	md.thermal.spctemperature=NaN*ones(md.mesh.numberofvertices,1);
-	if isprop(md.mesh,'vertexonsurface'),
+	if isprop(md.mesh,'vertexonsurface')
 		pos=find(md.mesh.vertexonsurface);
 		md.thermal.spctemperature(pos)=md.initialization.temperature(pos); %impose observed temperature on surface
 	end
-	if (length(md.basalforcings.geothermalflux)~=md.mesh.numberofvertices),
+	if (length(md.basalforcings.geothermalflux)~=md.mesh.numberofvertices)
 		md.basalforcings.geothermalflux=zeros(md.mesh.numberofvertices,1);
 	end
 else

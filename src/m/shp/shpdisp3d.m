@@ -27,18 +27,18 @@ aboveground=getfieldvalue(options,'aboveground',1000)
 %read domain:
 domain=shpread(domainoutline);
 
-if epsg~=4326,
+if epsg~=4326
 	%transform to lat,long:
-	for i=1:length(domain),
+	for i=1:length(domain)
 		[x,y] = CoordTransform(domain(i).x,domain(i).y,'EPSG:4326',sprintf('EPSG:%i',epsg));
 		domain(i).x=x; domain(i).y=y;
 	end
 end
 
-for i=1:length(domain),
+for i=1:length(domain)
 
 	%make sure lat,long are what they are supposed to be: 
-	if any(domain(i).x>90 | domain(i).x<-90), 
+	if any(domain(i).x>90 | domain(i).x<-90) 
 		long=domain(i).x; lat=domain(i).y;
 	else
 		long=domain(i).y; lat=domain(i).x;

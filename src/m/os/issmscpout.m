@@ -33,7 +33,7 @@ if numel(packages)==1
 	fileliststr=packages{1};
 else
 	fileliststr='\{';
-	for i=1:numel(packages)-1,
+	for i=1:numel(packages)-1
 		fileliststr=[fileliststr packages{i} ','];
 	end
 	fileliststr=[fileliststr packages{end} '\}'];

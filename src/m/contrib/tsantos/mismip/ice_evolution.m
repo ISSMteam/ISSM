@@ -56,7 +56,7 @@ function [ga iv ivaf GL_y IF_y nelem t] = ice_evolution(varargin),
 	nsteps	= length(md.results.TransientSolution);
 
 
-	for i=i0:nsteps,
+	for i=i0:nsteps
 		ga(i)			= md.results.TransientSolution(i).GroundedArea;
 		iv(i)			= md.results.TransientSolution(i).IceVolume;
 		ivaf(i)		= md.results.TransientSolution(i).IceVolumeAboveFloatation;

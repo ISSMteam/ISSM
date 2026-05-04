@@ -38,11 +38,11 @@ classdef basalforcingsismip6
 			end
 		end % }}}
 		function self = initialize(self,md) % {{{
-			if self.gamma_0 == 0,
+			if self.gamma_0 == 0
 				self.gamma_0 = 14477;
 				disp('      no basalforcings.gamma_0 specified: value set to 14477 m/yr');
 			end
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
@@ -62,7 +62,7 @@ classdef basalforcingsismip6
 			md = checkfield(md,'fieldname','basalforcings.islocal','values',[0 1]);
 			md = checkfield(md,'fieldname','basalforcings.geothermalflux','NaN',1,'Inf',1,'>=',0,'timeseries',1);
 			md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
-			if length(md.basalforcings.melt_anomaly)>1,
+			if length(md.basalforcings.melt_anomaly)>1
 				md = checkfield(md,'fieldname','basalforcings.melt_anomaly','NaN',1,'Inf',1,'timeseries',1);
 			end
 

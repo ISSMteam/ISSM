@@ -17,7 +17,7 @@ for i=1:length(fields)
 	field=fields{i};
 
 	%Some properties do not need to be checked
-	if ismember(field,{'results' 'debug' 'radaroverlay'}),
+	if ismember(field,{'results' 'debug' 'radaroverlay'})
 		continue;
 	end
 

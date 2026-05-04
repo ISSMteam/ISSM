@@ -36,7 +36,7 @@ classdef cflevelsetmisfit
 			end
 		end % }}}
 		function self = cflevelsetmisfit(varargin) % {{{
-			if nargin==0,
+			if nargin==0
 				self=setdefaultparameters(self);
 			else
 				%use provided options to change fields
@@ -59,7 +59,7 @@ classdef cflevelsetmisfit
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ischar(self.name),
+			if ~ischar(self.name)
 				error('cflevelsetmisfit error message: ''name'' field should be a string!');
 			end
 			OutputdefinitionStringArray={};
