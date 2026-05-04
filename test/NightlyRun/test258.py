@@ -28,7 +28,6 @@ md2 = parameterize(md2, '../Par/SquareShelf.py')
 md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 1
 md.smb.swIdx = 1
-%md.smb.adThresh = 500
 md.smb.teThresh = 2
 md.smb.teValue[:] = .95
 

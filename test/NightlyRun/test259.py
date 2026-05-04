@@ -29,9 +29,9 @@ md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 1
 md.smb.swIdx = 1
 md.smb.aIdx = 0
-#md.smb.eIdx = 3
-#md.smb.teValue[:] = 0.95
-#md.smb.teDefault = 0.97
+md.smb.eIdx = 3
+md.smb.teValue[:] = 0.95
+md.smb.teDefault = 0.97
 
 #load hourly surface forcing date from 1979 to 2009:
 if sys.version_info.major == 2:
