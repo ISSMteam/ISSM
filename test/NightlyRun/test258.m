@@ -14,9 +14,9 @@ md2=parameterize(md2,'../Par/SquareShelf.par');
 md.smb = SMBgemb(md.mesh);
 md.smb.dsnowIdx = 1;
 md.smb.swIdx = 1;
-md.smb.adThresh = 500; 
-%md.smb.teThresh = 2;
-%md.smb.teValue(:) = .95;
+%md.smb.adThresh = 500; 
+md.smb.teThresh = 2;
+md.smb.teValue(:) = .95;
 
 %load hourly surface forcing date from 1979 to 2009:
 inputs=load('../Data/gemb_input.mat');

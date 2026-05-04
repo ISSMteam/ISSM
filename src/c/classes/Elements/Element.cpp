@@ -5770,16 +5770,16 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				IssmDouble* xinterp = xNew<IssmDouble>(4);
 				IssmDouble* yinterp = xNew<IssmDouble>(4);
 				int* mappedforcingpoints = xNew<int>(4);
-				IssmDouble* xelem = xNew<IssmDouble>(1);
-				IssmDouble* yelem = xNew<IssmDouble>(1);
-				IssmDouble* latelem = xNew<IssmDouble>(1);
-				IssmDouble* lonelem = xNew<IssmDouble>(1);
+				double* xelem = xNew<double>(1);
+				double* yelem = xNew<double>(1);
+				double* latelem = xNew<double>(1);
+				double* lonelem = xNew<double>(1);
 
 				/*Allocate all arrays*/
 				IssmDouble* xyz_list = NULL;
 				this->GetVerticesCoordinates(&xyz_list);
-				xelem[0]=this->GetXcoord(xyz_list,gauss);
-				yelem[0]=this->GetYcoord(xyz_list,gauss);
+				xelem[0]=reCast<double>(this->GetXcoord(xyz_list,gauss));
+				yelem[0]=reCast<double>(this->GetYcoord(xyz_list,gauss));
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
 				int neighbor1 = mappedforcingneighbors[0];
