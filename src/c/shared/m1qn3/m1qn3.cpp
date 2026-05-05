@@ -229,12 +229,13 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
             done = true;
          }
          else if (indic < 0) {
-            /* computation failed: shrink interval and re-enter advance */
+            /* computation failed: shrink interval and re-enter advance.
+             * Fortran goes to label 905 (skipping fa=f;fpa=fp update). */
             td    = t;
             logic = 0;
             t     = tg + 0.1 * (td - tg);
-            fa    = f; fpa = dot(n, d, g);
-            indica = indic;
+            /* indica = indic (goes to 905, NOT 900 — do not update fa/fpa) */
+            indica = (int)indic;
             need_advance = true;
          }
       }
@@ -244,11 +245,14 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
          double ffn = f - fn;
 
          if (ffn > t * tesf) {
-            /* first Wolfe condition violated: interpolate */
-            td    = t; fa = f; fpa = fp;
-            logic = 0;
+            /* first Wolfe condition violated → bracket from above, interpolate.
+             * Fortran: td=t; go to 500; then fa=f; fpa=fp at label 900.
+             * ecube must be called with the OLD fa/fpa (previous anchor),
+             * so do NOT overwrite fa/fpa before calling ecube. */
+            td     = t;
+            logic  = 0;
 
-            /* interpolation */
+            /* interpolation (label 500 in Fortran) */
             if (indica <= 0) {
                ta = t;
                t  = 0.9 * tg + 0.1 * td;
@@ -265,22 +269,31 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
                else
                   barr = fmin(barmul * barr, barmax);
             }
+            /* label 900: update anchor AFTER ecube */
             fa = f; fpa = fp;
             need_advance = true;
          }
-         else if (fp > tesd || logic == 0) {
-            /* first Wolfe ok and (second Wolfe ok or serious step): accept */
+         else if (fp > tesd) {
+            /* first Wolfe ok, curvature condition satisfied: serious step → accept */
             logic = 0;
             fn = f;
             for (long i = 0; i < n; ++i) xn[i] = x[i];
             done = true;
          }
+         else if (logic == 0) {
+            /* first Wolfe ok, curvature not satisfied, not blocked on tmax:
+             * accept as "not serious" step (Fortran: if logic.eq.0 go to 350 → 320) */
+            fn = f;
+            for (long i = 0; i < n; ++i) xn[i] = x[i];
+            done = true;
+         }
          else {
-            /* second Wolfe not yet satisfied, blocked on tmax: extrapolate */
+            /* first Wolfe ok, curvature not satisfied, blocked on tmax (logic==1):
+             * update left bracket and extrapolate/interpolate further */
             tg = t; fg = f; fpg = fp;
 
             if (td != 0.0) {
-               /* interpolation step */
+               /* interpolation (label 500 in Fortran) */
                if (indica <= 0) {
                   ta = t;
                   t  = 0.9 * tg + 0.1 * td;
@@ -297,6 +310,7 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
                   else
                      barr = fmin(barmul * barr, barmax);
                }
+               /* label 900: update anchor AFTER ecube */
                fa = f; fpa = fp;
                need_advance = true;
             }
@@ -307,6 +321,7 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
                double droite = 10.0 * t;
                ecube(t, f, fp, ta, fa, fpa, gauche, droite);
                ta = taa;
+               /* label 900: update anchor AFTER ecube */
                fa = f; fpa = fp;
                if (t >= tmax) {
                   logic = 1;
@@ -474,8 +489,8 @@ static void m1qn3a(M1qn3SimulFunc simul,
          /* advance ring pointer */
          jmax = jmax + 1;
          if (jmax >= m) jmax -= m;
-         /* advance jmin if ring is full */
-         if ((niter > m) || (jmin == jmax)) {
+         /* advance jmin only when ring is full (cold start: Fortran niter > m) */
+         if (niter > m) {
             jmin++;
             if (jmin >= m) jmin -= m;
          }
