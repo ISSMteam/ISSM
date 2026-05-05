@@ -18,15 +18,7 @@ double transient_ad(FemModel* femmodel, double* G,double* Jlist);
 
 #if defined (_HAVE_M1QN3_) && defined(_HAVE_AD_)
 /*m1qn3 prototypes {{{*/
-extern "C" void *ctonbe_; // DIS mode : Conversion
-extern "C" void *ctcabe_; // DIS mode : Conversion
-extern "C" void *euclid_; // Scalar product
 typedef void (*SimulFunc) (long* indic,long* n, double* x,double* pf,double* g,long [],float [],void* dzs);
-extern "C" void m1qn3_ (void f(long* indic,long* n, double* x,double* pf,double* g,long [],float [],void* dzs),
-			void **, void **, void **,
-			long *, double [],double *, double[], double*, double *,
-			double *, char [], long *, long *, long *, long *, long *, long *, long [],double [], long *,
-			long *, long *, long [], float [],void* );
 
 /*Use struct to provide arguments*/
 typedef struct{
@@ -435,15 +427,11 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	/*Initialize M1QN3 parameters*/
 	if(VerboseControl())_printf0_("   Initialize M1QN3 parameters\n");
 	SimulFunc simul_ptr    = &simul_ad; /*Cost function address*/
-	void**    prosca       = &euclid_;  /*Dot product function (euclid is the default)*/
-	char      normtype[]   = "dfn";     /*Norm type: dfn = scalar product defined by prosca*/
 	long      izs[5];                   /*Arrays used by m1qn3 subroutines*/
 	long      iz[5];                    /*Integer m1qn3 working array of size 5*/
 	float     rzs[1];                   /*Arrays used by m1qn3 subroutines*/
 	long      impres       = 0;         /*verbosity level*/
-	long      imode[3]     = {0};       /*scaling and starting mode, 0 by default*/
 	long      indic        = 4;         /*compute f and g*/
-	long      reverse      = 0;         /*reverse or direct mode*/
 	long      io           = 6;         /*Channel number for the output*/
 
 	/*Optimization criterions*/
@@ -489,11 +477,11 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	if(dfmin_frac==0.) dfmin_frac=1.;
 	double df1=dfmin_frac*f;
 
-	/*Call M1QN3 solver*/
-	m1qn3_(simul_ptr,prosca,&ctonbe_,&ctcabe_,
+	/*Call M1QN3 solver (C++ implementation)*/
+	m1qn3_cpp(simul_ptr,
 				&n,X,&f,G,&dxmin,&df1,
-				&gttol,normtype,&impres,&io,imode,&omode,&niter,&nsim,iz,dz,&ndz,
-				&reverse,&indic,izs,rzs,(void*)&mystruct);
+				&gttol,&impres,&io,&omode,&niter,&nsim,iz,dz,&ndz,
+				izs,rzs,(void*)&mystruct);
 
 	/*Print exit flag*/
 	InversionStatsFooter(num_cost_functions);
