@@ -20,5 +20,6 @@
 #include "./Threads/issm_threads.h"
 #include "./Triangle/triangle.h"
 #include "./LatLong/latlong.h"
+#include "./m1qn3/m1qn3.h"
 
 #endif
