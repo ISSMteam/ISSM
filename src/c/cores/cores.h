@@ -59,6 +59,9 @@ void bmb_core(FemModel* femmodel);
 void damage_core(FemModel* femmodel);
 void sampling_core(FemModel* femmodel);
 void debris_core(FemModel* femmodel);
+void write_control_output(int iter, double* X, double* G,
+			  int* spatial_size, int* temporal_size,
+			  int num_controls);
 
 /*sealevel change cores:*/
 #ifdef _HAVE_SEALEVELCHANGE_
