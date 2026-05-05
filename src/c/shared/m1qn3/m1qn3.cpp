@@ -62,26 +62,25 @@ static void ecube(double& t, double f, double fp, double ta, double fa, double f
       discri = fp / z1;
       discri = discri * fpa;
       discri = z1 - discri;
+
       if (z1 >= 0.0 && discri >= 0.0) {
          discri = sqrt(z1) * sqrt(discri);
-         goto label120;
       }
-      if (z1 <= 0.0 && discri <= 0.0) {
+      else if (z1 <= 0.0 && discri <= 0.0) {
          discri = sqrt(-z1) * sqrt(-discri);
-         goto label120;
       }
-      discri = -1.0;
+      else {
+         discri = -1.0;
+      }
    }
 
    if (discri < 0.0) {
       t = (fp < 0.0) ? tupper : tlower;
-      goto label900;
    }
-   discri = sqrt(discri);
+   else {
+      discri = sqrt(discri);
+      if (t - ta < 0.0) discri = -discri;
 
-label120:
-   if (t - ta < 0.0) discri = -discri;
-   {
       double sign = (t - ta) / fabs(t - ta);
       if (b * sign > 0.0) {
          t = t + fp * (ta - t) / (b + discri);
@@ -98,7 +97,6 @@ label120:
       }
    }
 
-label900:
    t = fmax(t, tlower);
    t = fmin(t, tupper);
 }
@@ -207,16 +205,18 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
    for (long i = 0; i < n; ++i) { xn[i] = x[i]; x[i] = xn[i] + t * d[i]; }
 
    /* ---- main loop ---- */
-   for (;;) {
+   bool done = false;
+   while (!done) {
       nap++;
       if (nap > napmax) {
          logic = 4;
          fn = fg;
          for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
-         goto done;
+         break;
       }
 
       /* call simulator: ask for f and g */
+      bool need_advance = false;
       {
          long indic = 4;
          simul(&indic, &n, x, &f, g, izs, rzs, dzs);
@@ -226,121 +226,133 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
             logic = 5;
             fn = f;
             for (long i = 0; i < n; ++i) xn[i] = x[i];
-            goto done;
+            done = true;
          }
-         if (indic < 0) {
-            /* computation failed */
-            td     = t;
-            int indicd = indic;
-            logic  = 0;
-            t      = tg + 0.1 * (td - tg);
-            fa     = f; fpa = dot(n, d, g);  /* update for next ecube */
+         else if (indic < 0) {
+            /* computation failed: shrink interval and re-enter advance */
+            td    = t;
+            logic = 0;
+            t     = tg + 0.1 * (td - tg);
+            fa    = f; fpa = dot(n, d, g);
             indica = indic;
-            /* jump to line-search continuation */
-            goto continue_ls;
+            need_advance = true;
          }
       }
 
-      {
+      if (!done && !need_advance) {
          double fp  = dot(n, d, g);
          double ffn = f - fn;
 
-         /* first Wolfe condition */
          if (ffn > t * tesf) {
-            td     = t; fa = f; fpa = fp; /* indicd = 1 (computed) */
-            logic  = 0;
-            /* interpolate */
-            goto interp;
-         }
-
-         /* first Wolfe ok — second Wolfe condition */
-         if (fp > tesd) {
+            /* first Wolfe condition violated: interpolate */
+            td    = t; fa = f; fpa = fp;
             logic = 0;
-            /* accept step: copy x into xn */
-            fn = f;
-            for (long i = 0; i < n; ++i) xn[i] = x[i];
-            goto done;
-         }
-         if (logic == 0) {
-            /* both conditions satisfied: serious step */
-            fn = f;
-            for (long i = 0; i < n; ++i) xn[i] = x[i];
-            goto done;
-         }
 
-         /* second test ok but blocked on tmax: extrapolate */
-         tg = t; fg = f; fpg = fp;
-         if (td != 0.0) goto interp;
-
-         /* extrapolation */
-         {
-            double taa    = t;
-            double gauche = (1.0 + barmin) * t;
-            double droite = 10.0 * t;
-            ecube(t, f, fp, ta, fa, fpa, gauche, droite);
-            ta = taa;
-            if (t < tmax) {
-               fa = f; fpa = fp;
-               goto advance;
+            /* interpolation */
+            if (indica <= 0) {
+               ta = t;
+               t  = 0.9 * tg + 0.1 * td;
             }
-            logic = 1;
-            t = tmax;
+            else {
+               double test   = barr * (td - tg);
+               double gauche = tg + test;
+               double droite = td - test;
+               double taa    = t;
+               ecube(t, f, fp, ta, fa, fpa, gauche, droite);
+               ta = taa;
+               if (t > gauche && t < droite)
+                  barr = fmax(barmin, barr / barmul);
+               else
+                  barr = fmin(barmul * barr, barmax);
+            }
             fa = f; fpa = fp;
-            goto advance;
+            need_advance = true;
          }
-
-      interp:
-         if (indica <= 0) {
-            ta = t;
-            t  = 0.9 * tg + 0.1 * td;
+         else if (fp > tesd || logic == 0) {
+            /* first Wolfe ok and (second Wolfe ok or serious step): accept */
+            logic = 0;
+            fn = f;
+            for (long i = 0; i < n; ++i) xn[i] = x[i];
+            done = true;
          }
          else {
-            double test   = barr * (td - tg);
-            double gauche = tg + test;
-            double droite = td - test;
-            double taa    = t;
-            ecube(t, f, fp, ta, fa, fpa, gauche, droite);
-            ta = taa;
-            if (t > gauche && t < droite)
-               barr = fmax(barmin, barr / barmul);
-            else
-               barr = fmin(barmul * barr, barmax);
+            /* second Wolfe not yet satisfied, blocked on tmax: extrapolate */
+            tg = t; fg = f; fpg = fp;
+
+            if (td != 0.0) {
+               /* interpolation step */
+               if (indica <= 0) {
+                  ta = t;
+                  t  = 0.9 * tg + 0.1 * td;
+               }
+               else {
+                  double test   = barr * (td - tg);
+                  double gauche = tg + test;
+                  double droite = td - test;
+                  double taa    = t;
+                  ecube(t, f, fp, ta, fa, fpa, gauche, droite);
+                  ta = taa;
+                  if (t > gauche && t < droite)
+                     barr = fmax(barmin, barr / barmul);
+                  else
+                     barr = fmin(barmul * barr, barmax);
+               }
+               fa = f; fpa = fp;
+               need_advance = true;
+            }
+            else {
+               /* extrapolation */
+               double taa    = t;
+               double gauche = (1.0 + barmin) * t;
+               double droite = 10.0 * t;
+               ecube(t, f, fp, ta, fa, fpa, gauche, droite);
+               ta = taa;
+               fa = f; fpa = fp;
+               if (t >= tmax) {
+                  logic = 1;
+                  t = tmax;
+               }
+               need_advance = true;
+            }
          }
-         fa = f; fpa = fp;
-         goto advance;
       }
 
-   continue_ls:
-      fa = f; fpa = dot(n, d, g);
+      if (!done && need_advance) {
+         indica = 1; /* treated as "computed" for next cubic */
 
-   advance:
-      indica = 1; /* treated as "computed" for next cubic */
+         /* check stopping: td - tg < tmin? */
+         if (td != 0.0) {
+            bool stop_dxmin = false;
+            if (td - tg < tmin) {
+               stop_dxmin = true;
+            }
+            else {
+               /* machine-precision guard */
+               bool no_change = true;
+               for (long i = 0; i < n; ++i) {
+                  double z = xn[i] + t * d[i];
+                  if (z != xn[i] && z != x[i]) { no_change = false; break; }
+               }
+               if (no_change) stop_dxmin = true;
+            }
 
-      /* check stopping: td - tg < tmin? */
-      if (td != 0.0) {
-         if (td - tg < tmin) goto stop_dxmin;
-         /* machine-precision guard */
-         bool no_change = true;
-         for (long i = 0; i < n; ++i) {
-            double z = xn[i] + t * d[i];
-            if (z != xn[i] && z != x[i]) { no_change = false; break; }
+            if (stop_dxmin) {
+               logic = 6;
+               if (tg != 0.0) {
+                  fn = fg;
+                  for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
+               }
+               done = true;
+            }
          }
-         if (no_change) goto stop_dxmin;
+
+         if (!done) {
+            /* update trial point and loop */
+            for (long i = 0; i < n; ++i) x[i] = xn[i] + t * d[i];
+         }
       }
-
-      /* update trial point and loop */
-      for (long i = 0; i < n; ++i) x[i] = xn[i] + t * d[i];
-      continue;
-
-   stop_dxmin:
-      logic = 6;
-      if (tg == 0.0) goto done;
-      fn = fg;
-      for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
-      goto done;
    }
 
-done:
    /* restore x = best point found (xn) */
    f = fn;
    for (long i = 0; i < n; ++i) x[i] = xn[i];
@@ -445,10 +457,6 @@ static void m1qn3a(M1qn3SimulFunc simul,
          if (moderl < 0) {
             omode = moderl; return;
          }
-         else if (moderl == 1) {
-            /* blocked on tmax: skip BFGS update */
-            goto skip_update;
-         }
          else if (moderl == 4) {
             omode = 5; return;
          }
@@ -458,10 +466,11 @@ static void m1qn3a(M1qn3SimulFunc simul,
          else if (moderl == 6) {
             omode = 6; return;
          }
+         /* moderl == 1 (blocked on tmax): skip L-BFGS update, fall through */
       }
 
-      /* --- L-BFGS matrix update --- */
-      if (m > 0) {
+      /* --- L-BFGS matrix update (skipped when blocked on tmax) --- */
+      if (moderl != 1 && m > 0) {
          /* advance ring pointer */
          jmax = jmax + 1;
          if (jmax >= m) jmax -= m;
@@ -524,8 +533,6 @@ static void m1qn3a(M1qn3SimulFunc simul,
             for (long i = 0; i < n; ++i) gg[i] = g[i];
          }
       }
-
-   skip_update:
 
       /* --- stopping tests --- */
       gnorm = sqrt(dot(n, g, g));
