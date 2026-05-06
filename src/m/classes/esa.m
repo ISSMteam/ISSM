@@ -48,7 +48,7 @@ classdef esa
 			md = checkfield(md,'fieldname','esa.requested_outputs','stringrow',1);
 
 			%check that love numbers are provided at the same level of accuracy: 
-			if (size(self.love_h,1)~=size(self.love_l,1)),
+			if (size(self.love_h,1)~=size(self.love_l,1))
 				error('esa error message: love numbers should be provided at the same level of accuracy');
 			end
 
@@ -56,7 +56,7 @@ classdef esa
 			pos=find(self.deltathickness);
 			maskpos=md.mask.ice_levelset(md.mesh.elements(pos,:)); 
 			[els,vertices]=find(maskpos>0);
-			if length(els),
+			if length(els)
 				error('esa checkconsistency fail: there are elements with ice loads where some vertices are not on the ice!');
 			end
 
@@ -87,7 +87,7 @@ classdef esa
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

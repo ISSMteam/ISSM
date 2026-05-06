@@ -49,7 +49,7 @@ classdef spatiallinearbasalforcings
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
@@ -69,14 +69,14 @@ classdef spatiallinearbasalforcings
             md = checkfield(md,'fieldname','basalforcings.perturbation_melting_rate','NaN',1,'Inf',1,'timeseries',1);
          end
 
-			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0),
+			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport==0)
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','NaN',1,'Inf',1,'timeseries',1,'>=',0);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_elevation','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_melting_rate','NaN',1,'Inf',1,'timeseries',1,'>=',0);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_elevation','NaN',1,'Inf',1,'timeseries',1,'<=',0);
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				error('not implemented yet!');
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','>=',0,'numel',1);
@@ -84,7 +84,7 @@ classdef spatiallinearbasalforcings
 				md = checkfield(md,'fieldname','basalforcings.upperwater_melting_rate','>=',0,'numel',1);
 				md = checkfield(md,'fieldname','basalforcings.upperwater_elevation','<=',0,'numel',1);
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0),
+			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal==0)
 				error('not implemented yet!');
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','basalforcings.deepwater_melting_rate','>=',0,'numel',1);

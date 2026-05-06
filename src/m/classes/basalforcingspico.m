@@ -34,7 +34,7 @@ classdef basalforcingspico
 			end
 		end % }}}
 		function self = initialize(self,md) % {{{
-			if isnan(self.maxboxcount),
+			if isnan(self.maxboxcount)
 	            self.maxboxcount = 5;
 		   			disp('      no maximum number of boxes set, setting value to 5');
 		   end
@@ -46,7 +46,7 @@ classdef basalforcingspico
 				self.gamma_T = 2e-5; %m/s
 				disp('      no turbulent temperature exchange velocity set, setting value to 2e-5');
 			end
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end

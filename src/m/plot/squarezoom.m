@@ -9,7 +9,7 @@ disp('Click twice to define a square where you want to zoom. First click for upp
 dx=x(2)-x(1);
 dy=y(1)-y(2);
 
-if dx>dy,
+if dx>dy
 	delta=dx-dy;
 	xlim([x(1) x(2)]);
 	ylim([y(2)-delta/2 y(1)+delta/2]);

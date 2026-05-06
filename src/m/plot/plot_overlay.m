@@ -8,7 +8,7 @@ function plot_overlay(md,data,options,plotlines,plotcols,i)
 
 %process mesh and data
 [x y z elements is2d isplanet]=processmesh(md,[],options);
-if strcmpi(data,'none'),
+if strcmpi(data,'none')
 	radaronly=1;
 	data=NaN*ones(md.mesh.numberofvertices,1);
 	datatype=1;
@@ -24,15 +24,15 @@ if islevelset
 end
 
 %check is2d
-if ~is2d, 
+if ~is2d 
 	error('buildoverlay error message: overlay not supported for 3d meshes, project on a layer');
 end
-if datatype==3,
+if datatype==3
 	error('buildoverlay error message: overlay not supported for quiver plots');
 end
 
 %radar power
-if ~any(isnan(md.radaroverlay.x)) & ~any(isnan(md.radaroverlay.y)) & ~any(isnan(md.radaroverlay.pwr)),
+if ~any(isnan(md.radaroverlay.x)) & ~any(isnan(md.radaroverlay.y)) & ~any(isnan(md.radaroverlay.pwr))
 	disp('plot_overlay info: the radar image held by the model is being used');
 	xlim=[min(md.radaroverlay.x) max(md.radaroverlay.x)];
 	ylim=[min(md.radaroverlay.y) max(md.radaroverlay.y)];
@@ -54,9 +54,9 @@ contrast = getfieldvalue(options,'contrast',1);
 radar    = md.radaroverlay.pwr;
 
 if ~radaronly
-	if size(radar,3)>1,
+	if size(radar,3)>1
 		disp('WARNING: color image converted to greyscale intensity image');
-		if strcmp(class(radar),'uint8'),
+		if strcmp(class(radar),'uint8')
 			radar=double(sum(radar,3))/(255*3);
 		else
 			radar=sum(radar,3)/3;
@@ -77,7 +77,7 @@ end
 disp('Interpolating data on grid...');
 x_m = md.radaroverlay.x;
 y_m = md.radaroverlay.y;
-if radaronly,
+if radaronly
 	data_grid=NaN(size(radar));
 else
 	data_grid=InterpFromMeshToGrid(elements,x/getfieldvalue(options,'unit',1),y/getfieldvalue(options,'unit',1),data,x_m,y_m,NaN);
@@ -90,11 +90,11 @@ end
 
 %Process data_grid (For processing, it is better not to have nan)
 pos=find(isinf(data_grid));
-if ~isempty(pos),
+if ~isempty(pos)
 	disp('Warning: removing Infs from vector (probably log(0)?)');
 	data_grid(pos)=NaN;
 end
-if exist(options,'caxis'),
+if exist(options,'caxis')
 	caxis_opt=getfieldvalue(options,'caxis');
 	data_grid(find(data_grid<caxis_opt(1)))=caxis_opt(1);
 	data_grid(find(data_grid>caxis_opt(2)))=caxis_opt(2);
@@ -110,12 +110,12 @@ data_grid(data_nan)=data_min;
 %Special colormaps that require hsv treatment
 colorm=getfieldvalue(options,'colormap','parula');
 if strcmpi(colorm,'Rignot') | strcmpi(colorm,'Seroussi') | strcmpi(colorm,'redblue')
-	if strcmpi(colorm,'Rignot'),
+	if strcmpi(colorm,'Rignot')
 		transparency=getfieldvalue(options,'alpha',1);
 		h=(data_grid-data_min)/(data_max-data_min+eps);
 		if radaronly, h(:)=0; end
 		s=max(min((0.1+h).^(1/transparency),1),0);
-	elseif strcmpi(colorm,'Seroussi'),
+	elseif strcmpi(colorm,'Seroussi')
 		transparency=getfieldvalue(options,'alpha',1);
 		h=1-(data_grid-data_min)/(data_max-data_min+eps)*0.7;
 		if radaronly, h(:)=0; end
@@ -168,7 +168,7 @@ subplotmodel(plotlines,plotcols,i,options);
 imagesc(x_m*getfieldvalue(options,'unit',1),y_m*getfieldvalue(options,'unit',1),image_rgb);set(gca,'YDir','normal');
 
 %last step: mesh overlay?
-if exist(options,'edgecolor'),
+if exist(options,'edgecolor')
 	hold on
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 	patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',zeros(size(x)),'FaceColor','none',...
@@ -177,7 +177,7 @@ end
 
 %Apply options, without colorbar and without grid
 options=changefieldvalue(options,'colormap',colorm);              % We used an HSV colorbar
-if ~isnan(data_min),
+if ~isnan(data_min)
 	options=changefieldvalue(options,'caxis',[data_min data_max]); % force caxis so that the colorbar is ready
 end
 options=addfielddefault(options,'xlim',xlim);        % default xlim

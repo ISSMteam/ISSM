@@ -18,7 +18,7 @@ elementice=sum(ice(md.mesh.elements),2);
 elementnoice=sum(noice(md.mesh.elements),2);
 elementzeroice=sum(zeroice(md.mesh.elements),2);
 
-if is2d,
+if is2d
 	icefront=(elementice & elementnoice) & ~(elementice==2 & elementzeroice);
 
 	%plot mesh

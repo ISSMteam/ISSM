@@ -51,7 +51,7 @@ disp('       ''caxis'': modify  colorbar range. (array of type [a b] where b>=a)
 disp('       ''backgroundcolor'': plot background color. (default is ''w'')');
 disp('       ''figurebackgroundcolor'': figure background color. (default is ''none'')');
 disp('       ''coord'':  ''xy'' (default) or ''latlon''');
-disp('       ''colorlevels'':  N or {value1,valu2,value3,...} used if quiver, use different colors for the given number of colors or limits');
+disp('       ''colorlevels'':  N or {value1,value2,value3,...} used if quiver, use different colors for the given number of colors or limits');
 disp('       ''colorbar'': add colorbar (string ''on'' or ''off'')');
 disp('       ''colorbartitle'': colorbar title (string)');
 disp('       ''colorbarYlabel'': colorbar Y label (string)');
@@ -62,7 +62,7 @@ disp('       ''colorbarfontsize'': specify colorbar fontsize');
 disp('       ''colorbarwidth'': multiplier (default 1) to the default width colorbar');
 disp('       ''colorbarheight'': multiplier (default 1) to the default height colorbar');
 disp('       ''colormap'': same as standard matlab option (''jet'',''hsv'',''cool'',''spring'',''gray'',''Ala'',''Rignot'',...)');
-disp('       ''contourlevels'': N or {value1,valu2,value3,...} add the contours of the specified values or N contours');
+disp('       ''contourlevels'': N or {value1,value2,value3,...} add the contours of the specified values or N contours');
 disp('       ''contourticks'': ''on'' or ''off'' to display the ticks of the contours');
 disp('       ''contouronly'': ''on'' or ''off'' to display the contours on a white background');
 disp('       ''contourcolor'': ticks and contour color');

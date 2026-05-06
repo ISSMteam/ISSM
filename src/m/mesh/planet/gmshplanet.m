@@ -16,10 +16,10 @@ function mesh=gmshplanet(varargin)
 
 	%Get Gmsh version
 	[s,r]=system(['gmsh -info | grep ''Version'' | sed -e ''s/Version[[:blank:]]*:[[:blank:]]//'' | cut -d ''.'' -f1']);
-	if contains(r, 'dyld'),
+	if contains(r, 'dyld')
 		error(['gmshplanet: ' r]);
 	end
-	if s~=0,
+	if s~=0
 		%gmsh executable may not be on path; attempt to find it
 
 		paths={
@@ -32,25 +32,25 @@ function mesh=gmshplanet(varargin)
 		};
 		gmshpath='';
 		for i=paths
-			if exist([i{1} '/gmsh'],'file'),
+			if exist([i{1} '/gmsh'],'file')
 				gmshpath = i{1};
 				break;
 			end
 		end
-		if isempty(gmshpath),
+		if isempty(gmshpath)
 			error('gmshplanet: gmsh executable not found!');
 		end
 		setenv('PATH', [gmshpath ':' getenv('PATH')]);
 
 		%Get Gmsh version
 		[s,r]=system(['gmsh -info | grep ''Version'' | sed -e ''s/Version[[:blank:]]*:[[:blank:]]//'' | cut -d ''.'' -f1']);
-		if contains(r, 'dyld'),
+		if contains(r, 'dyld')
 			error(['gmshplanet: ' r]);
 		end
 	end
 
 	gmshmajorversion=str2num(r);
-	if ~ismember([3,4],gmshmajorversion),
+	if ~ismember([3,4],gmshmajorversion)
 		error(['gmshplanet: Gmsh major version ' gmshmajorversion ' not supported!']);
 	end
 
@@ -79,10 +79,10 @@ function mesh=gmshplanet(varargin)
 	fprintf(fid,'Mesh.Algorithm = 1;\n'); % MeshAdapt
 	fprintf(fid,'Mesh.MshFileVersion = 2;\n');
 	fprintf(fid,'Mesh.RandomFactor = 1e-10;\n');
-	if  exist(options,'refine'),
+	if  exist(options,'refine')
 		fprintf(fid,'Mesh.Algorithm = 7;\n'); % BAMG
 		fprintf(fid,'Mesh.CharacteristicLengthFromPoints = 0;\n');
-		if gmshmajorversion == 3,
+		if gmshmajorversion == 3
 			fprintf(fid,'Mesh.RemeshAlgorithm = 1;\n');
 		end
 	end
@@ -108,9 +108,9 @@ function mesh=gmshplanet(varargin)
 	fprintf(fid,'Circle(11) = {4,1,6};\n');
 	fprintf(fid,'Circle(12) = {6,1,2};\n');
 
-	if gmshmajorversion == 3,
+	if gmshmajorversion == 3
 		curvename='Line Loop';
-	elseif gmshmajorversion == 4,
+	elseif gmshmajorversion == 4
 		curvename='Curve Loop';
 	end
 
@@ -137,7 +137,7 @@ function mesh=gmshplanet(varargin)
 	fclose(fid);
 	%}}}
 
-	if  exist(options,'refine'),
+	if  exist(options,'refine')
 		meshini=getfieldvalue(options,'refine');
 		metric=getfieldvalue(options,'refinemetric');
 
@@ -145,7 +145,7 @@ function mesh=gmshplanet(varargin)
 		fid=fopen('sphere.pos','w');
 
 		fprintf(fid,'View "background mesh" {\n');
-		for i=1:meshini.numberofelements,
+		for i=1:meshini.numberofelements
 			fprintf(fid,'ST(%g,%g,%g,%g,%g,%g,%g,%g,%g){%g,%g,%g};\n',...
 			meshini.x(meshini.elements(i,1)), meshini.y(meshini.elements(i,1)), meshini.z(meshini.elements(i,1)),...
 			meshini.x(meshini.elements(i,2)), meshini.y(meshini.elements(i,2)), meshini.z(meshini.elements(i,2)),...
@@ -165,7 +165,7 @@ function mesh=gmshplanet(varargin)
 	%		modifying our parsing scheme for Gmsh 4, for now, we simply set the
 	%		"-format" option.
 	%
-	if  exist(options,'refine'),
+	if  exist(options,'refine')
 		system(['gmsh -2 sphere.geo -bgm sphere.pos']);
 	else
 		system(['gmsh -2 sphere.geo']);
@@ -176,19 +176,19 @@ function mesh=gmshplanet(varargin)
 
 	%Get Mesh format
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$MeshFormat'),
+	if ~strcmp(A,'$MeshFormat')
 		error(['Expecting $MeshFormat (' A ')']);
 	end
 
 	A=fscanf(fid,'%f %i %i',[1 3]);
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$EndMeshFormat'),
+	if ~strcmp(A,'$EndMeshFormat')
 		error(['Expecting $EndMeshFormat (' A ')']);
 	end
 
 	%Nodes
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$Nodes'),
+	if ~strcmp(A,'$Nodes')
 		error(['Expecting $Nodes (' A ')']);
 	end
 
@@ -199,20 +199,20 @@ function mesh=gmshplanet(varargin)
 	mesh.z = A(4,:)';
 
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$EndNodes'),
+	if ~strcmp(A,'$EndNodes')
 		error(['Expecting $EndNodes (' A ')']);
 	end
 
 	%Elements
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$Elements'),
+	if ~strcmp(A,'$Elements')
 		error(['Expecting $Elements (' A ')']);
 	end
 	mesh.numberofelements=fscanf(fid,'%i',1);
 	A=fscanf(fid,'%i %i %i %i %i %i %i %i',[8 mesh.numberofelements]);
 	mesh.elements=A(6:8,:)';
 	A=fscanf(fid,'%s',1);
-	if ~strcmp(A,'$EndElements'),
+	if ~strcmp(A,'$EndElements')
 		error(['Expecting $EndElements (' A ')']);
 	end
 	fclose(fid);

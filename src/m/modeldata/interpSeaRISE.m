@@ -36,33 +36,33 @@ function [dataout] = interpSeaRISE(X,Y,string,varargin),
 
 verbose=0;
 
-if nargin==3,
+if nargin==3
 	hemisphere = +1;
 else
 	hemisphere = varargin{1};
 end
 
-if nargin==5,
+if nargin==5
 	searisenc = varargin{2};
 else
 	%read data
 	switch (oshostname()),
 		case {'ronne'}
-			if hemisphere==1,
+			if hemisphere==1
 				searisenc='/home/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
-			elseif hemisphere==-1,
+			elseif hemisphere==-1
 				searisenc='/home/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
 			end
 		case {'thwaites','larsen','murdo','astrid','wilkins.jpl.nasa.gov'}
-			if hemisphere==1,
+			if hemisphere==1
 				searisenc='/u/astrid-r1b/ModelData/SeaRISE/Greenland5km_v1.2/Greenland_5km_dev1.2.nc';
-			elseif hemisphere==-1,
+			elseif hemisphere==-1
 				searisenc='/u/astrid-r1b/ModelData/SeaRISE/Antarctica5km_shelves_v1.0/Antarctica_5km_dev1.0.nc';
 			end
 		case {'totten'}
-			if hemisphere==1,
+			if hemisphere==1
 				searisenc='/totten_1/ModelData/SeaRISE/Greenland_5km_dev1.2.nc';
-			elseif hemisphere==-1,
+			elseif hemisphere==-1
 				searisenc='/totten_1/ModelData/SeaRISE/Antarctica_5km_dev1.0.nc';
 			end
 		otherwise
@@ -72,10 +72,10 @@ end
 
 %convert coordinates to SeaRISE projection
 if verbose, disp('   -- SeaRISE: converting coordinates'); end
-if hemisphere==1,
+if hemisphere==1
 	[LAT,  LON  ] = xy2ll(double(X(:)),double(Y(:)),+1,45,70);
 	[xproj,yproj] = ll2xy(LAT,LON  ,+1,39,71);
-elseif hemisphere==-1,
+elseif hemisphere==-1
 	xproj=X; yproj=Y;
 end
 

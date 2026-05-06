@@ -14,40 +14,40 @@ function md = googlemaps(md,ullat,ullon,lrlat,lrlon,varargin)
 %      - zoomlevel: between 1 and 21 (default dynamically calculated)
 
 %Parse inputs
-if nargin<=5,
+if nargin<=5
 	options=pairoptions;
 else
 	options=varargin{:};
-	if ~isa(options,'pairoptions'),
+	if ~isa(options,'pairoptions')
 		options=pairoptions(varargin{:});
 	end
 end
 
 %Check that no temp.* exists
-if exist('temp.tiff','file'),
+if exist('temp.tiff','file')
 	error('File temp.tiff already exists, remove first');
 end
-if exist('temp.png','file'),
+if exist('temp.png','file')
 	error('File temp.png already exists, remove first');
 end
 
-if nargin==2,
+if nargin==2
 	options=addfielddefault(options,'zoomlevel',ullat);
 end
 
-if md.mesh.epsg==0,
+if md.mesh.epsg==0
 	error('md.mesh.epsg not defined');
 end
-if nargin<3,
+if nargin<3
 	%Get xlim and ylim (used to extract Google maps image)
 	xlim=getfieldvalue(options,'xlim',[min(md.mesh.x) max(md.mesh.x)]);
 	ylim=getfieldvalue(options,'ylim',[min(md.mesh.y) max(md.mesh.y)]);
-	if md.mesh.epsg==3413,
+	if md.mesh.epsg==3413
 		[latlist lonlist]= xy2ll(...
 			[linspace(xlim(1),xlim(2),100) linspace(xlim(2),xlim(2),100) linspace(xlim(2),xlim(1),100) linspace(xlim(1),xlim(1),100)],...
 			[linspace(ylim(1),ylim(1),100) linspace(ylim(1),ylim(2),100) linspace(ylim(2),ylim(2),100) linspace(ylim(2),ylim(1),100)],...
 			+1,45,70);
-	elseif md.mesh.epsg==3031,
+	elseif md.mesh.epsg==3031
 		[latlist lonlist]= xy2ll(...
 			[linspace(xlim(1),xlim(2),100) linspace(xlim(2),xlim(2),100) linspace(xlim(2),xlim(1),100) linspace(xlim(1),xlim(1),100)],...
 			[linspace(ylim(1),ylim(1),100) linspace(ylim(1),ylim(2),100) linspace(ylim(2),ylim(2),100) linspace(ylim(2),ylim(1),100)],...
@@ -57,7 +57,7 @@ if nargin<3,
 			[linspace(xlim(1),xlim(2),100) linspace(xlim(2),xlim(2),100) linspace(xlim(2),xlim(1),100) linspace(xlim(1),xlim(1),100)],...
 			[linspace(ylim(1),ylim(1),100) linspace(ylim(1),ylim(2),100) linspace(ylim(2),ylim(2),100) linspace(ylim(2),ylim(1),100)],...
 			6);
-	elseif numel(md.mesh.lat)==numel(md.mesh.x),
+	elseif numel(md.mesh.lat)==numel(md.mesh.x)
 		latlist = md.mesh.lat; %That might work?
 		lonlist = md.mesh.long;
 	else
@@ -67,7 +67,7 @@ if nargin<3,
 	%Image corners in lat/long
 	ullat = max(latlist); ullon = min(lonlist);
 	lrlat = min(latlist); lrlon = max(lonlist);
-elseif nargin>1 & nargin<5,
+elseif nargin>1 & nargin<5
 	help googlemaps
 	error('Wrong usage');
 end
@@ -77,7 +77,7 @@ EPSGgoogle = 'EPSG:3785';   % Mercator       http://www.spatialreference.org/ref
 EPSGlocal  = ['EPSG:' num2str(md.mesh.epsg)];
 
 %Find optimal zoomlevel
-if exist(options,'zoomlevel'),
+if exist(options,'zoomlevel')
 	zoomlevel = getfieldvalue(options,'zoomlevel');
 else
 	zoomlevel = optimalzoomlevel(ullat,ullon,lrlat,lrlon);
@@ -120,8 +120,8 @@ if iskey
 
 	%Initialize final image
 	final = zeros(floor(dy),floor(dx),3);%RGB image
-	for x=0:cols-1,
-		for y=0:rows-1,
+	for x=0:cols-1
+		for y=0:rows-1
 			dxn = width  * (0.5 + x);
 			dyn = height * (0.5 + y);
 			[latn, lonn] = pixelstolatlon(ulx + dxn, uly - dyn - bottom/2, zoomlevel);
@@ -137,7 +137,7 @@ if iskey
 				'&maptype=satellite'...
 				'&sensor=false'...
 				'&scale=' num2str(scale)];
-			if iskey,
+			if iskey
 				params = [params,'&key=' key];
 			end
 			url = ['http://maps.google.com/maps/api/staticmap?' params];
@@ -151,7 +151,7 @@ if iskey
 					disp(['Failed, trying again... (' num2str(countmax-count) ' more attempts)']);
 					count = count+1;
 					pause(.3);
-					if count>countmax,
+					if count>countmax
 						disp('Giving up...');
 						rethrow(me);
 					end
@@ -214,7 +214,7 @@ imwrite(final,'temp.png','png')
 delete('temp.png');
 
 %If not GDAL, exit
-if status~=0,
+if status~=0
 	disp(result);
 	disp('googlemaps info: GDAL not found or not working properly, the Google image will not be transformed');
 	md.radaroverlay.pwr=final;
@@ -228,7 +228,7 @@ end
 delete('temp.tiff','temp.tfw');
 
 %If previous command failed, exit
-if ~isempty(strfind(result,'ERROR')),
+if ~isempty(strfind(result,'ERROR'))
 	disp(result);
 	disp(' ');disp('googlemaps info: GDAL not working properly (missing PROJ.4 library?), Google image will not be transformed');
 	disp(result);

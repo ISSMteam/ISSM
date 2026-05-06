@@ -31,7 +31,7 @@ function segmentstobasin(basin,varargin)
 		expfile=varargin{(i-1)*2+1};
 		invert=varargin{(i-1)*2+2};
 		[path,name,ext]=fileparts(expfile); 
-		if strcmpi(ext,'.exp'),
+		if strcmpi(ext,'.exp')
 			expstruct=expread(expfile,'invert',invert);
 		else
 			expstruct=shpread(expfile,'invert',invert);

@@ -59,11 +59,11 @@ classdef SMBpdd
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.s0p),
+			if isnan(self.s0p)
 				self.s0p=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpdd.s0p specified: values set as zero');
 			end
-			if isnan(self.s0t),
+			if isnan(self.s0t)
 				self.s0t=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBpdd.s0t specified: values set as zero');
 			end
@@ -82,7 +82,7 @@ classdef SMBpdd
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.desfac','<=',1,'numel',1);
 				md = checkfield(md,'fieldname','smb.s0p','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','smb.s0t','>=',0,'NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
@@ -210,7 +210,7 @@ classdef SMBpdd
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

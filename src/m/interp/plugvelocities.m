@@ -28,7 +28,7 @@ Names=VelFindVarNames(filename);
 Vel=load(filename);
 
 %Interpolation
-if strcmpi(Names.interp,'node'),
+if strcmpi(Names.interp,'node')
 	md.inversion.vx_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vxname),md.mesh.x,md.mesh.y,default_value);
 	md.inversion.vy_obs=InterpFromGridToMesh(Vel.(Names.xname),Vel.(Names.yname),Vel.(Names.vyname),md.mesh.x,md.mesh.y,default_value);
 else
@@ -71,7 +71,7 @@ A=whos('-file',filename);
 
 %find x,y,vx and vy
 xenum=NaN; yenum=NaN; vxenum=NaN; vyenum=NaN; indexenum=NaN;
-if length(A)==4,
+if length(A)==4
 	isnode=1;
 	for i=1:4
 		if strcmpi(A(i).name(1),'x');
@@ -86,7 +86,7 @@ if length(A)==4,
 			end
 		end
 	end
-elseif length(A)==5,
+elseif length(A)==5
 	isnode=0;
 	for i=1:5
 		if strcmpi(A(i).name(1),'x');
@@ -113,14 +113,14 @@ if ( isnan(vxenum) | isnan(vyenum))
 end
 
 %find index
-if (~isnode & isnan(indexenum)),
+if (~isnode & isnan(indexenum))
 	for i=1:5
 		lengthi=min(A(i).size);
-		if (lengthi==3),
+		if (lengthi==3)
 			indexenum=i;
 		end
 	end
-	if isnan(indexenum),
+	if isnan(indexenum)
 		error(['VelFindVarNames error message: file ' filename  ' not supported yet (index not found)']);
 	end
 end
@@ -129,19 +129,19 @@ end
 if (isnan(xenum) | isnan(yenum))
 
 	%check the size
-	if A(vxenum).size(1)==A(vxenum).size(2),
+	if A(vxenum).size(1)==A(vxenum).size(2)
 		error(['VelFindVarNames error message: file ' filename  ' not supported (velocities is a square matrix, save x and y with another name)']);
 	end
-	if ~(A(vxenum).size(1)==A(vyenum).size(1) & A(vxenum).size(2)==A(vyenum).size(2)),
+	if ~(A(vxenum).size(1)==A(vyenum).size(1) & A(vxenum).size(2)==A(vyenum).size(2))
 		error(['VelFindVarNames error message: file ' filename  ' not supported (vx and vy matrices do not have the same size)']);
 	end
 
 	%find xenum and yenum
 	for i=1:4
 		lengthi=max(A(i).size);
-		if ((i~=vxenum) & (lengthi==A(vxenum).size(1) | lengthi==A(vxenum).size(1)+1)),
+		if ((i~=vxenum) & (lengthi==A(vxenum).size(1) | lengthi==A(vxenum).size(1)+1))
 			yenum=i;
-		elseif ((i~=vxenum) & (lengthi==A(vxenum).size(2) | lengthi==A(vxenum).size(2)+1)),
+		elseif ((i~=vxenum) & (lengthi==A(vxenum).size(2) | lengthi==A(vxenum).size(2)+1))
 			xenum=i;
 		end
 	end
@@ -158,7 +158,7 @@ Names.xname=A(xenum).name;
 Names.yname=A(yenum).name;
 Names.vxname=A(vxenum).name;
 Names.vyname=A(vyenum).name;
-if ~isnode,
+if ~isnode
 	Names.indexname=A(indexenum).name; 
 	Names.interp='mesh';
 else

@@ -175,7 +175,7 @@ for i=1:length(dvar)
 	descriptor=discardnum(dvar(i).descriptor);
 
 	%is there a lock on this variable? We don't want to update the variable twice!
-	if exist([descriptor '_lock'],'var'),
+	if exist([descriptor '_lock'],'var')
 		%lock is in place, do not update! continue;
 		continue;
 	else

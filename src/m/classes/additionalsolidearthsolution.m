@@ -20,7 +20,7 @@ classdef additionalsolidearthsolution < solidearthsolution
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.solidearth.settings.isgrd==0) 
 				error('additionalsolidearthsolution checkconsistency error message: need to run GRD solution if you are supplying a GRD additional pattern solution');
 			end
 			self.checkconsistency@solidearthsolution(md,solution,analyses);

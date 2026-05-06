@@ -8,7 +8,7 @@ function plot_basaldrag(md,options,width,i,type)
 %   See also: PLOTMODEL
 
 %check layer
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	if getfieldvalue(options,'layer',1)~=1;
 		disp('plot_basaldrag warning: basal drag is displayed in the lower layer')
 		changefieldvalue(options,'layer',1);

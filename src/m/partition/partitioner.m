@@ -48,13 +48,13 @@ if(dimension(md.mesh)==3),
 end
 
 %adjacency matrix if needed:
-if strcmpi(recomputeadjacency,'on'),
+if strcmpi(recomputeadjacency,'on')
 	md=adjacency(md);
 else
 	disp('skipping adjacency matrix computation as requested in the options');
 end
 
-if strcmpi(package,'chaco'),
+if strcmpi(package,'chaco')
 
 	if strcmpi(vectortype,'element')
 		error(['partitioner error message: package ' package ' does not allow element partitions.']);
@@ -69,7 +69,7 @@ if strcmpi(package,'chaco'),
 		method(6)=getfieldvalue(options,'section');%  ndims (1=bisection, 2=quadrisection, 3=octasection)
 
 		%are we using weights? 
-		if strcmpi(getfieldvalue(options,'weighting'),'on'),
+		if strcmpi(getfieldvalue(options,'weighting'),'on')
 			weights=floor(md.qmu.vertex_weight/min(md.qmu.vertex_weight));
 			method(3)=1;
 		else 
@@ -77,7 +77,7 @@ if strcmpi(package,'chaco'),
 		end
 
 		%  partition into nparts
-		if isa(md.mesh,'mesh2d'),
+		if isa(md.mesh,'mesh2d')
 			part=Chaco(md.qmu.adjacency,weights,[],md.mesh.x,md.mesh.y,zeros(md.mesh.numberofvertices,1),method,npart,[])'+1; %index partitions from 1 up. like metis.
 		else
 			part=Chaco(md.qmu.adjacency,weights,[],md.mesh.x, md.mesh.y,md.mesh.z,method,npart,[])'+1; %index partitions from 1 up. like metis.
@@ -85,13 +85,13 @@ if strcmpi(package,'chaco'),
 
 	end
 
-elseif strcmpi(package,'scotch'),
+elseif strcmpi(package,'scotch')
 
 	if strcmpi(vectortype,'element')
 		error(['partitioner error message: package ' package ' does not allow element partitions.']);
 	else
 		%are we using weights? 
-		if strcmpi(getfieldvalue(options,'weighting'),'on'),
+		if strcmpi(getfieldvalue(options,'weighting'),'on')
 			weights=floor(md.qmu.vertex_weight/min(md.qmu.vertex_weight));
 		else
 			weights=[];
@@ -101,7 +101,7 @@ elseif strcmpi(package,'scotch'),
 		part=maptab(:,2)+1;%index partitions from 1 up. like metis.
 	end
 
-elseif strcmpi(package,'linear'),
+elseif strcmpi(package,'linear')
 
 	if strcmpi(vectortype,'element')
 		part=1:1:md.mesh.numberofelements;
@@ -110,7 +110,7 @@ elseif strcmpi(package,'linear'),
 		part=1:1:md.mesh.numberofvertices;
 	end
 
-elseif strcmpi(package,'metis'),
+elseif strcmpi(package,'metis')
 
 	if strcmpi(vectortype,'element')
 		error(['partitioner error message: package ' package ' does not allow element partitions.']);
@@ -125,7 +125,7 @@ else
 end
 
 %extrude if we are in 3D:
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	md3d.qmu.vertex_weight=md.qmu.vertex_weight;
 	md3d.qmu.adjacency=md.qmu.adjacency;
 	md=md3d;

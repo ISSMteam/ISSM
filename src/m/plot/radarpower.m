@@ -14,7 +14,7 @@ if nargin==1
 	options=pairoptions;
 else
 	options=varargin{:};
-	if ~isa(options,'pairoptions'),
+	if ~isa(options,'pairoptions')
 		options=pairoptions(varargin{:});
 	end
 end
@@ -43,10 +43,10 @@ if strcmp(oshostname(),'totten')
 end
 
 if ~exist(options,'overlay_image'), % no image provided, go look into ModelData for one
-	if exist(options,'geotiff_name'),
+	if exist(options,'geotiff_name')
 		paths = {getfieldvalue(options,'geotiff_name')};
 	elseif md.mesh.epsg==3031, %Antarctica
-			if highres,
+			if highres
 				paths = {'/Users/larour/ModelData/MosaicTiffRsat/amm125m_v2_200m.tif',...
 					'/home/ModelData/Antarctica/MosaicTiffRsat/amm125m_v2_200m.tif',...
 					'/totten_1/ModelData/Antarctica/MosaicTiffRsat/amm125m_v2_200m.tif',...
@@ -60,7 +60,7 @@ if ~exist(options,'overlay_image'), % no image provided, go look into ModelData 
 					};
 			end
 	elseif md.mesh.epsg==3413,   %Greenland 
-		if highres,
+		if highres
 			paths = {'/u/astrid-r1b/ModelData/MOG/mog100_r2_hp1.tif',...
 				'/home/ModelData/Greenland/MOG/mog100_r2_hp1.tif',...
 				'/totten_1/ModelData/Greenland/MOG/mog100_r2_hp1.tif',...
@@ -80,12 +80,12 @@ if ~exist(options,'overlay_image'), % no image provided, go look into ModelData 
 
 	%Find file from list
 	found = false;
-	for i=1:numel(paths),
-		if exist(paths{i},'file'),
+	for i=1:numel(paths)
+		if exist(paths{i},'file')
 			geotiff_name = paths{i}; found = true;
 		end
 	end
-	if ~found,
+	if ~found
 		error('could not find radar image'); 
 	end
 
@@ -106,7 +106,7 @@ if ~exist(options,'overlay_image'), % no image provided, go look into ModelData 
 	md.radaroverlay.y=(y0:(y1-y0)/(size(md.radaroverlay.pwr,1)-1):y1);
 
 	%Erase image or keep it?
-	if ~getfieldvalue(options,'keep_image',0),
+	if ~getfieldvalue(options,'keep_image',0)
 		system('rm -rf ./temp.tif');
 	end
 else %user provided image
@@ -136,11 +136,11 @@ else %user provided image
 		md.radaroverlay.y=y1:-(y1-y0)/(size(md.radaroverlay.pwr,1)-1):y0;
 
 		%Erase image or keep it?
-		if ~getfieldvalue(options,'keep_image',0),
+		if ~getfieldvalue(options,'keep_image',0)
 			delete(tempfilename);
 		end
 	else
-		if (~exist(options,'overlay_xlim') | ~exist(options,'overlay_xlim')| ~exist(options,'overlay_xposting')| ~exist(options,'overlay_yposting')),
+		if (~exist(options,'overlay_xlim') | ~exist(options,'overlay_xlim')| ~exist(options,'overlay_xposting')| ~exist(options,'overlay_yposting'))
 			error('radarpower error message: please provide overlay_xlim, overlay_ylim, overlay_xposting and overlay_yposting options together with overlay_image option');
 		end
 		overlay_xlim=getfieldvalue(options,'overlay_xlim');
@@ -167,7 +167,7 @@ else %user provided image
 end
 
 %Was a triangulation requested for the area of the image that is not covered by the mesh?
-if strcmpi(getfieldvalue(options,'outertriangulation','no'),'yes'),
+if strcmpi(getfieldvalue(options,'outertriangulation','no'),'yes')
 
 	%create expfile that is a box controlled by xlim and ylim, with a hole defined by the mesh outer segments.
 	box.name='';
@@ -183,7 +183,7 @@ if strcmpi(getfieldvalue(options,'outertriangulation','no'),'yes'),
 	box(2).y=md.mesh.y(md.mesh.segments(:,1)); 
 	box(2).y=[box(2).y; box(2).y(1)];
 
-	if strcmpi(getfieldvalue(options,'outertriangulationflip','no'),'yes'),
+	if strcmpi(getfieldvalue(options,'outertriangulationflip','no'),'yes')
 		box(2).x=flipud(box(2).x);
 		box(2).y=flipud(box(2).y);
 	end

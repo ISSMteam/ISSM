@@ -76,66 +76,66 @@ classdef pfe
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.nprocs(),cluster.time)
 
 			%now, check cluster.cpuspernode according to processor type
-			if strcmpi(cluster.processor,'ivy'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1)),
+			if strcmpi(cluster.processor,'ivy')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 40 for ''ivy'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>20 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>20 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 20 for ''ivy'' processors');
 					end
 				end
-			elseif strcmpi(cluster.processor,'bro'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>56 ) | (cluster.cpuspernode<1)),
+			elseif strcmpi(cluster.processor,'bro')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>56 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 56 for ''bro'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>28 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>28 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 28 for ''bro'' processors');
 					end
 				end
-			elseif strcmpi(cluster.processor,'has'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>48 ) | (cluster.cpuspernode<1)),
+			elseif strcmpi(cluster.processor,'has')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>48 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 48 for ''has'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>24 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>24 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 24 for ''has'' processors');
 					end
 				end
 			
-			elseif strcmpi(cluster.processor,'san'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>32 ) | (cluster.cpuspernode<1)),
+			elseif strcmpi(cluster.processor,'san')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>32 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 32 for ''san'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>16 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>16 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 16 for ''san'' processors');
 					end
 				end
 
-			elseif strcmpi(cluster.processor,'cas_ait'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>80 ) | (cluster.cpuspernode<1)),
+			elseif strcmpi(cluster.processor,'cas_ait')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>80 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 80 for ''cas_ait'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 40 for ''cas_ait'' processors');
 					end
 				end
 			
-			elseif strcmpi(cluster.processor,'rom_ait'),
-				if cluster.hyperthreading,
-					if ((cluster.cpuspernode>256 ) | (cluster.cpuspernode<1)),
+			elseif strcmpi(cluster.processor,'rom_ait')
+				if cluster.hyperthreading
+					if ((cluster.cpuspernode>256 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 80 for ''rom_ait'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>128 ) | (cluster.cpuspernode<1)),
+					if ((cluster.cpuspernode>128 ) | (cluster.cpuspernode<1))
 						md = checkmessage(md,'cpuspernode should be between 1 and 128 for ''rom_ait'' processors');
 					end
 				end
@@ -171,7 +171,7 @@ classdef pfe
 			executable='issm.exe';
 			if isdakota
 				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6),
+				if (version>=6)
 					executable='issm_dakota.exe';
 				end
 			end
@@ -215,7 +215,7 @@ classdef pfe
 			%in interactive mode, create a run file, and errlog and outlog file
 			if cluster.interactive
 				fid=fopen([filename '.run'],'w');
-				if cluster.interactive==10,
+				if cluster.interactive==10
 						fprintf(fid,'module unload mpi-mvapich2/1.4.1/gcc\n');
 						fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.nprocs(),cluster.codepath,executable,solution,[pwd() '/run'],modelname);
 				else
@@ -282,7 +282,7 @@ classdef pfe
 			mpistring=[mpistring sprintf(' %i ',length(dirnames))];
 
 			%icecaps, glaciers and earth location, names and number of processors associated:
-			for i=1:length(dirnames),
+			for i=1:length(dirnames)
 				mpistring=[mpistring sprintf(' %s/%s %s %i ',cluster.executionpath,dirnames{i},modelnames{i},nps{i})];
 			end
 
@@ -362,9 +362,9 @@ classdef pfe
 			fclose(fid);
 
 			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive,
+			if cluster.interactive
 				fid=fopen([modelname '.run'],'w');
-				if ~isvalgrind,
+				if ~isvalgrind
 					fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname);
 				else
 					fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname);
@@ -431,24 +431,24 @@ classdef pfe
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz'];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.run '  modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);
 
 			disp('uploading input file and queueing script');
-			if cluster.interactive==10,
+			if cluster.interactive==10
 				directory=[pwd() '/run/'];
-			elseif cluster.interactive,
+			elseif cluster.interactive
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 			else 
 				directory=cluster.executionpath;
 			end
 
-			if cluster.bbftp,
+			if cluster.bbftp
 				issmbbftpout(cluster.name,directory,cluster.login,cluster.port,cluster.numstreams,{[dirname '.tar.gz']});
 			else
 				issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
@@ -459,11 +459,11 @@ classdef pfe
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
 
 			%launch command, to be executed via ssh
-			if cluster.interactive,
+			if cluster.interactive
 				if ~isempty(restart)
 					launchcommand=['cd ' cluster.executionpath '/Interactive' num2str(cluster.interactive)];
 				else
-					if cluster.interactive==10,
+					if cluster.interactive==10
 						launchcommand=['cd ' pwd() '/run && tar -zxf ' dirname '.tar.gz'];
 					else
 						launchcommand=['cd ' cluster.executionpath '/Interactive' num2str(cluster.interactive) ' && tar -zxf ' dirname '.tar.gz'];
@@ -485,15 +485,15 @@ classdef pfe
 		function Download(cluster,dirname,filelist) % {{{
 
 			%copy files from cluster to current directory
-			if cluster.interactive==10,
+			if cluster.interactive==10
 				directory=[pwd() '/run/'];
-			elseif ~cluster.interactive,
+			elseif ~cluster.interactive
 				directory=[cluster.executionpath '/' dirname '/'];
 			else
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive) '/'];
 			end
 
-			if cluster.bbftp,
+			if cluster.bbftp
 				issmbbftpin(cluster.name, cluster.login, cluster.port, cluster.numstreams, directory, filelist);
 			else
 				issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);

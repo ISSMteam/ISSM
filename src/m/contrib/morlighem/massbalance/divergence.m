@@ -4,7 +4,7 @@ function div=divergence(md,a,b)
 %   Usage:
 %      div=divergence(md,a,b)
 
-if (dimension(md.mesh)==2),
+if (dimension(md.mesh)==2)
 	numberofelements=md.mesh.numberofelements;
 	numberofnodes=md.mesh.numberofvertices;
 	index=md.mesh.elements;

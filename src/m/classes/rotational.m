@@ -29,7 +29,7 @@ classdef rotational
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
 

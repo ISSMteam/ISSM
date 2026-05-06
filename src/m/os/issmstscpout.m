@@ -7,7 +7,7 @@ function issmstscpout(host,path,login,packages)
 
 %create string of packages being sent
 string='';
-for i=1:numel(packages),
+for i=1:numel(packages)
 	string=[string ' ' packages{i}];
 end
 string=[string ' '];

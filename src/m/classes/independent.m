@@ -41,19 +41,19 @@ classdef independent
 		end % }}}
 		function md = checkconsistency(self,md,i,solution,analyses,driver) % {{{
 			if ~isnan(self.fos_forward_index)
-				if ~strcmpi(driver,'fos_forward'),
+				if ~strcmpi(driver,'fos_forward')
 					error('cannot declare an independent with a fos_forward_index when the driver is not fos_forward!');
 				end
-				if self.nods==0,
+				if self.nods==0
 					error('independent checkconsistency error: nods should be set to the size of the independent variable');
 				end
 			end
 
 			if ~isempty(self.fov_forward_indices)
-				if ~strcmpi(driver,'fov_forward'),
+				if ~strcmpi(driver,'fov_forward')
 					error('cannot declare an independent with fov_forward_indices when the driver is not fov_forward!');
 				end
-				if self.nods==0,
+				if self.nods==0
 					error('independent checkconsistency error: nods should be set to the size of the independent variable');
 				end
 				md = checkfield(md,'fieldname',['autodiff.independents{' num2str(i) '}.fov_forward_indices'],'>=',1,'<=',self.nods,'size',[NaN 1]);
@@ -73,10 +73,10 @@ classdef independent
 			fielddisplay(self,'min_parameters','absolute minimum acceptable value of the inversed parameter on each vertex');
 			fielddisplay(self,'max_parameters','absolute maximum acceptable value of the inversed parameter on each vertex');
 			fielddisplay(self,'control_scaling_factor','order of magnitude of each control (useful for multi-parameter optimization)');
-			if ~isnan(self.fos_forward_index),
+			if ~isnan(self.fos_forward_index)
 				fielddisplay(self,'fos_forward_index','index for fos_foward driver of ADOLC');
 			end
-			if ~isnan(self.fov_forward_indices),
+			if ~isnan(self.fov_forward_indices)
 				fielddisplay(self,'fov_forward_indices','indices for fov_foward driver of ADOLC');
 			end
 		end % }}}

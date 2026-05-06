@@ -87,7 +87,7 @@ data(find(data==-9999))=NaN;
 
 disp(['   -- BedMachine Greenland: interpolating ' string]);
 disp(['       -- Interpolation method: ' method]);
-if strcmp(string,'mask') | strcmp(string,'source'),
+if strcmp(string,'mask') | strcmp(string,'source')
 	%Need nearest neighbor to avoid interpolation between 0 and 2
 	output = InterpFromGrid(xdata,ydata,data,double(X),double(Y),'nearest');
 else
@@ -110,7 +110,7 @@ function zi = FastInterp(x,y,data,xi,yi,method)
 	% Fill Zi with NaNs
 	zi = NaN(size(xi));
 
-	if strcmpi(method,'nearest'),
+	if strcmpi(method,'nearest')
 		% Find the nearest point in index space
 		rxi = round(xi)+1;  ryi = round(yi)+1;
 		% Find points that are in X,Y range

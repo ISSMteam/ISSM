@@ -15,14 +15,14 @@ function [x,y] = lambert2xy(lat,lon,sgn,projection_center_lat,projection_center_
 %              -1 S hemisphere [default projection center lat = -90 lon=0]
 
 %Get projection_center_lat and projection_center_lon 
-if nargin==5,
+if nargin==5
 	latitude0  = projection_center_lat;
 	longitude0 = projection_center_lon;
-elseif nargin==3,
-	if sgn==1,
+elseif nargin==3
+	if sgn==1
 		latitude0 = 90; longitude0 = 0;
 		disp('Info: creating coordinates in polar stereographic (Projection center lat: 90N lon: 0)');
-	elseif sgn==-1,
+	elseif sgn==-1
 		latitude0 = -90; longitude0 = 0;
 		disp('Info: creating coordinates in polar stereographic (Projection center lat: 90S lon: 0)');
 	else

@@ -15,21 +15,21 @@ function indices=meshintersect2d(x,y,xs,ys,varargin)
 	%go through lats,longs and find within tolerance, the index of the corresponding value in lat,long: 
 	indices=zeros(length(xs),1);
 	
-	for i=1:length(xs),
+	for i=1:length(xs)
 		tolerance=0;
 		distance=sqrt((x-xs(i)).^2+(y-ys(i)).^2);
 
 		s=find(distance==0); 
-		if ~isempty(s), 
-			if length(s)>1,
+		if ~isempty(s) 
+			if length(s)>1
 
 				%we have two vertices that are coincident! Not good. 
-				for j=1:length(s),
+				for j=1:length(s)
 					hold on;plot(x(s(j)),y(s(j)),'c.','MarkerSize',40)
 				end
 				disp(['Vertex ' num2str(i) ' of input mesh coincides with the following output mesh vertices ']);
 				s
-				if force,
+				if force
 					indices(i)=s(1);
 				else
 					error('');
@@ -41,8 +41,8 @@ function indices=meshintersect2d(x,y,xs,ys,varargin)
 
 			%we could not find a 0 distance, find the lowest tolerance that generates a find: 
 			count=1;
-			while isempty(s),
-				if count>1000,
+			while isempty(s)
+				if count>1000
 					disp(['could not find a vertex matching vertex ' num2str(i) ' of input mesh!']);
 					disp('Might think about changing tolerance increment');
 					error('');
@@ -51,7 +51,7 @@ function indices=meshintersect2d(x,y,xs,ys,varargin)
 				s=find(distance<tolerance);
 				count=count+1;
 			end
-			if tolerance>maxtol, 
+			if tolerance>maxtol 
 				disp(['found matching vertices ' num2str(s) ' in output mesh for input mesh vertex ' num2str(i) ]);
 				disp(' however, these vertices are farther that the max tolerance allowed!');
 				error('');

@@ -10,15 +10,15 @@ function cmap = demmap(ncolors,minZ,maxZ,varargin);
 %      cmap = demmap(50,-300,1200,'ibcao');
 
 %Input checks
-if nargin<3,
+if nargin<3
 	help demmap
 	error('3 or 4 arguments necessary');
-elseif nargin>4,
+elseif nargin>4
 	help demmap
 	error('3 or 4 arguments necessary');
 end
 
-if nargin==4,
+if nargin==4
 	colorscheme = varargin{1};
 	if ~ischar(colorscheme), error('color scheme should be a string'); end
 else
@@ -72,7 +72,7 @@ end
 
 clim = [cmn cmx];
 
-if strcmpi(colorscheme,'dem'),
+if strcmpi(colorscheme,'dem')
 	cmap = [seacolor(nsea);landcolor(nland).^1.3];
 elseif strcmpi(colorscheme,'ibcao');
 	cmap = ibcao(nsea,nland);

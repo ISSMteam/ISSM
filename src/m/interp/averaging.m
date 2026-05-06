@@ -18,14 +18,14 @@ function average=averaging(md,data,iterations,varargin)
 %      pressure=averaging(md,md.initialization.pressure,0);
 %      temperature=averaging(md,md.initialization.temperature,1,1);
 
-if ((nargin~=4) & (nargin~=3)),
+if ((nargin~=4) & (nargin~=3))
 	error('averaging error message: wrong number of arguments');
 end
-if (length(data)~=md.mesh.numberofelements & length(data)~=md.mesh.numberofvertices),
+if (length(data)~=md.mesh.numberofelements & length(data)~=md.mesh.numberofvertices)
 	error('averaging error message: data not supported yet');
 end
-if dimension(md.mesh)==3 & nargin==4,
-	if varargin{1}<=0 | varargin{1}>md.mesh.numberoflayers,
+if dimension(md.mesh)==3 & nargin==4
+	if varargin{1}<=0 | varargin{1}>md.mesh.numberoflayers
 		error('layer should be between 1 and md.mesh.numberoflayers');
 	end
 	layer=varargin{1};
@@ -34,7 +34,7 @@ else
 end
 
 %initialization
-if layer==0,
+if layer==0
 	weights=zeros(md.mesh.numberofvertices,1);
 	data=data(:);
 else 
@@ -43,7 +43,7 @@ else
 end
 
 %load some variables (it is much faster if the variables are loaded from md once for all)
-if layer==0,
+if layer==0
 	index=md.mesh.elements;
 	numberofnodes=md.mesh.numberofvertices;
 	numberofelements=md.mesh.numberofelements;
@@ -55,15 +55,15 @@ end
 
 %build some variables
 line=index(:);
-if dimension(md.mesh)==3 & layer==0,
+if dimension(md.mesh)==3 & layer==0
 	rep=6;
 	areas=GetAreas(index,md.mesh.x,md.mesh.y,md.mesh.z);
-elseif dimension(md.mesh)==2,
+elseif dimension(md.mesh)==2
 	rep=3;
 	areas=GetAreas(index,md.mesh.x,md.mesh.y);
 else
 	rep=3;
-	if isa(md.mesh,'mesh3dsurface'),
+	if isa(md.mesh,'mesh3dsurface')
 		areas=GetAreas3DTria(md.mesh.elements,md.mesh.x,md.mesh.y,md.mesh.z);
 	else
 		areas=GetAreas(index,md.mesh.x,md.mesh.y);

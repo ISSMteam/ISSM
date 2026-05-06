@@ -21,27 +21,27 @@ classdef rifts
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
-			if isempty(self.riftstruct) | isnans(self.riftstruct),
+			if isempty(self.riftstruct) | isnans(self.riftstruct)
 				numrifts=0;
 			else
 				numrifts=numel(self.riftstruct);
 			end
-			if numrifts,
-				if ~(strcmp(domaintype(md.mesh),'2Dhorizontal')),
+			if numrifts
+				if ~(strcmp(domaintype(md.mesh),'2Dhorizontal'))
 					md = checkmessage(md,['models with rifts are only supported in 2d for now!']);
 				end
-				if ~isstruct(self.riftstruct),
+				if ~isstruct(self.riftstruct)
 					md = checkmessage(md,['rifts.riftstruct should be a structure!']);
 				end
-				if ~isempty(find(md.mesh.segmentmarkers>=2)),
+				if ~isempty(find(md.mesh.segmentmarkers>=2))
 					%We have segments with rift markers, but no rift structure!
 					md = checkmessage(md,['model should be processed for rifts (run meshprocessrifts)!']);
 				end
-				for i=1:numrifts,
+				for i=1:numrifts
 					md = checkfield(md,'fieldname',sprintf('rifts.riftstruct(%d).fill',i),'values',{'Air','Ice','Melange','Water'});
 				end
 			else
-				if ~isnans(self.riftstruct),
+				if ~isnans(self.riftstruct)
 					md = checkmessage(md,['riftstruct should be NaN since numrifts is 0!']);
 				end
 			end
@@ -56,14 +56,14 @@ classdef rifts
 		function marshall(self,prefix,md,fid) % {{{
 
 			%Process rift info
-			if isempty(self.riftstruct) | isnans(self.riftstruct),
+			if isempty(self.riftstruct) | isnans(self.riftstruct)
 				numrifts=0;
 			else
 				numrifts=numel(self.riftstruct);
 			end
 
 			numpairs=0;
-			for i=1:numrifts,
+			for i=1:numrifts
 				numpairs=numpairs+size(self.riftstruct(i).penaltypairs,1);
 			end
 			
@@ -84,7 +84,7 @@ classdef rifts
 			% 2 for nodes + 2 for elements+ 2 for  normals + 1 for length + 1 for fill + 1 for friction + 1 for fraction + 1 for fractionincrement + 1 for state.
 			data=zeros(numpairs,12);
 			count=1;
-			for i=1:numrifts,
+			for i=1:numrifts
 				numpairsforthisrift=size(self.riftstruct(i).penaltypairs,1);
 				data(count:count+numpairsforthisrift-1,1:7)=self.riftstruct(i).penaltypairs;
 				data(count:count+numpairsforthisrift-1,8)=self.riftstruct(i).fill;
@@ -100,13 +100,13 @@ classdef rifts
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 	
-			if isempty(self.riftstruct) | isnans(self.riftstruct),
+			if isempty(self.riftstruct) | isnans(self.riftstruct)
 				numrifts=0;
 			else
 				numrifts=numel(self.riftstruct);
 			end
 			
-			if numrifts,
+			if numrifts
 				error('rifts savemodeljs error message: not supported yet!');
 			end
 	

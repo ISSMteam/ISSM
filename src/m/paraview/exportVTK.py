@@ -488,7 +488,7 @@ def exportVTK(filename, md, *args, enveloppe=False, **kwargs):
                         print("format for field {}.{} is not suported, field is skipped".format(other, field))
                         continue
             # }}}
-            # Now writting cell variables {{{
+            # Now writing cell variables {{{
             if np.size(list(saved_cells.keys())) > 0:
                 fid.write('CELL_DATA {:d} \n'.format(num_of_elt + num_of_edges))
                 for key in list(saved_cells.keys()):
@@ -500,7 +500,7 @@ def exportVTK(filename, md, *args, enveloppe=False, **kwargs):
                     for edge in range(0, num_of_edges):
                         fid.write('{:f}\n'.format(-9999.999))
             # }}}
-            # Now writting edge variables {{{
+            # Now writing edge variables {{{
             if np.size(list(saved_edges.keys())) > 0:
                 for key in list(saved_edges.keys()):
                     fid.write('SCALARS {} float 1 \n'.format(key))

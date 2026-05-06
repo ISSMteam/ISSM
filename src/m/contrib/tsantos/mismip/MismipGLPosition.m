@@ -7,7 +7,7 @@ function [GLy0 GLy40] = MismipGLPosition(xGL,yGL,t),
 	GLy40		= [];
 	nsteps	= length(t);
 
-	for i=1:nsteps,
+	for i=1:nsteps
 		
 		xi	 = xGL(i,:);
 		yi	 = yGL(i,:);

@@ -18,7 +18,7 @@ function writejsfile(filename,model,keyname)
 	%write index:
 	fprintf(fid,'<!-- model["index"]{{{-->\n');
 	fprintf(fid,'model["index"]=[');
-	for i=1:nel-1,
+	for i=1:nel-1
 		fprintf(fid,'[%i, %i, %i],',model.index(i,1),model.index(i,2),model.index(i,3));
 	end
 	fprintf(fid,'[%i, %i, %i]];\n',model.index(end,1),model.index(end,2),model.index(end,3));
@@ -39,7 +39,7 @@ function writejsfile(filename,model,keyname)
 	results=model.results;
 	fprintf(fid,'results={};\n');
 
-	for i=1:length(results),
+	for i=1:length(results)
 		fprintf(fid,'result={};\n');
 		writejsfield(fid,'result["data"]',results(i).data,nods);
 		fprintf(fid,'<!--{{{-->\n');
@@ -47,7 +47,7 @@ function writejsfile(filename,model,keyname)
 		fprintf(fid,'result["label"]="%s";\n',results(i).label);
 		fprintf(fid,'result["shortlabel"]="%s";\n',results(i).shortlabel);
 		fprintf(fid,'result["unit"]="%s";\n',results(i).unit);
-		if size(results(i).data,2)>1,
+		if size(results(i).data,2)>1
 			fprintf(fid,'result["time_range"]=[%g,%g];\n',results(i).time_range(1),results(i).time_range(2));
 		end
 		fprintf(fid,'results["%i"]=result;\n',i);

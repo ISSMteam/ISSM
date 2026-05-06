@@ -4,9 +4,9 @@ function tips=rifttipsonmesh(md,riftoutline)
 
 %read rift file according to its extension: 
 [path,name,ext]=fileparts(riftoutline);
-if strcmp(ext,'.exp'),
+if strcmp(ext,'.exp')
 	rifts=expread(riftoutline);
-elseif strcmp(ext,'.shp'),
+elseif strcmp(ext,'.shp')
 	rifts=shpread(riftoutline);
 else
 	error(['bamg error message: file ' riftoutline ' format not supported (.shp or .exp)']);
@@ -14,7 +14,7 @@ end
 
 tips=[];
 
-for i=1:length(rifts),
+for i=1:length(rifts)
 	rift=rifts(i);
 
 	x_tip=rift.x(1);

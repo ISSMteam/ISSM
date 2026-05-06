@@ -29,7 +29,7 @@ function writeNetCDF(md0,md,step,dt,ncfile),
 	uBaseGL{1}				= griddata(x,y,md0.results.TransientSolution(end).Vx,xgl_step,ygl_step);
 	vBaseGL{1}				= griddata(x,y,md0.results.TransientSolution(end).Vy,xgl_step,ygl_step);
 
-   for i=2:length(step),
+   for i=2:length(step)
 		if(isfield(md.results.TransientSolution,'MeshElements'))
 			x     = md.results.TransientSolution(step(i)).MeshX;
 			y     = md.results.TransientSolution(step(i)).MeshY;
@@ -102,7 +102,7 @@ function writeNetCDF(md0,md,step,dt,ncfile),
    netcdf.putVar(ncid,volume_var_id,iceVolume);
    netcdf.putVar(ncid,VAF_var_id,iceVAF);
    netcdf.putVar(ncid,grounded_var_id,groundedArea);
-   for i=1:length(time),
+   for i=1:length(time)
       netcdf.putVar(ncid,xgl_var_id,[i-1,0],[1,length(xGL{i})],xGL{i}');
       netcdf.putVar(ncid,ygl_var_id,[i-1,0],[1,length(xGL{i})],yGL{i}');
       netcdf.putVar(ncid,thickness_var_id,[i-1,0],[1,length(xGL{i})],iceThicknessGL{i}');

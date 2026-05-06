@@ -35,7 +35,7 @@ classdef mesh3dsurface
 			% loaded. Update old properties here
 
 			%2014 Oct. 1st
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(mesh3dsurface(),oldself);
@@ -62,7 +62,7 @@ classdef mesh3dsurface
 					fields=fieldnames(object);
 					for i=1:length(fields)
 						field=fields{i};
-						if ismember(field,properties('mesh3dsurface')),
+						if ismember(field,properties('mesh3dsurface'))
 							self.(field)=object.(field);
 						end
 					end
@@ -204,16 +204,16 @@ classdef mesh3dsurface
 
 			%prepare contours: 
 			contours= struct([]);
-			if strcmpi(geometry,'point'),
-				for i=1:self.numberofvertices,
+			if strcmpi(geometry,'point')
+				for i=1:self.numberofvertices
 					contours(i).x = self.long(i);
 					contours(i).y = self.lat(i);
 					contours(i).id = i;
 					contours(i).Geometry = 'Point';
 				end
-			elseif strcmpi(geometry,'line'),
+			elseif strcmpi(geometry,'line')
 				count=1;
-				for i=1:self.numberofelements,
+				for i=1:self.numberofelements
 					el=self.elements(i,:);
 					%first line:
 					contours(count).x = [self.long(el(1)) self.long(el(2))];
@@ -233,11 +233,11 @@ classdef mesh3dsurface
 					%increase count: 
 					count = count+3;
 				end
-			elseif strcmpi(geometry,'polygon'),
+			elseif strcmpi(geometry,'polygon')
 				% TODO: Refactor the following to reduce repeated code, or 
 				%		leave as is because it is more readable?
-				if isempty(index),
-					for i=1:self.numberofelements,
+				if isempty(index)
+					for i=1:self.numberofelements
 						el=self.elements(i,:);
 						contours(i).x=[self.long(el(1)) self.long(el(2)) self.long(el(3)) self.long(el(1))];
 						contours(i).y=[self.lat(el(1)) self.lat(el(2)) self.lat(el(3)) self.lat(el(1))];
@@ -245,7 +245,7 @@ classdef mesh3dsurface
 						contours(i).Geometry = 'Polygon';
 					end
 				else
-					for i=1:length(index),
+					for i=1:length(index)
 						el=self.elements(index(i),:);
 						contours(i).x=[self.long(el(1)) self.long(el(2)) self.long(el(3)) self.long(el(1))];
 						contours(i).y=[self.lat(el(1)) self.lat(el(2)) self.lat(el(3)) self.lat(el(1))];
@@ -258,16 +258,16 @@ classdef mesh3dsurface
 			end
 
 			%write file: 
-			if strcmpi(format,'shp'),
+			if strcmpi(format,'shp')
 				shpwrite(contours,filename);
-			elseif strcmpi(format,'exp'),
+			elseif strcmpi(format,'exp')
 				expwrite(contours,filename);
 			else
 				error(sprintf('mesh3dsurface ''export'' error message: file format %s not supported yet',format));
 			end
 
 			%write projection file: 
-			if ~isempty(proj),
+			if ~isempty(proj)
 				proj2shpprj(filename,proj);
 			end
 

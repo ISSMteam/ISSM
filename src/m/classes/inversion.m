@@ -103,7 +103,7 @@ classdef inversion
 
 			%Only SSA, HO and FS are supported right now
 			if strcmp(solution,'StressbalanceSolution')
-				if ~(md.flowequation.isSSA || md.flowequation.isMOLHO || md.flowequation.isHO || md.flowequation.isFS || md.flowequation.isL1L2),
+				if ~(md.flowequation.isSSA || md.flowequation.isMOLHO || md.flowequation.isHO || md.flowequation.isFS || md.flowequation.isL1L2)
 					md = checkmessage(md,['inversion can only be performed for SSA, MOLHO, HO or FS ice flow models']);
 				end
 			end

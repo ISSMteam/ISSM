@@ -7,10 +7,10 @@ function plot_riftrelvel(md,options,nlines,ncols,index)
 %   See also: PLOTMODEL
 
 %some checks
-if (length(md.initialization.vx)~=md.mesh.numberofvertices | length(md.initialization.vy)~=md.mesh.numberofvertices),
+if (length(md.initialization.vx)~=md.mesh.numberofvertices | length(md.initialization.vy)~=md.mesh.numberofvertices)
 	error('plot_riftvel error message: vx and vy do not have the right size'),
 end
-if ~isstruct(md.rifts.riftstruct),
+if ~isstruct(md.rifts.riftstruct)
 	error('plot error message: no rifts available!');
 end
 options=addfielddefault(options,'scaling',2);
@@ -25,7 +25,7 @@ vy=getfieldvalue(options,'riftrelvel_vy',md.initialization.vy);
 %set as NaN all velocities not on rifts
 u=NaN*ones(md.mesh.numberofvertices,1);
 v=NaN*ones(md.mesh.numberofvertices,1);
-for i=1:size(md.rifts.riftstruct,1),
+for i=1:size(md.rifts.riftstruct,1)
 	penaltypairs=md.rifts.riftstruct(i).penaltypairs(:,[1 2]);
 	u(md.rifts.riftstruct(i).penaltypairs(:,1))=vx(penaltypairs(:,1))-vx(penaltypairs(:,2));
 	v(md.rifts.riftstruct(i).penaltypairs(:,1))=vy(penaltypairs(:,1))-vy(penaltypairs(:,2));
@@ -56,21 +56,21 @@ isp1=0;
 isp2=0;
 
 %plot mesh boundaries
-for i=1:size(md.mesh.segments,1),
+for i=1:size(md.mesh.segments,1)
 	h1=plot(x(md.mesh.segments(i,1:2)),y(md.mesh.segments(i,1:2)),'b-');
 end
-for i=1:size(md.rifts.riftstruct,1),
+for i=1:size(md.rifts.riftstruct,1)
 
 	%get nodes on rift
 	penaltypairs=md.rifts.riftstruct(i).penaltypairs;
 
 	segments=md.rifts.riftstruct(i).segments;
-	for j=1:size(segments,1),
+	for j=1:size(segments,1)
 		plot(x(segments(j,1:2)),y(segments(j,1:2)),'k-');
 	end
 
 	normal=zeros(2,1);
-	for j=1:size(penaltypairs,1),
+	for j=1:size(penaltypairs,1)
 		normal(1)=penaltypairs(j,5);
 		normal(2)=penaltypairs(j,6);
 
@@ -95,7 +95,7 @@ end
 faulttitle=getfieldvalue(options','faulttitle','faults');
 rifttitle=getfieldvalue(options','rifttitle','rifts');
 %legend
-if strcmpi(getfieldvalue(options,'legend','on'),'on'),
+if strcmpi(getfieldvalue(options,'legend','on'),'on')
 	if isp1 & isp2
 		l=legend([h1,h2,p1,p2],'mesh boundaries','crack tips',faulttitle,rifttitle);
 	elseif isp1

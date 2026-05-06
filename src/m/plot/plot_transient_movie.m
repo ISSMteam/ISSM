@@ -9,7 +9,7 @@ function plot_transient_movie(md,options,width,i)
 	subplot(width,width,i);
 
 	%xlim
-	if exist(options,'transient_movie_field'),
+	if exist(options,'transient_movie_field')
 		field=getfieldvalue(options,'transient_movie_field');
 	elseif ischar(getfieldvalue(options,'data')) && ~strcmp(getfieldvalue(options,'data'),'transient_movie')
 		field=getfieldvalue(options,'data');
@@ -17,7 +17,7 @@ function plot_transient_movie(md,options,width,i)
 		disp('List of available fields:');
 		F=fieldnames(md.results.TransientSolution(1));
 		num = [];
-		for i=1:numel(F),
+		for i=1:numel(F)
 			if ~strcmp(F{i},'time') & ...
 				~strcmp(F{i},'step') & ...
 				~strcmp(F{i},'errlog') & ...
@@ -34,15 +34,15 @@ function plot_transient_movie(md,options,width,i)
 
 	results=md.results.TransientSolution;
 	%loop over the time steps
-	if exist(options,'transient_movie_limit'),
+	if exist(options,'transient_movie_limit')
 		limit=getfieldvalue(options,'transient_movie_limit');
 		steps=[limit(1):limit(end)];
-	elseif exist(options,'transient_movie_steps'),
+	elseif exist(options,'transient_movie_steps')
 		warning('option ''transient_movie_steps'' is now ''steps'', please update your script');
 		steps = getfieldvalue(options,'transient_movie_steps');
-	elseif exist(options,'steps'),
+	elseif exist(options,'steps')
 		steps = getfieldvalue(options,'steps');
-	elseif exist(options,'step'),
+	elseif exist(options,'step')
 		steps = getfieldvalue(options,'step');
 	else
 		steps=1:length(results);
@@ -52,7 +52,7 @@ function plot_transient_movie(md,options,width,i)
 	isavi = 0;
 	isgif = 0;
 	ismp4 = 0;
-	if exist(options,'transient_movie_output'),
+	if exist(options,'transient_movie_output')
 		filename=getfieldvalue(options,'transient_movie_output');
 		[pathstr,name,ext] = fileparts(filename);
 		if strcmp(ext,'.gif')
@@ -70,7 +70,7 @@ function plot_transient_movie(md,options,width,i)
 	end
 
 	%calculate caxis
-	if ~exist(options,'caxis'),
+	if ~exist(options,'caxis')
 		range = [Inf -Inf];
 		for i=steps
 			if isfield(results(i), 'MeshElements')
@@ -91,7 +91,7 @@ function plot_transient_movie(md,options,width,i)
 	deltat = getfieldvalue(options,'pause',.5);
 	for i=steps
 
-		if ~isempty(results(i).(field)),
+		if ~isempty(results(i).(field))
 			%Process mesh if necessary
 			if isfield(results(i), 'MeshElements')
 				options=changefieldvalue(options,'amr', i);
@@ -150,7 +150,7 @@ function plot_transient_movie(md,options,width,i)
 
 			if exist(options,'transient_movie_output')
 				%set(gcf,'Renderer','zbuffer','color','white'); %fixes a bug on Mac OS X (not needed in future Matlab version)
-				if nstep==1,
+				if nstep==1
 					%initialize images and frame
 					frame=getframe(gcf);
 					[images,map]=rgb2ind(frame.cdata,256,'nodither');

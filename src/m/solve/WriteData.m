@@ -13,7 +13,7 @@ if exist(options,'object')
 	fieldname = getfieldvalue(options,'fieldname');
 	classname = getfieldvalue(options,'class',class(obj));
 	name      = getfieldvalue(options,'name',[prefix '.' fieldname ]);
-	if exist(options,'data'),
+	if exist(options,'data')
 		data = getfieldvalue(options,'data');
 	else
 		data = obj.(fieldname);
@@ -34,15 +34,15 @@ end
 %Scale data if necessary
 if strcmpi(format,'MatArray')
 	for i=1:numel(data)
-		if exist(options,'scale'),
+		if exist(options,'scale')
 			scale = getfieldvalue(options,'scale');
-			if size(data{i},1)==timeserieslength,
+			if size(data{i},1)==timeserieslength
 				data{i}(1:end-1,:) = scale.*data{i}(1:end-1,:);
 			else
 				data{i} = scale.*data{i};
 			end
 		end
-		if size(data{i},1)==timeserieslength,
+		if size(data{i},1)==timeserieslength
 			yts = getfieldvalue(options,'yts');
 			data{i}(end,:) = data{i}(end,:)*yts;
 		end
@@ -50,7 +50,7 @@ if strcmpi(format,'MatArray')
 else
 	if exist(options,'scale')
 		scale = getfieldvalue(options,'scale');
-		if size(data,1)==timeserieslength,
+		if size(data,1)==timeserieslength
 			data(1:end-1,:) = scale.*data(1:end-1,:);
 		else
 			data  = scale.*data;
@@ -119,7 +119,7 @@ elseif strcmpi(format,'BooleanMat'), % {{{
 	%Get size
 	s=size(data);
 	%if matrix = NaN, then do not write anything
-	if (s(1)==1 & s(2)==1 & isnan(data)),
+	if (s(1)==1 & s(2)==1 & isnan(data))
 		s(1)=0; s(2)=0;
 	end
 
@@ -133,7 +133,7 @@ elseif strcmpi(format,'BooleanMat'), % {{{
 	%now write matrix
 	fwrite(fid,s(1),'int');
 	fwrite(fid,s(2),'int');
-	if s(1)*s(2),
+	if s(1)*s(2)
 		fwrite(fid,data','double'); %get to the "c" convention, hence the transpose
 	end
 	% }}}
@@ -142,7 +142,7 @@ elseif strcmpi(format,'IntMat'), % {{{
 	%Get size
 	s=size(data);
 	%if matrix = NaN, then do not write anything
-	if (s(1)==1 & s(2)==1 & isnan(data)),
+	if (s(1)==1 & s(2)==1 & isnan(data))
 		s(1)=0; s(2)=0;
 	end
 
@@ -156,7 +156,7 @@ elseif strcmpi(format,'IntMat'), % {{{
 	%now write matrix
 	fwrite(fid,s(1),'int');
 	fwrite(fid,s(2),'int');
-	if s(1)*s(2),
+	if s(1)*s(2)
 		fwrite(fid,data','double'); %get to the "c" convention, hence the transpose
 	end
 	% }}}
@@ -170,7 +170,7 @@ elseif strcmpi(format,'DoubleMat'), % {{{
 	end
 
 	%if matrix = NaN, then do not write anything
-	if (s(1)==1 & s(2)==1 & isnan(data)),
+	if (s(1)==1 & s(2)==1 & isnan(data))
 		s(1)=0; s(2)=0;
 	end
 
@@ -186,7 +186,7 @@ elseif strcmpi(format,'DoubleMat'), % {{{
 	%now write matrix
 	fwrite(fid,s(1),'int');
 	fwrite(fid,s(2),'int');
-	if s(1)*s(2),
+	if s(1)*s(2)
 		fwrite(fid,data','double'); %get to the "c" convention, hence the transpose
 	end
 	% }}}
@@ -195,7 +195,7 @@ elseif strcmpi(format,'CompressedMat'), % {{{
 	%Get size
 	s=size(data);
 
-	if (s(1)==1 & s(2)==1 & isnan(data)),
+	if (s(1)==1 & s(2)==1 & isnan(data))
 		s(1)=0; s(2)=0;
 	end
 
@@ -212,7 +212,7 @@ elseif strcmpi(format,'CompressedMat'), % {{{
 	fwrite(fid,s(1),'int');
 	fwrite(fid,s(2),'int');
 
-	if s(1)*s(2),
+	if s(1)*s(2)
 
 		%Write offset and range
 		A = data(1:end-1,:);
@@ -240,7 +240,7 @@ elseif strcmpi(format,'MatArray'), % {{{
 
 	%first get length of record
 	recordlength=4+4; %number of records + code
-	for i=1:numrecords,
+	for i=1:numrecords
 		matrix=data{i};
 		s=size(matrix);
 		recordlength=recordlength+4*2+... %row and col of matrix
@@ -257,7 +257,7 @@ elseif strcmpi(format,'MatArray'), % {{{
 	fwrite(fid,numrecords,'int');
 
 	%write each matrix:
-	for i=1:numrecords,
+	for i=1:numrecords
 		matrix=data{i};
 		s=size(matrix);
 		fwrite(fid,s(1),'int');
@@ -269,13 +269,13 @@ elseif strcmpi(format,'StringArray'), % {{{
 
 	%first get length of string array:
 	num=numel(data);
-	if isnumeric(data) & num==1 & isnan(data),
+	if isnumeric(data) & num==1 & isnan(data)
 		num = 0;
 	end
 
 	%now get length of record:
 	recordlength=4+4; %for length of array + code
-	for i=1:num,
+	for i=1:num
 		string=data{i};
 		recordlength=recordlength+4+length(string); %for each string
 	end
@@ -290,7 +290,7 @@ elseif strcmpi(format,'StringArray'), % {{{
 	fwrite(fid,num,'int');
 
 	%now write the strings
-	for i=1:num,
+	for i=1:num
 		string=data{i};
 		fwrite(fid,length(string),'int');
 		fwrite(fid,string,'char');
@@ -305,25 +305,25 @@ function code=FormatToCode(format) % {{{
 %This routine takes the format string, and hardcodes it into an integer, which
 %is passed along the record, in order to identify the nature of the dataset being
 %sent.
-	if     strcmpi(format,'Boolean'),
+	if     strcmpi(format,'Boolean')
 		code=1;
-	elseif strcmpi(format,'Integer'),
+	elseif strcmpi(format,'Integer')
 		code=2;
-	elseif strcmpi(format,'Double'),
+	elseif strcmpi(format,'Double')
 		code=3;
-	elseif strcmpi(format,'String'),
+	elseif strcmpi(format,'String')
 		code=4;
-	elseif strcmpi(format,'BooleanMat'),
+	elseif strcmpi(format,'BooleanMat')
 		code=5;
-	elseif strcmpi(format,'IntMat'),
+	elseif strcmpi(format,'IntMat')
 		code=6;
-	elseif strcmpi(format,'DoubleMat'),
+	elseif strcmpi(format,'DoubleMat')
 		code=7;
-	elseif strcmpi(format,'MatArray'),
+	elseif strcmpi(format,'MatArray')
 		code=8;
-	elseif strcmpi(format,'StringArray'),
+	elseif strcmpi(format,'StringArray')
 		code=9;
-	elseif strcmpi(format,'CompressedMat'),
+	elseif strcmpi(format,'CompressedMat')
 		code=10;
 	else
 		error('FormatToCode error message: data type not supported yet!');

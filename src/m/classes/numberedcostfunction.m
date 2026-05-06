@@ -55,7 +55,7 @@ classdef numberedcostfunction
 				md = checkfield(md,'fieldname','md.outputdefinition.definition{X}.thickness_obs','field',self.thickness_obs,'size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			else
 				md = checkfield(md,'fieldname','md.outputdefinition.definition{X}.vx_obs','field',self.vx_obs,'size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
-				if ~strcmp(domaintype(md.mesh),'2Dvertical'),
+				if ~strcmp(domaintype(md.mesh),'2Dvertical')
 					md = checkfield(md,'fieldname','md.outputdefinition.definition{X}.vy_obs','field',self.vy_obs,'size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 				end
 			end

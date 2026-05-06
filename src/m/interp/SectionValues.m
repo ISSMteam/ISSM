@@ -9,7 +9,7 @@ function [index,X,Y,Z,S,data_interp]=SectionValues(md,data,infile,resolution)
 %      [elements,x,y,z,s,data]=SectionValues(md,data,profile_structure,resolution)
 
 %check what we have for profile as input
-if ischar(infile),
+if ischar(infile)
 	%read infile:
 	profile=expread(infile);
 	nods=profile.nods;

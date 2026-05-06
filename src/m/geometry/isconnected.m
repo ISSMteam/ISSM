@@ -6,7 +6,7 @@ function flag=isconnected(elements,A,B)
 %
 
 elements=ElementsFromEdge(elements,A,B);
-if isempty(elements),
+if isempty(elements)
 	flag=0;
 else
 	flag=1;

@@ -31,16 +31,16 @@ options=pairoptions(varargin{:});
 %Some checks
 if ~nargin | nargout
 	error('exptool usage: exptool(newfile,varargin)')
-elseif exist(newfile,'file'),
+elseif exist(newfile,'file')
 	%recursive call to exptool if file already exists
-	if ~exist(options,'include'),
+	if ~exist(options,'include')
 		exptool(newfile,'include',newfile,varargin{:});
 		return;
 	end
 
 	%check modification
 	choice=input(['A file ' newfile ' already exists, do you want to modify it? (y/n)'],'s');
-	if ~strcmpi(choice,'y'),
+	if ~strcmpi(choice,'y')
 		disp('no modification done ... exiting');
 		return
 	end
@@ -62,12 +62,12 @@ numpoints=0;
 closed=[];
 
 %initialize the variables with files provided by 'include' option
-if exist(options,'include'),
+if exist(options,'include')
 	files=getfieldvalue(options,'include');
 	if ischar(files), files={files}; end
-	for i=1:length(files),
+	for i=1:length(files)
 		filename=files{i};
-		if ~exist(filename,'file'),
+		if ~exist(filename,'file')
 			error(['exptool error message:, ' filename ' does not exist. Exiting...']);
 		else
 			%read file
@@ -99,7 +99,7 @@ end
 
 %get current figure
 nofigurecopy=getfieldvalue(options,'nofigurecopy',1);
-if ~nofigurecopy,
+if ~nofigurecopy
 	if ~isempty(get(0,'children')),%if there is already a figure (return the number of opened figures)
 		set(gcf,'Renderer','zbuffer'); %fixes a bug on Mac OS X (not needed in future Matlab version)
 		P=get(gcf,'position');
@@ -163,13 +163,13 @@ while loop
 	%Now erase all that have been done and plot the new structure A as it is
 	undoplots(prevplot);
 	if numprofiles
-		if ~nofigurecopy,
+		if ~nofigurecopy
 			prevplot2=1;
 		else
 			prevplot2=L;
 		end
 		for i=1:numprofiles
-			if length(A(i).x)==1,
+			if length(A(i).x)==1
 				plot(A(i).x,A(i).y,'color',getfieldvalue(options,'color'),'LineStyle',getfieldvalue(options,'LineStyle'),'LineWidth',getfieldvalue(options,'LineWidth'),...
 					'MarkerEdgeColor',getfieldvalue(options,'MarkerEdgeColor'),'MarkerSize',getfieldvalue(options,'MarkerSize'),'Marker','o');
 			else
@@ -354,6 +354,6 @@ else
 end
 
 %close window
-if ~nofigurecopy,
+if ~nofigurecopy
 	close;
 end

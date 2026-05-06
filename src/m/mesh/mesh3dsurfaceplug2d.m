@@ -20,12 +20,12 @@ function mh=mh3dsurfaceplug2d(mh,mh2,flags,segments,xsegs,ysegs,varargin)
 
 	%The segments of md2 and the outer segments of md are identical. Go into  the elements of 
 	%dmd2 and set them to their md equivalent: 
-	for i=1:length(mh2.segments),
+	for i=1:length(mh2.segments)
 		node2=mh2.segments(i,1);
 		%this node2 has an equivalent on the segments  of md: 
-		for j=1:length(segments),
+		for j=1:length(segments)
 			node1=segments(j,1);
-			if mh2.x(node2-mh.numberofvertices) == xsegs(j) &&  mh2.y(node2-mh.numberofvertices) == ysegs(j),
+			if mh2.x(node2-mh.numberofvertices) == xsegs(j) &&  mh2.y(node2-mh.numberofvertices) == ysegs(j)
 				%go into the mesh of md2, and replace by node1.
 				pos=find(mh2.elements==node2); mh2.elements(pos)=node1;
 				segs=mh2.segments(:,1:2); pos=find(segs==node2); segs(pos)=node1; mh2.segments(:,1:2)=segs;
@@ -46,7 +46,7 @@ function mh=mh3dsurfaceplug2d(mh,mh2,flags,segments,xsegs,ysegs,varargin)
 	lat=mh.lat; long=mh.long; 
 	elements=mh.elements; segments=mh.segments;
 	orphan=find(~ismember([1:length(lat)],sort(unique(elements(:)))));
-	for i=1:length(orphan),
+	for i=1:length(orphan)
 		%disp('WARNING: removing orphans');
 		%get rid of the orphan node i
 		%update lat and long

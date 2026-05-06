@@ -12,7 +12,7 @@ function S=netcdf2struct(File)
 
 	%All the variables are in VarArray field
 	variables=data.VarArray;
-	for i=1:size(variables,2),
+	for i=1:size(variables,2)
 		fieldname=deblank(variables(i).Str);
 		fieldvalue=double(squeeze(variables(i).Data));
 		S.(fieldname)=fieldvalue;
@@ -20,7 +20,7 @@ function S=netcdf2struct(File)
 
 	%All the variables are in AttArray field
 	variables=data.AttArray;
-	for i=1:size(variables,2),
+	for i=1:size(variables,2)
 		fieldname=deblank(variables(i).Str);
 		fieldvalue=double(variables(i).Val);
 		S.(fieldname)=fieldvalue;

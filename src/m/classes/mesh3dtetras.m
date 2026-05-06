@@ -46,13 +46,13 @@ classdef mesh3dtetras
 			% loaded. Update old properties here
 
 			%2014 Oct. 1st
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(mesh3dtetras(),oldself);
-				if isfield(oldself,'hemisphere'),
+				if isfield(oldself,'hemisphere')
 					disp('md.mesh.hemisphere has been automatically converted to EPSG code');
-					if strcmpi(oldself.hemisphere,'n'),
+					if strcmpi(oldself.hemisphere,'n')
 						self.epsg=3413;
 						self.proj=epsg2proj(3413);
 					else
@@ -75,7 +75,7 @@ classdef mesh3dtetras
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -112,7 +112,7 @@ classdef mesh3dtetras
 			md = checkfield(md,'fieldname','mesh.z','>=',md.geometry.base-10^-10,'message','''mesh.z'' lower than bedrock');
 			md = checkfield(md,'fieldname','mesh.z','<=',md.geometry.surface+10^-10,'message','''mesh.z'' higher than surface elevation');
 			md = checkfield(md,'fieldname','mesh.average_vertex_connectivity','>=',24,'message','''mesh.average_vertex_connectivity'' should be at least 24 in 3d');
-			if numel(md.mesh.scale_factor)>1,
+			if numel(md.mesh.scale_factor)>1
 				md = checkfield(md,'fieldname','mesh.scale_factor','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 			end
 

@@ -6,7 +6,7 @@ function [i1,i2]=parallelrange(rank,numprocs,globalsize)
 
 num_local_rows=zeros(numprocs,1);
 
-for i=1:numprocs,
+for i=1:numprocs
 	%we use floor. we under distribute rows. The rows left  are then redistributed, therefore resulting in a more even distribution.
 	num_local_rows(i)=floor(globalsize/numprocs);
 end
@@ -14,7 +14,7 @@ end
 %There may be some rows left. Distribute evenly.
 row_rest=globalsize - numprocs*floor(globalsize/numprocs);
 
-for i=1:row_rest,
+for i=1:row_rest
 	num_local_rows(i)=num_local_rows(i)+1;
 end
 

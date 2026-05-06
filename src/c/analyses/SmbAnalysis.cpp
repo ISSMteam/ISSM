@@ -24,7 +24,7 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 
 	int    smb_model;
 	bool   isdelta18o,ismungsm,isd18opd,issetpddfac,isprecipscaled,istemperaturescaled,isfirnwarming,isstochastic;
-	bool   ismappedforcing,isprecipforcingremapped;
+	bool   ismappedforcing,isprecipforcingremapped,ismappingusingneighbors;
 
 	/*Update elements: */
 	int counter=0;
@@ -51,6 +51,7 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 		case SMBgembEnum:
 			iomodel->FindConstant(&ismappedforcing,"md.smb.ismappedforcing");
 			iomodel->FindConstant(&isprecipforcingremapped,"md.smb.isprecipforcingremapped");
+			iomodel->FindConstant(&ismappingusingneighbors,"md.smb.ismappingusingneighbors");
 			if (!ismappedforcing){
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Ta",SmbTaEnum);
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.V",SmbVEnum);
@@ -67,6 +68,9 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.Vz",SmbVzEnum);
 			} else {
 				iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingpoint",SmbMappedforcingpointEnum);
+				if(ismappingusingneighbors){
+					iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingneighbors",SmbMappedforcingneighborsEnum);
+				}
 				if(isprecipforcingremapped){
 					iomodel->FetchDataToInput(inputs,elements,"md.smb.mappedforcingprecipscaling",SmbMappedforcingprecipscalingEnum);
 				}
@@ -286,17 +290,17 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			break;
 		#ifdef _HAVE_PyBind11_
 		case SMBmariaEnum:
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",SmbMassBalanceEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",SmbElevEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",SmbAlEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",SmbStEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",SmbTtEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",SmbSwdEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",SmbLwdEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",SmbSwuEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",SmbLwuEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",SmbShfEnum);
-			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",SmbLhfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.mass_balance",MariaSmbEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.elev",MariaElevEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.al",MariaAlEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.st",MariaStEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.tt",MariaTtEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swd",MariaSwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwd",MariaLwdEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.swu",MariaSwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lwu",MariaLwuEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",MariaShfEnum);
+			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",MariaLhfEnum);
 			break;
 		#endif
 		default:
@@ -441,6 +445,13 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 				parameters->AddObject(new DoubleVecParam(SmbMappedforcingelevationEnum,&temp[0],M));
 				iomodel->DeleteData(temp,"md.smb.mappedforcingelevation");
 
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lat_mappedforcing"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLatMappedforcingEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lat_mappedforcing");
+				iomodel->FetchData(&temp,&M,&N,"md.smb.lon_mappedforcing"); _assert_(N==1);
+				parameters->AddObject(new DoubleVecParam(SmbLonMappedforcingEnum,&temp[0],M));
+				iomodel->DeleteData(temp,"md.smb.lon_mappedforcing");
+
 				iomodel->FetchData(&temp,&M,&N,"md.smb.lapseTaValue"); _assert_(N==1);
 				parameters->AddObject(new DoubleVecParam(SmbLapseTaValueEnum,&temp[0],M));
 				iomodel->DeleteData(temp,"md.smb.lapseTaValue");
@@ -473,6 +484,7 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isconstrainsurfaceT",SmbIsconstrainsurfaceTEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isdeltaLWup",SmbIsdeltaLWupEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismappedforcing",SmbIsmappedforcingEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ismappingusingneighbors",SmbIsmappingusingneighborsEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.isprecipforcingremapped",SmbIsprecipforcingremappedEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.InitDensityScaling",SmbInitDensityScalingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.smb.ThermoDeltaTScaling",SmbThermoDeltaTScalingEnum));

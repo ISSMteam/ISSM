@@ -48,8 +48,8 @@ classdef verbose
 					verbose.control=true;
 				case 1,
 					binary=varargin{1};
-					if     ischar(binary),
-						if strcmpi(binary,'all'),
+					if     ischar(binary)
+						if strcmpi(binary,'all')
 							binary=2^11-1; %all ones
 							verbose=BinaryToVerbose(verbose,binary);
 							verbose.solver=false; %Do not use by default
@@ -57,7 +57,7 @@ classdef verbose
 							binary=bin2dec(binary);
 							verbose=BinaryToVerbose(verbose,binary);
 						end
-					elseif isnumeric(binary),
+					elseif isnumeric(binary)
 						verbose=BinaryToVerbose(verbose,binary);
 					end 
 				otherwise,
@@ -66,10 +66,10 @@ classdef verbose
 
 					%Cast to logicals
 					listproperties=properties('verbose');
-					for i=1:numel(listproperties),
+					for i=1:numel(listproperties)
 						fieldname=listproperties{i};
 						fieldvalue=verbose.(fieldname);
-						if (islogical(fieldvalue) | isnumeric(fieldvalue)) & numel(fieldvalue)==1,
+						if (islogical(fieldvalue) | isnumeric(fieldvalue)) & numel(fieldvalue)==1
 							verbose.(fieldname)=logical(fieldvalue);
 						else
 							error('verbose supported field values are logicals only (true or false)');

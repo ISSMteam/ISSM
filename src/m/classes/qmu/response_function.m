@@ -35,7 +35,7 @@ classdef response_function
 			self.grell=getfieldvalue(options,'general_reliability_levels',[]);
 			
 			%if the response is scaled, a partition vector should have been supplied.
-			if self.isscaled(),
+			if self.isscaled()
 				self.partition=getfieldvalue(options,'partition');
 				npart=partition_npart(self.partition);
 			end
@@ -52,7 +52,7 @@ classdef response_function
                 disp(sprintf('         probl: %s'      ,string_vec(rf(i).probl)));
                 disp(sprintf('          rell: %s'      ,string_vec(rf(i).rell)));
                 disp(sprintf('         grell: %s'    ,string_vec(rf(i).grell)));
-                if ~isempty(rf.partition),
+                if ~isempty(rf.partition)
 					fielddisplay(rf,'partition','partition vector defining where response will be computed');
                 end
                 disp(sprintf('\n'));
@@ -116,7 +116,7 @@ classdef response_function
         end % }}}
 		%new methods: 
     	function scaled =isscaled(self) % {{{
-    		if strncmp(self.descriptor,'scaled_',7),
+    		if strncmp(self.descriptor,'scaled_',7)
     			scaled=1;
     		else
     			scaled=0;

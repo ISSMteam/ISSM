@@ -4,7 +4,7 @@ function [vxout vyout] = interpJoughin(X,Y,Date),
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid'}
-		if nargin==3,
+		if nargin==3
 			rootname = ['/u/astrid-r1b/morlighe/issmjpl/proj-morlighem/DatasetGreenland/Data/Vel/Joughin/' num2str(Date) '/'];
 		else
 			error('not supported');
@@ -16,7 +16,7 @@ switch oshostname(),
 end
 verbose = 1;
 
-if ~exist(rootname,'dir'),
+if ~exist(rootname,'dir')
 	error(['file ' rootname ' not found']);
 end
 
@@ -85,7 +85,7 @@ function xgeo=readgeodat(filein)
 fid = fopen(filein,'r');
 xgeo=zeros(3,2);
 i=1;
-while ~feof(fid),
+while ~feof(fid)
 	line=fgets(fid);
 	[A,count]=sscanf(line,'%f %f',[1 2]);
 	if(count == 2) 

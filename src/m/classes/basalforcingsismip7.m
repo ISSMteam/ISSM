@@ -42,7 +42,7 @@ classdef basalforcingsismip7
 		end % }}}
 		function self = initialize(self,md) % {{{
 			%Update fixed-coriolis parameter
-			if isnan(md.mesh.lat) | isempty(md.mesh.lat),
+			if isnan(md.mesh.lat) | isempty(md.mesh.lat)
 				disp('      no md.mesh.lat specified.');
 				if md.mesh.epsg == 3031 % For Antarctica
 					[lat, lon] = xy2ll(md.mesh.x,md.mesh.y,-1);
@@ -57,11 +57,11 @@ classdef basalforcingsismip7
 			omega=7.2921e-5; %angular velocity of the Earth (rad/s)
 			self.coriolis_f=2*omega*sin(lat/180*pi);
 
-			if self.gamma == 0,
+			if self.gamma == 0
 				self.gamma = 14477;
 				disp('      no basalforcings.gamma specified: value set to 14477 m/yr');
 			end
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end

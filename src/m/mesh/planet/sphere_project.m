@@ -22,7 +22,7 @@ function V = sphere_project(v,r,c)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ~exist('v','var'),
+if ~exist('v','var')
     msg = sprintf('SPHERE_PROJECT: No input vertices (X,Y,Z)\n');
     error(msg);
 end
@@ -31,7 +31,7 @@ X = v(:,1);
 Y = v(:,2);
 Z = v(:,3);
 
-if ~exist('c','var'),
+if ~exist('c','var')
     xo = 0;
     yo = 0;
     zo = 0;

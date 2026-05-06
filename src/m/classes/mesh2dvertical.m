@@ -35,13 +35,13 @@ classdef mesh2dvertical
 			% loaded. Update old properties here
 
 			%2014 Oct. 1st
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(mesh2dvertical(),oldself);
-				if isfield(oldself,'hemisphere'),
+				if isfield(oldself,'hemisphere')
 					disp('md.mesh.hemisphere has been automatically converted to EPSG code');
-					if strcmpi(oldself.hemisphere,'n'),
+					if strcmpi(oldself.hemisphere,'n')
 						self.epsg=3413;
 						self.proj=epsg2proj(3413);
 					else
@@ -64,7 +64,7 @@ classdef mesh2dvertical
 					list2 = fieldnames(inputstruct);
 					for i=1:length(list1)
 						fieldname = list1{i};
-						if ismember(fieldname,list2),
+						if ismember(fieldname,list2)
 							self.(fieldname) = inputstruct.(fieldname);
 						end
 					end
@@ -97,7 +97,7 @@ classdef mesh2dvertical
 			md = checkfield(md,'fieldname','mesh.vertexonbase','size',[md.mesh.numberofvertices 1],'values',[0 1]);
 			md = checkfield(md,'fieldname','mesh.vertexonsurface','size',[md.mesh.numberofvertices 1],'values',[0 1]);
 			md = checkfield(md,'fieldname','mesh.average_vertex_connectivity','>=',9,'message','''mesh.average_vertex_connectivity'' should be at least 9 in 2d');
-			if numel(md.mesh.scale_factor)>1,
+			if numel(md.mesh.scale_factor)>1
 				md = checkfield(md,'fieldname','mesh.scale_factor','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 			end
 
@@ -166,7 +166,7 @@ classdef mesh2dvertical
 		function [data datatype] = processdata(self,md,data,options) % {{{
 
 			%transpose data if necessary
-			if (size(data,2) > size(data,1)),
+			if (size(data,2) > size(data,1))
 				data=data';
 			end
 			datasize=size(data);
@@ -183,7 +183,7 @@ classdef mesh2dvertical
 			end
 
 			%quiver?
-			if datasize(2)>1,
+			if datasize(2)>1
 				datatype=3;
 			end
 
@@ -195,14 +195,14 @@ classdef mesh2dvertical
 			end
 
 			%element data
-			if (datasize(1)==md.mesh.numberofelements & datasize(2)==1),
+			if (datasize(1)==md.mesh.numberofelements & datasize(2)==1)
 				datatype=1;
 
 				%Mask?
-				if exist(options,'mask'),
+				if exist(options,'mask')
 					flags=getfieldvalue(options,'mask');
 					pos=find(~flags);
-					if length(flags)==md.mesh.numberofvertices,
+					if length(flags)==md.mesh.numberofvertices
 						[pos2 dummy]=find(ismember(md.mesh.elements,pos));
 						data(pos2,:)=NaN;
 					elseif length(flags)==md.mesh.numberofelements
@@ -213,10 +213,10 @@ classdef mesh2dvertical
 				end
 
 				%log?
-				if exist(options,'log'),
+				if exist(options,'log')
 					bounds=getfieldvalue(options,'caxis',[min(data(:)) max(data(:))]);
 					data(find(data<bounds(1)))=bounds(1);
-					if any(data<=0),
+					if any(data<=0)
 						error('Log option cannot be applied on negative values. Use caxis option (Rignot''s settings: [1.5 max(data)])');
 					end
 					pos=find(~isnan(data));
@@ -225,14 +225,14 @@ classdef mesh2dvertical
 			end
 
 			%node data
-			if (datasize(1)==md.mesh.numberofvertices & datasize(2)==1),
+			if (datasize(1)==md.mesh.numberofvertices & datasize(2)==1)
 				datatype=2;
 
 				%Mask?
-				if exist(options,'mask'),
+				if exist(options,'mask')
 					flags=getfieldvalue(options,'mask');
 					pos=find(~flags);
-					if length(flags)==md.mesh.numberofvertices,
+					if length(flags)==md.mesh.numberofvertices
 						data(pos,:)=NaN;
 					elseif length(flags)==md.mesh.numberofelements
 						data(md.mesh.elements(pos,:),:)=NaN;
@@ -242,7 +242,7 @@ classdef mesh2dvertical
 				end
 
 				%log?
-				if exist(options,'log'),
+				if exist(options,'log')
 					%if any(data<=0),
 					%	error('Log option cannot be applied on negative values. Use caxis option (Rignot''s settings: [1.5 max(data)])');
 					%end
@@ -260,11 +260,11 @@ classdef mesh2dvertical
 			y        = self.y;
 			z        = zeros(self.numberofvertices,1);
 
-			if exist(options,'xunit'),
+			if exist(options,'xunit')
 				unit=getfieldvalue(options,'xunit');
 				x=x*unit; % Apply to x only
 			end
-			if exist(options,'yunit'),
+			if exist(options,'yunit')
 				unit=getfieldvalue(options,'yunit');
 				x=x*unit; % Apply to x only
 			end

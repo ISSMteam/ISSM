@@ -10,13 +10,13 @@ function plotgemb(results,fieldname,varargin);
 	%number of results: 
 	nt=length(results); 
 
-	for i=1:nt, 
+	for i=1:nt 
 
 		z0=zerolevel;
 
 		%retrieve time, and delta around time: 
 		time=results(i).time;
-		if i<nt,
+		if i<nt
 			deltat=results(i+1).time-time;
 		else
 			deltat=time-results(i-1).time;			
@@ -24,7 +24,7 @@ function plotgemb(results,fieldname,varargin);
 
 		%figure out number of levels: 
 		dz=results(i).SmbDz(element,:);
-		if numlevels==-1,
+		if numlevels==-1
 			nlevels=length(dz); 
 		else
 			nlevels=numlevels;
@@ -49,7 +49,7 @@ function plotgemb(results,fieldname,varargin);
 		zD=zeros(nz,1);
 		
         
-		for j=1:nz, 
+		for j=1:nz 
 			zA(j)=z0;
 			zB(j)=z0;
 			zC(j)=z0+dz(j);
@@ -60,7 +60,7 @@ function plotgemb(results,fieldname,varargin);
 
 		patch([xA,xB,xC,xD]',[zA,zB,zC,zD]',[T,T,T,T]','EdgeColor','none');
 
-		if i>=maxstep,
+		if i>=maxstep
 			break;
 		end
     end

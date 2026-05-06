@@ -14,7 +14,7 @@ function md=setmask(md,floatingicename,groundedicename,varargin)
 %      md=setmask(md,'Iceshelves.exp','Islands.exp');
 
 %some checks on list of arguments
-if ((mod(nargin,2)==0) | (nargout~=1)),
+if ((mod(nargin,2)==0) | (nargout~=1))
 	help mask
 	error('mask error message');
 end
@@ -25,7 +25,7 @@ if(nargin>3)
 	else
 		error('mask error message: wrong field specified. Only icedomain allowed for now.');
 	end
-	if ~exist(icedomainname),
+	if ~exist(icedomainname)
         error(['setmask error message: file ' icedomainname ' not found!']);
 	end
 end

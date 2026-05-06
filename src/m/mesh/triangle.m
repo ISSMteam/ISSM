@@ -16,17 +16,17 @@ function md=triangle(md,domainname,varargin)
 
 %Figure out a characteristic area. Resolution is a node oriented concept (ex a 1000m  resolution node would 
 %be made of 1000*1000 area squares). 
-if (nargin==3),
+if (nargin==3)
 	resolution=varargin{1};
 	riftname='';
 end
-if (nargin==4),
+if (nargin==4)
 	riftname=varargin{1};
 	resolution=varargin{2};
 end
 
 %Check that mesh was not already run, and warn user: 
-if md.mesh.numberofelements~=0,
+if md.mesh.numberofelements~=0
 	choice=input('This model already has a mesh. Are you sure you want to go ahead? (y/n)','s');
 	if ~strcmp(choice,'y')
 		disp('no meshing done ... exiting');
@@ -46,10 +46,10 @@ end
 
 %check that all the created nodes belong to at least one element
 removeorphans=1;
-if removeorphans,
+if removeorphans
 	uniqueelements=sort(unique(elements(:)));
 	orphans=find(~ismember([1:length(x)],uniqueelements));
-	for i=1:length(orphans),
+	for i=1:length(orphans)
 		disp('WARNING: removing orphans');
 		%get rid of the orphan node i
 		%update x and y

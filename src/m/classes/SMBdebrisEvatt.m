@@ -68,7 +68,7 @@ classdef SMBdebrisEvatt
 		end % }}}
 		function self = initialize(self,md) % {{{
 
-			if isnan(self.s0t),
+			if isnan(self.s0t)
 				self.s0t=zeros(md.mesh.numberofvertices,1);
 				disp('      no SMBdebrisEvatt.s0t specified: values set as zero');
 			end
@@ -95,7 +95,7 @@ classdef SMBdebrisEvatt
 
 			if (strcmp(solution,'TransientSolution') & md.transient.issmb == 0), return; end
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.temperature','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 365]);
 				md = checkfield(md,'fieldname','smb.precipitation','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 365]);
 				md = checkfield(md,'fieldname','smb.dsradiation','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 365]);
@@ -193,7 +193,7 @@ classdef SMBdebrisEvatt
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

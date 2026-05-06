@@ -32,17 +32,17 @@ function backstress=backstressfrominversion(md,varargin)
 %      backstress=backstressfrominversion(md,'smoothing',2,'coordsys','longitudinal','tempmask',true);
 
 % check inputs
-if (nargin<1),
+if (nargin<1)
 	help backstressfrominversion
 	error('bad usage');
 end
-if isempty(fieldnames(md.results)),
+if isempty(fieldnames(md.results))
 	error(['md.results.strainrate is not present.  Calculate using md=mechanicalproperties(md,vx,vy)']);
 end
-if dimension(md.mesh)~=2,
+if dimension(md.mesh)~=2
 	error('only 2d model supported currently');
 end
-if any(md.flowequation.element_equation~=2),
+if any(md.flowequation.element_equation~=2)
 	disp('Warning: the model has some non SSA elements. These will be treated like SSA elements');
 end
 

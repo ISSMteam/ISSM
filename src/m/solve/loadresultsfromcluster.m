@@ -26,19 +26,19 @@ end
 if md.qmu.isdakota
 	filelist{end+1}=[md.miscellaneous.name '.qmu.err'];
 	filelist{end+1}=[md.miscellaneous.name '.qmu.out'];
-	if isfield(md.qmu.params,'tabular_graphics_data'),
-		if md.qmu.params.tabular_graphics_data==true,
+	if isfield(md.qmu.params,'tabular_graphics_data')
+		if md.qmu.params.tabular_graphics_data==true
 			filelist{end+1}='dakota_tabular.dat';
 		end
 	end
-	if md.qmu.output & strcmpi(md.qmu.statistics.method(1).name,'None'),
-		if strcmpi(md.qmu.method.method,'nond_sampling'),
+	if md.qmu.output & strcmpi(md.qmu.statistics.method(1).name,'None')
+		if strcmpi(md.qmu.method.method,'nond_sampling')
 			for i=1:md.qmu.method.params.samples
 				filelist{end+1}=[md.miscellaneous.name '.outbin.' num2str(i)];
 			end
 		end
 	end
-	if ~strcmpi(md.qmu.statistics.method(1).name,'None'),
+	if ~strcmpi(md.qmu.statistics.method(1).name,'None')
 		filelist{end+1}=[md.miscellaneous.name '.stats'];
 	end
 else
@@ -62,7 +62,7 @@ end
 
 %erase input file if run was carried out on same platform.
 hostname=oshostname();
-if strcmpi(hostname,cluster.name),
+if strcmpi(hostname,cluster.name)
 	delete([md.miscellaneous.name '.bin']);
 	delete([md.miscellaneous.name '.toolkits']);
 	if md.qmu.isdakota

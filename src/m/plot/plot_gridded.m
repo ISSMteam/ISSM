@@ -20,7 +20,7 @@ if islevelset
 end
 
 %check is2d
-if ~is2d, 
+if ~is2d 
 	error('buildgridded error message: gridded not supported for 3d meshes, project on a layer');
 end
 
@@ -45,7 +45,7 @@ x_m = xlim(1):postx:xlim(2);
 y_m = ylim(1):posty:ylim(2);
 data_grid=InterpFromMeshToGrid(elements,x,y,data,x_m,y_m,NaN);
 data_grid_save = data_grid;
-if size(data_grid,1)<3 | size(data_grid,2)<3,
+if size(data_grid,1)<3 | size(data_grid,2)<3
 	error('data_grid size too small in plot_gridded, check posting and units');
 end
 
@@ -57,7 +57,7 @@ end
 
 %Process data_grid: add white in NaN and correct caxis accordingly
 [data_nani data_nanj]=find(isnan(data_grid) | data_grid==-9999);
-if exist(options,'caxis'),
+if exist(options,'caxis')
 	caxis_opt=getfieldvalue(options,'caxis');
 	data_grid(find(data_grid<caxis_opt(1)))=caxis_opt(1);
 	data_grid(find(data_grid>caxis_opt(2)))=caxis_opt(2);
@@ -74,9 +74,9 @@ subplotmodel(plotlines,plotcols,i,options);
 %shading interp;
 map    = getcolormap(options);
 image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(map)/(data_max-data_min))),map);
-if exist(options,'shaded'),
+if exist(options,'shaded')
 
-	if exist(options,'dem'),
+	if exist(options,'dem')
 		dem_grid=InterpFromMeshToGrid(elements,x,y,getfieldvalue(options,'dem'),x_m,y_m,NaN);
 	else
 		dem_grid=data_grid_save;
@@ -113,13 +113,13 @@ h=imagesc(xlim,ylim,image_rgb);
 axis xy
 
 %last step: mesh gridded?
-if exist(options,'edgecolor'),
+if exist(options,'edgecolor')
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 	patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
 end
 
 %Apply options
-if ~isnan(data_min) & ~isinf(data_min),
+if ~isnan(data_min) & ~isinf(data_min)
 	options=changefieldvalue(options,'caxis',[data_min data_max]); % force caxis so that the colorbar is ready
 end
 options=addfielddefault(options,'axis','xy equal'); % default axis

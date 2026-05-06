@@ -34,7 +34,7 @@ options=pairoptions(varargin{:},'solutionstring',solutionstring);
 totalnp=0;
 for i=1:length(slm.icecaps), totalnp=totalnp+slm.icecaps{i}.cluster.np; end
 totalnp=totalnp+slm.earth.cluster.np;
-if totalnp~=slm.cluster.np,
+if totalnp~=slm.cluster.np
 	error('sum of all icecaps and earch cluster processors requestes should be equal to slm.cluster.np');
 end
 
@@ -44,7 +44,7 @@ cluster=slm.cluster;
 batch=0;
 %now, go through icecaps, glaciers and earth, and upload all the data independently: 
 disp('solving ice caps first');
-for i=1:length(slm.icecaps),
+for i=1:length(slm.icecaps)
 	slm.icecaps{i}=solve(slm.icecaps{i},solutionstringi,'batch','yes');
 end
 disp('solving earth now');
@@ -58,7 +58,7 @@ slm.private.runtimename=sprintf('%s-%02i-%02i-%04i-%02i-%02i-%02i-%i',slm.miscel
 privateruntimenames={}; 
 miscellaneousnames={}; 
 nps={};
-for i=1:length(slm.icecaps),
+for i=1:length(slm.icecaps)
 	privateruntimenames{end+1}=slm.icecaps{i}.private.runtimename;
 	miscellaneousnames{end+1}=slm.icecaps{i}.miscellaneous.name;
 	nps{end+1}=slm.icecaps{i}.cluster.np;
@@ -78,22 +78,22 @@ disp('launching solution sequence')
 LaunchQueueJob(cluster,slm.miscellaneous.name,slm.private.runtimename,filelist,'',batch);
 
 %wait on lock
-if isnan(slm.settings.waitonlock),
+if isnan(slm.settings.waitonlock)
 	%load when user enters 'y'
 	disp('solution launched on remote cluster. log in to detect job completion.');
 	choice=input('Is the job successfully completed? (y/n)','s');
-	if ~strcmp(choice,'y'), 
+	if ~strcmp(choice,'y') 
 		disp('Results not loaded... exiting'); 
 	else
 		for i=1:length(slm.icecaps), slm.icecaps{i}=loadresultsfromcluster(slm.icecaps{i});end;
 		slm.earth=loadresultsfromcluster(slm.earth);
 	end
-elseif slm.settings.waitonlock>0,
+elseif slm.settings.waitonlock>0
 	%we wait for the done file
 	done=waitonlock(slm);
 	disp('loading results from cluster');
 	for i=1:length(slm.icecaps), slm.icecaps{i}=loadresultsfromcluster(slm.icecaps{i});end;
 	slm.earth=loadresultsfromcluster(slm.earth);
-elseif slm.settings.waitonlock==0,
+elseif slm.settings.waitonlock==0
 	 disp('Model results must be loaded manually with slm=loadresultsfromcluster(slm);');
 end

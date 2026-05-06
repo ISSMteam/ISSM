@@ -9,7 +9,7 @@ structnames = strsplit_strict(datastruct,'.');
 
 %getting the position of the to be ploted point
 location=getfieldvalue(options,'position');
-if ~isnumeric(location) | numel(location)~=2,
+if ~isnumeric(location) | numel(location)~=2
 	error('location provided not supported (should be [x y])');
 end
 xpoint=location(1);
@@ -23,7 +23,7 @@ OutputDt=md.settings.output_frequency*Dt;
 %Constructiion of the result structure(one step above variable in
 %the structure tree)
 solstruct = md;
-for i=2:numel(structnames)-1,
+for i=2:numel(structnames)-1
 	solstruct=solstruct.(char(structnames(i)));
 end
 
@@ -32,7 +32,7 @@ timesteps   = numel(solstruct);
 Value(1:timesteps)=NaN*ones(timesteps,1);
 time(1:timesteps)=NaN*ones(timesteps,1);
 
-for t=1:timesteps,
+for t=1:timesteps
 	
 	data=solstruct(t).(char(structnames(numel(structnames))));
 

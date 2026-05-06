@@ -26,7 +26,7 @@ function [A,numprofiles,numpoints,closed]=closeprofile(A,numprofiles,numpoints,c
 			disp('no profile present, exiting...')
 			return            
 		end  
-		if ~any(~closed),
+		if ~any(~closed)
 			disp('All the profiles are closed, exiting...')
 			return
 		end
@@ -44,7 +44,7 @@ function [A,numprofiles,numpoints,closed]=closeprofile(A,numprofiles,numpoints,c
 				%back to regular color
 				plot(A(profsel).x,A(profsel).y,...
 					'color',getfieldvalue(options,'color'),'LineStyle',getfieldvalue(options,'LineStyle'),'LineWidth',getfieldvalue(options,'LineWidth'));
-			elseif closed(profsel),
+			elseif closed(profsel)
 				%profile already closed, do nothing
 				disp('selected profile aready closed, make another selection'),
 			else
@@ -56,7 +56,7 @@ function [A,numprofiles,numpoints,closed]=closeprofile(A,numprofiles,numpoints,c
 			end
 		else
 			%close the profiles
-			for i=1:length(selection),
+			for i=1:length(selection)
 				A(selection(i)).x(end+1)=A(selection(i)).x(1);
 				A(selection(i)).y(end+1)=A(selection(i)).y(1);
 				numpoints=numpoints+1;

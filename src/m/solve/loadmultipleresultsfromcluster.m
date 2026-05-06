@@ -23,7 +23,7 @@ scpin(cluster, executionpath, {'ModelResults.tar.gz'});
 !tar -zxvf ModelResults.tar.gz
 
 %ok, go through list and load results from disk: 
-for i=1:nummodels,
+for i=1:nummodels
 	%load  results for this model
 	md_list{i}=loadresultsfromdisk(md_list{i},[md_list{i}.name '.outbin']);
 

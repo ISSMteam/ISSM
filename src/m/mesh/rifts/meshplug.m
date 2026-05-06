@@ -36,13 +36,13 @@ x2(1:length(domain))=NaN;
 y2(1:length(domain))=NaN;
 
 %redirect border nodes in elements2  to elements
-for i=1:length(domain),
+for i=1:length(domain)
 	pos=find(elements2==(i+length(x)));
 	elements2(pos)=extractednodes(domain(i));
 end
 
 %same deal for nodeconv2:
-for i=1:length(domain),
+for i=1:length(domain)
 	nodeconv2(i)=extractednodes(domain(i));
 end
 
@@ -55,7 +55,7 @@ y=[y; y2];
 z=[z; z2];
 
 %now, get rid of NaN in x:
-while  ~isempty(find(isnan(x))),
+while  ~isempty(find(isnan(x)))
 
 	pos=find(isnan(x));
 	node=pos(1);

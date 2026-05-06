@@ -441,7 +441,7 @@ def exportVTU(filename, md, *args, enveloppe=False, fmtout="binary", **kwargs):
                             print("format for field {}.{} is not suported, field is skipped".format(other, field))
             fid.write('      </PointData>\n')
             # }}}
-            # Now writting cell variables {{{
+            # Now writing cell variables {{{
             if np.size(list(saved_cells.keys())) > 0 or np.size(list(saved_edges.keys())) > 0:
                 cellkeys = list(saved_cells.keys())
                 edgekeys = list(saved_edges.keys())
@@ -472,7 +472,7 @@ def exportVTU(filename, md, *args, enveloppe=False, fmtout="binary", **kwargs):
                     fid.write('        </DataArray>\n')
 
             # }}}
-            # Now writting edge variables {{{
+            # Now writing edge variables {{{
             if np.size(list(saved_edges.keys())) > 0:
                 for key in list(saved_edges.keys()):
                     if fmtout == "binary":
@@ -487,7 +487,7 @@ def exportVTU(filename, md, *args, enveloppe=False, fmtout="binary", **kwargs):
                 fid.write('      </CellData>\n')
             # }}}
 
-            # Now writting constants # {{{
+            # Now writing constants # {{{
             if np.size(list(saved_const.keys())) > 0:
                 fid.write('      <FieldData>\n')
                 for key in list(saved_const.keys()):

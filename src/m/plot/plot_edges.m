@@ -16,7 +16,7 @@ if isnan(edges)
 	error('edges in NaN')
 end
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 	%plot mesh
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 	h1=patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceVertexCData', [1 1 1],'FaceColor','none','EdgeColor','black');

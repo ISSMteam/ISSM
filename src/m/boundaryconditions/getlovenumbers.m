@@ -10042,31 +10042,31 @@ end
 	love_numbers(maxdeg+2:end,:)=[];
 
 	%retrive right type: 
-	if strcmpi(type,'loadingverticaldisplacement'),
+	if strcmpi(type,'loadingverticaldisplacement')
 		series=love_numbers(:,1);
-	elseif strcmpi(type,'loadinggravitationalpotential'),
+	elseif strcmpi(type,'loadinggravitationalpotential')
 		series=love_numbers(:,2);
-	elseif strcmpi(type,'loadinghorizontaldisplacement'),
+	elseif strcmpi(type,'loadinghorizontaldisplacement')
 		series=love_numbers(:,3);
-	elseif strcmpi(type,'tidalverticaldisplacement'),
+	elseif strcmpi(type,'tidalverticaldisplacement')
 		series=love_numbers(:,4);
-	elseif strcmpi(type,'tidalgravitationalpotential'),
+	elseif strcmpi(type,'tidalgravitationalpotential')
 		series=love_numbers(:,5);
-	elseif strcmpi(type,'tidalhorizontaldisplacement'),
+	elseif strcmpi(type,'tidalhorizontaldisplacement')
 		series=love_numbers(:,6);
 	else 
 		error(['love_numbers error message: unknown type:' type]);
 	end
 
 	% choose degree 1 term for CF reference system 
-	if strcmpi(frame,'CM'), 
+	if strcmpi(frame,'CM') 
 		return; 
 	elseif strcmpi(frame,'CF'), % from Blewitt, 2003, JGR
-		if strcmpi(type,'loadingverticaldisplacement'),
+		if strcmpi(type,'loadingverticaldisplacement')
 			series(2,1) = -0.269; 
-		elseif strcmpi(type,'loadinggravitationalpotential'),
+		elseif strcmpi(type,'loadinggravitationalpotential')
 			series(2,1) = 0.021;  
-		elseif strcmpi(type,'loadinghorizontaldisplacement'),
+		elseif strcmpi(type,'loadinghorizontaldisplacement')
 			series(2,1) = 0.134; 
 		end
 	else 

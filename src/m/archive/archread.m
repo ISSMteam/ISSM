@@ -48,7 +48,7 @@ function [archive_data]=archread(filename,varargin) % {{{
 
 	% Determine what fields we need (compare to varargin)
 	idx=find(ismember(field_names,varargin));
-	if size(idx) == 0,
+	if size(idx) == 0
 		fclose(fid);
 		error('Error: No matching variables found in archive.');
 	end

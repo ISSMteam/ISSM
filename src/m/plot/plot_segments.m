@@ -13,7 +13,7 @@ subplot(width,width,i);
 [x y z elements is2d isplanet]=processmesh(md,[],options);
 segments=md.mesh.segments;
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 	%plot mesh
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 
 	h1=patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceVertexCData', [1 1 1],'FaceColor','none','EdgeColor','black');
@@ -24,7 +24,7 @@ if dimension(md.mesh)==2,
 	A=elements(pos,1); B=elements(pos,2); C=elements(pos,3); 
 	h2=patch( 'Faces', [A B C], 'Vertices', [x y z],'FaceVertexCData', [1 1 1],'FaceColor','green','EdgeColor','black');
 
-	if strcmpi(getfieldvalue(options,'segmentnumbering','off'),'on'),
+	if strcmpi(getfieldvalue(options,'segmentnumbering','off'),'on')
 		text(sum(x(segments(:,1:2)),2)/2,sum(y(segments(:,1:2)),2)/2,sum(z(segments(:,1:2)),2)/2+1,...
 			num2str(md.mesh.segmentmarkers),...
 			'backgroundcolor',[0.8 0.9 0.8],'HorizontalAlignment','center','VerticalAlignment','middle');

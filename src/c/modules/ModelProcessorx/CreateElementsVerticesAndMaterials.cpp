@@ -450,12 +450,15 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 	if(solution_type!=LoveSolutionEnum) CreateNumberNodeToElementConnectivity(iomodel);
 	if(!isamr){
 		int isoceancoupling;
+		int smb_model;
 		iomodel->FindConstant(&isoceancoupling,"md.transient.isoceancoupling");
+		iomodel->FindConstant(&smb_model,"md.smb.model");
 
 		//iomodel->FetchData(6,"md.mesh.x","md.mesh.y","md.mesh.z","md.geometry.base","md.geometry.thickness","md.mask.ice_levelset");
 		iomodel->FetchData(5,"md.mesh.x","md.mesh.y","md.mesh.z","md.geometry.base","md.geometry.thickness");
 		if (iomodel->domaintype == Domain3DsurfaceEnum) iomodel->FetchData(3,"md.mesh.lat","md.mesh.long","md.mesh.r");
 		if (isoceancoupling) iomodel->FetchData(2,"md.mesh.lat","md.mesh.long");
+		if (smb_model==SMBmariaEnum) iomodel->FetchData(2,"md.mesh.lat","md.mesh.long");
 
 		for(int i=0;i<iomodel->numberofvertices;i++){
 			if(vertices_offsets[i]!=-1){
@@ -469,6 +472,7 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 		iomodel->DeleteData(5,"md.mesh.x","md.mesh.y","md.mesh.z","md.geometry.base","md.geometry.thickness");
 		if (iomodel->domaintype == Domain3DsurfaceEnum) iomodel->DeleteData(3,"md.mesh.lat","md.mesh.long","md.mesh.r");
 		if (isoceancoupling) iomodel->DeleteData(2,"md.mesh.lat","md.mesh.long");
+		if (smb_model==SMBmariaEnum) iomodel->DeleteData(2,"md.mesh.lat","md.mesh.long");
 	}
 	else{
 		for(int i=0;i<iomodel->numberofvertices;i++){

@@ -1,7 +1,7 @@
 function theta = colinearity(md)
 
 %load some variables (it is much faster if the variab;es are loaded from md once for all) 
-if ~strcmpi(meshtype(md.mesh),'3D'),
+if ~strcmpi(meshtype(md.mesh),'3D')
 	numberofelements=md.mesh.numberofelements;
 	numberofnodes=md.mesh.numberofvertices;
 	index=md.mesh.elements;

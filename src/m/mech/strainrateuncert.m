@@ -16,25 +16,25 @@ function md=strainratuncert(md,vx,vy,dvx,dvy)
 %      md=mechanicalproperties(md,md.inversion.vx_obs,md.inversion.vy_obs,dv);
 
 %some checks
-if length(vx)~=md.mesh.numberofvertices | length(vy)~=md.mesh.numberofvertices,
+if length(vx)~=md.mesh.numberofvertices | length(vy)~=md.mesh.numberofvertices
 	error(['the input velocity should be of size ' num2str(md.mesh.numberofvertices) '!'])
 end
-if length(dvx)==1,
+if length(dvx)==1
 	dvx=dvx*ones(md.mesh.numberofelements,1);
 end
-if length(dvx)~=md.mesh.numberofelements,
+if length(dvx)~=md.mesh.numberofelements
 	error(['the velocity error dvx should be of size ' num2str(md.mesh.numberofelements) ' or 1!'])
 end
-if length(dvy)==1,
+if length(dvy)==1
 	dvy=dvy*ones(md.mesh.numberofelements,1);
 end
-if length(dvy)~=md.mesh.numberofelements,
+if length(dvy)~=md.mesh.numberofelements
 	error(['the velocity error dvy should be of size ' num2str(md.mesh.numberofelements) ' or 1!'])
 end
-if dimension(md.mesh)~=2,
+if dimension(md.mesh)~=2
 	error('only 2d model supported yet');
 end
-if any(md.flowequation.element_equation~=2),
+if any(md.flowequation.element_equation~=2)
 	disp('Warning: the model has some non SSA elements. These will be treated like SSA''s elements');
 end
 

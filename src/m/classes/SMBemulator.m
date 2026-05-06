@@ -59,7 +59,7 @@ classdef SMBemulator
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 			if (strcmp(solution,'TransientSolution') & md.transient.issmb == 0), return; end
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 			md = checkfield(md,'fieldname','smb.mass_balance','timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','smb.elev','timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','smb.al','timeseries',1,'NaN',1,'Inf',1);
@@ -81,7 +81,7 @@ classdef SMBemulator
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('\n  smb emulator based on MAR-IA :'));
-         fielddisplay(self, 'mass_balance', 'surface mass balance for validation purpose [m/yr ice eq]'); 
+         fielddisplay(self, 'mass_balance', 'surface mass balance for validation purpose [kg/m^2/day]'); 
          fielddisplay(self, 'elev', 'surface elevation for validation purpose');
          fielddisplay(self, 'al', 'albedo');
          fielddisplay(self, 'st', 'surface temperature');
@@ -101,8 +101,9 @@ classdef SMBemulator
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			yts = md.constants.yts;
+			dts = 3600 * 24;
 			WriteData(fid,prefix,'name','md.smb.model','data',20,'format','Integer');
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','mass_balance','format','DoubleMat','mattype',1,'scale',1./yts,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % double check units
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','mass_balance','format','DoubleMat','mattype',1,'scale',1./dts,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % double check units
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','elev','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % unit of elev?
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','al','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','st','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts);
@@ -122,7 +123,7 @@ classdef SMBemulator
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

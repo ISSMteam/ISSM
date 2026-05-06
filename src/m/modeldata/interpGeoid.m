@@ -10,13 +10,13 @@ switch oshostname(),
 end
 verbose = 1;
 
-if nargin==3,
+if nargin==3
 	hemisphere = varargin{1};
 else
 	hemisphere = +1;
 end
 
-if hemisphere==+1,
+if hemisphere==+1
 	if verbose, disp('   -- Geoid: convert to lat/lon using Greenland projection'); end
 	[LAT,  LON  ] = xy2ll(double(X(:)),double(Y(:)),+1,45,70);
 else

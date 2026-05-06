@@ -8,7 +8,7 @@ function name=sessionname()
 	[status,styname]=system('export | grep STY'); 
 
 	sessionname=styname(17:end-2);
-	if isempty(sessionname),
+	if isempty(sessionname)
 		name='none';
 		return;
 	end

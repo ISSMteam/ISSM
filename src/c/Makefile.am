@@ -305,6 +305,7 @@ issm_sources += \
 	./modules/RheologyBbarAbsGradientx/RheologyBbarAbsGradientx.cpp \
 	./modules/RheologyBAbsGradientx/RheologyBAbsGradientx.cpp \
 	./shared/Numerics/BrentSearch.cpp \
+	./shared/m1qn3/m1qn3.cpp \
 	./cores/control_core.cpp \
 	./cores/controltao_core.cpp \
 	./cores/controlm1qn3_core.cpp \

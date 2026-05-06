@@ -12,15 +12,15 @@ function [data datatype]=processdata(md,data,options)
 %   See also: PLOTMODEL, PROCESSMESH
 
 %check format
-if (iscell(data) | isempty(data) | length(data)==0 | (length(data)==1 & ~isstruct(data) & isnan(data))),
+if (iscell(data) | isempty(data) | length(data)==0 | (length(data)==1 & ~isstruct(data) & isnan(data)))
 	error('plotmodel error message: data provided is empty');
 end
 
 %specials for struct
-if isstruct(data),
+if isstruct(data)
 	disp('data provided is a struct with the following fields:');
 	F=fieldnames(data);
-	for i=1:numel(F),
+	for i=1:numel(F)
 		disp(['   ' num2str(i) ': ' F{i} ]);
 	end
 	choice=input(['please enter the field number? (between 1 and ' num2str(numel(F)) ')  ']);
@@ -36,19 +36,19 @@ if exist(options,'nan')
 end
 
 %special case for mesh 2dvertical
-if strcmp(domaintype(md.mesh),'2Dvertical'),
+if strcmp(domaintype(md.mesh),'2Dvertical')
 	[data datatype] = processdata(md.mesh,md,data,options);
 	return;
 end
 
 %special case for coord latlong: 
-if strcmpi(getfieldvalue(options,'coord','xy'),'latlon') | strcmpi(getfieldvalue(options,'coord','xy'),'latlong'),
+if strcmpi(getfieldvalue(options,'coord','xy'),'latlon') | strcmpi(getfieldvalue(options,'coord','xy'),'latlong')
 	[data datatype] = processdatalatlong(md,data,options);
 	return;
 end
 
 %needed later on
-if isprop(md.mesh,'numberofvertices2d'), 
+if isprop(md.mesh,'numberofvertices2d') 
 	numberofvertices2d=md.mesh.numberofvertices2d; 
 	numberofelements2d=md.mesh.numberofelements2d; 
 else 
@@ -57,7 +57,7 @@ else
 end
 numberofvertices = md.mesh.numberofvertices;
 numberofelements = md.mesh.numberofelements;
-if exist(options,'amr'),
+if exist(options,'amr')
 	step = getfieldvalue(options,'amr');
 	numberofvertices = numel(md.results.TransientSolution(step).MeshX);
 	numberofelements = numel(md.results.TransientSolution(step).MeshElements);
@@ -70,7 +70,7 @@ datatype=0;
 datasize=size(data);
 
 %transpose data if necessary
-if (size(data,2) > size(data,1)),
+if (size(data,2) > size(data,1))
 	data=data';
 end
 datasize=size(data);
@@ -92,9 +92,9 @@ if datasize(2)>1
 		datatype=3;
 		%check number of columns, add zeros if necessary,
 		if (dimension(md.mesh)==3)
-			if datasize(2)==2,
+			if datasize(2)==2
 				data=[data, zeros(datasize(1),1)];
-			elseif datasize(2)~=3,
+			elseif datasize(2)~=3
 				error('plotmodel error message: data provided should have 2 or 3 columns for quiver plot, and 1 for regular plot');
 			end
 		end
@@ -124,14 +124,14 @@ if datasize(1)==6*numberofvertices
 end
 
 %treat the case datasize(1)=nodes2d
-if (dimension(md.mesh)==3 & datasize(1)==numberofvertices2d),
+if (dimension(md.mesh)==3 & datasize(1)==numberofvertices2d)
 	data=project3d(md,'vector',data,'type','node');
 	datasize(1)=numberofvertices;
 	%---> go to node data
 end
 
 %treat the case datasize(1)=nodes2d
-if (dimension(md.mesh)==3 & datasize(1)==numberofelements2d),
+if (dimension(md.mesh)==3 & datasize(1)==numberofelements2d)
 	data=project3d(md,'vector',data,'type','element');
 	datasize(1)=numberofelements;
 	%---> go to node data
@@ -145,19 +145,19 @@ if exist(options,'smooth')
 end
 
 %element data
-if (datasize(1)==numberofelements & datasize(2)==1),
+if (datasize(1)==numberofelements & datasize(2)==1)
 
 	%Initialize datatype if non patch
-	if datatype~=4 & datatype~=5,
+	if datatype~=4 & datatype~=5
 		datatype=1;
 	end
 
 	%Mask?
-	if exist(options,'mask'),
+	if exist(options,'mask')
 		flags=getfieldvalue(options,'mask');
 		maskvalue=getfieldvalue(options,'maskvalue',NaN);
 		pos=find(~flags);
-		if length(flags)==numberofvertices,
+		if length(flags)==numberofvertices
 			[pos2 dummy]=find(ismember(md.mesh.elements,pos));
 			data(pos2,:)=maskvalue;
 		elseif length(flags)==numberofelements
@@ -168,10 +168,10 @@ if (datasize(1)==numberofelements & datasize(2)==1),
 	end
 
 	%log?
-	if exist(options,'log'),
+	if exist(options,'log')
 		bounds=getfieldvalue(options,'caxis',[min(data(:)) max(data(:))]);
 		data(find(data<bounds(1)))=bounds(1);
-		if any(data<=0),
+		if any(data<=0)
 			warning('Log option cannot be applied on negative values. Using 1 as default, otherwise use ''caxis'' option');
 			data(find(data<0)) = 1;
 		end
@@ -181,15 +181,15 @@ if (datasize(1)==numberofelements & datasize(2)==1),
 end
 
 %node data
-if (datasize(1)==numberofvertices & datasize(2)==1),
+if (datasize(1)==numberofvertices & datasize(2)==1)
 	datatype=2;
 
 	%Mask?
-	if exist(options,'mask'),
+	if exist(options,'mask')
 		flags=getfieldvalue(options,'mask');
 		maskvalue=getfieldvalue(options,'maskvalue',NaN);
 		pos=find(~flags);
-		if length(flags)==numberofvertices,
+		if length(flags)==numberofvertices
 			data(pos,:)=maskvalue;
 		elseif length(flags)==numberofelements
 			data(md.mesh.elements(pos,:),:)=maskvalue;
@@ -199,10 +199,10 @@ if (datasize(1)==numberofvertices & datasize(2)==1),
 	end
 
 	%log?
-	if exist(options,'log'),
+	if exist(options,'log')
 		bounds=getfieldvalue(options,'caxis_pre',[min(data(:)) max(data(:))]);
 		data(find(data<bounds(1)))=bounds(1);
-		if any(data<=0),
+		if any(data<=0)
 			warning('Log option cannot be applied on negative values. Using 1 as default, otherwise use ''caxis'' option');
 			data(find(data<0)) = 1;
 		end
@@ -227,12 +227,12 @@ if datatype==3 & exist(options,'density')
 	data(1:density:end,:)=databak(1:density:end,:);
 	clear databak
 end
-if datatype==3,
+if datatype==3
 	%Mask?
-	if exist(options,'mask'),
+	if exist(options,'mask')
 		flags=getfieldvalue(options,'mask');
 		pos=find(~flags);
-		if length(flags)==numberofvertices,
+		if length(flags)==numberofvertices
 			data(pos,:)=NaN;
 		elseif length(flags)==numberofelements
 			data(md.mesh.elements(pos,:),:)=NaN;
@@ -243,6 +243,6 @@ if datatype==3,
 end
 
 %OK, if datatype=0 error out
-if datatype==0,
+if datatype==0
 	error(['data provided not recognized or not supported']);
 end

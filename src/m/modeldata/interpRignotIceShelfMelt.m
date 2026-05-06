@@ -17,7 +17,7 @@ switch (oshostname())
 		error('hostname not supported yet');
 end
 
-if nargin==2,
+if nargin==2
 	string = 'melt_actual';
 end
 

@@ -68,13 +68,13 @@ classdef SMBmeltcomponents
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.accumulation','timeseries',1,'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.evaporation','timeseries',1,'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.refreeze','timeseries',1,'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.melt','timeseries',1,'NaN',1,'Inf',1);
 			end
-			if ismember('BalancethicknessAnalysis',analyses),
+			if ismember('BalancethicknessAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.accumulation','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.evaporation','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.refreeze','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
@@ -99,7 +99,7 @@ classdef SMBmeltcomponents
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

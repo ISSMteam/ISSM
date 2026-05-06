@@ -7,7 +7,7 @@ function expflip(domainname)
 
 a=expread(domainname);
 
-for i=1:length(a),
+for i=1:length(a)
 	a(i).x=flipud(a(i).x);
 	a(i).y=flipud(a(i).y);
 end
