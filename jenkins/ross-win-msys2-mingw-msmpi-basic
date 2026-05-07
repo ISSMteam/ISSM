@@ -63,9 +63,8 @@ NUMCPUS_RUN=2
 # See documentation in test/NightlyRun/runme.* for more information
 #
 # NOTE:
-# - Tests 125, 126, and 129 are skipped because restart is not yet implemented 
-#	for Windows (under MSYS2)
-# - test701 is skipped because it uses full Stokes equations
+# - Tests 125, 126, and 129 are skipped because restart is not yet implemented for Windows (under MSYS2)
+# - test701:703 is skipped because it uses full Stokes equations
 #
 MATLAB_NROPTIONS="'exclude',[IdFromString('Dakota'),125,126,129,435,701,702,703]"
 PYTHON_NROPTIONS=""
