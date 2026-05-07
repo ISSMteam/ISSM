@@ -205,13 +205,20 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
    for (long i = 0; i < n; ++i) { xn[i] = x[i]; x[i] = xn[i] + t * d[i]; }
 
    /* ---- main loop ---- */
-   bool done = false;
+   bool done        = false;
+   bool napmax_exit = false;   /* true when we exit via napmax (no simul called) */
    while (!done) {
       nap++;
       if (nap > napmax) {
+         /* napmax exceeded: restore fn/xn to left bracket, but leave x at the
+          * current trial position (matching Fortran: x is not restored here,
+          * only xn/fn are updated; the final x = xn assignment below is
+          * skipped via napmax_exit so that x stays at the last trial point
+          * where g was evaluated). */
          logic = 4;
          fn = fg;
          for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
+         napmax_exit = true;
          break;
       }
 
@@ -368,9 +375,14 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
       }
    }
 
-   /* restore x = best point found (xn) */
+   /* restore x = best point found.
+    * For normal exits (accepted step, dxmin, user-stop): x <- xn (best safe point).
+    * For napmax exit: leave x as the last trial point where simul was called,
+    * matching Fortran m1qn3 behaviour (x is not explicitly restored there). */
    f = fn;
-   for (long i = 0; i < n; ++i) x[i] = xn[i];
+   if (!napmax_exit) {
+      for (long i = 0; i < n; ++i) x[i] = xn[i];
+   }
 }
 
 /* =========================================================================

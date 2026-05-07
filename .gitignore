@@ -37,6 +37,7 @@ config.h.in~
 config.log
 config.status
 configure
+configure~
 configure.sh
 libtool
 stamp-h1
@@ -96,3 +97,5 @@ examples/Data/*.txt
 examples/Data/*.zip
 examples/Data/Jakobshavn_2008_2011_Composite
 examples/Helheim/Models
+examples/Inversion/*.mat
+examples/Inversion/*.tar.gz

@@ -396,6 +396,7 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	basalelement->FindParam(&dt,TimesteppingTimeStepEnum);
 	basalelement->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
+	basalelement->FindParam(&stabilization,MasstransportStabilizationEnum);
 	//basalelement->FindParam(&intrusiondist,GroundinglineIntrusionDistanceEnum);
 
 	Input* groundedice_input   = basalelement->GetInput(MaskOceanLevelsetEnum);              _assert_(groundedice_input);
@@ -406,9 +407,6 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	Input* vz_input = NULL;
 	Input* vx_input = NULL;
 	Input* vy_input = NULL;
-	//Input* gldistance_input = basalelement->GetInput(DistanceToGroundinglineEnum); _assert_(gldistance_input); 
-	Input* intrusiondist_input = basalelement->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
-	
 	switch(dim){
 		case 1: 
 			vx_input=basalelement->GetInput(VxEnum); _assert_(vx_input);
@@ -429,13 +427,14 @@ ElementVector* FreeSurfaceBaseAnalysis::CreatePVector(Element* element){/*{{{*/
 	Gauss*      gauss     = NULL;
 	if(melt_style==SubelementMelt2Enum){
 		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,MaskOceanLevelsetEnum,0);
-		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
+		gauss = basalelement->NewGauss(point1,fraction1,fraction2,mainlyfloating,3);
 	}
-	if(melt_style==IntrusionMeltEnum){
+	else if(melt_style==IntrusionMeltEnum){
 		/* Calculate here the average intrusion distance value over the element to pass to GetGroundedPart*/
+		Input* intrusiondist_input = basalelement->GetInput(GroundinglineIntrusionDistanceEnum); _assert_(intrusiondist_input);
 		intrusiondist_input->GetInputAverage(&intrusiondist_avg);
 		basalelement->GetGroundedPart(&point1,&fraction1,&fraction2,&mainlyfloating,DistanceToGroundinglineEnum,intrusiondist_avg);
-		gauss = basalelement->NewGauss(point1,fraction1,fraction2,3);
+		gauss = basalelement->NewGauss(point1,fraction1,fraction2,mainlyfloating,3);
 	}
 	else{
 		gauss = basalelement->NewGauss(3);   
