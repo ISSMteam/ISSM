@@ -624,6 +624,7 @@ const char* EnumToStringx(int en){
 		case SmbIsgraingrowthEnum : return "SmbIsgraingrowth";
 		case SmbIsmappedforcingEnum : return "SmbIsmappedforcing";
 		case SmbIsmappingusingneighborsEnum : return "SmbIsmappingusingneighbors";
+		case SmbIsmappingneighborxyEnum : return "SmbIsmappingneighborxy";
 		case SmbIsmeltEnum : return "SmbIsmelt";
 		case SmbIsmungsmEnum : return "SmbIsmungsm";
 		case SmbIsprecipforcingremappedEnum : return "SmbIsprecipforcingremapped";
@@ -690,6 +691,8 @@ const char* EnumToStringx(int en){
 		case SmbVmeanParamEnum : return "SmbVmeanParam";
 		case SmbVzParamEnum : return "SmbVzParam";
 		case SmbWindspeedgradEnum : return "SmbWindspeedgrad";
+		case SmbXMappedforcingEnum : return "SmbXMappedforcing";
+		case SmbYMappedforcingEnum : return "SmbYMappedforcing";
 		case SmoothThicknessMultiplierEnum : return "SmoothThicknessMultiplier";
 		case SolutionTypeEnum : return "SolutionType";
 		case SteadystateMaxiterEnum : return "SteadystateMaxiter";
