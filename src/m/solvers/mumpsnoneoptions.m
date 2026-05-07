@@ -11,7 +11,7 @@ mumps=struct();
 %default mumps options
 PETSC_MAJOR=IssmConfig('_PETSC_MAJOR_');
 PETSC_MINOR=IssmConfig('_PETSC_MINOR_');
-if PETSC_MAJOR==2.,
+if PETSC_MAJOR==2.
 	mumps.toolkit='petsc';
 	mumps.mat_type=getfieldvalue(options,'mat_type','aijmumps');
 	mumps.ksp_type=getfieldvalue(options,'ksp_type','preonly');
@@ -19,7 +19,7 @@ if PETSC_MAJOR==2.,
 	mumps.mat_mumps_icntl_14=getfieldvalue(options,'mat_mumps_icntl_14',120);
 end
 
-if PETSC_MAJOR==3.,
+if PETSC_MAJOR==3.
 	mumps.toolkit='petsc';
 	mumps.mat_type=getfieldvalue(options,'mat_type','mpiaij');
 	mumps.ksp_type=getfieldvalue(options,'ksp_type','preonly');

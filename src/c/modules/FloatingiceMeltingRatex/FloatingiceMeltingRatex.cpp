@@ -223,11 +223,14 @@ void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 	IssmDouble  g;
 	IssmDouble* tf_depths=NULL;
 	int		   num_depths;
+	bool        islocal;
 
 	femmodel->parameters->FindParam(&time,TimeEnum);
 
 	//femmodel->parameters->FindParam(&num_basins,BasalforcingsIsmip7NumBasinsEnum);
 	femmodel->parameters->FindParam(&tf_depths,&num_depths,BasalforcingsIsmip7TfDepthsEnum); _assert_(tf_depths);
+	/* FIXME: What does Ismip7IsLocal value contribute to? */
+	femmodel->parameters->FindParam(&islocal,BasalforcingsIsmip7IsLocalEnum);
 
 	/*Binary search works for vectors that are sorted in increasing order only, make depths positive*/
 	//if(VerboseSolution())_printf0_("	  ismip7: prepare binary search\n");

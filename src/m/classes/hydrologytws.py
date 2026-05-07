@@ -34,7 +34,7 @@ class hydrologytws(object):
     # }}}
 
     def setdefaultparameters(self):  # {{{
-        self.requested_outputs = ['defualt']
+        self.requested_outputs = ['default']
         return self
     # }}}
 

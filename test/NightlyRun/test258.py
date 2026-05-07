@@ -1,4 +1,4 @@
-#Test Name: SquareShelfSMBGembMapping
+#Test Name: SquareShelfSMBGembPrecipMapping
 from socket import gethostname
 import sys
 import numpy as np
@@ -9,6 +9,7 @@ from setmask import *
 from SMBgemb import *
 from solve import *
 from triangle import *
+from xy2ll import *
 
 from scipy.interpolate import NearestNDInterpolator
 
@@ -27,6 +28,8 @@ md2 = parameterize(md2, '../Par/SquareShelf.py')
 md.smb = SMBgemb(md.mesh)
 md.smb.dsnowIdx = 1
 md.smb.swIdx = 1
+md.smb.teThresh = 2
+md.smb.teValue[:] = .95
 
 #load hourly surface forcing date from 1979 to 2009:
 if sys.version_info.major == 2:
@@ -52,6 +55,7 @@ xe=np.mean(md.mesh.x[md.mesh.elements-1],axis=1)
 ye=np.mean(md.mesh.y[md.mesh.elements-1],axis=1)
 xe2=np.mean(md2.mesh.x[md2.mesh.elements-1],axis=1)
 ye2=np.mean(md2.mesh.y[md2.mesh.elements-1],axis=1)
+[md.smb.lat_mappedforcing, md.smb.lon_mappedforcing]=xy2ll(xe2,ye2,+1)
 
 mpoints=np.arange(1,md2.mesh.numberofelements+1)
 

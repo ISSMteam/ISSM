@@ -88,6 +88,7 @@ const char* EnumToStringx(int en){
 		case BasalforcingsIsmip6NumBasinsEnum : return "BasalforcingsIsmip6NumBasins";
 		case BasalforcingsIsmip6TfDepthsEnum : return "BasalforcingsIsmip6TfDepths";
 		case BasalforcingsIsmip7DeltaTEnum : return "BasalforcingsIsmip7DeltaT";
+		case BasalforcingsIsmip7IsLocalEnum : return "BasalforcingsIsmip7IsLocal";
 		case BasalforcingsIsmip7TfDepthsEnum : return "BasalforcingsIsmip7TfDepths";
 		case BasalforcingsIsmip7NumBasinsEnum : return "BasalforcingsIsmip7NumBasins";
 		case BasalforcingsIsmip7GammaEnum : return "BasalforcingsIsmip7Gamma";
@@ -491,6 +492,9 @@ const char* EnumToStringx(int en){
 		case SealevelchangeViscousNumStepsEnum : return "SealevelchangeViscousNumSteps";
 		case SealevelchangeViscousTimesEnum : return "SealevelchangeViscousTimes";
 		case SealevelchangeViscousIndexEnum : return "SealevelchangeViscousIndex";
+		case SealevelchangeViscousSamplingEnum : return "SealevelchangeViscousSampling";
+		case SealevelchangeViscousSamplingLengthEnum : return "SealevelchangeViscousSamplingLength";
+		case SealevelchangeViscousSamplingIndexEnum : return "SealevelchangeViscousSamplingIndex";
 		case SealevelchangeViscousPolarMotionEnum : return "SealevelchangeViscousPolarMotion";
 		case SealevelchangeRunCountEnum : return "SealevelchangeRunCount";
 		case SealevelchangeTransitionsEnum : return "SealevelchangeTransitions";
@@ -619,6 +623,7 @@ const char* EnumToStringx(int en){
 		case SmbIsfirnwarmingEnum : return "SmbIsfirnwarming";
 		case SmbIsgraingrowthEnum : return "SmbIsgraingrowth";
 		case SmbIsmappedforcingEnum : return "SmbIsmappedforcing";
+		case SmbIsmappingusingneighborsEnum : return "SmbIsmappingusingneighbors";
 		case SmbIsmeltEnum : return "SmbIsmelt";
 		case SmbIsmungsmEnum : return "SmbIsmungsm";
 		case SmbIsprecipforcingremappedEnum : return "SmbIsprecipforcingremapped";
@@ -632,6 +637,8 @@ const char* EnumToStringx(int en){
 		case SmbLapsedlwrfValueEnum : return "SmbLapsedlwrfValue";
 		case SmbLapseRatesEnum : return "SmbLapseRates";
 		case SmbLapseTaValueEnum : return "SmbLapseTaValue";
+		case SmbLatMappedforcingEnum : return "SmbLatMappedforcing";
+		case SmbLonMappedforcingEnum : return "SmbLonMappedforcing";
 		case SmbLWgradEnum : return "SmbLWgrad";
 		case SmbMappedforcingelevationEnum : return "SmbMappedforcingelevation";
 		case SmbNumBasinsEnum : return "SmbNumBasins";
@@ -671,6 +678,7 @@ const char* EnumToStringx(int en){
 		case SmbT0wetEnum : return "SmbT0wet";
 		case SmbTaParamEnum : return "SmbTaParam";
 		case SmbTcIdxEnum : return "SmbTcIdx";
+		case SmbTeDefaultEnum : return "SmbTeDefault";
 		case SmbTeThreshEnum : return "SmbTeThresh";
 		case SmbTdiffEnum : return "SmbTdiff";
 		case SmbThermoDeltaTScalingEnum : return "SmbThermoDeltaTScaling";
@@ -1201,7 +1209,10 @@ const char* EnumToStringx(int en){
 		case SmbHSnowInitEnum : return "SmbHSnowInit";
 		case SmbHrefEnum : return "SmbHref";
 		case SmbIsInitializedEnum : return "SmbIsInitialized";
+		case SmbLatEnum : return "SmbLat";
+		case SmbLonEnum : return "SmbLon";
 		case SmbMAddEnum : return "SmbMAdd";
+		case SmbMappedforcingneighborsEnum : return "SmbMappedforcingneighbors";
 		case SmbMappedforcingpointEnum : return "SmbMappedforcingpoint";
 		case SmbMappedforcingprecipscalingEnum : return "SmbMappedforcingprecipscaling";
 		case SmbMassBalanceEnum : return "SmbMassBalance";
@@ -1210,12 +1221,16 @@ const char* EnumToStringx(int en){
 		case SmbMassBalanceSubstepEnum : return "SmbMassBalanceSubstep";
 		case SmbMassBalanceTransientEnum : return "SmbMassBalanceTransient";
 		case SmbMaskEnum : return "SmbMask";
+		case SmbMaxXEnum : return "SmbMaxX";
+		case SmbMaxYEnum : return "SmbMaxY";
 		case SmbMeanLHFEnum : return "SmbMeanLHF";
 		case SmbMeanSHFEnum : return "SmbMeanSHF";
 		case SmbMeanULWEnum : return "SmbMeanULW";
 		case SmbMeanTemperatureEnum : return "SmbMeanTemperature";
 		case SmbMeltEnum : return "SmbMelt";
 		case SmbMeltSubstepEnum : return "SmbMeltSubstep";
+		case SmbMinXEnum : return "SmbMinX";
+		case SmbMinYEnum : return "SmbMinY";
 		case SmbMonthlytemperaturesEnum : return "SmbMonthlytemperatures";
 		case SmbMonthlydsradiationEnum : return "SmbMonthlydsradiation";
 		case SmbMonthlydlradiationEnum : return "SmbMonthlydlradiation";
@@ -1232,6 +1247,7 @@ const char* EnumToStringx(int en){
 		case SmbPrecipitationEnum : return "SmbPrecipitation";
 		case SmbPrecipitationSubstepEnum : return "SmbPrecipitationSubstep";
 		case SmbPrecipitationsAnomalyEnum : return "SmbPrecipitationsAnomaly";
+		case SmbQinterpEnum : return "SmbQinterp";
 		case SmbDsradiationAnomalyEnum : return "SmbDsradiationAnomaly";
 		case SmbDlradiationAnomalyEnum : return "SmbDlradiationAnomaly";
 		case SmbWindspeedAnomalyEnum : return "SmbWindspeedAnomaly";

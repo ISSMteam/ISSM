@@ -21,12 +21,12 @@ function smb=PattynSMB(md,Tf)
 % ABLdot : Surface ablation rate in [m/a] ice equivalent
 
 	%Double check lat and long exist:
-	if isnan(md.mesh.lat),
+	if isnan(md.mesh.lat)
 		error('PattynSMB error message: md.mesh.lat field required');
 	end
 
 	%Delta Temperature forcing 
-	if (nargin==1),
+	if (nargin==1)
 		Tf=0; 
 	end
 

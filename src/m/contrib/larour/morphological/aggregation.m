@@ -15,14 +15,14 @@ function [mask,varargout]=aggregation(mask,windowsize,threshhold,varargin)
 
 %check input arguments  %{{{
 %even windowsize
-if mod(windowsize,2)==0,
+if mod(windowsize,2)==0
 	error('windowsize should be an even number');
 end
 
 %check on presence of varargin: 
 optional=0;
-if nargin>3,
-	if nargin~=5,
+if nargin>3
+	if nargin~=5
 		help aggregation;
 		error('wrong number of optional arguments specified');
 	else
@@ -33,8 +33,8 @@ if nargin>3,
 end
 
 %check on presence of varargout: 
-if optional,
-	if nargout~=3,
+if optional
+	if nargout~=3
 		help aggregation;
 		error('wrong number of optional output arguments specified');
 	end
@@ -58,7 +58,7 @@ mask=logical(mask);
 s=size(mask);
 mask=mask(1:windowsize:s(1),1:windowsize:s(2));
 
-if optional,
+if optional
 	varargout{1}=x(1:windowsize:s(2));
 	varargout{2}=y(1:windowsize:s(1));
 end

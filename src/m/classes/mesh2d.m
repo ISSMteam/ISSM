@@ -36,13 +36,13 @@ classdef mesh2d
 			% loaded. Update old properties here
 
 			%2014 Oct. 1st
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(mesh2d(),oldself);
-				if isfield(oldself,'hemisphere'),
+				if isfield(oldself,'hemisphere')
 					disp('md.mesh.hemisphere has been automatically converted to EPSG code');
-					if strcmpi(oldself.hemisphere,'n'),
+					if strcmpi(oldself.hemisphere,'n')
 						self.epsg=3413;
 						self.proj=epsg2proj(3413);
 					else
@@ -65,7 +65,7 @@ classdef mesh2d
 					fields=fieldnames(object);
 					for i=1:length(fields)
 						field=fields{i};
-						if ismember(field,properties('mesh2d')),
+						if ismember(field,properties('mesh2d'))
 							self.(field)=object.(field);
 						end
 					end
@@ -97,7 +97,7 @@ classdef mesh2d
 			md = checkfield(md,'fieldname','mesh.numberofvertices','>',0);
 			md = checkfield(md,'fieldname','mesh.average_vertex_connectivity','>=',9,'message','''mesh.average_vertex_connectivity'' should be at least 9 in 2d');
 			md = checkfield(md,'fieldname','mesh.segments','NaN',1,'Inf',1,'>',0,'size',[NaN 3]);
-			if numel(md.mesh.scale_factor)>1,
+			if numel(md.mesh.scale_factor)>1
 				md = checkfield(md,'fieldname','mesh.scale_factor','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 			end
 
@@ -199,16 +199,16 @@ classdef mesh2d
 
 			%prepare contours: 
 			contours= struct([]);
-			if strcmpi(geometry,'point'),
-				for i=1:self.numberofvertices,
+			if strcmpi(geometry,'point')
+				for i=1:self.numberofvertices
 					contours(i).x = self.x(i);
 					contours(i).y = self.y(i);
 					contours(i).id = i;
 					contours(i).Geometry = 'Point';
 				end
-			elseif strcmpi(geometry,'line'),
+			elseif strcmpi(geometry,'line')
 				counter=1;
-				for i=1:self.numberofelements,
+				for i=1:self.numberofelements
 					el=self.elements(i,:);
 					%first line:
 					contours(counter).x = [self.x(el(1)) self.x(el(2))];
@@ -228,10 +228,10 @@ classdef mesh2d
 					%increase counter: 
 					counter=counter+3;
 				end
-			elseif strcmpi(geometry,'polygon'),
-				if isempty(index),
+			elseif strcmpi(geometry,'polygon')
+				if isempty(index)
 					counter=1;
-					for i=1:self.numberofelements,
+					for i=1:self.numberofelements
 						el=self.elements(i,:);
 						contours(i).x=[self.x(el(1)) self.x(el(2)) self.x(el(3)) self.x(el(1))];
 						contours(i).y=[self.y(el(1)) self.y(el(2)) self.y(el(3)) self.y(el(1))];
@@ -240,7 +240,7 @@ classdef mesh2d
 					end
 				else
 					counter=1;
-					for i=1:length(index),
+					for i=1:length(index)
 						el=self.elements(index(i),:);
 						contours(i).x=[self.x(el(1)) self.x(el(2)) self.x(el(3)) self.x(el(1))];
 						contours(i).y=[self.y(el(1)) self.y(el(2)) self.y(el(3)) self.y(el(1))];
@@ -253,16 +253,16 @@ classdef mesh2d
 			end
 
 			%write file: 
-			if strcmpi(format,'shp'),
+			if strcmpi(format,'shp')
 				shpwrite(contours,filename);
-			elseif strcmpi(format,'exp'),
+			elseif strcmpi(format,'exp')
 				expwrite(contours,filename);
 			else
 				error(sprintf('mesh3dsurface ''export'' error message: file format %s not supported yet',format));
 			end
 
 			%write projection file: 
-			if ~isempty(proj),
+			if ~isempty(proj)
 				proj2shpprj(filename,proj);
 			end
 			%write style file: 

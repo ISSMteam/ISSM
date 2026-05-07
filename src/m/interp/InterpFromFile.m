@@ -30,7 +30,7 @@ end
 if ~exist(filename)
 	error(['plugdata error message: file ' filename  ' does not exist']);
 end
-if length(x)~=length(y),
+if length(x)~=length(y)
 	error('plugdata error message: x and y should have the same length');
 end
 
@@ -38,7 +38,7 @@ end
 Names=FieldFindVarNames(filename);
 Data=load(filename);
 disp('WARNING: function deprecated, replace InterpFromFile by the following command:');
-if strcmpi(Names.interp,'node'),
+if strcmpi(Names.interp,'node')
 	disp(['   data=InterpFromGridToMesh(' Names.xname ',' Names.yname ',' Names.dataname ',x,y,default_value);']);
 	data_out=InterpFromGridToMesh(Data.(Names.xname),Data.(Names.yname),Data.(Names.dataname),x,y,default_value);
 else
@@ -76,20 +76,20 @@ A=whos('-file',filename);
 
 %find x,y,vx and vy
 xenum=NaN; yenum=NaN; dataenum=NaN; indexenum=NaN;
-if length(A)==3,
+if length(A)==3
 	isnode=1;
 	for i=1:3
 		if strcmpi(A(i).name(1),'x');
 			xenum=i;
 		elseif strcmpi(A(i).name(1),'y');
 			yenum=i;
-		elseif (strncmpi(A(i).name,filename,3) | strncmpi(A(i).name,'data',4)),
+		elseif (strncmpi(A(i).name,filename,3) | strncmpi(A(i).name,'data',4))
 			dataenum=i;
 		else
 			%nothing
 		end
 	end
-elseif length(A)==4,
+elseif length(A)==4
 	isnode=0;
 	for i=1:4
 		if strcmpi(A(i).name(1),'x');
@@ -98,7 +98,7 @@ elseif length(A)==4,
 			yenum=i;
 		elseif (strncmpi(A(i).name,'index',5) | strncmpi(A(i).name,'elements',7));
 			indexenum=i;
-		elseif (strncmpi(A(i).name,filename,3) | strncmpi(A(i).name,'data',4)),
+		elseif (strncmpi(A(i).name,filename,3) | strncmpi(A(i).name,'data',4))
 			dataenum=i;
 		else
 			%nothing
@@ -109,29 +109,29 @@ else
 end
 
 %2: if only one item is missing, find it by elimination
-if ~isnode,
+if ~isnode
 	pos=find(isnan([xenum yenum indexenum dataenum]));
-	if length(pos)==1,
+	if length(pos)==1
 		list=[xenum yenum indexenum dataenum]; list(pos)=[];
-		if pos==1,
+		if pos==1
 			xenum=setdiff(1:4,list);
-		elseif pos==2,
+		elseif pos==2
 			yenum=setdiff(1:4,list);
-		elseif pos==3,
+		elseif pos==3
 			indexenum=setdiff(1:4,list);
-		elseif pos==4,
+		elseif pos==4
 			dataenum=setdiff(1:4,list);
 		end
 	end
 else
 	pos=find(isnan([xenum yenum dataenum]));
-	if length(pos)==1,
+	if length(pos)==1
 		list=[xenum yenum indexenum dataenum]; list(pos)=[];
-		if pos==1,
+		if pos==1
 			xenum=setdiff(1:3,list);
-		elseif pos==2,
+		elseif pos==2
 			yenum=setdiff(1:3,list);
-		elseif pos==3,
+		elseif pos==3
 			dataenum=setdiff(1:3,list);
 		end
 	end
@@ -143,42 +143,42 @@ if ( isnan(xenum) | isnan(yenum))
 end
 
 %find index
-if (~isnode & isnan(indexenum)),
+if (~isnode & isnan(indexenum))
 	for i=1:4
 		lengthi=min(A(i).size);
-		if (lengthi==3),
+		if (lengthi==3)
 			indexenum=i;
 		end
 	end
-	if isnan(indexenum),
+	if isnan(indexenum)
 		error(['FieldFindVarNames error message: file ' filename  ' not supported yet (index not found)']);
 	end
 end
 
 %4: last chance
-if ~isnode,
+if ~isnode
 	pos=find(isnan([xenum yenum indexenum dataenum]));
-	if length(pos)==1,
+	if length(pos)==1
 		list=[xenum yenum indexenum dataenum]; list(pos)=[];
-		if pos==1,
+		if pos==1
 			xenum=setdiff(1:4,list);
-		elseif pos==2,
+		elseif pos==2
 			yenum=setdiff(1:4,list);
-		elseif pos==3,
+		elseif pos==3
 			indexenum=setdiff(1:4,list);
-		elseif pos==4,
+		elseif pos==4
 			dataenum=setdiff(1:4,list);
 		end
 	end
 else
 	pos=find(isnan([xenum yenum dataenum]));
-	if length(pos)==1,
+	if length(pos)==1
 		list=[xenum yenum indexenum dataenum]; list(pos)=[];
-		if pos==1,
+		if pos==1
 			xenum=setdiff(1:3,list);
-		elseif pos==2,
+		elseif pos==2
 			yenum=setdiff(1:3,list);
-		elseif pos==3,
+		elseif pos==3
 			dataenum=setdiff(1:3,list);
 		end
 	end
@@ -194,7 +194,7 @@ Names=struct();
 Names.xname=A(xenum).name;
 Names.yname=A(yenum).name;
 Names.dataname=A(dataenum).name;
-if ~isnode,
+if ~isnode
 	Names.indexname=A(indexenum).name; 
 	Names.interp='mesh';
 else

@@ -39,7 +39,7 @@ classdef radaroverlay
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 		
-			if ~isnan(self.pwr),
+			if ~isnan(self.pwr)
 				writejs1Darray(fid,[modelname '.radaroverlay.xlim'],[min(self.x) max(self.x)]);
 				writejs1Darray(fid,[modelname '.radaroverlay.ylim'],[min(self.y) max(self.y)]);
 				writejs2Darray(fid,[modelname '.radaroverlay.outerindex'],self.outerindex);

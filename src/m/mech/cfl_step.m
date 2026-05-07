@@ -10,7 +10,7 @@ function maxtime=cfl_step(md,vx,vy)
 %      dt=cfl_step(md,md.results.StressbalanceSolution.Vx,md.results.StressbalanceSolution.Vy)
 
 %Check length of velocities 
-if size(vx,1)~=md.mesh.numberofvertices & size(vy,1)~=md.mesh.numberofvertices,
+if size(vx,1)~=md.mesh.numberofvertices & size(vy,1)~=md.mesh.numberofvertices
 	error('timesteps error message: size of velocity components must be the same as md.mesh.numberofvertices');
 end
 

@@ -34,7 +34,7 @@ posx=find(xdata<=xmax);
 id1x=max(1,find(xdata>=xmin,1)-offset);
 id2x=min(numel(xdata),posx(end)+offset);
 
-if 0,
+if 0
 	ymin=min(Y(:)); ymax=max(Y(:));
 	posy=find(ydata<=ymax);
 	id1y=max(1,find(ydata>=ymin,1)-offset);

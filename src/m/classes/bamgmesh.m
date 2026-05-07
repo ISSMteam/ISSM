@@ -38,7 +38,7 @@ classdef bamgmesh
 				fields=fieldnames(object);
 				for i=1:length(fields)
 					field=fields{i};
-					if ismember(field,properties('bamgmesh')),
+					if ismember(field,properties('bamgmesh'))
 						bg.(field)=object.(field);
 					end
 				end

@@ -10,12 +10,12 @@ function shpwrite(shp,filename)
 %   See also SHPREAD
 
 contours=struct([]);
-for i=1:length(shp),
-	if strcmpi(shp(i).Geometry,'Point'),
+for i=1:length(shp)
+	if strcmpi(shp(i).Geometry,'Point')
 		contours(i).Geometry='Point';
-	elseif strcmpi(shp(i).Geometry,'Polygon'),
+	elseif strcmpi(shp(i).Geometry,'Polygon')
 		contours(i).Geometry='Polygon';
-	elseif strcmpi(shp(i).Geometry,'Line'),
+	elseif strcmpi(shp(i).Geometry,'Line')
 		contours(i).Geometry='Line';
 	else,
 		error(['shpwrite error: geometry ' shp(i).Geometry ' not currently supported']);

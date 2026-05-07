@@ -19,7 +19,7 @@ if nargin~=4
 end
 
 [path,name,ext]=fileparts(filename); 
-if strcmpi(ext,'.shp'),
+if strcmpi(ext,'.shp')
 	
 	%convert to expfile and store in a temporary directory: 
 	oldfilename=filename;

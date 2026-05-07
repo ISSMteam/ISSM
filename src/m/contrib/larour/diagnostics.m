@@ -28,19 +28,19 @@ function diagnostics(md,varargin)
 	path=getfieldvalue(options,'path','./');
 
 	%mesh:
-	if getfieldvalue(options,'mesh',0),
+	if getfieldvalue(options,'mesh',0)
 		mesh2shp(md,[path '/mesh']);
 	end
 
 	%grounding line : 
-	if getfieldvalue(options,'gl',0),
+	if getfieldvalue(options,'gl',0)
 		contours=isoline(md,md.mask.ocean_levelset);
 		expwrite(contours,[path '/groundingline.exp']);
 		exp2shp([path '/groundingline.shp'],[path '/groundingline.exp']);
 	end
 
 	%velocity: 
-	if exist(options,'vel'),
+	if exist(options,'vel')
 		vel=getfieldvalue(options,'vel',md.initialization.vel);
 		xposting=getfieldvalue(options,'velposting',500);
 		yposting=getfieldvalue(options,'velposting',500);
@@ -61,7 +61,7 @@ function diagnostics(md,varargin)
 	end
 
 	%hot spots: 
-	if getfieldvalue(options,'hotspots',0),
+	if getfieldvalue(options,'hotspots',0)
 		threshold=getfieldvalue(options,'threshold',5000);
 		i=getfieldvalue(options,'hotspotsi',length(md.results.TransientSolution));
 		pos=find(md.results.TransientSolution(i).Vel>threshold);

@@ -21,17 +21,17 @@ nels=size(index,1);
 nods=length(x);
 
 %some checks
-if nargin~=3 | (nargout~=2 & nargout~=3),
+if nargin~=3 | (nargout~=2 & nargout~=3)
 	help GetNodalFunctionsCoeff
 	error('GetNodalFunctionsCoeff error message: bad usage')
 end
-if length(y)~=nods,
+if length(y)~=nods
 	error('GetNodalFunctionsCoeff error message: x and y do not have the same length')
 end
-if max(index(:))>nods,
+if max(index(:))>nods
 	error(['GetNodalFunctionsCoeff error message: index should not have values above ' num2str(nods) ])
 end
-if size(index,2)~=3,
+if size(index,2)~=3
 	error('GetNodalFunctionsCoeff error message: only 2d meshes supported. index should have 3 columns.')
 end
 
@@ -49,7 +49,7 @@ alpha=[invdet.*(y2-y3) invdet.*(y3-y1) invdet.*(y1-y2)];
 beta =[invdet.*(x3-x2) invdet.*(x1-x3) invdet.*(x2-x1)];
 
 %get gamma if requested
-if nargout==3,
+if nargout==3
 	gamma=zeros(nels,3);
 	gamma=[invdet.*(x2.*y3-x3.*y2) invdet.*(y1.*x3-y3.*x1) invdet.*(x1.*y2-x2.*y1)];
 	varargout{1}=gamma;

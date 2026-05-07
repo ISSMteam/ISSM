@@ -710,7 +710,7 @@ void albedo(IssmDouble** pa, IssmDouble** padiff, int aIdx, IssmDouble* re, Issm
 	*padiff=adiff;
 
 }  /*}}}*/
-void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT, IssmDouble* pulwrf, IssmDouble* re, IssmDouble* dz, IssmDouble* d, IssmDouble* swf, IssmDouble dlwrf, IssmDouble Ta, IssmDouble V, IssmDouble eAir, IssmDouble pAir, int tcIdx, int eIdx, IssmDouble teValue, IssmDouble dulwrfValue, IssmDouble teThresh, IssmDouble Ws, IssmDouble dt0, IssmDouble dzMin, int m, IssmDouble Vz, IssmDouble Tz, IssmDouble thermo_scaling, IssmDouble dIce, int sid, bool isconstrainsurfaceT, bool isdeltaLWup) { /*{{{*/
+void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT, IssmDouble* pulwrf, IssmDouble* re, IssmDouble* dz, IssmDouble* d, IssmDouble* swf, IssmDouble dlwrf, IssmDouble Ta, IssmDouble V, IssmDouble eAir, IssmDouble pAir, int tcIdx, int eIdx, IssmDouble teValue, IssmDouble teDefault, IssmDouble dulwrfValue, IssmDouble teThresh, IssmDouble Ws, IssmDouble dt0, IssmDouble dzMin, int m, IssmDouble Vz, IssmDouble Tz, IssmDouble thermo_scaling, IssmDouble dIce, int sid, bool isconstrainsurfaceT, bool isdeltaLWup) { /*{{{*/
 
 	/* ENGLACIAL THERMODYNAMICS*/
 
@@ -1179,12 +1179,13 @@ void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT
 
 		// upward longwave contribution
 		IssmDouble deltaULW=0.0;
-		IssmDouble emissivity=1.0;
+		IssmDouble emissivity=teDefault;
 		//If user wants to set a upward long wave bias
 		if(isdeltaLWup) deltaULW = dulwrfValue;
 		//If user wants to directly set emissivity, or grain radius is larger than the
 		// threshold, or eIdx is 2 and we have wet snow or ice, use prescribed emissivity
-		if(eIdx==0 || (teThresh - re[0])<Gdntol || (eIdx==2 && z0>(0.001+Gdntol))) emissivity = teValue;
+		// or eIdx is 3 and we have a wet surface, use prescribed emissivity
+		if(eIdx==0 || (teThresh - re[0])<Gdntol || (eIdx==2 && z0>0.001) || (eIdx==3 && Ws >= Wtol)) emissivity = teValue;
 		ulw = - (SB * pow(Ts,4.0)* emissivity + deltaULW) * dt; 
 		ulwrf = ulwrf - ulw/dt0;
 

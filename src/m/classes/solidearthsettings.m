@@ -20,6 +20,7 @@ classdef solidearthsettings
 		compute_bp_grd         = 0; %will GRD patterns for bottom pressures be computed? 
 		degacc                 = 0; %degree increment for resolution of Green tables.
 		timeacc                = 1; %time step accuracy required to compute Green tables
+		viscoussampling       = 8; %number of samples kept before doubling spacing in the viscous memory time grid
 		horiz                  = 0; %compute horizontal deformation
 		grdmodel               = 1; %grd model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
 		cross_section_shape    = 0; %cross section only used when grd model is Ivins
@@ -77,6 +78,7 @@ classdef solidearthsettings
 			%numerical discretization accuracy
 			self.degacc=.01;
 			self.timeacc=1; 
+			self.viscoussampling=8;
 
 			%how many time steps we skip before we run solidearthsettings solver during transient
 			self.runfrequency=1;
@@ -107,6 +109,7 @@ classdef solidearthsettings
 			disp(sprintf('      resolution:'));
 			fielddisplay(self,'degacc','spatial accuracy (default: .01 deg) for numerical discretization of the Green''s functions');
 			fielddisplay(self,'timeacc','time accuracy (default: 1 yr) for numerical discretization of the Green''s functions');
+			fielddisplay(self,'viscoussampling','number of samples kept at each spacing before doubling the spacing in the viscous memory time grid (default: 100)');
 			disp(sprintf('      sea-level equation:'));
 			fielddisplay(self,'grdocean','does this planet have an ocean, if set to 1: global water mass is conserved in GRD module (default: 1)'); 
 			fielddisplay(self,'sealevelloading','enables surface loading from sea-level change (default: 1)');
@@ -118,7 +121,7 @@ classdef solidearthsettings
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0), 
+			if ~ismember('SealevelchangeAnalysis',analyses) | (strcmp(solution,'TransientSolution') & md.transient.isslc==0) 
 				return; 
 			end
 			md = checkfield(md,'fieldname','solidearth.settings.reltol','size',[1 1]);
@@ -127,28 +130,29 @@ classdef solidearthsettings
 			md = checkfield(md,'fieldname','solidearth.settings.runfrequency','size',[1 1],'>=',1);
 			md = checkfield(md,'fieldname','solidearth.settings.degacc','size',[1 1],'>=',1e-10);
 			md = checkfield(md,'fieldname','solidearth.settings.timeacc','size',[1 1],'>',0);
+			md = checkfield(md,'fieldname','solidearth.settings.viscoussampling','size',[1 1],'>=',1);
 			md = checkfield(md,'fieldname','solidearth.settings.horiz','NaN',1,'Inf',1,'values',[0 1]);
 			md = checkfield(md,'fieldname','solidearth.settings.grdmodel','>=',0,'<=',2);
 			md = checkfield(md,'fieldname','solidearth.settings.cross_section_shape','numel',[1],'values',[1,2]);
 
-			if self.elastic==1 & self.selfattraction==0,
+			if self.elastic==1 & self.selfattraction==0
 				error('solidearthsettings checkconsistency error message: need selfattraction on if elastic flag is set');
 			end
-			if self.viscous==1 & self.elastic==0,
+			if self.viscous==1 & self.elastic==0
 				error('solidearthsettings checkconsistency error message: need elastic on if viscous flag is set');
 			end
-			if self.rotation==1 & self.elastic==0,
+			if self.rotation==1 & self.elastic==0
 				error('solidearthsettings checkconsistency error message: need elastic on if rotation flag is set');
 			end
 
 			%a GRD computation has been requested, make some checks on the nature of the meshes provided. 
-			if self.isgrd,
-				if strcmpi(class(md.mesh),'mesh3dsurface'),
-					if self.grdmodel==2,
+			if self.isgrd
+				if strcmpi(class(md.mesh),'mesh3dsurface')
+					if self.grdmodel==2
 						error('model requires a 2D mesh to run gia Ivins computations (change mesh from mesh3dsurface to mesh2d)');
 					end
 				else
-					if self.grdmodel==1,
+					if self.grdmodel==1
 						error('model requires a 3D surface mesh to run GRD computations (change mesh from mesh2d to mesh3dsurface)');
 					end
 				end
@@ -157,7 +161,7 @@ classdef solidearthsettings
 				end
 			end
 
-			if self.compute_bp_grd==1 & md.solidearth.settings.isgrd==0,
+			if self.compute_bp_grd==1 & md.solidearth.settings.isgrd==0
 					error('solidearthsettings checkconsistency error message; if bottom pressure grd patterns are requested, solidearth settings class should have isgrd flag on');
 			end
 
@@ -175,6 +179,7 @@ classdef solidearthsettings
 			WriteData(fid,prefix,'object',self,'fieldname','runfrequency','name','md.solidearth.settings.runfrequency','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','degacc','name','md.solidearth.settings.degacc','format','Double');
 			WriteData(fid,prefix,'object',self,'fieldname','timeacc','name','md.solidearth.settings.timeacc','format','Double','scale',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','viscoussampling','name','md.solidearth.settings.viscoussampling','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','horiz','name','md.solidearth.settings.horiz','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','sealevelloading','name','md.solidearth.settings.sealevelloading','format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','isgrd','name','md.solidearth.settings.isgrd','format','Integer');
@@ -201,6 +206,7 @@ classdef solidearthsettings
 			writejsdouble(fid,[modelname '.solidearth.settings.compute_bp_grd'],self.compute_bp_grd);
 			writejsdouble(fid,[modelname '.solidearth.settings.degacc'],self.degacc);
 			writejsdouble(fid,[modelname '.solidearth.settings.timeacc'],self.timeacc);
+			writejsdouble(fid,[modelname '.solidearth.settings.viscoussampling'],self.viscoussampling);
 			writejsdouble(fid,[modelname '.solidearth.settings.horiz'],self.horiz);
 			writejsdouble(fid,[modelname '.solidearth.settings.grdmodel'],self.grdmodel);
 			writejsdouble(fid,[modelname '.solidearth.settings.cross_section_shape'],self.cross_section_shape);

@@ -50,11 +50,11 @@ if exist(nc,'file')
 	xdata=xdata(id1x:id2x);
 	ydata=ydata(id1y:id2y);
 
-	if ~strcmp(string,'coverage'),
+	if ~strcmp(string,'coverage')
 		data(find(data==-9999))=NaN;
 	end
 
-	if strcmpi(string,'icemask_grounded_and_shelves') | strcmpi(string,'rockmask'),
+	if strcmpi(string,'icemask_grounded_and_shelves') | strcmpi(string,'rockmask')
 		output = InterpFromGrid(xdata,ydata,data,double(X),double(Y),'nearest');
 	else
 		output = InterpFromGrid(xdata,ydata,data,double(X),double(Y)); % linear interpolation is default
@@ -65,7 +65,7 @@ if exist(nc,'file')
 elseif exist('/Users/larour/ModelData/BedMap2/bedmap2_bin/','dir')
 	% ================================  OLD ===============================================
 	path='/Users/larour/ModelData/BedMap2/bedmap2_bin/'
-	if strcmp(string,'gl04c_geoid_to_wgs84'),
+	if strcmp(string,'gl04c_geoid_to_wgs84')
 		filepath = [path '/gl04c_geiod_to_wgs84.flt'];
 	else
 		filepath = [path '/bedmap2_' string '.flt'];
@@ -75,7 +75,7 @@ elseif exist('/Users/larour/ModelData/BedMap2/bedmap2_bin/','dir')
 	fclose(fid);
 
 	% define grid
-	if strcmp(string,'thickness_uncertainty_5km'),
+	if strcmp(string,'thickness_uncertainty_5km')
 		ncols    =1361;
 		nrows    =1361;
 		xll      =-3401000;
@@ -92,7 +92,7 @@ elseif exist('/Users/larour/ModelData/BedMap2/bedmap2_bin/','dir')
 	y_m=yll+(0:1:nrows-1)'*gridsize;
 
 	%Change default to NaN
-	if ~strcmp(string,'coverage'),
+	if ~strcmp(string,'coverage')
 		data(find(data==-9999))=NaN;
 	end
 
@@ -100,7 +100,7 @@ elseif exist('/Users/larour/ModelData/BedMap2/bedmap2_bin/','dir')
 	data = rot90(data);
 
 	%Interpolate
-	if strcmpi(string,'icemask_grounded_and_shelves') | strcmpi(string,'rockmask'),
+	if strcmpi(string,'icemask_grounded_and_shelves') | strcmpi(string,'rockmask')
 		dataout = InterpFromGrid(x_m,y_m,data,double(X),double(Y),'nearest');
 	else
 		dataout = InterpFromGrid(x_m,y_m,data,double(X),double(Y));

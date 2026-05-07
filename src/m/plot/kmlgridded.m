@@ -11,7 +11,7 @@ options=changefieldvalue(options,'coord','latlon');
 [data datatype]=processdata(md,data,options);
 
 %check is2d
-if ~is2d, 
+if ~is2d 
 	error('buildgridded error message: gridded not supported for 3d meshes, project on a layer');
 end
 
@@ -27,11 +27,11 @@ end
 x_m = xlim(1):post:xlim(2);
 y_m = ylim(1):post:ylim(2);
 data_grid=InterpFromMeshToGrid(elements,x,y,data,x_m,y_m,NaN);
-if size(data_grid,1)<3 | size(data_grid,2)<3,
+if size(data_grid,1)<3 | size(data_grid,2)<3
 	error('data_grid size too small, check posting and units');
 end
 pos=find(isinf(data_grid));
-if ~isempty(pos),
+if ~isempty(pos)
 	disp('Warning: removing Infs from vector (probably log(0)?)');
 	data_grid(pos)=NaN;
 end
@@ -40,7 +40,7 @@ end
 data_nan=find(isnan(data_grid));
 data_min=min(data_grid(:));
 data_max=max(data_grid(:));
-if exist(options,'caxis'),
+if exist(options,'caxis')
 	caxis_opt=getfieldvalue(options,'caxis');
 	data_grid(find(data_grid<caxis_opt(1)))=caxis_opt(1);
 	data_grid(find(data_grid>caxis_opt(2)))=caxis_opt(2);
@@ -81,7 +81,7 @@ clear image_rgb alphaMatrix
 
 %prepare colorbar
 iscolorbar=0;
-if strcmpi(getfieldvalue(options,'colorbar','on'),'on'),
+if strcmpi(getfieldvalue(options,'colorbar','on'),'on')
 	X = linspace(0,1,len)';
 	Xlab = round(linspace(data_min,data_max,len+1));
 	html = ['<TABLE border=' num2str(1) ' bgcolor=#FFFFFF>',10];
@@ -116,7 +116,7 @@ fprintf(fid,'%s\n','<?xml version="1.0" encoding="UTF-8"?>');
 fprintf(fid,'%s\n','<kml xmlns="http://earth.google.com/kml/2.1">');
 fprintf(fid,'%s\n','<Document>');
 fprintf(fid,'%s%s%s\n','<name>',kmlfilename,'</name>');
-if iscolorbar,
+if iscolorbar
 	fprintf(fid,'<Placemark id="colorbar">\n');
 	fprintf(fid,'%s%s%s\n','<name>','click the icon to see the colorbar','</name>');
 	fprintf(fid,'%s%s%s\n','<description>','Ground overlay colorbar','</description>');

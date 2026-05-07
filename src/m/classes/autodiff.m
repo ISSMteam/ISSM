@@ -65,7 +65,7 @@ classdef autodiff
 			md = checkfield(md,'fieldname','autodiff.enablePreaccumulation','>=',0);
 
 			%go through our dependents and independents and check consistency: 
-			for i=1:numel(self.dependents),
+			for i=1:numel(self.dependents)
 				dep=self.dependents{i};
 				if isempty(dep)
 					md = checkmessage(md,['md.autodiff.dependents{' num2str(i) '} is empty!']);
@@ -73,7 +73,7 @@ classdef autodiff
 					md=checkconsistency(dep,md,solution,analyses);
 				end
 			end
-			for i=1:numel(self.independents),
+			for i=1:numel(self.independents)
 				indep=self.independents{i};
 				if isempty(indep)
 					md = checkmessage(md,['md.autodiff.independents{' num2str(i) '} is empty!']);
@@ -132,7 +132,7 @@ classdef autodiff
 			WriteData(fid,prefix,'data',num_dependent_objects,'name','md.autodiff.num_dependent_objects','format','Integer');
 			if(num_dependent_objects)
 				names={};
-				for i=1:num_dependent_objects,
+				for i=1:num_dependent_objects
 					dep=self.dependents{i};
 					names{i}=dep.name;
 				end
@@ -154,13 +154,13 @@ classdef autodiff
 			%if driver is fos_forward, build inde
 			if strcmpi(self.driver,'fos_forward')
 				index=0;
-				for i=1:num_independent_objects,
+				for i=1:num_independent_objects
 					indep=self.independents{i};
-					if ~isnan(indep.fos_forward_index),
+					if ~isnan(indep.fos_forward_index)
 						index=index+indep.fos_forward_index;
 						break;
 					else
-						if strcmpi(indep.type,'scalar'),
+						if strcmpi(indep.type,'scalar')
 							index=index+1;
 						else
 							index=index+indep.nods;
@@ -172,12 +172,12 @@ classdef autodiff
 			end
 
 			%if driver is fos_reverse, build index:
-			if strcmpi(self.driver,'fos_reverse'),
+			if strcmpi(self.driver,'fos_reverse')
 				index=0;
 
-				for i=1:num_dependent_objects,
+				for i=1:num_dependent_objects
 					dep=self.dependents{i};
-					if ~isnan(dep.fos_reverse_index),
+					if ~isnan(dep.fos_reverse_index)
 						index=index+dep.fos_reverse_index;
 						break;
 					else
@@ -189,16 +189,16 @@ classdef autodiff
 			end
 
 			%if driver is fov_forward, build indices
-			if strcmpi(self.driver,'fov_forward'),
+			if strcmpi(self.driver,'fov_forward')
 				indices=0;
 
-				for i=1:num_independent_objects,
+				for i=1:num_independent_objects
 					indep=self.independents{i};
-					if ~isempty(indep.fos_forward_index),
+					if ~isempty(indep.fos_forward_index)
 						indices=indices+indep.fov_forward_indices;
 						break;
 					else
-						if strcmpi(indep.type,'scalar'),
+						if strcmpi(indep.type,'scalar')
 							indices=indices+1;
 						else
 							indices=indices+indep.nods;
@@ -211,13 +211,13 @@ classdef autodiff
 
 			%deal with mass fluxes
 			mass_flux_segments=cell(0,1);
-			for i=1:num_dependent_objects,
+			for i=1:num_dependent_objects
 				dep=self.dependents{i};
-				if strcmpi(dep.name,'MassFlux'),
+				if strcmpi(dep.name,'MassFlux')
 					mass_flux_segments{end+1,1}=dep.segments;
 				end
 			end
-			if ~isempty(mass_flux_segments), 
+			if ~isempty(mass_flux_segments) 
 				WriteData(fid,prefix,'data',mass_flux_segments,'name','md.autodiff.mass_flux_segments','format','MatArray');
 				flag=true;
 			else
@@ -235,10 +235,10 @@ classdef autodiff
 			% mode as described in the Section 4 and Section 5. 
 			%
 
-			if length(self.driver)<=3,
+			if length(self.driver)<=3
 				keep=false; %there is no "_reverse" string within the driver string: 
 			else
-				if strncmpi(self.driver(4:end),'_reverse',8),
+				if strncmpi(self.driver(4:end),'_reverse',8)
 					keep=true;
 				else
 					keep=false;
@@ -249,7 +249,7 @@ classdef autodiff
 		end % }}}
 		function savemodeljs(self,fid,modelname) % {{{
 			%do nothing for now
-			if self.isautodiff,
+			if self.isautodiff
 				error('autodiff savemodeljs error message: not implemented yet!');
 			end
 		end % }}}

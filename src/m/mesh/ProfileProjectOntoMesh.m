@@ -24,7 +24,7 @@ y0=y0(isort);
 processed_indices=[];
 processed_x=[];
 processed_y=[];
-for i=1:numel(indices),
+for i=1:numel(indices)
 	if(((indices(i)-floor(indices(i)))~=0) && ((ceil(indices(i))-indices(i))~=0))
 		processed_indices=[processed_indices;floor(indices(i))];
 		processed_x=[processed_x;x0(i)];
@@ -37,9 +37,9 @@ newx=profile.x;
 newy=profile.y;
 
 count=1;
-for i=1:numel(profile.x),
+for i=1:numel(profile.x)
 	pos=find(processed_indices==i);
-	if ~isempty(pos),
+	if ~isempty(pos)
 		newx=[newx(1:count); processed_x(pos); newx(count+1:end)];
 		newy=[newy(1:count); processed_y(pos); newy(count+1:end)];
 		count=count+length(pos)+1;
@@ -60,7 +60,7 @@ node_in_element=node_in_element(ind,:);
 mesh_profile=[newx(1:end-1) newy(1:end-1) newx(2:end) newy(2:end) zeros(length(newy(2:end)),1)];
 
 %find which element each segment belongs to.
-for i=1:length(newx)-1,
+for i=1:length(newx)-1
 	common=intersect(node_in_element(i,1:node_in_element(i,end)), node_in_element(i+1,1:node_in_element(i+1,end)));
 	mesh_profile(i,end)=common(1);
 end

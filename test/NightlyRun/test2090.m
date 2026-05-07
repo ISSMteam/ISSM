@@ -103,6 +103,7 @@ md.solidearth.settings.ocean_area_scaling=0;
 md.solidearth.settings.grdmodel=1;
 md.solidearth.settings.timeacc=md.timestepping.time_step;
 md.solidearth.settings.degacc=.1;
+md.solidearth.settings.viscoussampling=20;
 
 %Physics:
 md.transient.issmb=0; 

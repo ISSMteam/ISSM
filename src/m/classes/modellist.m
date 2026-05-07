@@ -31,7 +31,7 @@ classdef modellist
 			%in flags.
 
 			%2D or 3D?
-			if dimension(md.mesh)==3,
+			if dimension(md.mesh)==3
 				numberofelements=md.mesh.numberofelements2d; %this will be forgotten when we get out.
 				flags=project2d(md,flags,1);
 			else
@@ -40,15 +40,15 @@ classdef modellist
 
 			%recover extra arguments: 
 			distance=0;
-			if nargin==4,
+			if nargin==4
 				distance=varargin{1};
 			end
 
 			flag_list=cell(0,1);
 
-			for i=1:size(flags,1),
+			for i=1:size(flags,1)
 
-				if (flags(i)),
+				if (flags(i))
 
 					%ok, we are sure element i is part of a new pool.
 					pool=zeros(numberofelements,1);
@@ -63,16 +63,16 @@ classdef modellist
 
 			%go through flag_list and discard any pool of less than minel elements: 
 			ex_pos=[];
-			for i=1:length(flag_list),
-				if length(find(flag_list{i}))<minel,
+			for i=1:length(flag_list)
+				if length(find(flag_list{i}))<minel
 					ex_pos=[ex_pos; i];
 				end
 			end
 			flag_list(ex_pos)=[];
 
 			%now, if distance was specified, expand the flag_list by distance km: 
-			if distance,
-				for i=1:length(flag_list),
+			if distance
+				for i=1:length(flag_list)
 					flag_list{i}=PropagateFlagsUntilDistance(md,flag_list{i},distance);
 				end
 			end
@@ -81,9 +81,9 @@ classdef modellist
 			disp(['extracting ' num2str(size(flag_list,1)) ' models']);
 			models=cell(0,1);
 
-			for i=1:size(flag_list,1),
+			for i=1:size(flag_list,1)
 				disp(['   ' num2str(i) '/' num2str(size(flag_list,1))]);
-				if dimension(md.mesh)==3,
+				if dimension(md.mesh)==3
 					flags2d=flag_list{i};
 					realflags=project3d(md,flags2d,'element');
 				else
@@ -113,7 +113,7 @@ classdef modellist
 			cd ..
 
 			models=cell(0,1);
-			for i=1:length(basins),
+			for i=1:length(basins)
 				models{end+1,1}=modelextract(md,[directory '/' basins{i}]);
 			end
 
@@ -124,22 +124,22 @@ classdef modellist
 		function self = modellist(varargin) % {{{
 
 			%initialize list
-			if nargin==0,
+			if nargin==0
 				%Do nothing,
-			elseif nargin==1,
-				if ~isa(varargin{1},'cell'),
+			elseif nargin==1
+				if ~isa(varargin{1},'cell')
 					error('not supported yet');
 				end
 
 				celllist=varargin{1};
 
 				%check on size of cell list: 
-				if (size(celllist,2)~=1),
+				if (size(celllist,2)~=1)
 					error('modellist constructor error message: list of models should be a cell list of column size 1');
 				end
 
 				%check that only models are in the celllist: 
-				for i=1:size(celllist,1),
+				for i=1:size(celllist,1)
 					if ~isa(celllist{i},'model')
 						error(['modellist constructor error message: element ' num2str(i) ' of cell list is not a model!']);
 					end
@@ -197,7 +197,7 @@ classdef modellist
 			!tar -zxvf ModelResults.tar.gz
 
 			%ok, go through list and load results from disk: 
-			for i=1:nummodels,
+			for i=1:nummodels
 				%load  results for this model
 				self.models{i}=loadresultsfromdisk(self.models{i},[name '-' num2str(i) 'vs' num2str(nummodels) '.outbin']);
 
@@ -238,7 +238,7 @@ classdef modellist
 			[codepath,executionpath]=ClusterParameters(cluster,cluster_rc_location);
 
 			%solve in batch mode: 
-			for i=1:nummodels,
+			for i=1:nummodels
 
 				%model
 				mdex=self.models{i};
@@ -250,12 +250,12 @@ classdef modellist
 				mdex.time=self.time;
 				mdex.queue=self.queue;
 				mdex.cluster=self.cluster;
-				if ~isnan(self.np),
+				if ~isnan(self.np)
 					mdex.np=self.np;
 				end
 
 				%call solve in batch mode:
-				if strcmpi(cluster,oshostname),
+				if strcmpi(cluster,oshostname)
 					mdex=solve(mdex,varargin{:});
 				else
 					mdex=solve(mdex,varargin{:},'batch','yes','directory',name);
@@ -266,7 +266,7 @@ classdef modellist
 			end
 
 			%locally, we are done.
-			if strcmpi(cluster,oshostname),
+			if strcmpi(cluster,oshostname)
 				return
 			end
 
@@ -303,11 +303,11 @@ disp('building queuing script');
 function_name=['BuildMultipleQueueingScript' cluster]
 
 %some specific treatment of identical cluster, gemini, castor and pollux
-if strcmpi(cluster,'castor') || strcmpi(cluster,'pollux'),
+if strcmpi(cluster,'castor') || strcmpi(cluster,'pollux')
 	function_name='BuildMultipleQueueingScriptgemini';
 end
 
-if exist(function_name,'file'),
+if exist(function_name,'file')
 	%Call this function:
 	eval([function_name '(name,executionpath,codepath);']);
 else
@@ -324,7 +324,7 @@ function BuildQueueingScriptgemini(name,executionpath,codepath)% {{{
 scriptname=[name '.queue'];
 
 fid=fopen(scriptname,'w');
-if fid==-1,
+if fid==-1
 	error(['BuildQueueingScriptgeminierror message: could not open ' scriptname ' file for ascii writing']);
 end
 
@@ -349,11 +349,11 @@ function LaunchMultipleQueueJob(cluster,name,executionpath)% {{{
 function_name=['LaunchMultipleQueueJob' cluster]
 
 %some specific treatment of identical cluster, gemini, castor and pollux
-if strcmpi(cluster,'castor') || strcmpi(cluster,'pollux'),
+if strcmpi(cluster,'castor') || strcmpi(cluster,'pollux')
 	function_name='LaunchMultipleQueueJobgemini';
 end
 
-if exist(function_name,'file'),
+if exist(function_name,'file')
 	%Call this function:
 	eval([function_name '(cluster,name,executionpath);']);
 else
@@ -368,11 +368,11 @@ function md=LaunchMultipleQueueJobgemini(cluster,name,executionpath)% {{{
 %      LaunchMultipleQueueJobgemini(cluster,name,executionpath)
 
 %first, check we have the binary file and the queuing script
-if ~exist([ name '.queue'],'file'),
+if ~exist([ name '.queue'],'file')
 	error('LaunchMultipleQueueJobgemini error message: queuing script issing, cannot go forward');
 end
 
-if ~exist('ModelList.tar.gz','file'),
+if ~exist('ModelList.tar.gz','file')
 	error('LaunchMultipleQueueJobgemini error message: inputs models file missing, cannot go forward');
 end
 

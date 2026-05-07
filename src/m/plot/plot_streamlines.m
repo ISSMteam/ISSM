@@ -10,7 +10,7 @@ function plot_streamlines(md,options)
 [v datatype]=processdata(md,md.initialization.vy,options);
 
 %some checks
-if ~is2d,
+if ~is2d
 	disp('plot_streamlines error: streamlines option not supported for 3d plots. Project on a layer')
 	return
 end

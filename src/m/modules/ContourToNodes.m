@@ -10,15 +10,15 @@ function flags = ContourToNodes(x,y,contourname,edgevalue);
 %   flags: vector of flags (0 or 1), of size nodes
 
 %Check usage
-if nargin~=4,
+if nargin~=4
 	help ContourToNodes
 	error('Wrong usage (see above)');
 end
 
 %Some conversion of files:  
-if ischar(contourname),
+if ischar(contourname)
 	[path,name,ext]=fileparts(contourname); 
-	if strcmpi(ext,'.shp'),
+	if strcmpi(ext,'.shp')
 		%read contour from shapefile:
 		contourname=shpread(contourname); 
 

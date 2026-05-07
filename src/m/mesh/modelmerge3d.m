@@ -36,7 +36,7 @@ function md=modelmerge3d(md1,md2,varargin)
 	%go into the vertices on boundary of mesh 1 and figure out which ones are common with mesh2: 
 	verticesonboundary=find(md1.mesh.vertexonboundary);
 
-	for i=1:length(verticesonboundary),
+	for i=1:length(verticesonboundary)
 		node1=verticesonboundary(i);
 		xnode1=x1(node1);
 		ynode1=y1(node1);
@@ -44,10 +44,10 @@ function md=modelmerge3d(md1,md2,varargin)
 
 		%is there another node with these coordinates in mesh 2?
 		ind=find(sqrt((x2-xnode1).^2+(y2-ynode1).^2+(z2-znode1).^2)<tolerance);
-		if length(ind)>1,
+		if length(ind)>1
 			disp('should reduce the tolerance, several vertices picked up!');
 		end
-		if ~isempty(ind),
+		if ~isempty(ind)
 			x2(ind)=NaN;
 			y2(ind)=NaN;
 			z2(ind)=NaN;
@@ -98,6 +98,6 @@ function md=modelmerge3d(md1,md2,varargin)
 	md.mesh.vertexonboundary(md.mesh.segments(:,1:2))=1;
 
 	%some checks: 
-	if max(md.mesh.elements)>md.mesh.numberofvertices, 
+	if max(md.mesh.elements)>md.mesh.numberofvertices 
 		error('issue in modelmerge, one of the element ids is > number of vertices!');
 	end

@@ -46,7 +46,7 @@ classdef SMBgradientsela
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
-			if ismember('MasstransportAnalysis',analyses),
+			if ismember('MasstransportAnalysis',analyses)
 				md = checkfield(md,'fieldname','smb.ela','timeseries',1,'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.b_pos','timeseries',1,'NaN',1,'Inf',1);
 				md = checkfield(md,'fieldname','smb.b_neg','timeseries',1,'NaN',1,'Inf',1);
@@ -91,7 +91,7 @@ classdef SMBgradientsela
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

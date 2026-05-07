@@ -37,7 +37,7 @@ data  = double(ncread(ncpath,'z'))';
 disp('   -- IBCSOv2: interpolating bed');
 bedout = InterpFromGrid(xdata,ydata,data,double(X),double(Y));
 
-if nargout==2,
+if nargout==2
 	disp('   -- IBCSOv2: bathymetry sid');
 	data  = ncread(sidpath,'tid')';
 	disp('   -- IBCSOv2: interpolating sids');

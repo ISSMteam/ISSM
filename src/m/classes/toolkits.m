@@ -41,12 +41,12 @@ classdef toolkits < dynamicprops
 		%      md.toolkits=addoptions(md.toolkits,'StressbalanceAnalysis');
 
 			%Create dynamic property if property does not exist yet
-			if ~ismember(analysis,properties(self)),
+			if ~ismember(analysis,properties(self))
 				self.addprop(analysis);
 			end
 
 			%Add toolkits options to analysis
-			if nargin==3,
+			if nargin==3
 				self.(analysis) = varargin{1};
 			end
 		end
@@ -54,17 +54,17 @@ classdef toolkits < dynamicprops
 		function self = setdefaultparameters(self) % {{{
 
 			%default toolkits: 
-			if IssmConfig('_HAVE_PETSC_'),
+			if IssmConfig('_HAVE_PETSC_')
 				%MUMPS is the default toolkits
-				if IssmConfig('_HAVE_MUMPS_'),
+				if IssmConfig('_HAVE_MUMPS_')
 					self.DefaultAnalysis           = mumpsoptions();
 				else
 					self.DefaultAnalysis           = iluasmoptions(); 
 				end
 			else
-				if IssmConfig('_HAVE_MUMPS_'),
+				if IssmConfig('_HAVE_MUMPS_')
 					self.DefaultAnalysis           = issmmumpssolver(); 
-				elseif IssmConfig('_HAVE_GSL_'),
+				elseif IssmConfig('_HAVE_GSL_')
 					self.DefaultAnalysis           = issmgslsolver(); 
 				else 
 					disp('WARNING: Need at least MUMPS or GSL to define an ISSM solver type, no default solver assigned');
@@ -79,7 +79,7 @@ classdef toolkits < dynamicprops
 		function disp(self) % {{{
 			analyses=properties(self);
 			disp(sprintf('List of toolkits options per analysis:\n'));
-			for i=1:numel(analyses),
+			for i=1:numel(analyses)
 				analysis=analyses{i};
 				disp([analysis ':']);
 				disp(self.(analysis));
@@ -87,7 +87,7 @@ classdef toolkits < dynamicprops
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 			analyses=properties(self);
-			for i=1:numel(analyses),
+			for i=1:numel(analyses)
 				switch analyses{i}
 					case 'DefaultAnalysis'
 					case 'RecoveryAnalysis'
@@ -131,7 +131,7 @@ classdef toolkits < dynamicprops
 
 			%open file for writing
 			fid=fopen(filename,'w');
-			if fid==-1,
+			if fid==-1
 				error(['ToolkitsFile error: could not open ' filename ' for writing']);
 			end
 
@@ -140,7 +140,7 @@ classdef toolkits < dynamicprops
 
 			%start writing options
 			analyses=properties(toolkits);
-			for i=1:numel(analyses),
+			for i=1:numel(analyses)
 				analysis=analyses{i};
 				options=toolkits.(analysis);
 
@@ -149,18 +149,18 @@ classdef toolkits < dynamicprops
 
 				%now, write options
 				optionslist=fieldnames(options);
-				for j=1:numel(optionslist),
+				for j=1:numel(optionslist)
 					optionname=optionslist{j};
 					optionvalue=options.(optionname);
 
-					if isempty(optionvalue),
+					if isempty(optionvalue)
 						%this option has only one argument
 						fprintf(fid,'-%s\n',optionname);
 					else
 						%option with value. value can be string or scalar
-						if isnumeric(optionvalue),
+						if isnumeric(optionvalue)
 							fprintf(fid,'-%s %g\n',optionname,optionvalue);
-						elseif ischar(optionvalue),
+						elseif ischar(optionvalue)
 							fprintf(fid,'-%s %s\n',optionname,optionvalue);
 						else
 							error(['ToolkitsFile error: option ' optionname ' is not well formatted']);
@@ -174,7 +174,7 @@ classdef toolkits < dynamicprops
 		function savemodeljs(self,fid,modelname) % {{{
 
 			analyses=properties(self);
-			for i=1:numel(analyses),
+			for i=1:numel(analyses)
 				if isempty(fieldnames(self.(analyses{i})))
 					error(['md.toolkits.' analyses{i} ' is empty']);
 				else

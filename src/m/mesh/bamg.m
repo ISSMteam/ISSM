@@ -65,65 +65,65 @@ bamg_mesh=bamgmesh();
 subdomain_ref = 1;
 hole_ref = 1;
 % BAMG Geometry parameters {{{
-if exist(options,'domain'),
+if exist(options,'domain')
 
 	%Check that file exists
 	domainfile=getfieldvalue(options,'domain');
-	if ischar(domainfile),
+	if ischar(domainfile)
 		if ~exist(domainfile,'file') error(['bamg error message: file ' domainfile ' not found']); end
 
 		%read domain according to its extension: 
 		[path,name,ext]=fileparts(domainfile);
-		if strcmp(ext,'.exp'),
+		if strcmp(ext,'.exp')
 			domain=expread(domainfile);
-		elseif strcmp(ext,'.shp'),
+		elseif strcmp(ext,'.shp')
 			domain=shpread(domainfile);
 		else
 			error(['bamg error message: file ' domainfile ' format not supported (.exp or .shp)']);
 		end
-	elseif isstruct(domainfile),
+	elseif isstruct(domainfile)
 		domain = domainfile;
 	else
 		error('''domain'' type not supported yet');
 	end
 
 	holes = [];
-	if exist(options,'holes'),
+	if exist(options,'holes')
 		holesfile=getfieldvalue(options,'holes');
-		if ischar(holesfile),
+		if ischar(holesfile)
 			if ~exist(holesfile,'file') error(['bamg error message: file ' holesfile ' not found']); end
 
 			%read holes according to its extension: 
 			[path,name,ext]=fileparts(holesfile);
-			if strcmp(ext,'.exp'),
+			if strcmp(ext,'.exp')
 				holes=expread(holesfile);
-			elseif strcmp(ext,'.shp'),
+			elseif strcmp(ext,'.shp')
 				holes=shpread(holesfile);
 			else
 				error(['bamg error message: file ' holesfile ' format not supported (.shp or .exp)']);
 			end
-		elseif isstruct(holesfile),
+		elseif isstruct(holesfile)
 			holes = holesfile;
 		else
 			error('''holes'' type not supported yet');
 		end
 	end
 	subdomains = [];
-	if exist(options,'subdomains'),
+	if exist(options,'subdomains')
 		subdomainsfile=getfieldvalue(options,'subdomains');
-		if ischar(subdomainsfile),
+		if ischar(subdomainsfile)
 			if ~exist(subdomainsfile,'file') error(['bamg error message: file ' subdomainsfile ' not found']); end
 
 			%read subdomains according to its extension: 
 			[path,name,ext]=fileparts(subdomainsfile);
-			if strcmp(ext,'.exp'),
+			if strcmp(ext,'.exp')
 				subdomains=expread(subdomainsfile);
-			elseif strcmp(ext,'.shp'),
+			elseif strcmp(ext,'.shp')
 				subdomains=shpread(subdomainsfile);
 			else
 				error(['bamg error message: file ' subdomainsfile ' format not supported (.shp or .exp)']);
 			end
-		elseif isstruct(subdomainsfile),
+		elseif isstruct(subdomainsfile)
 			subdomains = subdomainsfile;
 		else
 			error('''subdomains'' type not supported yet');
@@ -132,17 +132,17 @@ if exist(options,'domain'),
 
 	%Build geometry 
 	count=0;
-	for i=1:length(domain),
+	for i=1:length(domain)
 
 		%Check that the domain is closed
-		if (domain(i).x(1)~=domain(i).x(end) | domain(i).y(1)~=domain(i).y(end)),
+		if (domain(i).x(1)~=domain(i).x(end) | domain(i).y(1)~=domain(i).y(end))
 			error('bamg error message: all contours provided in ''domain'' should be closed');
 		end
 
 		%Check that all holes are INSIDE the principle domain outline
-		if i>1,
+		if i>1
 			flags=ContourToNodes(domain(i).x,domain(i).y,domain(1),0);
-			if any(~flags),
+			if any(~flags)
 				error('bamg error message: All holes should be strictly inside the principal domain');
 			end
 		end
@@ -150,7 +150,7 @@ if exist(options,'domain'),
 		%Check orientation
 		nods=domain(i).nods-1; %the domain is closed (domain[1] = domain[end])
 		test = sum([(domain(i).x(2:nods+1) - domain(i).x(1:nods)).*(domain(i).y(2:nods+1) + domain(i).y(1:nods))]);
-		if (i==1 && test>0) || (i>1 && test<0),
+		if (i==1 && test>0) || (i>1 && test<0)
 			disp('At least one contour was not correctly oriented and has been re-oriented');
 			domain(i).x = flipud(domain(i).x); domain(i).y = flipud(domain(i).y);
 		end
@@ -168,7 +168,7 @@ if exist(options,'domain'),
 		new_edge_length=length(bamg_geometry.Edges);
 		edges_required=(edge_length+1):new_edge_length;
 
-		if i>1,
+		if i>1
 			bamg_geometry.SubDomains=[bamg_geometry.SubDomains; 2 count+1 1 -subdomain_ref]; 
 			subdomain_ref = subdomain_ref+1;
 		else
@@ -178,10 +178,10 @@ if exist(options,'domain'),
 		%update counter
 		count=count+nods;
 	end
-	for i=1:length(holes),
+	for i=1:length(holes)
 
 		%Check that the hole is closed
-		if (holes(i).x(1)~=holes(i).x(end) | holes(i).y(1)~=holes(i).y(end)),
+		if (holes(i).x(1)~=holes(i).x(end) | holes(i).y(1)~=holes(i).y(end))
 			error('bamg error message: all contours provided in ''holes'' should be closed');
 		end
 
@@ -204,16 +204,16 @@ if exist(options,'domain'),
 		%update counter
 		count=count+nods;
 	end
-	for i=1:length(subdomains),
+	for i=1:length(subdomains)
 
 		%Check that the subdomain is closed
-		if (subdomains(i).x(1)~=subdomains(i).x(end) | subdomains(i).y(1)~=subdomains(i).y(end)),
+		if (subdomains(i).x(1)~=subdomains(i).x(end) | subdomains(i).y(1)~=subdomains(i).y(end))
 			error('bamg error message: all contours provided in ''subdomains'' should be closed');
 		end
 
 		%Checks that all subdomains are INSIDE the principal domain (principal domain should be index 0)
 		flags=ContourToNodes(subdomains(i).x,subdomains(i).y,domain(1),0);
-		if any(~flags),
+		if any(~flags)
 			error('bamg error message: All subdomains should be strictly inside the principal domain');
 		end
 
@@ -236,48 +236,48 @@ if exist(options,'domain'),
 		count=count+nods;
 	end
 
-	if getfieldvalue(options,'vertical',0),
-		if numel(getfieldvalue(options,'Markers',[]))~=size(bamg_geometry.Edges,1),
+	if getfieldvalue(options,'vertical',0)
+		if numel(getfieldvalue(options,'Markers',[]))~=size(bamg_geometry.Edges,1)
 			error(['for 2d vertical mesh, ''Markers'' option is required, and should be of size ' num2str(size(bamg_geometry.Edges,1))]);
 		end
 	end
-	if numel(getfieldvalue(options,'Markers',[]))==size(bamg_geometry.Edges,1),
+	if numel(getfieldvalue(options,'Markers',[]))==size(bamg_geometry.Edges,1)
 		bamg_geometry.Edges(:,3)=getfieldvalue(options,'Markers');
 	end
 
 	%take care of rifts
-	if exist(options,'rifts'),
+	if exist(options,'rifts')
 		%read rift file according to its extension: 
 		riftfile=getfieldvalue(options,'rifts');
 		[path,name,ext]=fileparts(riftfile);
-		if strcmp(ext,'.exp'),
+		if strcmp(ext,'.exp')
 			rift=expread(riftfile);
-		elseif strcmp(ext,'.shp'),
+		elseif strcmp(ext,'.shp')
 			rift=shpread(riftfile);
 		else
 			error(['bamg error message: file ' riftfile ' format not supported (.exp or .shp)']);
 		end
 
-		for i=1:length(rift),
+		for i=1:length(rift)
 
 			%detect whether all points of the rift are inside the domain
 			flags=ContourToNodes(rift(i).x,rift(i).y,domain(1),0);
-			if ~flags,
+			if ~flags
 				error('one rift has all its points outside of the domain outline'),
 
-			elseif any(~flags),
+			elseif any(~flags)
 				%We have LOTS of work to do
 				disp('Rift tip outside of or on the domain has been detected and is being processed...');
 
 				%check that only one point is outside (for now)
-				if sum(~flags)~=1,
+				if sum(~flags)~=1
 					error('bamg error message: only one point outside of the domain is supported at this time');
 				end
 
 				%Move tip outside to the first position
-				if flags(1)==0,
+				if flags(1)==0
 					%OK, first point is outside (do nothing),
-				elseif (flags(end)==0),
+				elseif (flags(end)==0)
 					rift(i).x=flipud(rift(i).x);
 					rift(i).y=flipud(rift(i).y);
 				else
@@ -290,7 +290,7 @@ if exist(options,'domain'),
 				x2=rift(i).x(2);
 				y2=rift(i).y(2);
 				for j=1:length(domain(1).x)-1;
-					if SegIntersect([x1 y1; x2 y2],[domain(1).x(j) domain(1).y(j); domain(1).x(j+1) domain(1).y(j+1)]),
+					if SegIntersect([x1 y1; x2 y2],[domain(1).x(j) domain(1).y(j); domain(1).x(j+1) domain(1).y(j+1)])
 
 						%Get position of the two nodes of the edge in domain
 						i1=j;
@@ -306,11 +306,11 @@ if exist(options,'domain'),
 						segdis= sqrt((x4-x3)^2+(y4-y3)^2);
 						tipdis=[sqrt((x-x3)^2+(y-y3)^2)  sqrt((x-x4)^2+(y-y4)^2)];
 
-						if (min(tipdis)/segdis) < getfieldvalue(options,'toltip',0),
+						if (min(tipdis)/segdis) < getfieldvalue(options,'toltip',0)
 							disp('moving tip-domain intersection point');
 
 							%Get position of the closer point
-							if tipdis(1)>tipdis(2),
+							if tipdis(1)>tipdis(2)
 								pos=i2;
 							else
 								pos=i1;
@@ -362,10 +362,10 @@ if exist(options,'domain'),
 	end
 
 	%Deal with tracks
-	if exist(options,'tracks'),
+	if exist(options,'tracks')
 		%read tracks
 		intrack=getfieldvalue(options,'tracks');
-		if all(ischar(intrack)),
+		if all(ischar(intrack))
 			intrack=expread(intrack);
         else
             intrack=double(intrack); %for some reason, it is of class "single"
@@ -377,7 +377,7 @@ if exist(options,'domain'),
         track=[];
         edges=[];
         newcount=count;
-        for i=1:length(intrack), 
+        for i=1:length(intrack) 
             nods=size(intrack(i).x,1);
             newtrack=[intrack(i).x intrack(i).y];
             newedges=[transpose(newcount+1:newcount+nods-1) transpose(newcount+2:newcount+nods) 3.*ones(nods-1,1)];
@@ -388,8 +388,8 @@ if exist(options,'domain'),
 
             %calculate edge offset, accounting for broken tracks
             offsets=zeros(size(edgeflags,1)+1,3);
-            for j=2:size(offsets,1),
-                if edgeflags(j-1)==0,
+            for j=2:size(offsets,1)
+                if edgeflags(j-1)==0
                     offsets(j,:)=offsets(j-1,:)+[1 1 0];
                 else
                     offsets(j,:)=offsets(j-1,:);
@@ -417,7 +417,7 @@ if exist(options,'domain'),
 	end
 
 	%Deal with vertices that need to be kept by mesher
-	if exist(options,'RequiredVertices'),
+	if exist(options,'RequiredVertices')
 
 		%recover RequiredVertices
 		requiredvertices=double(getfieldvalue(options,'RequiredVertices')); %for some reason, it is of class "single"
@@ -437,25 +437,25 @@ if exist(options,'domain'),
 	end
 
 	%Deal with RequiredEdges
-	if getfieldvalue(options,'NoBoundaryRefinement',0)==1,
+	if getfieldvalue(options,'NoBoundaryRefinement',0)==1
 		bamg_geometry.RequiredEdges=edges_required';
-	elseif getfieldvalue(options,'NoBoundaryRefinementAllBoundaries',0)==1,
+	elseif getfieldvalue(options,'NoBoundaryRefinementAllBoundaries',0)==1
 		bamg_geometry.RequiredEdges=[1:size(bamg_geometry.Edges,1)]';
 	end
 
 	%process geom
 	%bamg_geometry=processgeometry(bamg_geometry,getfieldvalue(options,'tol',NaN),domain(1));
 
-elseif isstruct(md.private.bamg) & isfield(md.private.bamg,'geometry'),
+elseif isstruct(md.private.bamg) & isfield(md.private.bamg,'geometry')
 	bamg_geometry=bamggeom(md.private.bamg.geometry); 
 else
 	%do nothing...
 end
 %}}}
 % BAMG Mesh parameters {{{
-if (~exist(options,'domain') & md.mesh.numberofvertices~=0 & strcmp(elementtype(md.mesh),'Tria')),
+if (~exist(options,'domain') & md.mesh.numberofvertices~=0 & strcmp(elementtype(md.mesh),'Tria'))
 
-	if isstruct(md.private.bamg) & isfield(md.private.bamg,'mesh'),
+	if isstruct(md.private.bamg) & isfield(md.private.bamg,'mesh')
 		bamg_mesh=bamgmesh(md.private.bamg.mesh);
 	else
 		bamg_mesh.Vertices=[md.mesh.x md.mesh.y ones(md.mesh.numberofvertices,1)];
@@ -498,7 +498,7 @@ bamg_options.verbose=getfieldvalue(options,'verbose',1);
 %call BAMG
 [bamgmesh_out bamggeom_out]=BamgMesher(bamg_mesh,bamg_geometry,bamg_options);
 
-if getfieldvalue(options,'vertical',0),
+if getfieldvalue(options,'vertical',0)
 	md.mesh=mesh2dvertical();
 	md.mesh.x=bamgmesh_out.Vertices(:,1);
 	md.mesh.y=bamgmesh_out.Vertices(:,2);
@@ -514,7 +514,7 @@ if getfieldvalue(options,'vertical',0),
 	md.mesh.vertexonboundary=zeros(md.mesh.numberofvertices,1);
 	md.mesh.vertexonboundary(md.mesh.segments(:,1:2))=1;
 
-elseif getfieldvalue(options,'3dsurface',0),
+elseif getfieldvalue(options,'3dsurface',0)
 	
 	md.mesh=mesh3dsurface();
 	md.mesh.x=bamgmesh_out.Vertices(:,1);
@@ -567,7 +567,7 @@ function geom=processgeometry(geom,tol,outline) % {{{
 %Deal with edges
 disp('Checking Edge crossing...');
 i=0;
-while (i<size(geom.Edges,1)),
+while (i<size(geom.Edges,1))
 
 	%edge counter
 	i=i+1;
@@ -580,13 +580,13 @@ while (i<size(geom.Edges,1)),
 	color1=geom.Edges(i,3);
 
 	j=i; %test edges located AFTER i only
-	while (j<size(geom.Edges,1)),
+	while (j<size(geom.Edges,1))
 
 		%edge counter
 		j=j+1;
 
 		%Skip if the two edges already have a vertex in common
-		if any(ismember(geom.Edges(i,1:2),geom.Edges(j,1:2))),
+		if any(ismember(geom.Edges(i,1:2),geom.Edges(j,1:2)))
 			continue
 		end
 
@@ -598,7 +598,7 @@ while (i<size(geom.Edges,1)),
 		color2=geom.Edges(j,3);
 
 		%Check if the two edges are crossing one another
-		if SegIntersect([x1 y1; x2 y2],[x3 y3; x4 y4]),
+		if SegIntersect([x1 y1; x2 y2],[x3 y3; x4 y4])
 
 			%Get coordinate of intersection point (http://mathworld.wolfram.com/Line-LineIntersection.html)
 			x=det([det([x1 y1; x2 y2])  x1-x2;det([x3 y3; x4 y4])  x3-x4])/det([x1-x2 y1-y2;x3-x4 y3-y4]);
@@ -627,7 +627,7 @@ end
 disp('Checking for points outside the domain...');
 i=0;
 num=0;
-while (i<size(geom.Vertices,1)),
+while (i<size(geom.Vertices,1))
 
 	%vertex counter
 	i=i+1;
@@ -638,7 +638,7 @@ while (i<size(geom.Vertices,1)),
 	color=geom.Vertices(i,3);
 
 	%Check that the point is inside the domain
-	if (color~=1 & ~ContourToNodes(x,y,outline(1),1)),
+	if (color~=1 & ~ContourToNodes(x,y,outline(1),1))
 
 		%Remove points from list of Vertices
 		num=num+1;
@@ -654,15 +654,15 @@ while (i<size(geom.Vertices,1)),
 		i=i-1;
 	end
 end
-if num,
+if num
 	disp(['WARNING: ' num2str(num) ' points outside the domain outline have been removed']);
 end
 
 %Check point spacing
-if ~isnan(tol),
+if ~isnan(tol)
 	disp('Checking point spacing...');
 	i=0;
-	while (i<size(geom.Vertices,1)),
+	while (i<size(geom.Vertices,1))
 
 		%vertex counter
 		i=i+1;
@@ -672,7 +672,7 @@ if ~isnan(tol),
 		y1=geom.Vertices(i,2);
 
 		j=i; %test edges located AFTER i only
-		while (j<size(geom.Vertices,1)),
+		while (j<size(geom.Vertices,1))
 
 			%vertex counter
 			j=j+1;

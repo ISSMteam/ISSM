@@ -7,7 +7,7 @@ function [xsegments ysegments]=flagedges(elements,x,y,partition)
 xsegments=[];
 ysegments=[];
 
-for i=1:size(elements,1),
+for i=1:size(elements,1)
 	m1=partition(elements(i,1));
 	m2=partition(elements(i,2));
 	m3=partition(elements(i,3));
@@ -18,7 +18,7 @@ for i=1:size(elements,1),
 	y2=y(elements(i,2));
 	y3=y(elements(i,3));
 
-	if (m1~=m2) & (m1~=m3) & (m2~=m3),
+	if (m1~=m2) & (m1~=m3) & (m2~=m3)
 		xmiddle=(x1+x2+x3)/3;
 		ymiddle=(y1+y2+y3)/3;
 		xsegments=[xsegments; (x1+x2)/2 xmiddle];
@@ -29,16 +29,16 @@ for i=1:size(elements,1),
 		ysegments=[ysegments; (y2+y3)/2 ymiddle];
 	end
 
-	if (m1==m2) & (m1~=m3),
+	if (m1==m2) & (m1~=m3)
 		xsegments=[xsegments; (x1+x3)/2 (x2+x3)/2];
 		ysegments=[ysegments; (y1+y3)/2 (y2+y3)/2];
 	end
-	if (m1==m3) & (m2~=m3),
+	if (m1==m3) & (m2~=m3)
 		xsegments=[xsegments; (x1+x2)/2 (x2+x3)/2];
 		ysegments=[ysegments; (y1+y2)/2 (y2+y3)/2];
 	end
 
-	if (m2==m3) & (m1~=m3),
+	if (m2==m3) & (m1~=m3)
 		xsegments=[xsegments; (x1+x2)/2 (x1+x3)/2];
 		ysegments=[ysegments; (y1+y2)/2 (y1+y3)/2];
 	end

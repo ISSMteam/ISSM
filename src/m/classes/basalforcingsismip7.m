@@ -14,6 +14,8 @@ classdef basalforcingsismip7
 		tf                        = NaN;
 		tf_depths                 = NaN;
 		delta_t                   = NaN;
+
+		islocal                   = 0;
 		
 		geothermalflux            = NaN;
 		groundedice_melting_rate  = NaN;
@@ -40,7 +42,7 @@ classdef basalforcingsismip7
 		end % }}}
 		function self = initialize(self,md) % {{{
 			%Update fixed-coriolis parameter
-			if isnan(md.mesh.lat) | isempty(md.mesh.lat),
+			if isnan(md.mesh.lat) | isempty(md.mesh.lat)
 				disp('      no md.mesh.lat specified.');
 				if md.mesh.epsg == 3031 % For Antarctica
 					[lat, lon] = xy2ll(md.mesh.x,md.mesh.y,-1);
@@ -55,23 +57,25 @@ classdef basalforcingsismip7
 			omega=7.2921e-5; %angular velocity of the Earth (rad/s)
 			self.coriolis_f=2*omega*sin(lat/180*pi);
 
-			if self.gamma == 0,
+			if self.gamma == 0
 				self.gamma = 14477;
 				disp('      no basalforcings.gamma specified: value set to 14477 m/yr');
 			end
-			if isnan(self.groundedice_melting_rate),
+			if isnan(self.groundedice_melting_rate)
 				self.groundedice_melting_rate=zeros(md.mesh.numberofvertices,1);
 				disp('      no basalforcings.groundedice_melting_rate specified: values set as zero');
 			end
 
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
-			self.gamma = 0.0; % ?
+			self.gamma   = 0.0; % ?
+			self.islocal = 1;
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
 			md = checkfield(md,'fieldname','basalforcings.num_basins','numel',1,'NaN',1,'Inf',1,'>',0);
 			md = checkfield(md,'fieldname','basalforcings.basin_id','Inf',1,'>=',0,'<=',md.basalforcings.num_basins,'size',[md.mesh.numberofelements 1]);
+			md = checkfield(md,'fieldname','basalforcings.islocal','values',[0 1]);
 			md = checkfield(md,'fieldname','basalforcings.delta_t','NaN',1,'Inf',1,'numel',md.basalforcings.num_basins,'size',[1,md.basalforcings.num_basins]);
 
 			md = checkfield(md,'fieldname','basalforcings.gamma','numel',1,'NaN',1,'Inf',1,'>',0);
@@ -97,6 +101,7 @@ classdef basalforcingsismip7
 			fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset');
 			fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)');
 			fielddisplay(self,'delta_t','Ocean temperature correction per basin (degrees C)');
+			fielddisplay(self,'islocal','[TODO] boolean to use the local version of the ISMIP7 melt rate parameter (default: true)');
 			fielddisplay(self,'salinity','salinity (psu)');
 			fielddisplay(self,'coriolis_f','Coriolis parameter (s^-1)');
 			fielddisplay(self,'geothermalflux','geothermal heat flux (W/m^2)');
@@ -115,6 +120,7 @@ classdef basalforcingsismip7
 			WriteData(fid,prefix,'object',self,'fieldname','tf_depths','format','DoubleMat','name','md.basalforcings.tf_depths');
 			WriteData(fid,prefix,'object',self,'fieldname','tf','format','MatArray','name','md.basalforcings.tf','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','delta_t','format','DoubleMat','name','md.basalforcings.delta_t','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','islocal','format','Boolean');
 			WriteData(fid,prefix,'object',self,'fieldname','salinity','format','MatArray','name','md.basalforcings.salinity','timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','geothermalflux','format','DoubleMat','name','md.basalforcings.geothermalflux','mattype',1,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','groundedice_melting_rate','format','DoubleMat','mattype',1,'scale',1./yts,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);

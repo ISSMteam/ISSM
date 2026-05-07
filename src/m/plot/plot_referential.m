@@ -27,7 +27,7 @@ Zhat=Zhat./[Zhatnorm Zhatnorm Zhatnorm];
 
 Yhat=cross(Zhat,Xhat);
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 
 	%plot mesh
 	A=elements(:,1); B=elements(:,2); C=elements(:,3); 

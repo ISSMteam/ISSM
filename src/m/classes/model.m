@@ -67,7 +67,7 @@ classdef model
 			% old fields must be recovered (make sure they are in the deprecated
 			% model properties)
 
-			if verLessThan('matlab','7.9'),
+			if verLessThan('matlab','7.9')
 				disp('Warning: your matlab version is old and there is a risk that load does not work correctly');
 				disp('         if the model is not loaded correctly, rename temporarily loadobj so that matlab does not use it');
 
@@ -85,9 +85,9 @@ classdef model
 			end
 
 			%2012 August 4th
-			if isa(md.materials,'materials'),
+			if isa(md.materials,'materials')
 				disp('Recovering old materials');
-				if numel(md.materials.rheology_Z)==1 & isnan(md.materials.rheology_Z),
+				if numel(md.materials.rheology_Z)==1 & isnan(md.materials.rheology_Z)
 					md.materials=matice(md.materials);
 				else
 					md.materials=matdamageice(md.materials);
@@ -98,25 +98,25 @@ classdef model
 				md.stressbalance.loadingforce=0*ones(md.mesh.numberofvertices,3);
 			end
 			%2013 April 17
-			if isa(md.hydrology,'hydrology'),
+			if isa(md.hydrology,'hydrology')
 				disp('Recovering old hydrology class');
 				md.hydrology=hydrologyshreve(md.materials);
 			end
 			%2013 October 9
-			if ~isa(md.damage,'damage'),
+			if ~isa(md.damage,'damage')
 				md.damage=damage();
 				md.damage.D=zeros(md.mesh.numberofvertices,1);
 				md.damage.spcdamage=NaN*ones(md.mesh.numberofvertices,1);
 			end
 			%2013 November 18
-			if ~isa(md.outputdefinition,'outputdefinition'),
+			if ~isa(md.outputdefinition,'outputdefinition')
 				md.outputdefinition=outputdefinition();
 			end
 			%2014 March 26th
-			if isa(md.mesh,'mesh'),
+			if isa(md.mesh,'mesh')
 				disp('Recovering old mesh class');
-				if isprop(md.mesh,'dimension'),
-					if md.mesh.dimension==2,
+				if isprop(md.mesh,'dimension')
+					if md.mesh.dimension==2
 						md.mesh=mesh2d(md.mesh);
 					else
 						md.mesh=mesh3dprisms(md.mesh);
@@ -131,7 +131,7 @@ classdef model
 			if isa(md.esa,'double'); md.esa=esa(); end
 			%2017 February 10th
 			if isa(md.settings,'settings'), %this 'isa' verification: 2018 October 24th
-				if md.settings.solver_residue_threshold==0,
+				if md.settings.solver_residue_threshold==0
 					md.settings.solver_residue_threshold = 1e-6;
 				end
 			end
@@ -337,7 +337,7 @@ classdef model
 			%   See also: EXTRUDE, EXTRACT
 
 			%Check that the model is really a 3d model
-			if ~strcmp(md.mesh.elementtype(),'Penta'),
+			if ~strcmp(md.mesh.elementtype(),'Penta')
 				error('collapse error message: only 3d mesh can be collapsed')
 			end
 
@@ -345,32 +345,32 @@ classdef model
 
 			%dealing with the friction law
 			%drag is limited to nodes that are on the bedrock.
-			if isa(md.friction,'friction'),
+			if isa(md.friction,'friction')
 				md.friction.coefficient=project2d(md,md.friction.coefficient,1);
 				md.friction.p=project2d(md,md.friction.p,1);
 				md.friction.q=project2d(md,md.friction.q,1);
-			elseif isa(md.friction,'frictioncoulomb'),
+			elseif isa(md.friction,'frictioncoulomb')
 				md.friction.coefficient=project2d(md,md.friction.coefficient,1);
 				md.friction.coefficientcoulomb=project2d(md,md.friction.coefficientcoulomb,1);
 				md.friction.p=project2d(md,md.friction.p,1);
 				md.friction.q=project2d(md,md.friction.q,1);
-			elseif isa(md.friction,'frictionhydro'),
+			elseif isa(md.friction,'frictionhydro')
 				md.friction.q=project2d(md,md.friction.q,1);
 				md.friction.C=project2d(md,md.friction.C,1);
 				md.friction.As=project2d(md,md.friction.As,1);
 				md.friction.effective_pressure=project2d(md,md.friction.effective_pressure,1);
-			elseif isa(md.friction,'frictionwaterlayer'),
+			elseif isa(md.friction,'frictionwaterlayer')
 				md.friction.coefficient=project2d(md,md.friction.coefficient,1);
 				md.friction.p=project2d(md,md.friction.p,1);
 				md.friction.q=project2d(md,md.friction.q,1);
 				md.friction.water_layer=project2d(md,md.friction.water_layer,1);
-			elseif isa(md.friction,'frictionweertman'),
+			elseif isa(md.friction,'frictionweertman')
 				md.friction.C=project2d(md,md.friction.C,1);
 				md.friction.m=project2d(md,md.friction.m,1);
-			elseif isa(md.friction,'frictionweertmantemp'),
+			elseif isa(md.friction,'frictionweertmantemp')
 				md.friction.C=project2d(md,md.friction.C,1);
 				md.friction.m=project2d(md,md.friction.m,1);
-			elseif isa(md.friction,'frictionjosh'),
+			elseif isa(md.friction,'frictionjosh')
 				md.friction.coefficient=project2d(md,md.friction.coefficient,1);
 				md.friction.pressure_adjusted_temperature=project2d(md,md.friction.pressure_adjusted_temperature,1);
 			else
@@ -378,30 +378,30 @@ classdef model
 			end
 
 			%observations
-			if ~isnan(md.inversion.vx_obs),
+			if ~isnan(md.inversion.vx_obs)
 				md.inversion.vx_obs=project2d(md,md.inversion.vx_obs,md.mesh.numberoflayers);
 			end
-			if ~isnan(md.inversion.vy_obs),
+			if ~isnan(md.inversion.vy_obs)
 				md.inversion.vy_obs=project2d(md,md.inversion.vy_obs,md.mesh.numberoflayers);
 			end
-			if ~isnan(md.inversion.vel_obs),
+			if ~isnan(md.inversion.vel_obs)
 				md.inversion.vel_obs=project2d(md,md.inversion.vel_obs,md.mesh.numberoflayers);
 			end
-			if ~isnan(md.inversion.thickness_obs),
+			if ~isnan(md.inversion.thickness_obs)
 				md.inversion.thickness_obs=project2d(md,md.inversion.thickness_obs,md.mesh.numberoflayers);
 			end
-			if ~isnan(md.inversion.cost_functions_coefficients),
+			if ~isnan(md.inversion.cost_functions_coefficients)
 				md.inversion.cost_functions_coefficients=project2d(md,md.inversion.cost_functions_coefficients,md.mesh.numberoflayers);
 			end
-			if numel(md.inversion.min_parameters)>1,
+			if numel(md.inversion.min_parameters)>1
 				md.inversion.min_parameters=project2d(md,md.inversion.min_parameters,md.mesh.numberoflayers);
 			end
-			if numel(md.inversion.max_parameters)>1,
+			if numel(md.inversion.max_parameters)>1
 				md.inversion.max_parameters=project2d(md,md.inversion.max_parameters,md.mesh.numberoflayers);
 			end
-			if isa(md.smb,'SMBforcing') & ~isnan(md.smb.mass_balance),
+			if isa(md.smb,'SMBforcing') & ~isnan(md.smb.mass_balance)
 				md.smb.mass_balance=project2d(md,md.smb.mass_balance,md.mesh.numberoflayers); 
-			elseif isa(md.smb,'SMBhenning') & ~isnan(md.smb.smbref),
+			elseif isa(md.smb,'SMBhenning') & ~isnan(md.smb.smbref)
 				md.smb.smbref=project2d(md,md.smb.smbref,md.mesh.numberoflayers);
 			elseif isa(md.smb, 'SMBpddSicopolis') || isa(md.smb, 'SMBpddFast');
 				md.smb.s0p = project2d(md, md.smb.s0p, md.mesh.numberoflayers);
@@ -414,40 +414,40 @@ classdef model
 			end
 
 			%results
-			if ~isnan(md.initialization.vx),
+			if ~isnan(md.initialization.vx)
 				md.initialization.vx=DepthAverage(md,md.initialization.vx);
 			end
-			if ~isnan(md.initialization.vy),
+			if ~isnan(md.initialization.vy)
 				md.initialization.vy=DepthAverage(md,md.initialization.vy);
 			end
-			if ~isnan(md.initialization.vz),
+			if ~isnan(md.initialization.vz)
 				md.initialization.vz=DepthAverage(md,md.initialization.vz);
 			end
-			if ~isnan(md.initialization.vel),
+			if ~isnan(md.initialization.vel)
 				md.initialization.vel=DepthAverage(md,md.initialization.vel);
 			end
-			if ~isnan(md.initialization.temperature),
+			if ~isnan(md.initialization.temperature)
 				md.initialization.temperature=DepthAverage(md,md.initialization.temperature);
 			end
-			if ~isnan(md.initialization.pressure),
+			if ~isnan(md.initialization.pressure)
 				md.initialization.pressure=project2d(md,md.initialization.pressure,1);
 			end
-			if ~isnan(md.initialization.sediment_head),
+			if ~isnan(md.initialization.sediment_head)
 				md.initialization.sediment_head=project2d(md,md.initialization.sediment_head,1);
 			end
-			if ~isnan(md.initialization.epl_head),
+			if ~isnan(md.initialization.epl_head)
 				md.initialization.epl_head=project2d(md,md.initialization.epl_head,1);
 			end
-			if ~isnan(md.initialization.epl_thickness),
+			if ~isnan(md.initialization.epl_thickness)
 				md.initialization.epl_thickness=project2d(md,md.initialization.epl_thickness,1);
 			end
-			if ~isnan(md.initialization.waterfraction),
+			if ~isnan(md.initialization.waterfraction)
 				md.initialization.waterfraction=project2d(md,md.initialization.waterfraction,1);
 			end
-			if ~isnan(md.initialization.watercolumn),
+			if ~isnan(md.initialization.watercolumn)
 				md.initialization.watercolumn=project2d(md,md.initialization.watercolumn,1);
 			end
-			if ~isnan(md.initialization.debris),
+			if ~isnan(md.initialization.debris)
 				md.initialization.debris=project2d(md,md.initialization.debris,1);
 			end
 
@@ -466,13 +466,13 @@ classdef model
 			md.stressbalance.spcvz=project2d(md,md.stressbalance.spcvz,md.mesh.numberoflayers);
 			md.stressbalance.referential=project2d(md,md.stressbalance.referential,md.mesh.numberoflayers);
 			md.stressbalance.loadingforce=project2d(md,md.stressbalance.loadingforce,md.mesh.numberoflayers);
-			if numel(md.masstransport.spcthickness)>1,
+			if numel(md.masstransport.spcthickness)>1
 				md.masstransport.spcthickness=project2d(md,md.masstransport.spcthickness,md.mesh.numberoflayers);
 			end
-			if numel(md.damage.spcdamage)>1,
+			if numel(md.damage.spcdamage)>1
 				md.damage.spcdamage=project2d(md,md.damage.spcdamage,md.mesh.numberoflayers);
 			end
-			if numel(md.levelset.spclevelset)>1,
+			if numel(md.levelset.spclevelset)>1
 				md.levelset.spclevelset=project2d(md,md.levelset.spclevelset,md.mesh.numberoflayers);
 			end
 			md.thermal.spctemperature=project2d(md,md.thermal.spctemperature,md.mesh.numberoflayers);
@@ -496,15 +496,15 @@ classdef model
 			end
 			
 			%damage: 
-			if md.damage.isdamage,
+			if md.damage.isdamage
 				md.damage.D=DepthAverage(md,md.damage.D);
 			end
 
 			%special for thermal modeling:
-			if ~isnan(md.basalforcings.groundedice_melting_rate),
+			if ~isnan(md.basalforcings.groundedice_melting_rate)
 				md.basalforcings.groundedice_melting_rate=project2d(md,md.basalforcings.groundedice_melting_rate,1); 
 			end
-			if isprop(md.basalforcings,'floatingice_melting_rate') & ~isnan(md.basalforcings.floatingice_melting_rate),
+			if isprop(md.basalforcings,'floatingice_melting_rate') & ~isnan(md.basalforcings.floatingice_melting_rate)
 				md.basalforcings.floatingice_melting_rate=project2d(md,md.basalforcings.floatingice_melting_rate,1); 
 			end
 			if isprop(md.basalforcings,'deepwater_melting_rate')
@@ -515,10 +515,10 @@ classdef model
 			end
 			md.basalforcings.geothermalflux=project2d(md,md.basalforcings.geothermalflux,1); %bedrock only gets geothermal flux
 
-			if isprop(md.calving,'coeff') & ~isnan(md.calving.coeff),
+			if isprop(md.calving,'coeff') & ~isnan(md.calving.coeff)
 				md.calving.coeff=project2d(md,md.calving.coeff,1); 
 			end
-			if isprop(md.frontalforcings,'meltingrate') & ~isnan(md.frontalforcings.meltingrate),
+			if isprop(md.frontalforcings,'meltingrate') & ~isnan(md.frontalforcings.meltingrate)
 				md.frontalforcings.meltingrate=project2d(md,md.frontalforcings.meltingrate,1); 
 			end
 
@@ -533,21 +533,21 @@ classdef model
 			md.geometry.surface=project2d(md,md.geometry.surface,1);
 			md.geometry.thickness=project2d(md,md.geometry.thickness,1);
 			md.geometry.base=project2d(md,md.geometry.base,1);
-			if ~isnan(md.geometry.bed),
+			if ~isnan(md.geometry.bed)
 				md.geometry.bed=project2d(md,md.geometry.bed,1);
 			end
-			if ~isnan(md.mask.ocean_levelset),
+			if ~isnan(md.mask.ocean_levelset)
 				md.mask.ocean_levelset=project2d(md,md.mask.ocean_levelset,1);
 			end
-			if ~isnan(md.mask.ice_levelset),
+			if ~isnan(md.mask.ice_levelset)
 				md.mask.ice_levelset=project2d(md,md.mask.ice_levelset,1);
 			end
 
 			%lat long
-			if numel(md.mesh.lat)==md.mesh.numberofvertices,
+			if numel(md.mesh.lat)==md.mesh.numberofvertices
 				md.mesh.lat=project2d(md,md.mesh.lat,1);
 			end
-			if numel(md.mesh.long)==md.mesh.numberofvertices,
+			if numel(md.mesh.long)==md.mesh.numberofvertices
 				md.mesh.long=project2d(md,md.mesh.long,1);
 			end
 
@@ -556,9 +556,9 @@ classdef model
 				if isobject(md.outputdefinition.definitions{i})
 					%get subfields
 					solutionsubfields=fields(md.outputdefinition.definitions{i});
-					for j=1:length(solutionsubfields),
+					for j=1:length(solutionsubfields)
 						field=md.outputdefinition.definitions{i}.(solutionsubfields{j});
-						if length(field)==md.mesh.numberofvertices | length(field)==md.mesh.numberofelements,
+						if length(field)==md.mesh.numberofvertices | length(field)==md.mesh.numberofelements
 							md.outputdefinition.definitions{i}.(solutionsubfields{j})=project2d(md,md.outputdefinition.definitions{i}.(solutionsubfields{j}),1);
 						end
 					end
@@ -572,20 +572,20 @@ classdef model
 			mesh.numberofvertices=md.mesh.numberofvertices2d;
 			mesh.numberofelements=md.mesh.numberofelements2d;
 			mesh.elements=md.mesh.elements2d;
-			if numel(md.mesh.lat)==md.mesh.numberofvertices,
+			if numel(md.mesh.lat)==md.mesh.numberofvertices
 				mesh.lat=project2d(md,md.mesh.lat,1);
 			end
-			if numel(md.mesh.long)==md.mesh.numberofvertices,
+			if numel(md.mesh.long)==md.mesh.numberofvertices
 				mesh.long=project2d(md,md.mesh.long,1);
 			end
 			mesh.epsg=md.mesh.epsg;
-			if numel(md.mesh.scale_factor)==md.mesh.numberofvertices,
+			if numel(md.mesh.scale_factor)==md.mesh.numberofvertices
 				mesh.scale_factor=project2d(md,md.mesh.scale_factor,1);
 			end
-			if ~isnan(md.mesh.vertexonboundary),
+			if ~isnan(md.mesh.vertexonboundary)
 				mesh.vertexonboundary=project2d(md,md.mesh.vertexonboundary,1);
 			end
-			if ~isnan(md.mesh.elementconnectivity),
+			if ~isnan(md.mesh.elementconnectivity)
 				mesh.elementconnectivity=project2d(md,md.mesh.elementconnectivity,1);
 			end
 			md.mesh=mesh;
@@ -620,14 +620,14 @@ classdef model
 			options=pairoptions(varargin{:});
 
 			%some checks
-			if ((nargin<2) | (nargout~=1)),
+			if ((nargin<2) | (nargout~=1))
 				help extract
 				error('extract error message: bad usage');
 			end
 
 			%get elements that are inside area
 			flag_elem=FlagElements(md1,area);
-			if ~any(flag_elem),
+			if ~any(flag_elem)
 				error('extracted model is empty');
 			end
 
@@ -665,7 +665,7 @@ classdef model
 			elements_2(:,1)=Pnode(elements_2(:,1));
 			elements_2(:,2)=Pnode(elements_2(:,2));
 			elements_2(:,3)=Pnode(elements_2(:,3));
-			if isa(md1.mesh,'mesh3dprisms'),
+			if isa(md1.mesh,'mesh3dprisms')
 				elements_2(:,4)=Pnode(elements_2(:,4));
 				elements_2(:,5)=Pnode(elements_2(:,5));
 				elements_2(:,6)=Pnode(elements_2(:,6));
@@ -680,13 +680,13 @@ classdef model
 
 			%loop over model fields
 			model_fields=fields(md1);
-			for i=1:length(model_fields),
+			for i=1:length(model_fields)
 				%get field
 				field=md1.(model_fields{i});
 				fieldsize=size(field);
 				if isobject(field), %recursive call
 					object_fields=fields(md1.(model_fields{i}));
-					for j=1:length(object_fields),
+					for j=1:length(object_fields)
 						%get field
 						field=md1.(model_fields{i}).(object_fields{j});
 						fieldsize=size(field);
@@ -725,7 +725,7 @@ classdef model
 			md2.mesh.elements=elements_2;
 
 			%mesh.uppervertex mesh.lowervertex
-			if isa(md1.mesh,'mesh3dprisms'),
+			if isa(md1.mesh,'mesh3dprisms')
 				md2.mesh.uppervertex=md1.mesh.uppervertex(pos_node);
 				pos=find(~isnan(md2.mesh.uppervertex));
 				md2.mesh.uppervertex(pos)=Pnode(md2.mesh.uppervertex(pos));
@@ -744,7 +744,7 @@ classdef model
 			end
 
 			%Initial 2d mesh
-			if isa(md1.mesh,'mesh3dprisms'),
+			if isa(md1.mesh,'mesh3dprisms')
 				flag_elem_2d=flag_elem(1:md1.mesh.numberofelements2d);
 				pos_elem_2d=find(flag_elem_2d);
 				flag_node_2d=flag_node(1:md1.mesh.numberofvertices2d);
@@ -791,13 +791,13 @@ classdef model
 			end
 
 			%Penalties
-			if ~isnan(md2.stressbalance.vertex_pairing),
+			if ~isnan(md2.stressbalance.vertex_pairing)
 				for i=1:size(md1.stressbalance.vertex_pairing,1);
 					md2.stressbalance.vertex_pairing(i,:)=Pnode(md1.stressbalance.vertex_pairing(i,:));
 				end
 				md2.stressbalance.vertex_pairing=md2.stressbalance.vertex_pairing(find(md2.stressbalance.vertex_pairing(:,1)),:);
 			end
-			if ~isnan(md2.masstransport.vertex_pairing),
+			if ~isnan(md2.masstransport.vertex_pairing)
 				for i=1:size(md1.masstransport.vertex_pairing,1);
 					md2.masstransport.vertex_pairing(i,:)=Pnode(md1.masstransport.vertex_pairing(i,:));
 				end
@@ -805,7 +805,7 @@ classdef model
 			end
 
 			%recreate segments
-			if isa(md1.mesh,'mesh2d') | isa(md1.mesh','mesh3dsurface'),
+			if isa(md1.mesh,'mesh2d') | isa(md1.mesh','mesh3dsurface')
 				md2.mesh.vertexconnectivity=NodeConnectivity(md2.mesh.elements,md2.mesh.numberofvertices);
 				md2.mesh.elementconnectivity=ElementConnectivity(md2.mesh.elements,md2.mesh.vertexconnectivity);
 				md2.mesh.segments=contourenvelope(md2.mesh);
@@ -831,7 +831,7 @@ classdef model
 			%Figure out which node are on the boundary between md2 and md1
 			nodestoflag1=intersect(orphans_node,pos_node);
 			nodestoflag2=Pnode(nodestoflag1);
-			if numel(md1.stressbalance.spcvx)>1 & numel(md1.stressbalance.spcvy)>1 & numel(md1.stressbalance.spcvz)>1,
+			if numel(md1.stressbalance.spcvx)>1 & numel(md1.stressbalance.spcvy)>1 & numel(md1.stressbalance.spcvz)>1
 				if isprop(md1.inversion,'vx_obs') & numel(md1.inversion.vx_obs)>1 & numel(md1.inversion.vy_obs)>1
 					disp('NOTE: using observed velocities to create constraints along new boundary');
 					md2.stressbalance.spcvx(nodestoflag2)=md2.inversion.vx_obs(nodestoflag2); 
@@ -858,26 +858,26 @@ classdef model
 				%put 0 for vz
 				md2.stressbalance.spcvz(nodestoflag2)=0;
 			end
-			if ~isnan(md1.thermal.spctemperature),
+			if ~isnan(md1.thermal.spctemperature)
 				md2.thermal.spctemperature(nodestoflag2,1)=1;
 			end
 
 			%Results fields
-			if isstruct(md1.results),
+			if isstruct(md1.results)
 				md2.results=struct();
 				solutionfields=fields(md1.results);
-				for i=1:length(solutionfields),
+				for i=1:length(solutionfields)
 					if isstruct(md1.results.(solutionfields{i}))
 						%get subfields
 						% loop over time steps
 						for p=1:length(md1.results.(solutionfields{i}))
 							current = md1.results.(solutionfields{i})(p);
 							solutionsubfields=fields(current);
-							for j=1:length(solutionsubfields),
+							for j=1:length(solutionsubfields)
 							field=md1.results.(solutionfields{i})(p).(solutionsubfields{j});
-							if length(field)==numberofvertices1,
+							if length(field)==numberofvertices1
 								md2.results.(solutionfields{i})(p).(solutionsubfields{j})=field(pos_node);
-							elseif length(field)==numberofelements1,
+							elseif length(field)==numberofelements1
 								md2.results.(solutionfields{i})(p).(solutionsubfields{j})=field(pos_elem);
 							else
 								md2.results.(solutionfields{i})(p).(solutionsubfields{j})=field;
@@ -886,9 +886,9 @@ classdef model
 						end
 					else
 						field=md1.results.(solutionfields{i});
-						if length(field)==numberofvertices1,
+						if length(field)==numberofvertices1
 							md2.results.(solutionfields{i})=field(pos_node);
-						elseif length(field)==numberofelements1,
+						elseif length(field)==numberofelements1
 							md2.results.(solutionfields{i})=field(pos_elem);
 						else
 							md2.results.(solutionfields{i})=field;
@@ -898,15 +898,15 @@ classdef model
 			end
 
 			%OutputDefinitions fields
-			for i=1:length(md1.outputdefinition.definitions),
+			for i=1:length(md1.outputdefinition.definitions)
 				if isobject(md1.outputdefinition.definitions{i})
 					%get subfields
 					solutionsubfields=fields(md1.outputdefinition.definitions{i});
-					for j=1:length(solutionsubfields),
+					for j=1:length(solutionsubfields)
 						field=md1.outputdefinition.definitions{i}.(solutionsubfields{j});
-						if length(field)==numberofvertices1,
+						if length(field)==numberofvertices1
 							md2.outputdefinition.definitions{i}.(solutionsubfields{j})=field(pos_node);
-						elseif length(field)==numberofelements1,
+						elseif length(field)==numberofelements1
 							md2.outputdefinition.definitions{i}.(solutionsubfields{j})=field(pos_elem);
 						elseif size(field,1)==numberofvertices1+1
 							md2.outputdefinition.definitions{i}.(solutionsubfields{j})=[field(pos_node,:); field(end,:)];
@@ -1048,13 +1048,13 @@ classdef model
 
 			%loop over model fields (except mesh)
 			model_fields=setxor(fields(md),{'mesh'});
-			for i=1:length(model_fields),
+			for i=1:length(model_fields)
 				%get field
 				field=md.(model_fields{i});
 				fieldsize=size(field);
 				if isobject(field), %recursive call
 					object_fields=fields(md.(model_fields{i}));
-					for j=1:length(object_fields),
+					for j=1:length(object_fields)
 						%get field
 						field=md.(model_fields{i}).(object_fields{j});
 						fieldsize=size(field);
@@ -1142,7 +1142,7 @@ classdef model
 			%   See also: EXTRACT, COLLAPSE
 
 			%some checks on list of arguments
-			if ((nargin>4) | (nargin<2) | (nargout~=1)),
+			if ((nargin>4) | (nargin<2) | (nargout~=1))
 				help extrude;
 				error('extrude error message');
 			end
@@ -1153,13 +1153,13 @@ classdef model
 			%Extrude the mesh
 			if nargin==2, %list of coefficients
 				clist=varargin{1};
-				if any(clist<0) | any(clist>1),
+				if any(clist<0) | any(clist>1)
 					error('extrusioncoefficients must be between 0 and 1');
 				end
 				extrusionlist=sort(unique([clist(:);0;1]));
 				numlayers=length(extrusionlist);
 			elseif nargin==3, %one polynomial law
-				if varargin{2}<=0,
+				if varargin{2}<=0
 					help extrude;
 					error('extrusionexponent must be >=0');
 				end
@@ -1170,7 +1170,7 @@ classdef model
 				lowerexp=varargin{2};
 				upperexp=varargin{3};
 
-				if varargin{2}<=0 | varargin{3}<=0,
+				if varargin{2}<=0 | varargin{3}<=0
 					help extrude;
 					error('lower and upper extrusionexponents must be >=0');
 				end
@@ -1181,7 +1181,7 @@ classdef model
 
 			end
 
-			if numlayers<2,
+			if numlayers<2
 				error('number of layers should be at least 2');
 			end
 			if strcmp(md.mesh.domaintype(),'3D')
@@ -1219,7 +1219,7 @@ classdef model
 			bed3d=md.geometry.base;
 
 			%Create the new layers
-			for i=1:numlayers,
+			for i=1:numlayers
 				x3d=[x3d; md.mesh.x]; 
 				y3d=[y3d; md.mesh.y];
 				%nodes are distributed between bed and surface accordingly to the given exponent
@@ -1229,7 +1229,7 @@ classdef model
 
 			%Extrude elements 
 			elements3d=[];
-			for i=1:numlayers-1,
+			for i=1:numlayers-1
 				elements3d=[elements3d;[md.mesh.elements+(i-1)*md.mesh.numberofvertices md.mesh.elements+i*md.mesh.numberofvertices]]; %Create the elements of the 3d mesh for the non extruded part
 			end
 			number_el3d=size(elements3d,1); %number of 3d nodes for the non extruded part of the mesh
@@ -1302,7 +1302,7 @@ classdef model
 			if ~isnan(md.mesh.elementconnectivity)
 				md.mesh.elementconnectivity=repmat(md.mesh.elementconnectivity,numlayers-1,1);
 				md.mesh.elementconnectivity(find(md.mesh.elementconnectivity==0))=NaN;
-				for i=2:numlayers-1,
+				for i=2:numlayers-1
 					md.mesh.elementconnectivity((i-1)*md.mesh.numberofelements2d+1:(i)*md.mesh.numberofelements2d,:)...
 						=md.mesh.elementconnectivity((i-1)*md.mesh.numberofelements2d+1:(i)*md.mesh.numberofelements2d,:)+md.mesh.numberofelements2d;
 				end
@@ -1317,7 +1317,7 @@ classdef model
 			md.outputdefinition=extrude(md.outputdefinition,md);
 
 			%increase connectivity if less than 25:
-			if md.mesh.average_vertex_connectivity<=25,
+			if md.mesh.average_vertex_connectivity<=25
 				md.mesh.average_vertex_connectivity=100;
 			end
 		end % }}}
@@ -1463,7 +1463,7 @@ classdef model
 			if isfield(structmd,'y2d'), md.mesh.y2d=structmd.y2d; end
 			if isfield(structmd,'x2d'), md.mesh.x2d=structmd.x2d; end
 			if isfield(structmd,'elements'), md.mesh.elements=structmd.elements; end
-			if isfield(structmd,'edges'), 
+			if isfield(structmd,'edges') 
 				md.mesh.edges=structmd.edges; 
 				md.mesh.edges(isnan(md.mesh.edges))=-1;
 			end
@@ -1474,11 +1474,11 @@ classdef model
 			if isfield(structmd,'npart'); md.qmu.numberofpartitions=structmd.npart; end
 			if isfield(structmd,'part'); md.qmu.partition=structmd.part; end
 
-			if isnumeric(md.verbose),
+			if isnumeric(md.verbose)
 				md.verbose=verbose;
 			end
 
-			if isfield(structmd,'spcvelocity'), 
+			if isfield(structmd,'spcvelocity') 
 				md.stressbalance.spcvx=NaN*ones(md.mesh.numberofvertices,1);
 				md.stressbalance.spcvy=NaN*ones(md.mesh.numberofvertices,1);
 				md.stressbalance.spcvz=NaN*ones(md.mesh.numberofvertices,1);
@@ -1486,26 +1486,26 @@ classdef model
 				pos=find(structmd.spcvelocity(:,2)); md.stressbalance.spcvy(pos)=structmd.spcvelocity(pos,5); 
 				pos=find(structmd.spcvelocity(:,3)); md.stressbalance.spcvz(pos)=structmd.spcvelocity(pos,6); 
 			end
-			if isfield(structmd,'spcvx'), 
+			if isfield(structmd,'spcvx') 
 				md.stressbalance.spcvx=NaN*ones(md.mesh.numberofvertices,1);
 				pos=find(~isnan(structmd.spcvx)); md.stressbalance.spcvx(pos)=structmd.spcvx(pos); 
 			end
-			if isfield(structmd,'spcvy'),
+			if isfield(structmd,'spcvy')
 				md.stressbalance.spcvy=NaN*ones(md.mesh.numberofvertices,1);
 				pos=find(~isnan(structmd.spcvy)); md.stressbalance.spcvy(pos)=structmd.spcvy(pos);     
 			end
-			if isfield(structmd,'spcvz'),
+			if isfield(structmd,'spcvz')
 				md.stressbalance.spcvz=NaN*ones(md.mesh.numberofvertices,1);
 				pos=find(~isnan(structmd.spcvz)); md.stressbalance.spcvz(pos)=structmd.spcvz(pos);     
 			end
-			if isfield(structmd,'pressureload'),
-				if ~isempty(structmd.pressureload) & ismember(structmd.pressureload(end,end),[118 119 120]),
+			if isfield(structmd,'pressureload')
+				if ~isempty(structmd.pressureload) & ismember(structmd.pressureload(end,end),[118 119 120])
 					pos=find(structmd.pressureload(:,end)==120); md.stressbalance.icefront(pos,end)=0;
 					pos=find(structmd.pressureload(:,end)==118); md.stressbalance.icefront(pos,end)=1;
 					pos=find(structmd.pressureload(:,end)==119); md.stressbalance.icefront(pos,end)=2;
 				end
 			end
-			if isfield(structmd,'elements_type') & structmd.elements_type(end,end)>50,
+			if isfield(structmd,'elements_type') & structmd.elements_type(end,end)>50
 				pos=find(structmd.elements_type==59); md.flowequation.element_equation(pos,end)=0;
 				pos=find(structmd.elements_type==55); md.flowequation.element_equation(pos,end)=1;
 				pos=find(structmd.elements_type==56); md.flowequation.element_equation(pos,end)=2;
@@ -1515,7 +1515,7 @@ classdef model
 				pos=find(structmd.elements_type==58); md.flowequation.element_equation(pos,end)=6;
 				pos=find(structmd.elements_type==61); md.flowequation.element_equation(pos,end)=7;
 			end
-			if isfield(structmd,'vertices_type') & structmd.vertices_type(end,end)>50,
+			if isfield(structmd,'vertices_type') & structmd.vertices_type(end,end)>50
 				pos=find(structmd.vertices_type==59); md.flowequation.vertex_equation(pos,end)=0;
 				pos=find(structmd.vertices_type==55); md.flowequation.vertex_equation(pos,end)=1;
 				pos=find(structmd.vertices_type==56); md.flowequation.vertex_equation(pos,end)=2;
@@ -1525,22 +1525,22 @@ classdef model
 				pos=find(structmd.vertices_type==58); md.flowequation.vertex_equation(pos,end)=6;
 				pos=find(structmd.vertices_type==61); md.flowequation.vertex_equation(pos,end)=7;
 			end
-			if isfield(structmd,'rheology_law') & isnumeric(structmd.rheology_law),
+			if isfield(structmd,'rheology_law') & isnumeric(structmd.rheology_law)
 				if (structmd.rheology_law==272), md.materials.rheology_law='None';      end
 				if (structmd.rheology_law==368), md.materials.rheology_law='Paterson';  end
 				if (structmd.rheology_law==369), md.materials.rheology_law='Arrhenius'; end
 			end
-			if isfield(structmd,'groundingline_migration') & isnumeric(structmd.groundingline_migration),
+			if isfield(structmd,'groundingline_migration') & isnumeric(structmd.groundingline_migration)
 				if (structmd.groundingline_migration==272), md.groundingline.migration='None';      end
 				if (structmd.groundingline_migration==273), md.groundingline.migration='AggressiveMigration';  end
 				if (structmd.groundingline_migration==274), md.groundingline.migration='SoftMigration'; end
 			end
-			if isfield(structmd,'control_type') & isnumeric(structmd.control_type),
+			if isfield(structmd,'control_type') & isnumeric(structmd.control_type)
 				if (structmd.control_type==143), md.inversion.control_parameters={'FrictionCoefficient'}; end
 				if (structmd.control_type==190), md.inversion.control_parameters={'RheologyBbar'}; end
 				if (structmd.control_type==147), md.inversion.control_parameters={'Thickeningrate'}; end
 			end
-			if isfield(structmd,'cm_responses') & ismember(structmd.cm_responses(end,end),[165:170 383 388 389]),
+			if isfield(structmd,'cm_responses') & ismember(structmd.cm_responses(end,end),[165:170 383 388 389])
 				pos=find(structmd.cm_responses==166); md.inversion.cost_functions(pos)=101;
 				pos=find(structmd.cm_responses==167); md.inversion.cost_functions(pos)=102;
 				pos=find(structmd.cm_responses==168); md.inversion.cost_functions(pos)=103;
@@ -1552,13 +1552,13 @@ classdef model
 				pos=find(structmd.cm_responses==382); md.inversion.cost_functions(pos)=503;
 			end
 
-			if isfield(structmd,'artificial_diffusivity') & structmd.artificial_diffusivity==2,
+			if isfield(structmd,'artificial_diffusivity') & structmd.artificial_diffusivity==2
 					md.thermal.stabilization=2;
 					md.masstransport.stabilization=1;
 					md.balancethickness.stabilization=1;
 			end
 			if isnumeric(md.masstransport.hydrostatic_adjustment)
-				if md.masstransport.hydrostatic_adjustment==269,
+				if md.masstransport.hydrostatic_adjustment==269
 					md.masstransport.hydrostatic_adjustment='Incremental';
 				else
 					md.masstransport.hydrostatic_adjustment='Absolute';
@@ -1582,35 +1582,35 @@ classdef model
 			end
 
 			%2013 August 9
-			if isfield(structmd,'prognostic') & isa(structmd.prognostic,'prognostic'),
+			if isfield(structmd,'prognostic') & isa(structmd.prognostic,'prognostic')
 				disp('Recovering old prognostic class');
 				md.masstransport=masstransport(structmd.prognostic);
 			end
 			%2013 August 9
-			if isfield(structmd,'diagnostic') & (isa(structmd.diagnostic,'diagnostic') || isa(structmd.diagnostic,'stressbalance')),
+			if isfield(structmd,'diagnostic') & (isa(structmd.diagnostic,'diagnostic') || isa(structmd.diagnostic,'stressbalance'))
 				disp('Recovering old diagnostic class');
 				md.stressbalance=stressbalance(structmd.diagnostic);
 			end
 			%2014 January 9th
-			if isfield(structmd,'surfaceforcings') & isa(md.smb,'surfaceforcings'),
+			if isfield(structmd,'surfaceforcings') & isa(md.smb,'surfaceforcings')
 				disp('Recovering old surfaceforcings class');
 				mass_balance=structmd.surfaceforcings.mass_balance;
 				md.smb=SMB();
 				md.smb.mass_balance=mass_balance;
 			end
 			%2015 September 10
-			if isfield(structmd,'surfaceforcings') & isa(structmd.surfaceforcings,'SMB'),
+			if isfield(structmd,'surfaceforcings') & isa(structmd.surfaceforcings,'SMB')
 				disp('Recovering old SMB class');
 				md.smb=SMBforcing(structmd.surfaceforcings);
 			end
-			if isfield(structmd,'surfaceforcings') & isa(structmd.surfaceforcings,'SMBhenning'),
+			if isfield(structmd,'surfaceforcings') & isa(structmd.surfaceforcings,'SMBhenning')
 				disp('Recovering old SMBhenning class');
 				md.smb=SMBhenning(structmd.surfaceforcings);
 			end
 			if isfield(structmd,'slr') && ~isempty(structmd.slr)
 				md.solidearth       = solidearth('Earth');
 				disp('Recovering old slr class');
-				if isfield(structmd.slr,'sealevel'),
+				if isfield(structmd.slr,'sealevel')
 					md.solidearth.sealevel=structmd.slr.sealevel;
 				end
 				md.solidearth.planetradius=structmd.slr.planetradius;
@@ -1727,7 +1727,7 @@ classdef model
 				for j=1:3
 					element = elements(3*(i-1)+j,:);
 					matrix = [md.mesh.x(element), md.mesh.y(element), md.mesh.z(element), ones(4,1)];
-					if det(matrix)>0,
+					if det(matrix)>0
 						elements(3*(i-1)+j,1)=element(2);
 						elements(3*(i-1)+j,2)=element(1);
 					end
@@ -1738,7 +1738,7 @@ classdef model
 			%subelement2 = [4 6 5 1];
 			%subelement3 = [5 6 3 1];
 			%elements=[md.mesh.elements(:,subelement1);md.mesh.elements(:,subelement2);md.mesh.elements(:,subelement3)];
-			if steiner==0,
+			if steiner==0
 				disp('No Steiner point required to split prismatic mesh into tets');
 			else
 				disp([num2str(steiner) ' Steiner points had to be included'])
@@ -1751,7 +1751,7 @@ classdef model
 			md.mesh.numberofelements=size(elements,1);
 
 			%p and q (same deal, except for element that are on the bedrock: )
-			if ~isnan(md.friction.p),
+			if ~isnan(md.friction.p)
 				md.friction.p=md.friction.p(pos_elements);
 				md.friction.q=md.friction.q(pos_elements);
 			end
@@ -1766,12 +1766,12 @@ classdef model
 			md.mesh.elementconnectivity=NaN;
 
 			%materials
-			if ~isnan(md.materials.rheology_n),
+			if ~isnan(md.materials.rheology_n)
 				md.materials.rheology_n=md.materials.rheology_n(pos_elements);
 			end
 
 			%increase connectivity if less than 25:
-			if md.mesh.average_vertex_connectivity<=25,
+			if md.mesh.average_vertex_connectivity<=25
 				md.mesh.average_vertex_connectivity=100;
 			end
 		end % }}}
@@ -1782,7 +1782,7 @@ classdef model
 			fields=properties('model');
 			mem=0;
 
-			for i=1:length(fields),
+			for i=1:length(fields)
 				field=self.(fields{i});
 				s=whos('field'); 
 				mem=mem+s.bytes/1e6;
@@ -1812,13 +1812,13 @@ classdef model
 			%Preallocate variable id, needed to write variables in netcdf file
 			var_id=zeros(1000,1);%preallocate
 
-			for step=1:2,
+			for step=1:2
 				counter=0;
 				[var_id,counter]=structtonc(ncid,'md',self,0,var_id,counter,step);
 				if step==1, netcdf.endDef(ncid); end
 			end
 
-			if counter>1000,
+			if counter>1000
 				warning(['preallocation of var_id need to be updated from ' num2str(1000) ' to ' num2str(counter)]);
 			end
 
@@ -1872,7 +1872,7 @@ classdef model
 
 			disp('Converting all model fields to struct...');
 			warning off MATLAB:structOnObject
-			for i=1:length(mdfields),
+			for i=1:length(mdfields)
 
 				%convert md field to struct
 				field=mdfields{i};
@@ -1916,18 +1916,18 @@ classdef model
 			%now go through all the classes and fwrite all the corresponding fields: 
 
 			fields=properties('model');
-			for i=1:length(fields),
+			for i=1:length(fields)
 				field=fields{i};
 
 				%Some properties do not need to be saved
-				if ismember(field,{'results','cluster'}),
+				if ismember(field,{'results','cluster'})
 					continue;
 				end
 
 				%some optimization: 
-				if optimization==1,
+				if optimization==1
 					%optimize for plotting only:
-					if ~ismember(field,{'geometry','mesh','mask'}),
+					if ~ismember(field,{'geometry','mesh','mask'})
 						continue;
 					end
 				end

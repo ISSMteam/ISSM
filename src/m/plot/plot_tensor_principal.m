@@ -43,7 +43,7 @@ if  dimension(md.mesh)==3
 	[tensor.principalvalue3 datatype]=processdata(md,tensor.principalvalue3,options);
 end
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 	subplot(2*width,2*width,index3)
 	plot_unit(x,y,z,elements,tensor.principalvalue1,is2d,isplanet,datatype,options)
 	Apply_options_tensor(md,options,type,'principal value 1')

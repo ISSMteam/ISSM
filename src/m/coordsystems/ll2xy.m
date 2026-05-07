@@ -16,14 +16,14 @@ function [x,y,scale_factor] = ll2xy(lat,lon,sgn,central_meridian,standard_parall
 %                              	   -1 : south latitude (default is mer=0  lat=71)
 
 %Get central_meridian and standard_parallel depending on hemisphere
-if nargin==5,
+if nargin==5
 	delta = central_meridian;
 	slat  = standard_parallel;
 elseif nargin==3
-	if sgn == 1,
+	if sgn == 1
 		delta = 45; slat = 70;
 		disp('Info: creating coordinates in polar stereographic (Std Latitude: 70ºN Meridian: 45º)');
-	elseif sgn==-1,
+	elseif sgn==-1
 		delta = 0;  slat = 71;
 		disp('Info: creating coordinates in polar stereographic (Std Latitude: 71ºS Meridian: 0º)');
 	else
@@ -34,7 +34,7 @@ else
 	error('bad usage');
 end
 
-if nargout~=3 & nargout~=2,
+if nargout~=3 & nargout~=2
 	help ll2xy
 	error('bad usage');
 end
@@ -79,7 +79,7 @@ if cnt1
 	y(cnt1) = 0.0;
 end
 
-if nargout==3,
+if nargout==3
 	m=((1+sin(abs(slat)*pi/180))*ones(length(lat),1)./(1+sin(abs(lat)*pi/180)));
 	scale_factor=(1./m).^2;
 end

@@ -38,12 +38,12 @@ classdef steadystate
 			%Early return
 			if ~strcmp(solution,'SteadystateSolution'), return; end;
 
-			if md.timestepping.time_step~=0,
+			if md.timestepping.time_step~=0
 				md = checkmessage(md,['for a steadystate computation, timestepping.time_step must be zero.']);
 			end
 			md = checkfield(md,'fieldname','steadystate.requested_outputs','stringrow',1);
 
-			if isnan(md.stressbalance.reltol),
+			if isnan(md.stressbalance.reltol)
 				md = checkmessage(md,['for a steadystate computation, stressbalance.reltol (relative convergence criterion) must be defined!']);
 			end
 		end % }}}
@@ -62,7 +62,7 @@ classdef steadystate
 			%process requested outputs
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
-			if ~isempty(pos),
+			if ~isempty(pos)
 				outputs(pos) = [];                         %remove 'default' from outputs
 				outputs      = [outputs defaultoutputs(self,md)]; %add defaults
 			end

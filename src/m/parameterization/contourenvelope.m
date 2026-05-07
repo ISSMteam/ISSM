@@ -9,20 +9,20 @@ function segments=contourenvelope(mh,varargin)
 %      segments=contourenvelope(mh);
 
 %some checks
-if nargin>2,
+if nargin>2
 	help contourenvelope
 	error('contourenvelope error message: bad usage');
 end
-if nargin==2,
+if nargin==2
 	flags=varargin{1};
 
-	if ischar(flags),
+	if ischar(flags)
 		file=flags;
-		if ~exist(file),
+		if ~exist(file)
 			error(['contourenvelope error message: file ' file ' not found']);
 		end
 		isfile=1;
-	elseif isnumeric(flags),
+	elseif isnumeric(flags)
 		%do nothing for now
 		isfile=0;
 	else
@@ -32,16 +32,16 @@ end
 
 %Now, build the connectivity tables for this mesh.
 %Computing connectivity
-if isnan(mh.vertexconnectivity),
+if isnan(mh.vertexconnectivity)
 	mh.vertexconnectivity=NodeConnectivity(mh.elements,mh.numberofvertices);
 end
-if isnan(mh.elementconnectivity),
+if isnan(mh.elementconnectivity)
 	mh.elementconnectivity=ElementConnectivity(mh.elements,mh.vertexconnectivity);
 end
 
 %get nodes inside profile
 mesh.elementconnectivity=mh.elementconnectivity;
-if dimension(mh)==2,
+if dimension(mh)==2
 	mesh.elements=mh.elements;
 	mesh.x=mh.x;
 	mesh.y=mh.y;
@@ -55,9 +55,9 @@ else
 	mesh.numberofelements=mh.numberofelements2d;
 end
 
-if nargin==2,
+if nargin==2
 
-	if isfile,
+	if isfile
 		%get flag list of elements and nodes inside the contour
 		nodein=ContourToMesh(mesh.elements,mesh.x,mesh.y,file,'node',1);
 		elemin=(sum(nodein(mesh.elements),2)==size(mesh.elements,2));
@@ -84,7 +84,7 @@ end
 %Find element on boundary
 %First: find elements on the boundary of the domain
 flag=mesh.elementconnectivity;
-if nargin==2,
+if nargin==2
 	flag(find(flag))=elemin(flag(find(flag)));
 end
 elementonboundary=double(prod(flag,2)==0 & sum(flag,2)>0);
@@ -95,10 +95,10 @@ num_segments=length(pos);
 segments=zeros(num_segments*3,3);
 count=1;
 
-for i=1:num_segments,
+for i=1:num_segments
 	el1=pos(i);
 	els2=mesh.elementconnectivity(el1,find(mesh.elementconnectivity(el1,:)));
-	if length(els2)>1,
+	if length(els2)>1
 		flag=intersect(intersect(mesh.elements(els2(1),:),mesh.elements(els2(2),:)),mesh.elements(el1,:));
 		nods1=mesh.elements(el1,:);
 		nods1(find(nods1==flag))=[];
@@ -108,7 +108,7 @@ for i=1:num_segments,
 		ord2=find(nods1(2)==mesh.elements(el1,:));
 
 		%swap segment nodes if necessary
-		if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) ),
+		if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) )
 			temp=segments(count,1);
 			segments(count,1)=segments(count,2);
 			segments(count,2)=temp;
@@ -118,13 +118,13 @@ for i=1:num_segments,
 	else
 		nods1=mesh.elements(el1,:);
 		flag=setdiff(nods1,mesh.elements(els2,:));
-		for j=1:3,
+		for j=1:3
 			nods=nods1; nods(j)=[];
-			if any(ismember(flag,nods)),
+			if any(ismember(flag,nods))
 				segments(count,:)=[nods el1];
 				ord1=find(nods(1)==mesh.elements(el1,:));
 				ord2=find(nods(2)==mesh.elements(el1,:));
-				if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) ),
+				if ( (ord1==1 & ord2==2) | (ord1==2 & ord2==3) | (ord1==3 & ord2==1) )
 					temp=segments(count,1);
 					segments(count,1)=segments(count,2);
 					segments(count,2)=temp;

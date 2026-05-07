@@ -33,11 +33,11 @@ function md=modelmerge2d(md1,md2,varargin)
 
 	%go into the vertices on boundary of mesh 1, and figure out which ones are common to mesh2: 
 	verticesonboundary=find(md1.mesh.vertexonboundary); 
-	for i=1:length(verticesonboundary),
+	for i=1:length(verticesonboundary)
 		node1=verticesonboundary(i); xnode1=x1(node1); ynode1=y1(node1);
 		%is there another node with these coordinates in mesh2? 
 		ind=find(sqrt(((x2-xnode1).^2+(y2-ynode1).^2))<tolerance);
-		if ~isempty(ind),
+		if ~isempty(ind)
 			x2(ind)=NaN;
 			y2(ind)=NaN;
 			pos=find(elements2==(ind+nods1)); elements2(pos)=node1;
@@ -46,8 +46,8 @@ function md=modelmerge2d(md1,md2,varargin)
 
 	%go through elements2 and drop counter on each vertex that is above the x2 and y2 vertices being dropped: 
 	while( ~isempty(find(isnan(x2)))),
-		for i=1:length(x2),
-			if isnan(x2(i)),
+		for i=1:length(x2)
+			if isnan(x2(i))
 				pos=find(elements2>(i+nods1));
 				elements2(pos)=elements2(pos)-1;
 				x2(i)=[];
@@ -82,7 +82,7 @@ function md=modelmerge2d(md1,md2,varargin)
 	md.mesh.vertexonboundary=zeros(md.mesh.numberofvertices,1);
 	md.mesh.vertexonboundary(md.mesh.segments(:,1:2))=1;
 
-	if getfieldvalue(options,'full',0),
+	if getfieldvalue(options,'full',0)
 		%we are asked to merge the classes fields too. We need have vertex and element mappings first: 
 		%vertex intersections:
 		md.mesh.extractedvertices={meshintersect(x,y,md1.mesh.x,md1.mesh.y,'tolerance',1e-5), meshintersect(x,y,md2.mesh.x,md2.mesh.y,'tolerance',1e-5)};
@@ -96,7 +96,7 @@ function md=modelmerge2d(md1,md2,varargin)
 		md=transfer_fields(md,md1,md2,'geometry',{'thickness','surface','bed','base'});
 		md=transfer_fields(md,md1,md2,'mask',{'ocean_levelset','ice_levelset','ocean_levelset','land_levelset','glacier_levelset'});
 		md=transfer_fields(md,md1,md2,'smb',{'mass_balance'});
-		if strcmpi(class(md1.basalforcings),'linearbasalforcings'),
+		if strcmpi(class(md1.basalforcings),'linearbasalforcings')
 			md=transfer_fields(md,md1,md2,'basalforcings',{'groundedice_melting_rate','geothermalflux'});
 		else
 			md=transfer_fields(md,md1,md2,'basalforcings',{'groundedice_melting_rate','deepwater_melting_rate','deepwater_elevation','upperwater_elevation','geothermalflux'});
@@ -123,10 +123,10 @@ function md=modelmerge2d(md1,md2,varargin)
 		
 		%identify corners between both basins
 		ends=[];
-		for i=1:length(pos),
+		for i=1:length(pos)
 			v=pos(i); [indi,indj]=find(md.mesh.elements==v); 
 			conn=unique(md.mesh.elements(indi,:));
-			if (sum(boundary(conn))==2),
+			if (sum(boundary(conn))==2)
 				ends(end+1)=v;
 			end
 		end
@@ -137,7 +137,7 @@ function md=modelmerge2d(md1,md2,varargin)
 
 	
 	%some checks: 
-	if max(md.mesh.elements)>md.mesh.numberofvertices, 
+	if max(md.mesh.elements)>md.mesh.numberofvertices 
 		error('issue in modelmerge, one of the element ids is > number of vertices!');
 	end
 
@@ -145,7 +145,7 @@ end %end of function
 
 function prop=transfer_vertices(md,md1,md2,field1,field2) % {{{
 	f1=getfield(md1,field1); f2=getfield(f1,field2); 
-	if length(f2)==md1.mesh.numberofvertices,
+	if length(f2)==md1.mesh.numberofvertices
 		prop=zeros(md.mesh.numberofvertices,1); 
 		prop(md.mesh.extractedvertices{1})=f2;
 		f1=getfield(md2,field1); f2=getfield(f1,field2); prop(md.mesh.extractedvertices{2})=f2;
@@ -166,9 +166,9 @@ function prop=transfer_elements(md,md1,md2,field1,field2) % {{{
 end %end of function %}}}
 function md=transfer_fields(md,md1,md2,classname,classfields) % {{{
 
-	for i=1:length(classfields),
+	for i=1:length(classfields)
 		field1=eval(['md1.' classname '.' classfields{i}]); 
-		if length(field1)==md1.mesh.numberofvertices | length(field1)==md1.mesh.numberofvertices+1,
+		if length(field1)==md1.mesh.numberofvertices | length(field1)==md1.mesh.numberofvertices+1
 			eval(['md.' classname '.' classfields{i} '=transfer_vertices(md,md1,md2,''' classname ''',''' classfields{i} ''');']);
 		else
 			eval(['md.' classname '.' classfields{i} '=transfer_elements(md,md1,md2,''' classname ''',''' classfields{i} ''');']);

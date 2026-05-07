@@ -149,7 +149,7 @@ classdef frontera
 				fprintf(fid,'#SBATCH --mail-user=%s \n',cluster.email);
 				fprintf(fid,'#SBATCH --mail-type=all \n\n');
 			end
-			for i=1:numel(cluster.modules),
+			for i=1:numel(cluster.modules)
 				fprintf(fid,['module load ' cluster.modules{i} '\n']);
 			end
 
@@ -183,10 +183,10 @@ classdef frontera
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
-			if cluster.interactive,
+			if cluster.interactive
 				compressstring = [compressstring ' ' modelname '.errlog ' modelname '.outlog '];
 			end
 			system(compressstring);

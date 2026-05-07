@@ -47,13 +47,13 @@ classdef mesh3dprisms
 			% loaded. Update old properties here
 
 			%2014 Oct. 1st
-			if isstruct(self),
+			if isstruct(self)
 				oldself=self;
 				%Assign property values from struct
 				self=structtoobj(mesh3dprisms(),oldself);
-				if isfield(oldself,'hemisphere'),
+				if isfield(oldself,'hemisphere')
 					disp('md.mesh.hemisphere has been automatically converted to EPSG code');
-					if strcmpi(oldself.hemisphere,'n'),
+					if strcmpi(oldself.hemisphere,'n')
 						self.epsg=3413;
 						self.proj=epsg2proj(3413);
 					else
@@ -76,7 +76,7 @@ classdef mesh3dprisms
 					fields=fieldnames(object);
 					for i=1:length(fields)
 						field=fields{i};
-						if ismember(field,properties('mesh3dprisms')),
+						if ismember(field,properties('mesh3dprisms'))
 							self.(field)=object.(field);
 						end
 					end
@@ -116,16 +116,16 @@ classdef mesh3dprisms
 			%Check that mesh follows the geometry
 			md = checkfield(md,'fieldname','mesh.z','>=',md.geometry.base-10^-10,'message','''mesh.z'' lower than bedrock');
 			md = checkfield(md,'fieldname','mesh.z','<=',md.geometry.surface+10^-10,'message','''mesh.z'' higher than surface elevation');
-			if any(max(abs(project2d(md,md.mesh.z,1)-project2d(md,md.geometry.base,1)))>1e-10),
+			if any(max(abs(project2d(md,md.mesh.z,1)-project2d(md,md.geometry.base,1)))>1e-10)
 				md = checkmessage(md,'md.mesh.z is not consistent with md.geometry.base, you changed the geometry after extrusion');
 			end
-			if any(max(abs(project2d(md,md.mesh.z,md.mesh.numberoflayers)-project2d(md,md.geometry.surface,1)))>1e-10),
+			if any(max(abs(project2d(md,md.mesh.z,md.mesh.numberoflayers)-project2d(md,md.geometry.surface,1)))>1e-10)
 				md = checkmessage(md,'md.mesh.z is not consistent with md.geometry.surface, you changed the geometry after extrusion !!');
 			end
-			if any(max(abs(project2d(md,md.mesh.z,md.mesh.numberoflayers)-project2d(md,md.mesh.z,1) - project2d(md,md.geometry.thickness,1)))>1e-10),
+			if any(max(abs(project2d(md,md.mesh.z,md.mesh.numberoflayers)-project2d(md,md.mesh.z,1) - project2d(md,md.geometry.thickness,1)))>1e-10)
 				md = checkmessage(md,'md.mesh.z is not consistent with md.geometry.thickness, you changed the geometry after extrusion !!');
 			end
-			if numel(md.mesh.scale_factor)>1,
+			if numel(md.mesh.scale_factor)>1
 				md = checkfield(md,'fieldname','mesh.scale_factor','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 			end
 		end % }}}
@@ -195,7 +195,7 @@ classdef mesh3dprisms
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','numberofvertices2d','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','numberofelements2d','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','mesh','fieldname','scale_factor','format','DoubleMat','mattype',1);
-			if md.transient.isoceancoupling,
+			if md.transient.isoceancoupling
 				WriteData(fid,prefix,'object',self,'class','mesh','fieldname','lat','format','DoubleMat','mattype',1);
 				WriteData(fid,prefix,'object',self,'class','mesh','fieldname','long','format','DoubleMat','mattype',1);
 			end

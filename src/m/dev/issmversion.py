@@ -1,6 +1,5 @@
 from IssmConfig import IssmConfig
 
-
 def issmversion():
     """
     ISSMVERSION - display ISSM version
@@ -8,7 +7,6 @@ def issmversion():
         Usage:
             issmversion()
     """
-
 
 print(' ')
 print((IssmConfig('PACKAGE_NAME')[0] + ' Version ' + IssmConfig('PACKAGE_VERSION')[0]))

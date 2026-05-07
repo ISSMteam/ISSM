@@ -39,7 +39,7 @@ disp('   -- Jakobsson2020: interpolating bed');
 bedout = InterpFromGrid(xdata,ydata,data,x0075,y0075);
 bedout = reshape(bedout,size(X,1),size(X,2));
 
-if nargout==2,
+if nargout==2
 	ncpath ='/totten_1/ModelData/Greenland/IBCAO/IBCAO_v4_200m_TID.nc';
 	disp('   -- Jakobsson2020: loading source');
 	data = double(ncread(ncpath,'z',[id1x id1y],[id2x-id1x+1 id2y-id1y+1],[1 1]))';

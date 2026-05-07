@@ -28,7 +28,7 @@ classdef sealevelmodel < handle
 		function slm = sealevelmodel(varargin) % {{{
 			slm=setdefaultparameters(slm);
 
-			if nargin==1,
+			if nargin==1
 
 				options=pairoptions(varargin{:});
 
@@ -67,12 +67,12 @@ classdef sealevelmodel < handle
 				error('earth.transient.isslc should be turned on') 
 			end
 
-			for i=1:length(slm.icecaps),
+			for i=1:length(slm.icecaps)
 
 				md= slm.icecaps{i};
 
 				%check that the transition vectors have the right size:
-				if md.mesh.numberofvertices ~= length(slm.earth.solidearth.transitions{i}),
+				if md.mesh.numberofvertices ~= length(slm.earth.solidearth.transitions{i})
 					error(['issue with size of transition vector for ice cap: ' num2str(i) ' name: ' md.miscellaneous.name]);
 				end
 
@@ -137,27 +137,27 @@ classdef sealevelmodel < handle
 		end % }}}
 		function self=mergeresults(self) % {{{
 			champs=fieldnames(self.icecaps{1}.results.TransientSolution);
-			for i=1:length(self.mergedcaps)/2,
+			for i=1:length(self.mergedcaps)/2
 				md=self.mergedcaps{2*(i-1)+1}; trans=self.mergedcaps{2*(i-1)+2};
 				%icecaps=self.icecaps(self.range{2*(i-1)+2});
-				for j=1:length(self.icecaps{1}.results.TransientSolution),
-					for k=1:length(champs),
-						if strcmpi(class(icecaps{1}.results.TransientSolution(j).(champs{k})),'double'),
+				for j=1:length(self.icecaps{1}.results.TransientSolution)
+					for k=1:length(champs)
+						if strcmpi(class(icecaps{1}.results.TransientSolution(j).(champs{k})),'double')
 							%vertex or element?
-							if length(icecaps{1}.results.TransientSolution(j).(champs{k}))==icecaps{1}.mesh.numberofvertices,
+							if length(icecaps{1}.results.TransientSolution(j).(champs{k}))==icecaps{1}.mesh.numberofvertices
 								md.results.TransientSolution(j).(champs{k})=zeros(md.mesh.numberofvertices,1);
-								for l=1:length(trans),
+								for l=1:length(trans)
 									resultcap=icecaps{l}.results.TransientSolution(j).(champs{k});
 									md.results.TransientSolution(j).(champs{k})(trans{l})=resultcap;
 								end
 							else
-								if strcmpi(champs{k},'IceVolume') | strcmpi(champs{k},'IceVolumeAboveFloatation') ,
+								if strcmpi(champs{k},'IceVolume') | strcmpi(champs{k},'IceVolumeAboveFloatation') 
 									md.results.TransientSolution(j).(champs{k})=0;
-									for l=1:length(trans),
+									for l=1:length(trans)
 										resultcap=icecaps{l}.results.TransientSolution(j).(champs{k});
 										md.results.TransientSolution(j).(champs{k})= md.results.TransientSolution(j).(champs{k})+resultcap;
 									end
-								elseif strcmpi(champs{k},'time'),
+								elseif strcmpi(champs{k},'time')
 									md.results.TransientSolution(j).(champs{k})= icecaps{1}.results.TransientSolution(j).(champs{k});
 								else
 									continue;
@@ -172,7 +172,7 @@ classdef sealevelmodel < handle
 			end
 		end % }}}
 		function listcaps(self) % {{{
-			for  i=1:length(self.icecaps),
+			for  i=1:length(self.icecaps)
 				disp(sprintf('%i: %s',i,self.icecaps{i}.miscellaneous.name));
 			end
 		end % }}}
@@ -181,15 +181,15 @@ classdef sealevelmodel < handle
 		end % }}}
 		function list=continents(self) % {{{
 			list={};
-			for  i=1:length(self.basins),
+			for  i=1:length(self.basins)
 				list{end+1}=self.basins{i}.continent;
 			end
 			list=unique(list);
 		end % }}}
 		function list=basinsfromcontinent(self,continent) % {{{
 			list={};
-			for  i=1:length(self.icecaps),
-				if strcmpi(self.basins{i}.continent,continent),
+			for  i=1:length(self.icecaps)
+				if strcmpi(self.basins{i}.continent,continent)
 					list{end+1}=self.basins{i}.name;
 				end
 			end
@@ -214,7 +214,7 @@ classdef sealevelmodel < handle
 			xe=self.earth.mesh.x(self.earth.mesh.elements)*[1;1;1]/3;
 			ye=self.earth.mesh.y(self.earth.mesh.elements)*[1;1;1]/3;
 			
-			for i=1:length(self.icecaps),
+			for i=1:length(self.icecaps)
 				mdi=self.icecaps{i};
 		
 				%for elements:
@@ -243,7 +243,7 @@ classdef sealevelmodel < handle
 			ye=self.earth.mesh.y(self.earth.mesh.elements)*[1;1;1]/3;
 			ze=self.earth.mesh.z(self.earth.mesh.elements)*[1;1;1]/3;
 			
-			for i=1:length(self.icecaps),
+			for i=1:length(self.icecaps)
 				mdi=self.icecaps{i};
 				mdi=TwoDToThreeD(mdi,self.planet);
 		
@@ -261,20 +261,20 @@ classdef sealevelmodel < handle
 				self.earth.solidearth.transfercount(self.transitions{i})=self.earth.solidearth.transfercount(self.transitions{i})+1;
 			end
 
-			for i=1:length(self.icecaps),
+			for i=1:length(self.icecaps)
 				self.icecaps{i}.solidearth.transfercount=self.earth.solidearth.transfercount(self.transitions{i});
 			end
 		end % }}}
 		function checkintersections(self) % {{{
 			flags=zeros(self.earth.mesh.numberofvertices,1);
-			for i=1:length(self.basins),
+			for i=1:length(self.basins)
 				flags(self.transitions{i})=i;
 			end
 			plotmodel(self.earth,'data',flags,'coastlines','on');
 
 		end % }}}
 		function checkbasinconsistency(self) % {{{
-			for i=1:length(self.basins),
+			for i=1:length(self.basins)
 				self.basins{i}.checkconsistency();
 			end
 
@@ -285,12 +285,12 @@ classdef sealevelmodel < handle
 			bas=getfieldvalue(options,'basin','all');
 
 			%expand continent list: {{{
-			if iscell(continent),
-				if length(continent)==1,
-					if strcmpi(continent{1},'all'),
+			if iscell(continent)
+				if length(continent)==1
+					if strcmpi(continent{1},'all')
 						%need to transform this into a list of continents:
 						continent={};
-						for i=1:length(self.basins),
+						for i=1:length(self.basins)
 							continent{end+1}=self.basins{i}.continent;
 						end
 						continent=unique(continent);
@@ -301,10 +301,10 @@ classdef sealevelmodel < handle
 					%nothing to do: assume we have a list of continents
 				end
 			else
-				if strcmpi(continent,'all'),
+				if strcmpi(continent,'all')
 					%need to transform this into a list of continents:
 					continent={};
-					for i=1:length(self.basins),
+					for i=1:length(self.basins)
 						continent{end+1}=self.basins{i}.continent;
 					end
 					continent=unique(continent);
@@ -314,13 +314,13 @@ classdef sealevelmodel < handle
 			end
 			%}}}
 			%expand basins list using the continent list above and the extra bas discriminator: %{{{
-			if iscell(bas),
-				if length(bas)==1,
-					if strcmpi(bas{1},'all'),
+			if iscell(bas)
+				if length(bas)==1
+					if strcmpi(bas{1},'all')
 						%need to transform this into a list of basins:
 						baslist=[];
-						for i=1:length(self.basins),
-							if self.basins{i}.iscontinentany(continent{:}),
+						for i=1:length(self.basins)
+							if self.basins{i}.iscontinentany(continent{:})
 								baslist(end+1)=i;
 							end
 						end
@@ -328,9 +328,9 @@ classdef sealevelmodel < handle
 					else
 					bas=bas{1};
 					baslist=[];
-					for i=1:length(self.basins),
-						if self.basins{i}.iscontinentany(continent{:}),
-							if self.basins{i}.isnameany(bas),
+					for i=1:length(self.basins)
+						if self.basins{i}.iscontinentany(continent{:})
+							if self.basins{i}.isnameany(bas)
 								baslist(end+1)=i;
 							end
 						end
@@ -340,11 +340,11 @@ classdef sealevelmodel < handle
 				else
 					%we have a list of basin names:
 					baslist=[];
-					for i=1:length(bas),
+					for i=1:length(bas)
 						basname=bas{i};
-						for j=1:length(self.basins),
-							if self.basins{j}.iscontinentany(continent{:}),
-								if self.basins{j}.isnameany(basname),
+						for j=1:length(self.basins)
+							if self.basins{j}.iscontinentany(continent{:})
+								if self.basins{j}.isnameany(basname)
 									baslist(end+1)=j;
 								end
 							end
@@ -353,19 +353,19 @@ classdef sealevelmodel < handle
 					end
 				end
 			else
-				if strcmpi(bas,'all'),
+				if strcmpi(bas,'all')
 					baslist=[];
-					for i=1:length(self.basins),
-						if self.basins{i}.iscontinentany(continent{:}),
+					for i=1:length(self.basins)
+						if self.basins{i}.iscontinentany(continent{:})
 							baslist(end+1)=i;
 						end
 					end
 					baslist=unique(baslist);
 				else
 					baslist=[];
-					for i=1:length(self.basins),
-						if self.basins{i}.iscontinentany(continent{:}),
-							if self.basins{i}.isnameany(bas),
+					for i=1:length(self.basins)
+						if self.basins{i}.iscontinentany(continent{:})
+							if self.basins{i}.isnameany(bas)
 								baslist(end+1)=i;
 							end
 						end
@@ -383,7 +383,7 @@ classdef sealevelmodel < handle
 			self.icecaps{end+1}=md;
 		end % }}}
 		function basinsplot3d(self,varargin) % {{{
-			for i=1:length(self.basins),
+			for i=1:length(self.basins)
 				self.basins{i}.plot3d(varargin{:});
 			end
 		end % }}}
@@ -396,23 +396,23 @@ classdef sealevelmodel < handle
 	
 			%make 3D model:
 			models=self.icecaps;
-			for i=1:length(models),
+			for i=1:length(models)
 				models{i}=TwoDToThreeD(models{i},self.planet);
 			end
 			
 			%Plug all models together:
 			md=models{1};
-			for i=2:length(models),
+			for i=2:length(models)
 				md=modelmerge3d(md,models{i},'tolerance',tolerance);
 				md.private.bamg.landmask=[md.private.bamg.landmask;models{i}.private.bamg.landmask];
 			end
 
 			%Look for lone edges if asked for it: {{{
-			if loneedgesdetect,
+			if loneedgesdetect
 				edges=loneedges(md);
 				plotmodel(md,'data',md.mask.land_levelset);
 				hold on;
-				for i=1:length(edges),
+				for i=1:length(edges)
 					ind1=edges(i,1);
 					ind2=edges(i,2);
 					%plot([md.mesh.x(ind1),md.mesh.x(ind2)],[md.mesh.y(ind1),md.mesh.y(ind2)],'r*-');
@@ -437,15 +437,15 @@ classdef sealevelmodel < handle
 
 			%Plug all models together:
 			md=models{1};
-			for i=2:length(models),
+			for i=2:length(models)
 				md=modelmerge2d(md,models{i},'tolerance',tolerance);
 			end
 
 			%Look for lone edges if asked for it: {{{
-			if loneedgesdetect,
+			if loneedgesdetect
 				edges=loneedges(md);
 				hold on;
-				for i=1:length(edges),
+				for i=1:length(edges)
 					ind1=edges(i,1);
 					ind2=edges(i,2);
 					plot([md.mesh.x(ind1),md.mesh.x(ind2)],[md.mesh.y(ind1),md.mesh.y(ind2)],'g*-');
@@ -457,17 +457,17 @@ classdef sealevelmodel < handle
 
 		end % }}}
 		function viscousiterations(self) % {{{
-			for  i=1:length(self.icecaps),
+			for  i=1:length(self.icecaps)
 				ic=self.icecaps{i};
 				mvi=ic.results.TransientSolution(1).StressbalanceConvergenceNumSteps;
-				for j=2:length(ic.results.TransientSolution)-1,
+				for j=2:length(ic.results.TransientSolution)-1
 					mvi=max(mvi,ic.results.TransientSolution(j).StressbalanceConvergenceNumSteps);
 				end
 				disp(sprintf('%i, %s: %i',i,self.icecaps{i}.miscellaneous.name,mvi));
 			end
 		end % }}}
 		function maxtimestep(self) % {{{
-			for  i=1:length(self.icecaps),
+			for  i=1:length(self.icecaps)
 				ic=self.icecaps{i};
 				mvi=length(ic.results.TransientSolution);
 				timei=ic.results.TransientSolution(end).time;
@@ -480,19 +480,19 @@ classdef sealevelmodel < handle
 		function transfer(self,string) % {{{
 			%Recover field size in one icecap:
 			eval(['n=size(self.icecaps{1}.' string ',1);']);
-			if n==self.icecaps{1}.mesh.numberofvertices,
+			if n==self.icecaps{1}.mesh.numberofvertices
 				eval(['self.earth.' string '=zeros(self.earth.mesh.numberofvertices,1);']);
-				for i=1:length(self.icecaps),
+				for i=1:length(self.icecaps)
 					eval(['self.earth.' string '(self.transitions{' num2str(i) '})=self.icecaps{' num2str(i) '}.' string ';']);
 				end
-			elseif n==(self.icecaps{1}.mesh.numberofvertices+1),
+			elseif n==(self.icecaps{1}.mesh.numberofvertices+1)
 				%dealing with a transient dataset.
 				%check that all timetags are similar between all icecaps:  %{{{
-				for i=1:length(self.icecaps),
+				for i=1:length(self.icecaps)
 					eval(['capfieldi= self.icecaps{' num2str(i) '}.' string ';']);
-					for j=(i+1):length(self.icecaps),
+					for j=(i+1):length(self.icecaps)
 						eval(['capfieldj= self.icecaps{' num2str(j) '}.' string ';']);
-						if ~isequal(capfieldi(end,:),capfieldj(end,:)),
+						if ~isequal(capfieldi(end,:),capfieldj(end,:))
 							error(['Time stamps for ' string ' field are different between icecaps ' num2str(i) ' and ' num2str(j)]);
 						end
 					end
@@ -506,17 +506,17 @@ classdef sealevelmodel < handle
 				eval(['field(end,:)=times;']); %transfer the times only, not the values
 				%}}}
 				%transfer all time fields: {{{
-				for i=1:length(self.icecaps),
+				for i=1:length(self.icecaps)
 					eval(['capfieldi= self.icecaps{' num2str(i) '}.' string ';']);
-					for j=1:nsteps,
+					for j=1:nsteps
 						eval(['field(self.transitions{' num2str(i) '},' num2str(j) ')=capfieldi(1:end-1,' num2str(j) ');']); %transfer only the values, not the time.
 					end
 				end
 				eval(['self.earth.' string '=field;']); %do not forget to plug the field variable into its final location
 				%}}}
-			elseif n==self.icecaps{1}.mesh.numberofelements,
+			elseif n==self.icecaps{1}.mesh.numberofelements
 				eval(['self.earth.' string '=zeros(self.earth.mesh.numberofelements,1);']);
-				for i=1:length(self.icecaps),
+				for i=1:length(self.icecaps)
 					eval(['self.earth.' string '(self.eltransitions{' num2str(i) '})=self.icecaps{' num2str(i) '}.' string ';']);
 				end
 			else
@@ -524,32 +524,32 @@ classdef sealevelmodel < handle
 			end
 		end % }}}
 		function self=homogeneize(self,noearth) % {{{
-			if nargin==1,
+			if nargin==1
 				noearth=0;
 			end
 			mintimestep=Inf;
-			for  i=1:length(self.icecaps),
+			for  i=1:length(self.icecaps)
 				ic=self.icecaps{i};
 				mintimestep=min(mintimestep, length(ic.results.TransientSolution));
 			end
-			if ~noearth,
+			if ~noearth
 				mintimestep=min(mintimestep, length(self.earth.results.TransientSolution));
 			end
 			
-			for  i=1:length(self.icecaps),
+			for  i=1:length(self.icecaps)
 				ic=self.icecaps{i};
 				ic.results.TransientSolution=ic.results.TransientSolution(1:mintimestep);
 				self.icecaps{i}=ic;
 			end
 			ic=self.earth;
-			if ~noearth,
+			if ~noearth
 				ic.results.TransientSolution=ic.results.TransientSolution(1:mintimestep);
 			end
 			self.earth=ic;
 		end % }}}
 		function self=initializemodels(self) % {{{
 
-			for i=1:length(self.basins),
+			for i=1:length(self.basins)
 				md=model();
 				md.miscellaneous.name=self.basins{i}.name;
 				self.addicecap(md);

@@ -7,7 +7,7 @@ function new_x=round_ice(x,numnonzeros)
 %      new_x=round_ice(x,numnonzeros)
 
 %some checks
-if (nargin ~=2 | nargout>1),
+if (nargin ~=2 | nargout>1)
 	error('round_ice usage: new_x=round_ice(x,numonzeros)');
 end
 if ~isnumeric(x)

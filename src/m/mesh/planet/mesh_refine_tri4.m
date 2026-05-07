@@ -76,7 +76,7 @@ Nface = size(FV.faces,1);
 V2 = zeros(Nface*3,3);
 F2 = zeros(Nface*4,3);
 
-for f = 1:Nface,
+for f = 1:Nface
 
     % Get the triangle vertex indices
     NA = FV.faces(f,1);
@@ -128,8 +128,8 @@ function [FV, N] = mesh_find_vertex(FV,vertex)
     Vexist = find( FV.vertices(:,1) == Va(:,1) & ...
                    FV.vertices(:,2) == Va(:,2) & ...
                    FV.vertices(:,3) == Va(:,3) );
-    if Vexist,
-        if size(Vexist) == [1,1],
+    if Vexist
+        if size(Vexist) == [1,1]
             N = Vexist;
         else,
             msg = sprintf('replicated vertices');

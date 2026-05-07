@@ -41,16 +41,16 @@ classdef histogram_bin_uncertain
 			%if the variable is distributed,  a partition vector should have been 
 			%supplied, and that partition vector should have as many partitions 
 			%as the pairs_per_variable, abscissas and counts arrays: 
-			if self.isdistributed(),
+			if self.isdistributed()
 				self.partition=getfieldvalue(options,'partition');
 				npart=qmupart2npart(self.partition);
-				if npart~=length(self.pairs_per_variable),
+				if npart~=length(self.pairs_per_variable)
 					error(sprintf('histogram_bin_uncertain constructor: for the distributed variable  %s the number of pairs_per_variable arrays (%i) should be equal to the number of partitions (%i)',self.descriptor,length(self.pairs_per_variable),npart));
 				end
-				if npart~=length(self.abscissas),
+				if npart~=length(self.abscissas)
 					error(sprintf('histogram_bin_uncertain constructor: for the distributed variable  %s the number of abscissas arrays (%i) should be equal to the number of partitions (%i)',self.descriptor,length(self.abscissas),npart));
 				end
-				if npart~=length(self.counts),
+				if npart~=length(self.counts)
 					error(sprintf('histogram_bin_uncertain constructor: for the distributed variable  %s the size of counts (%i) should be equal to the number of partitions (%i)',self.descriptor,length(self.counts),npart));
 				end
 			end
@@ -63,7 +63,7 @@ classdef histogram_bin_uncertain
 			fielddisplay(self,'pairs_per_variable','number of bins in histogram');
 			fielddisplay(self,'abscissas','abscissas for histogram');
 			fielddisplay(self,'counts','probabilities for histogram');
-			if ~isempty(self.partition),
+			if ~isempty(self.partition)
 				fielddisplay(self,'partition','partition vector defining where sampling will occur');
 			end
 		end
@@ -130,14 +130,14 @@ classdef histogram_bin_uncertain
             scale=[]; 
         end % }}}
 		function scaled=isscaled(self) % {{{
-			if strncmp(self.descriptor,'scaled_',7),
+			if strncmp(self.descriptor,'scaled_',7)
 				scaled=1;
 			else
 				scaled=0;
 			end
 		end % }}}
 		function distributed=isdistributed(self) % {{{
-			if strncmp(self.descriptor,'distributed_',12),
+			if strncmp(self.descriptor,'distributed_',12)
 				distributed=1;
 			else
 				distributed=0;

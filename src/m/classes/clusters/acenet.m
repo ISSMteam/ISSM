@@ -116,7 +116,7 @@ classdef acenet
 
 			%compress the files into one zip.
 			compressstring=['tar -zcf ' dirname '.tar.gz '];
-			for i=1:numel(filelist),
+			for i=1:numel(filelist)
 				compressstring = [compressstring ' ' filelist{i}];
 			end
 			system(compressstring);

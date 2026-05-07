@@ -14,18 +14,18 @@ nels=size(index,1);
 nods=length(x);
 
 %some checks
-if nargout~=1 | (nargin~=3 & nargin~=4),
+if nargout~=1 | (nargin~=3 & nargin~=4)
 	help GetAreas3DTria
 	error('GetAreas3DTria error message: bad usage')
 end
-if ((length(y)~=nods) | (nargin==4 & length(z)~=nods)),
+if ((length(y)~=nods) | (nargin==4 & length(z)~=nods))
 	error('GetAreas3DTria error message: x, y, and z do not have the same length')
 end
 
-if max(index(:))>nods,
+if max(index(:))>nods
 	error(['GetAreas3DTria error message: index should not have values above ' num2str(nods) ])
 end
-if (nargin==4 & size(index,2)~=3),
+if (nargin==4 & size(index,2)~=3)
 	error('GetAreas3DTria error message: index should have 3 columns for 2d meshes')
 end
 
@@ -36,7 +36,7 @@ y1=y(index(:,1)); y2=y(index(:,2)); y3=y(index(:,3));
 z1=z(index(:,1)); z2=z(index(:,2)); z3=z(index(:,3));
 
 %compute the volume of each element
-if nargin==4,
+if nargin==4
 	% area of triangles with 3D coordinates
 	for i=1:nels
 		m1=[x1(i) x2(i) x3(i); y1(i) y2(i) y3(i); 1 1 1];

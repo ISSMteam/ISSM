@@ -31,7 +31,7 @@ function [xout,yout] = gdaltransform(x,y,proj_in,proj_out)
 	fclose(fid);
 
 	[s,r]=system(['gdaltransform -s_srs "',proj_in,'" -t_srs "',proj_out,'" < ' filename_in ' > ' filename_out]);
-	if s~=0 | ~isempty(deblank(r)),
+	if s~=0 | ~isempty(deblank(r))
 		error(r);
 	end
 

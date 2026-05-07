@@ -58,22 +58,22 @@ function [FV] = sphere_tri(shape,maxlevel,r,winding)
 eegversion = '$Revision: 1.2 $';
 fprintf('SPHERE_TRI [v %s]\n',eegversion(11:15)); tic
 
-if ~exist('shape','var') || isempty(shape),
+if ~exist('shape','var') || isempty(shape)
     shape = 'ico';
 end
 fprintf('...creating sphere tesselation based on %s\n',shape);
 
 % default maximum subdivision level
-if ~exist('maxlevel','var') || isempty(maxlevel) || maxlevel < 0,
+if ~exist('maxlevel','var') || isempty(maxlevel) || maxlevel < 0
     maxlevel = 0;
 end
 
 % default radius
-if ~exist('r','var') || isempty(r),
+if ~exist('r','var') || isempty(r)
     r = 1;
 end
 
-if ~exist('winding','var') || isempty(winding),
+if ~exist('winding','var') || isempty(winding)
     winding = 0;
 end
 
@@ -172,10 +172,10 @@ end
 
 % -----------------
 % refine the starting shapes with subdivisions
-if maxlevel,
+if maxlevel
 
     % Subdivide each starting triangle (maxlevel) times
-    for level = 1:maxlevel,
+    for level = 1:maxlevel
 
         % Subdivide each triangle and normalize the new points thus
         % generated to lie on the surface of a sphere radius r.
@@ -188,7 +188,7 @@ if maxlevel,
     end
 end
 
-if winding,
+if winding
     fprintf('...returning counterclockwise vertex order (viewed from outside)\n');
     FV.faces = FV.faces(:,[1 3 2]);
 else

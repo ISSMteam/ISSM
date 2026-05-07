@@ -21,7 +21,7 @@ function Struct=expread(filename,varargin)
 options=pairoptions(varargin{:});
 
 %some checks
-if ~exist(filename),
+if ~exist(filename)
 	error(['expread error message: file ' filename ' not found!']);
 end
 
@@ -33,7 +33,7 @@ Struct = struct();
 fid=fopen(filename,'r');
 
 %loop over the number of profiles
-while (~feof(fid)),
+while (~feof(fid))
 
 	%update number of profiles
 	count=count+1;
@@ -41,7 +41,7 @@ while (~feof(fid)),
 	%Get file name
 	A=fscanf(fid,'%s %s',2);
 	if ~strncmp(A,'##Name:',7), break; end
-	if length(A)>7, 
+	if length(A)>7 
 		Struct(count).name=A(8:end);
 	else
 		Struct(count).name='';
@@ -89,8 +89,8 @@ end
 fclose(fid);
 	
 invert=getfieldvalue(options,'invert',0);
-if invert,
-	for i=1:length(Struct),
+if invert
+	for i=1:length(Struct)
 		Struct(i).x=flipud(Struct(i).x);
 		Struct(i).y=flipud(Struct(i).y);
 	end

@@ -12,22 +12,22 @@ subplot(nlines,ncols,i);
 
 allsegments=md.qmu.mass_flux_segments;
 
-if dimension(md.mesh)==2,
+if dimension(md.mesh)==2
 
 	%recover segments
 	hold on
-	for i=1:length(allsegments),
+	for i=1:length(allsegments)
 		segments=allsegments{i};
 
 		%plot semgnets
-		for j=1:length(segments),
+		for j=1:length(segments)
 			plot([segments(j,1) segments(j,3)],[segments(j,2) segments(j,4)]);
 		end
 		text(segments(j,1),segments(j,2),['Profile #' num2str(i)]);
 
 		%plot normals
 
-		for j=1:length(segments),
+		for j=1:length(segments)
 			xstart=mean([segments(j,1) segments(j,3)]);
 			ystart=mean([segments(j,2) segments(j,4)]);
 			length1=sqrt((segments(j,1)-segments(j,3)).^2 + (segments(j,2)-segments(j,4)).^2);

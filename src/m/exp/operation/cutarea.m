@@ -50,7 +50,7 @@ function [A,numprofiles,numpoints,closed]=cutarea(A,numprofiles,numpoints,closed
 			%first time, look at all profiles
 			if isempty(points)
 				[profsel indsel]=closestpoint(A,numprofiles,xi,yi);
-				if ((closed(profsel) & length(A(profsel).x)<4) |  (~closed(profsel) & length(A(profsel).x)<3)),
+				if ((closed(profsel) & length(A(profsel).x)<4) |  (~closed(profsel) & length(A(profsel).x)<3))
 					disp('the selected profile has less than 3 points, make another selection');
 				else
 					selection=profsel;
@@ -66,7 +66,7 @@ function [A,numprofiles,numpoints,closed]=cutarea(A,numprofiles,numpoints,closed
 					disp('the selected points must be distinct')
 				else
 					%second click?
-					if length(points)==1,
+					if length(points)==1
 						points(end+1)=indsel;
 						text(A(selection).x(indsel),A(selection).y(indsel),num2str(2),'FontSize',14,'background',[0.7 0.7 0.9]);
 					%third click?

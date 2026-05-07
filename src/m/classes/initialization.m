@@ -39,24 +39,24 @@ classdef initialization
 		function self = setdefaultparameters(self) % {{{
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
-			if ismember('StressbalanceAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isstressbalance == 0),
+			if ismember('StressbalanceAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isstressbalance == 0)
 				if numel(md.initialization.vx)>1 | numel(md.initialization.vy)>1
 					md = checkfield(md,'fieldname','initialization.vx','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					md = checkfield(md,'fieldname','initialization.vy','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport == 0),
+			if ismember('MasstransportAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.ismasstransport == 0)
 				md = checkfield(md,'fieldname','initialization.vx','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','initialization.vy','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 			end
 			if ismember('OceantransportAnalysis',analyses) 
-				if strcmp(solution,'TransientSolution') & md.transient.isslc & md.transient.isoceantransport,
+				if strcmp(solution,'TransientSolution') & md.transient.isslc & md.transient.isoceantransport
 					md = checkfield(md,'fieldname','initialization.bottompressure','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					md = checkfield(md,'fieldname','initialization.dsl','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					md = checkfield(md,'fieldname','initialization.str','NaN',1,'Inf',1,'size',[1 1]);
 				end
 			end
-			if ismember('BalancethicknessAnalysis',analyses) & strcmp(solution,'BalancethicknessSolution'),
+			if ismember('BalancethicknessAnalysis',analyses) & strcmp(solution,'BalancethicknessSolution')
 				md = checkfield(md,'fieldname','initialization.vx','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','initialization.vy','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				%Triangle with zero velocity
@@ -64,7 +64,7 @@ classdef initialization
 					md = checkmessage(md,'at least one triangle has all its vertices with a zero velocity');
 				end
 			end
-			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal == 0),
+			if ismember('ThermalAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.isthermal == 0)
 				md = checkfield(md,'fieldname','initialization.vx','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				md = checkfield(md,'fieldname','initialization.vy','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				if dimension(md.mesh)==3
@@ -82,54 +82,54 @@ classdef initialization
 					%'message','set temperature to pressure melting point at locations with waterfraction>0');
 				end
 			end
-			if ismember('HydrologyShreveAnalysis',analyses),
-				if isa(md.hydrology,'hydrologyshreve'),
-					if (strcmp(solution,'TransientSolution') & md.transient.ishydrology) | strcmp(solution,'HydrologySolution'),
+			if ismember('HydrologyShreveAnalysis',analyses)
+				if isa(md.hydrology,'hydrologyshreve')
+					if (strcmp(solution,'TransientSolution') & md.transient.ishydrology) | strcmp(solution,'HydrologySolution')
 						md = checkfield(md,'fieldname','initialization.watercolumn','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					end
 				end
 			end
-			if ismember('HydrologyTwsAnalysis',analyses),
-				if isa(md.hydrology,'hydrologytws'),
+			if ismember('HydrologyTwsAnalysis',analyses)
+				if isa(md.hydrology,'hydrologytws')
 					md = checkfield(md,'fieldname','initialization.watercolumn','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('SealevelchangeAnalysis',analyses),
-				if strcmp(solution,'TransientSolution') & md.transient.isslc,
+			if ismember('SealevelchangeAnalysis',analyses)
+				if strcmp(solution,'TransientSolution') & md.transient.isslc
 					md = checkfield(md,'fieldname','initialization.sealevel','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('HydrologyGlaDSAnalysis',analyses),
-				if isa(md.hydrology,'hydrologyglads'),
+			if ismember('HydrologyGlaDSAnalysis',analyses)
+				if isa(md.hydrology,'hydrologyglads')
 					md = checkfield(md,'fieldname','initialization.watercolumn','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					md = checkfield(md,'fieldname','initialization.hydraulic_potential','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					md = checkfield(md,'fieldname','initialization.channelarea','NaN',1,'Inf',1,'>=',0,'size',[md.mesh.numberofedges 1]);
 				end
 			end
-			if ismember('HydrologyDCInefficientAnalysis',analyses),
-				if isa(md.hydrology,'hydrologydc'),
+			if ismember('HydrologyDCInefficientAnalysis',analyses)
+				if isa(md.hydrology,'hydrologydc')
 					md = checkfield(md,'fieldname','initialization.sediment_head','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('HydrologyDCEfficientAnalysis',analyses),
-				if isa(md.hydrology,'hydrologydc'),
-					if md.hydrology.isefficientlayer==1,
+			if ismember('HydrologyDCEfficientAnalysis',analyses)
+				if isa(md.hydrology,'hydrologydc')
+					if md.hydrology.isefficientlayer==1
 						md = checkfield(md,'fieldname','initialization.epl_head','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 						md = checkfield(md,'fieldname','initialization.epl_thickness','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 					end
 				end
 			end
-			if ismember('SamplingAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.issampling == 0),
+			if ismember('SamplingAnalysis',analyses) & ~(strcmp(solution,'TransientSolution') & md.transient.issampling == 0)
 				if ~isnan(md.initialization.sample)
 					md = checkfield(md,'fieldname','initialization.sample','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('DebrisAnalysis',analyses),
+			if ismember('DebrisAnalysis',analyses)
 				if ~isnan(md.initialization.debris)
 					md = checkfield(md,'fieldname','initialization.debris','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
 			end
-			if ismember('AgeAnalysis',analyses),
+			if ismember('AgeAnalysis',analyses)
 				if ~isnan(md.initialization.age)
 					md = checkfield(md,'fieldname','initialization.age','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
 				end
@@ -183,8 +183,8 @@ classdef initialization
 			WriteData(fid,prefix,'object',self,'fieldname','debris','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','age','format','DoubleMat','mattype',1,'scale',yts);
 
-			if md.thermal.isenthalpy,
-				if numel(self.enthalpy) <= 1,
+			if md.thermal.isenthalpy
+				if numel(self.enthalpy) <= 1
 					%reconstruct enthalpy
 					tpmp = md.materials.meltingpoint - md.materials.beta*md.initialization.pressure;
 					pos  = find(md.initialization.waterfraction>0.);

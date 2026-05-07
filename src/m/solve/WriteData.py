@@ -39,7 +39,7 @@ def WriteData(fid, prefix, *args):
     #               data = full(data)
     #       end
 
-    # Make a copy of the the data so that we do not accidentally overwrite any
+    # Make a copy of the data so that we do not accidentally overwrite any
     # model fields.
     #
     data = copy(data)

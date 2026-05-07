@@ -20,7 +20,7 @@ newpos=1:length(x);
 flags=zeros(length(x2),1); flags(index2)=1;
 orphans=find(flags==0);
 
-while ~isempty(orphans),
+while ~isempty(orphans)
 
 	%take the first orphan, the lower numbered, and take it out
 	orphan=orphans(1);

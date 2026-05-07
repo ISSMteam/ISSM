@@ -8,7 +8,7 @@ function varargout=loadmodellist(path)
 %      loadmodellist path
 
 %check nargout
-if nargout>1,
+if nargout>1
 	error('loadmodellist usage error: mds=loadmodellist(path)');
 end
 %check existence
@@ -23,7 +23,7 @@ if( stat==0 | mess.UserRead~=1),
 end
 
 %check number of variables
-if length(whos('-file',path))>1,
+if length(whos('-file',path))>1
 	error(['loadmodellist error message: file ' path ' contains several variables. Only one model should be present.']);
 end
 
@@ -33,13 +33,13 @@ try,
 	%get name of model variable
 	fieldname=char(fieldnames(struc));
 	mds=eval(['struc.' fieldname]);
-	if ~strcmpi(class(mds),'model'),
+	if ~strcmpi(class(mds),'model')
 		mds2=modellist;
 		mds2=structtomodel(mds2,mds);
 		mds=mds2;
 		clear mds2;
 	end
-	if nargout,
+	if nargout
 		varargout{1}=mds;
 	else
 		assignin('caller',fieldname,mds);

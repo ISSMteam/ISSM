@@ -25,7 +25,7 @@ classdef oceanmip < handle
 	methods
 		function self = oceanmip(varargin) % {{{
 
-			if nargin==0, 
+			if nargin==0 
 				self=setdefaultparameters(self);
 			else 
 				self=setdefaultparameters(self);
@@ -37,14 +37,14 @@ classdef oceanmip < handle
 				self.n=length(self.files);
 
 				%read files: 
-				for f=1:self.n,
+				for f=1:self.n
 					file=[self.root '/' self.files{f}];
 					disp(['reading file ' file]);
 					
 					%figure out time interval and remove historical:
 					time=ncread(file,'time');
 					pos=find(diff(time)<0); 
-					if isempty(pos),
+					if isempty(pos)
 						%pos=(length(time)-12*100+1):length(time);
 						pos=1:length(time);
 					else
@@ -62,7 +62,7 @@ classdef oceanmip < handle
 					%zos: 
 					zos=ncread(file,'zos'); nx=size(zos,1); ny=size(zos,2); zos=zos(:,:,pos);
 					zosm=zeros(nx,ny,nt/12);
-					for i=12:12:nt,
+					for i=12:12:nt
 						year=i/12;
 						zosm(:,:,year)=mean(zos(:,:,(i-11):i),3);
 					end
@@ -71,7 +71,7 @@ classdef oceanmip < handle
 					%zostoga:
 					zostoga=ncread(file,'zostoga'); zostoga=zostoga(pos);
 					zostogam=zeros(nt/12,1);
-					for i=12:12:nt,
+					for i=12:12:nt
 						year=i/12;
 						zostogam(year)=mean(zostoga(i-11:i));
 					end
@@ -82,7 +82,7 @@ classdef oceanmip < handle
 					%pbo: 
 					pbo=ncread(file,'pbo'); nx=size(pbo,1); ny=size(pbo,2); pbo=pbo(:,:,pos);
 					pbom=zeros(nx,ny,nt/12);
-					for i=12:12:nt,
+					for i=12:12:nt
 						year=i/12;
 						pbom(:,:,year)=mean(pbo(:,:,i-11:i),3);
 					end
@@ -108,11 +108,11 @@ classdef oceanmip < handle
 			pos=find(meshlong<0); meshlong(pos)=meshlong(pos)+360;
 			meshlat=md.mesh.lat;
 
-			for i=1:self.n,
+			for i=1:self.n
 				disp(['interpolating model ' self.model{i} ' onto model mesh']);
 
 				%If we have 182 cells in long, trim by 1 on each side:
-				if size(self.pbo{i},1)==182,
+				if size(self.pbo{i},1)==182
 					self.pbo{i}=self.pbo{i}(2:181,:,:);
 					self.zos{i}=self.zos{i}(2:181,:,:);
 					self.long{i}=self.long{i}(2:181,:,:);
@@ -149,7 +149,7 @@ classdef oceanmip < handle
 
 				parfor j=1:length(time),
 				%for j=1:length(time),
-					if mod(j,10)==0, 
+					if mod(j,10)==0 
 						s=sprintf('   progress: %.2g ',j/length(time)*100);
 						fprintf(s); pause(1e-3); fprintf(repmat('\b',1,numel(s))); 
 					end
@@ -179,7 +179,7 @@ classdef oceanmip < handle
 		end
 		%}}}
 		function self = rawclean(self) % {{{
-			for i=1:self.n,
+			for i=1:self.n
 				self.zos{i}=[];
 				self.pbo{i}=[];
 			end
@@ -187,7 +187,7 @@ classdef oceanmip < handle
 		%}}}
 		function [rate,time]= zostoga_mean(self) % {{{
 			series=zeros(length(self.time{1}),self.n);
-			for i=1:self.n,
+			for i=1:self.n
 				series(:,i)=self.zostoga{i};
 			end
 			rate=mean(series,2);
@@ -196,7 +196,7 @@ classdef oceanmip < handle
 		%}}}
 		function [rate,time]= zostoga_std(self) % {{{
 			series=zeros(length(self.time{1}),self.n);
-			for i=1:self.n,
+			for i=1:self.n
 				series(:,i)=self.zostoga{i};
 			end
 			rate=std(series,1,2);
@@ -205,7 +205,7 @@ classdef oceanmip < handle
 		%}}}
 		function [average,stddev,time]= zostoga_stats(self) % {{{
 			series=zeros(length(self.time{1}),self.n);
-			for i=1:self.n,
+			for i=1:self.n
 				series(:,i)=self.zostoga{i};
 			end
 			average=mean(series,2);
@@ -214,9 +214,9 @@ classdef oceanmip < handle
 		end
 		%}}}
 	function array= bottompressure(self,model,gridded) % {{{
-			for i=1:self.n,
-				if strcmpi(model,self.model{i}),
-					if gridded,
+			for i=1:self.n
+				if strcmpi(model,self.model{i})
+					if gridded
 						pbo=self.pbo{i}; pbo=pbo/1000; %in meters
 					else
 						pbo=self.mesh_pbo{i}; pbo=pbo/1000; %in meters
@@ -232,10 +232,10 @@ classdef oceanmip < handle
 		units=getfieldvalue(options,'units','mm/yr');
 		
 		arrays=cell(self.n,1);
-		for i=1:self.n,
+		for i=1:self.n
 			pbo=self.mesh_pbo{i}; 
 			dpbo=diff(pbo,1,2);
-			if strcmpi(units,'m/yr'),
+			if strcmpi(units,'m/yr')
 				dpbo=dpbo/1000;
 			end
 			time=self.time{i}; time=time(1:end-1);
@@ -248,10 +248,10 @@ classdef oceanmip < handle
 		units=getfieldvalue(options,'units','mm/yr');
 		
 		arrays=cell(self.n,1);
-		for i=1:self.n,
+		for i=1:self.n
 			zos=self.mesh_zos{i}; 
 			dzos=diff(zos,1,2);
-			if strcmpi(units,'m/yr'),
+			if strcmpi(units,'m/yr')
 				dzos=dzos/1000;
 			end
 			time=self.time{i};time=time(1:end-1);
@@ -264,10 +264,10 @@ classdef oceanmip < handle
 		units=getfieldvalue(options,'units','mm/yr');
 
 		arrays=cell(self.n,1);
-		for i=1:self.n,
+		for i=1:self.n
 			zostoga=self.zostoga{i}; 
 			dzostoga=diff(zostoga);
-			if strcmpi(units,'m/yr'),
+			if strcmpi(units,'m/yr')
 				dzostoga=dzostoga/1000;
 			end
 			time=self.time{i};time=time(1:end-1);
@@ -276,8 +276,8 @@ classdef oceanmip < handle
 		end
 	end	%}}}
 		function [lat,long]= latlong(self,model) % {{{
-			for i=1:self.n,
-				if strcmpi(model,self.model{i}),
+			for i=1:self.n
+				if strcmpi(model,self.model{i})
 					lat=self.lat{i};
 					long=self.long{i};
 					break;

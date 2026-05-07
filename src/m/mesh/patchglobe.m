@@ -76,7 +76,7 @@ function mh=patchglobe(mh,mh2d,varargin)
 	mhb=mdb.mesh; clear mdb;
 
 	%double check: 
-	if length(mhb.segments) ~= (length(dom(1).x)+length(env(1).x)-2),
+	if length(mhb.segments) ~= (length(dom(1).x)+length(env(1).x)-2)
 		error('band mesh not consistent');
 	end
 

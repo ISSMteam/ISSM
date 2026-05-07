@@ -30,19 +30,19 @@ ispatch        = getfieldvalue(options,'patch',0);
 domain=expread(domainoutline);
 
 %Create figure if needed and hold
-if exist(options,'figure'),
+if exist(options,'figure')
 	figure(getfieldvalue(options,'figure'));
 end
 hold on
 
-for i=1:length(domain),		
+for i=1:length(domain)		
 	if domain(i).nods==1
 		plot(domain(i).x*unitmultiplier,domain(i).y*unitmultiplier,'o','MarkerEdgeColor','k','MarkerFaceColor','r','MarkerSize',10);
 		if exist(options,'title')
 			text(domain(i).x*unitmultiplier,domain(i).y*unitmultiplier,domain(i).name,'BackgroundColor',[1. .0 .0]);
 		end
 	else
-		if ispatch,
+		if ispatch
 			patch(domain(i).x*unitmultiplier,domain(i).y*unitmultiplier,linestyle);
 		else
 			if (isnumeric(linestyle))

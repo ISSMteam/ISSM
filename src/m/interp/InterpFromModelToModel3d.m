@@ -20,7 +20,7 @@ if nargin~=4
    error('Wrong usage (see above)');
 end
 
-if (length(data)~=md1.mesh.numberofelements & length(data)~=md1.mesh.numberofvertices),
+if (length(data)~=md1.mesh.numberofelements & length(data)~=md1.mesh.numberofvertices)
    error('Data not supported yet');
 end
 

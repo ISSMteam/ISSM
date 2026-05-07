@@ -8,7 +8,7 @@ function rigidity=cuffeytemperate(temperature, waterfraction, stressexp)
 %   Usage:
 %      rigidity=cuffeytemperate(temperature, waterfraction, stressexp)
 
-if (any(size(temperature)~=size(waterfraction))),
+if (any(size(temperature)~=size(waterfraction)))
 	error('input temperature and waterfraction should have same size!');
 end
 if any(temperature<0)

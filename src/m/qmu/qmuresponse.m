@@ -1,23 +1,23 @@
 function response=qmuresponse(models,results,processedresults,descriptor)
 %QMURESPONSE - compute response function from model results.
 
-if strcmpi(descriptor,'max_vel'),
+if strcmpi(descriptor,'max_vel')
 	response=max(processedresults.vel);
-elseif strcmpi(descriptor,'min_vel'),
+elseif strcmpi(descriptor,'min_vel')
 	response=min(processedresults.vel);
-elseif strcmpi(descriptor,'max_vx'),
+elseif strcmpi(descriptor,'max_vx')
 	response=max(processedresults.vx);
-elseif strcmpi(descriptor,'max_abs_vx'),
+elseif strcmpi(descriptor,'max_abs_vx')
 	response=max(abs(processedresults.vx));
-elseif strcmpi(descriptor,'min_vx'),
+elseif strcmpi(descriptor,'min_vx')
 	response=min(processedresults.vx);
-elseif strcmpi(descriptor,'max_vy'),
+elseif strcmpi(descriptor,'max_vy')
 	response=max(processedresults.vy);
-elseif strcmpi(descriptor,'max_abs_vy'),
+elseif strcmpi(descriptor,'max_abs_vy')
 	response=max(abs(processedresults.vy));
-elseif strcmpi(descriptor,'min_vy'),
+elseif strcmpi(descriptor,'min_vy')
 	response=min(processedresults.vy);
-elseif strncmpi(descriptor,'mass_flux',9),
+elseif strncmpi(descriptor,'mass_flux',9)
 	indx=str2int(descriptor(10:end));
 	if isempty(indx) || ~indx
 		indx=1;
@@ -31,7 +31,7 @@ elseif strncmpi(descriptor,'mass_flux',9),
 	isSSA=m_dh.parameters.isSSA;
 	isHO=m_dh.parameters.isHO;
 	isFS=m_ds.parameters.isFS;
-	if isSIA,
+	if isSIA
 
 % for now, separate all segments from double array for parallel to make cells
 		if (length(m_dhu.parameters.qmu_mass_flux_num_segments) > 1)
@@ -57,7 +57,7 @@ elseif strncmpi(descriptor,'mass_flux',9),
 			clear save
 		end
 
-	elseif isSSA || isHO,
+	elseif isSSA || isHO
 
 % for now, separate all segments from double array for parallel to make cells
 		if (length(m_dh.parameters.qmu_mass_flux_num_segments) > 1)
@@ -83,7 +83,7 @@ elseif strncmpi(descriptor,'mass_flux',9),
 			clear save
 		end
 
-	elseif isFS,
+	elseif isFS
 
 % for now, separate all segments from double array for parallel to make cells
 		if (length(m_ds.parameters.qmu_mass_flux_num_segments) > 1)

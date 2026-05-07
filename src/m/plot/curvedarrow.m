@@ -24,7 +24,7 @@ function curvedarrow(centerx,centery,distance,angle,secondangle,varargin)
 	%compute some values out of (x1,y1) and (x2,y2)
 	length=distance*angle;
 
-	if exist(options,'widthratio'),
+	if exist(options,'widthratio')
 		widthratio=getfieldvalue(options,'widthratio');
 		width=length*widthratio;
 	else if exist(options,'width'),
@@ -57,7 +57,7 @@ function curvedarrow(centerx,centery,distance,angle,secondangle,varargin)
 		m=-m;
 	end
 
-	if exist(options,'arrowlength'),
+	if exist(options,'arrowlength')
 		d=arrowlength;
 	else
 		d=abs((distance*angle)*ratio);

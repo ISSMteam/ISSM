@@ -20,7 +20,7 @@ cluster       = md.cluster;
 if isa(cluster,'pfe') && cluster.interactive>0
 	lockfilename  = [executionpath '/Interactive' num2str(cluster.interactive) '/' md.miscellaneous.name '.lock'];
 	logfilename   = [executionpath '/Interactive' num2str(cluster.interactive) '/' md.miscellaneous.name '.outlog'];
-elseif isa(cluster,'localpfe'),
+elseif isa(cluster,'localpfe')
 	lockfilename  = [executionpath '/' md.miscellaneous.name '.lock'];
 	logfilename   = [executionpath '/' md.miscellaneous.name '.outlog'];
 else
@@ -29,7 +29,7 @@ else
 end
 
 %If we are using the generic cluster in interactive mode, job is already complete
-if (isa(cluster,'generic') & cluster.interactive) | isa(cluster,'generic_static'),
+if (isa(cluster,'generic') & cluster.interactive) | isa(cluster,'generic_static')
 	%We are in interactive mode, no need to check for job completion
 	ispresent=1;
 	return;
@@ -40,16 +40,16 @@ elapsedtime=0; ispresent=0; starttime=clock;
 disp(['waiting for ' lockfilename ' hold on... (Ctrl+C to exit)'])
 
 %prepare command if the job is not running on the local machine
-if ~strcmpi(oshostname(),cluster.name),
-	if isa(cluster,'cloud'),
+if ~strcmpi(oshostname(),cluster.name)
+	if isa(cluster,'cloud')
 		command = [' [ -f ' lockfilename ' ] && [ -f ' logfilename ' ] 2>/dev/null'];
 		command = [starcluster() ' sshmaster ' cluster.name ' --user ' cluster.login ' ''' command ''''];
 	else
 		command = ['ssh -l ' cluster.login];
-		if isprop(cluster,'idfile') && ~strcmp(cluster.idfile,''),
+		if isprop(cluster,'idfile') && ~strcmp(cluster.idfile,'')
 			command = [command ' -i ' cluster.idfile];
 		end
-		if isprop(cluster,'port') && cluster.port,
+		if isprop(cluster,'port') && cluster.port
 			command = [command ' -p ' num2str(cluster.port) ' localhost'];
 		else,
 			command = [command ' ' cluster.name];
@@ -60,7 +60,7 @@ end
 
 %loop till file .lock exist or time is up
 while (ispresent==0 & elapsedtime<timelimit)
-	if strcmpi(oshostname(),cluster.name),
+	if strcmpi(oshostname(),cluster.name)
 		pause(1);
 		ispresent=(exist(lockfilename,'file') & exist(logfilename,'file'));
 		elapsedtime=etime(clock,starttime)/60;
@@ -75,7 +75,7 @@ while (ispresent==0 & elapsedtime<timelimit)
 end
 
 %build output
-if (elapsedtime>timelimit),
+if (elapsedtime>timelimit)
 	disp('Time limit exceeded. Increase md.settings.waitonlock');
 	disp('The results must be loaded manually with md=loadresultsfromcluster(md).');
 	error(['waitonlock error message: time limit exceeded']);

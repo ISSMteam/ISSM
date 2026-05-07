@@ -18,20 +18,20 @@ nods=length(x);
 if nargin==4, z=varargin{1}; end
 
 %some checks
-if nargout~=1 | (nargin~=3 & nargin~=4),
+if nargout~=1 | (nargin~=3 & nargin~=4)
 	help GetAreas
 	error('GetAreas error message: bad usage')
 end
-if ((length(y)~=nods) | (nargin==4 & length(z)~=nods)),
+if ((length(y)~=nods) | (nargin==4 & length(z)~=nods))
 	error('GetAreas error message: x,y and z do not have the same length')
 end
-if max(index(:))>nods,
+if max(index(:))>nods
 	error(['GetAreas error message: index should not have values above ' num2str(nods) ])
 end
-if (nargin==3 & size(index,2)~=3),
+if (nargin==3 & size(index,2)~=3)
 	error('GetAreas error message: index should have 3 columns for 2d meshes.')
 end
-if (nargin==4 & size(index,2)~=6),
+if (nargin==4 & size(index,2)~=6)
 	error('GetAreas error message: index should have 6 columns for 3d meshes.')
 end
 
@@ -41,7 +41,7 @@ x1=x(index(:,1)); x2=x(index(:,2)); x3=x(index(:,3));
 y1=y(index(:,1)); y2=y(index(:,2)); y3=y(index(:,3));
 
 %compute the volume of each element
-if nargin==3,
+if nargin==3
 	%compute the surface of the triangle
 	areas=(0.5*((x2-x1).*(y3-y1)-(y2-y1).*(x3-x1)));
 else

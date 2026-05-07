@@ -12,7 +12,7 @@ function md=parameterize(md,parametername)
 %      md=parameterize(md,'Square.par');
 
 %some checks
-if ~exist(parametername),
+if ~exist(parametername)
 	error(['parameterize error message: file ' parametername ' not found!']);
 end
 
@@ -35,12 +35,12 @@ catch me,
 	me2=struct('message',me.message,'stack',me.stack);
 
 	%rename parameter file
-	for i=1:length(me2.stack)-1,
+	for i=1:length(me2.stack)-1
 		if strcmp(me2.stack(i).name,temporaryname)
 			me2.stack(i).file = strrep(me2.stack(i).file,temporaryname,parametername);
 			me2.stack(i).name = parametername;
 		end
-		if strcmp(me2.stack(i).name,'parameterize'),
+		if strcmp(me2.stack(i).name,'parameterize')
 			%remove error (eval(temporaryname);) misleading
 			me2.stack(i)=[];
 		end
@@ -51,10 +51,10 @@ catch me,
 end
 
 %Name and notes
-if isempty(md.miscellaneous.name), 
+if isempty(md.miscellaneous.name) 
 	[path,root,ext]=fileparts(parametername);
 	md.miscellaneous.name=root; 
 end
-if isempty(md.miscellaneous.notes), 
+if isempty(md.miscellaneous.notes) 
 	md.miscellaneous.notes=['Model created by using parameter file: ' parametername ' on: ' datestr(now)];
 end

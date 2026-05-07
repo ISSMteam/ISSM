@@ -41,6 +41,6 @@ y = y(id1y:id2y);
 vxout = InterpFromGrid(x,y,double(vx),X,Y);
 vyout = InterpFromGrid(x,y,double(vy),X,Y);
 
-if nargout==1,
+if nargout==1
 	vxout = sqrt(vxout.^2+vyout.^2);
 end

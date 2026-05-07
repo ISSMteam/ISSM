@@ -85,7 +85,7 @@ classdef taoinversion
 			%Early return
 			if ~self.iscontrol, return; end
 
-			if ~IssmConfig('_HAVE_TAO_'),
+			if ~IssmConfig('_HAVE_TAO_')
 				md = checkmessage(md,['TAO has not been installed, ISSM needs to be reconfigured and recompiled with TAO']);
 			end
 

@@ -4,12 +4,12 @@ function JPL_SVN=jplsvn()
 %   Usage:
 %      JPL_SVN=jplsvn()
 
-if ~ispc(),
+if ~ispc()
 	JPL_SVN =getenv('JPL_SVN');
 else
 	JPL_SVN =getenv('JPL_SVN_WIN');
 end
 
-if (isempty(JPL_SVN)),
+if (isempty(JPL_SVN))
 	error('jplsvn error message: ''JPL_SVN'' environment variable is empty! You should define JPL_SVN in your .cshrc or .bashrc');
 end

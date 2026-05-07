@@ -8,8 +8,8 @@ function partvector=AreaAverageOntoPartition(md,vector,partition,layer)
 %      average=AreaAverageOntoPartition(md,vector,layer) %if in 3D, chose which layer is partitioned
 
 %some checks
-if dimension(md.mesh)==3,
-	if nargin~=3,
+if dimension(md.mesh)==3
+	if nargin~=3
 		error('layer should be provided onto which Area Averaging occurs');
 	end
 	%save 3D model
@@ -36,7 +36,7 @@ part=partition+1;
 
 %some check: 
 npart=qmupart2npart(partition);
-if npart~=max(part),
+if npart~=max(part)
 	error('AreaAverageOntoPartition error message: ''npart'' should be equal to max(partition)');
 end
 
@@ -45,12 +45,12 @@ partvector=zeros(max(part),1);
 
 %start weight average
 weightedvector=vector.*md.qmu.vertex_weight;
-for i=1:max(part),
+for i=1:max(part)
 	pos=find(part==i);
 	partvector(i)=sum(weightedvector(pos))/sum(md.qmu.vertex_weight(pos));
 end
 
 %in 3D, restore 3D model:
-if dimension(md.mesh)==3,
+if dimension(md.mesh)==3
 	md=md3d;
 end

@@ -13,17 +13,17 @@ options=removefield(options,'log',0);
 if isempty(data), error('data provided is empty'); end
 
 %check is2d
-if ~is2d & ~isplanet,
+if ~is2d & ~isplanet
 	error('plot_contour error message: contour not supported for 3d meshes, project on a layer');
 end
 
 %first, process data: must be on nodes
-if datatype==1,
+if datatype==1
 	%elements -> take average
 	data=averaging(md,data,0);
-elseif datatype==2,
+elseif datatype==2
 	%nodes -> do nothing
-elseif datatype==3,
+elseif datatype==3
 	%quiver -> take norm
 	data=sqrt(sum(datain.*datain,2));
 else
@@ -40,7 +40,7 @@ linewidth=getfieldvalue(options,'linewidth',1);
 
 %get contours levels
 contourlevels=getfieldvalue(options,'contourlevels');
-if isnumeric(contourlevels),
+if isnumeric(contourlevels)
 	levels=round_ice(linspace(max(data),min(data),contourlevels),2);
 else
 	levels=[];
@@ -105,7 +105,7 @@ for i=1:numlevels
 	numelems=length(poselem);
 
 	%if no element has been flagged, skip to the next level
-	if numelems==0,
+	if numelems==0
 		continue,
 	end
 
@@ -119,7 +119,7 @@ for i=1:numlevels
 
 	edge_l=zeros(numelems,2);
 
-	for j=1:numelems,
+	for j=1:numelems
 
 		weight1=(level-Data1(poselem(j),1))/(Data1(poselem(j),2)-Data1(poselem(j),1));
 		weight2=(level-Data2(poselem(j),1))/(Data2(poselem(j),2)-Data2(poselem(j),1));
@@ -136,7 +136,7 @@ for i=1:numlevels
 			edge_l(j,1)=Seg1_num(poselem(j));
 			edge_l(j,2)=Seg2_num(poselem(j));
 
-		elseif poselem13(poselem(j)),
+		elseif poselem13(poselem(j))
 
 			x1(j)=x(Seg1(poselem(j),1))+weight1*(x(Seg1(poselem(j),2))-x(Seg1(poselem(j),1)));
 			x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -148,7 +148,7 @@ for i=1:numlevels
 			edge_l(j,1)=Seg1_num(poselem(j));
 			edge_l(j,2)=Seg3_num(poselem(j));
 
-		elseif poselem23(poselem(j)),
+		elseif poselem23(poselem(j))
 
 			x1(j)=x(Seg2(poselem(j),1))+weight2*(x(Seg2(poselem(j),2))-x(Seg2(poselem(j),1)));
 			x2(j)=x(Seg3(poselem(j),1))+weight3*(x(Seg3(poselem(j),2))-x(Seg3(poselem(j),1)));
@@ -166,7 +166,7 @@ for i=1:numlevels
 	%now that we have the segments, we must try to connect them...
 
 	%loop over the subcontours
-	while ~isempty(edge_l),
+	while ~isempty(edge_l)
 
 		%take the right edge of the second segment and connect it to the next segments if any
 		e1=edge_l(1,1);   e2=edge_l(1,2);
@@ -182,7 +182,7 @@ for i=1:numlevels
 
 		while ~isempty(ro1)
 
-			if co1==1,
+			if co1==1
 				xc=[x2(ro1);xc]; yc=[y2(ro1);yc]; zc=[z2(ro1);zc];
 
 				%next edge:
@@ -210,7 +210,7 @@ for i=1:numlevels
 
 		while ~isempty(ro2)
 
-			if co2==1,
+			if co2==1
 				xc=[xc;x2(ro2)]; yc=[yc;y2(ro2)]; zc=[zc;z2(ro2)];
 
 				%next edge:
@@ -233,8 +233,8 @@ for i=1:numlevels
 		end
 
 		%we now have one subcontour ready to be plotted
-		if getfieldvalue(options,'contouronly',0),
-			if isplanet,
+		if getfieldvalue(options,'contouronly',0)
+			if isplanet
 				h=[h;patch('Xdata',[xc;NaN],'Ydata',[yc;NaN],'Zdata',[zc;NaN],'facecolor','none','linewidth',linewidth)];
 			else
 				h=[h;patch('Xdata',[xc;NaN],'Ydata',[yc;NaN],'Zdata',zc,'Cdata',zc,'facecolor','none','edgecolor','flat','linewidth',linewidth)];
@@ -243,7 +243,7 @@ for i=1:numlevels
 		else
 			%dist = 5000;
 			dist = 0;
-			if isplanet,
+			if isplanet
 				if (max(xc)-min(xc)+max(yc)-min(yc)+max(zc)-min(zc))<dist, continue; end
 				h=[h;patch('Xdata',[xc;NaN],'Ydata',[yc;NaN],'Zdata',[zc;NaN],'facecolor','none','edgecolor',color,'linewidth',linewidth)];
 				c = horzcat([level, xc'; length(xc), yc'; length(xc), zc']);
