@@ -394,7 +394,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsInf(Gnorm));
 
 	/*Print info*/
-	write_control_output(*Jlisti, X, G, M, N, num_controls);
+	write_control_output(*Jlisti, X, G, scaling_factors, XL, XU, M, N, num_controls);
 	InversionStatsIter((*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
 
 	/*Clean-up and return*/
@@ -601,8 +601,20 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 }/*}}}*/
 
 
-void write_control_output(int iter, double* X, double* G, int* spatial_size, int* temporal_size, int num_controls)
+void write_control_output(int iter, double* X, double* G, double* scaling_factors, double* XL, double* XU, int* spatial_size, int* temporal_size, int num_controls)
 {
+
+  int offset = 0;
+   for (int c=0;c<num_controls;c++){
+      for(int i=0;i<spatial_size[c]*temporal_size[c];i++){
+         int index = offset+i;
+         X[index] = X[index]*scaling_factors[c];
+         if(X[index]>XU[index]) X[index]=XU[index];
+         if(X[index]<XL[index]) X[index]=XL[index];
+      }
+      offset += spatial_size[c]*temporal_size[c];
+   }
+  
     for (int c = 0; c < num_controls; c++)
     {
         std::string filename = "control" + std::to_string(c) + "_iter_" + std::to_string(iter) + ".bin";
