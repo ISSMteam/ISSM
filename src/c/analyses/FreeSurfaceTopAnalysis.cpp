@@ -347,6 +347,7 @@ ElementVector* FreeSurfaceTopAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	topelement->GetVerticesCoordinates(&xyz_list);
 	topelement->FindParam(&dt,TimesteppingTimeStepEnum);
+	topelement->FindParam(&stabilization,MasstransportStabilizationEnum);
 	Input *ms_input      = topelement->GetInput(SmbMassBalanceEnum); _assert_(ms_input);
 	Input *surface_input = topelement->GetInput(SurfaceEnum);        _assert_(surface_input);
 	Input *vz_input      = NULL;
@@ -380,23 +381,23 @@ ElementVector* FreeSurfaceTopAnalysis::CreatePVector(Element* element){/*{{{*/
 
 		factor = Jdet*gauss->weight*(surface + dt*ms + dt*vz);
 		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
-	}
 
-	if(stabilization==5){
-		/*SUPG*/
-		topelement->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
-		if(dim==1){
-			vx_input->GetInputAverage(&vx);
-			tau=h/(2.*fabs(vx)+1e-10);
-			factor = Jdet*gauss->weight*(dt*ms+dt*vz)*tau;
-			for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]);
-		}
-		else{
-			vx_input->GetInputAverage(&vx);
-			vy_input->GetInputAverage(&vy);
-			tau=h/(2.*pow(vx*vx+vy*vy,0.5)+1e-10);
-			factor = Jdet*gauss->weight*(dt*ms+dt*vz)*tau;
-			for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+		if(stabilization==5){
+			/*SUPG*/
+			topelement->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
+			if(dim==1){
+				vx_input->GetInputAverage(&vx);
+				tau=h/(2.*fabs(vx)+1e-10);
+				factor = Jdet*gauss->weight*(dt*ms+dt*vz)*tau;
+				for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]);
+			}
+			else{
+				vx_input->GetInputAverage(&vx);
+				vy_input->GetInputAverage(&vy);
+				tau=h/(2.*pow(vx*vx+vy*vy,0.5)+1e-10);
+				factor = Jdet*gauss->weight*(dt*ms+dt*vz)*tau;
+				for(int i=0;i<numnodes;i++) pe->values[i]+=factor*(vx*dbasis[0*numnodes+i]+vy*dbasis[1*numnodes+i]);
+			}
 		}
 	}
 
