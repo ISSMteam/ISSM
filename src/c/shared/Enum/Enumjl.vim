@@ -615,6 +615,7 @@ syn keyword juliaConstC SmbIsfirnwarmingEnum
 syn keyword juliaConstC SmbIsgraingrowthEnum
 syn keyword juliaConstC SmbIsmappedforcingEnum
 syn keyword juliaConstC SmbIsmappingusingneighborsEnum
+syn keyword juliaConstC SmbIsmappingneighborxyEnum
 syn keyword juliaConstC SmbIsmeltEnum
 syn keyword juliaConstC SmbIsmungsmEnum
 syn keyword juliaConstC SmbIsprecipforcingremappedEnum
@@ -681,6 +682,8 @@ syn keyword juliaConstC SmbVParamEnum
 syn keyword juliaConstC SmbVmeanParamEnum
 syn keyword juliaConstC SmbVzParamEnum
 syn keyword juliaConstC SmbWindspeedgradEnum
+syn keyword juliaConstC SmbXMappedforcingEnum
+syn keyword juliaConstC SmbYMappedforcingEnum
 syn keyword juliaConstC SmoothThicknessMultiplierEnum
 syn keyword juliaConstC SolutionTypeEnum
 syn keyword juliaConstC SteadystateMaxiterEnum
