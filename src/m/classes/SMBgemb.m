@@ -59,13 +59,13 @@ classdef SMBgemb
 		mappedforcingelevation = NaN; %The elevation of each mapped forcing location (m above sea level). Of size number
 		                         %of forcing points. Use if ismappedforcing is true.
 		lat_mappedforcing = NaN; %The latitude coordinate of each mapped forcing location (m). Of size number
-										 %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
+		                         %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
 		lon_mappedforcing = NaN; %The longitude coordinate of each mapped forcing location (m). Of size number
-										 %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
+		                         %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
 		x_mappedforcing = NaN;   %The x coordinate of each mapped forcing location (m), in same projection as the mesh. Of size number
-										 %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
+		                         %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
 		y_mappedforcing = NaN;   %The y coordinate of each mapped forcing location (m), in same projection as the mesh. Of size number
-										 %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
+		                         %of forcing points. Use if ismappedforcing and ismappingusingneighbors are true.
 		mappedforcingprecipscaling = NaN; %Map of a precipitation multiplier correction term to be applied to forcing P.
 		                        %Of size number of elements. Use if ismappedforcing is true and isprecipforcingremapped is true.
 		                        % (Default value is 1)
