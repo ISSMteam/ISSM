@@ -611,6 +611,7 @@
 	SmbIsgraingrowthEnum
 	SmbIsmappedforcingEnum
 	SmbIsmappingusingneighborsEnum
+	SmbIsmappingneighborxyEnum
 	SmbIsmeltEnum
 	SmbIsmungsmEnum
 	SmbIsprecipforcingremappedEnum
@@ -677,6 +678,8 @@
 	SmbVmeanParamEnum
 	SmbVzParamEnum
 	SmbWindspeedgradEnum
+	SmbXMappedforcingEnum
+	SmbYMappedforcingEnum
 	SmoothThicknessMultiplierEnum
 	SolutionTypeEnum
 	SteadystateMaxiterEnum
@@ -4438,6 +4441,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbIsgraingrowthEnum) return "SmbIsgraingrowth" end
 	if(enum==SmbIsmappedforcingEnum) return "SmbIsmappedforcing" end
 	if(enum==SmbIsmappingusingneighborsEnum) return "SmbIsmappingusingneighbors" end
+	if(enum==SmbIsmappingneighborxyEnum) return "SmbIsmappingneighborxy" end
 	if(enum==SmbIsmeltEnum) return "SmbIsmelt" end
 	if(enum==SmbIsmungsmEnum) return "SmbIsmungsm" end
 	if(enum==SmbIsprecipforcingremappedEnum) return "SmbIsprecipforcingremapped" end
@@ -4504,6 +4508,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SmbVmeanParamEnum) return "SmbVmeanParam" end
 	if(enum==SmbVzParamEnum) return "SmbVzParam" end
 	if(enum==SmbWindspeedgradEnum) return "SmbWindspeedgrad" end
+	if(enum==SmbXMappedforcingEnum) return "SmbXMappedforcing" end
+	if(enum==SmbYMappedforcingEnum) return "SmbYMappedforcing" end
 	if(enum==SmoothThicknessMultiplierEnum) return "SmoothThicknessMultiplier" end
 	if(enum==SolutionTypeEnum) return "SolutionType" end
 	if(enum==SteadystateMaxiterEnum) return "SteadystateMaxiter" end
@@ -8265,6 +8271,7 @@ function StringToEnum(name::String)
 	if(name=="SmbIsgraingrowth") return SmbIsgraingrowthEnum  end
 	if(name=="SmbIsmappedforcing") return SmbIsmappedforcingEnum  end
 	if(name=="SmbIsmappingusingneighbors") return SmbIsmappingusingneighborsEnum  end
+	if(name=="SmbIsmappingneighborxy") return SmbIsmappingneighborxyEnum  end
 	if(name=="SmbIsmelt") return SmbIsmeltEnum  end
 	if(name=="SmbIsmungsm") return SmbIsmungsmEnum  end
 	if(name=="SmbIsprecipforcingremapped") return SmbIsprecipforcingremappedEnum  end
@@ -8331,6 +8338,8 @@ function StringToEnum(name::String)
 	if(name=="SmbVmeanParam") return SmbVmeanParamEnum  end
 	if(name=="SmbVzParam") return SmbVzParamEnum  end
 	if(name=="SmbWindspeedgrad") return SmbWindspeedgradEnum  end
+	if(name=="SmbXMappedforcing") return SmbXMappedforcingEnum  end
+	if(name=="SmbYMappedforcing") return SmbYMappedforcingEnum  end
 	if(name=="SmoothThicknessMultiplier") return SmoothThicknessMultiplierEnum  end
 	if(name=="SolutionType") return SolutionTypeEnum  end
 	if(name=="SteadystateMaxiter") return SteadystateMaxiterEnum  end

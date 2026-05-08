@@ -622,6 +622,7 @@ syn keyword cConstant SmbIsfirnwarmingEnum
 syn keyword cConstant SmbIsgraingrowthEnum
 syn keyword cConstant SmbIsmappedforcingEnum
 syn keyword cConstant SmbIsmappingusingneighborsEnum
+syn keyword cConstant SmbIsmappingneighborxyEnum
 syn keyword cConstant SmbIsmeltEnum
 syn keyword cConstant SmbIsmungsmEnum
 syn keyword cConstant SmbIsprecipforcingremappedEnum
@@ -688,6 +689,8 @@ syn keyword cConstant SmbVParamEnum
 syn keyword cConstant SmbVmeanParamEnum
 syn keyword cConstant SmbVzParamEnum
 syn keyword cConstant SmbWindspeedgradEnum
+syn keyword cConstant SmbXMappedforcingEnum
+syn keyword cConstant SmbYMappedforcingEnum
 syn keyword cConstant SmoothThicknessMultiplierEnum
 syn keyword cConstant SolutionTypeEnum
 syn keyword cConstant SteadystateMaxiterEnum
@@ -3856,7 +3859,6 @@ syn keyword cType Cfsurfacelogvel
 syn keyword cType Cfsurfacesquare
 syn keyword cType Cfsurfacesquaretransient
 syn keyword cType Channel
-syn keyword cType classes
 syn keyword cType Constraint
 syn keyword cType Constraints
 syn keyword cType Contour
@@ -3864,8 +3866,8 @@ syn keyword cType Contours
 syn keyword cType ControlInput
 syn keyword cType ControlParam
 syn keyword cType Covertree
-syn keyword cType DatasetInput
 syn keyword cType DataSetParam
+syn keyword cType DatasetInput
 syn keyword cType Definition
 syn keyword cType DependentObject
 syn keyword cType DoubleInput
@@ -3878,8 +3880,8 @@ syn keyword cType Element
 syn keyword cType ElementHook
 syn keyword cType ElementInput
 syn keyword cType ElementMatrix
-syn keyword cType Elements
 syn keyword cType ElementVector
+syn keyword cType Elements
 syn keyword cType EmulatorParam
 syn keyword cType ExponentialVariogram
 syn keyword cType ExternalResult
@@ -3887,12 +3889,11 @@ syn keyword cType FemModel
 syn keyword cType FileParam
 syn keyword cType Friction
 syn keyword cType Gauss
-syn keyword cType GaussianVariogram
-syn keyword cType gaussobjects
 syn keyword cType GaussPenta
 syn keyword cType GaussSeg
 syn keyword cType GaussTetra
 syn keyword cType GaussTria
+syn keyword cType GaussianVariogram
 syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
@@ -3909,7 +3910,6 @@ syn keyword cType IntVecParam
 syn keyword cType IoModel
 syn keyword cType IssmDirectApplicInterface
 syn keyword cType IssmParallelDirectApplicInterface
-syn keyword cType krigingobjects
 syn keyword cType Load
 syn keyword cType Loads
 syn keyword cType Masscon
@@ -3920,7 +3920,6 @@ syn keyword cType Materials
 syn keyword cType Matestar
 syn keyword cType Matice
 syn keyword cType Matlitho
-syn keyword cType matrixobjects
 syn keyword cType MatrixParam
 syn keyword cType Misfit
 syn keyword cType Moulin
@@ -3947,13 +3946,13 @@ syn keyword cType Quadtree
 syn keyword cType Radar
 syn keyword cType Regionaloutput
 syn keyword cType Results
-syn keyword cType Riftfront
 syn keyword cType RiftStruct
+syn keyword cType Riftfront
 syn keyword cType SealevelGeometry
 syn keyword cType Seg
 syn keyword cType SegInput
-syn keyword cType Segment
 syn keyword cType SegRef
+syn keyword cType Segment
 syn keyword cType SpcDynamic
 syn keyword cType SpcStatic
 syn keyword cType SpcTransient
@@ -3974,6 +3973,10 @@ syn keyword cType Variogram
 syn keyword cType VectorParam
 syn keyword cType Vertex
 syn keyword cType Vertices
+syn keyword cType classes
+syn keyword cType gaussobjects
+syn keyword cType krigingobjects
+syn keyword cType matrixobjects
 syn keyword cType AdjointBalancethickness2Analysis
 syn keyword cType AdjointBalancethicknessAnalysis
 syn keyword cType AdjointHorizAnalysis

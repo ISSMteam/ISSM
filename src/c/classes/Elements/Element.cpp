@@ -5594,7 +5594,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble accsumP=0.0;
 	IssmDouble accsumRa=0.0;
 	bool isgraingrowth,isalbedo,isshortwave,isthermal,isaccumulation,ismelt,isdensification,isturbulentflux;
-	bool ismappedforcing, ismappingusingneighbors;
+	bool ismappedforcing, ismappingusingneighbors, ismappingneighborxy;
 	bool isconstrainsurfaceT=false;
 	bool isdeltaLWup=false;
 	IssmDouble init_scaling=0.0;
@@ -5699,6 +5699,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	parameters->FindParam(&teDefault,SmbTeDefaultEnum);
 	parameters->FindParam(&ismappedforcing,SmbIsmappedforcingEnum);
 	parameters->FindParam(&ismappingusingneighbors,SmbIsmappingusingneighborsEnum);
+	parameters->FindParam(&ismappingneighborxy,SmbIsmappingneighborxyEnum);
 	/*}}}*/
 	/*Retrieve inputs: {{{*/
 	Input *zTop_input          = this->GetInput(SmbZTopEnum);         _assert_(zTop_input);
@@ -5761,8 +5762,13 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				IssmDouble* lon_mappingpoint=NULL;
 				int* mappedforcingneighbors=NULL;
 
-				parameters->FindParam(&lon_mappingpoint,&N,SmbLonMappedforcingEnum);
-				parameters->FindParam(&lat_mappingpoint,&N,SmbLatMappedforcingEnum);
+				if (ismappingneighborxy) {
+					parameters->FindParam(&lon_mappingpoint,&N,SmbXMappedforcingEnum);
+					parameters->FindParam(&lat_mappingpoint,&N,SmbYMappedforcingEnum);
+				}else{
+					parameters->FindParam(&lon_mappingpoint,&N,SmbLonMappedforcingEnum);
+					parameters->FindParam(&lat_mappingpoint,&N,SmbLatMappedforcingEnum);
+				}
 
 				this->inputs->GetIntArray(SmbMappedforcingneighborsEnum,this->lid,&mappedforcingneighbors,&N2); _assert_(N2==3);
 
@@ -5782,9 +5788,19 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				yelem[0]=reCast<double>(this->GetYcoord(xyz_list,gauss));
 
 				//Figure out which points are Q11, Q12, Q21, and Q22
-				int neighbor1 = mappedforcingneighbors[0];
-				int neighbor2 = mappedforcingneighbors[1];
-				int neighbor3 = mappedforcingneighbors[2];
+				int neighbor1,neighbor2,neighbor3;
+
+				if (mappedforcingneighbors[0] < 0 || mappedforcingneighbors[1] < 0 || mappedforcingneighbors[2] < 0){
+					neighbor1 = Mappedpoint;
+					neighbor2 = Mappedpoint;
+					neighbor3 = Mappedpoint;
+				}
+				else{
+					neighbor1 = mappedforcingneighbors[0];
+					neighbor2 = mappedforcingneighbors[1];
+					neighbor3 = mappedforcingneighbors[2];
+				}
+
 				mappedforcingpoints[0]=Mappedpoint;
 				mappedforcingpoints[1]=neighbor1;
 				mappedforcingpoints[2]=neighbor2;
@@ -5797,18 +5813,25 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				yinterp[1]=lat_mappingpoint[mappedforcingpoints[1]-1];
 				yinterp[2]=lat_mappingpoint[mappedforcingpoints[2]-1];
 				yinterp[3]=lat_mappingpoint[mappedforcingpoints[3]-1];
-				if(xinterp[0]>180) xinterp[0]=xinterp[0]-360;
-				if(xinterp[1]>180) xinterp[1]=xinterp[1]-360;
-				if(xinterp[2]>180) xinterp[2]=xinterp[2]-360;
-				if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
-				int latlon = 0;
-				int signlat = 1;
-				if (yinterp[0]<0) signlat = -1;
-				latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat); _assert_(latlon>0);
-				lat = latelem[0];
-				lon = lonelem[0];
-				if(lon>180) lon=lon-360;
+				if (ismappingneighborxy){
+					lat = yelem[0];
+					lon = xelem[0];
+				}
+				else{
+					if(xinterp[0]>180) xinterp[0]=xinterp[0]-360;
+					if(xinterp[1]>180) xinterp[1]=xinterp[1]-360;
+					if(xinterp[2]>180) xinterp[2]=xinterp[2]-360;
+					if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
+
+					int latlon = 0;
+					int signlat = 1;
+					if (yinterp[0]<0) signlat = -1;
+					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat); _assert_(latlon>0);
+					lat = latelem[0];
+					lon = lonelem[0];
+					if(lon>180) lon=lon-360;
+				}
 
 				minx=fmin(fmin(xinterp[0],xinterp[1]),fmin(xinterp[2],xinterp[3]));
 				maxx=fmax(fmax(xinterp[0],xinterp[1]),fmax(xinterp[2],xinterp[3]));
