@@ -481,7 +481,8 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	m1qn3_cpp(simul_ptr,
 				&n,X,&f,G,&dxmin,&df1,
 				&gttol,&impres,&io,&omode,&niter,&nsim,iz,dz,&ndz,
-				izs,rzs,(void*)&mystruct);
+				izs,rzs,(void*)&mystruct,
+				true); /*return_best: always restore the iterate with the lowest f*/
 
 	/*Print exit flag*/
 	InversionStatsFooter(num_cost_functions);

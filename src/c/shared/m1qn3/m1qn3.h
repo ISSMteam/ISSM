@@ -52,6 +52,7 @@ void m1qn3_cpp(M1qn3SimulFunc simul,
                long* impres, long* io,
                long* omode, long* niter, long* nsim,
                long* iz, double* dz, long* ndz,
-               long izs[], float rzs[], void* dzs);
+               long izs[], float rzs[], void* dzs,
+               bool return_best = true);
 
 #endif /* _M1QN3_CPP_H_ */
