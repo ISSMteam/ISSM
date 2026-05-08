@@ -394,9 +394,9 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	_assert_(!xIsInf(Gnorm));
 
 	/*Print info*/
-	write_control_output(*Jlisti, X, G, scaling_factors, XL, XU, M, N, num_controls);
 	InversionStatsIter((*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
-
+	write_control_output(*Jlisti, X, G, scaling_factors, XL, XU, M, N, num_controls);
+	
 	/*Clean-up and return*/
 	delete femmodel;
 	*Jlisti = (*Jlisti) +1;
@@ -577,7 +577,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	xDelete(aG);
 
 	/*Add last cost function to results*/
-
+p
 	/*Finalize*/
 	if(VerboseControl()) _printf0_("   preparing final solution\n");
 	femmodel->parameters->SetParam(true,SaveResultsEnum);
