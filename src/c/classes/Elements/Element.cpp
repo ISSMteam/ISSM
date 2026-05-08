@@ -5825,7 +5825,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 					if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
 					int latlon = 0;
-					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, (int)(fabs(yinterp[0])/yinterp[0])); _assert_(latlon>0);
+					int signlat = 1;
+					if (yinterp[0]<0) signlat = -1;
+					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat); _assert_(latlon>0);
 					lat = latelem[0];
 					lon = lonelem[0];
 					if(lon>180) lon=lon-360;
