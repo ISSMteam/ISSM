@@ -412,7 +412,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	
 	/*Print info*/
 	InversionStatsIter((*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
-	write_control_output(*Jlisti, X, G, scaling_factors, XL, XU, M, N, num_controls);
+	write_control_output(*Jlisti, X, G, scaling_factors, XL, XU, intn, M, N, num_controls);
 	
 	/*Clean-up and return*/
 	delete femmodel;
@@ -603,7 +603,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 
 
 	/*Add last cost function to results*/
-p
+
 	/*Finalize*/
 	if(VerboseControl()) _printf0_("   preparing final solution\n");
 	femmodel->parameters->SetParam(true,SaveResultsEnum);
@@ -631,16 +631,17 @@ p
 }/*}}}*/
 
 
-void write_control_output(int iter, double* X, double* G, double* scaling_factors, double* XL, double* XU, int* spatial_size, int* temporal_size, int num_controls)
+void write_control_output(int iter, double* X, double* G, double* scaling_factors, double* XL, double* XU, int n, int* spatial_size, int* temporal_size, int num_controls)
 {
 
+  double *writeX = new double[n];
   int offset = 0;
    for (int c=0;c<num_controls;c++){
       for(int i=0;i<spatial_size[c]*temporal_size[c];i++){
          int index = offset+i;
-         X[index] = X[index]*scaling_factors[c];
-         if(X[index]>XU[index]) X[index]=XU[index];
-         if(X[index]<XL[index]) X[index]=XL[index];
+         writeX[index] = X[index]*scaling_factors[c];
+         if(writeX[index]>XU[index]) writeX[index]=XU[index];
+         if(writeX[index]<XL[index]) writeX[index]=XL[index];
       }
       offset += spatial_size[c]*temporal_size[c];
    }
@@ -667,7 +668,7 @@ void write_control_output(int iter, double* X, double* G, double* scaling_factor
             continue;
         }
 
-        if (!out.write(reinterpret_cast<const char*>(X + n * c), n * sizeof(double))) {
+        if (!out.write(reinterpret_cast<const char*>(writeX + n * c), n * sizeof(double))) {
             std::cerr << "Error: Failed to write X data for control " << c << "\n";
             continue;
         }
@@ -678,6 +679,9 @@ void write_control_output(int iter, double* X, double* G, double* scaling_factor
 
         out.close();
     }
+
+    delete[] writeX;
+    
 }
 
 #else
