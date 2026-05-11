@@ -1,7 +1,9 @@
 from datetime import datetime
 import os
+import shutil
 
 from ismodelselfconsistent import ismodelselfconsistent
+from issmdir import issmdir
 from loadresultsfromcluster import loadresultsfromcluster
 from marshall import marshall
 from pairoptions import pairoptions
@@ -119,16 +121,26 @@ def solve(md, solutionstring, *args):
             print('checking model consistency')
         ismodelselfconsistent(md)
 
+    # Prepare directory in execution
+    execdir = issmdir() + '/execution'
+    if not os.path.isdir(execdir):
+        raise RuntimeError('Could not find directory ' + execdir)
+    root = execdir + '/' + md.private.runtimename
+    if os.path.isdir(root):
+        shutil.rmtree(root)
+    os.mkdir(root)
 
-    # If running QMU analysis, some preprocessing of Dakota files using model 
+    # If running QMU analysis, some preprocessing of Dakota files using model
     # fields needs to be carried out
     if md.qmu.isdakota:
         md = preqmu(md, options)
+        os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
 
     # Write all input files
-    marshall(md, md.miscellaneous.name + '.bin')                   # bin file
-    md.toolkits.ToolkitsFile(md.miscellaneous.name + '.toolkits')  # toolkits file
-    cluster.BuildQueueScript(md, md.miscellaneous.name + '.queue') # queue file
+    basename = root + '/' + md.miscellaneous.name
+    marshall(md, basename + '.bin')                   # bin file
+    md.toolkits.ToolkitsFile(basename + '.toolkits')  # toolkits file
+    cluster.BuildQueueScript(md, basename + '.queue') # queue file
 
     # Upload all required files
     modelname = md.miscellaneous.name
@@ -142,13 +154,22 @@ def solve(md, solutionstring, *args):
     if md.qmu.isdakota:
         filelist.append(modelname + '.qmu.in')
 
-    if isempty(restart):
+    if hasattr(cluster, 'interactive') and cluster.interactive:
+        open(basename + '.errlog', 'w').close()
+        open(basename + '.outlog', 'w').close()
+        filelist.append(modelname + '.outlog')
+        filelist.append(modelname + '.errlog')
+
+    # Build full-path version of filelist for UploadQueueJob (files live in root)
+    fullfilelist = [os.path.join(root, f) for f in filelist]
+
+    if isempty(restart) and cluster.name != oshostname():
         print('uploading input files')
-        cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, filelist)
+        cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, fullfilelist)
 
     # Launch job
     print('launching solution sequence')
-    cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, filelist, restart, batch)
+    cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, fullfilelist, restart, batch)
 
     # Return if batch
     if batch:

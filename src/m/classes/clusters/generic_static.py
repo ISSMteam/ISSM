@@ -103,13 +103,7 @@ class generic_static(object):
         fid.close()
 
         # Set permissions on queue script so that it can be run
-        subprocess.call(['chmod', '0755', modelname + '.queue'])
-
-        # Create an errlog and outlog file
-        fid = open(modelname + '.errlog', 'w')
-        fid.close()
-        fid = open(modelname + '.outlog', 'w')
-        fid.close()
+        subprocess.call(['chmod', '0755', filename])
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
@@ -119,16 +113,10 @@ class generic_static(object):
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
         if not ispc():
-            # Figure out which file extension to use
-            if self.shell.find('csh') == -1:
-                shellext='sh'
-            else:
-                shellext='csh'
-
-            launchcommand = './' + modelname + '.queue'
+            launchcommand = self.executionpath + '/' + dirname + '/' + modelname + '.queue'
             subprocess.call([launchcommand])
         else:
-            launchcommand = './' + modelname + '.bat'
+            launchcommand = self.executionpath + '\\' + dirname + '\\' + modelname + '.bat'
             subprocess.call([launchcommand])
     # }}}
 

@@ -1,3 +1,4 @@
+import os
 from subprocess import call
 
 from fielddisplay import fielddisplay
@@ -145,20 +146,14 @@ class generic(object):
             fid.close()
 
         else:  # Windows
-            fid = open(modelname + '.bat', 'w')
+            batfilename = filename[:-6] + '.bat'
+            fid = open(batfilename, 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/{}" {} "{}/{}" {} '.format(self.codepath, executable, solution, self.executionpath, dirname, modelname))
             else:
                 fid.write('"{}/{}" {} "{}/{}" {} 2>{}.errlog>{}.outlog'.
                           format(self.codepath, executable, solution, self.executionpath, dirname, modelname, modelname, modelname))
-            fid.close()
-
-            #in interactive mode, create a run file, and errlog and outlog file
-        if self.interactive:
-            fid = open(modelname + '.errlog', 'w')
-            fid.close()
-            fid = open(modelname + '.outlog', 'w')
             fid.close()
     # }}}
 
@@ -194,7 +189,8 @@ class generic(object):
             fid.close()
 
         else:    # Windows
-            fid = open(modelname + '.bat', 'w')
+            batfilename = filename[:-6] + '.bat'
+            fid = open(batfilename, 'w')
             fid.write('@echo off\n')
             if self.interactive:
                 fid.write('"{}/issm.exe" {} "{}/{}" {} '.format(self.codepath, solution, self.executionpath, modelname, modelname))
@@ -202,22 +198,15 @@ class generic(object):
                 fid.write('"{}/issm.exe" {} "{}/{}" {} 2>{}.errlog>{}.outlog'.format
                           (self.codepath, solution, self.executionpath, modelname, modelname, modelname, modelname))
             fid.close()
-
-        # In interactive mode, create a run file, and errlog and outlog file
-        if self.interactive:
-            fid = open(modelname + '.errlog', 'w')
-            fid.close()
-            fid = open(modelname + '.outlog', 'w')
-            fid.close()
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress the files into one zip
-        compressstring = 'tar -zcf {}.tar.gz '.format(dirname)
-        for file in filelist:
-            compressstring += ' {}'.format(file)
-        if self.interactive:
-            compressstring += ' {}.errlog {}.outlog '.format(modelname, modelname)
+        # Compress the files into one zip.
+        # filelist contains full paths; use -C so only basenames are stored in the archive.
+        root = issmdir() + '/execution/' + dirname
+        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
+        for filepath in filelist:
+            compressstring += ' {}'.format(os.path.basename(filepath))
         call(compressstring, shell=True)
 
         issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
@@ -226,12 +215,12 @@ class generic(object):
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
         if not isempty(restart):
-            launchcommand = 'cd {} && cd {} chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
+            launchcommand = 'cd {} && cd {} && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
         else:
             if batch:
-                launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./&& tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
+                launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
             else:
-                launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./&& tar -zxf {}.tar.gz  && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname, modelname)
+                launchcommand = 'cd {} && cd {} && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 

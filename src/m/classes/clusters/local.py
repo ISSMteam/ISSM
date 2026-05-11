@@ -1,3 +1,4 @@
+import subprocess
 from subprocess import call
 
 import numpy as np
@@ -88,7 +89,8 @@ class local(object):  # {{{
     # }}}
 
     def LaunchQueueJob(cluster, modelname, dirname, filelist, restart, batch):  # {{{
-        subprocess.call('source ' + modelname + '.queue')
+        root = issmdir() + '/execution/' + dirname
+        subprocess.call('source ' + root + '/' + modelname + '.queue', shell=True)
     # }}}
 
     def Download(cluster, dirname, filelist):  # {{{

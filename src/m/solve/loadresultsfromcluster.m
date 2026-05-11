@@ -56,21 +56,3 @@ for i=1:numel(filelist)
 		delete(filename)
 	end
 end
-if exist([md.private.runtimename '.tar.gz']) & ~ispc()
-	delete([md.private.runtimename '.tar.gz']);
-end
-
-%erase input file if run was carried out on same platform.
-hostname=oshostname();
-if strcmpi(hostname,cluster.name)
-	delete([md.miscellaneous.name '.bin']);
-	delete([md.miscellaneous.name '.toolkits']);
-	if md.qmu.isdakota
-		delete([md.miscellaneous.name '.qmu.in']);
-	end
-	if ~ispc()
-		delete([md.miscellaneous.name '.queue']);
-	else
-		delete([md.miscellaneous.name '.bat']);
-	end
-end

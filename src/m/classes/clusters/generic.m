@@ -162,7 +162,8 @@ classdef generic
 				fclose(fid);
 
 			else % Windows
-				fid=fopen([modelname '.bat'],'w');
+				batfilename=[filename(1:end-6) '.bat'];
+				fid=fopen(batfilename,'w');
 				fprintf(fid,'@echo off\n');
 
 				if cluster.np>1
@@ -171,12 +172,6 @@ classdef generic
 					fprintf(fid,'"%s\\%s" %s ./ %s',cluster.codepath,executable,solution,modelname);
 				end
 				fclose(fid);
-			end
-
-			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive
-				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
-				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 			end
 		end
 		%}}}
@@ -227,12 +222,6 @@ classdef generic
 			%write this long string to disk:
 			fprintf(fid,mpistring);
 			fclose(fid);
-
-			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive
-				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
-				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
-			end
 		end
 		%}}}
 		function BuildQueueScriptIceOcean(cluster, md, filename) % {{{
@@ -260,12 +249,6 @@ classdef generic
 					cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,cluster.executionpath,modelname,cluster.npocean);
 			end
 			fclose(fid);
-
-			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive
-				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
-				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
-			end
 		end
 		%}}}
 		function BuildKrigingQueueScript(cluster, md, filename) % {{{
@@ -303,12 +286,6 @@ classdef generic
 			else % Windows
 				error('not supported');
 			end
-
-			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive
-				fid=fopen([modelname '.errlog'],'w'); fclose(fid);
-				fid=fopen([modelname '.outlog'],'w'); fclose(fid);
-			end
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
@@ -316,15 +293,15 @@ classdef generic
 			if ~ispc
 
 				%compress the files into one zip.
-				compressstring=['tar -zcf ' dirname '.tar.gz '];
+				%filelist contains full paths; tar with -C so only basenames are stored in the archive
+				root=[issmdir() '/execution/' dirname];
+				compressstring=['tar -C ' root ' -zcf ' dirname '.tar.gz'];
 				for i=1:numel(filelist)
 					if ~exist(filelist{i},'file')
 						error(['File ' filelist{i} ' not found']);
 					end
-					compressstring = [compressstring ' ' filelist{i}];
-				end
-				if cluster.interactive
-					compressstring = [compressstring ' ' modelname '.errlog ' modelname '.outlog '];
+					[~,fname,fext]=fileparts(filelist{i});
+					compressstring=[compressstring ' ' fname fext];
 				end
 				system(compressstring);
 
@@ -345,11 +322,12 @@ classdef generic
 					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
 				else
 					if ~batch
-						launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && source  ' modelname '.queue '];
+						launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
+						%launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
+						%' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz  && source  ' modelname '.queue '];
 					else
 						launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
+							' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
 					end
 				end
 				issmssh(cluster.name,cluster.login,cluster.port,launchcommand);

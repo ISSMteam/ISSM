@@ -98,7 +98,8 @@ classdef generic_static
 				fprintf(fid,['%s/mpiexec -np %i %s/%s %s %s %s \n'],codepath,cluster.np,codepath,executable,solution,'./',modelname);
 				fclose(fid);
 			else % Windows
-				fid=fopen([modelname '.bat'], 'w');
+				batfilename=[filename(1:end-6) '.bat'];
+				fid=fopen(batfilename, 'w');
 				fprintf(fid,'@echo off\n');
 				if cluster.np>1
 					fprintf(fid,'"%s\\mpiexec.exe" -n %i "%s/%s" %s ./ %s',cluster.codepath,cluster.np,cluster.codepath,executable,solution,modelname);
@@ -107,10 +108,6 @@ classdef generic_static
 				end
 				fclose(fid);
 			end
-
-			%Create an errlog and outlog file
-			fid=fopen([modelname '.errlog'],'w'); fclose(fid);
-			fid=fopen([modelname '.outlog'],'w'); fclose(fid);
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
@@ -126,10 +123,10 @@ classdef generic_static
 					shellext='csh';
 				end
 
-				launchcommand=['source  ' modelname '.queue '];
+				launchcommand=['source ' cluster.executionpath '/' dirname '/' modelname '.queue '];
 				issmssh(cluster.name,'',0,launchcommand);
 			else
-				system([modelname '.bat']);
+				system([cluster.executionpath '\' dirname '\' modelname '.bat']);
 			end
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{

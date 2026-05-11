@@ -121,34 +121,52 @@ if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
 	ismodelselfconsistent(md);
 end
 
-%if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out. 
+%Prepare directory in execution
+if ~exist([issmdir() '/execution/'], 'dir')
+	error(['Could not find directory ' issmdir() '/execution/']);
+end
+root = [issmdir() '/execution/' md.private.runtimename];
+if exist(root, 'dir')
+	rmdir(root, 's');
+end
+mkdir(root);
+
+%if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out.
 if md.qmu.isdakota
 	md=preqmu(md,options);
+	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 end
 
-%Prepare directory in execution
-
 %Write all input files
-marshall(md, [md.miscellaneous.name '.bin']);                    % bin file
-ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']);   % toolkits file
-BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue']); % queue file
+basename = [root '/' md.miscellaneous.name];
+marshall(md, [basename '.bin']);                    % bin file
+ToolkitsFile(md.toolkits, [basename '.toolkits']);  % toolkits file
+BuildQueueScript(cluster, md, [basename '.queue']); % queue file
 
 %Upload all required files
 modelname = md.miscellaneous.name;
 filelist  = {[modelname '.bin'] [modelname '.toolkits']};
 if ispc
-	filelist{end+1}=[modelname '.bat'];
+	filelist{end+1} = [modelname '.bat'];
 else
-	filelist{end+1}=[modelname '.queue'];
+	filelist{end+1} = [modelname '.queue'];
 end
-
 if md.qmu.isdakota
 	filelist{end+1} = [modelname '.qmu.in'];
 end
+if isprop(cluster, 'interactive') && cluster.interactive
+	fid=fopen([basename '.errlog'],'w'); fclose(fid);
+	fid=fopen([basename '.outlog'],'w'); fclose(fid);
+	filelist{end+1} = [modelname '.outlog'];
+	filelist{end+1} = [modelname '.errlog'];
+end
 
-if isempty(restart)
+%Build full-path version of filelist for UploadQueueJob (files live in root)
+fullfilelist = cellfun(@(f) fullfile(root, f), filelist, 'UniformOutput', false);
+
+if isempty(restart) && ~strcmpi(cluster.name, oshostname())
 	disp('uploading input files')
-	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist);
+	UploadQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,fullfilelist);
 end
 
 %launch queue job: 

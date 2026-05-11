@@ -78,7 +78,8 @@ classdef local
 			%do nothing really.
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
-			system(['source ' modelname '.queue']);
+			root=[issmdir() '/execution/' dirname];
+			system(['source ' root '/' modelname '.queue']);
 		end %}}}
 		function Download(cluster,dirname,filelist)% {{{
 		end %}}}
