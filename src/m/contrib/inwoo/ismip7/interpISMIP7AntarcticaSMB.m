@@ -28,13 +28,18 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 	% Find appropriate directory
 	switch oshostname(),
 		case {'totten'}
-			path='/totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/';
+			datadir='/totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/';
 		case {'amundsen.thayer.dartmouth.edu'}
-			path='/local/ModelData/ISMIP6Data/Forcings2100/Atmosphere/';
+			datadir='/local/ModelData/ISMIP6Data/Forcings2100/Atmosphere/';
 		case {'simba00'}
-			path='/data2/msmg/DATA/ISMIP7/AIS/';
+			datadir='/data2/msmg/DATA/ISMIP7/AIS/';
 		otherwise
 			error('machine not supported yet, please provide your own path');
+	end
+
+	if nargin == 3
+		start_time = 1996;
+		end_time   = 2300;
 	end
 
 	% Searching forcing files
@@ -48,6 +53,8 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 	temp_matrix_smb = [];
 	temp_matrix_time= [];
 	for i = 1:length(smb_file)
+		fprintf('    processing file %d/%d \r',i,length(smb_file));
+
 		%NOTE: unit for acabf in netcdf file: kg m-2 s-1
 		smb_data = double(ncread(smb_file{i},'acabf')); % dimension = (x,y,time)
 		smb_data = smb_data/md.materials.rho_ice*md.constants.yts; % kg m-2 s-1 -> ice m yr-1
@@ -57,7 +64,7 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 
 		% Now, interpolate SMB 
 		for j = 1:size(smb_data,3)
-			temp_smb = InterpFromGridToMesh(x_n,y_n,smb_data(:,:,j)',md.mesh.x,md.mesh.y);
+			temp_smb = InterpFromGridToMesh(x_n,y_n,smb_data(:,:,j)',md.mesh.x,md.mesh.y,NaN);
 
 			% Concatenate dataset
 			temp_matrix_smb = [temp_matrix_smb, temp_smb];
@@ -70,10 +77,13 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 	% convert days in year decimal
 	%FIXME: standard calendar for time is 365 days in year (with noleap)?
 	temp_matrix_time = temp_matrix_time/365 + 1850;
+	if size(temp_matrix_time,2) == 1
+		temp_matrix_time = transpose(temp_matrix_time);
+	end
 
 	% Save data
 	smb = SMBforcing();
-	smb.mass_balance = [temp_matrix_smb; temp_matrix_time];
+	smb.mass_balance = [temp_matrix_smb; temp_matrix_time'];
 end
 
 function smb_file = search_forcing_file(datadir, modelname, scenario, start_time, end_time) % {{{
@@ -110,7 +120,7 @@ function smb_file = search_forcing_file(datadir, modelname, scenario, start_time
 	switch modelname
 		case 'obs'
 			%FIXME: Assign smb file lists.
-			error('Not supported yet. We do not find any observation data set for SMB.';
+			error('Not supported yet. We do not find any observation data set for SMB.');
 
 		case 'cesm2-waccm'
 			%FIXME: SDBN1 now is replaced with SDBN1-2000m or SDBN1-8000m. These search logic should be changed according to ISMIP7 repository.
@@ -133,8 +143,8 @@ function smb_file = search_forcing_file(datadir, modelname, scenario, start_time
 			for i = 1:numel(smb_file)
 				tmp_year = strsplit(smb_file(i).name,'_');
 				tmp_year = tmp_year{7};
-				tmp_year = strsplit(tmp_year,'.nc');
-				tmp_year = int16(tmp_year{1});
+				tmp_year = split(tmp_year,'.nc');
+				tmp_year = str2int(tmp_year{1});
 
 				% Now, check this find in years
 				if any(years == tmp_year) 
