@@ -19,7 +19,7 @@ void bedslope_core(FemModel* femmodel){
 	femmodel->parameters->FindParam(&save_results,SaveResultsEnum);
 	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
 
-	if(VerboseSolution()) _printf0_("   computing slope\n");
+	if(VerboseSolution()) _printf0_("   computing bed slopes\n");
 
 	/*Call on core computations: */
 	femmodel->SetCurrentConfiguration(L2ProjectionBaseAnalysisEnum);
