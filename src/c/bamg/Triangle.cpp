@@ -271,14 +271,17 @@ namespace bamg {
 								  x2a = s2->i.x - sa->i.x,
 								  yba = sb->i.y - sa->i.y,
 								  y2a = s2->i.y - sa->i.y;
-						 double
-							cosb12 =  double(xb1*x21 + yb1*y21),
-									 cosba2 =  double(xba*x2a + yba*y2a) ,
-									 sinb12 = double(det2),
-									 sinba2 = double(t2->det);
+						 long long cosb12_ll = xb1*x21 + yb1*y21;
+						 long long cosba2_ll = xba*x2a + yba*y2a;
+						 long long sinb12_ll = det2;
+						 long long sinba2_ll = t2->det;
 
 						 // angle b12 > angle ba2 => cotg(angle b12) < cotg(angle ba2)
-						 OnSwap =  ((double) cosb12 * (double)  sinba2) <  ((double) cosba2 * (double) sinb12);
+						 // Use exact 128-bit integer arithmetic to avoid platform-dependent
+						 // floating-point rounding in the cross-multiplication:
+						 __int128 lhs = (__int128)cosb12_ll * (__int128)sinba2_ll;
+						 __int128 rhs = (__int128)cosba2_ll * (__int128)sinb12_ll;
+						 OnSwap = lhs < rhs;
 						 break;
 					 }
 					 else {	
@@ -320,17 +323,30 @@ namespace bamg {
 							 } else 
 								{kopt=1;continue;}
 							}
-						 OnSwap = som < 2;
+						 // When som is within machine epsilon of 2, the anisotropic criterion
+						 // is ambiguous (co-circular in metric space). Fall back to the exact
+						 // isotropic criterion (integer arithmetic, fully deterministic).
+						 if(som >= 2*(1-4e-15) && som <= 2*(1+4e-15)) {
+							 long long xb1_ = sb->i.x - s1->i.x, x21_ = s2->i.x - s1->i.x,
+							          yb1_ = sb->i.y - s1->i.y, y21_ = s2->i.y - s1->i.y,
+							          xba_ = sb->i.x - sa->i.x, x2a_ = s2->i.x - sa->i.x,
+							          yba_ = sb->i.y - sa->i.y, y2a_ = s2->i.y - sa->i.y;
+							 __int128 lhs_ = (__int128)(xb1_*x21_ + yb1_*y21_) * (__int128)det2;
+							 __int128 rhs_ = (__int128)(xba_*x2a_ + yba_*y2a_) * (__int128)(t2->det);
+							 OnSwap = lhs_ < rhs_;
+						 } else {
+							 OnSwap = som < 2;
+						 }
 						 break;
 					 }
 
 				} // OnSwap 
 			} // (! OnSwap &&(det1 > 0) && (det2 > 0) )
 		}
-		if( OnSwap ) 
+		if( OnSwap )
 		 bamg::swap(t1,a1,t2,a2,s1,s2,det1,det2);
 		else {
-			t1->SetMarkUnSwap(a1);     
+			t1->SetMarkUnSwap(a1);
 		}
 		return OnSwap;
 	}
