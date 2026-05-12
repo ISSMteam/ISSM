@@ -366,11 +366,6 @@ classdef generic
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 
-			if ispc()
-				%do nothing
-				return;
-			end
-
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
 			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);

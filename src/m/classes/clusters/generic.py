@@ -225,9 +225,6 @@ class generic(object):
     # }}}
 
     def Download(self, dirname, filelist):  # {{{
-        if ispc():
-            # Do nothing
-            return
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)
         issmscpin(self.name, self.login, self.port, directory, filelist)

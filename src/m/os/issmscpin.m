@@ -1,8 +1,8 @@
-function issmscpin(host, login, port, path, packages, bracketstyle)
-%ISSMSCPIN get packages from host
+function issmscpin(host, login, port, path, filelist, bracketstyle)
+%ISSMSCPIN get filelist from host
 %
 %   usage:
-%      issmscpin(host,packages,path,bracketstyle)
+%      issmscpin(host,filelist,path,bracketstyle)
 %
 %      bracketstyle:  1 - \{\}    (escaped; default)
 %                     2 - {}      (not escaped)
@@ -17,18 +17,18 @@ hostname=oshostname();
 
 %if hostname and host are the same, do a simple copy
 if strcmpi(hostname,host)
-	for i=1:numel(packages)
-		system(['cp ' path '/' packages{i} ' .']);
+	for i=1:numel(filelist)
+		copyfile([path '/' filelist{i} ], '.');
 	end
 else
-	if numel(packages)==1
-		fileliststr=packages{1};
+	if numel(filelist)==1
+		fileliststr=filelist{1};
 	else
 		fileliststr='\{';
-		for i=1:numel(packages)-1
-			fileliststr=[fileliststr packages{i} ','];
+		for i=1:numel(filelist)-1
+			fileliststr=[fileliststr filelist{i} ','];
 		end
-		fileliststr=[fileliststr packages{end} '\}'];
+		fileliststr=[fileliststr filelist{end} '\}'];
 
 		%remove \ if bracketstyle is 2
 		if bracketstyle==2
@@ -55,9 +55,9 @@ else
 	if status ~= 0
 		error(['scp error message: ' cmdout])
 	end
-	for i=1:numel(packages)
-		if ~exist(['./' packages{i}])
-			warning(['issmscpin error message: could not scp ' packages{i}]);
+	for i=1:numel(filelist)
+		if ~exist(['./' filelist{i}])
+			warning(['issmscpin error message: could not scp ' filelist{i}]);
 		end
 	end
 end
