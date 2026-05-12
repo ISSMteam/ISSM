@@ -165,11 +165,12 @@ classdef generic
 				batfilename=[filename(1:end-6) '.bat'];
 				fid=fopen(batfilename,'w');
 				fprintf(fid,'@echo off\n');
+				execdir=[cluster.executionpath '\' dirname];
 
 				if cluster.np>1
-					fprintf(fid,'"C:\\Program Files\\Microsoft MPI\\Bin\\mpiexec.exe" -n %i "%s/%s" %s ./ %s',cluster.np,cluster.codepath,executable,solution,modelname);
+					fprintf(fid,'"C:\\Program Files\\Microsoft MPI\\Bin\\mpiexec.exe" -n %i "%s\\%s" %s "%s" %s',cluster.np,cluster.codepath,executable,solution,execdir,modelname);
 				else
-					fprintf(fid,'"%s\\%s" %s ./ %s',cluster.codepath,executable,solution,modelname);
+					fprintf(fid,'"%s\\%s" %s "%s" %s',cluster.codepath,executable,solution,execdir,modelname);
 				end
 				fclose(fid);
 			end
@@ -330,7 +331,8 @@ classdef generic
 				end
 				issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 			else
-				system([modelname '.bat']);
+				batfile=[cluster.executionpath '\' dirname '\' modelname '.bat'];
+				system(['"' batfile '"']);
 			end
 
 		end %}}}
@@ -357,7 +359,8 @@ classdef generic
 				end
 				issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 			else
-				system([modelname '.bat']);
+				batfile=[cluster.executionpath '\' dirname '\' modelname '.bat'];
+				system(['"' batfile '"']);
 			end
 
 		end %}}}
