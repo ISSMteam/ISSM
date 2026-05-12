@@ -220,11 +220,7 @@ class generic(object):
             if batch:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
             else:
-                if os.path.normpath(self.executionpath) == os.path.normpath(os.path.join(issmdir(), 'execution')):
-                    launchcommand = 'cd {} && cd {} && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
-                else:
-                    launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && chmod 755 {}.queue && ./{}.queue'.format(
-                        self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname, modelname)
+                launchcommand = 'chmod 755 {}/{}/{}.queue && {}/{}/{}.queue'.format(self.executionpath, dirname, modelname, self.executionpath, dirname, modelname)
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 

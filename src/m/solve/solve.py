@@ -122,10 +122,13 @@ def solve(md, solutionstring, *args):
         ismodelselfconsistent(md)
 
     # Prepare directory in execution
-    execdir = issmdir() + '/execution'
-    if not os.path.isdir(execdir):
-        raise RuntimeError('Could not find directory ' + execdir)
-    root = execdir + '/' + md.private.runtimename
+    if cluster.name == oshostname():
+        localexecdir = cluster.executionpath
+    else:
+        localexecdir = issmdir() + '/execution'
+    if not os.path.isdir(localexecdir):
+        raise RuntimeError('Could not find directory ' + localexecdir)
+    root = localexecdir + '/' + md.private.runtimename
     if os.path.isdir(root):
         shutil.rmtree(root)
     os.mkdir(root)
@@ -160,13 +163,7 @@ def solve(md, solutionstring, *args):
         filelist.append(basename + '.errlog')
 
     # Upload input files if necessary
-    isupload = False
     if isempty(restart) and cluster.name != oshostname():
-        isupload = True
-    elif os.path.normpath(cluster.executionpath) != os.path.normpath(os.path.join(issmdir(), 'execution')):
-        isupload = True
-
-    if isupload:
         print('uploading input files')
         cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, filelist)
 

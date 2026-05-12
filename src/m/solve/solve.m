@@ -122,10 +122,15 @@ if strcmpi(getfieldvalue(options,'checkconsistency','yes'),'yes')
 end
 
 %Prepare directory in execution
-if ~exist([issmdir() '/execution/'], 'dir')
+if strcmpi(cluster.name, oshostname())
+	localexecdir = cluster.executionpath;
+else
+	localexecdir = [issmdir() '/execution/'];
+end
+if ~exist(localexecdir, 'dir')
 	error(['Could not find directory ' issmdir() '/execution/']);
 end
-root = [issmdir() '/execution/' md.private.runtimename];
+root = [localexecdir '/' md.private.runtimename];
 if exist(root, 'dir')
 	rmdir(root, 's');
 end
@@ -161,14 +166,7 @@ if isprop(cluster, 'interactive') && cluster.interactive
 end
 
 %Upload input files if necessary
-isupload = false;
 if isempty(restart) && ~strcmpi(cluster.name, oshostname())
-   isupload = true;
-elseif ~strcmpi(fullfile(cluster.executionpath),fullfile(issmdir(),'execution'))
-	isupload = true;
-end
-
-if isupload
    disp('uploading input files')
    UploadQueueJob(cluster, md.miscellaneous.name, md.private.runtimename, filelist);
 end
