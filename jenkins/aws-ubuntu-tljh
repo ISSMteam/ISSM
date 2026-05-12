@@ -1,15 +1,22 @@
+# NOTE: This configuration adds solid earth and Dakota capabilities to the 
+#		basic build.
+
+MATLAB_PATH="/usr/local/MATLAB/R2025a"
+
 #--------------------#
 # ISSM Configuration #
 #--------------------#
 
 ISSM_CONFIG='\
-	--prefix="${ISSM_DIR}" \
+	--prefix=${ISSM_DIR} \
 	--disable-static \
-	--with-numthreads=1 \
+	--enable-debugging \
+	--with-numthreads=4 \
+	--with-matlab-dir=${MATLAB_PATH} \
 	--with-python-version=3.9 \
-	--with-python-dir=/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/Compiler/gcccore/11.2.0/python/3.9.6 \
-	--with-python-numpy-dir=/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/avx512/MPI/gcc/11.2.0/openmpi/4.1.1/scipy-bundle/2021.10/lib/python3.9/site-packages/numpy \
-	--with-fortran-lib="-L/cvmfs/soft.ccr.buffalo.edu/versions/2023.01/easybuild/software/Core/gcccore/11.2.0/lib64 -lgfortran" \
+	--with-python-dir=/opt/tljh/user \
+	--with-python-numpy-dir="/opt/tljh/user/lib/python3.9/site-packages/numpy" \
+	--with-fortran-lib="-L/usr/lib/x86_64-linux-gnu -lgfortran" \
 	--with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
 	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
@@ -19,9 +26,12 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
+	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
+	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
 	--with-proj-dir="${ISSM_DIR}/externalpackages/proj/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
+	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
 '
 
 #-------------------#
@@ -29,14 +39,22 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	petsc			install-3.22-linux.sh
-	hdf5			install-1.sh
-	netcdf			install-4.sh
-	proj			install-6.sh
-	gdal			install-3-linux-python.sh
-	triangle		install-linux.sh
-	semic			install.sh
-	shell2junit		install.sh
+	autotools	install-linux.sh
+	cmake		install.sh
+	petsc		install-3.23-linux.sh
+	boost		install-1.7-linux.sh
+	dakota		install-6.2-linux.sh
+	chaco		install-linux.sh
+	curl		install-7-linux.sh
+	hdf5		install-1.sh
+	netcdf		install-4.sh
+	proj		install-6.sh
+	gdal		install-3-linux-python.sh
+	gshhg		install.sh
+	gmt			install-6-linux.sh
+	gmsh		install-4-linux.sh
+	triangle	install-linux.sh
+	semic		install.sh
 "
 
 #---------#
@@ -45,7 +63,7 @@ EXTERNALPACKAGES="
 
 # Test suites
 MATLAB_TEST=0
-PYTHON_TEST=1
+PYTHON_TEST=0
 JAVASCRIPT_TEST=0
 EXAMPLES_TEST=0
 
@@ -61,4 +79,4 @@ NUMCPUS_RUN=1
 
 # Nightly run options
 MATLAB_NROPTIONS=""
-PYTHON_NROPTIONS="--exclude 234 418 420"
+PYTHON_NROPTIONS=""

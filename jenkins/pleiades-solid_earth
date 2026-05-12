@@ -30,7 +30,6 @@ ISSM_CONFIG='\
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
 	--with-proj-dir="${ISSM_DIR}/externalpackages/proj/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
 	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
@@ -53,7 +52,6 @@ EXTERNALPACKAGES="
 	gmt			install-6-pleiades.sh
 	gmsh		install-4-pleiades.sh
 	triangle	install-linux.sh
-	m1qn3		install-linux.sh
 	semic		install.sh
 "
 

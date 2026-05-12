@@ -1,8 +1,0 @@
---- src/blas/ddot.f	2009-10-20 06:39:35.000000000 -0400
-+++ ddot.f	2024-05-28 16:21:01.271069359 -0400
-@@ -1,4 +1,4 @@
--      double precision function ddot(n,dx,incx,dy,incy)
-+      double precision function ddot_m1qn3(n,dx,incx,dy,incy)
- c
- c     forms the dot product of two vectors.
- c     uses unrolled loops for increments equal to one.

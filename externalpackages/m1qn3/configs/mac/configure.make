@@ -1,2 +1,0 @@
-STATIC_LIB_EXT=a
-SHARED_LIB_EXT=dylib

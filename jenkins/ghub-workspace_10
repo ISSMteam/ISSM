@@ -32,7 +32,6 @@ ISSM_CONFIG='\
 	--with-chaco-dir="${ISSM_EXT_DIR}/chaco/install" \
 	--with-proj-dir="${ISSM_EXT_DIR}/proj/install" \
 	--with-triangle-dir="${ISSM_EXT_DIR}/triangle/install" \
-	--with-m1qn3-dir="${ISSM_EXT_DIR}/m1qn3/install" \
 	--with-semic-dir=${ISSM_EXT_DIR}/semic/install \
 '
 
@@ -55,7 +54,6 @@ EXTERNALPACKAGES="
 	gmt			install-6-linux.sh
 	gmsh		install-4-linux.sh
 	triangle	install-linux.sh
-	m1qn3		install-linux.sh
 	semic		install.sh
 	shell2junit	install.sh
 "

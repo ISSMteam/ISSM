@@ -1575,35 +1575,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		fi
 	fi
 	dnl }}}
-	dnl M1QN3{{{
-	AC_MSG_CHECKING([for M1QN3])
-	AC_ARG_WITH(
-		[m1qn3-dir],
-		AS_HELP_STRING([--with-m1qn3-dir=DIR], [M1QN3 root directory]),
-		[M1QN3_ROOT=${withval}],
-		[M1QN3_ROOT="no"]
-	)
-	if test "x${M1QN3_ROOT}" == "xno"; then
-		HAVE_M1QN3=no
-	else
-		HAVE_M1QN3=yes
-		if ! test -d "${M1QN3_ROOT}"; then
-			AC_MSG_ERROR([M1QN3 directory provided (${M1QN3_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_M1QN3}])
-
-	dnl M1QN3 libraries and header files
-	if test "x${HAVE_M1QN3}" == "xyes"; then
-		if test "x${IS_MSYS2}" == "xyes"; then
-			M1QN3LIB="-Wl,-L${M1QN3_ROOT} -Wl,-lm1qn3 -Wl,-lddot"
-		else
-			M1QN3LIB="-L${M1QN3_ROOT} -lm1qn3 -lddot"
-		fi
-		AC_DEFINE([_HAVE_M1QN3_], [1], [with M1QN3 in ISSM src])
-		AC_SUBST([M1QN3LIB])
-	fi
-	dnl }}}
 	dnl PROJ{{{
 	AC_MSG_CHECKING([for PROJ])
 	AC_ARG_WITH(

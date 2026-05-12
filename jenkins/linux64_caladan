@@ -22,7 +22,6 @@ ISSM_CONFIG='\
 	--with-dakota-dir=$ISSM_DIR/externalpackages/dakota/install \
 	--with-boost-dir=$ISSM_DIR/externalpackages/boost/install/ \
 	--with-fortran-lib="-L/usr/lib/gcc/x86_64-linux-gnu/4.9/ -lgfortran" \
-	--with-m1qn3-dir=$ISSM_DIR/externalpackages/m1qn3/install \
 	--with-numthreads=4 \
 	--enable-development \
 	--enable-debugging '
@@ -40,7 +39,6 @@ EXTERNALPACKAGES="
 	boost		install-1.7-linux.sh
 	dakota		install-6.2-linux64.sh
 	chaco		install-linux.sh
-	m1qn3		install-linux.sh
 	shell2junit	install.sh
 "
 

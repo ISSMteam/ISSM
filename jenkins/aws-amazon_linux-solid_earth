@@ -46,7 +46,6 @@ EXTERNALPACKAGES="
 	gmt				install-6-linux.sh
 	gmsh			install-4-linux.sh
 	triangle		install-linux.sh
-	m1qn3			install-linux.sh
 	semic			install.sh
 	shell2junit		install.sh
 "

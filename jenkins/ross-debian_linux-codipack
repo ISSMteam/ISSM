@@ -25,7 +25,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
 	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
-	--with-m1qn3-dir=${ISSM_DIR}/externalpackages/m1qn3/install \
 	--with-medipack-dir="${ISSM_DIR}/externalpackages/medipack/install" \
 	--with-codipack-dir="${ISSM_DIR}/externalpackages/codipack/install" \
 	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
@@ -41,7 +40,6 @@ EXTERNALPACKAGES="
 	petsc		install-3.23-linux.sh
 	gsl			install.sh
 	triangle	install-linux.sh
-	m1qn3		install-linux.sh
 	medipack	install.sh
 	codipack	install.sh
 	semic		install.sh

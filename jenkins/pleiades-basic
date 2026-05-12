@@ -25,7 +25,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${PETSC_DIR}" \
 	--with-petsc-dir="${PETSC_DIR}" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
 	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
@@ -36,7 +35,6 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	triangle	install-linux.sh
-	m1qn3		install-linux.sh
 	semic		install.sh
 "
 

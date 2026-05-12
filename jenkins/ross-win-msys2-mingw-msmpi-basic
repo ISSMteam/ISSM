@@ -21,7 +21,6 @@ ISSM_CONFIG='\
 	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-m1qn3-dir="${ISSM_DIR}/externalpackages/m1qn3/install" \
 	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
@@ -33,7 +32,6 @@ EXTERNALPACKAGES="
 	msmpi		install.sh
 	petsc		install-3.14-win-msys2-mingw-msmpi.sh
 	triangle	install-win-msys2-mingw.sh
-	m1qn3		install-win-msys2-mingw-static.sh
 	semic		install.sh
 	shell2junit	install.sh
 "

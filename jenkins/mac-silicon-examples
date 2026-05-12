@@ -26,7 +26,6 @@ ISSM_CONFIG='\
 	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
 	--with-proj-dir=${ISSM_DIR}/externalpackages/proj/install \
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
-	--with-m1qn3-dir=${ISSM_DIR}/externalpackages/m1qn3/install \
 	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
 '
 
@@ -50,7 +49,6 @@ EXTERNALPACKAGES="
 	gmt			install-6-mac.sh
 	gmsh		install-4-mac.sh
 	triangle	install-mac.sh
-	m1qn3		install-mac.sh
 	semic		install.sh
 	shell2junit	install.sh
 "
