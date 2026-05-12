@@ -142,34 +142,37 @@ def solve(md, solutionstring, *args):
     md.toolkits.ToolkitsFile(basename + '.toolkits')  # toolkits file
     cluster.BuildQueueScript(md, basename + '.queue') # queue file
 
-    # Upload all required files
-    modelname = md.miscellaneous.name
-    filelist = [modelname + '.bin', modelname + '.toolkits']
+    # List all required files
+    filelist = [basename + '.bin', basename + '.toolkits']
 
     if ispc():
-        filelist.append(modelname + '.bat')
+        filelist.append(basename + '.bat')
     else:
-        filelist.append(modelname + '.queue')
+        filelist.append(basename + '.queue')
 
     if md.qmu.isdakota:
-        filelist.append(modelname + '.qmu.in')
+        filelist.append(basename + '.qmu.in')
 
     if hasattr(cluster, 'interactive') and cluster.interactive:
         open(basename + '.errlog', 'w').close()
         open(basename + '.outlog', 'w').close()
-        filelist.append(modelname + '.outlog')
-        filelist.append(modelname + '.errlog')
+        filelist.append(basename + '.outlog')
+        filelist.append(basename + '.errlog')
 
-    # Build full-path version of filelist for UploadQueueJob (files live in root)
-    fullfilelist = [os.path.join(root, f) for f in filelist]
-
+    # Upload input files if necessary
+    isupload = False
     if isempty(restart) and cluster.name != oshostname():
+        isupload = True
+    elif os.path.normpath(cluster.executionpath) != os.path.normpath(os.path.join(issmdir(), 'execution')):
+        isupload = True
+
+    if isupload:
         print('uploading input files')
-        cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, fullfilelist)
+        cluster.UploadQueueJob(md.miscellaneous.name, md.private.runtimename, filelist)
 
     # Launch job
     print('launching solution sequence')
-    cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, fullfilelist, restart, batch)
+    cluster.LaunchQueueJob(md.miscellaneous.name, md.private.runtimename, filelist, restart, batch)
 
     # Return if batch
     if batch:

@@ -203,7 +203,7 @@ class generic(object):
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
         # Compress the files into one zip.
         # filelist contains full paths; use -C so only basenames are stored in the archive.
-        root = issmdir() + '/execution/' + dirname
+        root = os.path.join(self.executionpath, dirname)
         compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
         for filepath in filelist:
             compressstring += ' {}'.format(os.path.basename(filepath))
@@ -220,7 +220,11 @@ class generic(object):
             if batch:
                 launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'.format(self.executionpath, dirname, dirname, dirname, dirname, dirname)
             else:
-                launchcommand = 'cd {} && cd {} && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
+                if os.path.normpath(self.executionpath) == os.path.normpath(os.path.join(issmdir(), 'execution')):
+                    launchcommand = 'cd {} && cd {} && chmod 755 {}.queue && ./{}.queue'.format(self.executionpath, dirname, modelname, modelname)
+                else:
+                    launchcommand = 'cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && chmod 755 {}.queue && ./{}.queue'.format(
+                        self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname, modelname)
         issmssh(self.name, self.login, self.port, launchcommand)
     # }}}
 
