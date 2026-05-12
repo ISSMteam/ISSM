@@ -4,7 +4,7 @@ import subprocess
 from MatlabFuncs import *
 
 
-def issmscpin(host, login, port, path, packages=1):
+def issmscpin(host, login, port, path, packages=1, bracketstyle=1):
     """issmscpin get files from host
 
     Usage:
@@ -35,22 +35,23 @@ def issmscpin(host, login, port, path, packages=1):
             # Remove backslashes if bracketstyle is 2
             if bracketstyle == 2:
                 fileliststr = fileliststr[1:-2] + fileliststr[-1]
+
         if port:
-            subproc_cmd = 'scp -P {} {}@localhost:{} {}'.format(port, login, fileliststr, os.getcwd())
+            subproc_cmd = 'scp -P {} {}@localhost:{}/{} {}'.format(port, login, path, fileliststr, os.getcwd())
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
             if errs != '':
                 # List expansion is a bashism. Try again with '-OT'.
-                subproc_cmd = 'scp -OT -P {} {}@localhost:{} {}'.format(port, login, fileliststr, os.getcwd())
+                subproc_cmd = 'scp -OT -P {} {}@localhost:{}/{} {}'.format(port, login, path, fileliststr, os.getcwd())
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
         else:
-            subproc_cmd = 'scp {}@{}:{} {}'.format(login, host, fileliststr, os.getcwd())
+            subproc_cmd = 'scp {}@{}:{}/{} {}'.format(login, host, path, fileliststr, os.getcwd())
             subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
             outs, errs = subproc.communicate()
             if errs != '':
                 # List expansion is a bashism. Try again with '-OT'.
-                subproc_cmd = 'scp -OT {}@{}:{} {}'.format(login, host, fileliststr, os.getcwd())
+                subproc_cmd = 'scp -OT {}@{}:{}/{} {}'.format(login, host, path, fileliststr, os.getcwd())
                 subproc = subprocess.Popen(subproc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
                 outs, errs = subproc.communicate()
 
