@@ -75,10 +75,6 @@ classdef m1qn3inversion
 
 			%Early return
 			if ~self.iscontrol, return; end
-
-			if ~IssmConfig('_HAVE_M1QN3_')
-				md = checkmessage(md,['M1QN3 has not been installed, ISSM needs to be reconfigured and recompiled with M1QN3']);
-			end
 			num_controls=numel(md.inversion.control_parameters);
 			num_costfunc=size(md.inversion.cost_functions,2);
 
@@ -89,7 +85,7 @@ classdef m1qn3inversion
 			md = checkfield(md,'fieldname','inversion.maxsteps','numel',1,'>=',0);
 			md = checkfield(md,'fieldname','inversion.maxiter','numel',1,'>=',0);
 			md = checkfield(md,'fieldname','inversion.dxmin','numel',1,'>',0);
-         md = checkfield(md,'fieldname','inversion.dfmin_frac','numel',1,'>=',0,'<=',1);
+			md = checkfield(md,'fieldname','inversion.dfmin_frac','numel',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','inversion.gttol','numel',1,'>',0);
 			md = checkfield(md,'fieldname','inversion.cost_functions','size',[1 num_costfunc],'values',supportedcostfunctions());
 			md = checkfield(md,'fieldname','inversion.cost_functions_coefficients','size',[md.mesh.numberofvertices num_costfunc],'>=',0);
@@ -117,7 +113,7 @@ classdef m1qn3inversion
 			fielddisplay(self,'maxsteps','maximum number of iterations (gradient computation)');
 			fielddisplay(self,'maxiter','maximum number of Function evaluation (forward run)');
 			fielddisplay(self,'dxmin','convergence criterion: two points less than dxmin from eachother (sup-norm) are considered identical');
-         fielddisplay(self,'dfmin_frac','expected reduction of J during the first step (e.g., 0.3=30% reduction in cost function)');
+			fielddisplay(self,'dfmin_frac','expected reduction of J during the first step (e.g., 0.3=30% reduction in cost function)');
 			fielddisplay(self,'gttol','convergence criterion: ||g(X)||/||g(X0)|| (g(X0): gradient at initial guess X0)');
 			fielddisplay(self,'cost_functions','indicate the type of response for each optimization step');
 			fielddisplay(self,'cost_functions_coefficients','cost_functions_coefficients applied to the misfit of each vertex and for each control_parameter');
@@ -151,7 +147,7 @@ classdef m1qn3inversion
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxsteps','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxiter','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dxmin','format','Double');
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dfmin_frac','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dfmin_frac','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','gttol','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','cost_functions_coefficients','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','min_parameters','format','DoubleMat','mattype',3);
@@ -188,7 +184,7 @@ classdef m1qn3inversion
 			writejsdouble(fid,[modelname '.inversion.maxsteps'],self.maxsteps);
 			writejsdouble(fid,[modelname '.inversion.maxiter'],self.maxiter);
 			writejsdouble(fid,[modelname '.inversion.dxmin'],self.dxmin);
-         writejsdouble(fid,[modelname '.inversion.dfmin_frac'],self.dfmin_frac);
+			writejsdouble(fid,[modelname '.inversion.dfmin_frac'],self.dfmin_frac);
 			writejsdouble(fid,[modelname '.inversion.gttol'],self.gttol);
 			writejs2Darray(fid,[modelname '.inversion.cost_functions'],self.cost_functions);
 			writejs2Darray(fid,[modelname '.inversion.cost_functions_coefficients'],self.cost_functions_coefficients);
