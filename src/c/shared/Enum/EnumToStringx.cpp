@@ -705,6 +705,10 @@ const char* EnumToStringx(int en){
 		case StressbalanceFSreconditioningEnum : return "StressbalanceFSreconditioning";
 		case StressbalanceIsHydrologyLayerEnum : return "StressbalanceIsHydrologyLayer";
 		case StressbalanceIsnewtonEnum : return "StressbalanceIsnewton";
+		case StressbalanceIsemulatorEnum : return "StressbalanceIsemulator";
+		case EdgesNumberEnum : return "EdgesNumber";
+		case EdgesSrcEnum : return "EdgesSrc";
+		case EdgesDstEnum : return "EdgesDst";
 		case StressbalanceMaxiterEnum : return "StressbalanceMaxiter";
 		case StressbalanceNumRequestedOutputsEnum : return "StressbalanceNumRequestedOutputs";
 		case StressbalancePenaltyFactorEnum : return "StressbalancePenaltyFactor";
@@ -771,6 +775,7 @@ const char* EnumToStringx(int en){
 		case WorldCommEnum : return "WorldComm";
 		case FrictionEmulatorEnum : return "FrictionEmulator";
 		case SmbEmulatorEnum : return "SmbEmulator";
+		case StressbalanceEmulatorEnum : return "StressbalanceEmulator";
 		case ParametersENDEnum : return "ParametersEND";
 		case InputsSTARTEnum : return "InputsSTART";
 		case AccumulatedDeltaBottomPressureEnum : return "AccumulatedDeltaBottomPressure";

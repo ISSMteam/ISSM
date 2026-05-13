@@ -5,6 +5,10 @@
 
 classdef stressbalance
 	properties (SetAccess=public)
+		isemulator             = 0;
+		module_dir             = '';
+		pt_name                = '';
+		py_name                = '';
 		spcvx                  = NaN;
 		spcvy                  = NaN;
 		spcvx_base             = NaN;
@@ -91,6 +95,14 @@ classdef stressbalance
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
+	
+         % CHECK EMULATOR
+			md = checkfield(md,'fieldname','stressbalance.isemulator','numel',[1],'values',[0 1 2]);
+			if self.isemulator
+			   md = checkfield(md,'fieldname','stressbalance.module_dir','filepath',1);
+			   md = checkfield(md,'fieldname','stressbalance.py_name','string', 1);
+			   md = checkfield(md,'fieldname','stressbalance.pt_name','string', 1);
+			end
 
 			%Early return
 			if ~ismember('StressbalanceAnalysis',analyses), return; end
@@ -142,6 +154,7 @@ classdef stressbalance
 				md = checkfield(md,'fieldname','stressbalance.spcvx_shear','Inf',1,'timeseries',1);
 				md = checkfield(md,'fieldname','stressbalance.spcvy_shear','Inf',1,'timeseries',1);
 			end
+			
 		end % }}}
 		function list=defaultoutputs(self,md) % {{{
 
@@ -157,6 +170,12 @@ classdef stressbalance
 		function disp(self) % {{{
 
 			disp(sprintf('   StressBalance solution parameters:'));
+
+			disp(sprintf('\n      %s','Emulator parameters:'));
+			fielddisplay(self,'isemulator','0: finite element (default), 1: gnn emulator, 2: hybrid (not implementd)');
+         fielddisplay(self,'module_dir', 'directory of the emulator module');
+			fielddisplay(self,'pt_name', 'name of the checkpoint file for pre-trained ML model');
+			fielddisplay(self,'py_name', 'name of the python file that defines ML architecture');
 
 			disp(sprintf('\n      %s','Convergence criteria:'));
 			fielddisplay(self,'restol','mechanical equilibrium residual convergence criterion');
@@ -196,6 +215,12 @@ classdef stressbalance
 
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
+			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','isemulator','format','Integer');
+			if self.isemulator
+			   WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','module_dir','format','String')
+			   WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','pt_name','format','String');
+			   WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','py_name','format','String');
+		   end
 
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','vertex_pairing','format','DoubleMat','mattype',3);
 

@@ -692,6 +692,10 @@
 	StressbalanceFSreconditioningEnum
 	StressbalanceIsHydrologyLayerEnum
 	StressbalanceIsnewtonEnum
+	StressbalanceIsemulatorEnum
+	EdgesNumberEnum
+	EdgesSrcEnum
+	EdgesDstEnum
 	StressbalanceMaxiterEnum
 	StressbalanceNumRequestedOutputsEnum
 	StressbalancePenaltyFactorEnum
@@ -758,6 +762,7 @@
 	WorldCommEnum
 	FrictionEmulatorEnum
 	SmbEmulatorEnum
+	StressbalanceEmulatorEnum
 	ParametersENDEnum
 	InputsSTARTEnum
 	AccumulatedDeltaBottomPressureEnum
@@ -4522,6 +4527,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==StressbalanceFSreconditioningEnum) return "StressbalanceFSreconditioning" end
 	if(enum==StressbalanceIsHydrologyLayerEnum) return "StressbalanceIsHydrologyLayer" end
 	if(enum==StressbalanceIsnewtonEnum) return "StressbalanceIsnewton" end
+	if(enum==StressbalanceIsemulatorEnum) return "StressbalanceIsemulator" end
+	if(enum==EdgesNumberEnum) return "EdgesNumber" end
+	if(enum==EdgesSrcEnum) return "EdgesSrc" end
+	if(enum==EdgesDstEnum) return "EdgesDst" end
 	if(enum==StressbalanceMaxiterEnum) return "StressbalanceMaxiter" end
 	if(enum==StressbalanceNumRequestedOutputsEnum) return "StressbalanceNumRequestedOutputs" end
 	if(enum==StressbalancePenaltyFactorEnum) return "StressbalancePenaltyFactor" end
@@ -4588,6 +4597,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==WorldCommEnum) return "WorldComm" end
 	if(enum==FrictionEmulatorEnum) return "FrictionEmulator" end
 	if(enum==SmbEmulatorEnum) return "SmbEmulator" end
+	if(enum==StressbalanceEmulatorEnum) return "StressbalanceEmulator" end
 	if(enum==ParametersENDEnum) return "ParametersEND" end
 	if(enum==InputsSTARTEnum) return "InputsSTART" end
 	if(enum==AccumulatedDeltaBottomPressureEnum) return "AccumulatedDeltaBottomPressure" end
@@ -8352,6 +8362,10 @@ function StringToEnum(name::String)
 	if(name=="StressbalanceFSreconditioning") return StressbalanceFSreconditioningEnum  end
 	if(name=="StressbalanceIsHydrologyLayer") return StressbalanceIsHydrologyLayerEnum  end
 	if(name=="StressbalanceIsnewton") return StressbalanceIsnewtonEnum  end
+	if(name=="StressbalanceIsemulator") return StressbalanceIsemulatorEnum  end
+	if(name=="EdgesNumber") return EdgesNumberEnum  end
+	if(name=="EdgesSrc") return EdgesSrcEnum  end
+	if(name=="EdgesDst") return EdgesDstEnum  end
 	if(name=="StressbalanceMaxiter") return StressbalanceMaxiterEnum  end
 	if(name=="StressbalanceNumRequestedOutputs") return StressbalanceNumRequestedOutputsEnum  end
 	if(name=="StressbalancePenaltyFactor") return StressbalancePenaltyFactorEnum  end
@@ -8418,6 +8432,7 @@ function StringToEnum(name::String)
 	if(name=="WorldComm") return WorldCommEnum  end
 	if(name=="FrictionEmulator") return FrictionEmulatorEnum  end
 	if(name=="SmbEmulator") return SmbEmulatorEnum  end
+	if(name=="StressbalanceEmulator") return StressbalanceEmulatorEnum  end
 	if(name=="ParametersEND") return ParametersENDEnum  end
 	if(name=="InputsSTART") return InputsSTARTEnum  end
 	if(name=="AccumulatedDeltaBottomPressure") return AccumulatedDeltaBottomPressureEnum  end

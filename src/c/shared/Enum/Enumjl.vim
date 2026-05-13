@@ -696,6 +696,10 @@ syn keyword juliaConstC StressbalanceAbstolEnum
 syn keyword juliaConstC StressbalanceFSreconditioningEnum
 syn keyword juliaConstC StressbalanceIsHydrologyLayerEnum
 syn keyword juliaConstC StressbalanceIsnewtonEnum
+syn keyword juliaConstC StressbalanceIsemulatorEnum
+syn keyword juliaConstC EdgesNumberEnum
+syn keyword juliaConstC EdgesSrcEnum
+syn keyword juliaConstC EdgesDstEnum
 syn keyword juliaConstC StressbalanceMaxiterEnum
 syn keyword juliaConstC StressbalanceNumRequestedOutputsEnum
 syn keyword juliaConstC StressbalancePenaltyFactorEnum
@@ -762,6 +766,7 @@ syn keyword juliaConstC AreaeEnum
 syn keyword juliaConstC WorldCommEnum
 syn keyword juliaConstC FrictionEmulatorEnum
 syn keyword juliaConstC SmbEmulatorEnum
+syn keyword juliaConstC StressbalanceEmulatorEnum
 syn keyword juliaConstC ParametersENDEnum
 syn keyword juliaConstC InputsSTARTEnum
 syn keyword juliaConstC AccumulatedDeltaBottomPressureEnum

@@ -697,6 +697,10 @@ enum definitions{
 	StressbalanceFSreconditioningEnum,
 	StressbalanceIsHydrologyLayerEnum,
 	StressbalanceIsnewtonEnum,
+	StressbalanceIsemulatorEnum,
+	EdgesNumberEnum,
+	EdgesSrcEnum,
+	EdgesDstEnum,
 	StressbalanceMaxiterEnum,
 	StressbalanceNumRequestedOutputsEnum,
 	StressbalancePenaltyFactorEnum,
@@ -763,6 +767,7 @@ enum definitions{
 	WorldCommEnum,
 	FrictionEmulatorEnum,
 	SmbEmulatorEnum,
+	StressbalanceEmulatorEnum,
 	/*}}}*/
 	ParametersENDEnum,
 	InputsSTARTEnum,

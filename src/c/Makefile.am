@@ -589,6 +589,7 @@ endif
 # PyBind11{{{
 if PyBind11
 issm_sources += ./classes/Params/EmulatorParam.cpp
+issm_sources += ./modules/StressBalanceEmulatorx/StressBalanceEmulatorx.cpp
 endif
 #}}}
 # Sampling sources {{{

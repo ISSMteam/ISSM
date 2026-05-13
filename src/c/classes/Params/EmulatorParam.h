@@ -32,6 +32,7 @@ class EmulatorParam: public Param{
 		/*EmulatorParam constructors, destructors: {{{*/
 		EmulatorParam();
 		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in);
+		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in, int* edge_src, int nsrc, int* edge_dst, int ndst, int num_nodes);
 		~EmulatorParam();
 		/*}}}*/
 		/*Object virtual functions definitions:{{{ */

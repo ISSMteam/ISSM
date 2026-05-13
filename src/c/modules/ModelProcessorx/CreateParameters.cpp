@@ -14,6 +14,68 @@
 #include "../ParseToolkitsOptionsx/ParseToolkitsOptionsx.h"
 #include "./ModelProcessorx.h"
 
+#ifdef _HAVE_PyBind11_
+#include <vector>
+static void BuildGnnAdjacencyFromElements(IoModel* iomodel, Parameters* parameters) {/*{{{*/
+
+	int n_points  = iomodel->numberofvertices;   
+	int n_elems   = iomodel->numberofelements;   
+	int nperelem  = 3;                           
+	int* elements = iomodel->elements;
+
+	std::vector< std::vector<int> > node_to_elems(n_points);
+	for (int e = 0; e < n_elems; ++e) {
+		for (int loc = 0; loc < nperelem; ++loc) {
+			int v = elements[e*nperelem + loc] - 1; // convert to 0-based
+			if (v < 0 || v >= n_points) _error_("BuildGnnAdjacencyFromElements: bad vertex index");
+			node_to_elems[v].push_back(e);
+		}
+	}
+
+	std::vector<int> src;
+	std::vector<int> dst;
+
+	src.reserve(6 * n_points);
+	dst.reserve(6 * n_points);
+
+	for (int i0 = 0; i0 < n_points; ++i0) {
+		std::vector<int> connect;
+		connect.reserve(16); 
+		const std::vector<int>& elems_for_node = node_to_elems[i0];
+		for (int idx = 0; idx < (int)elems_for_node.size(); ++idx) {
+			int e = elems_for_node[idx];
+			for (int loc = 0; loc < nperelem; ++loc) {
+				int k0 = elements[e*nperelem + loc] - 1; // 0-based
+				if (k0 == i0) continue;
+				bool seen = false;
+				for (int c : connect) {
+					if (c == k0) { seen = true; break; }
+				}
+				if (seen) continue;
+				connect.push_back(k0);
+				src.push_back(i0);
+				dst.push_back(k0);
+			}
+		}
+	}
+
+	int nedges = (int)src.size();
+	int* src_arr = xNew<int>(nedges);
+	int* dst_arr = xNew<int>(nedges);
+	for (int i = 0; i < nedges; ++i) {
+		src_arr[i] = src[i];
+		dst_arr[i] = dst[i];
+	}
+
+	parameters->AddObject(new IntParam(EdgesNumberEnum, nedges));
+	parameters->AddObject(new IntVecParam(EdgesSrcEnum,  src_arr, nedges));
+	parameters->AddObject(new IntVecParam(EdgesDstEnum,  dst_arr, nedges));
+
+	xDelete<int>(src_arr);
+	xDelete<int>(dst_arr);
+}/*}}}*/
+#endif
+
 void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FILE* toolkitsoptionsfid,const int solution_type){
 
 	int         i,j,m,k;
@@ -103,6 +165,10 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 		parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.abstol",StressbalanceAbstolEnum));
 		if(iomodel->domaintype==Domain3DEnum)
 		 parameters->AddObject(iomodel->CopyConstantObject("md.mesh.numberoflayers",MeshNumberoflayersEnum));
+
+		#ifdef _HAVE_PyBind11_
+		BuildGnnAdjacencyFromElements(iomodel, parameters);
+		#endif
 	  }
 
 	/*amr properties*/

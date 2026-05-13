@@ -104,4 +104,8 @@
 #include "./OceanExchangeDatax/OceanExchangeDatax.h"
 #endif
 
+#ifdef _HAVE_PyBind11_
+#include "./StressBalanceEmulatorx/StressBalanceEmulatorx.h"
+#endif
+
 #endif
