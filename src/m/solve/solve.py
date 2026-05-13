@@ -136,7 +136,7 @@ def solve(md, solutionstring, *args):
     # If running QMU analysis, some preprocessing of Dakota files using model
     # fields needs to be carried out
     if md.qmu.isdakota:
-        md = preqmu(md, options)
+        md = preqmu(md, options, root)
         os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
 
     # Write all input files

@@ -10,8 +10,8 @@ function md=loadresultsfromcluster(md,varargin)
 %     md=loadresultsfromcluster(md,'runtimename','test101-06-15-2021-13-24-18-4883');
 
 %process options: 
-options=pairoptions(varargin{:});
-nolog=getfieldvalue(options,'nolog',0);
+options = pairoptions(varargin{:});
+nolog   = getfieldvalue(options,'nolog',0);
 md.private.runtimename = getfieldvalue(options,'runtimename',md.private.runtimename);
 
 %retrieve cluster, to be able to call its methods
@@ -27,9 +27,7 @@ if md.qmu.isdakota
 	filelist{end+1}=[md.miscellaneous.name '.qmu.err'];
 	filelist{end+1}=[md.miscellaneous.name '.qmu.out'];
 	if isfield(md.qmu.params,'tabular_graphics_data')
-		if md.qmu.params.tabular_graphics_data==true
-			filelist{end+1}='dakota_tabular.dat';
-		end
+		filelist{end+1}='dakota_tabular.dat';
 	end
 	if md.qmu.output & strcmpi(md.qmu.statistics.method(1).name,'None')
 		if strcmpi(md.qmu.method.method,'nond_sampling')

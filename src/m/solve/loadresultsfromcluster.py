@@ -6,14 +6,12 @@ from loadresultsfromdisk import loadresultsfromdisk
 from MatlabFuncs import *
 from pairoptions import pairoptions
 
-
 def remove(filename):  #{{{
     try:
         os.remove(filename)
     except OSError:
         print(('WARNING: ' + filename + ' does not exist'))
 # }}}
-
 
 def loadresultsfromcluster(md, *args):  #{{{
     """loadresultsfromcluster - load results of solution sequence from cluster
