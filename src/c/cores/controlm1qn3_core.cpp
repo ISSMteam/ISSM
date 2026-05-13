@@ -10,7 +10,6 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 
-#if defined (_HAVE_M1QN3_)
 /*m1qn3 prototypes {{{*/
 typedef void (*SimulFunc) (long* indic,long* n, double* x, double* pf,double* g,long [],float [],void* dzs);
 
@@ -305,7 +304,3 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 	xDelete<double>(XL);
 	xDelete<double>(scaling_factors);
 }/*}}}*/
-
-#else
-void controlm1qn3_core(FemModel* femmodel){_error_("M1QN3 not installed");}
-#endif //_HAVE_M1QN3_

@@ -63,11 +63,6 @@ WRAPPER(IssmConfig_python){
 		value = 1.;
 		#endif
 	}
-	else if(strcmp(name,"_HAVE_M1QN3_")==0){
-		#ifdef _HAVE_M1QN3_
-		value = 1.;
-		#endif
-	}
 	else if(strcmp(name,"_HAVE_ADOLC_")==0){
 		#ifdef _HAVE_ADOLC_
 		value = 1.;
