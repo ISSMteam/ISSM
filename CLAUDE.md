@@ -49,7 +49,9 @@ cd $ISSM_DIR/test/NightlyRun
 ./runme.py                        # run all nightly tests
 ./runme.py -i 101 102             # run specific tests by ID
 ./runme.py -i SquareShelf         # run by (partial) name
-./runme.py --benchmark nightly    # benchmark filter
+./runme.py -b nightly             # benchmark filter (-b/--benchmark: all/nightly/ismip/eismint/thermal/mesh/slc/qmu/...)
+./runme.py -e Dakota              # exclude tests by ID or name (-e/--exclude)
+./runme.py -p update              # update reference archive (-p/--procedure: check/update)
 ```
 
 **MATLAB** (from within MATLAB):
@@ -61,7 +63,7 @@ runme('id', [101 102])         % run specific tests
 runme('id', 102, 'procedure', 'update')  % update reference archive (developers only)
 ```
 
-To update a test's reference archive (after an intentional result change), use `procedure='update'` (MATLAB) or `--procedure update` (Python).
+To update a test's reference archive (after an intentional result change), use `procedure='update'` (MATLAB) or `-p update` (Python).
 
 ## Code Architecture
 
@@ -69,9 +71,11 @@ To update a test's reference archive (after an intentional result change), use `
 
 ISSM has two layers that work together:
 
-1. **High-level interfaces** (`src/m/`) — MATLAB (`.m`), Python (`.py`), and JavaScript (`.js`) code for building and parameterizing models, running simulations, and post-processing results. The key object is `model` (defined in `src/m/classes/model.m` / `model.py`), which holds all simulation fields as properties (mesh, geometry, materials, boundary conditions, solver settings, results, etc.).
+1. **High-level interfaces** (`src/m/`) — MATLAB (`.m`), Python (`.py`), and JavaScript (`.js`) code for building and parameterizing models, running simulations, and post-processing results. The key object is `model` (defined in `src/m/classes/model.m` / `model.py` / `model.js`), which holds all simulation fields as properties (mesh, geometry, materials, boundary conditions, solver settings, results, etc.).
 
 2. **C++ computational core** (`src/c/`) — compiled finite-element parallel engine that does the actual solving.
+
+3. **JavaScript interface** (`src/m/js/`, `src/m/classes/model.js`) — browser/WebAssembly interface built via Emscripten, with wrappers in `src/wrappers/javascript/`.
 
 The high-level interface generates input files (`.bin`, `.queue`, and `.toolkits`) that are read by the computational core. In turn, the results from the simulation are saved in an `.outbin` file that is read by the High-level interface and added to the model (saved in `md.results`)
 
@@ -81,7 +85,7 @@ The high-level interface generates input files (`.bin`, `.queue`, and `.toolkits
 triangle/mesh → setmask → parameterize → setflowequation → solve → results
 ```
 
-Each step corresponds to functions in `src/m/parameterization/` and `src/m/solve/`. `parameterize()` runs a user-supplied `.par` file that fills the `model` object fields. `solve()` marshals model data to binary, calls the C++ executable (`bin/issm.exe`), and loads results back into `md.results`.
+Each step corresponds to functions in `src/m/parameterization/` and `src/m/solve/`. `parameterize()` runs a user-supplied `.par` file that fills the `model` object fields. `solve()` marshals model data to binary, calls the C++ executable (`bin/issm.exe` for ice dynamics, `bin/issm_slc.exe` for sea-level change), and loads results back into `md.results`.
 
 ### C++ core layout (`src/c/`)
 
@@ -92,10 +96,13 @@ Each step corresponds to functions in `src/m/parameterization/` and `src/m/solve
 - **`modules/`** — Compiled callable modules exposed as MEX/Python wrappers (e.g., mesh generation, interpolation, partitioning).
 - **`toolkits/`** — Abstraction layer over PETSc, MPI, MUMPS, METIS for linear algebra and distributed computing.
 - **`datastructures/`** — `DataSet` container and `Object` base class used throughout the core.
+- **`shared/`** — Shared utilities (I/O helpers, exceptions, enum definitions, math routines) used across the core.
+- **`bamg/`** — BAMG anisotropic mesh generator (alternative to Triangle).
+- **`main/`** — Entry-point source files for the compiled executables (`issm.cpp`, `issm_slc.cpp`, `kriging.cpp`).
 
 ### Wrappers (`src/wrappers/`)
 
-Glue code that compiles C++ modules as shared libraries loadable from MATLAB (`*_matlab.la`) and Python (`*_python.la`). The `io/` subdirectory handles binary serialization of the `model` object (marshalling) for communication between the interface and the executable.
+Glue code that compiles C++ modules as shared libraries loadable from MATLAB (`*_matlab.la`), Python (`*_python.la`), and JavaScript (`javascript/` via Emscripten/WebAssembly). The `io/` subdirectory handles binary serialization of the `model` object (marshalling) for communication between the interface and the executable.
 
 ### External packages (`externalpackages/`)
 
@@ -104,9 +111,16 @@ Each subdirectory has its own `install-linux.sh` / `install-mac.sh` / etc. ISSM 
 - **Triangle** (mesh generation),
 - **m1qn3** (L-BFGS optimizer for inversions).
 
-Some optional that can be useful depending on the application:
-- **Dakota** (UQ/sampling),
-- **CoDiPack** (automatic differentiation)
+Some optional packages that can be useful depending on the application:
+- **Dakota** (UQ/sampling)
+- **CoDiPack** / **ADOL-C** (automatic differentiation)
+- **GDAL** / **PROJ** (geospatial data I/O and coordinate transforms)
+- **NetCDF** / **HDF5** (scientific data file formats)
+- **Boost** (C++ utilities)
+- **GSL** (GNU Scientific Library)
+- **Gmsh** (alternative mesh generation)
+- **SEMIC** (surface energy/mass balance coupling)
+- **ESMF** (Earth System Modeling Framework coupling)
 
 ### Path setup for interfaces
 
