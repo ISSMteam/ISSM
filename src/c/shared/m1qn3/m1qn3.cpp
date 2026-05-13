@@ -281,22 +281,20 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
             need_advance = true;
          }
          else if (fp > tesd) {
-            /* first Wolfe ok, curvature condition satisfied: serious step → accept */
+            /* first Wolfe ok, curvature condition satisfied: serious step → accept.
+             * Fortran: fp > tesd → logic=0; go to 320 (accept). */
             logic = 0;
             fn = f;
             for (long i = 0; i < n; ++i) xn[i] = x[i];
             done = true;
          }
-         else if (logic == 0) {
-            /* first Wolfe ok, curvature not satisfied, not blocked on tmax:
-             * accept as "not serious" step (Fortran: if logic.eq.0 go to 350 → 320) */
-            fn = f;
-            for (long i = 0; i < n; ++i) xn[i] = x[i];
-            done = true;
-         }
          else {
-            /* first Wolfe ok, curvature not satisfied, blocked on tmax (logic==1):
-             * update left bracket and extrapolate/interpolate further */
+            /* first Wolfe ok, curvature condition NOT satisfied.
+             * Fortran label 350: tg=t; fg=f; fpg=fp; then extrapolate (td==0)
+             * or interpolate (td!=0) — regardless of whether logic==0 or logic==1.
+             * The old "else if (logic==0) accept" branch was WRONG: it caused the
+             * line search to return a step that doesn't satisfy the strong Wolfe
+             * curvature condition, corrupting (y,s) pairs and producing <y,s><=0. */
             tg = t; fg = f; fpg = fp;
 
             if (td != 0.0) {
