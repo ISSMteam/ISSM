@@ -10,7 +10,8 @@ classdef frontera
 		% {{{
 		name          = 'frontera'
 		login         = '';
-		modules        = {'intel/23.1.0', 'impi/21.9.0', 'petsc/3.21'};
+		allocation    = ''
+		modules       = {'intel/23.1.0', 'impi/21.9.0', 'petsc/3.21'};
 		numnodes      = 4;
 		cpuspernode   = 56;
 		port          = 0;
@@ -38,6 +39,7 @@ classdef frontera
 			disp(sprintf('class ''%s'' object ''%s'' = ',class(cluster),inputname(1)));
 			disp(sprintf('    name: %s',cluster.name));
 			disp(sprintf('    login: %s',cluster.login));
+			disp(sprintf('    allocation: %s',cluster.allocation));
 			disp(sprintf('    modules: %s',strjoin(cluster.modules,', ')));
 			disp(sprintf('    port: %i',cluster.port));
 			disp(sprintf('    numnodes: %i',cluster.numnodes));
@@ -68,6 +70,7 @@ classdef frontera
 
 			%Miscellaneous
 			if isempty(cluster.login), md = checkmessage(md,'login empty'); end
+			if isempty(cluster.allocation), md = checkmessage(md,'allocation empty'); end
 			if isempty(cluster.codepath), md = checkmessage(md,'codepath empty'); end
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
@@ -87,6 +90,8 @@ classdef frontera
          %checks
 			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
 			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+
+			error('Needs to be updated, look at BuildQueueScript');
 
 			%write queuing script 
 			fid=fopen(filename, 'w');
@@ -139,12 +144,13 @@ classdef frontera
 			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'#SBATCH -J %s \n',modelname);
+			fprintf(fid,'#SBATCH -A %s \n', cluster.allocation);
 			fprintf(fid,'#SBATCH -p %s \n',cluster.queue);
 			fprintf(fid,'#SBATCH -o %s.outlog \n',modelname);
 			fprintf(fid,'#SBATCH -e %s.errlog \n',modelname);
 			fprintf(fid,'#SBATCH -n %i \n',cluster.numnodes*max(cluster.nprocs()/cluster.numnodes,56));
 			fprintf(fid,'#SBATCH -N %i \n',cluster.numnodes);
-			fprintf(fid,'#SBATCH -t %02i:00:00 \n\n',ceil(cluster.time));
+			fprintf(fid,'#SBATCH -t %i:00:00 \n\n',ceil(cluster.time));
 			if length(find(cluster.email=='@'))>0
 				fprintf(fid,'#SBATCH --mail-user=%s \n',cluster.email);
 				fprintf(fid,'#SBATCH --mail-type=all \n\n');
