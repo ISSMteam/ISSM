@@ -9,7 +9,7 @@ from process_qmu_response_data import *
 from qmupart2npart import qmupart2npart
 
 
-def preqmu(md, options, executionpath=''):
+def preqmu(md, options):
     """PREQMU - apply Quantification of Margins and Uncertainties techniques
     to a solution sequence (like stressbalance.py, progonstic.py, etc ...),
     using the Dakota software from Sandia.
@@ -25,10 +25,6 @@ def preqmu(md, options, executionpath=''):
         iresp   : same thing for response functions
         imethod : same thing for methods
         iparams : same thing for params
-
-    executionpath (optional): full path to the execution directory; when provided
-        and tabular_graphics_data is true, tabular_graphics_file is set to an
-        absolute path inside that directory so Dakota writes the file there directly.
     """
 
     print('preprocessing dakota inputs')
@@ -86,20 +82,9 @@ def preqmu(md, options, executionpath=''):
         numresponses = numresponses + np.size(vars(responses)[field_name])
     # }}}
 
-    # If an execution directory is provided, redirect the tabular graphics file there so
-    # Dakota writes it directly into the execution directory rather than the CWD
-    import copy
-    dparams = copy.copy(md.qmu.params)
-    if executionpath and isfield(dparams, 'tabular_graphics_data') and dparams.tabular_graphics_data:
-        if not isfield(dparams, 'tabular_graphics_file') or not dparams.tabular_graphics_file:
-            tabname = 'dakota_tabular.dat'
-        else:
-            tabname = os.path.basename(dparams.tabular_graphics_file)
-        dparams.tabular_graphics_file = executionpath + '/' + tabname
-
     # Create in file for Dakota
     #dakota_in_data(md.qmu.method[imethod], variables, responses, md.qmu.params[iparams], qmufile)
-    dakota_in_data(md.qmu.method, variables, responses, dparams, qmufile)
+    dakota_in_data(md.qmu.method, variables, responses, md.qmu.params, qmufile)
 
     # Build a list of variables and responses descriptors. the list is not expanded.
     #{{{

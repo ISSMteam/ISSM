@@ -138,7 +138,7 @@ mkdir(root);
 
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out.
 if md.qmu.isdakota
-	md=preqmu(md,options,root);
+	md=preqmu(md,options);
 	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 end
 

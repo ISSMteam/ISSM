@@ -9,6 +9,7 @@
 #include "ParallelLibrary.hpp"
 #include "ProblemDescDB.hpp"
 #include "LibraryEnvironment.hpp"
+#include "OutputManager.hpp"
 #include "DakotaModel.hpp"
 #include "DakotaInterface.hpp"
 #endif
@@ -52,6 +53,20 @@ int main(int argc,char **argv){ /*{{{*/
 
 	/* Defaults constructs the MPIManager, which assumes COMM_WORLD*/
 	Dakota::LibraryEnvironment env(opts);
+
+	/* Redirect dakota_tabular.dat into the execution directory (same rootpath as outbin),
+	 * so it is written alongside other output files rather than in the process CWD */
+	{
+		Dakota::ProblemDescDB& pdb = env.problem_description_db();
+		Dakota::OutputManager& om  = pdb.parallel_library().output_manager();
+		if (om.tabularDataFlag) {
+			std::string tabname = om.tabularDataFile.empty() ? "dakota_tabular.dat" : om.tabularDataFile;
+			/* strip any directory component the user may have put in tabname */
+			std::string::size_type slash = tabname.rfind('/');
+			if (slash != std::string::npos) tabname = tabname.substr(slash + 1);
+			om.tabularDataFile = std::string(argv[2]) + "/" + tabname;
+		}
+	}
 
 	/* get the list of all models matching the specified model, interface, driver:*/
 	Dakota::ModelList filt_models = env.filtered_model_list("single", "direct", "matlab");
