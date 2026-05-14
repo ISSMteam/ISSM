@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import shutil
+import warnings
 
 from ismodelselfconsistent import ismodelselfconsistent
 from issmdir import issmdir
@@ -128,6 +129,8 @@ def solve(md, solutionstring, *args):
         localexecdir = issmdir() + '/execution'
     if not os.path.isdir(localexecdir):
         raise RuntimeError('Could not find directory ' + localexecdir)
+    elif len(os.listdir(localexecdir)) > 200:
+        warnings.warn(localexecdir + ' has more than 200 subdirectories. Consider cleaning up your execution directory')
     root = localexecdir + '/' + md.private.runtimename
     if os.path.isdir(root):
         shutil.rmtree(root)
@@ -136,7 +139,7 @@ def solve(md, solutionstring, *args):
     # If running QMU analysis, some preprocessing of Dakota files using model
     # fields needs to be carried out
     if md.qmu.isdakota:
-        md = preqmu(md, options, root)
+        md = preqmu(md, options)
         os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
 
     # Write all input files

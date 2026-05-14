@@ -1,4 +1,4 @@
-function md=preqmu(md,options,executionpath)
+function md=preqmu(md,options)
 %QMU - apply Quantification of Margins and Uncertainties techniques
 %      to a solution sequence (like stressbalance.m, progonstic.m, etc ...),
 %      using the Dakota software from Sandia.
@@ -10,13 +10,8 @@ function md=preqmu(md,options,executionpath)
 %       iresp: same thing for response functions
 %       imethod: same thing for methods
 %       iparams: same thing for params
-%
-%   executionpath (optional): full path to the execution directory; when provided
-%       and tabular_graphics_data is true, tabular_graphics_file is set to an
-%       absolute path inside that directory so Dakota writes the file there directly.
 
 disp('preprocessing dakota inputs');
-if nargin<3, executionpath=''; end
 qmufile   = getfieldvalue(options,'qmufile','qmu');
 ivar      = getfieldvalue(options,'ivar',1);
 iresp     = getfieldvalue(options,'iresp',1);
@@ -70,21 +65,8 @@ for i=1:length(response_fieldnames)
 	numresponses=numresponses+numel(responses.(field_name));
 end
 
-%if an execution directory is provided, redirect the tabular graphics file there so
-%Dakota writes it directly into the execution directory rather than the CWD
-dparams=md.qmu.params(iparams);
-if ~isempty(executionpath) && isfield(dparams,'tabular_graphics_data') && dparams.tabular_graphics_data
-	if ~isfield(dparams,'tabular_graphics_file') || isequal(dparams.tabular_graphics_file,false) || isempty(dparams.tabular_graphics_file)
-		tabname='dakota_tabular.dat';
-	else
-		[~,tname,text]=fileparts(dparams.tabular_graphics_file);
-		tabname=[tname text];
-	end
-	dparams.tabular_graphics_file=[executionpath '/' tabname];
-end
-
 %create in file for dakota
-dakota_in_data(md.qmu.method(imethod),variables,responses,dparams,qmufile,md.qmu.correlation_matrix);
+dakota_in_data(md.qmu.method(imethod),variables,responses,md.qmu.params(iparams),qmufile,md.qmu.correlation_matrix);
 
 %build a list of variables and responses descriptors. the list is not expanded.
 variabledescriptors={};

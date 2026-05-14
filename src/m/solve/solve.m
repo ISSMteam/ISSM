@@ -129,6 +129,8 @@ else
 end
 if ~exist(localexecdir, 'dir')
 	error(['Could not find directory ' issmdir() '/execution/']);
+elseif numel(dir(localexecdir))>200
+	warning([localexecdir ' has more than 200 subdirectories. Consider cleaning up your execution directory'])
 end
 root = [localexecdir '/' md.private.runtimename];
 if exist(root, 'dir')
@@ -138,7 +140,7 @@ mkdir(root);
 
 %if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out.
 if md.qmu.isdakota
-	md=preqmu(md,options,root);
+	md=preqmu(md,options);
 	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 end
 
