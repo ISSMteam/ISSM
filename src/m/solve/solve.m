@@ -129,6 +129,8 @@ else
 end
 if ~exist(localexecdir, 'dir')
 	error(['Could not find directory ' issmdir() '/execution/']);
+elseif numel(dir(localexecdir))>200
+	warning([localexecdir ' has more than 200 subdirectories. Consider cleaning up your execution directory'])
 end
 root = [localexecdir '/' md.private.runtimename];
 if exist(root, 'dir')
