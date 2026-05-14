@@ -108,6 +108,7 @@ classdef generic
 			end
 
 			if ~ispc()
+
 				% Check that executable exists at the right path
 				if ~exist([cluster.codepath '/' executable],'file')
 					error(['File ' cluster.codepath '/' executable ' does not exist']);
@@ -115,6 +116,7 @@ classdef generic
 
 				% Process codepath and prepend empty spaces with \ to avoid errors in queuing script
 				codepath=strrep(cluster.codepath,' ','\ ');
+				execpath = [cluster.executionpath '/' dirname];
 
 				% Write queuing script
 				fid=fopen(filename, 'w');
@@ -125,18 +127,18 @@ classdef generic
 					if ismac
 						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s --leak-check=full --leak-check=full --show-leak-kinds=all --error-limit=no --dsymutil=yes --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog ',...
-							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname], modelname,modelname,modelname);
+							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,execpath, modelname,modelname,modelname);
 						else
 							fprintf(fid,'%s --leak-check=full --dsymutil=yes --error-limit=no --leak-check=full --show-leak-kinds=all --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname], modelname,modelname,modelname);
+							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath, modelname,modelname,modelname);
 						end
 					else
 						if IssmConfig('_HAVE_MPI_')
 							fprintf(fid,'mpiexec -np %i %s --leak-check=full --error-limit=no --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
+							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath,modelname,modelname,modelname);
 						else
 							fprintf(fid,'%s --leak-check=full --error-limit=no --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
+							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath, modelname,modelname,modelname);
 						end
 					end
 				elseif isgprof
@@ -144,15 +146,15 @@ classdef generic
 				else
 					if cluster.interactive
 						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
+							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution, execpath, modelname);
 						else
-							fprintf(fid,'%s/%s %s %s %s',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
+							fprintf(fid,'%s/%s %s %s %s',cluster.codepath,executable,solution, execpath, modelname);
 						end
 					else
 						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
+							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s 2> %s/%s.errlog > %s/%s.outlog &',cluster.np,cluster.codepath,executable,solution,execpath,modelname,execpath,modelname,execpath,modelname);
 						else
-							fprintf(fid,'%s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
+							fprintf(fid,'%s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.codepath,executable,solution, execpath,modelname,modelname,modelname);
 						end
 					end
 				end
