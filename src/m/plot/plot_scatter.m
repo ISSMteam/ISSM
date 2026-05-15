@@ -61,14 +61,10 @@ if (alreadyplot)
 		h = findobj(gcf,'Type','Colorbar');
 		ylim = h.Limits;
 	end
-	palette=turbo();%colormap();
+	%palette=turbo();%colormap();
+	palette=colormap();
 	numcolors=size(palette,1);
 	levels=round_ice(linspace(ylim(1),ylim(2),numcolors+1),2);
-else
-	palette=getcolormap(options);
-	colormap(palette);
-	numcolors=size(palette,1);
-	levels=round_ice(linspace(Min,Max,numcolors+1),3);
 end
 
 colorind=ones(Siz,1);
