@@ -101,9 +101,8 @@ classdef SMBemulator
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			yts = md.constants.yts;
-			dts = 3600 * 24;
 			WriteData(fid,prefix,'name','md.smb.model','data',20,'format','Integer');
-			WriteData(fid,prefix,'object',self,'class','smb','fieldname','mass_balance','format','DoubleMat','mattype',1,'scale',1./dts,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % double check units
+			WriteData(fid,prefix,'object',self,'class','smb','fieldname','mass_balance','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % double check units
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','elev','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts); % unit of elev?
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','al','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts);
 			WriteData(fid,prefix,'object',self,'class','smb','fieldname','st','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',yts);
