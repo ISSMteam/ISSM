@@ -10,6 +10,14 @@
 #include "../../classes/Inputs/TransientInput.h"
 #include "../../shared/Random/random.h"
 
+#ifdef _HAVE_PyBind11_
+#include <exception>
+#include <pybind11/numpy.h>
+#include <sstream>
+#include <vector>
+namespace py = pybind11;
+#endif
+
 void SmbForcingx(FemModel* femmodel){/*{{{*/
 
 	// void SmbForcingx(smb,ni){
@@ -425,11 +433,174 @@ void SmbEmulatorx(FemModel* femmodel){/*{{{*/
 
 	IssmDouble timeinputs;
 	femmodel->parameters->FindParam(&timeinputs,TimeEnum);
+	IssmDouble rho_ice;
+	femmodel->parameters->FindParam(&rho_ice,MaterialsRhoIceEnum);
+	const IssmDouble dts = 86400.;
+
+	int numberofvertices_local = femmodel->vertices->NumberOfVerticesLocalAll();
+	if(numberofvertices_local==0) return;
+
+	std::vector<int> lid_to_batch(numberofvertices_local,-1);
+	std::vector<int> batch_lids;
+	std::vector<double> elev;
+	std::vector<double> lon;
+	std::vector<double> lat;
+	std::vector<double> al;
+	std::vector<double> st;
+	std::vector<double> tt;
+	std::vector<double> swd;
+	std::vector<double> lwd;
+	std::vector<double> swu;
+	std::vector<double> lwu;
+	std::vector<double> shf;
+	std::vector<double> lhf;
+	std::vector<double> maria_elev;
+	std::vector<double> maria_smb;
+	batch_lids.reserve(numberofvertices_local);
+	elev.reserve(numberofvertices_local);
+	lon.reserve(numberofvertices_local);
+	lat.reserve(numberofvertices_local);
+	al.reserve(numberofvertices_local);
+	st.reserve(numberofvertices_local);
+	tt.reserve(numberofvertices_local);
+	swd.reserve(numberofvertices_local);
+	lwd.reserve(numberofvertices_local);
+	swu.reserve(numberofvertices_local);
+	lwu.reserve(numberofvertices_local);
+	shf.reserve(numberofvertices_local);
+	lhf.reserve(numberofvertices_local);
+	maria_elev.reserve(numberofvertices_local);
+	maria_smb.reserve(numberofvertices_local);
 
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
-		element->SmbEmulator(timeinputs, smbemulator);
+		const int numvertices = element->GetNumberOfVertices();
+
+		std::vector<IssmDouble> elev_e(numvertices);
+		std::vector<IssmDouble> al_e(numvertices);
+		std::vector<IssmDouble> st_e(numvertices);
+		std::vector<IssmDouble> tt_e(numvertices);
+		std::vector<IssmDouble> swd_e(numvertices);
+		std::vector<IssmDouble> lwd_e(numvertices);
+		std::vector<IssmDouble> swu_e(numvertices);
+		std::vector<IssmDouble> lwu_e(numvertices);
+		std::vector<IssmDouble> shf_e(numvertices);
+		std::vector<IssmDouble> lhf_e(numvertices);
+		std::vector<IssmDouble> maria_elev_e(numvertices);
+		std::vector<IssmDouble> maria_smb_e(numvertices);
+
+		Input* elev_input = element->GetInput(SurfaceEnum);             _assert_(elev_input);
+		Input* maria_elev_input = element->GetInput(MariaElevEnum,timeinputs); _assert_(maria_elev_input);
+		Input* maria_smb_input  = element->GetInput(MariaSmbEnum,timeinputs);  _assert_(maria_smb_input);
+		Input* al_input   = element->GetInput(MariaAlEnum,timeinputs);  _assert_(al_input);
+		Input* st_input   = element->GetInput(MariaStEnum,timeinputs);  _assert_(st_input);
+		Input* tt_input   = element->GetInput(MariaTtEnum,timeinputs);  _assert_(tt_input);
+		Input* swd_input  = element->GetInput(MariaSwdEnum,timeinputs); _assert_(swd_input);
+		Input* lwd_input  = element->GetInput(MariaLwdEnum,timeinputs); _assert_(lwd_input);
+		Input* swu_input  = element->GetInput(MariaSwuEnum,timeinputs); _assert_(swu_input);
+		Input* lwu_input  = element->GetInput(MariaLwuEnum,timeinputs); _assert_(lwu_input);
+		Input* shf_input  = element->GetInput(MariaShfEnum,timeinputs); _assert_(shf_input);
+		Input* lhf_input  = element->GetInput(MariaLhfEnum,timeinputs); _assert_(lhf_input);
+
+		element->GetInputListOnVertices(elev_e.data(),elev_input,0.);
+		element->GetInputListOnVertices(maria_elev_e.data(),maria_elev_input,0.);
+		element->GetInputListOnVertices(maria_smb_e.data(),maria_smb_input,0.);
+		element->GetInputListOnVertices(al_e.data(),al_input,0.);
+		element->GetInputListOnVertices(st_e.data(),st_input,0.);
+		element->GetInputListOnVertices(tt_e.data(),tt_input,0.);
+		element->GetInputListOnVertices(swd_e.data(),swd_input,0.);
+		element->GetInputListOnVertices(lwd_e.data(),lwd_input,0.);
+		element->GetInputListOnVertices(swu_e.data(),swu_input,0.);
+		element->GetInputListOnVertices(lwu_e.data(),lwu_input,0.);
+		element->GetInputListOnVertices(shf_e.data(),shf_input,0.);
+		element->GetInputListOnVertices(lhf_e.data(),lhf_input,0.);
+
+		for(int iv=0;iv<numvertices;iv++){
+			int lid = element->vertices[iv]->Lid();
+			if(lid<0 || lid>=numberofvertices_local){
+				_error_("SmbEmulatorx vertex local id " << lid << " is outside local vertex range [0," << numberofvertices_local << ")");
+			}
+			if(lid_to_batch[lid]>=0) continue;
+
+			lid_to_batch[lid] = static_cast<int>(batch_lids.size());
+			batch_lids.push_back(lid);
+			elev.push_back(static_cast<double>(elev_e[iv]));
+			lon.push_back(static_cast<double>(element->vertices[iv]->GetLongitude()));
+			lat.push_back(static_cast<double>(element->vertices[iv]->GetLatitude()));
+			al.push_back(static_cast<double>(al_e[iv]));
+			st.push_back(static_cast<double>(st_e[iv]));
+			tt.push_back(static_cast<double>(tt_e[iv]));
+			swd.push_back(static_cast<double>(swd_e[iv]));
+			lwd.push_back(static_cast<double>(lwd_e[iv]));
+			swu.push_back(static_cast<double>(swu_e[iv]));
+			lwu.push_back(static_cast<double>(lwu_e[iv]));
+			shf.push_back(static_cast<double>(shf_e[iv]));
+			lhf.push_back(static_cast<double>(lhf_e[iv]));
+			maria_elev.push_back(static_cast<double>(maria_elev_e[iv]));
+			maria_smb.push_back(static_cast<double>(maria_smb_e[iv]));
+		}
 	}
+
+	int batch_size = static_cast<int>(batch_lids.size());
+	if(batch_size==0) return;
+
+	std::vector<IssmDouble> smb_local(numberofvertices_local,0.);
+
+	try{
+		py::gil_scoped_acquire gil;
+
+		py::array_t<double> elev_np(batch_size,elev.data());
+		py::array_t<double> lon_np(batch_size,lon.data());
+		py::array_t<double> lat_np(batch_size,lat.data());
+		py::array_t<double> al_np(batch_size,al.data());
+		py::array_t<double> st_np(batch_size,st.data());
+		py::array_t<double> tt_np(batch_size,tt.data());
+		py::array_t<double> swd_np(batch_size,swd.data());
+		py::array_t<double> lwd_np(batch_size,lwd.data());
+		py::array_t<double> swu_np(batch_size,swu.data());
+		py::array_t<double> lwu_np(batch_size,lwu.data());
+		py::array_t<double> shf_np(batch_size,shf.data());
+		py::array_t<double> lhf_np(batch_size,lhf.data());
+
+		py::object pred_obj = smbemulator->mod.attr("predict_smb_np")(
+					elev_np, lon_np, lat_np, al_np, st_np, tt_np, swd_np, lwd_np, swu_np, lwu_np, shf_np, lhf_np,
+					py::arg("dtype") = "float64");
+		py::array_t<double, py::array::c_style | py::array::forcecast> pred(pred_obj);
+		py::buffer_info pred_info = pred.request();
+
+		if(pred_info.ndim!=1){
+			_error_("SmbEmulatorx output is not a 1D array");
+		}
+		if(pred_info.shape[0]!=batch_size){
+			std::ostringstream message;
+			message << "SmbEmulatorx unexpected output length: " << pred_info.shape[0] << ", expected " << batch_size;
+			_error_(message.str());
+		}
+
+		const double* pred_data = static_cast<const double*>(pred_info.ptr);
+		for(int i=0;i<batch_size;i++){
+			smb_local[batch_lids[i]] = static_cast<IssmDouble>(pred_data[i])/(rho_ice*dts);
+		}
+		if(IssmComm::GetRank()==0){
+			int nprint = batch_size<3 ? batch_size : 3;
+			_printf0_("   SMB emulator diagnostic at time " << timeinputs << ":\n");
+			for(int i=0;i<nprint;i++){
+				_printf0_("      vertex local id " << batch_lids[i]
+						<< ": ISSM Elev=" << elev[i]
+						<< ", MAR-IA Elev=" << maria_elev[i]
+						<< ", predicted SMB=" << pred_data[i]
+						<< ", data SMB=" << maria_smb[i] << "\n");
+			}
+		}
+	}
+	catch(const py::error_already_set& e){
+		_error_("SmbEmulatorx Python exception: " << e.what());
+	}
+	catch(const std::exception& e){
+		_error_("SmbEmulatorx exception: " << e.what());
+	}
+
+	InputUpdateFromVectorx(femmodel,smb_local.data(),SmbMassBalanceEnum,VertexLIdEnum);
 
 }/*}}}*/
 #endif
