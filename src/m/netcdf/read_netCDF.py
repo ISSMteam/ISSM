@@ -1,679 +1,501 @@
-# imports
-from netCDF4 import Dataset
-import numpy as np
-import numpy.ma as ma
-from os import path, remove
-from model import *
-import re
-from results import *
-from m1qn3inversion import m1qn3inversion
-from taoinversion import taoinversion
-from collections import OrderedDict
+"""
+read_netCDF  –  Load an ISSM model from a NetCDF4 file written by
+                write_netCDF.py (Python) or write_netCDF.m (MATLAB).
+
+Usage
+-----
+    from read_netCDF import read_netCDF
+    md = read_netCDF('model.nc')
+    md = read_netCDF('model.nc', verbose=True)
+
+Every call returns an independent model() instance (fully re-entrant,
+no module-level global state).
+"""
+
 import sys
-from massfluxatgate import massfluxatgate
+from collections import OrderedDict
+import numpy as np
+from netCDF4 import Dataset
+from model import model
+from results import results, solution, solutionstep
+from toolkits import toolkits
 
 
+# ---------------------------------------------------------------------------
+# Public entry point
+# ---------------------------------------------------------------------------
 
-'''
-Given a NetCDF4 file, this set of functions will perform the following:
-    1. Enter each group of the file.
-    2. For each variable in each group, update an empty model with the variable's data
-    3. Enter nested groups and repeat
-'''
-
-
-# make a model framework to fill that is in the scope of this file
-model_copy = model()
-# make a blank requested output for hydrology
-hydro_rout_list = ['default']
-
-def read_netCDF(filename, verbose = False):
+def read_netCDF(filename: str, verbose: bool = False):
+    """Read *filename* and return a populated ISSM model object."""
     if verbose:
-        print('NetCDF42C v1.2.0')
+        print('read_netCDF v2.0  (Python)')
 
-    '''
-    filename = path and name to save file under
-    verbose = T/F = show or muted log statements. Naturally muted
-    '''
+    from os.path import exists
+    if not exists(filename):
+        raise FileNotFoundError(f'read_netCDF: file not found: {filename}')
 
-    # this is a precaution so that data is not lost
+    md = model()
+
+    nc = Dataset(filename, 'r')
+    nc.set_auto_mask(False)
     try:
-        # check if path exists
-        if path.exists(filename):
-            if verbose:
-                print('Opening {} for reading'.format(filename))
-            else: pass
-    
-            # open the given netCDF4 file
-            NCData = Dataset(filename, 'r')
-            # remove masks from numpy arrays for easy conversion
-            NCData.set_auto_mask(False)
-        else:
-            return 'The file you entered does not exist or cannot be found in the current directory'
-        
-        # in order to handle some subclasses in the results class, we have to utilize this band-aid
-        # there will likely be more band-aids added unless a class name library is created with all class names that might be added to a md
-        try:
-            # if results has meaningful data, save the name of the subclass and class instance
-            NCData.groups['results']
-            make_results_subclasses(NCData, verbose)
-        except:
-            pass
-    
-        # similarly, we need to check and see if we have an m1qn3inversion class instance
-        try:
-            NCData.groups['inversion']
-            check_inversion_class(NCData, verbose)
-        except:
-            pass
-        
-        # check the smb class used
-        try:
-            NCData.groups['smb']
-            check_smb_class(NCData, verbose)
-        except:
-            pass
-        
-        # check the friction class used
-        try:
-            NCData.groups['friction']
-            check_friction_class(NCData, verbose)
-        except:
-            pass
-        
-        # check the hydrology class used
-        try:
-            NCData.groups['hydrology']
-            hydro_rout_list = check_hydrology_class(NCData, verbose)            
-        except:
-            pass
-        
-        
-        
-        # walk through each group looking for subgroups and variables
-        for group in NCData.groups.keys():
-            if 'debris' in group:
-                pass
-            else:
-                # have to send a custom name to this function: filename.groups['group']
-                name = "NCData.groups['" + str(group) + "']"
-                walk_nested_groups(name, NCData, verbose)
-                model_copy.hydrology.requested_outputs = hydro_rout_list
-        
-        if verbose:
-            print("Model Successfully Loaded.")
-            
-        NCData.close()
-        
-        return model_copy
+        md = _read_all_groups(nc, md, verbose)
+    finally:
+        nc.close()
 
-    # just in case something unexpected happens
+    if verbose:
+        print('Model successfully loaded from NetCDF4.')
+    return md
+
+
+# ---------------------------------------------------------------------------
+# Top-level group walk
+# ---------------------------------------------------------------------------
+
+def _read_all_groups(nc, md, verbose: bool):
+    for gname, grp in nc.groups.items():
+        if verbose:
+            print(f'  Reading group: {gname}')
+
+        ct = _get_classtype(grp)
+
+        # results group: walk solution sub-groups and build results()/solution() objects
+        if gname == 'results':
+            md.results = _read_results_group(grp, verbose)
+            continue
+
+        # toolkits group: each analysis sub-group holds an OrderedDict of solver options
+        if gname == 'toolkits':
+            md.toolkits = _read_toolkits_group(grp, verbose)
+            continue
+
+        # Instantiate the correct sub-class for polymorphic model fields
+        md = _instantiate_subclass(md, gname, ct, verbose)
+
+        # Populate all fields
+        try:
+            target = getattr(md, gname)
+        except AttributeError:
+            if verbose:
+                print(f'    [SKIP] md.{gname} does not exist in model()')
+            continue
+
+        target = _read_group_into_obj(grp, target, verbose)
+        setattr(md, gname, target)
+
+    return md
+
+
+# ---------------------------------------------------------------------------
+# Results group reader  –  builds results() / solution() / solutionstep()
+# ---------------------------------------------------------------------------
+
+def _read_results_group(grp, verbose: bool):
+    """Reconstruct md.results as a proper results()/solution()/solutionstep()
+    hierarchy, matching what loadresultsfromdisk produces."""
+    res = results()
+
+    for sol_name, sol_grp in grp.groups.items():
+        ct = _get_classtype(sol_grp)
+
+        if ct == 'struct':
+            # Each step_k sub-group → one solutionstep
+            steps = []
+            for sg_name in sorted(sol_grp.groups.keys(),
+                                  key=lambda n: int(n.split('_')[-1])
+                                  if n.startswith('step_') else 0):
+                sg   = sol_grp.groups[sg_name]
+                step = solutionstep()
+                for vname, var in sg.variables.items():
+                    setattr(step, vname, _read_variable(sg, vname, var, verbose))
+                # Recurse into any nested groups within a step (rare)
+                for sub_name, sub_sg in sg.groups.items():
+                    setattr(step, sub_name, _read_group_into_obj(sub_sg, {}, verbose))
+                steps.append(step)
+
+            if not steps:
+                # Empty struct – store as empty solution
+                setattr(res, sol_name, solution([]))
+            elif len(steps) == 1 and sol_name != 'TransientSolution':
+                # Single-step non-transient: store the solutionstep directly,
+                # wrapped in a solution so attribute access still works
+                sol_obj = solution(steps)
+                setattr(res, sol_name, sol_obj)
+            else:
+                setattr(res, sol_name, solution(steps))
+
+            if verbose:
+                print(f'    [results] {sol_name}: {len(steps)}-step solution')
+        else:
+            # Unexpected sub-group inside results – fall back to dict
+            if verbose:
+                print(f'    [results] {sol_name}: unrecognised classtype "{ct}", stored as dict')
+            setattr(res, sol_name, _read_group_into_obj(sol_grp, {}, verbose))
+
+    return res
+
+
+# ---------------------------------------------------------------------------
+# Toolkits group reader  –  rebuilds toolkits() with OrderedDict per analysis
+# ---------------------------------------------------------------------------
+
+def _read_toolkits_group(grp, verbose: bool):
+    """Reconstruct md.toolkits as a toolkits() instance whose analysis
+    attributes are OrderedDicts of solver options (matching mumpsoptions() etc.)"""
+    tk = toolkits.__new__(toolkits)   # bypass __init__ / setdefaultparameters
+    tk.DefaultAnalysis  = None
+    tk.RecoveryAnalysis = None
+
+    for aname, agrp in grp.groups.items():
+        ct = _get_classtype(agrp)
+        opts = OrderedDict()
+
+        if ct == 'struct':
+            # Variables are stored one level deeper in step_1
+            step_grps = agrp.groups
+            src = step_grps.get('step_1', agrp) if step_grps else agrp
+        else:
+            src = agrp
+
+        for vname, var in src.variables.items():
+            opts[vname] = _read_variable(src, vname, var, verbose)
+
+        setattr(tk, aname, opts)
+        if verbose:
+            print(f'    [toolkits] {aname}: {list(opts.keys())}')
+
+    return tk
+
+
+# ---------------------------------------------------------------------------
+# Generic recursive group reader
+# ---------------------------------------------------------------------------
+
+def _read_group_into_obj(grp, obj, verbose: bool):
+    """Populate *obj* from the variables and sub-groups in *grp*."""
+
+    # Read variables at this level
+    for vname, var in grp.variables.items():
+        data = _read_variable(grp, vname, var, verbose)
+        obj  = _set_attr(obj, vname, data, verbose)
+
+    # Recurse into sub-groups
+    for sg_name, sg in grp.groups.items():
+        ct = _get_classtype(sg)
+
+        if ct == 'struct':
+            # Struct array (results.TransientSolution etc.)
+            nsteps = int(getattr(sg, 'nsteps', len(sg.groups)))
+            data   = _read_struct_array(sg, nsteps, verbose)
+
+        elif ct == 'cell_of_objects':
+            data = _read_cell_of_objects(sg, verbose)
+
+        elif ct == 'dict':
+            data = _read_dict(sg, verbose)
+
+        else:
+            # Regular sub-class or unknown: read into existing attr or new dict
+            try:
+                sub_obj = getattr(obj, sg_name)
+            except AttributeError:
+                sub_obj = {}
+
+            # If the classtype tells us which class to instantiate
+            if ct and ct not in ('', 'struct', 'cell_of_objects', 'dict'):
+                sub_obj = _instantiate_class(ct, sub_obj, verbose)
+
+            data = _read_group_into_obj(sg, sub_obj, verbose)
+
+        obj = _set_attr(obj, sg_name, data, verbose)
+
+    return obj
+
+
+# ---------------------------------------------------------------------------
+# Struct-array reader  (results.TransientSolution etc.)
+# ---------------------------------------------------------------------------
+
+def _read_struct_array(grp, nsteps: int, verbose: bool):
+    """Return a list of dicts (one per step_k sub-group)."""
+    steps = []
+    for sg_name in sorted(grp.groups.keys(),
+                          key=lambda n: int(n.split('_')[-1]) if n.startswith('step_') else 0):
+        sg   = grp.groups[sg_name]
+        step = {}
+        for vname, var in sg.variables.items():
+            step[vname] = _read_variable(sg, vname, var, verbose)
+        # Recurse into any nested groups within a step (rare)
+        for sub_name, sub_grp in sg.groups.items():
+            step[sub_name] = _read_group_into_obj(sub_grp, {}, verbose)
+        steps.append(step)
+
+    if verbose:
+        print(f'    [struct] loaded {len(steps)}-step struct array')
+    return steps
+
+
+# ---------------------------------------------------------------------------
+# Cell-of-objects reader
+# ---------------------------------------------------------------------------
+
+def _read_cell_of_objects(grp, verbose: bool):
+    nrows = int(getattr(grp, 'nrows', 1))
+    ncols = int(getattr(grp, 'ncols', len(grp.groups)))
+    result = [[None] * ncols for _ in range(nrows)]
+
+    for ig_name, ig in grp.groups.items():
+        import re
+        m = re.match(r'^item_(\d+)_(\d+)$', ig_name)
+        if not m:
+            continue
+        r   = int(m.group(1)) - 1
+        c   = int(m.group(2)) - 1
+        ct  = _get_classtype(ig)
+        obj = _instantiate_class(ct, {}, verbose)
+        obj = _read_group_into_obj(ig, obj, verbose)
+        result[r][c] = obj
+
+    if nrows == 1:
+        result = result[0]  # return flat list for 1-D case
+    if verbose:
+        print(f'    [cell]  loaded {nrows}x{ncols} cell of objects')
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Dict reader
+# ---------------------------------------------------------------------------
+
+def _read_dict(grp, verbose: bool) -> dict:
+    d = {}
+    for vname, var in grp.variables.items():
+        d[vname] = _read_variable(grp, vname, var, verbose)
+    for sg_name, sg in grp.groups.items():
+        d[sg_name] = _read_group_into_obj(sg, {}, verbose)
+    return d
+
+
+# ---------------------------------------------------------------------------
+# Variable reader
+# ---------------------------------------------------------------------------
+
+def _read_variable(grp, vname: str, var, verbose: bool):
+    """Read one NetCDF variable and convert to the appropriate Python type."""
+    type_is = getattr(var, 'type_is', '')
+
+    # Empty sentinel
+    if type_is == 'empty':
+        return []
+
+    raw = var[:]
+
+    # Bool
+    if type_is == 'bool':
+        return np.array(raw, dtype=bool)
+
+    # String / cell-of-strings
+    if type_is == 'string' or (hasattr(var, 'dimensions') and
+                                any('char' in d for d in var.dimensions)):
+        return _decode_string(raw)
+
+    if type_is == 'cell_of_strings':
+        return _decode_cell_strings(raw)
+
+    # Numpy array / scalar
+    data = np.array(raw)
+
+    # Squeeze trailing size-1 dims
+    data = np.squeeze(data)
+
+    # Single-element array → Python scalar
+    if data.ndim == 0:
+        v = data.item()
+        # Return int if value is a whole number (guard against nan/inf first)
+        if isinstance(v, float) and np.isfinite(v) and v == int(v):
+            return int(v)
+        return v
+
+    return data
+
+
+def _decode_string(raw) -> str:
+    """Convert raw NetCDF char data to a Python str."""
+    try:
+        return raw.tobytes().decode('utf-8').strip('\x00').strip()
+    except Exception:
+        try:
+            return ''.join(c.decode('utf-8') if isinstance(c, bytes) else c
+                           for c in np.ndarray.flatten(raw))
+        except Exception:
+            return str(raw)
+
+
+def _decode_cell_strings(raw) -> list:
+    """Convert a 2-D char array to a list of strings."""
+    if raw.ndim == 1:
+        return [_decode_string(raw)]
+    result = []
+    for row in raw:
+        s = _decode_string(row)
+        result.append(s)
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Subclass instantiation
+# ---------------------------------------------------------------------------
+
+def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):
+    """For polymorphic model fields, swap in the right class instance."""
+    if not ct:
+        return md
+
+    try:
+        if gname == 'inversion':
+            if ct == 'm1qn3inversion':
+                from m1qn3inversion import m1qn3inversion
+                md.inversion = m1qn3inversion()
+            elif ct == 'taoinversion':
+                from taoinversion import taoinversion
+                md.inversion = taoinversion()
+
+        elif gname == 'smb':
+            md = _instantiate_smb(md, ct, verbose)
+
+        elif gname == 'friction':
+            md = _instantiate_friction(md, ct, verbose)
+
+        elif gname == 'hydrology':
+            md = _instantiate_hydrology(md, ct, verbose)
+
+        elif gname == 'mesh':
+            if ct == 'mesh3dprisms':
+                from mesh3dprisms import mesh3dprisms
+                md.mesh = mesh3dprisms()
+
+        # All other groups: keep default instance, just overwrite fields below
+
     except Exception as e:
-        if 'NCData' in locals():
-            NCData.close()
-        raise e
-
-def make_results_subclasses(NCData, verbose = False):
-    '''
-        There are 3 possible subclasses: solution, solutionstep, resultsdakota.
-        In the NetCDF file these are saved as a list of strings. Ie, say there are 2
-        instances of solution under results, StressbalanceSolution and TransientSolution. 
-        In the NetCDF file we would see solution = "StressbalanceSolution", "TransientSolution"
-        To deconstruct this, we need to iteratively assign md.results.StressbalanceSolution = solution()
-        and md.results.TransientSolution = solution() and whatever else.
-    '''
-    # start with the subclasses
-    for subclass in NCData.groups['results'].variables.keys():
-        class_instance = subclass + '()'
-
-        # now handle the instances
-        for instance in NCData.groups['results'].variables[subclass][:]:
-            # this is an ndarray of numpy bytes_ that we have to convert to strings
-            class_instance_name = instance.tobytes().decode('utf-8').strip()
-            # from here we can make new subclasses named as they were in the model saved
-            setattr(model_copy.results, class_instance_name, eval(class_instance))
-            if verbose:
-                print(f'Successfully created results subclass instance {class_instance} named {class_instance_name}.')
-
-
-def check_inversion_class(NCData, verbose = False):
-    # get the name of the inversion class: either inversion or m1qn3inversion or taoinversion
-    inversion_class_is = NCData.groups['inversion'].variables['inversion_class_name'][:][...].tobytes().decode()
-    if inversion_class_is == 'm1qn3inversion':
-        # if it is m1qn3inversion we need to instantiate that class since it's not native to model()
-        model_copy.inversion = m1qn3inversion(model_copy.inversion)
         if verbose:
-            print('Conversion successful')
-    elif inversion_class_is == 'taoinversion':
-        # if it is taoinversion we need to instantiate that class since it's not native to model()
-        model_copy.inversion = taoinverion()
-        if verbose:
-            print('Conversion successful')
-    else: pass
-    
-def check_smb_class(NCData, verbose = False):
-    # get the name of the smb class, either: SMBforcing, SMB, SMBcomponents, SMBd18opdd, 
-    # SMBdebrisEvatt, SMBgemb, SMBgradients, SMBgradientscomponents, SMBgradientsela, 
-    # SMBhenning, SMBmeltcomponents, SMBpdd, SMBpddSicopolis, or SMBsemic
-    # 
-    # Note: SMB, SMBdebrisEvatt, SMBgemb, SMBgradientscomponents, SMBgradientsela, SMBhenning,
-    # SMBpddSicopolis, and SMBsemic do not have python versions as of yet
-    smb_class_is = NCData.groups['smb'].variables['smb_class_name'][:][...].tobytes().decode()
-    if smb_class_is == 'SMBforcing':
-        # if it is SMBforcing there is no real need to do anything since that is the default, 
-        # but I have done it anyway to match everything else
-        model_copy.smb = SMBforcing()
-        if verbose:
-            print('Conversion successful')
-    elif smb_class_is == 'SMBcomponents':
-        # if it is SMBcomponents load the SMBcomponents module
-        model_copy.smb = SMBcomponents()
-        if verbose:
-            print('Conversion successful')
-    elif smb_class_is == 'SMBd18opdd':
-        # if it is SMBd18opdd load the SMBd18opdd module
-        model_copy.smb = SMBd18opdd()
-        if verbose:
-            print('Conversion successful')
-    elif smb_class_is == 'SMBgradients':
-        # if it is SMBgradients load the SMBgradients module
-        model_copy.smb = SMBgradients()
-        if verbose:
-            print('Conversion successful')
-    elif smb_class_is == 'SMBmeltcomponents':
-        # you guessed it! if it is the SMBmeltcomponents module, load SMBmeltcomponents
-        model_copy.smb = SMBmeltcomponents()
-        if verbose:
-            print('Conversion successful')
-    elif smb_class_is == 'SMBpdd':
-        # one more for luck: if it is SMBpdd, load SMBpdd
-        model_copy.smb = SMBpdd()
-        if verbose:
-            print('Conversion successful')
-    else:
-        print('Conversion unsuccessful, SMB requested is not yet in Python!')
-        pass
-    
-def check_friction_class(NCData, verbose = False):
-    # get the name of the friction class, either: friction(default), frictioncoulomb, frictioncoulomb2, 
-    # frictionhydro, frictionjosh, frictionpism, frictionregcoulomb, frictionregcoulomb2,frictionschoof,
-    # frictionshakti, frictiontemp, frictiontsai, frictionwaterlayer, frictionweertman, or frictionweertmantemp
-    #
-    # Note: frictionregcoulomb, frictionregcoulomb, frictiontemp, frictiontsai, and frictionweertmantemp either
-    # are not present or tripped an error
-    friction_class_is = NCData.groups['friction'].variables['friction_class_name'][:][...].tobytes().decode()
-    if friction_class_is == 'friction':
-        # if it is friction, load friction (the default)
-        model_copy.friction = friction()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictioncoulomb':
-        # if it is frictioncoulomb, import the module, load frictioncoulomb
-        from frictioncoulomb import frictioncoulomb
-        model_copy.friction = frictioncoulomb()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictioncoulomb2':
-        # if it is frictioncoulomb2, import the module, load frictioncoulomb2
-        from frictioncoulomb2 import frictioncoulomb2
-        model_copy.friction = frictioncoulomb2()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionhydro':
-        # if it is frictionhydro, import the module, load frictionhydro
-        from frictionhydro import frictionhydro
-        model_copy.friction = frictionhydro()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionjosh':
-        # if it is frictionjosh, import the module, load frictionjosh
-        from frictionjosh import frictionjosh
-        model_copy.friction = frictionjosh()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionpism':
-        # if it is frictionpism, import the module, load frictionpism
-        from frictionpism import frictionpism
-        model_copy.friction = frictionpism()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionschoof':
-        # if it is frictionschoof, import the module, load frictionschoof
-        from frictionschoof import frictionschoof
-        model_copy.friction = frictionschoof()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionshakti':
-        #if it is frictionshakti, import the module, load frictionshakti
-        from frictionshakti import frictionshakti
-        model_copy.friction = frictionshakti()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionwaterlayer':
-        #if it is frictionwaterlayer, import the module, load frictionwaterlayer
-        from frictionwaterlayer import frictionwaterlayer
-        model_copy.friction = frictionwaterlayer()
-        if verbose:
-            print('Conversion successful')
-    elif friction_class_is == 'frictionweertman':
-        #if it is frictionweertman, import the module, load frictionweertman
-        from frictionweertman import frictionweertman
-        model_copy.friction = frictionweertman()
-        if verbose:
-            print('Conversion successful')
-    else:
-        print('Conversion unsuccessful, friction requested is not present and/or working yet in Python!')
-        pass
-    
-def check_hydrology_class(NCData, verbose = False):
-    # get the name of the hydrology class, either: hydrologyshreve (default), hydrology, hydrologyarmapw,
-    # hydrologydc, hydrologyglads, hydrologypism, hydrologyshakti, hydrologtws
-    #
-    # Note: hydrology, hydrologyarmapw, hydrologytws do not have a python implementation
-    hydrology_class_is = NCData.groups['hydrology'].variables['hydrology_class_name'][:][...].tobytes().decode()
-    hydro_rout = NCData.groups['hydrology'].variables['requested_outputs'][:][...].tobytes().decode()
-    hydro_rout_list = hydro_rout.split()
-    model_copy.hydrology.requested_outputs = hydro_rout_list
-    if hydrology_class_is == 'hydrologyshreve':
-        #if it is hydrologyshreve, load hydrologyshreve
-        model_copy.hydrology = hydrologyshreve()
-        if verbose:
-            print('Conversion successful')
-    elif hydrology_class_is == 'hydrologydc':
-        #if it is hydrologydc, load hydrologydc
-        model_copy.hydrology = hydrologydc()
-        if verbose:
-            print('Conversion successful')
-    elif hydrology_class_is == 'hydrologyglads':
-        #if it is hydrologyglads, load hydrologyglads
-        model_copy.hydrology = hydrologyglads()
-        if verbose:
-            print('Conversion successful')
-    elif hydrology_class_is == 'hydrologypism':
-        #if it is hydrologypism, load hydrologypism
-        model_copy.hydrology = hydrologypism()
-        if verbose:
-            print('Conversion successful')
-    elif hydrology_class_is == 'hydrologyshakti':
-        #if it is hydrologyshakti, load hydrologyshakti
-        model_copy.hydrology = hydrologyshakti()
-        if verbose:
-            print('Conversion successful')
-    else:
-        print('Conversion unsuccessful, hydrology requested is not present and/or working yet in Python!')
-        pass
-    return hydro_rout_list
-        
-def walk_nested_groups(group_location_in_file, NCData, verbose = False):
-    # first, we enter the group by: filename.groups['group_name']
-    # second we search the current level for variables: filename.groups['group_name'].variables.keys()
-    # at this step we check for multidimensional structure arrays/ arrays of objects and filter them out
-    # third we get nested group keys by: filename.groups['group_name'].groups.keys()
-    # if a nested groups exist, repeat all
+            print(f'    [WARN] could not instantiate {ct} for {gname}: {e}')
 
-    for variable in eval(group_location_in_file + '.variables.keys()'):
-        if 'is_object' not in locals():
-            if variable == 'this_is_a_nested' and 'results' in group_location_in_file and 'qmu' not in group_location_in_file:
-                # have to do some string deconstruction to get the name of the class instance/last group from 'NetCDF.groups['group1'].groups['group1.1']'
-                pattern = r"\['(.*?)'\]"
-                matches = re.findall(pattern, group_location_in_file)
-                name_of_struct = matches[-1] #eval(group_location_in_file + ".variables['solution']") 
-                deserialize_nested_results_struct(group_location_in_file, name_of_struct, NCData)
-                is_object = True
-    
-            elif variable == 'name_of_cell_array':
-                # reconstruct an array of elements
-                deserialize_array_of_objects(group_location_in_file, model_copy, NCData, verbose)
-                is_object = True
-    
-            elif variable == 'this_is_a_nested' and 'qmu' in group_location_in_file:
-                if verbose:
-                    print('encountered qmu structure that is not yet supported.')
-                else: pass
-                    
-                is_object = True
-        
-            else:
-                location_of_variable_in_file = group_location_in_file + ".variables['" + str(variable) + "']"
-                # group_location_in_file is like filename.groups['group1'].groups['group1.1'].groups['group1.1.1']
-                # Define the regex pattern to match the groups within brackets
-                pattern = r"\['(.*?)'\]"
-                # Use regex to find all matches and return something like 'group1.group1.1.group1.1.1 ...' where the last value is the name of the variable
-                matches = re.findall(pattern, location_of_variable_in_file)
-                variable_name = matches[-1]
-                location_of_variable_in_model = '.'.join(matches[:-1])
-                deserialize_data(location_of_variable_in_file, location_of_variable_in_model, variable_name, NCData, verbose=verbose)
-
-    # if one of the variables above was an object, further subclasses will be taken care of when reconstructing it
-    if 'is_object' in locals():
-        pass
-    else:
-        for nested_group in eval(group_location_in_file + '.groups.keys()'):
-            new_nested_group = group_location_in_file + ".groups['" + str(nested_group) + "']"
-            walk_nested_groups(new_nested_group, NCData, verbose=verbose)
+    return md
 
 
-
-'''
-    MATLAB has Multidimensional Structure Arrays in 2 known classes: results and qmu.
-    The python classes results.py and qmu.py emulate this MATLAB object in their own
-    unique ways. The functions in this script will assign data to either of these 
-    classes such that the final structure is compatible with its parent class.
-'''
-
-def deserialize_nested_results_struct(group_location_in_file, name_of_struct, NCData, verbose = False):
-    '''
-    A common multidimensional array is the 1xn md.results.TransientSolution object.
-
-    The way that this object emulates the MATLAB mutli-dim. struct. array is with 
-    the solution().steps attr. which is a list of solutionstep() instances
-        The process to recreate is as follows:
-            1. Get instance of solution() with solution variable (the instance is made in make_results_subclasses)
-            2. For each subgroup, create a solutionstep() class instance
-             2a. Populate the instance with the key:value pairs
-             2b. Append the instance to the solution().steps list
-    '''
-    # step 1
-    class_instance_name = name_of_struct
-    
-    # for some reason steps is not already a list
-    setattr(model_copy.results.__dict__[class_instance_name], 'steps', list())
-
-    steps = model_copy.results.__dict__[class_instance_name].steps
-    
-    # step 2
-    layer = 1
-    for subgroup in eval(group_location_in_file + ".groups.keys()"):
-        solutionstep_instance = solutionstep()
-        # step 2a
-        subgroup_location_in_file = group_location_in_file + ".groups['" + subgroup + "']"
-        for key in eval(subgroup_location_in_file + ".variables.keys()"):
-            value = eval(subgroup_location_in_file + ".variables['" + str(key) + "'][:]")
-            setattr(solutionstep_instance, key, value)
-        # step 2b
-        steps.append(solutionstep_instance)
-        if verbose:
-            print('Succesfully loaded layer ' + str(layer) + ' to results.' + str(class_instance_name) + ' struct.')
-        else: pass
-        layer += 1
-
-    if verbose:
-        print('Successfully recreated results structure ' + str(class_instance_name))
-
-
-
-def deserialize_array_of_objects(group_location_in_file, model_copy, NCData, verbose):
-    '''
-        The structure in netcdf for groups with the name_of_cell_array variable is like:
-
-        group: 2x6_cell_array_of_objects {
-            name_of_cell_array = <name_of_cell_array>
-
-            group: Row_1_of_2 {
-                group: Col_1_of_6 {
-                    ... other groups can be here that refer to objects
-                } // group Col_6_of_6
-            } // group Row_1_of_2
-
-            group: Row_2_of_2 {
-                group: Col_1_of_6 {
-                    ... other groups can be here that refer to objects
-                } // group Col_6_of_6
-            } // group Row_2_of_2
-        } // group 2x6_cell_array_of_objects
-
-        We have to navigate this structure to extract all the data and recreate the 
-        original structure when the model was saved
-    '''
-
-    if verbose: 
-        print(f"Loading array of objects.")
-
-    # get the name_of_cell_array, rows and cols vars
-    name_of_cell_array_varID = eval(group_location_in_file + ".variables['name_of_cell_array']")
-    rows_varID = eval(group_location_in_file + ".variables['rows']")
-    cols_varID = eval(group_location_in_file + ".variables['cols']")
-
-    name_of_cell_array = name_of_cell_array_varID[:][...].tobytes().decode()
-    rows = rows_varID[:]
-    cols = cols_varID[:]
-
-    # now we work backwards: make the array, fill it in, and assign it to the model
-
-    # make the array
-    array = list()
-
-    subgroups = eval(group_location_in_file + ".groups") #.keys()")
-
-    # enter each subgroup, get the data, assign it to the corresponding index of cell array
-    if rows > 1:
-        # we go over rows
-        # set index for rows
-        row_idx = 0
-        for row in list(subgroups):
-            # make list for each row
-            current_row = list()
-            columns = subgroups[str(row)].groups.keys()
-
-            # set index for columns
-            col_idx = 0
-
-            # iterate over columns
-            for col in list(columns):
-                # now get the variables 
-                current_col_vars = columns.groups[str(col)].variables
-
-                # check for special datastructures                
-                if "class_is_a" in current_col_vars:
-                    class_name = subgroups[str(col)].variables['class_is_a'][:][...].tobytes().decode()
-                    col_data = deserialize_class_instance(class_name, columns.groups[str(col)], NCData, verbose)
-                    is_object = True
-                elif "this_is_a_nested" in current_col_vars:
-                    # functionality not yet supported
-                    print('Error: Cell Arrays of structs not yet supported!')
-                    is_object = True
-                else:
-                    if 'is_object_' in locals():
-                        pass
-                        # already taken care of
-                    else:
-                        # store the variables as normal -- to be added later
-                        print('Error: Arrays of mixed objects not yet supported!')
-                        for var in current_col_vars:
-                            # this is where that functionality would be handled
-                            pass
-                col_idx += 1
-                # add the entry to our row list
-                current_row.append(col_data)
-
-            # add the list of columns to the array
-            array.append(current_row)
-            row_idx += 1
-
-    else:
-        # set index for columns
-        col_idx = 0
-
-        # iterate over columns
-        for col in list(subgroups):
-            # now get the variables 
-            current_col_vars = subgroups[str(col)].variables
-            
-            # check for special datastructures
-            if "class_is_a" in current_col_vars:
-                class_name = subgroups[str(col)].variables['class_is_a'][:][...].tobytes().decode()
-                col_data = deserialize_class_instance(class_name, subgroups[str(col)], NCData, verbose)
-                is_object = True
-            elif "this_is_a_nested" in current_col_vars:
-                # functionality not yet supported
-                print('Error: Cell Arrays of structs not yet supported!')
-                is_object = True
-            else:
-                if 'is_object_' in locals():
-                    pass
-                    # already taken care of
-                else:
-                    # store the variables as normal -- to be added later
-                    print('Error: Arrays of mixed objects not yet supported!')
-                    for var in current_col_vars:
-                        # this is where that functionality would be handled
-                        pass
-            col_idx += 1
-            # add the list of columns to the array
-            array.append(col_data)
-
-    # finally, add the attribute to the model
-    pattern = r"\['(.*?)'\]"
-    matches = re.findall(pattern, group_location_in_file)
-    variable_name = matches[0]
-    setattr(model_copy.__dict__[variable_name], name_of_cell_array, array)
-
-    if verbose:
-        print(f"Successfully loaded array of objects: {name_of_cell_array} to {variable_name}")
-
-
-
-def deserialize_class_instance(class_name, group, NCData, verbose=False):
-
-    if verbose:
-        print(f"Loading class: {class_name}")
-
-    # this function requires the class module to be imported into the namespace of this file.
-    # we make a custom error in case the class module is not in the list of imported classes.
-    # most ISSM classes are imported by from <name> import <name>
-    class ModuleError(Exception):
-        pass
-    
-    if class_name not in sys.modules:
-        raise ModuleError(str('Model requires the following class to be imported from a module: ' + class_name + ". Please add the import to read_netCDF.py in order to continue."))
-
-    # Instantiate the class
-    class_instance = eval(class_name + "()")
-
-    # Get and assign properties
-    subgroups = list(group.groups.keys())
-
-    if len(subgroups) == 1:
-        # Get properties
-        subgroup = group[subgroups[0]]
-        varIDs = subgroup.variables.keys()
-        for varname in varIDs:
-            # Variable metadata
-            var = subgroup[varname]
-
-            # Data
-            if 'char' in var.dimensions[0]:
-                data = var[:][...].tobytes().decode()
-            else:
-                data = var[:]
-
-            # Some classes may have permissions, so we skip those
-            try:
-                setattr(class_instance, varname, data)
-            except:
-                pass
-    else:
-        # Not supported
-        pass
-
-    if verbose: 
-        print(f"Successfully loaded class instance {class_name} to model")
-    return class_instance
-
-
-
-def deserialize_data(location_of_variable_in_file, location_of_variable_in_model, variable_name, NCData, verbose = False):
-    # as simple as navigating to the location_of_variable_in_model and setting it equal to the location_of_variable_in_file
-    # NetCDF4 has a property called "_FillValue" that sometimes saves empty lists, so we have to catch those
-    FillValue = -9223372036854775806
+def _instantiate_class(ct: str, fallback, verbose: bool):
+    """Try to instantiate *ct* by importing it; return *fallback* on failure."""
+    if not ct or ct in ('struct', 'cell_of_objects', 'dict', ''):
+        return fallback
     try:
-        # results band-aid...
-        if str(location_of_variable_in_model + '.' + variable_name) in ['results.solutionstep', 'results.solution', 'results.resultsdakota']:
-            pass
-        # qmu band-aid
-        elif 'qmu.statistics.method' in str(location_of_variable_in_model + '.' + variable_name):
-            pass
-        # handle any strings:
-        elif 'char' in eval(location_of_variable_in_file + '.dimensions[0]'):
-            setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, eval(location_of_variable_in_file + '[:][...].tobytes().decode()'))
-        # handle ndarrays + lists
-        elif len(eval(location_of_variable_in_file + '[:]'))>1:
-            # check for bool
-            try: # there is only one datatype assigned the attribute 'units' and that is bool, so anything else will go right to except
-                if eval(location_of_variable_in_file + '.units') == 'bool':
-                    setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, np.array(eval(location_of_variable_in_file + '[:]'), dtype = bool))
-                else:
-                    setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, eval(location_of_variable_in_file + '[:]'))
-            except:
-                setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, eval(location_of_variable_in_file + '[:]'))
-        # catch everything else
-        else:
-            # check for FillValue. use try/except because try block will only work on datatypes like int64, float, single element lists/arrays ect and not nd-arrays/n-lists etc
-            try:
-                # this try block will only work on single ints/floats/doubles and will skip to the except block for all other cases
-                var_to_save = eval(location_of_variable_in_file + '[:][0]')  # note the [0] on the end
-                if FillValue == var_to_save:
-                    setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, [])
-                else:
-                    if var_to_save.is_integer():
-                        setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, int(var_to_save))
-                    else:
-                        # we have to convert numpy datatypes to native python types with .item()
-                        setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, var_to_save.item())
-            except:
-                setattr(eval('model_copy.' + location_of_variable_in_model), variable_name, eval(location_of_variable_in_file + '[:]'))
-    except AttributeError:
-        deserialize_dict(location_of_variable_in_file, location_of_variable_in_model, NCData, verbose=verbose)
-
+        mod = __import__(ct, fromlist=[ct])
+        cls = getattr(mod, ct)
+        return cls()
+    except Exception:
+        pass
+    # Try to find ct in already-imported modules
+    for mod_name, mod in list(sys.modules.items()):
+        if mod is not None and hasattr(mod, ct):
+            cls = getattr(mod, ct)
+            if isinstance(cls, type):
+                try:
+                    return cls()
+                except Exception:
+                    pass
     if verbose:
-        print('Successfully loaded ' + location_of_variable_in_model + '.' + variable_name + ' into model.')
+        print(f'    [WARN] could not instantiate class {ct}, using fallback')
+    return fallback
 
 
-
-def deserialize_dict(location_of_variable_in_file, location_of_variable_in_model, NCData, verbose = False):
-    FillValue = -9223372036854775806
-
-    # the key will be the last item in the location
-    key = ''.join(location_of_variable_in_model.split('.')[-1])
-
-    # update the location to point to the dict instead of the dict key
-    location_of_variable_in_model = '.'.join(location_of_variable_in_model.split('.')[:-1])
-
-    # verify we're working with a dict:
-    if isinstance(eval('model_copy.' + location_of_variable_in_model), OrderedDict):
-        dict_object = eval('model_copy.' + location_of_variable_in_model)
-        
-        # handle any strings:
-        if 'char' in eval(location_of_variable_in_file + '.dimensions[0]'):
-            data = eval(location_of_variable_in_file + '[:][...].tobytes().decode()')
-            dict_object.update({key: data})
-            
-        # handle ndarrays + lists
-        elif len(eval(location_of_variable_in_file + '[:]'))>1:
-            # check for bool
-            try: # there is only one datatype assigned the attribute 'units' and that is bool, so anything else will go right to except
-                if eval(location_of_variable_in_file + '.units') == 'bool':
-                    data = np.array(eval(location_of_variable_in_file + '[:]'), dtype = bool)
-                    dict_object.update({key: data})
-                else:
-                    data = eval(location_of_variable_in_file + '[:]')
-                    dict_object.update({key: data})
-            except:
-                data = eval(location_of_variable_in_file + '[:]')
-                dict_object.update({key: data})
-        # catch everything else
-        else:
-            # check for FillValue. use try/except because try block will only work on datatypes like int64, float, single element lists/arrays ect and not nd-arrays/n-lists etc
-            try:
-                # this try block will only work on single ints/floats/doubles and will skip to the except block for all other cases
-                if FillValue == eval(location_of_variable_in_file + '[:][0]'):
-                    dict_object.update({key: []})
-                else:
-                    # we have to convert numpy datatypes to native python types with .item()
-                    var_to_save = eval(location_of_variable_in_file + '[:][0]')  # note the [0] on the end
-                    dict_object.update({key:  var_to_save.item()})
-            except:
-                data = eval(location_of_variable_in_file + '[:]')
-                dict_object.update({key: data})
+def _instantiate_smb(md, ct: str, verbose: bool):
+    mapping = {
+        'SMBforcing':            ('SMBforcing',            'SMBforcing'),
+        'SMBpdd':                ('SMBpdd',                'SMBpdd'),
+        'SMBd18opdd':            ('SMBd18opdd',            'SMBd18opdd'),
+        'SMBgradients':          ('SMBgradients',          'SMBgradients'),
+        'SMBcomponents':         ('SMBcomponents',         'SMBcomponents'),
+        'SMBmeltcomponents':     ('SMBmeltcomponents',     'SMBmeltcomponents'),
+        'SMBgradientscomponents':('SMBgradientscomponents','SMBgradientscomponents'),
+        'SMBgradientsela':       ('SMBgradientsela',       'SMBgradientsela'),
+        'SMBhenning':            ('SMBhenning',            'SMBhenning'),
+        'SMBgemb':               ('SMBgemb',               'SMBgemb'),
+        'SMBpddSicopolis':       ('SMBpddSicopolis',       'SMBpddSicopolis'),
+        'SMBsemic':              ('SMBsemic',               'SMBsemic'),
+        'SMBdebrisEvatt':        ('SMBdebrisEvatt',        'SMBdebrisEvatt'),
+    }
+    if ct in mapping:
+        mod_name, cls_name = mapping[ct]
+        try:
+            mod = __import__(mod_name, fromlist=[cls_name])
+            md.smb = getattr(mod, cls_name)()
+        except Exception as e:
+            if verbose:
+                print(f'    [WARN] could not load SMB class {ct}: {e}')
     else:
-        print(f"Unrecognized object was saved to NetCDF file and cannot be reconstructed: {location_of_variable_in_model}")
+        if verbose:
+            print(f'    [WARN] unknown SMB class: {ct}')
+    return md
+
+
+def _instantiate_friction(md, ct: str, verbose: bool):
+    known = [
+        'friction', 'frictioncoulomb', 'frictioncoulomb2',
+        'frictionhydro', 'frictionjosh', 'frictionpism',
+        'frictionregcoulomb', 'frictionregcoulomb2', 'frictionschoof',
+        'frictionshakti', 'frictiontsai', 'frictionwaterlayer',
+        'frictionweertman', 'frictionweertmantemp',
+    ]
+    if ct in known:
+        try:
+            mod = __import__(ct, fromlist=[ct])
+            md.friction = getattr(mod, ct)()
+        except Exception as e:
+            if verbose:
+                print(f'    [WARN] could not load friction class {ct}: {e}')
+    else:
+        if verbose:
+            print(f'    [WARN] unknown friction class: {ct}')
+    return md
+
+
+def _instantiate_hydrology(md, ct: str, verbose: bool):
+    known = [
+        'hydrologyshreve', 'hydrologydc', 'hydrologyglads',
+        'hydrologypism', 'hydrologyshakti', 'hydrologytws', 'hydrologyarmapw',
+    ]
+    if ct in known:
+        try:
+            mod = __import__(ct, fromlist=[ct])
+            md.hydrology = getattr(mod, ct)()
+        except Exception as e:
+            if verbose:
+                print(f'    [WARN] could not load hydrology class {ct}: {e}')
+    else:
+        if verbose:
+            print(f'    [WARN] unknown hydrology class: {ct}')
+    return md
+
+
+# ---------------------------------------------------------------------------
+# Attribute setter
+# ---------------------------------------------------------------------------
+
+def _set_attr(obj, name: str, value, verbose: bool):
+    """Set attribute *name* on *obj* (works for class instances and dicts)."""
+    try:
+        if isinstance(obj, dict):
+            obj[name] = value
+        else:
+            setattr(obj, name, value)
+    except Exception as e:
+        if verbose:
+            print(f'    [WARN] could not set {name}: {e}')
+    return obj
+
+
+# ---------------------------------------------------------------------------
+# Utility
+# ---------------------------------------------------------------------------
+
+def _get_classtype(grp) -> str:
+    return getattr(grp, 'classtype', '')

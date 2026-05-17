@@ -1,87 +1,114 @@
-The write_netCDF and read_netCDF modules provide a convenient way to save and restore the state of a model class instance 
-in binary format via NetCDF4. This allows users to store the class state on disk and retrieve it later, facilitating seamless 
-transitions between Python and MATLAB environments.
+write_netCDF / read_netCDF  –  Cross-language ISSM model serialisation
+======================================================================
 
-To save a model, call either write_netCDF.py or write_netCDF.m depending on whether your class is in matlab or python. 
-To read a saved model, call either read_netCDF.py or read_netCDF.m depending on what language you prefer to use the model in.
-If you would like to log the names and locations of variables being stored, add the argument verbose = True (verbose = true for matlab).
+These four files let you save an ISSM model (md) to NetCDF4 and reload it
+in either MATLAB or Python, interchangeably.
 
-Usage Instructions:
+    write_netCDF.m   –  save  from MATLAB
+    read_netCDF.m    –  load  into MATLAB
+    write_netCDF.py  –  save  from Python
+    read_netCDF.py   –  load  into Python
 
-    Python:
-        - Saving a model: 
-            from write_netCDF import write_netCDF
-
-            md = bamg(model(), foo.csv, .01)
-
-            write_netCDF(md, 'adress_to_save/../filename.nc')            
-
-        - Reading a model:
-            from read_netCDF import read_netCDF
-
-            md = read_netCDF('adress_to_file/../filename.nc')
-
-        Verbose examples:
-            write_netCDF(md, adress_to_save/../filename.nc, verbose = True)
-            md = read_netCDF(adress_to_file/../filename.nc, verbose = True)
-
-    MATLAB:
-        - Saving a model:
-
-            write_netCDF(md, adress_to_save/../filename.nc);
-
-        - Reading a model:
-
-            md = read_netCDF(adress_to_file/../filename.nc);
-
-        Verbose examples:
-            write_netCDF(md, adress_to_save/../filename.nc, verbose = true);
-	    
-          or:
-
-	    write_netCDF(md, adress_to_save/../filename.nc, verbose);
-            md = read_netCDF(adress_to_file/../filename.nc, verbose = true);
-
-Dependencies:
-    Python: 
-        - NumPy 
-        - NetCDF4 / NetCDF4.Dataset
-        - The model() class
-        - results.solution / results.solutionstep / results.resultsdakota
-        - inversion.inversion / inversion.m1qn3inversion / inversion.taoinversion
-
-    MATLAB: 
-        - The model() class
-        - inversion.inversion / inversion.m1qn3inversion / inversion.taoinversion
+Version: 2.0
 
 
-Additional Information:
+USAGE
+-----
 
-There are currently datatypes that both write_netCDF and read_netCDF modules may not be able to handle. These datatypes might 
-include lists with multiple datatypes (ie, ['number', 1, 'letter', a, 'color', 'blue']), lists of dicts ect. 
+Python:
+    from write_netCDF import write_netCDF
+    from read_netCDF  import read_netCDF
 
-To add functionality for these additional cases, one must simply create a function to handle the case and call it using a 
-conditional case within the create_var() function. To read the data from the NetCDF4 file, add the case to the 
-copy_variable_data_to_new_model() function in read_netCDF so that the data can be added to a new model() instance.
+    write_netCDF(md, 'model.nc')
+    write_netCDF(md, 'model.nc', verbose=True)
 
-Known issues:
+    md2 = read_netCDF('model.nc')
+    md2 = read_netCDF('model.nc', verbose=True)
 
-Unlike Python, MATLAB doesn't utilize subclasses in its model class. This leads to a loss of certain subclass instances. 
-For instance, the results.solutionstep() class poses a known issue. In MATLAB, there's no direct equivalent. The fields in 
-'md.results' in MATLAB might correspond to instances of resultsdakota(), solution(), or solutionstep() in Python, but 
-because those classes don't exist in MATLAB, there is no way for python to know which instance it needs. 
+MATLAB:
+    write_netCDF(md, 'model.nc')
+    write_netCDF(md, 'model.nc', 'verbose', true)
 
-The current workaround, while not theoretically sound, involves searching for the class name string in MATLAB's 'results' 
-field names. For instance, 'md.results.TransientSolution' is recorded as a solution() class instance. However, problems arise 
-in cases like 'md.results.StressbalanceSolution', where the code notes a solution() instance, while in Python, it should be a 
-solutionstep() instance.
+    md2 = read_netCDF('model.nc')
+    md2 = read_netCDF('model.nc', 'verbose', true)
 
-So far, there have been no recorded problems swapping a solutionstep() instance for a solution() instance.
+Cross-language round-trip:
+    %% MATLAB → Python
+    write_netCDF(md, 'model.nc');        % MATLAB
+    md2 = read_netCDF('model.nc')        # Python
 
-Potential solutions are:
+    ## Python → MATLAB
+    write_netCDF(md, 'model.nc')         # Python
+    md2 = read_netCDF('model.nc');       % MATLAB
 
-    - Restructure both Python and MATLAB solve frameworks. In Python, when creating an md.results.<solutionstep()> instance, 
-    embed 'solutionstep' in the class instance name.
-        >> This solution is very involved, and would include the tedious modification of >5 files in total
-    - Create a hash table linking solutions with their corresponding 'md.results.<class>' for reference when saving models to 
-    the netCDF file. 
+
+DEPENDENCIES
+------------
+Python:  numpy, netCDF4, and the ISSM model() class (plus any sub-class
+         modules that your model uses, e.g. m1qn3inversion, SMBpdd, etc.)
+MATLAB:  built-in netcdf package (no extra toolboxes required), plus
+         the ISSM model() class and any sub-class .m files.
+
+
+FILE FORMAT  (ISSM-NetCDF-2.0)
+------------------------------
+Global attributes:
+    Conventions = 'ISSM-NetCDF-2.0'
+    history     = creation timestamp
+
+Layout:
+    /mesh/          ← group per top-level md field
+        classtype   ← NC_GLOBAL attribute: Python/MATLAB class name
+        x           ← variable
+        y           ← variable
+        …
+    /geometry/
+        …
+    /results/
+        /TransientSolution/   ← sub-group (classtype='struct')
+            nsteps            ← NC_GLOBAL attribute: number of steps
+            /step_1/
+                Vel           ← variable
+                …
+            /step_2/
+                …
+    /inversion/
+        classtype = 'm1qn3inversion'   ← enables correct class reconstruction
+        …
+
+Key design decisions:
+  - Every group carries a 'classtype' global attribute so readers can
+    reconstruct the exact Python/MATLAB class without heuristics.
+  - Struct arrays (results.TransientSolution) are stored as step_1 … step_n
+    sub-groups, one per time step.
+  - The file is overwritten silently if it already exists (no interactive
+    prompts – safe for use in scripts and Jupyter notebooks).
+  - No module-level global state in Python (fully re-entrant; calling
+    read_netCDF twice returns two independent model objects).
+  - No MATLAB 'persistent' variable bugs (the old code skipped writing
+    inversion/smb/friction/hydrology class names on the second call).
+
+
+KNOWN LIMITATIONS
+-----------------
+- md.qmu  is not yet supported (complex OrderedDict-based structure).
+- Cell arrays whose elements are themselves struct arrays are not yet
+  supported.
+- MATLAB classes that have no Python equivalent (e.g. SMBgemb) can be
+  saved from MATLAB and round-tripped back to MATLAB, but the Python
+  reader will fall back to a plain dict for those fields.
+- Very large arrays (> a few GB) work fine thanks to NetCDF4 chunking,
+  but you may want to increase the zlib compression level in write_netCDF.py
+  for highly compressible fields.
+
+
+OTHER FILES IN THIS DIRECTORY
+------------------------------
+export_netCDF.m / export_netCDF.py
+    An older, alternative serialisation that stacks results variables by
+    time dimension rather than using per-step sub-groups.  It writes a
+    different file format and does not have a matching read_netCDF.
+    Kept for backward compatibility.
+
+restable.m
+    Helper used by export_netCDF.m.
