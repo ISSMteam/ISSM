@@ -16,7 +16,6 @@ class linearbasalforcings(object):
     def __init__(self, *args):  # {{{
         nargs = len(args)
         if nargs == 0:
-            print('empty init')
             self.deepwater_melting_rate = 0.
             self.deepwater_elevation = 0.
             self.upperwater_melting_rate = 0.
