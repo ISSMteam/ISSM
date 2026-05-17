@@ -85,96 +85,96 @@ classdef generic
 		%}}}
 		function BuildQueueScript(cluster, md, filename) % {{{
 
-         %Get variables from md
-         dirname         = md.private.runtimename;
-         modelname       = md.miscellaneous.name;
-         solution        = md.private.solution;
-         io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
+			% Unpack fields used below
+			dirname         = md.private.runtimename;
+			modelname       = md.miscellaneous.name;
+			solution        = md.private.solution;
+			io_gather       = md.settings.io_gather;
+			isvalgrind      = md.debug.valgrind;
+			isgprof         = md.debug.gprof;
+			isdakota        = md.qmu.isdakota;
+			isoceancoupling = md.transient.isoceancoupling;
 
-			% Which executable are we calling?
-			executable='issm.exe'; % default
-
+			% Determine which executable to call
+			executable = 'issm.exe';
 			if isdakota
-				version=IssmConfig('_DAKOTA_VERSION_');
-				version=str2num(version(1:3));
-				if(version>=6) executable='issm_dakota.exe'; end
+				dakota_version_str = IssmConfig('_DAKOTA_VERSION_'); version = str2num(dakota_version_str(1:3));
+				if version >= 6, executable = 'issm_dakota.exe'; end
 			end
 			if isoceancoupling
-				executable='issm_ocean.exe';
+				executable = 'issm_ocean.exe';
 			end
 
 			if ~ispc()
 
-				% Check that executable exists at the right path
-				if ~exist([cluster.codepath '/' executable],'file')
-					error(['File ' cluster.codepath '/' executable ' does not exist']);
+				% Verify the executable exists
+				exepath = [cluster.codepath '/' executable];
+				if ~exist(exepath, 'file')
+					error('File %s does not exist', exepath);
 				end
 
-				% Process codepath and prepend empty spaces with \ to avoid errors in queuing script
-				codepath=strrep(cluster.codepath,' ','\ ');
+				% Escape spaces in codepath for the shell script
+				codepath = strrep(cluster.codepath, ' ', '\ ');
 				execpath = [cluster.executionpath '/' dirname];
 
-				% Write queuing script
-				fid=fopen(filename, 'w');
-				fprintf(fid,'#!%s\n',cluster.shell);
+				% Build the mpi prefix once (empty string when MPI is not available)
+				mpiprefix = '';
+				if IssmConfig('_HAVE_MPI_')
+					mpiprefix = sprintf('mpiexec -np %i ', cluster.np);
+				end
+
+				% Build the core command string
 				if isvalgrind
-					%Add --gen-suppressions=all to get suppression lines
-					%fprintf(fid,'LD_PRELOAD=%s \\\n',cluster.valgrindlib); it could be deleted
 					if ismac
-						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s --leak-check=full --leak-check=full --show-leak-kinds=all --error-limit=no --dsymutil=yes --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog ',...
-							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution,execpath, modelname,modelname,modelname);
-						else
-							fprintf(fid,'%s --leak-check=full --dsymutil=yes --error-limit=no --leak-check=full --show-leak-kinds=all --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath, modelname,modelname,modelname);
-						end
+						vgflags = '--leak-check=full --show-leak-kinds=all --error-limit=no --dsymutil=yes';
 					else
-						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s --leak-check=full --error-limit=no --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.np,cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath,modelname,modelname,modelname);
-						else
-							fprintf(fid,'%s --leak-check=full --error-limit=no --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog',...
-							cluster.valgrind,cluster.valgrindsup,cluster.codepath,executable,solution, execpath, modelname,modelname,modelname);
-						end
+						vgflags = '--leak-check=full --error-limit=no';
 					end
+					cmd = sprintf('%s%s %s --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog', ...
+						mpiprefix, cluster.valgrind, vgflags, cluster.valgrindsup, ...
+						codepath, executable, solution, execpath, modelname, modelname, modelname);
+
 				elseif isgprof
-					fprintf(fid,'\n gprof %s/issm.exe gmon.out > %s.performance',cluster.codepath,modelname);
+					cmd = sprintf('gprof %s/issm.exe gmon.out > %s.performance', cluster.codepath, modelname);
+
+				elseif cluster.interactive
+					cmd = sprintf('%s%s/%s %s %s %s', mpiprefix, codepath, executable, solution, execpath, modelname);
+
 				else
-					if cluster.interactive
-						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s\n',cluster.np,cluster.codepath,executable,solution, execpath, modelname);
-						else
-							fprintf(fid,'%s/%s %s %s %s',cluster.codepath,executable,solution, execpath, modelname);
-						end
+					% Non-interactive: redirect output and run in background
+					if IssmConfig('_HAVE_MPI_')
+						cmd = sprintf('%s%s/%s %s %s %s 2> %s/%s.errlog > %s/%s.outlog &', ...
+							mpiprefix, codepath, executable, solution, execpath, modelname, execpath, modelname, execpath, modelname);
 					else
-						if IssmConfig('_HAVE_MPI_')
-							fprintf(fid,'mpiexec -np %i %s/%s %s %s %s 2> %s/%s.errlog > %s/%s.outlog &',cluster.np,cluster.codepath,executable,solution,execpath,modelname,execpath,modelname,execpath,modelname);
-						else
-							fprintf(fid,'%s/%s %s %s %s 2> %s.errlog > %s.outlog &',cluster.codepath,executable,solution, execpath,modelname,modelname,modelname);
-						end
+						cmd = sprintf('%s/%s %s %s %s 2> %s.errlog > %s.outlog &', ...
+							codepath, executable, solution, execpath, modelname, modelname, modelname);
 					end
 				end
-				if ~io_gather, %concatenate the output files:
-					fprintf(fid,'\ncat %s.outbin.* > %s.outbin',modelname,modelname);
+
+				% Write the queue script
+				fid = fopen(filename, 'w');
+				fprintf(fid, '#!%s\n', cluster.shell);
+				fprintf(fid, '%s', cmd);
+				if ~io_gather
+					% Concatenate distributed output files into one
+					fprintf(fid, '\ncat %s.outbin.* > %s.outbin', modelname, modelname);
 				end
 				fclose(fid);
 
 			else % Windows
-				batfilename=[filename(1:end-6) '.bat'];
-				fid=fopen(batfilename,'w');
-				fprintf(fid,'@echo off\n');
-				execdir=[cluster.executionpath '\' dirname];
 
-				if cluster.np>1
-					fprintf(fid,'"C:\\Program Files\\Microsoft MPI\\Bin\\mpiexec.exe" -n %i "%s\\%s" %s "%s" %s',cluster.np,cluster.codepath,executable,solution,execdir,modelname);
+				batfilename = [filename(1:end-6) '.bat'];
+				execdir     = [cluster.executionpath '\' dirname];
+				fid         = fopen(batfilename, 'w');
+				fprintf(fid, '@echo off\n');
+				if cluster.np > 1
+					fprintf(fid, '"C:\\Program Files\\Microsoft MPI\\Bin\\mpiexec.exe" -n %i "%s\\%s" %s "%s" %s', ...
+						cluster.np, cluster.codepath, executable, solution, execdir, modelname);
 				else
-					fprintf(fid,'"%s\\%s" %s "%s" %s',cluster.codepath,executable,solution,execdir,modelname);
+					fprintf(fid, '"%s\\%s" %s "%s" %s', cluster.codepath, executable, solution, execdir, modelname);
 				end
 				fclose(fid);
+
 			end
 		end
 		%}}}
