@@ -17,7 +17,6 @@ class m1qn3inversion(object):
 
     def __init__(self, *args):  # {{{
         if not len(args):
-            print('empty init')
             self.iscontrol                   = 0
             self.incomplete_adjoint          = 0
             self.control_parameters          = np.nan
