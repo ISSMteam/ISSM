@@ -8,7 +8,7 @@ if (dimension(md.mesh)==2)
 	numberofelements=md.mesh.numberofelements;
 	numberofnodes=md.mesh.numberofvertices;
 	index=md.mesh.elements;
-	x=md.mesh.x; y=md.mesh.y; z=md.mesh.z;
+	x=md.mesh.x; y=md.mesh.y; %z=md.mesh.z;
 else
 	numberofelements=md.mesh.numberofelements2d;
 	numberofnodes=md.mesh.numberofvertices2d;
