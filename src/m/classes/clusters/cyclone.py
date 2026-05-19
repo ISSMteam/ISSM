@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 try:
@@ -10,6 +11,7 @@ from pairoptions import pairoptions
 from issmscpin import issmscpin
 from issmscpout import issmscpout
 from issmssh import issmssh
+from issmdir import issmdir
 
 
 class cyclone(object):
@@ -99,13 +101,16 @@ class cyclone(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        #compress the files into one zip.
-        compressstring = 'tar -zcf %s.tar.gz ' % dirname
-        for file in filelist:
-            compressstring += ' {}'.format(file)
+        # Compress the files into one zip.
+        # filelist contains full paths; use -C so only basenames are stored in the archive.
+        root = issmdir() + '/execution/' + dirname
+        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
+        for filepath in filelist:
+            if not os.path.isfile(filepath):
+                raise Exception('File {} not found'.format(filepath))
+            compressstring += ' {}'.format(os.path.basename(filepath))
         subprocess.call(compressstring, shell=True)
 
-        #upload input files
         issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
     # }}}
 

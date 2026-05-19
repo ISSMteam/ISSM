@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from fielddisplay import fielddisplay
@@ -6,6 +7,7 @@ from IssmConfig import IssmConfig
 from issmscpin import issmscpin
 from issmscpout import issmscpout
 from issmssh import issmssh
+from issmdir import issmdir
 from MatlabFuncs import *
 from pairoptions import pairoptions
 try:
@@ -211,15 +213,17 @@ class gadi(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress inputs into a tarball
-        compressstring = 'tar -zcf {}.tar.gz'.format(dirname)
-        for f in filelist:
-            compressstring += ' {}'.format(f)
-
+        # Compress the files into one zip.
+        # filelist contains full paths; use -C so only basenames are stored in the archive.
+        root = issmdir() + '/execution/' + dirname
+        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
+        for filepath in filelist:
+            if not os.path.isfile(filepath):
+                raise Exception('File {} not found'.format(filepath))
+            compressstring += ' {}'.format(os.path.basename(filepath))
         subprocess.call(compressstring, shell=True)
-        print('Uploading input file and queueing script to Gadi...')
-        directory = self.executionpath
-        issmscpout(self.name, directory, self.login, self.port, [dirname + '.tar.gz'])
+
+        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
