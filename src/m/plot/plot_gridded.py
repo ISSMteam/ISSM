@@ -93,9 +93,12 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     #subplotmodel(plotlines,plotcols,i,options);
 
     #shading interp;
-    options.addfielddefault('colormap',plt.cm.turbo)
-    #options.addfielddefault('colormap',plt.cm.viridis)
-    cmap = getcolormap(copy.deepcopy(options))
+    options.addfielddefault('colormap',plt.cm.turbo) # Synchronize colormap with Matlab version.
+
+    #TODO: Do we need to copy object?
+    #cmap = getcolormap(copy.deepcopy(options))
+    cmap = getcolormap(options)
+
     #TODO: Matlab version
     #image_rgb = ind2rgb(uint16((data_grid - data_min)*(length(map)/(data_max-data_min))),cmap);
     #NOTE: Python version
@@ -155,8 +158,6 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
 
     #last step: mesh gridded?
     if options.exist('edgecolor'):
-        #A=elements[:,0]; B=elements[:,1]; C=elements[:,2]
-        #patch('Faces',[A B C],'Vertices', [x y z],'FaceVertexCData',data_grid(1)*ones(size(x)),'FaceColor','none','EdgeColor',getfieldvalue(options,'edgecolor'));
         ax.triplot(x,y,triangles=elements,
                    color=options.getfieldvalue('edgecolor'),
                    linewidth=options.getfieldvalue('linewidth',1),
