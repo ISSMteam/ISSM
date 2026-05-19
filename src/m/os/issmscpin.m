@@ -18,7 +18,8 @@ hostname=oshostname();
 %if hostname and host are the same, do a simple copy
 if strcmpi(hostname,host)
 	for i=1:numel(filelist)
-		copyfile([path '/' filelist{i} ], '.');
+		status = copyfile([path '/' filelist{i} ], '.');
+		if(~status) warning(['Could not copy ' path '/' filelist{i} ]); end
 	end
 else
 	if numel(filelist)==1
