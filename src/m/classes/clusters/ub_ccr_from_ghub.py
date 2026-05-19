@@ -175,7 +175,7 @@ class ub_ccr_from_ghub(object):
         #upload input files
         directory = issmexecdir
 
-        issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)])
+        issmscpout(self.name, directory, self.login, 0, ['{}.tar.gz'.format(dirname)])
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
