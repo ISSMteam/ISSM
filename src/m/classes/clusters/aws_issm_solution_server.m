@@ -148,16 +148,18 @@ classdef aws_issm_solution_server
 			end
 		end %}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
-
 			%compress the files into one zip.
-			compressstring=['tar -zcf ' dirname '.tar.gz'];
-			for i=1:numel(filelist)
-				compressstring = [compressstring ' ' filelist{i}];
-			end
-			if cluster.interactive
-				compressstring = [compressstring ' ' modelname '.run '  modelname '.errlog ' modelname '.outlog '];
-			end
-			system(compressstring);
+         %filelist contains full paths; tar with -C so only basenames are stored in the archive
+         root=[issmdir() '/execution/' dirname];
+         compressstring=['tar -C ' root ' -zcf ' dirname '.tar.gz'];
+         for i=1:numel(filelist)
+            if ~exist(filelist{i},'file')
+               error(['File ' filelist{i} ' not found']);
+            end
+            [~,fname,fext]=fileparts(filelist{i});
+            compressstring=[compressstring ' ' fname fext];
+         end
+         system(compressstring);
 
 			%upload input files
 			if cluster.interactive==10

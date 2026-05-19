@@ -10,6 +10,7 @@ from fielddisplay import fielddisplay
 from helpers import *
 from IssmConfig import IssmConfig
 from issmssh import issmssh
+from issmdir import issmdir
 from MatlabFuncs import *
 from pairoptions import pairoptions
 
@@ -180,12 +181,14 @@ class eis_nasa_smce(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress the files into one zip
-        compressstring = 'tar -zcf {}.tar.gz'.format(dirname)
-        for file in filelist:
-            compressstring += ' {}'.format(file)
-        if self.interactive:
-            compressstring += ' {}.run {}.errlog {}.outlog'.format(modelname, modelname, modelname)
+        # Compress the files into one zip.
+        # filelist contains full paths; use -C so only basenames are stored in the archive.
+        root = issmdir() + '/execution/' + dirname
+        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
+        for filepath in filelist:
+            if not os.path.isfile(filepath):
+                raise Exception('File {} not found'.format(filepath))
+            compressstring += ' {}'.format(os.path.basename(filepath))
         subprocess.call(compressstring, shell=True)
 
         print('uploading input file and queueing script')
