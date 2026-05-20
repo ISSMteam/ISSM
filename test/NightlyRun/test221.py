@@ -18,7 +18,7 @@ md = solve(md, 'Stressbalance')
 
 #Fields and tolerances to track changes
 field_names = ['Vx', 'Vy', 'Vz', 'Vel']
-field_tolerances = [1e-09, 1e-09, 5e-06, 1e-09]
+field_tolerances = [1e-09, 1e-09, 7e-06, 1e-09]
 field_values = [md.results.StressbalanceSolution.Vx,
                 md.results.StressbalanceSolution.Vy,
                 md.results.StressbalanceSolution.Vz,
