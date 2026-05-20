@@ -212,8 +212,8 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 			tf_file = fullfile(datadir,'obs/ocean/climatology/zhou_annual_06_nov/tf/v3/tf_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc');
 			so_file = fullfile(datadir,'obs/ocean/climatology/zhou_annual_06_nov/so/v3/so_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc');
 
-			assert(~isemtpy(tf_file),'Error: we cannot find tf_file for observation')
-			assert(~isemtpy(so_file),'Error: we cannot find so_file for observation')
+			assert(isfile(tf_file),'Error: we cannot find tf_file for observation. %s',tf_file)
+			assert(isfile(so_file),'Error: we cannot find so_file for observation. %s',so_file)
 
 			tf_file = {tf_file};
 			so_file = {so_file};
