@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import warnings
 from MatlabFuncs import *
 
 
@@ -23,6 +24,7 @@ def issmscpin(host, login, port, path, filelist=1, bracketstyle=1):
             try:
                 shutil.copy(os.path.join(path, file), os.getcwd()) # keep going, even if success == 0
             except OSError as e:
+                warnings.warn('Could not copy ' + os.path.join(path, file))
                 pass
     else:
         if len(filelist) == 1:
