@@ -40,7 +40,6 @@ class Penpair: public Load{
 		void  InputUpdateFromConstant(IssmDouble constant, int name);
 		void  InputUpdateFromConstant(int constant, int name);
 		void  InputUpdateFromConstant(bool constant, int name);
-		void  InputUpdateFromIoModel(int index, IoModel* iomodel){_error_("not implemented yet");};
 		void  InputUpdateFromMatrixDakota(IssmDouble* matrix, int nrow, int ncols,int name, int type){_error_("Not implemented yet!");}
 		void  InputUpdateFromVector(IssmDouble* vector, int name, int type);
 		void  InputUpdateFromVectorDakota(IssmDouble* vector, int name, int type){_error_("Not implemented yet!");}

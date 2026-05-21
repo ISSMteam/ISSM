@@ -4311,34 +4311,6 @@ void       Tria::InputDepthAverageAtBase(int enum_type,int average_enum_type){/*
 	_error_("not implemented");
 }
 /*}}}*/
-void       Tria::InputUpdateFromIoModel(int index, IoModel* iomodel){ //i is the element index/*{{{*/
-
-	/*Intermediaries*/
-	int        i,j;
-	int        tria_vertex_ids[3];
-	IssmDouble nodeinputs[3];
-	IssmDouble cmmininputs[3];
-	IssmDouble cmmaxinputs[3];
-	bool       control_analysis,ad_analysis   = false;
-	int        num_control_type,num_responses;
-	char**     controls = NULL;
-	IssmDouble yts;
-
-	/*Get parameters: */
-	iomodel->FindConstant(&yts,"md.constants.yts");
-	iomodel->FindConstant(&control_analysis,"md.inversion.iscontrol");
-	iomodel->FindConstant(&ad_analysis, "md.autodiff.isautodiff");
-	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_control_type,"md.inversion.num_control_parameters");
-	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_responses,"md.inversion.num_cost_functions");
-	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_control_type,"md.autodiff.num_independent_objects");
-	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_responses,"md.autodiff.num_dependent_objects");
-
-	/*Recover vertices ids needed to initialize inputs*/
-	for(i=0;i<3;i++){
-		tria_vertex_ids[i]=reCast<int>(iomodel->elements[3*index+i]); //ids for vertices are in the elements array from Matlab
-	}
-}
-/*}}}*/
 void       Tria::InputUpdateFromSolutionOneDof(IssmDouble* solution,int enum_type){/*{{{*/
 
 	/*Intermediary*/

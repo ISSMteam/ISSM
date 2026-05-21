@@ -396,33 +396,6 @@ bool     Tetra::HasFaceOnSurface(){/*{{{*/
 	}
 }
 /*}}}*/
-void     Tetra::InputUpdateFromIoModel(int index,IoModel* iomodel){ /*{{{*/
-
-	/*Intermediaries*/
-	int         i,j;
-	int         tetra_vertex_ids[NUMVERTICES];
-	IssmDouble  nodeinputs[NUMVERTICES];
-	IssmDouble  cmmininputs[NUMVERTICES];
-	IssmDouble  cmmaxinputs[NUMVERTICES];
-
-	IssmDouble  yts;
-	bool    control_analysis;
-	char**  controls = NULL;
-	int     num_control_type,num_responses;
-
-	/*Fetch parameters: */
-	iomodel->FindConstant(&yts,"md.constants.yts");
-	iomodel->FindConstant(&control_analysis,"md.inversion.iscontrol");
-	if(control_analysis) iomodel->FindConstant(&num_control_type,"md.inversion.num_control_parameters");
-	if(control_analysis) iomodel->FindConstant(&num_responses,"md.inversion.num_cost_functions");
-
-	/*Recover vertices ids needed to initialize inputs*/
-	_assert_(iomodel->elements);
-	for(i=0;i<NUMVERTICES;i++){ 
-		tetra_vertex_ids[i]=iomodel->elements[NUMVERTICES*index+i]; //ids for vertices are in the elements array from Matlab
-	}
-}
-/*}}}*/
 void     Tetra::InputUpdateFromSolutionOneDof(IssmDouble* solution,int enum_type){/*{{{*/
 
 	/*Intermediary*/
@@ -888,9 +861,6 @@ void     Tetra::Update(Inputs* inputs,int index,IoModel* iomodel,int analysis_co
 	/*hooks: */
 	this->SetHookNodes(tetra_node_ids,numnodes,analysis_counter); this->nodes=NULL;
 	xDelete<int>(tetra_node_ids);
-
-	/*Fill with IoModel*/
-	this->InputUpdateFromIoModel(index,iomodel);
 }
 /*}}}*/
 void     Tetra::ValueP1OnGauss(IssmDouble* pvalue,IssmDouble* values,Gauss* gauss){/*{{{*/

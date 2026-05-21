@@ -88,7 +88,6 @@ class Seg: public Element,public ElementHook,public SegRef{
 		IssmDouble  IceVolumeAboveFloatation(bool scaled){_error_("not implemented yet");};
 		void        InputDepthAverageAtBase(int enum_type,int average_enum_type){_error_("not implemented yet");};
 		void        InputExtrude(int enum_type,int start){_error_("not implemented"); /*For penta only*/};
-		void        InputUpdateFromIoModel(int index, IoModel* iomodel){_error_("not implemented yet");};
 		void        InputUpdateFromSolutionOneDof(IssmDouble* solution,int inputenum){_error_("not implemented yet");};
 		void        InputUpdateFromSolutionOneDofCollapsed(IssmDouble* solution,int inputenum){_error_("not implemented yet");};
 		void        InputUpdateFromVector(IssmDouble* vector, int name, int type){_error_("not implemented yet");};

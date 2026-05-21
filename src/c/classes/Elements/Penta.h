@@ -121,7 +121,6 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		IssmDouble     IceVolumeAboveFloatation(bool scaled);
 		void           InputDepthAverageAtBase(int enum_type,int average_enum_type);
 		void	         InputExtrude(int enum_type,int start);
-		void           InputUpdateFromIoModel(int index, IoModel* iomodel);
 		void           InputUpdateFromSolutionOneDof(IssmDouble* solutiong,int enum_type);
 		void           InputUpdateFromSolutionOneDofCollapsed(IssmDouble* solutiong,int enum_type);
 		void           InputUpdateFromVector(IssmDouble* vector, int name, int type);

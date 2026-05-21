@@ -323,7 +323,6 @@ class Element: public Object{
 		virtual void  InputUpdateFromVectorDakota(IssmDouble* vector, int name, int type)=0;
 		virtual void  InputScaleFromDakota(IssmDouble* distributed_values, IssmDouble* partition, int npart, int nt, int name)=0;
 		#endif
-		virtual void  InputUpdateFromIoModel(int index, IoModel* iomodel)=0;
 		virtual void  InputUpdateFromVector(IssmDouble* vector, int name, int type)=0;
 		virtual bool       IsFaceOnBoundary(void)=0;
 		virtual bool       IsIcefront(void)=0;
