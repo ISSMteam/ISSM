@@ -1559,7 +1559,7 @@ void accumulation(IssmDouble** pT, IssmDouble** pdz, IssmDouble** pd, IssmDouble
 	massinit=0.0; 
 	for(int i=0;i<m;i++)massinit+=mInit[i];
 
-	if (P > 0.0+Ptol){
+	if (P > 0.0+Dtol){
 
 		if (T_air <= CtoK+Ttol){ // if snow
 
