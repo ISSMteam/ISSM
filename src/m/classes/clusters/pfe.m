@@ -472,17 +472,12 @@ classdef pfe
 						launchcommand=['cd ' cluster.executionpath '/Interactive' num2str(cluster.interactive) ' && tar -zxf ' dirname '.tar.gz'];
 					end
 				end
+				issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
+
 			else
-				if ~isempty(restart)
-					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && /PBS/bin/qsub ' modelname '.queue '];
-				else
-					launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && /PBS/bin/qsub ' modelname '.queue '];
-				end
+				cluster_defaults.LaunchQueueJobSbatch(cluster,modelname,dirname,filelist,restart,batch, 3);
 			end
 
-			%Execute Queue job
-			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end
 		%}}}
 		function Download(cluster,dirname,filelist) % {{{

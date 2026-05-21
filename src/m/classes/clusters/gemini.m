@@ -81,25 +81,9 @@ classdef gemini
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
-			%compress the files into one zip.
-			%filelist contains full paths; tar with -C so only basenames are stored in the archive
-			root=[issmdir() '/execution/' dirname];
-			compressstring=['tar -C ' root ' -zcf ' dirname '.tar.gz'];
-			for i=1:numel(filelist)
-				if ~exist(filelist{i},'file')
-					error(['File ' filelist{i} ' not found']);
-				end
-				[~,fname,fext]=fileparts(filelist{i});
-				compressstring=[compressstring ' ' fname fext];
-			end
-			system(compressstring);
-
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
-
+			cluster_defaults.UploadQueueJob(cluster,modelname,dirname,filelist);
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{
-
-			%Execute Queue job
 			if ~isempty(restart)
 				launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && qsub ' modelname '.queue '];
 			else
@@ -109,11 +93,7 @@ classdef gemini
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
-
-			%copy files from cluster to current directory
-			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
-
+			cluster_defaults.Download(cluster,dirname,filelist);
 		end %}}}
 	end
 end

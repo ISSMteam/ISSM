@@ -35,8 +35,8 @@ classdef cluster_defaults
 			% format 2: SLURM, use sbatch
 			% format 3: PBS, use qsub
 
-			if format==2
-				%Source queue file
+			if format==1
+				%No scheduler: source .queue directly
 				if ~isempty(restart)
 					launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
 				else
