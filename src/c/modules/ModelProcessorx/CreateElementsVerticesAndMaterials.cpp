@@ -43,7 +43,6 @@ void CreateElements(Elements* elements,IoModel* iomodel,const int nummodels){/*{
 	_assert_(elements->Size()==0);
 
 	/*Create elements*/
-	if(control_analysis && !adolc_analysis)iomodel->FetchData(2,"md.inversion.min_parameters","md.inversion.max_parameters");
 	if(iomodel->domaintype==Domain2DverticalEnum || iomodel->domaindim==3)  iomodel->FetchData(2,"md.mesh.vertexonbase","md.mesh.vertexonsurface");
 
 	int count = 0;
@@ -78,7 +77,7 @@ void CreateElements(Elements* elements,IoModel* iomodel,const int nummodels){/*{
 	}
 
 	/*Free data: */
-	iomodel->DeleteData(6,"md.mesh.upperelements","md.mesh.lowerelements","md.inversion.min_parameters","md.inversion.max_parameters","md.mesh.vertexonbase","md.mesh.vertexonsurface");
+	iomodel->DeleteData(4,"md.mesh.upperelements","md.mesh.lowerelements","md.mesh.vertexonbase","md.mesh.vertexonsurface");
 
 }/*}}}*/
 void CreateMaterials(Elements* elements,Inputs* inputs,Materials* materials,IoModel* iomodel,const int nummodels){/*{{{*/
