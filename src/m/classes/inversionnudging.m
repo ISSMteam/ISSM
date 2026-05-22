@@ -38,12 +38,12 @@ classdef inversionnudging
 			md = checkfield(md,'fieldname','inversion.dhdt_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 		end % }}}
 		function disp(self) % {{{
-			disp(sprintf('   inversionnudging parameters:'));
+			disp(sprintf('   Nudging parameters:'));
 			fielddisplay(self,'iscontrol','is inversion activated?');
 			fielddisplay(self,'tau_C','adjustment timescale for friction coefficient [yr]');
 			fielddisplay(self,'dhdt_obs','observed thickness rate of change [m/yr]');
 		end % }}}
-		function marshall(self,prefix,md,fid) % {{{
+		function marshall(self, prefix, md, fid) % {{{
 
 			yts=md.constants.yts;
 
