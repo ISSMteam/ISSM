@@ -353,6 +353,7 @@ syn keyword cConstant InversionNumControlParametersEnum
 syn keyword cConstant InversionNumCostFunctionsEnum
 syn keyword cConstant InversionStepThresholdEnum
 syn keyword cConstant InversionStopFlagEnum
+syn keyword cConstant InversionTauCEnum
 syn keyword cConstant InversionTypeEnum
 syn keyword cConstant IoConstantEnum
 syn keyword cConstant IvinsEnum

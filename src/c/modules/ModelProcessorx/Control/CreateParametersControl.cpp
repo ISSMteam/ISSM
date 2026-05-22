@@ -98,9 +98,13 @@ void CreateParametersControl(Parameters* parameters,IoModel* iomodel,int solutio
 			xDelete<char*>(cm_responses);
 			parameters->AddObject(new IntVecParam(InversionCostFunctionsEnum,costfunc_enums,num_costfunc));
 			xDelete<int>(costfunc_enums);
-
+				  }
 			break;
-			}
+			case 5:/*Nudging*/
+				  {
+					/*Nothing to do here*/
+					break;
+				  }
 			default:
 				_error_("not supported");
 		}
@@ -147,7 +151,10 @@ void CreateParametersControl(Parameters* parameters,IoModel* iomodel,int solutio
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.gttol",InversionGttolEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.maxsteps",InversionMaxstepsEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.maxiter",InversionMaxiterEnum));
-			break;
+				break;
+			case 5: /*Nudging*/
+				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.tau_C",InversionTauCEnum));
+				break;
 			default:
 				_error_("not supported");
 		}

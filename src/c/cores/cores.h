@@ -33,6 +33,7 @@ void controltao_core(FemModel* femmodel);
 void controlm1qn3_core(FemModel* femmodel);
 void controladm1qn3_core(FemModel* femmodel);
 void controlvalidation_core(FemModel* femmodel);
+void controlnudging_core(FemModel* femmodel);
 void masstransport_core(FemModel* femmodel);
 void mmemasstransport_core(FemModel* femmodel);
 void oceantransport_core(FemModel* femmodel);

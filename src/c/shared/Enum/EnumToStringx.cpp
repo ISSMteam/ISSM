@@ -355,6 +355,7 @@ const char* EnumToStringx(int en){
 		case InversionNumCostFunctionsEnum : return "InversionNumCostFunctions";
 		case InversionStepThresholdEnum : return "InversionStepThreshold";
 		case InversionStopFlagEnum : return "InversionStopFlag";
+		case InversionTauCEnum : return "InversionTauC";
 		case InversionTypeEnum : return "InversionType";
 		case IoConstantEnum : return "IoConstant";
 		case IvinsEnum : return "Ivins";

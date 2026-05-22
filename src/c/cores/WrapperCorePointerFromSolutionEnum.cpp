@@ -47,6 +47,7 @@ void WrapperCorePointerFromSolutionEnum(void (**psolutioncore)(FemModel*),Parame
 			case 2: solutioncore=controlm1qn3_core; break;
 			case 3: solutioncore=controlvalidation_core; break;
 			case 4: solutioncore=controladm1qn3_core; break;
+			case 5: solutioncore=controlnudging_core; break;
 			default: _error_("control type not supported");
 		}
 	}
