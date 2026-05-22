@@ -32,7 +32,8 @@ def UploadQueueJob(cluster, modelname, dirname, filelist):  # {{{
         compressstring += ' {}'.format(os.path.basename(filepath))
     subprocess.call(compressstring, shell=True)
 
-    issmscpout(cluster.name, cluster.executionpath, cluster.login, cluster.port, [dirname + '.tar.gz'])
+    port = getattr(cluster, 'port', 0)
+    issmscpout(cluster.name, cluster.executionpath, cluster.login, port, [dirname + '.tar.gz'])
 # }}}
 
 def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, fmt):  # {{{
@@ -82,11 +83,13 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
                         dirname, dirname, modelname))
     else:
         raise ValueError('fmt={} not supported'.format(fmt))
-    issmssh(cluster.name, cluster.login, cluster.port, launchcommand)
+    port = getattr(cluster, 'port', 0)
+    issmssh(cluster.name, cluster.login, port, launchcommand)
 # }}}
 
 def Download(cluster, dirname, filelist):  # {{{
     """Copy output files from the cluster back to the current directory via scp."""
     directory = '{}/{}/'.format(cluster.executionpath, dirname)
-    issmscpin(cluster.name, cluster.login, cluster.port, directory, filelist)
+    port = getattr(cluster, 'port', 0)
+    issmscpin(cluster.name, cluster.login, port, directory, filelist)
 # }}}

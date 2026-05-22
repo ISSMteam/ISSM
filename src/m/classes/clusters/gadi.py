@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+import cluster_defaults
 from fielddisplay import fielddisplay
 from helpers import *
 from IssmConfig import IssmConfig
@@ -213,50 +214,13 @@ class gadi(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress the files into one zip.
-        # filelist contains full paths; use -C so only basenames are stored in the archive.
-        root = issmdir() + '/execution/' + dirname
-        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
-        for filepath in filelist:
-            if not os.path.isfile(filepath):
-                raise Exception('File {} not found'.format(filepath))
-            compressstring += ' {}'.format(os.path.basename(filepath))
-        subprocess.call(compressstring, shell=True)
-
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        cluster_defaults.UploadQueueJob(self, modelname, dirname, filelist)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
-        """
-        On Gadi, typically you do: 
-          qsub modelname.queue
-        rather than `./modelname.queue`.
-        """
-        if not isempty(restart):
-            # If "restart" logic is needed, adapt as necessary
-            launchcommand = (
-                'cd {executionpath}/{dirname} && qsub {modelname}.queue'
-                .format(executionpath=self.executionpath, 
-                        dirname=dirname, modelname=modelname)
-            )
-        else:
-            # Create/clean directory, extract tar, then qsub
-            launchcommand = (
-                'cd {executionpath} && '
-                'rm -rf ./{dirname} && mkdir {dirname} && cd {dirname} && '
-                'mv ../{dirname}.tar.gz ./ && '
-                'tar -zxf {dirname}.tar.gz && '
-                'qsub {modelname}.queue'
-                .format(executionpath=self.executionpath, 
-                        dirname=dirname, modelname=modelname)
-            )
-            
-        print('Launching solution sequence on Gadi via SSH...')
-        issmssh(self.name, self.login, self.port, launchcommand)
+        cluster_defaults.LaunchQueueJobSbatch(self, modelname, dirname, filelist, restart, batch, 3)
     # }}}
 
     def Download(self, dirname, filelist):  # {{{
-        # Copy files from Gadi back to local machine
-        directory = '{}/{}/'.format(self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        cluster_defaults.Download(self, dirname, filelist)
     # }}}
