@@ -32,7 +32,7 @@ class gadi(object):
         self.numnodes       = 1
         self.cpuspernode    = 4
         self.memory         = 40  # e.g. '40GB'
-        self.port           = ''  # typical SSH port
+        self.port           = 0   # typical SSH port
         self.queue          = 'normal'  # or "hugemem", "express", etc.
         self.time           = 60  # total minutes of walltime, e.g. 60 => 1 hour
         self.processor      = ''  # not usually needed for Gadi

@@ -32,7 +32,7 @@ class ub_ccr(object):
     def __init__(self, *args):  # {{{
         self.name = oshostname()
         self.login = ''
-        self.port = ''
+        self.port = 0
         self.cluster = 'ub-hpc'
         self.partition = 'general-compute'
         self.qos = 'general-compute'
@@ -268,11 +268,6 @@ class ub_ccr(object):
             directory = '{}/Interactive{}'.format(self.executionpath, self.interactive)
         else:
             directory = '{}/{}/'.format(self.executionpath, dirname)
-
-        # if self.bbftp:
-        #     issmbbftpin(self.name, self.login, self.port, self.numstreams, directory, filelist)
-        # else:
-        #     issmscpin(self.name, self.login, self.port, directory, filelist)
 
         # NOTE: Replacement for issmscpin(self.name, self.login, self.port, directory, filelist)
         filelist = [os.path.join(directory, x) for x in filelist]

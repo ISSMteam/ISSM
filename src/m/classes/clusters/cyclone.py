@@ -33,7 +33,7 @@ class cyclone(object):
         self.time = 100
         self.codepath = ''
         self.executionpath = ''
-        self.port = ''
+        self.port = 0
         self.interactive = 0
 
         # Use provided options to change fields
