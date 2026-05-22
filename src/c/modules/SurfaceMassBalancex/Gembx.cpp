@@ -19,7 +19,6 @@ const double Ttol = 1e-10;
 const double Dtol = 1e-11;
 const double Gdntol = 1e-10;
 const double Wtol = 1e-13;
-const double Ptol = 1e-6;
 
 const double CI = 2102.0;                       // heat capacity of snow/ice (J kg-1 k-1)
 const double LF = 0.3345e6;             // latent heat of fusion (J kg-1)
@@ -1559,7 +1558,7 @@ void accumulation(IssmDouble** pT, IssmDouble** pdz, IssmDouble** pd, IssmDouble
 	massinit=0.0; 
 	for(int i=0;i<m;i++)massinit+=mInit[i];
 
-	if (P > 0.0+Dtol){
+	if (P > 0.0) { //if (P > 0.0+Dtol){
 
 		if (T_air <= CtoK+Ttol){ // if snow
 
@@ -2505,7 +2504,7 @@ void densification(IssmDouble** pd,IssmDouble** pdz, IssmDouble* T, IssmDouble* 
       else d[i] = d[i] + (c2 * (dIce - d[i]) / 365.0 * dt);
 
 		// do not allow densities to exceed the density of ice
-		if(d[i] > dIce-Ptol) d[i]=dIce;
+		if(d[i] > dIce-Dtol) d[i]=dIce;
 
 		// calculate new grid cell length
 		dz[i] = mass_init[i] / d[i];
