@@ -342,6 +342,7 @@
 	InversionNumCostFunctionsEnum
 	InversionStepThresholdEnum
 	InversionStopFlagEnum
+	InversionTauCEnum
 	InversionTypeEnum
 	IoConstantEnum
 	IvinsEnum
@@ -4177,6 +4178,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionNumCostFunctionsEnum) return "InversionNumCostFunctions" end
 	if(enum==InversionStepThresholdEnum) return "InversionStepThreshold" end
 	if(enum==InversionStopFlagEnum) return "InversionStopFlag" end
+	if(enum==InversionTauCEnum) return "InversionTauC" end
 	if(enum==InversionTypeEnum) return "InversionType" end
 	if(enum==IoConstantEnum) return "IoConstant" end
 	if(enum==IvinsEnum) return "Ivins" end
@@ -8012,6 +8014,7 @@ function StringToEnum(name::String)
 	if(name=="InversionNumCostFunctions") return InversionNumCostFunctionsEnum  end
 	if(name=="InversionStepThreshold") return InversionStepThresholdEnum  end
 	if(name=="InversionStopFlag") return InversionStopFlagEnum  end
+	if(name=="InversionTauC") return InversionTauCEnum  end
 	if(name=="InversionType") return InversionTypeEnum  end
 	if(name=="IoConstant") return IoConstantEnum  end
 	if(name=="Ivins") return IvinsEnum  end

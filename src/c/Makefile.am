@@ -310,6 +310,7 @@ issm_sources += \
 	./cores/controltao_core.cpp \
 	./cores/controlm1qn3_core.cpp \
 	./cores/controladm1qn3_core.cpp \
+	./cores/controlnudging_core.cpp \
 	./cores/controlvalidation_core.cpp \
 	./cores/adjointstressbalance_core.cpp \
 	./cores/adjointbalancethickness_core.cpp \
