@@ -28,12 +28,12 @@ void controlnudging_core(FemModel* femmodel){
    IssmDouble deltat = (tmax - tmin)*yts; // convert to years
 
    /*Fields before/after*/
-   IssmPDouble* C0   = NULL;
-   IssmPDouble* C    = NULL;
-   IssmPDouble* Hobs = NULL;
-   IssmPDouble* H    = NULL;
-	IssmPDouble* V    = NULL;
-   IssmPDouble* O_ls = NULL;
+   IssmDouble* C0   = NULL;
+   IssmDouble* C    = NULL;
+   IssmDouble* Hobs = NULL;
+   IssmDouble* H    = NULL;
+	IssmDouble* V    = NULL;
+   IssmDouble* O_ls = NULL;
 
    /*Get Fields once and for all*/
    GetVectorFromInputsx(&C0, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
@@ -97,14 +97,14 @@ void controlnudging_core(FemModel* femmodel){
       InputUpdateFromVectorx(femmodel, C, FrictionCoefficientEnum, VertexSIdEnum);
       _error_("not implemented yet");
 
-      xDelete<IssmPDouble>(H);
-      xDelete<IssmPDouble>(C);
-      xDelete<IssmPDouble>(O_ls);
-		xDelete<IssmPDouble>(V);
+      xDelete<IssmDouble>(H);
+      xDelete<IssmDouble>(C);
+      xDelete<IssmDouble>(O_ls);
+		xDelete<IssmDouble>(V);
       delete femmodel_temp;
    }
 
    /*Clean up and return*/
-   xDelete<IssmPDouble>(C0);
-   xDelete<IssmPDouble>(Hobs);
+   xDelete<IssmDouble>(C0);
+   xDelete<IssmDouble>(Hobs);
 }
