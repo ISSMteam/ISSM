@@ -79,7 +79,7 @@ mkdir ${PKG}
 cd ${ISSM_DIR}/bin
 
 echo "Modify generic"
-cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
+#cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
 
 echo "Moving certain shared libraries to lib/"
 cp ${LIBGCC} ${LIBGCC_DIST} 2>/dev/null
