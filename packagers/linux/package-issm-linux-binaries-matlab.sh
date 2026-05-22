@@ -78,9 +78,6 @@ mkdir ${PKG}
 # Add required binaries and libraries to package and modify them where needed
 cd ${ISSM_DIR}/bin
 
-echo "Modify generic"
-#cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
-
 echo "Moving certain shared libraries to lib/"
 cp ${LIBGCC} ${LIBGCC_DIST} 2>/dev/null
 cp ${LIBGFORTRAN} ${LIBGFORTRAN_DIST} 2>/dev/null
@@ -192,7 +189,6 @@ echo "Copying assets to package: ${PKG}"
 cp -rf bin examples lib scripts share test ${PKG}
 mkdir ${PKG}/execution
 echo "Cleaning up unneeded/unwanted files"
-rm -f ${PKG}/bin/generic_static.* # Remove static versions of generic cluster classes
 rm -f ${PKG}/lib/*.a # Remove static libraries from package
 rm -f ${PKG}/lib/*.la # Remove libtool libraries from package
 rm -rf ${PKG}/test/SandBox # Remove testing sandbox from package

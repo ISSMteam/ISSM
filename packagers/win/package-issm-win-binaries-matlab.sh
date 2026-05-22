@@ -69,9 +69,6 @@ mkdir ${PKG}
 # Add required binaries and libraries to package and modify them where needed
 cd ${ISSM_DIR}/bin
 
-echo "Modify generic"
-cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
-
 echo "Moving system and MinGW libraries to bin/"
 cp /c/msys64/mingw64/bin/libgcc_s_seh-1.dll .
 cp /c/msys64/mingw64/bin/libstdc++-6.dll .
@@ -234,7 +231,6 @@ cp -rf bin examples scripts share test ${PKG}
 mkdir ${PKG}/execution
 
 echo "Cleaning up unneeded/unwanted files"
-rm -f ${PKG}/bin/generic_static.* # Remove static versions of generic cluster classes
 rm -rf ${PKG}/test/SandBox # Remove testing sandbox from package
 
 # Compress package

@@ -73,9 +73,6 @@ mkdir ${PKG}
 # Add required binaries and libraries to package and modify them where needed
 cd ${ISSM_DIR}/bin
 
-echo "Modify generic"
-cat generic_static.m | sed -e "s/generic_static/generic/g" > generic.m
-
 echo "Moving certain shared libraries to lib/"
 cp ${LIBGMT} ${LIBGMT_DIST} 2>/dev/null
 cp ${LIBPSL} ${LIBPSL_DIST} 2>/dev/null
@@ -184,7 +181,6 @@ cp -rf bin examples lib scripts share test ${PKG}
 mkdir ${PKG}/execution
 cp packagers/mac/issm-executable_entitlements.plist ${PKG}/bin/entitlements.plist
 echo "Cleaning up unneeded/unwanted files"
-rm -f ${PKG}/bin/generic_static.* # Remove static versions of generic cluster classes
 rm -f ${PKG}/lib/*.a # Remove static libraries from package
 rm -f ${PKG}/lib/*.la # Remove libtool libraries from package
 rm -rf ${PKG}/test/SandBox # Remove testing sandbox from package
