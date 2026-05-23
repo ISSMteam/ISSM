@@ -29,7 +29,7 @@ else
 end
 
 %If we are using the generic cluster in interactive mode, job is already complete
-if (isa(cluster,'generic') & cluster.interactive) | isa(cluster,'generic_static')
+if (isa(cluster,'generic') & cluster.interactive)
 	%We are in interactive mode, no need to check for job completion
 	ispresent=1;
 	return;

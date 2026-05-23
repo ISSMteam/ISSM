@@ -2,7 +2,6 @@ import subprocess
 import sys
 import time
 from generic import *
-from generic_static import *
 # from localpfe import *
 from MatlabFuncs import *
 from pfe import *
@@ -40,7 +39,7 @@ def waitonlock(md):
         logfilename = '{}/{}/{}.outlog'.format(executionpath, md.private.runtimename, md.miscellaneous.name)
 
     # If we are using the generic cluster in interactive mode, job is already complete
-    if (isa(cluster, generic) and cluster.interactive) or (isa(cluster, generic_static)):
+    if (isa(cluster, generic) and cluster.interactive):
         # We are in interactive mode, no need to check for job completion
         return 1
 
