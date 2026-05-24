@@ -300,9 +300,7 @@ else
 		field = field*yts;
 	elseif strcmp(fieldname,'CalvingCalvingrate')
 		field = field*yts;
-	elseif strcmp(fieldname,'Calvingratex')
-		field = field*yts;
-	elseif strcmp(fieldname,'Calvingratey')
+	elseif strncmp(fieldname,'Calvingrate',11)
 		field = field*yts;
 	elseif strcmp(fieldname,'CalvingMeltingrate')
 		field = field*yts;

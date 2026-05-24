@@ -87,7 +87,7 @@ class generic(object):
         return md
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Unpack fields used below
         dirname         = md.private.runtimename

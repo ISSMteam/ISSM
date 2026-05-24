@@ -9,13 +9,28 @@ cluster=getfieldvalue(options,'cluster',generic('np',1));
 options=removefield(options,'cluster',0);
 name   = ['krig' num2str(feature('GetPid'))];
 
-if 1
+%Prepare directory in execution
+if strcmpi(cluster.name, oshostname())
+	localexecdir = cluster.executionpath;
+else
+	localexecdir = [issmdir() '/execution/'];
+end
+if ~exist(localexecdir, 'dir')
+	error(['Could not find directory ' issmdir() '/execution/']);
+elseif numel(dir(localexecdir))>200
+	warning([localexecdir ' has more than 200 subdirectories. Consider cleaning up your execution directory'])
+end
+root = [localexecdir '/' name];
+if exist(root, 'dir')
+	rmdir(root, 's');
+end
+mkdir(root);
+basename = [root '/' name];
+
 % =========================================   MARSHALL.m =================================================
 disp(['marshalling file ' name '.bin']);
-fid=fopen([name '.bin'],'wb');
-if fid==-1
-	error(['marshall error message: could not open ' name '.bin file for binary writing']);
-end
+fid=fopen([basename '.bin'],'wb');
+if(fid==-1) error(['marshall error message: could not open ' name '.bin file for binary writing']); end
 
 %Write all data
 WriteData(fid,'','name','md.x','data',x,'format','DoubleMat');
@@ -23,26 +38,22 @@ WriteData(fid,'','name','md.y','data',y,'format','DoubleMat');
 WriteData(fid,'','name','md.data','data',observations,'format','DoubleMat');
 WriteData(fid,'','name','md.x_interp','data',x_interp,'format','DoubleMat');
 WriteData(fid,'','name','md.y_interp','data',y_interp,'format','DoubleMat');
-
-%Now, write number of options
 options.marshall(fid);
-
-%Last, write "md.EOF" to make sure that the binary file is not corrupt
 WriteData(fid,'','name','md.EOF','data',true,'format','Boolean');
+fclose(fid);
 
 %Fake md as a place holder
 md=model; md.cluster=cluster; md.settings.waitonlock=Inf; md.private.runtimename=name;md.miscellaneous.name=name;
 
 %Launch job on remote cluster
-BuildKrigingQueueScript(cluster, md, [name '.queue']);
-UploadQueueJob(cluster,name,name,{[name '.bin'] [name '.queue']})
-LaunchQueueJob(cluster,name,name,{[name '.bin'] [name '.queue']},'',0);
+BuildQueueScript(cluster, md, [basename '.queue'], 'kriging.exe');
+UploadQueueJob(cluster,name,name,{[basename '.bin'] [basename '.queue']})
+LaunchQueueJob(cluster,name,name,{[basename '.bin'] [basename '.queue']},'',0);
 
 %Call waitonlock
 waitonlock(md);
 
 %Download
-end
 Download(cluster,name,{[name '.outbin']});
 structure=parseresultsfromdisk(md,[name '.outbin'],0);
 delete([name '.outlog']);

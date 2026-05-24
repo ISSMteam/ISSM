@@ -67,14 +67,10 @@ classdef discovery
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
          %checks
-			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+			if(md.debug.valgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(md.debug.gprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queueing script 
 			fid=fopen(filename, 'w');
@@ -102,21 +98,17 @@ classdef discovery
 			fclose(fid);
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
          %Get variables from md
          dirname         = md.private.runtimename;
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
          %checks
-			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+			if(md.debug.valgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(md.debug.gprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script
 			fid = fopen(filename, 'w');
@@ -139,7 +131,7 @@ classdef discovery
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath);
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');
 			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
-			fprintf(fid,'mpirun -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
+			fprintf(fid,'mpirun -n %i %s/%s %s %s %s\n',cluster.nprocs(), cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 			end
@@ -151,7 +143,7 @@ classdef discovery
 			%in interactive mode, create a run file, and errlog and outlog file
 			if cluster.interactive
 				fid=fopen([modelname '.run'],'w');
-				fprintf(fid,'mpirun -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
+				fprintf(fid,'mpirun -n %i %s/%s %s %s %s\n',cluster.nprocs(), cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 				if ~io_gather %concatenate the output files:
 					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 				end

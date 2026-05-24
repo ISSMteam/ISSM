@@ -83,7 +83,7 @@ classdef generic
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
 			% Unpack fields used below
 			dirname         = md.private.runtimename;

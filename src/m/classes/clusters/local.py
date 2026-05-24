@@ -59,7 +59,7 @@ class local(object):  # {{{
         return md
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Get variables from md
         dirname         = md.private.runtimename

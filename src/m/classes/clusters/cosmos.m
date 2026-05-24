@@ -45,21 +45,17 @@ classdef cosmos
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.np,cluster.time)
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
          %Get variables from md
          dirname         = md.private.runtimename;
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
          %checks
-			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+			if(md.debug.valgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(md.debug.gprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script
 			fid=fopen(filename, 'w');
@@ -75,7 +71,7 @@ classdef cosmos
 			fprintf(fid,'export OMP_NUM_THREADS=1\n');
 			fprintf(fid,'ulimit -s unlimited\n');
 			fprintf(fid,'ulimit -c 0\n');
-			fprintf(fid,'/opt/mpich/gm/intel10.1/bin/mpiexec -np %i %s/issm.exe %s %s %s',cluster.np,cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
+			fprintf(fid,'/opt/mpich/gm/intel10.1/bin/mpiexec -np %i %s/%s %s %s %s',cluster.np,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			fclose(fid);
 
 		end

@@ -29,6 +29,7 @@ function md=solve(md,solutionstring,varargin)
 %   Extra options:
 %   - loadonly         : do not solve, only load results
 %   - runtimename      : true or false (default is true); makes name unique
+%   - batch            : create input files but do not submit job
 %   - checkconsistency : 'yes' or 'no' (default is 'yes'); checks consistency of model
 %   - restart          : directory name (relative to the execution directory) 
 %                        where the restart file is located
@@ -138,17 +139,18 @@ if exist(root, 'dir')
 end
 mkdir(root);
 
-%if running QMU analysis, some preprocessing of Dakota files using model fields needs to be carried out.
+%Figure out executable
+executable = 'issm.exe';
 if md.qmu.isdakota
-	md=preqmu(md,options);
-	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
+	dakota_version_str = IssmConfig('_DAKOTA_VERSION_'); dakota_ver = str2num(dakota_version_str(1:3));
+	if(dakota_ver >= 6), executable = 'issm_dakota.exe'; end
 end
 
 %Write all input files
 basename = [root '/' md.miscellaneous.name];
-marshall(md, [basename '.bin']);                    % bin file
-ToolkitsFile(md.toolkits, [basename '.toolkits']);  % toolkits file
-BuildQueueScript(cluster, md, [basename '.queue']); % queue file
+marshall(md, [basename '.bin']);                               % bin file
+ToolkitsFile(md.toolkits, [basename '.toolkits']);             % toolkits file
+BuildQueueScript(cluster, md, [basename '.queue'], executable);% queue file
 
 %List all required files
 filelist  = {[basename '.bin'] [basename '.toolkits']};
@@ -158,6 +160,8 @@ else
 	filelist{end+1} = [basename '.queue'];
 end
 if md.qmu.isdakota
+	md=preqmu(md,options);
+	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 	filelist{end+1} = [basename '.qmu.in'];
 end
 if isprop(cluster, 'interactive') && cluster.interactive

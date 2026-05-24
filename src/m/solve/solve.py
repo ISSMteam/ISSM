@@ -3,6 +3,7 @@ import os
 import shutil
 import warnings
 
+from IssmConfig import IssmConfig
 from ismodelselfconsistent import ismodelselfconsistent
 from issmdir import issmdir
 from loadresultsfromcluster import loadresultsfromcluster
@@ -42,6 +43,7 @@ def solve(md, solutionstring, *args):
     Extra options:
     - loadonly         : do not solve, only load results
     - runtimename      : true or false (default is true); makes name unique
+%   - batch            : create input files but do not submit job
     - checkconsistency : 'yes' or 'no' (default is 'yes'); checks consistency 
                          of model
     - restart          : directory name (relative to the execution directory) 
@@ -142,11 +144,18 @@ def solve(md, solutionstring, *args):
         md = preqmu(md, options)
         os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
 
+    # Figure out executable
+    executable = 'issm.exe'
+    if md.qmu.isdakota:
+        dakota_ver = float(IssmConfig('_DAKOTA_VERSION_')[0:3])
+        if dakota_ver >= 6:
+            executable = 'issm_dakota.exe'
+
     # Write all input files
     basename = root + '/' + md.miscellaneous.name
     marshall(md, basename + '.bin')                   # bin file
     md.toolkits.ToolkitsFile(basename + '.toolkits')  # toolkits file
-    cluster.BuildQueueScript(md, basename + '.queue') # queue file
+    cluster.BuildQueueScript(md, basename + '.queue', executable) # queue file
 
     # List all required files
     filelist = [basename + '.bin', basename + '.toolkits']

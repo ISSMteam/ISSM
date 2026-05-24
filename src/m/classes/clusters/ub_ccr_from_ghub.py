@@ -90,29 +90,16 @@ class ub_ccr_from_ghub(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Get variables from md
         dirname         = md.private.runtimename
         modelname       = md.miscellaneous.name
         solution        = md.private.solution
         io_gather       = md.settings.io_gather
-        isvalgrind      = md.debug.valgrind
-        isgprof         = md.debug.gprof
-        isdakota        = md.qmu.isdakota
-        isoceancoupling = md.transient.isoceancoupling
 
-        if isgprof:
+        if md.debug.gprof:
             print('gprof not supported by cluster, ignoring...')
-
-        executable = 'issm.exe'
-        if isdakota:
-            version = IssmConfig('_DAKOTA_VERSION_')[0:2]
-            version = float(str(version[0]))
-            if version >= 6:
-                executable = 'issm_dakota.exe'
-        if isoceancoupling:
-            executable = 'issm_ocean.exe'
 
         # Write queuing script
         fid = open(filename, 'w')

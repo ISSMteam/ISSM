@@ -59,21 +59,17 @@ classdef aci
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
          %Get variables from md
          dirname         = md.private.runtimename;
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
 			%checks
-			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+			if(md.debug.valgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(md.debug.gprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
 			fid=fopen(filename, 'w');
@@ -87,7 +83,7 @@ classdef aci
 			for i=1:numel(cluster.modules)
 				fprintf(fid,'module load %s\n', cluster.modules{i});
 			end
-			fprintf(fid,'mpirun -np %i %s/issm.exe %s %s %s\n',cluster.nodes*cluster.ppn,cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
+			fprintf(fid,'mpirun -np %i %s/%s %s %s %s\n',cluster.nodes*cluster.ppn,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 			end

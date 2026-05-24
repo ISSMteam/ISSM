@@ -50,21 +50,17 @@ classdef acenet
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.np,cluster.time)
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
 			%Get variables from md
 			dirname         = md.private.runtimename;
 			modelname       = md.miscellaneous.name;
 			solution        = md.private.solution;
 			io_gather       = md.settings.io_gather;
-			isvalgrind      = md.debug.valgrind;
-			isgprof         = md.debug.gprof;
-			isdakota        = md.qmu.isdakota;
-			isoceancoupling = md.transient.isoceancoupling;
 
          %checks
-			if(isvalgrind) disp('valgrind not supported by cluster, ignoring...'); end
-			if(isgprof)    disp('gprof not supported by cluster, ignoring...'); end
+			if(md.debug.valgrind) disp('valgrind not supported by cluster, ignoring...'); end
+			if(md.debug.gprof)    disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script 
 			fid=fopen(filename, 'w');
@@ -107,8 +103,8 @@ classdef acenet
 			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
 			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
 			fprintf(fid,'\n');
-			fprintf(fid,'mpiexec %s/issm.exe %s %s %s 2> %s.errlog >%s.outlog\n',...
-					cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
+			fprintf(fid,'mpiexec %s/%s %s %s %s 2> %s.errlog >%s.outlog\n',...
+					cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname,modelname,modelname);
 			fclose(fid);
 		end
 		%}}}

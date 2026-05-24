@@ -73,19 +73,13 @@ class cyclone(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Get variables from md
         dirname         = md.private.runtimename
         modelname       = md.miscellaneous.name
         solution        = md.private.solution
         io_gather       = md.settings.io_gather
-        isvalgrind      = md.debug.valgrind
-        isgprof         = md.debug.gprof
-        isdakota        = md.qmu.isdakota
-        isoceancoupling = md.transient.isoceancoupling
-
-        executable = 'issm.exe'
 
         # Write queuing script
         fid = open(filename, 'w')

@@ -94,26 +94,13 @@ class saga(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Get variables from md
         dirname         = md.private.runtimename
         modelname       = md.miscellaneous.name
         solution        = md.private.solution
         io_gather       = md.settings.io_gather
-        isvalgrind      = md.debug.valgrind
-        isgprof         = md.debug.gprof
-        isdakota        = md.qmu.isdakota
-        isoceancoupling = md.transient.isoceancoupling
-
-        executable = 'issm.exe'
-        if isdakota:
-            version = IssmConfig('_DAKOTA_VERSION_')[0:2]
-            version = float(version)
-            if version >= 6:
-                executable = 'issm_dakota.exe'
-        if isoceancoupling:
-            executable = 'issm_ocean.exe'
         # Write queuing script
         shortname = modelname[0:min(12, len(modelname))]
         timeobj = datetime.timedelta(minutes=self.time)
@@ -145,11 +132,11 @@ class saga(object):
         fid.write('module load CMake/3.15.3-GCCcore-8.3.0\n')
         fid.write('module load PETSc/3.12.4-foss-2019b\n')
         fid.write('module load ParMETIS/4.0.3-gompi-2019b\n')
-        if isvalgrind:
+        if md.debug.valgrind:
             fid.write('module --ignore-cache load Valgrind/3.16.1-gompi-2019b \n')
 
         fid.write('cd %s/%s/ \n\n' % (self.executionpath, dirname))
-        if isvalgrind:
+        if md.debug.valgrind:
             # profiling
             #fid.write('srun {} --tool=callgrind {}/{} {} {}/{} {} 2>{}.errlog>{}.outlog \n'.format(self.valgrind, self.codepath, executable, solution, self.executionpath, dirname, modelname, modelname, modelname))
             # leak check

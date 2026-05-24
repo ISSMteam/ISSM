@@ -47,24 +47,20 @@ classdef cloud
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
          %Get variables from md
          dirname         = md.private.runtimename;
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script 
 			fid=fopen(filename, 'w');
 			fprintf(fid,'#!/bin/bash\n');
 			fprintf(fid,'source %s%s\n',cluster.codepath,'/../etc/environment.sh');
 			fprintf(fid,'cd %s\n',[cluster.executionpath '/' dirname]);
-			fprintf(fid,'mpiexec -np %i -f /home/mpich2.hosts %s/issm.exe %s %s/%s %s 2> %s.errlog > /dev/stdout | tee %s.outlog',cluster.np,cluster.codepath,solution,cluster.executionpath,dirname,modelname,modelname,modelname);
+			fprintf(fid,'mpiexec -np %i -f /home/mpich2.hosts %s/%s %s %s/%s %s 2> %s.errlog > /dev/stdout | tee %s.outlog',cluster.np,cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname,modelname,modelname);
 		end
 		%}}}
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{

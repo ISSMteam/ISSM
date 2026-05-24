@@ -113,29 +113,16 @@ class discover(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
 
         # Get variables from md
         dirname         = md.private.runtimename
         modelname       = md.miscellaneous.name
         solution        = md.private.solution
         io_gather       = md.settings.io_gather
-        isvalgrind      = md.debug.valgrind
-        isgprof         = md.debug.gprof
-        isdakota        = md.qmu.isdakota
-        isoceancoupling = md.transient.isoceancoupling
 
-        if isgprof:
+        if md.debug.gprof:
             print('gprof not supported by cluster, ignoring...')
-
-        executable = 'issm.exe'
-        if isdakota:
-            version = IssmConfig('_DAKOTA_VERSION_')[0:2]
-            version = float(str(version[0]))
-            if version >= 6:
-                executable = 'issm_dakota.exe'
-        if isoceancoupling:
-            executable = 'issm_ocean.exe'
 
         # Write queuing script
         fid = open(filename, 'w')
@@ -170,7 +157,7 @@ class discover(object):
         # In interactive mode, create a run file, and errlog and outlog file
         if self.interactive:
             fid = open(modelname + '.run', 'w')
-            if not isvalgrind:
+            if not md.debug.valgrind:
                 fid.write('mpiexec -np {} {}/{} {} {}/{} {}\n'.format(self.nprocs(), self.codepath, executable, solution, self.executionpath, dirname, modelname))
             else:
                 fid.write('mpiexec -np {} valgrind --leak-check=full {}/{} {} {}/{} {}\n'.format(self.nprocs(), self.codepath, executable, solution, self.executionpath, dirname, modelname))

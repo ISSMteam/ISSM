@@ -122,7 +122,7 @@ class gadi(object):
         return self
     # }}}
 
-    def BuildQueueScript(self, md, filename):  # {{{
+    def BuildQueueScript(self, md, filename, executable):  # {{{
         """
         Create a PBS script for Gadi. 
         Gadi typically uses #PBS lines like:
@@ -138,23 +138,9 @@ class gadi(object):
         modelname       = md.miscellaneous.name
         solution        = md.private.solution
         io_gather       = md.settings.io_gather
-        isvalgrind      = md.debug.valgrind
-        isgprof         = md.debug.gprof
-        isdakota        = md.qmu.isdakota
-        isoceancoupling = md.transient.isoceancoupling
 
-        if isgprof:
+        if md.debug.gprof:
             print('gprof not typically used on Gadi via this script, ignoring...')
-
-        executable = 'issm.exe'
-        if isdakota:
-            version_str = IssmConfig('_DAKOTA_VERSION_')
-            # e.g. "6.14"
-            version_float = float(version_str[0:3])
-            if version_float >= 6.0:
-                executable = 'issm_dakota.exe'
-        if isoceancoupling:
-            executable = 'issm_ocean.exe'
 
         # Convert self.time (minutes) to hh:mm:ss
         hours   = self.time // 60
@@ -191,7 +177,7 @@ class gadi(object):
         fid.write('\n# Now launch the job:\n')
         
 
-        if not isvalgrind:
+        if not md.debug.valgrind:
             fid.write('mpiexec -n {} {}/{} {} {}/{} {}\n'.format(
                 self.nprocs(), self.codepath, executable,
                 solution, self.executionpath, dirname, modelname))

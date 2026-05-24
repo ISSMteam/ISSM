@@ -55,15 +55,13 @@ classdef unity
 			if isempty(cluster.executionpath), md = checkmessage(md,'executionpath empty'); end
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
          %Get variables from md
          dirname         = md.private.runtimename;
          modelname       = md.miscellaneous.name;
          solution        = md.private.solution;
          io_gather       = md.settings.io_gather;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
 
 			%write queuing script
 			fid=fopen(filename, 'w');
@@ -82,7 +80,7 @@ classdef unity
 			end
 			fprintf(fid,'\n');
 			fprintf(fid,'module load intel-oneapi-compilers/2024.1.0 intel-oneapi-mpi/2021.12.1 petsc/3.22.1\n');
-			fprintf(fid,'mpiexec -n %i %s/issm.exe %s %s %s\n',cluster.nprocs(), cluster.codepath,solution,[cluster.executionpath '/' dirname],modelname);
+			fprintf(fid,'mpiexec -n %i %s/%s %s %s %s\n',cluster.nprocs(), cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
 			end

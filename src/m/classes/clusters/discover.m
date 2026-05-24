@@ -94,31 +94,17 @@ classdef discover
 
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename) % {{{
+		function BuildQueueScript(cluster, md, filename, executable) % {{{
 
-         %Get variables from md
-         dirname         = md.private.runtimename;
-         modelname       = md.miscellaneous.name;
-         solution        = md.private.solution;
-         io_gather       = md.settings.io_gather;
-         isvalgrind      = md.debug.valgrind;
-         isgprof         = md.debug.gprof;
-         isdakota        = md.qmu.isdakota;
-         isoceancoupling = md.transient.isoceancoupling;
+			%Get variables from md
+			dirname    = md.private.runtimename;
+			modelname  = md.miscellaneous.name;
+			solution   = md.private.solution;
+			io_gather  = md.settings.io_gather;
+			isvalgrind = md.debug.valgrind;
 
-         %checks
-			if(isgprof) disp('gprof not supported by cluster, ignoring...'); end
-
-			executable='issm.exe';
-			if isdakota
-				version=IssmConfig('_DAKOTA_VERSION_'); version=str2num(version(1:3));
-				if (version>=6)
-					executable='issm_dakota.exe';
-				end
-			end
-			if isoceancoupling
-				executable='issm_ocean.exe';
-			end
+			%checks
+			if(md.debug.gprof) disp('gprof not supported by cluster, ignoring...'); end
 
 			%write queuing script
 			fid=fopen(filename, 'w');

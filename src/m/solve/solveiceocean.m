@@ -84,7 +84,7 @@ end
 %Write all input files
 marshall(md);                                          % bin file
 ToolkitsFile(md.toolkits,[md.miscellaneous.name '.toolkits']); % toolkits file
-BuildQueueScriptIceOcean(cluster,md.private.runtimename,md.miscellaneous.name,md.private.solution,md.settings.io_gather,md.debug.valgrind,md.debug.gprof,md.qmu.isdakota); % queue file
+BuildQueueScript(cluster, md, [md.miscellaneous.name '.queue'], 'issm_ocean.exe'); % queue file
 
 %Upload all required files
 modelname = md.miscellaneous.name;
