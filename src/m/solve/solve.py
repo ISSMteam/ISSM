@@ -138,15 +138,11 @@ def solve(md, solutionstring, *args):
         shutil.rmtree(root)
     os.mkdir(root)
 
-    # If running QMU analysis, some preprocessing of Dakota files using model
-    # fields needs to be carried out
-    if md.qmu.isdakota:
-        md = preqmu(md, options)
-        os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
-
     # Figure out executable
     executable = 'issm.exe'
     if md.qmu.isdakota:
+        md = preqmu(md, options)
+        os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
         dakota_ver = float(IssmConfig('_DAKOTA_VERSION_')[0:3])
         if dakota_ver >= 6:
             executable = 'issm_dakota.exe'

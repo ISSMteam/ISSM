@@ -142,6 +142,8 @@ mkdir(root);
 %Figure out executable
 executable = 'issm.exe';
 if md.qmu.isdakota
+	md=preqmu(md,options);
+	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 	dakota_version_str = IssmConfig('_DAKOTA_VERSION_'); dakota_ver = str2num(dakota_version_str(1:3));
 	if(dakota_ver >= 6), executable = 'issm_dakota.exe'; end
 end
@@ -160,8 +162,6 @@ else
 	filelist{end+1} = [basename '.queue'];
 end
 if md.qmu.isdakota
-	md=preqmu(md,options);
-	movefile([md.miscellaneous.name '.qmu.in'], [root '/' md.miscellaneous.name '.qmu.in']);
 	filelist{end+1} = [basename '.qmu.in'];
 end
 if isprop(cluster, 'interactive') && cluster.interactive
