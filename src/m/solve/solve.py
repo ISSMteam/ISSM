@@ -143,9 +143,7 @@ def solve(md, solutionstring, *args):
     if md.qmu.isdakota:
         md = preqmu(md, options)
         os.rename(md.miscellaneous.name + '.qmu.in', root + '/' + md.miscellaneous.name + '.qmu.in')
-        version_str = IssmConfig('_DAKOTA_VERSION_')
-        dakota_ver = float(version_str[0:3])
-        if dakota_ver >= 6:
+        if float(IssmConfig('_DAKOTA_VERSION_')[0]) >= 6:
             executable = 'issm_dakota.exe'
 
     # Write all input files
