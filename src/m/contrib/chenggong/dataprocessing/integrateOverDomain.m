@@ -13,8 +13,8 @@ end
 
 masked = masked | isnan(data) | isnan(weights);
 % Set the area with masked=1 to nan
-data(masked) = nan;
-weights(masked) =nan;
+data(masked) = 0;
+weights(masked) =0;
 
 
 % get the mesh

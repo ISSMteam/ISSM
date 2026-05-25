@@ -43,6 +43,7 @@ t = t(idt_min:idt_max);
 
 % load dH
 data = ncread(ncdata, 'dhdt_vol', [idx_min, idy_min, idt_min], [idx_max-idx_min+1, idy_max-idy_min+1, idt_max-idt_min+1], [1,1,1]);
+data(data <= -9999) = nan;
 
 % Convert to ice_levelset values
 dH = zeros(numel(X)+1, numel(t));
@@ -50,3 +51,9 @@ dH(end,:) = t;
 for i = 1:numel(t)
 	dH(1:end-1, i) = InterpFromGrid(x, y, data(:,:,i)', X, Y,'nearest');
 end
+
+% crop anything outside the data domain
+pos = find(X>max(x) | (X<min(x)));
+dH(pos, :) = nan;
+pos = find(Y>max(y) | (Y<min(y)));
+dH(pos, :) = nan;
