@@ -1,20 +1,24 @@
-function output = interpRignotIceShelfMelt(X,Y,string)
+function output = interpRignotIceShelfMelt(X,Y,string,ncdata)
 %INTERPRIGNOTICESHELFMELT - interp melt rates from Rignot et al. 2013
 %
 %   Usage:
 %      output = interpRignotIceShelfMelt(X,Y)
 
-switch (oshostname())
-	case {'ronne'}
-		rignotmelt='/home/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
-	case {'totten'}
-		rignotmelt='/totten_1/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
-	case {'amundsen.thayer.dartmouth.edu'}
-		rignotmelt='/local/ModelData/AntarcticMeltRignot/Ant_MeltingRate.nc';
-	case {'thwaites','larsen','murdo','astrid','wilkins.jpl.nasa.gov'}
-		rignotmelt=['/u/astrid-r1b/ModelData/RignotAntarcticaMeltRates/Ant_MeltingRate.v2.nc'];
-	otherwise
-		error('hostname not supported yet');
+if nargin < 4
+	switch (oshostname())
+		case {'ronne'}
+			rignotmelt='/home/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
+		case {'totten'}
+			rignotmelt='/totten_1/ModelData/Antarctica/RignotMeltingrate/Ant_MeltingRate.nc';
+		case {'amundsen.thayer.dartmouth.edu'}
+			rignotmelt='/local/ModelData/AntarcticMeltRignot/Ant_MeltingRate.nc';
+		case {'thwaites','larsen','murdo','astrid','wilkins.jpl.nasa.gov'}
+			rignotmelt=['/u/astrid-r1b/ModelData/RignotAntarcticaMeltRates/Ant_MeltingRate.v2.nc'];
+		otherwise
+			error('hostname not supported yet');
+	end
+else
+	rignotmelt = ncdata;
 end
 
 if nargin==2

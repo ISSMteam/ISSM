@@ -1,15 +1,19 @@
-function [vxout vyout]= interpMouginotAnt2017(X,Y),
+function [vxout vyout]= interpMouginotAnt2017(X,Y,ncdata),
 
 %read data
-switch (oshostname()),
-	case {'ronne'}
-		nc = '/home/ModelData/Antarctica/MouginotVel/vel_nsidc.CF16_2.nc';
-	case {'totten'}
-		nc = '/totten_1/ModelData/Antarctica/MouginotVel/vel_nsidc.CF16_2.nc';
-	case {'amundsen.thayer.dartmouth.edu'}
-		nc = '/local/ModelData/AntarcticVelocity/v_mix.v13Mar2019.nc';
-	otherwise
-		error('hostname not supported yet');
+if nargin < 3
+	switch (oshostname()),
+		case {'ronne'}
+			nc = '/home/ModelData/Antarctica/MouginotVel/vel_nsidc.CF16_2.nc';
+		case {'totten'}
+			nc = '/totten_1/ModelData/Antarctica/MouginotVel/vel_nsidc.CF16_2.nc';
+		case {'amundsen.thayer.dartmouth.edu'}
+			nc = '/local/ModelData/AntarcticVelocity/v_mix.v13Mar2019.nc';
+		otherwise
+			error('hostname not supported yet');
+	end
+else
+	nc = ncdata;
 end
 
 xdata = double(ncread(nc,'x'));
