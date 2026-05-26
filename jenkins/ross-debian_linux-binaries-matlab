@@ -34,7 +34,6 @@ ISSM_CONFIG='\
 	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
 	--with-proj-dir=${ISSM_DIR}/externalpackages/proj/install \
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
-	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
 '
 #-------------------#
 # External Packages #
@@ -56,7 +55,6 @@ EXTERNALPACKAGES="
 	gmt			install-6-linux-static.sh
 	gmsh		install-4-linux-static.sh
 	triangle	install-linux-static.sh
-	semic		install.sh
 	shell2junit	install.sh
 "
 

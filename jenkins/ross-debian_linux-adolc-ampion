@@ -29,7 +29,6 @@ ISSM_CONFIG='\
 	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
 	--with-gsl-dir=${ISSM_DIR}/externalpackages/gsl/install \
 	--with-adolc-dir=${ISSM_DIR}/externalpackages/adolc/install \
-	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
 '
 
 #-------------------#
@@ -48,7 +47,6 @@ EXTERNALPACKAGES="
 	triangle		install-linux.sh
 	adjoinablempi	install-linux.sh
 	adolc			install-with_ampi.sh
-	semic			install.sh
 	shell2junit		install.sh
 "
 

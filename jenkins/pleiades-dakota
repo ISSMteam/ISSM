@@ -28,7 +28,6 @@ ISSM_CONFIG='\
 	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
 #-------------------#
@@ -41,7 +40,6 @@ EXTERNALPACKAGES="
 	dakota		install-6.2-pleiades.sh
 	chaco		install-linux.sh
 	triangle	install-linux.sh
-	semic		install.sh
 "
 
 #---------#

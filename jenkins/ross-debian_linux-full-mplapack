@@ -27,7 +27,7 @@ ISSM_CONFIG='\
 	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
 	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
 	--with-proj-dir="${ISSM_DIR}/externalpackages/proj/install" \
-	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \	--with-semic-dir=${ISSM_DIR}/externalpackages/semic/install \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 '
 
 #-------------------#
@@ -51,7 +51,6 @@ EXTERNALPACKAGES="
 	gmt			install-6-linux.sh
 	gmsh		install-4-linux.sh
 	triangle	install-linux.sh
-	semic		install.sh
 	shell2junit	install.sh
 "
 

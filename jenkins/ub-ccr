@@ -21,7 +21,6 @@ ISSM_CONFIG='\
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-proj-dir="${ISSM_DIR}/externalpackages/proj/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
-	--with-semic-dir="${ISSM_DIR}/externalpackages/semic/install" \
 '
 
 #-------------------#
@@ -35,7 +34,6 @@ EXTERNALPACKAGES="
 	proj			install-6.sh
 	gdal			install-3-linux-python.sh
 	triangle		install-linux.sh
-	semic			install.sh
 	shell2junit		install.sh
 "
 
