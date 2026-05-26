@@ -814,14 +814,12 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			SmbGradientsComponentsx(femmodel);
 			break;
 		case SMBsemicEnum:
-			#ifdef _HAVE_SEMIC_
 			if(VerboseSolution())_printf0_("   call smb SEMIC module\n");
-			int ismethod;
-			femmodel->parameters->FindParam(&ismethod,SmbSemicMethodEnum);
-			SmbSemicx(femmodel,ismethod);
-			#else
-			_error_("SEMIC not installed");
-			#endif //_HAVE_SEMIC_
+			{
+				int ismethod;
+				femmodel->parameters->FindParam(&ismethod,SmbSemicMethodEnum);
+				SmbSemicx(femmodel,ismethod);
+			}
 			break;
 		case SMBdebrisEvattEnum:
 			if(VerboseSolution())_printf0_("        call smb Evatt debris module\n");

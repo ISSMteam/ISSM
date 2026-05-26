@@ -170,6 +170,7 @@ issm_sources += \
 	./shared/Numerics/Interpolation.cpp \
 	./shared/Exceptions/Exceptions.cpp \
 	./shared/Sorting/binary_search.cpp \
+	./shared/Semic/Semic.cpp \
 	./shared/Elements/Cuffey.cpp \
 	./shared/Elements/BuddJacka.cpp \
 	./shared/Elements/CuffeyTemperate.cpp \
@@ -632,14 +633,6 @@ endif
 # Esmf sources {{{
 if ESMF
 issm_sources += ./main/esmfbinders.cpp
-endif
-#}}}
-# SEMIC sources {{{
-if SEMIC
-if FORTRAN
-issm_sources += ./modules/SurfaceMassBalancex/run_semic.f90
-issm_sources += ./modules/SurfaceMassBalancex/run_semic_transient.f90
-endif
 endif
 #}}}
 # Wrapper sources

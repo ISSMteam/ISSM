@@ -25,26 +25,6 @@
 /*}}}*/
 #define MAXVERTICES 6 /*Maximum number of vertices per element, currently Penta, to avoid dynamic mem allocation*/
 
-#ifdef _HAVE_SEMIC_
-/* SEMIC prototype {{{*/
-extern "C" void run_semic_(IssmDouble *sf_in, IssmDouble *rf_in, IssmDouble *swd_in, IssmDouble *lwd_in, IssmDouble *wind_in, IssmDouble *sp_in, IssmDouble *rhoa_in,
-			IssmDouble *qq_in, IssmDouble *tt_in, IssmDouble *tsurf_out, IssmDouble *smb_out, IssmDouble *saccu_out, IssmDouble *smelt_out);
-
-extern "C" void run_semic_transient_(int *nx, int *ntime, int *nloop, 
-			IssmDouble *sf_in, IssmDouble *rf_in, IssmDouble *swd_in, 
-			IssmDouble *lwd_in, IssmDouble *wind_in, IssmDouble *sp_in, IssmDouble *rhoa_in,
-			IssmDouble *qq_in, IssmDouble *tt_in, IssmDouble *tsurf_in, IssmDouble *qmr_in,
-			IssmDouble *tstic,
-			IssmDouble *hcrit, IssmDouble *rcrit,
-			IssmDouble *mask, IssmDouble *hice, IssmDouble *hsnow,
-			IssmDouble *albedo_in, IssmDouble *albedo_snow_in,
-			int *alb_scheme, IssmDouble *alb_smax, IssmDouble *alb_smin, IssmDouble *albi, IssmDouble *albl,
-			IssmDouble *Tamp, 
-			IssmDouble *tmin, IssmDouble *tmax, IssmDouble *tmid, IssmDouble *mcrit, IssmDouble *wcrit, IssmDouble *tau_a, IssmDouble* tau_f, IssmDouble *afac, bool *verbose,
-			IssmDouble *tsurf_out, IssmDouble *smb_out, IssmDouble *smbi_out, IssmDouble *smbs_out, IssmDouble *saccu_out, IssmDouble *smelt_out, IssmDouble *refr_out, IssmDouble *albedo_out, IssmDouble *albedo_snow_out, IssmDouble *hsnow_out, IssmDouble *hice_out, IssmDouble *qmr_out, IssmDouble *runoff_out, IssmDouble *subl_out);
-#endif
-// _HAVE_SEMIC_
-/*}}}*/
 /*Constructors/destructor/copy*/
 Element::Element(){/*{{{*/
 	this->id  = -1;
@@ -4908,7 +4888,6 @@ void       Element::SetwiseNodeConnectivity(int* pd_nz,int* po_nz,Node* node,boo
 	*po_nz=o_nz;
 }
 /*}}}*/
-#ifdef _HAVE_SEMIC_
 void       Element::SmbSemic(){/*{{{*/
 
 	/*only compute SMB at the surface: */
@@ -5003,10 +4982,10 @@ void       Element::SmbSemic(){/*{{{*/
 	}
 
 	for (int iv = 0; iv<NUM_VERTICES; iv++){
-		/* call semic */
-		run_semic_(&dailysnowfall[iv*365], &dailyrainfall[iv*365], &dailydsradiation[iv*365], &dailydlradiation[iv*365],
-					&dailywindspeed[iv*365], &dailypressure[iv*365], &dailyairdensity[iv*365], &dailyairhumidity[iv*365], &dailytemperature[iv*365],
-					&tsurf_out[iv], &smb_out[iv], &saccu_out[iv], &smelt_out[iv]);
+		/* call semic (C++ implementation) */
+		RunSemic(&dailysnowfall[iv*365], &dailyrainfall[iv*365], &dailydsradiation[iv*365], &dailydlradiation[iv*365],
+		         &dailywindspeed[iv*365], &dailypressure[iv*365], &dailyairdensity[iv*365], &dailyairhumidity[iv*365], &dailytemperature[iv*365],
+		         tsurf_out[iv], smb_out[iv], saccu_out[iv], smelt_out[iv]);
 	}
 
 	switch(this->ObjectEnum()){
@@ -5267,20 +5246,21 @@ void       Element::SmbSemicTransient(){/*{{{*/
 		_printf0_("smb core: assign qmr             :" << qmr_in[0]  << "\n");
 	}
 
-	if(isverbose && this->Sid()==0)_printf0_("smb core: call run_semic_transient module.\n");
-	/* call semic */
+	if(isverbose && this->Sid()==0)_printf0_("smb core: call RunSemicTransient (C++).\n");
+	/* call semic (C++ implementation) */
 	int nx=NUM_VERTICES, ntime=1, nloop=1;
 	bool semic_verbose=false; //VerboseSmb();
-	run_semic_transient_(&nx, &ntime, &nloop,
+	RunSemicTransient(nx, ntime, nloop,
 			dailysnowfall,  dailyrainfall, dailydsradiation, dailydlradiation,
-			dailywindspeed, dailypressure, dailyairdensity,  dailyairhumidity, dailytemperature, tsurf_in, qmr_in, 
-			&dt,
-			&hcrit, &rcrit, 
-			mask_in, hice_in, hsnow_in, 
+			dailywindspeed, dailypressure, dailyairdensity,  dailyairhumidity, dailytemperature, tsurf_in, qmr_in,
+			dt,
+			hcrit, rcrit,
+			mask_in, hice_in, hsnow_in,
 			albedo_in, albedo_snow_in,
-			&alb_scheme, &alb_smax, &alb_smin, &albi, &albl,
+			alb_scheme, alb_smax, alb_smin, albi, albl,
 			Tamp_in,
-			&tmin, &tmax, &tmid, &mcrit, &wcrit, &tau_a, &tau_f, &afac, &semic_verbose,
+			tmin, tmax, tmid, mcrit, wcrit, tau_a, tau_f, afac,
+			semic_verbose,
 			tsurf_out, smb_out, smbi_out, smbs_out, saccu_out, smelt_out, refr_out, albedo_out, albedo_snow_out, hsnow_out, hice_out, qmr_out, runoff_out, subl_out);
 
 	for (int iv = 0; iv<NUM_VERTICES; iv++){
@@ -5383,7 +5363,6 @@ void       Element::SmbSemicTransient(){/*{{{*/
 	/*}}}*/
 }
 /*}}}*/
-#endif // _HAVE_SEMIC_
 int        Element::Sid(){/*{{{*/
 
 	return this->sid;

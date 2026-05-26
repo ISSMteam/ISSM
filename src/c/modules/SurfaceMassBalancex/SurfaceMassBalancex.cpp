@@ -764,7 +764,6 @@ void SmbGradientsComponentsx(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
-#ifdef _HAVE_SEMIC_
 void SmbSemicx(FemModel* femmodel,int ismethod){/*{{{*/
 
 	for(Object* & object : femmodel->elements->objects){
@@ -774,6 +773,3 @@ void SmbSemicx(FemModel* femmodel,int ismethod){/*{{{*/
 	}
 
 }/*}}}*/
-#else
-void SmbSemicx(FemModel* femmodel){_error_("SEMIC not installed");}
-#endif //_HAVE_SEMIC_

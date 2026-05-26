@@ -15,6 +15,7 @@
 #include "./Exp/exp.h"
 #include "./Matrix/matrix.h"
 #include "./Numerics/numerics.h"
+#include "./Semic/Semic.h"
 #include "./Sorting/sorting.h"
 #include "./String/sharedstring.h"
 #include "./Threads/issm_threads.h"
