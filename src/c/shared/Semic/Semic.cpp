@@ -14,6 +14,7 @@
 #include "./Semic.h"
 #include "../io/Print/Print.h"
 #include "../Exceptions/exceptions.h"
+#include "../Numerics/recast.h"
 
 #include <algorithm>   /* std::min, std::max                    */
 #include <cmath>       /* exp, log, sqrt, tanh, acos, fabs ...  */
@@ -674,7 +675,7 @@ void RunSemicTransient(int nx, int ntime, int nloop,
 
 	/* Initialise from inputs */
 	for (int i = 0; i < nx; i++) {
-		now.mask    [i] = static_cast<int>(mask[i]);
+		now.mask    [i] = reCast<int,IssmDouble>(mask[i]);
 		now.hsnow   [i] = hsnow   [i];
 		now.hice    [i] = hice    [i];
 		now.tsurf   [i] = tsurf_in[i];
