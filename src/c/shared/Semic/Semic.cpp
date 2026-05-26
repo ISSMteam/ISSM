@@ -17,6 +17,7 @@
 
 #include <algorithm>   /* std::min, std::max                    */
 #include <cmath>       /* exp, log, sqrt, tanh, acos, fabs ...  */
+#include <limits>      /* machine epsilon*/
 #include <cstring>     /* memset                                 */
 #include <stdexcept>
 #include <string>
