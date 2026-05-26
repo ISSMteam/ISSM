@@ -21,7 +21,6 @@ External packages must be installed before configuring ISSM. The minimum require
 
 ```sh
 cd $ISSM_DIR/externalpackages/triangle && ./install-linux.sh    # or install-mac.sh
-cd $ISSM_DIR/externalpackages/m1qn3    && ./install-linux.sh
 cd $ISSM_DIR/externalpackages/petsc    && ./install-3.22-linux.sh
 ```
 
@@ -35,7 +34,7 @@ make -j$(nproc)
 make install
 ```
 
-Key `configure` flags: `--prefix=$ISSM_DIR`, `--with-matlab-dir`, `--with-python`, `--with-petsc-dir`, `--with-triangle-dir`, `--with-m1qn3-dir`, `--enable-debugging`.
+Key `configure` flags: `--prefix=$ISSM_DIR`, `--with-matlab-dir`, `--with-python`, `--with-petsc-dir`, `--with-triangle-dir`, `--enable-debugging`.
 
 ## Running Tests
 
@@ -109,7 +108,6 @@ Glue code that compiles C++ modules as shared libraries loadable from MATLAB (`*
 Each subdirectory has its own `install-linux.sh` / `install-mac.sh` / etc. ISSM only needs a handful of external packages installed depending on the desired configuration. The key dependencies are: 
 - **PETSc** (includes MPI/MPICH, BLAS/LAPACK, MUMPS, METIS/ParMETIS, ScaLAPACK)
 - **Triangle** (mesh generation),
-- **m1qn3** (L-BFGS optimizer for inversions).
 
 Some optional packages that can be useful depending on the application:
 - **Dakota** (UQ/sampling)
@@ -119,7 +117,6 @@ Some optional packages that can be useful depending on the application:
 - **Boost** (C++ utilities)
 - **GSL** (GNU Scientific Library)
 - **Gmsh** (alternative mesh generation)
-- **SEMIC** (surface energy/mass balance coupling)
 - **ESMF** (Earth System Modeling Framework coupling)
 
 ### Path setup for interfaces
