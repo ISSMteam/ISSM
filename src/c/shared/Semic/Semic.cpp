@@ -30,52 +30,52 @@ using namespace semic_const;
 /* ======================================================================== */
 
 /* Saturation water-vapour pressure over water (Magnus formula) */
-static inline double ew_sat(double t) {
+static inline IssmDouble ew_sat(IssmDouble t) {
 	return 611.2 * std::exp(17.62 * (t - t0) / (243.12 + t - t0));
 }
 
 /* Saturation water-vapour pressure over ice */
-static inline double ei_sat(double t) {
+static inline IssmDouble ei_sat(IssmDouble t) {
 	return 611.2 * std::exp(22.46 * (t - t0) / (272.62 + t - t0));
 }
 
 /* ---------------------------------------------------------------------- */
-double semic_sensible_heat_flux(double ts, double ta, double wind,
-                                double rhoatm, double csh, double cap_air)
+IssmDouble semic_sensible_heat_flux(IssmDouble ts, IssmDouble ta, IssmDouble wind,
+                                IssmDouble rhoatm, IssmDouble csh, IssmDouble cap_air)
 {
 	return csh * cap_air * rhoatm * wind * (ts - ta);
 }
 
 /* ---------------------------------------------------------------------- */
-void semic_latent_heat_flux(double ts, double wind, double shum, double sp,
-                            double rhoatm, int mask, double clh,
-                            double& lhf, double& subl, double& evap)
+void semic_latent_heat_flux(IssmDouble ts, IssmDouble wind, IssmDouble shum, IssmDouble sp,
+                            IssmDouble rhoatm, int mask, IssmDouble clh,
+                            IssmDouble& lhf, IssmDouble& subl, IssmDouble& evap)
 {
 	subl = 0.0;
 	evap = 0.0;
 	lhf  = 0.0;
 	if (ts < t0) {
-		double esat_sur = ei_sat(ts);
-		double shum_sat = esat_sur * eps / (esat_sur * (eps - 1.0) + sp);
+		IssmDouble esat_sur = ei_sat(ts);
+		IssmDouble shum_sat = esat_sur * eps / (esat_sur * (eps - 1.0) + sp);
 		subl = clh * wind * rhoatm * (shum_sat - shum);
 		lhf  = subl * cls;
 	} else {
-		double esat_sur = ew_sat(ts);
-		double shum_sat = esat_sur * eps / (esat_sur * (eps - 1.0) + sp);
+		IssmDouble esat_sur = ew_sat(ts);
+		IssmDouble shum_sat = esat_sur * eps / (esat_sur * (eps - 1.0) + sp);
 		evap = clh * wind * rhoatm * (shum_sat - shum);
 		lhf  = evap * clv;
 	}
 }
 
 /* ---------------------------------------------------------------------- */
-double semic_longwave_upward(double ts) {
+IssmDouble semic_longwave_upward(IssmDouble ts) {
 	return sigm * ts * ts * ts * ts;
 }
 
 /* ---------------------------------------------------------------------- */
-void semic_diurnal_cycle(double amp, double tmean, double& above, double& below)
+void semic_diurnal_cycle(IssmDouble amp, IssmDouble tmean, IssmDouble& above, IssmDouble& below)
 {
-	double tmp1 = 0.0, tmp2 = 0.0;
+	IssmDouble tmp1 = 0.0, tmp2 = 0.0;
 	if (std::fabs(tmean / amp) < 1.0) {
 		tmp1 = std::acos(tmean / amp);
 		tmp2 = std::sqrt(1.0 - tmean * tmean / (amp * amp));
@@ -97,13 +97,13 @@ void semic_diurnal_cycle(double amp, double tmean, double& above, double& below)
 /*  Albedo schemes                                                          */
 /* ---------------------------------------------------------------------- */
 
-double semic_albedo_slater(double alb_snow, double tsurf, double tmin,
-                           double tmax, double alb_smax, double alb_smin)
+IssmDouble semic_albedo_slater(IssmDouble alb_snow, IssmDouble tsurf, IssmDouble tmin,
+                           IssmDouble tmax, IssmDouble alb_smax, IssmDouble alb_smin)
 {
 	(void)alb_snow; /* the Fortran subroutine ignores the input alb_snow   */
 	(void)tmax;     /* tmax is not actually used inside the formulation    */
-	double tm = 0.0;
-	double f  = 1.0 / (t0 - tmin);
+	IssmDouble tm = 0.0;
+	IssmDouble f  = 1.0 / (t0 - tmin);
 	if (tsurf >= tmin && tsurf <= t0)
 		tm = f * (tsurf - tmin);
 	if (tsurf > t0)
@@ -111,27 +111,27 @@ double semic_albedo_slater(double alb_snow, double tsurf, double tmin,
 	return alb_smax - (alb_smax - alb_smin) * tm * tm * tm;
 }
 
-double semic_albedo_denby(double melt, double alb_smax,
-                          double alb_smin, double mcrit)
+IssmDouble semic_albedo_denby(IssmDouble melt, IssmDouble alb_smax,
+                          IssmDouble alb_smin, IssmDouble mcrit)
 {
 	return alb_smin + (alb_smax - alb_smin) * std::exp(-melt / mcrit);
 }
 
-double semic_albedo_isba(double alb, double sf, double melt, double tstic,
-                         double tau_a, double tau_f, double w_crit,
-                         double mcrit, double alb_smin, double alb_smax)
+IssmDouble semic_albedo_isba(IssmDouble alb, IssmDouble sf, IssmDouble melt, IssmDouble tstic,
+                         IssmDouble tau_a, IssmDouble tau_f, IssmDouble w_crit,
+                         IssmDouble mcrit, IssmDouble alb_smin, IssmDouble alb_smax)
 {
 	/* dry case: linear decline                                            */
-	double alb_dry = alb - tau_a * tstic / tstic; /* tau [1/day], step [s] */
+	IssmDouble alb_dry = alb - tau_a * tstic / tstic; /* tau [1/day], step [s] */
 	/* wet case: exponential decline                                       */
-	double alb_wet = (alb - alb_smin) * std::exp(-tau_f * tstic / tstic) + alb_smin;
-	double alb_new = sf * tstic / (w_crit / rhow) * (alb_smax - alb_smin);
+	IssmDouble alb_wet = (alb - alb_smin) * std::exp(-tau_f * tstic / tstic) + alb_smin;
+	IssmDouble alb_new = sf * tstic / (w_crit / rhow) * (alb_smax - alb_smin);
 
-	double w_alb = 0.0;
+	IssmDouble w_alb = 0.0;
 	if (melt > 0.0) w_alb = 1.0 - melt / mcrit;
 	w_alb = std::min(1.0, std::max(w_alb, 0.0));
 
-	double alb_out = (1.0 - w_alb) * alb_dry + w_alb * alb_wet + alb_new;
+	IssmDouble alb_out = (1.0 - w_alb) * alb_dry + w_alb * alb_wet + alb_new;
 	return std::min(alb_smax, std::max(alb_out, alb_smin));
 }
 
@@ -281,7 +281,7 @@ void semic_energy_balance(SemicState& now, const SemicParam& par,
 		now.lwu[i] = semic_longwave_upward(now.tsurf[i]);
 
 	/* 4. Surface energy balance */
-	std::vector<double> qsb(nx);
+	std::vector<IssmDouble> qsb(nx);
 	for (int i = 0; i < nx; i++)
 		qsb[i] = (1.0 - now.alb[i]) * now.swd[i]
 		        + now.lwd[i] - now.lwu[i]
@@ -317,14 +317,14 @@ void semic_mass_balance(SemicState& now, const SemicParam& par,
                         const SemicBnd& bnd, int /*day*/, int /*year*/)
 {
 	const int nx = par.nx;
-	const double epsil = std::numeric_limits<double>::epsilon();
+	const IssmDouble epsil = std::numeric_limits<IssmDouble>::epsilon();
 
 	/* Temporary work arrays */
-	std::vector<double> qmelt(nx, 0.0), qcold(nx, 0.0);
-	std::vector<double> above(nx, 0.0), below(nx, 0.0);
-	std::vector<double> f_rz(nx, 0.0), f_alb(nx, 0.0);
-	std::vector<double> refrozen_rain(nx, 0.0), refrozen_snow(nx, 0.0);
-	std::vector<double> snow_to_ice(nx, 0.0);
+	std::vector<IssmDouble> qmelt(nx, 0.0), qcold(nx, 0.0);
+	std::vector<IssmDouble> above(nx, 0.0), below(nx, 0.0);
+	std::vector<IssmDouble> f_rz(nx, 0.0), f_alb(nx, 0.0);
+	std::vector<IssmDouble> refrozen_rain(nx, 0.0), refrozen_snow(nx, 0.0);
+	std::vector<IssmDouble> snow_to_ice(nx, 0.0);
 
 	/* 1. Diurnal cycle amplitude */
 	for (int i = 0; i < nx; i++) {
@@ -369,7 +369,7 @@ void semic_mass_balance(SemicState& now, const SemicParam& par,
 	if (!bnd.refr) {
 		for (int i = 0; i < nx; i++) {
 			f_rz[i] = par.rcrit;
-			double pot_refr = qcold[i] / (rhow * clm);
+			IssmDouble pot_refr = qcold[i] / (rhow * clm);
 			refrozen_rain[i] = std::min(pot_refr, now.rf[i]);
 			refrozen_snow[i] = std::max(pot_refr - refrozen_rain[i], 0.0);
 			refrozen_snow[i] = std::min(refrozen_snow[i], now.melted_snow[i]);
@@ -510,13 +510,13 @@ void semic_surface_step(SemicState& now, const SemicParam& par,
 /* ======================================================================== */
 /*  RunSemic – annual driver (replaces Fortran run_semic_)                  */
 /* ======================================================================== */
-void RunSemic(const double* sf_in,   const double* rf_in,
-              const double* swd_in,  const double* lwd_in,
-              const double* wind_in, const double* sp_in,
-              const double* rhoa_in, const double* qq_in,
-              const double* tt_in,
-              double& tsurf_out, double& smb_out,
-              double& saccu_out, double& smelt_out)
+void RunSemic(const IssmDouble* sf_in,   const IssmDouble* rf_in,
+              const IssmDouble* swd_in,  const IssmDouble* lwd_in,
+              const IssmDouble* wind_in, const IssmDouble* sp_in,
+              const IssmDouble* rhoa_in, const IssmDouble* qq_in,
+              const IssmDouble* tt_in,
+              IssmDouble& tsurf_out, IssmDouble& smb_out,
+              IssmDouble& saccu_out, IssmDouble& smelt_out)
 {
 	const int nloop = 10;
 	const int nx    = 1;
@@ -600,33 +600,33 @@ void RunSemic(const double* sf_in,   const double* rf_in,
 /*                       run_semic_transient_)                              */
 /* ======================================================================== */
 void RunSemicTransient(int nx, int ntime, int nloop,
-                       const double* sf_in,    const double* rf_in,
-                       const double* swd_in,   const double* lwd_in,
-                       const double* wind_in,  const double* sp_in,
-                       const double* rhoa_in,  const double* qq_in,
-                       const double* tt_in,
-                       const double* tsurf_in, const double* qmr_in,
-                       double tstic,
-                       double hcrit, double rcrit,
-                       const double* mask,   const double* hice,
-                       const double* hsnow,
-                       const double* albedo, const double* albedo_snow,
+                       const IssmDouble* sf_in,    const IssmDouble* rf_in,
+                       const IssmDouble* swd_in,   const IssmDouble* lwd_in,
+                       const IssmDouble* wind_in,  const IssmDouble* sp_in,
+                       const IssmDouble* rhoa_in,  const IssmDouble* qq_in,
+                       const IssmDouble* tt_in,
+                       const IssmDouble* tsurf_in, const IssmDouble* qmr_in,
+                       IssmDouble tstic,
+                       IssmDouble hcrit, IssmDouble rcrit,
+                       const IssmDouble* mask,   const IssmDouble* hice,
+                       const IssmDouble* hsnow,
+                       const IssmDouble* albedo, const IssmDouble* albedo_snow,
                        int alb_scheme_int,
-                       double alb_smax, double alb_smin,
-                       double albi,     double albl,
-                       const double* Tamp,
-                       double tmin, double tmax, double tmid,
-                       double mcrit, double wcrit,
-                       double tau_a, double tau_f, double afac,
+                       IssmDouble alb_smax, IssmDouble alb_smin,
+                       IssmDouble albi,     IssmDouble albl,
+                       const IssmDouble* Tamp,
+                       IssmDouble tmin, IssmDouble tmax, IssmDouble tmid,
+                       IssmDouble mcrit, IssmDouble wcrit,
+                       IssmDouble tau_a, IssmDouble tau_f, IssmDouble afac,
                        bool verbose,
-                       double* tsurf_out,    double* smb_out,
-                       double* smbi_out,     double* smbs_out,
-                       double* saccu_out,    double* smelt_out,
-                       double* refr_out,     double* alb_out,
-                       double* alb_snow_out,
-                       double* hsnow_out,    double* hice_out,
-                       double* qmr_out,
-                       double* runoff_out,   double* subl_out)
+                       IssmDouble* tsurf_out,    IssmDouble* smb_out,
+                       IssmDouble* smbi_out,     IssmDouble* smbs_out,
+                       IssmDouble* saccu_out,    IssmDouble* smelt_out,
+                       IssmDouble* refr_out,     IssmDouble* alb_out,
+                       IssmDouble* alb_snow_out,
+                       IssmDouble* hsnow_out,    IssmDouble* hice_out,
+                       IssmDouble* qmr_out,
+                       IssmDouble* runoff_out,   IssmDouble* subl_out)
 {
 	if (verbose) {
 		/* minimal printf – mirrors the Fortran debug prints */

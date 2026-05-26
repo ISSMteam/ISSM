@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include "../Numerics/types.h"
 
 /* ======================================================================== */
 /*  Albedo-scheme integer codes (matches run_semic_transient.f90 convention) */
@@ -44,16 +45,16 @@ enum SemicAlbedoScheme {
 /*  Physical constants (≡ module-level parameters in surface_physics.f90)   */
 /* ======================================================================== */
 namespace semic_const {
-	static const double pi   = 3.141592653589793238462643;
-	static const double t0   = 273.15;          /* melting point [K]               */
-	static const double sigm = 5.67e-8;         /* Stefan-Boltzmann [W/(m2 K4)]    */
-	static const double eps  = 0.62197;         /* molar-weight ratio water/dry air */
-	static const double cls  = 2.83e6;          /* latent heat sublimation [J/kg]  */
-	static const double clm  = 3.30e5;          /* latent heat melting [J/kg]      */
-	static const double clv  = 2.5e6;           /* latent heat condensation [J/kg] */
-	static const double cap  = 1000.0;          /* specific heat capacity air [J/(kg K)] */
-	static const double rhow = 1000.0;          /* density of water [kg/m3]        */
-	static const double hsmax= 5.0;             /* maximum snow height [m]         */
+	static const IssmDouble pi   = 3.141592653589793238462643;
+	static const IssmDouble t0   = 273.15;          /* melting point [K]               */
+	static const IssmDouble sigm = 5.67e-8;         /* Stefan-Boltzmann [W/(m2 K4)]    */
+	static const IssmDouble eps  = 0.62197;         /* molar-weight ratio water/dry air */
+	static const IssmDouble cls  = 2.83e6;          /* latent heat sublimation [J/kg]  */
+	static const IssmDouble clm  = 3.30e5;          /* latent heat melting [J/kg]      */
+	static const IssmDouble clv  = 2.5e6;           /* latent heat condensation [J/kg] */
+	static const IssmDouble cap  = 1000.0;          /* specific heat capacity air [J/(kg K)] */
+	static const IssmDouble rhow = 1000.0;          /* density of water [kg/m3]        */
+	static const IssmDouble hsmax= 5.0;             /* maximum snow height [m]         */
 }
 
 /* ======================================================================== */
@@ -62,26 +63,26 @@ namespace semic_const {
 struct SemicParam {
 	int    nx;           /* number of grid points                          */
 	int    n_ksub;       /* number of sub-daily time steps                 */
-	double ceff;         /* surface heat capacity snow/ice [J/(K m2)]      */
-	double albi;         /* bare-ice albedo                                */
-	double albl;         /* bare-land albedo                               */
-	double alb_smax;     /* maximum (fresh) snow albedo                    */
-	double alb_smin;     /* minimum (old/wet) snow albedo                  */
-	double hcrit;        /* critical snow height for 50 % snow cover [m]   */
-	double rcrit;        /* critical snow height for 50 % refreezing [m]   */
-	double amp;          /* diurnal cycle amplitude [K]                    */
-	double csh;          /* sensible heat exchange coefficient             */
-	double clh;          /* latent heat exchange coefficient               */
-	double tmin;         /* min temperature for Slater albedo decline [K]  */
-	double tmax;         /* max temperature for Slater albedo decline [K]  */
-	double tstic;        /* time step [s]                                  */
-	double tsticsub;     /* sub-time step [s]  (= tstic / n_ksub)          */
-	double tau_a;        /* dry albedo decline (ISBA) [1/day]              */
-	double tau_f;        /* wet albedo decline (ISBA) [1/day]              */
-	double w_crit;       /* critical liquid water (ISBA) [kg/m2]           */
-	double mcrit;        /* critical melt rate (ISBA / Denby) [m/s]        */
-	double afac;         /* "alex" albedo param                            */
-	double tmid;         /* "alex" albedo param [K]                        */
+	IssmDouble ceff;         /* surface heat capacity snow/ice [J/(K m2)]      */
+	IssmDouble albi;         /* bare-ice albedo                                */
+	IssmDouble albl;         /* bare-land albedo                               */
+	IssmDouble alb_smax;     /* maximum (fresh) snow albedo                    */
+	IssmDouble alb_smin;     /* minimum (old/wet) snow albedo                  */
+	IssmDouble hcrit;        /* critical snow height for 50 % snow cover [m]   */
+	IssmDouble rcrit;        /* critical snow height for 50 % refreezing [m]   */
+	IssmDouble amp;          /* diurnal cycle amplitude [K]                    */
+	IssmDouble csh;          /* sensible heat exchange coefficient             */
+	IssmDouble clh;          /* latent heat exchange coefficient               */
+	IssmDouble tmin;         /* min temperature for Slater albedo decline [K]  */
+	IssmDouble tmax;         /* max temperature for Slater albedo decline [K]  */
+	IssmDouble tstic;        /* time step [s]                                  */
+	IssmDouble tsticsub;     /* sub-time step [s]  (= tstic / n_ksub)          */
+	IssmDouble tau_a;        /* dry albedo decline (ISBA) [1/day]              */
+	IssmDouble tau_f;        /* wet albedo decline (ISBA) [1/day]              */
+	IssmDouble w_crit;       /* critical liquid water (ISBA) [kg/m2]           */
+	IssmDouble mcrit;        /* critical melt rate (ISBA / Denby) [m/s]        */
+	IssmDouble afac;         /* "alex" albedo param                            */
+	IssmDouble tmid;         /* "alex" albedo param [K]                        */
 	SemicAlbedoScheme alb_scheme; /* albedo parameterisation to use        */
 
 	SemicParam();        /* constructor sets sensible defaults             */
@@ -112,38 +113,38 @@ struct SemicBnd {
 /* ======================================================================== */
 struct SemicState {
 	/* prognostic / diagnostic */
-	std::vector<double> t2m;          /* 2-m air temperature [K]                   */
-	std::vector<double> tsurf;        /* surface temperature [K]                   */
-	std::vector<double> hsnow;        /* snow-pack height (water-equiv.) [m]        */
-	std::vector<double> hice;         /* ice thickness (water-equiv.) [m]          */
-	std::vector<double> alb;          /* grid-averaged albedo                       */
-	std::vector<double> alb_snow;     /* snow albedo                                */
-	std::vector<double> melt;         /* potential surface melt [m/s]              */
-	std::vector<double> melted_snow;  /* actual melted snow [m/s]                  */
-	std::vector<double> melted_ice;   /* actual melted ice [m/s]                   */
-	std::vector<double> refr;         /* refreezing [m/s]                          */
-	std::vector<double> smb;          /* surface mass balance [m/s]                */
-	std::vector<double> acc;          /* accumulation [m/s]                        */
-	std::vector<double> lhf;          /* latent heat flux [W/m2]                   */
-	std::vector<double> shf;          /* sensible heat flux [W/m2]                 */
-	std::vector<double> lwu;          /* upwelling longwave radiation [W/m2]       */
-	std::vector<double> subl;         /* sublimation [m/s]                         */
-	std::vector<double> evap;         /* evaporation                               */
-	std::vector<double> smb_snow;     /* SMB of snow [m/s]                         */
-	std::vector<double> smb_ice;      /* SMB of ice [m/s]                          */
-	std::vector<double> runoff;       /* surface runoff [m/s]                      */
-	std::vector<double> qmr;          /* heat flux from melt/refreezing [W/m2]     */
-	std::vector<double> qmr_res;      /* residual heat flux [W/m2]                 */
-	std::vector<double> amp;          /* diurnal cycle amplitude [K]               */
+	std::vector<IssmDouble> t2m;          /* 2-m air temperature [K]                   */
+	std::vector<IssmDouble> tsurf;        /* surface temperature [K]                   */
+	std::vector<IssmDouble> hsnow;        /* snow-pack height (water-equiv.) [m]        */
+	std::vector<IssmDouble> hice;         /* ice thickness (water-equiv.) [m]          */
+	std::vector<IssmDouble> alb;          /* grid-averaged albedo                       */
+	std::vector<IssmDouble> alb_snow;     /* snow albedo                                */
+	std::vector<IssmDouble> melt;         /* potential surface melt [m/s]              */
+	std::vector<IssmDouble> melted_snow;  /* actual melted snow [m/s]                  */
+	std::vector<IssmDouble> melted_ice;   /* actual melted ice [m/s]                   */
+	std::vector<IssmDouble> refr;         /* refreezing [m/s]                          */
+	std::vector<IssmDouble> smb;          /* surface mass balance [m/s]                */
+	std::vector<IssmDouble> acc;          /* accumulation [m/s]                        */
+	std::vector<IssmDouble> lhf;          /* latent heat flux [W/m2]                   */
+	std::vector<IssmDouble> shf;          /* sensible heat flux [W/m2]                 */
+	std::vector<IssmDouble> lwu;          /* upwelling longwave radiation [W/m2]       */
+	std::vector<IssmDouble> subl;         /* sublimation [m/s]                         */
+	std::vector<IssmDouble> evap;         /* evaporation                               */
+	std::vector<IssmDouble> smb_snow;     /* SMB of snow [m/s]                         */
+	std::vector<IssmDouble> smb_ice;      /* SMB of ice [m/s]                          */
+	std::vector<IssmDouble> runoff;       /* surface runoff [m/s]                      */
+	std::vector<IssmDouble> qmr;          /* heat flux from melt/refreezing [W/m2]     */
+	std::vector<IssmDouble> qmr_res;      /* residual heat flux [W/m2]                 */
+	std::vector<IssmDouble> amp;          /* diurnal cycle amplitude [K]               */
 	/* forcing */
-	std::vector<double> sf;           /* snowfall [m/s]                            */
-	std::vector<double> rf;           /* rainfall [m/s]                            */
-	std::vector<double> sp;           /* surface pressure [Pa]                     */
-	std::vector<double> lwd;          /* downwelling longwave radiation [W/m2]     */
-	std::vector<double> swd;          /* downwelling shortwave radiation [W/m2]    */
-	std::vector<double> wind;         /* surface wind speed [m/s]                  */
-	std::vector<double> rhoa;         /* air density [kg/m3]                       */
-	std::vector<double> qq;           /* air specific humidity [kg/kg]             */
+	std::vector<IssmDouble> sf;           /* snowfall [m/s]                            */
+	std::vector<IssmDouble> rf;           /* rainfall [m/s]                            */
+	std::vector<IssmDouble> sp;           /* surface pressure [Pa]                     */
+	std::vector<IssmDouble> lwd;          /* downwelling longwave radiation [W/m2]     */
+	std::vector<IssmDouble> swd;          /* downwelling shortwave radiation [W/m2]    */
+	std::vector<IssmDouble> wind;         /* surface wind speed [m/s]                  */
+	std::vector<IssmDouble> rhoa;         /* air density [kg/m3]                       */
+	std::vector<IssmDouble> qq;           /* air specific humidity [kg/kg]             */
 	std::vector<int>    mask;         /* ocean/land/ice mask  0/1/2                */
 };
 
@@ -178,23 +179,23 @@ void semic_surface_step  (SemicState& now, const SemicParam& par, const SemicBnd
 /*  Elemental physics helpers (scalar, inlined equivalents of Fortran        */
 /*  ELEMENTAL subroutines — also useful for unit tests)                      */
 /* ======================================================================== */
-double semic_sensible_heat_flux(double ts, double ta, double wind, double rhoa,
-                                double csh, double cap_air);
+IssmDouble semic_sensible_heat_flux(IssmDouble ts, IssmDouble ta, IssmDouble wind, IssmDouble rhoa,
+                                IssmDouble csh, IssmDouble cap_air);
 
-void   semic_latent_heat_flux  (double ts, double wind, double shum, double sp,
-                                double rhoatm, int mask, double clh,
-                                double& lhf, double& subl, double& evap);
+void   semic_latent_heat_flux  (IssmDouble ts, IssmDouble wind, IssmDouble shum, IssmDouble sp,
+                                IssmDouble rhoatm, int mask, IssmDouble clh,
+                                IssmDouble& lhf, IssmDouble& subl, IssmDouble& evap);
 
-double semic_longwave_upward   (double ts);
+IssmDouble semic_longwave_upward   (IssmDouble ts);
 
-void   semic_diurnal_cycle     (double amp, double tmean, double& above, double& below);
+void   semic_diurnal_cycle     (IssmDouble amp, IssmDouble tmean, IssmDouble& above, IssmDouble& below);
 
-double semic_albedo_slater(double alb_snow, double tsurf, double tmin, double tmax,
-                           double alb_smax, double alb_smin);
-double semic_albedo_denby (double melt, double alb_smax, double alb_smin, double mcrit);
-double semic_albedo_isba  (double alb, double sf, double melt, double tstic,
-                           double tau_a, double tau_f, double w_crit, double mcrit,
-                           double alb_smin, double alb_smax);
+IssmDouble semic_albedo_slater(IssmDouble alb_snow, IssmDouble tsurf, IssmDouble tmin, IssmDouble tmax,
+                           IssmDouble alb_smax, IssmDouble alb_smin);
+IssmDouble semic_albedo_denby (IssmDouble melt, IssmDouble alb_smax, IssmDouble alb_smin, IssmDouble mcrit);
+IssmDouble semic_albedo_isba  (IssmDouble alb, IssmDouble sf, IssmDouble melt, IssmDouble tstic,
+                           IssmDouble tau_a, IssmDouble tau_f, IssmDouble w_crit, IssmDouble mcrit,
+                           IssmDouble alb_smin, IssmDouble alb_smax);
 
 /* ======================================================================== */
 /*  High-level drivers  (replace the two Fortran entry points)               */
@@ -218,13 +219,13 @@ double semic_albedo_isba  (double alb, double sf, double melt, double tstic,
  *  \param saccu_out mean annual albedo (historically labelled) (output)
  *  \param smelt_out mean annual melt [m/s]                     (output)
  */
-void RunSemic(const double* sf_in, const double* rf_in,
-              const double* swd_in, const double* lwd_in,
-              const double* wind_in, const double* sp_in,
-              const double* rhoa_in, const double* qq_in,
-              const double* tt_in,
-              double& tsurf_out, double& smb_out,
-              double& saccu_out, double& smelt_out);
+void RunSemic(const IssmDouble* sf_in, const IssmDouble* rf_in,
+              const IssmDouble* swd_in, const IssmDouble* lwd_in,
+              const IssmDouble* wind_in, const IssmDouble* sp_in,
+              const IssmDouble* rhoa_in, const IssmDouble* qq_in,
+              const IssmDouble* tt_in,
+              IssmDouble& tsurf_out, IssmDouble& smb_out,
+              IssmDouble& saccu_out, IssmDouble& smelt_out);
 
 /*! Transient driver: advances one time step for nx grid points.
  *  Used by Element::SmbSemicTransient() (method 1).
@@ -271,30 +272,30 @@ void RunSemic(const double* sf_in, const double* rf_in,
  *  \param tsurf_out … output arrays (same units as inputs)
  */
 void RunSemicTransient(int nx, int ntime, int nloop,
-                       const double* sf_in,    const double* rf_in,
-                       const double* swd_in,   const double* lwd_in,
-                       const double* wind_in,  const double* sp_in,
-                       const double* rhoa_in,  const double* qq_in,
-                       const double* tt_in,
-                       const double* tsurf_in, const double* qmr_in,
-                       double tstic,
-                       double hcrit, double rcrit,
-                       const double* mask, const double* hice, const double* hsnow,
-                       const double* albedo, const double* albedo_snow,
+                       const IssmDouble* sf_in,    const IssmDouble* rf_in,
+                       const IssmDouble* swd_in,   const IssmDouble* lwd_in,
+                       const IssmDouble* wind_in,  const IssmDouble* sp_in,
+                       const IssmDouble* rhoa_in,  const IssmDouble* qq_in,
+                       const IssmDouble* tt_in,
+                       const IssmDouble* tsurf_in, const IssmDouble* qmr_in,
+                       IssmDouble tstic,
+                       IssmDouble hcrit, IssmDouble rcrit,
+                       const IssmDouble* mask, const IssmDouble* hice, const IssmDouble* hsnow,
+                       const IssmDouble* albedo, const IssmDouble* albedo_snow,
                        int alb_scheme,
-                       double alb_smax, double alb_smin, double albi, double albl,
-                       const double* Tamp,
-                       double tmin, double tmax, double tmid,
-                       double mcrit, double wcrit,
-                       double tau_a, double tau_f, double afac,
+                       IssmDouble alb_smax, IssmDouble alb_smin, IssmDouble albi, IssmDouble albl,
+                       const IssmDouble* Tamp,
+                       IssmDouble tmin, IssmDouble tmax, IssmDouble tmid,
+                       IssmDouble mcrit, IssmDouble wcrit,
+                       IssmDouble tau_a, IssmDouble tau_f, IssmDouble afac,
                        bool verbose,
-                       double* tsurf_out,  double* smb_out,
-                       double* smbi_out,   double* smbs_out,
-                       double* saccu_out,  double* smelt_out,
-                       double* refr_out,   double* alb_out,
-                       double* alb_snow_out,
-                       double* hsnow_out,  double* hice_out,
-                       double* qmr_out,
-                       double* runoff_out, double* subl_out);
+                       IssmDouble* tsurf_out,  IssmDouble* smb_out,
+                       IssmDouble* smbi_out,   IssmDouble* smbs_out,
+                       IssmDouble* saccu_out,  IssmDouble* smelt_out,
+                       IssmDouble* refr_out,   IssmDouble* alb_out,
+                       IssmDouble* alb_snow_out,
+                       IssmDouble* hsnow_out,  IssmDouble* hice_out,
+                       IssmDouble* qmr_out,
+                       IssmDouble* runoff_out, IssmDouble* subl_out);
 
 #endif /* _SEMIC_H_ */
