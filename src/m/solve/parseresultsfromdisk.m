@@ -274,7 +274,7 @@ else
 		field = field/10.^12*yts; %(GigaTon/year)
 	elseif strcmp(fieldname,'IcefrontMassFluxLevelset')
 		field = field/10.^12*yts; %(GigaTon/year)
-	elseif strcmp(fieldname,'TotalHydrologyFlux')
+	elseif strcmp(fieldname,'TotalHydrologyBasalFlux')
 		field = field/10.^12*yts; %(GigaTon/year)
 	elseif strcmp(fieldname,'SmbMassBalance')
 		field = field*yts;
