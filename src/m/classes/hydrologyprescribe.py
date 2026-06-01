@@ -26,7 +26,7 @@ class hydrologyprescribe(object):
         string+= '   Pw   = rho_w g (head - z_b)\n'
         string+= '   H: ice thickness (m) / head: hydrology head (m) / z_b: bedrock elevation'
 
-        string+= "{}\n".format(fielddisplay(self, 'head', 'subglacial hydrology water head (m)'
+        string+= "{}\n".format(fielddisplay(self, 'head', 'subglacial hydrology water head (m)'))
         return string
         # }}}
 
