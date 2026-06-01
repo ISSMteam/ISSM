@@ -27,7 +27,111 @@
 
 #include <string>
 #include <vector>
+#include <config.h>
 #include "../Numerics/types.h"
+
+/* ======================================================================== */
+/*  High-level drivers  (replace the two Fortran entry points)               */
+/* ======================================================================== */
+
+/*! Annual driver: loops 365 days × nloop spinup cycles for a single vertex.
+ *  Input arrays have dimension [365].
+ *  Used by Element::SmbSemic() (method 0).
+ *
+ *  \param sf_in     snowfall rate [m/s], 365 entries
+ *  \param rf_in     rainfall rate [m/s], 365 entries
+ *  \param swd_in    downwelling SW radiation [W/m2], 365 entries
+ *  \param lwd_in    downwelling LW radiation [W/m2], 365 entries
+ *  \param wind_in   surface wind speed [m/s], 365 entries
+ *  \param sp_in     surface pressure [Pa], 365 entries
+ *  \param rhoa_in   air density [kg/m3], 365 entries
+ *  \param qq_in     specific humidity [kg/kg], 365 entries
+ *  \param tt_in     2-m temperature [K], 365 entries
+ *  \param tsurf_out mean annual surface temperature [K]        (output)
+ *  \param smb_out   mean annual SMB [m/s]                      (output)
+ *  \param saccu_out mean annual albedo (historically labelled) (output)
+ *  \param smelt_out mean annual melt [m/s]                     (output)
+ */
+void RunSemic(const IssmDouble* sf_in, const IssmDouble* rf_in,
+              const IssmDouble* swd_in, const IssmDouble* lwd_in,
+              const IssmDouble* wind_in, const IssmDouble* sp_in,
+              const IssmDouble* rhoa_in, const IssmDouble* qq_in,
+              const IssmDouble* tt_in,
+              IssmDouble& tsurf_out, IssmDouble& smb_out,
+              IssmDouble& saccu_out, IssmDouble& smelt_out);
+
+/*! Transient driver: advances one time step for nx grid points.
+ *  Used by Element::SmbSemicTransient() (method 1).
+ *
+ *  Input/output arrays all have dimension [nx].
+ *
+ *  \param nx          number of grid points
+ *  \param ntime       number of sub-time steps within a call (usually 1)
+ *  \param nloop       number of spinup repetitions (usually 1)
+ *  \param sf_in       snowfall   [m/s]
+ *  \param rf_in       rainfall   [m/s]
+ *  \param swd_in      downwelling SW [W/m2]
+ *  \param lwd_in      downwelling LW [W/m2]
+ *  \param wind_in     wind speed [m/s]
+ *  \param sp_in       surface pressure [Pa]
+ *  \param rhoa_in     air density [kg/m3]
+ *  \param qq_in       specific humidity [kg/kg]
+ *  \param tt_in       2-m temperature [K]
+ *  \param tsurf_in    previous surface temperature [K]
+ *  \param qmr_in      residual heat flux from previous step [W/m2]
+ *  \param tstic       time step [s]
+ *  \param hcrit       critical snow height for snow cover [m]
+ *  \param rcrit       critical snow height for refreezing [m]
+ *  \param mask        ocean/land/ice mask 0/1/2
+ *  \param hice        ice thickness (water-equiv.) [m]   (in/out via out arrays)
+ *  \param hsnow       snow height (water-equiv.) [m]     (in/out via out arrays)
+ *  \param albedo      grid-averaged albedo
+ *  \param albedo_snow snow albedo
+ *  \param alb_scheme  albedo scheme code (SemicAlbedoScheme)
+ *  \param alb_smax    maximum snow albedo
+ *  \param alb_smin    minimum snow albedo
+ *  \param albi        bare-ice albedo
+ *  \param albl        bare-land albedo
+ *  \param Tamp        diurnal cycle amplitude [K]
+ *  \param tmin        min temperature for Slater scheme [K]
+ *  \param tmax        max temperature for Slater scheme [K]
+ *  \param tmid        "alex" parameter [K]
+ *  \param mcrit       critical melt rate [m/s]
+ *  \param wcrit       critical liquid water (ISBA) [kg/m2]
+ *  \param tau_a       dry albedo decline (ISBA)
+ *  \param tau_f       wet albedo decline (ISBA)
+ *  \param afac        "alex" parameter
+ *  \param verbose     print debug info
+ *  \param tsurf_out … output arrays (same units as inputs)
+ */
+void RunSemicTransient(int nx, int ntime, int nloop,
+                       const IssmDouble* sf_in,    const IssmDouble* rf_in,
+                       const IssmDouble* swd_in,   const IssmDouble* lwd_in,
+                       const IssmDouble* wind_in,  const IssmDouble* sp_in,
+                       const IssmDouble* rhoa_in,  const IssmDouble* qq_in,
+                       const IssmDouble* tt_in,
+                       const IssmDouble* tsurf_in, const IssmDouble* qmr_in,
+                       IssmDouble tstic,
+                       IssmDouble hcrit, IssmDouble rcrit,
+                       const IssmDouble* mask, const IssmDouble* hice, const IssmDouble* hsnow,
+                       const IssmDouble* albedo, const IssmDouble* albedo_snow,
+                       int alb_scheme,
+                       IssmDouble alb_smax, IssmDouble alb_smin, IssmDouble albi, IssmDouble albl,
+                       const IssmDouble* Tamp,
+                       IssmDouble tmin, IssmDouble tmax, IssmDouble tmid,
+                       IssmDouble mcrit, IssmDouble wcrit,
+                       IssmDouble tau_a, IssmDouble tau_f, IssmDouble afac,
+                       bool verbose,
+                       IssmDouble* tsurf_out,  IssmDouble* smb_out,
+                       IssmDouble* smbi_out,   IssmDouble* smbs_out,
+                       IssmDouble* saccu_out,  IssmDouble* smelt_out,
+                       IssmDouble* refr_out,   IssmDouble* alb_out,
+                       IssmDouble* alb_snow_out,
+                       IssmDouble* hsnow_out,  IssmDouble* hice_out,
+                       IssmDouble* qmr_out,
+                       IssmDouble* runoff_out, IssmDouble* subl_out);
+
+#if !defined(_HAVE_ADOLC_)
 
 /* ======================================================================== */
 /*  Albedo-scheme integer codes (matches run_semic_transient.f90 convention) */
@@ -197,105 +301,6 @@ IssmDouble semic_albedo_isba  (IssmDouble alb, IssmDouble sf, IssmDouble melt, I
                            IssmDouble tau_a, IssmDouble tau_f, IssmDouble w_crit, IssmDouble mcrit,
                            IssmDouble alb_smin, IssmDouble alb_smax);
 
-/* ======================================================================== */
-/*  High-level drivers  (replace the two Fortran entry points)               */
-/* ======================================================================== */
 
-/*! Annual driver: loops 365 days × nloop spinup cycles for a single vertex.
- *  Input arrays have dimension [365].
- *  Used by Element::SmbSemic() (method 0).
- *
- *  \param sf_in     snowfall rate [m/s], 365 entries
- *  \param rf_in     rainfall rate [m/s], 365 entries
- *  \param swd_in    downwelling SW radiation [W/m2], 365 entries
- *  \param lwd_in    downwelling LW radiation [W/m2], 365 entries
- *  \param wind_in   surface wind speed [m/s], 365 entries
- *  \param sp_in     surface pressure [Pa], 365 entries
- *  \param rhoa_in   air density [kg/m3], 365 entries
- *  \param qq_in     specific humidity [kg/kg], 365 entries
- *  \param tt_in     2-m temperature [K], 365 entries
- *  \param tsurf_out mean annual surface temperature [K]        (output)
- *  \param smb_out   mean annual SMB [m/s]                      (output)
- *  \param saccu_out mean annual albedo (historically labelled) (output)
- *  \param smelt_out mean annual melt [m/s]                     (output)
- */
-void RunSemic(const IssmDouble* sf_in, const IssmDouble* rf_in,
-              const IssmDouble* swd_in, const IssmDouble* lwd_in,
-              const IssmDouble* wind_in, const IssmDouble* sp_in,
-              const IssmDouble* rhoa_in, const IssmDouble* qq_in,
-              const IssmDouble* tt_in,
-              IssmDouble& tsurf_out, IssmDouble& smb_out,
-              IssmDouble& saccu_out, IssmDouble& smelt_out);
-
-/*! Transient driver: advances one time step for nx grid points.
- *  Used by Element::SmbSemicTransient() (method 1).
- *
- *  Input/output arrays all have dimension [nx].
- *
- *  \param nx          number of grid points
- *  \param ntime       number of sub-time steps within a call (usually 1)
- *  \param nloop       number of spinup repetitions (usually 1)
- *  \param sf_in       snowfall   [m/s]
- *  \param rf_in       rainfall   [m/s]
- *  \param swd_in      downwelling SW [W/m2]
- *  \param lwd_in      downwelling LW [W/m2]
- *  \param wind_in     wind speed [m/s]
- *  \param sp_in       surface pressure [Pa]
- *  \param rhoa_in     air density [kg/m3]
- *  \param qq_in       specific humidity [kg/kg]
- *  \param tt_in       2-m temperature [K]
- *  \param tsurf_in    previous surface temperature [K]
- *  \param qmr_in      residual heat flux from previous step [W/m2]
- *  \param tstic       time step [s]
- *  \param hcrit       critical snow height for snow cover [m]
- *  \param rcrit       critical snow height for refreezing [m]
- *  \param mask        ocean/land/ice mask 0/1/2
- *  \param hice        ice thickness (water-equiv.) [m]   (in/out via out arrays)
- *  \param hsnow       snow height (water-equiv.) [m]     (in/out via out arrays)
- *  \param albedo      grid-averaged albedo
- *  \param albedo_snow snow albedo
- *  \param alb_scheme  albedo scheme code (SemicAlbedoScheme)
- *  \param alb_smax    maximum snow albedo
- *  \param alb_smin    minimum snow albedo
- *  \param albi        bare-ice albedo
- *  \param albl        bare-land albedo
- *  \param Tamp        diurnal cycle amplitude [K]
- *  \param tmin        min temperature for Slater scheme [K]
- *  \param tmax        max temperature for Slater scheme [K]
- *  \param tmid        "alex" parameter [K]
- *  \param mcrit       critical melt rate [m/s]
- *  \param wcrit       critical liquid water (ISBA) [kg/m2]
- *  \param tau_a       dry albedo decline (ISBA)
- *  \param tau_f       wet albedo decline (ISBA)
- *  \param afac        "alex" parameter
- *  \param verbose     print debug info
- *  \param tsurf_out … output arrays (same units as inputs)
- */
-void RunSemicTransient(int nx, int ntime, int nloop,
-                       const IssmDouble* sf_in,    const IssmDouble* rf_in,
-                       const IssmDouble* swd_in,   const IssmDouble* lwd_in,
-                       const IssmDouble* wind_in,  const IssmDouble* sp_in,
-                       const IssmDouble* rhoa_in,  const IssmDouble* qq_in,
-                       const IssmDouble* tt_in,
-                       const IssmDouble* tsurf_in, const IssmDouble* qmr_in,
-                       IssmDouble tstic,
-                       IssmDouble hcrit, IssmDouble rcrit,
-                       const IssmDouble* mask, const IssmDouble* hice, const IssmDouble* hsnow,
-                       const IssmDouble* albedo, const IssmDouble* albedo_snow,
-                       int alb_scheme,
-                       IssmDouble alb_smax, IssmDouble alb_smin, IssmDouble albi, IssmDouble albl,
-                       const IssmDouble* Tamp,
-                       IssmDouble tmin, IssmDouble tmax, IssmDouble tmid,
-                       IssmDouble mcrit, IssmDouble wcrit,
-                       IssmDouble tau_a, IssmDouble tau_f, IssmDouble afac,
-                       bool verbose,
-                       IssmDouble* tsurf_out,  IssmDouble* smb_out,
-                       IssmDouble* smbi_out,   IssmDouble* smbs_out,
-                       IssmDouble* saccu_out,  IssmDouble* smelt_out,
-                       IssmDouble* refr_out,   IssmDouble* alb_out,
-                       IssmDouble* alb_snow_out,
-                       IssmDouble* hsnow_out,  IssmDouble* hice_out,
-                       IssmDouble* qmr_out,
-                       IssmDouble* runoff_out, IssmDouble* subl_out);
-
+#endif /*!defined(_HAVE_ADOLC_)*/
 #endif /* _SEMIC_H_ */

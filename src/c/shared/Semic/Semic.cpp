@@ -26,6 +26,51 @@
 
 using namespace semic_const;
 
+#if defined(_HAVE_ADOLC_)
+void RunSemic(const IssmDouble* sf_in,   const IssmDouble* rf_in,
+			const IssmDouble* swd_in,  const IssmDouble* lwd_in,
+			const IssmDouble* wind_in, const IssmDouble* sp_in,
+			const IssmDouble* rhoa_in, const IssmDouble* qq_in,
+			const IssmDouble* tt_in,
+			IssmDouble& tsurf_out, IssmDouble& smb_out,
+			IssmDouble& saccu_out, IssmDouble& smelt_out)
+{
+	_error_("not implemented yet");
+}
+
+void RunSemicTransient(int nx, int ntime, int nloop,
+                       const IssmDouble* sf_in,    const IssmDouble* rf_in,
+                       const IssmDouble* swd_in,   const IssmDouble* lwd_in,
+                       const IssmDouble* wind_in,  const IssmDouble* sp_in,
+                       const IssmDouble* rhoa_in,  const IssmDouble* qq_in,
+                       const IssmDouble* tt_in,
+                       const IssmDouble* tsurf_in, const IssmDouble* qmr_in,
+                       IssmDouble tstic,
+                       IssmDouble hcrit, IssmDouble rcrit,
+                       const IssmDouble* mask,   const IssmDouble* hice,
+                       const IssmDouble* hsnow,
+                       const IssmDouble* albedo, const IssmDouble* albedo_snow,
+                       int alb_scheme_int,
+                       IssmDouble alb_smax, IssmDouble alb_smin,
+                       IssmDouble albi,     IssmDouble albl,
+                       const IssmDouble* Tamp,
+                       IssmDouble tmin, IssmDouble tmax, IssmDouble tmid,
+                       IssmDouble mcrit, IssmDouble wcrit,
+                       IssmDouble tau_a, IssmDouble tau_f, IssmDouble afac,
+                       bool verbose,
+                       IssmDouble* tsurf_out,    IssmDouble* smb_out,
+                       IssmDouble* smbi_out,     IssmDouble* smbs_out,
+                       IssmDouble* saccu_out,    IssmDouble* smelt_out,
+                       IssmDouble* refr_out,     IssmDouble* alb_out,
+                       IssmDouble* alb_snow_out,
+                       IssmDouble* hsnow_out,    IssmDouble* hice_out,
+                       IssmDouble* qmr_out,
+                       IssmDouble* runoff_out,   IssmDouble* subl_out)
+{
+	_error_("not implemented yet");
+}
+#else
+
 /* ======================================================================== */
 /*  Helpers – scalar physics (identical to Fortran ELEMENTAL routines)       */
 /* ======================================================================== */
@@ -729,3 +774,4 @@ void RunSemicTransient(int nx, int ntime, int nloop,
 
 	semic_dealloc(now);
 }
+#endif
