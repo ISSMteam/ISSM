@@ -66,10 +66,10 @@ class ResTable:
             return np.squeeze(np.asarray(self.data))
 
 
-def export_netCDF(md, filename):  # {{{
+def export_netCDF(md, filename, overwrite=False):  # {{{
     #verbosity of the code, 0 is no messages, 5 is chatty
     verbose = 0
-    if path.exists(filename):
+    if path.exists(filename) and (overwrite == False):
         print('File {} already exists'.format(filename))
         newname = input('Give a new name or "delete" to replace: ')
         if newname == 'delete':
