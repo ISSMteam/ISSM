@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 
-using namespace semic_const;
-
 #if defined(_HAVE_ADOLC_)
 void RunSemic(const IssmDouble* sf_in,   const IssmDouble* rf_in,
 			const IssmDouble* swd_in,  const IssmDouble* lwd_in,
@@ -70,6 +68,8 @@ void RunSemicTransient(int nx, int ntime, int nloop,
 	_error_("not implemented yet");
 }
 #else
+
+using namespace semic_const;
 
 /* ======================================================================== */
 /*  Helpers – scalar physics (identical to Fortran ELEMENTAL routines)       */
