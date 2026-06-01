@@ -54,7 +54,7 @@ def effectivepressure(md, *args):
             if isinstance(md.hydrology,hydrologyprescribe):
                 p_water=md.constants.g*md.materials.rho_freshwater*(md.hydrology.head -md.geometry.base)
             else:
-                raise Exception('Coupling method = ' + str(coupling,'%i') + ' is not supported yet with ' + class(md.hydrology) + '. Only for hydrologyprescribe')
+                raise Exception('Coupling method = ' + str(coupling,'%i') + ' is not supported yet with ' + type(md.hydrology) + '. Only for hydrologyprescribe')
 
         N = p_ice-p_water
     else:
