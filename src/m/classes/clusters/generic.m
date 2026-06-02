@@ -130,9 +130,9 @@ classdef generic
 					else
 						vgflags = '--leak-check=full --error-limit=no';
 					end
-					cmd = sprintf('%s%s %s --suppressions=%s %s/%s %s %s %s 2> %s.errlog > %s.outlog', ...
+					cmd = sprintf('%s%s %s --suppressions=%s %s/%s %s %s %s 2> %s/%s.errlog > %s/%s.outlog', ...
 						mpiprefix, cluster.valgrind, vgflags, cluster.valgrindsup, ...
-						codepath, executable, solution, execpath, modelname, modelname, modelname);
+						codepath, executable, solution, execpath, modelname, execpath, modelname, execpath, modelname);
 
 				elseif isgprof
 					cmd = sprintf('gprof %s/issm.exe gmon.out > %s.performance', cluster.codepath, modelname);
