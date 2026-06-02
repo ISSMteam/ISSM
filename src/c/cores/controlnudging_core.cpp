@@ -58,6 +58,7 @@ void controlnudging_core(FemModel* femmodel){
       transient_core(femmodel);
 
       /*Extract results*/
+		xDelete<IssmDouble>(C);
       GetVectorFromInputsx(&H, femmodel, ThicknessEnum, VertexSIdEnum);
       GetVectorFromInputsx(&C, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
 		GetVectorFromInputsx(&V, femmodel, VelEnum, VertexSIdEnum);
@@ -121,12 +122,15 @@ void controlnudging_core(FemModel* femmodel){
 
       xDelete<IssmDouble>(H_old);
       xDelete<IssmDouble>(H);
-      xDelete<IssmDouble>(C);
       xDelete<IssmDouble>(O_ls);
 		xDelete<IssmDouble>(V);
    }
 
+	/*Add C to results*/
+	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,FrictionCoefficientEnum,C, numvertices, 1, 0, 0));
+
    /*Clean up and return*/
+	xDelete<IssmDouble>(C);
    xDelete<IssmDouble>(C0);
    xDelete<IssmDouble>(H_obs);
 }
