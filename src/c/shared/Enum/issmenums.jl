@@ -334,12 +334,14 @@
 	InversionGttolEnum
 	InversionIncompleteAdjointEnum
 	InversionIscontrolEnum
+	InversionH0Enum
 	InversionMaxiterEnum
 	InversionMaxiterPerStepEnum
 	InversionMaxstepsEnum
 	InversionNstepsEnum
 	InversionNumControlParametersEnum
 	InversionNumCostFunctionsEnum
+	InversionRelaxationEnum
 	InversionStepThresholdEnum
 	InversionStopFlagEnum
 	InversionTauCEnum
@@ -4171,12 +4173,14 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionGttolEnum) return "InversionGttol" end
 	if(enum==InversionIncompleteAdjointEnum) return "InversionIncompleteAdjoint" end
 	if(enum==InversionIscontrolEnum) return "InversionIscontrol" end
+	if(enum==InversionH0Enum) return "InversionH0" end
 	if(enum==InversionMaxiterEnum) return "InversionMaxiter" end
 	if(enum==InversionMaxiterPerStepEnum) return "InversionMaxiterPerStep" end
 	if(enum==InversionMaxstepsEnum) return "InversionMaxsteps" end
 	if(enum==InversionNstepsEnum) return "InversionNsteps" end
 	if(enum==InversionNumControlParametersEnum) return "InversionNumControlParameters" end
 	if(enum==InversionNumCostFunctionsEnum) return "InversionNumCostFunctions" end
+	if(enum==InversionRelaxationEnum) return "InversionRelaxation" end
 	if(enum==InversionStepThresholdEnum) return "InversionStepThreshold" end
 	if(enum==InversionStopFlagEnum) return "InversionStopFlag" end
 	if(enum==InversionTauCEnum) return "InversionTauC" end
@@ -8008,12 +8012,14 @@ function StringToEnum(name::String)
 	if(name=="InversionGttol") return InversionGttolEnum  end
 	if(name=="InversionIncompleteAdjoint") return InversionIncompleteAdjointEnum  end
 	if(name=="InversionIscontrol") return InversionIscontrolEnum  end
+	if(name=="InversionH0") return InversionH0Enum  end
 	if(name=="InversionMaxiter") return InversionMaxiterEnum  end
 	if(name=="InversionMaxiterPerStep") return InversionMaxiterPerStepEnum  end
 	if(name=="InversionMaxsteps") return InversionMaxstepsEnum  end
 	if(name=="InversionNsteps") return InversionNstepsEnum  end
 	if(name=="InversionNumControlParameters") return InversionNumControlParametersEnum  end
 	if(name=="InversionNumCostFunctions") return InversionNumCostFunctionsEnum  end
+	if(name=="InversionRelaxation") return InversionRelaxationEnum  end
 	if(name=="InversionStepThreshold") return InversionStepThresholdEnum  end
 	if(name=="InversionStopFlag") return InversionStopFlagEnum  end
 	if(name=="InversionTauC") return InversionTauCEnum  end

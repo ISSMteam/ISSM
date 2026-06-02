@@ -338,12 +338,14 @@ syn keyword juliaConstC InversionGrtolEnum
 syn keyword juliaConstC InversionGttolEnum
 syn keyword juliaConstC InversionIncompleteAdjointEnum
 syn keyword juliaConstC InversionIscontrolEnum
+syn keyword juliaConstC InversionH0Enum
 syn keyword juliaConstC InversionMaxiterEnum
 syn keyword juliaConstC InversionMaxiterPerStepEnum
 syn keyword juliaConstC InversionMaxstepsEnum
 syn keyword juliaConstC InversionNstepsEnum
 syn keyword juliaConstC InversionNumControlParametersEnum
 syn keyword juliaConstC InversionNumCostFunctionsEnum
+syn keyword juliaConstC InversionRelaxationEnum
 syn keyword juliaConstC InversionStepThresholdEnum
 syn keyword juliaConstC InversionStopFlagEnum
 syn keyword juliaConstC InversionTauCEnum

@@ -345,12 +345,14 @@ syn keyword cConstant InversionGrtolEnum
 syn keyword cConstant InversionGttolEnum
 syn keyword cConstant InversionIncompleteAdjointEnum
 syn keyword cConstant InversionIscontrolEnum
+syn keyword cConstant InversionH0Enum
 syn keyword cConstant InversionMaxiterEnum
 syn keyword cConstant InversionMaxiterPerStepEnum
 syn keyword cConstant InversionMaxstepsEnum
 syn keyword cConstant InversionNstepsEnum
 syn keyword cConstant InversionNumControlParametersEnum
 syn keyword cConstant InversionNumCostFunctionsEnum
+syn keyword cConstant InversionRelaxationEnum
 syn keyword cConstant InversionStepThresholdEnum
 syn keyword cConstant InversionStopFlagEnum
 syn keyword cConstant InversionTauCEnum

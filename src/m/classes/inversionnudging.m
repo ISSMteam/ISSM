@@ -5,9 +5,12 @@
 
 classdef inversionnudging
 	properties (SetAccess=public) 
-		iscontrol = 0
-		tau_C     = 0.0;
-		dhdt_obs  = NaN;
+		iscontrol  = 0;
+		maxiter    = 0;
+		tau_C      = 0.0;
+		H0         = 0.0;
+		relaxation = 0.0;
+		dhdt_obs   = NaN;
 	end
 	methods
 		function self = extrude(self,md) % {{{
@@ -25,8 +28,18 @@ classdef inversionnudging
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
+			% maximum number of nudging steps
+			self.maxiter = 100;
+
 			% Cadjustment timescale 100 yrs used in van den Akker et al (2025)
 			self.tau_C = 100.0;
+
+			%thickness error scale (smaller = more sensitive), 100 m used in van den Akker et al (2025)
+			self.H0 = 100.0;
+
+         %relaxation strength toward C_inv (0 = none, 1 = strong) , 0.5 used in van den Akker et al (2025)
+         self.relaxation = 0.5;
+
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -34,13 +47,19 @@ classdef inversionnudging
 			if(~self.iscontrol) return; end
 
 			md = checkfield(md,'fieldname','inversion.iscontrol','values',[0 1]);
+			md = checkfield(md,'fieldname','inversion.maxiter','numel',1,'>=',0);
 			md = checkfield(md,'fieldname','inversion.tau_C','numel',1,'>',0);
+			md = checkfield(md,'fieldname','inversion.H0','numel',1,'>',0);
+         md = checkfield(md,'fieldname','inversion.relaxation','numel',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','inversion.dhdt_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   Nudging parameters:'));
 			fielddisplay(self,'iscontrol','is inversion activated?');
+			fielddisplay(self,'maxiter','maximum number of nudging steps');
 			fielddisplay(self,'tau_C','adjustment timescale for friction coefficient [yr]');
+			fielddisplay(self,'H0','thickness error scale (smaller = more sensitive) [m]');
+         fielddisplay(self,'relaxation','relaxation strength toward C_inv (0 = none, 1 = strong)');
 			fielddisplay(self,'dhdt_obs','observed thickness rate of change [m/yr]');
 		end % }}}
 		function marshall(self, prefix, md, fid) % {{{
@@ -50,7 +69,10 @@ classdef inversionnudging
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','iscontrol','format','Boolean');
 			WriteData(fid,prefix,'name','md.inversion.type','data',5,'format','Integer');
 			if ~self.iscontrol, return; end
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxiter','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','tau_C','format','Double','scale',yts);
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','H0','format','Double');
+         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dhdt_obs','format','DoubleMat','mattype',1,'scale',1./yts);
 		end % }}}
 	end

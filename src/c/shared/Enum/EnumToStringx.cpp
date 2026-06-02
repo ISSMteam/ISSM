@@ -347,12 +347,14 @@ const char* EnumToStringx(int en){
 		case InversionGttolEnum : return "InversionGttol";
 		case InversionIncompleteAdjointEnum : return "InversionIncompleteAdjoint";
 		case InversionIscontrolEnum : return "InversionIscontrol";
+		case InversionH0Enum : return "InversionH0";
 		case InversionMaxiterEnum : return "InversionMaxiter";
 		case InversionMaxiterPerStepEnum : return "InversionMaxiterPerStep";
 		case InversionMaxstepsEnum : return "InversionMaxsteps";
 		case InversionNstepsEnum : return "InversionNsteps";
 		case InversionNumControlParametersEnum : return "InversionNumControlParameters";
 		case InversionNumCostFunctionsEnum : return "InversionNumCostFunctions";
+		case InversionRelaxationEnum : return "InversionRelaxation";
 		case InversionStepThresholdEnum : return "InversionStepThreshold";
 		case InversionStopFlagEnum : return "InversionStopFlag";
 		case InversionTauCEnum : return "InversionTauC";
