@@ -3535,6 +3535,7 @@ syn keyword cConstant FixedTimesteppingEnum
 syn keyword cConstant FloatingAreaEnum
 syn keyword cConstant FloatingAreaScaledEnum
 syn keyword cConstant FloatingMeltRateEnum
+syn keyword cConstant FluxDivergenceEnum
 syn keyword cConstant FreeEnum
 syn keyword cConstant FreeSurfaceBaseAnalysisEnum
 syn keyword cConstant FreeSurfaceTopAnalysisEnum

@@ -3624,6 +3624,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"FloatingArea")==0) return FloatingAreaEnum;
 	      else if (strcmp(name,"FloatingAreaScaled")==0) return FloatingAreaScaledEnum;
 	      else if (strcmp(name,"FloatingMeltRate")==0) return FloatingMeltRateEnum;
+	      else if (strcmp(name,"FluxDivergence")==0) return FluxDivergenceEnum;
 	      else if (strcmp(name,"Free")==0) return FreeEnum;
 	      else if (strcmp(name,"FreeSurfaceBaseAnalysis")==0) return FreeSurfaceBaseAnalysisEnum;
 	      else if (strcmp(name,"FreeSurfaceTopAnalysis")==0) return FreeSurfaceTopAnalysisEnum;
@@ -3702,11 +3703,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"LevelsetAnalysis")==0) return LevelsetAnalysisEnum;
 	      else if (strcmp(name,"LevelsetfunctionPicard")==0) return LevelsetfunctionPicardEnum;
 	      else if (strcmp(name,"LinearFloatingMeltRate")==0) return LinearFloatingMeltRateEnum;
-	      else if (strcmp(name,"LinearFloatingMeltRatearma")==0) return LinearFloatingMeltRatearmaEnum;
          else stage=31;
    }
    if(stage==31){
-	      if (strcmp(name,"LliboutryDuval")==0) return LliboutryDuvalEnum;
+	      if (strcmp(name,"LinearFloatingMeltRatearma")==0) return LinearFloatingMeltRatearmaEnum;
+	      else if (strcmp(name,"LliboutryDuval")==0) return LliboutryDuvalEnum;
 	      else if (strcmp(name,"Loads")==0) return LoadsEnum;
 	      else if (strcmp(name,"LoveAnalysis")==0) return LoveAnalysisEnum;
 	      else if (strcmp(name,"LoveHf")==0) return LoveHfEnum;
@@ -3825,11 +3826,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SMBdebrisEvatt")==0) return SMBdebrisEvattEnum;
 	      else if (strcmp(name,"SMBd18opdd")==0) return SMBd18opddEnum;
 	      else if (strcmp(name,"SMBforcing")==0) return SMBforcingEnum;
-	      else if (strcmp(name,"SMBgcm")==0) return SMBgcmEnum;
          else stage=32;
    }
    if(stage==32){
-	      if (strcmp(name,"SMBgemb")==0) return SMBgembEnum;
+	      if (strcmp(name,"SMBgcm")==0) return SMBgcmEnum;
+	      else if (strcmp(name,"SMBgemb")==0) return SMBgembEnum;
 	      else if (strcmp(name,"SMBgradients")==0) return SMBgradientsEnum;
 	      else if (strcmp(name,"SMBgradientscomponents")==0) return SMBgradientscomponentsEnum;
 	      else if (strcmp(name,"SMBgradientsela")==0) return SMBgradientselaEnum;

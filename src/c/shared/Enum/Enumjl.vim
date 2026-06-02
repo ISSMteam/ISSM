@@ -3528,6 +3528,7 @@ syn keyword juliaConstC FixedTimesteppingEnum
 syn keyword juliaConstC FloatingAreaEnum
 syn keyword juliaConstC FloatingAreaScaledEnum
 syn keyword juliaConstC FloatingMeltRateEnum
+syn keyword juliaConstC FluxDivergenceEnum
 syn keyword juliaConstC FreeEnum
 syn keyword juliaConstC FreeSurfaceBaseAnalysisEnum
 syn keyword juliaConstC FreeSurfaceTopAnalysisEnum

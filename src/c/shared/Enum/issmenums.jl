@@ -3524,6 +3524,7 @@
 	FloatingAreaEnum
 	FloatingAreaScaledEnum
 	FloatingMeltRateEnum
+	FluxDivergenceEnum
 	FreeEnum
 	FreeSurfaceBaseAnalysisEnum
 	FreeSurfaceTopAnalysisEnum
@@ -7360,6 +7361,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FloatingAreaEnum) return "FloatingArea" end
 	if(enum==FloatingAreaScaledEnum) return "FloatingAreaScaled" end
 	if(enum==FloatingMeltRateEnum) return "FloatingMeltRate" end
+	if(enum==FluxDivergenceEnum) return "FluxDivergence" end
 	if(enum==FreeEnum) return "Free" end
 	if(enum==FreeSurfaceBaseAnalysisEnum) return "FreeSurfaceBaseAnalysis" end
 	if(enum==FreeSurfaceTopAnalysisEnum) return "FreeSurfaceTopAnalysis" end
@@ -11196,6 +11198,7 @@ function StringToEnum(name::String)
 	if(name=="FloatingArea") return FloatingAreaEnum  end
 	if(name=="FloatingAreaScaled") return FloatingAreaScaledEnum  end
 	if(name=="FloatingMeltRate") return FloatingMeltRateEnum  end
+	if(name=="FluxDivergence") return FluxDivergenceEnum  end
 	if(name=="Free") return FreeEnum  end
 	if(name=="FreeSurfaceBaseAnalysis") return FreeSurfaceBaseAnalysisEnum  end
 	if(name=="FreeSurfaceTopAnalysis") return FreeSurfaceTopAnalysisEnum  end

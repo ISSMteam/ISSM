@@ -3534,6 +3534,7 @@ enum definitions{
 	FloatingAreaEnum,
 	FloatingAreaScaledEnum,
 	FloatingMeltRateEnum,
+	FluxDivergenceEnum,
 	FreeEnum,
 	FreeSurfaceBaseAnalysisEnum,
 	FreeSurfaceTopAnalysisEnum,

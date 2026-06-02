@@ -85,6 +85,7 @@ void	UpdateElementsAndMaterialsControl(Elements* elements,Parameters* parameters
 		else if(cost_function==SurfaceAbsVelMisfitEnum
 			  || cost_function==SurfaceRelVelMisfitEnum
 			  || cost_function==SurfaceLogVelMisfitEnum
+			  || cost_function==FluxDivergenceEnum
 			  || cost_function==SurfaceLogVxVyMisfitEnum
 			  || cost_function==SurfaceAverageVelMisfitEnum){
 			iomodel->FetchDataToInput(inputs,elements,"md.inversion.vx_obs",InversionVxObsEnum);

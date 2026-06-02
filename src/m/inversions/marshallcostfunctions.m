@@ -1,4 +1,5 @@
 function data = marshallcostfunctions(cost_functions)
+
 	pos=find(cost_functions==101); data(pos) = {'SurfaceAbsVelMisfit'};
 	pos=find(cost_functions==102); data(pos) = {'SurfaceRelVelMisfit'};
 	pos=find(cost_functions==103); data(pos) = {'SurfaceLogVelMisfit'};
@@ -15,3 +16,4 @@ function data = marshallcostfunctions(cost_functions)
 	pos=find(cost_functions==508); data(pos) = {'RheologyBInitialguessMisfit'};
 	pos=find(cost_functions==510); data(pos) = {'ThicknessPositive'};
 	pos=find(cost_functions==601); data(pos) = {'SurfaceAbsMisfit'};
+	pos=find(cost_functions==701); data(pos) = {'FluxDivergence'};

@@ -163,6 +163,7 @@ class FemModel {
 		void ThicknessAverage();
 		void ThicknessAbsGradientx( IssmDouble* pJ);
 		void ThicknessPositivex(IssmDouble* pJ);
+		void FluxDivergencex(IssmDouble* pJ);
 		#ifdef _HAVE_ESA_
 		void EsaGeodetic2D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, Vector<IssmDouble>* pGravity, Vector<IssmDouble>* pX, Vector<IssmDouble>* pY, IssmDouble* xx, IssmDouble* yy);
       void EsaGeodetic3D(Vector<IssmDouble>* pUp, Vector<IssmDouble>* pNorth, Vector<IssmDouble>* pEast, Vector<IssmDouble>* pGravity, IssmDouble* latitude, IssmDouble* longitude, IssmDouble* radius, IssmDouble* xx, IssmDouble* yy, IssmDouble* zz);

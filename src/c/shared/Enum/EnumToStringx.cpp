@@ -3537,6 +3537,7 @@ const char* EnumToStringx(int en){
 		case FloatingAreaEnum : return "FloatingArea";
 		case FloatingAreaScaledEnum : return "FloatingAreaScaled";
 		case FloatingMeltRateEnum : return "FloatingMeltRate";
+		case FluxDivergenceEnum : return "FluxDivergence";
 		case FreeEnum : return "Free";
 		case FreeSurfaceBaseAnalysisEnum : return "FreeSurfaceBaseAnalysis";
 		case FreeSurfaceTopAnalysisEnum : return "FreeSurfaceTopAnalysis";

@@ -1389,7 +1389,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorSSA(Element* element){/*{{{*/
 	/*Intermediaries */
 	int         num_responses,i;
 	IssmDouble  Jdet,obs_velocity_mag,velocity_mag;
-	IssmDouble  vx,vy,vxobs,vyobs,dux,duy,weight;
+	IssmDouble  vx,vy,vxobs,vyobs,dux,duy,weight,dvx[2],dvy[2],H,dH[2];
 	IssmDouble scalex,scaley,scale,S;
 	int        *responses = NULL;
 	IssmDouble *xyz_list  = NULL;
@@ -1400,14 +1400,16 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorSSA(Element* element){/*{{{*/
 	/*Initialize Element vector and vectors*/
 	ElementVector* pe    = basalelement->NewElementVector(SSAApproximationEnum);
 	IssmDouble*    basis = xNew<IssmDouble>(numnodes);
+	IssmDouble*   dbasis = xNew<IssmDouble>(2*numnodes);
 
 	/*Retrieve all inputs and parameters*/
 	basalelement->GetVerticesCoordinates(&xyz_list);
 	basalelement->FindParam(&num_responses,InversionNumCostFunctionsEnum);
 	basalelement->FindParam(&responses,NULL,InversionCostFunctionsEnum);
 	DatasetInput* weights_input = basalelement->GetDatasetInput(InversionCostFunctionsCoefficientsEnum); _assert_(weights_input);
-	Input* vx_input      = basalelement->GetInput(VxEnum);                                               _assert_(vx_input);
-	Input* vxobs_input   = basalelement->GetInput(InversionVxObsEnum);                                   _assert_(vxobs_input);
+	Input* H_input       = basalelement->GetInput(ThicknessEnum);        _assert_(H_input);
+	Input* vx_input      = basalelement->GetInput(VxEnum);               _assert_(vx_input);
+	Input* vxobs_input   = basalelement->GetInput(InversionVxObsEnum);   _assert_(vxobs_input);
 	Input* vy_input=NULL;
 	Input* vyobs_input=NULL;
 	if(domaintype!=Domain2DverticalEnum){
@@ -1574,6 +1576,31 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorSSA(Element* element){/*{{{*/
 						}
 					}
 					break;
+				case FluxDivergenceEnum:
+					/*
+					 *    |   ∂H      ∂H      ∂vx     ∂vy | 2
+					 * J =|vx -- + vy --  + H --- + H --  |
+					 *    |   ∂x      ∂y      ∂x      ∂y  |
+					 *
+					 *        ∂J              ∂H           ∂ phi_i
+					 * DU = - --  = - 2 div*( -- phi_i + H ------- )
+					 *        ∂vx             ∂x             ∂x
+					 */
+					basalelement->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
+					H_input->GetInputValue(&H,gauss);
+					H_input->GetInputDerivativeValue(&dH[0],xyz_list,gauss);
+					vx_input->GetInputDerivativeValue(&dvx[0],xyz_list,gauss);
+					vy_input->GetInputDerivativeValue(&dvy[0],xyz_list,gauss);
+					for(i=0;i<numnodes;i++){
+
+						IssmDouble temp = vx*dH[0] + vy*dH[1] + H*(dvx[0] + dvy[1]);
+						dux=-2*(basis[i]*dH[0] + H*dbasis[0*numnodes+i])*temp;
+						duy=-2*(basis[i]*dH[1] + H*dbasis[1*numnodes+i])*temp;
+								 
+						pe->values[i*2+0]+=dux*weight*Jdet*gauss->weight; 
+						pe->values[i*2+1]+=duy*weight*Jdet*gauss->weight; 
+					}
+					break;
 				case DragCoefficientAbsGradientEnum:
 					/*Nothing in P vector*/
 					break;
@@ -1608,6 +1635,7 @@ ElementVector* AdjointHorizAnalysis::CreatePVectorSSA(Element* element){/*{{{*/
 	xDelete<int>(responses);
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(basis);
+	xDelete<IssmDouble>(dbasis);
 	if(basalelement->IsSpawnedElement()){basalelement->DeleteMaterials(); delete basalelement;};
 	delete gauss;
 	return pe;
@@ -1654,6 +1682,7 @@ void           AdjointHorizAnalysis::GradientJ(Vector<IssmDouble>* gradient,Elem
 		case SurfaceLogVelMisfitEnum:     /*Nothing, \partial J/\partial k = 0*/ break;
 		case SurfaceLogVxVyMisfitEnum:    /*Nothing, \partial J/\partial k = 0*/ break;
 		case SurfaceAverageVelMisfitEnum: /*Nothing, \partial J/\partial k = 0*/ break;
+		case FluxDivergenceEnum:          /*Nothing, \partial J/\partial k = 0*/ break;
 		case DragCoefficientAbsGradientEnum:   GradientJDragGradient(element,gradient,control_interp,control_index); break;
 		case RheologyBbarAbsGradientEnum:      GradientJBbarGradient(element,gradient,control_interp,control_index); break;
 		case RheologyBAbsGradientEnum:         GradientJBGradient(element,gradient,control_interp,control_index);    break;
