@@ -79,7 +79,11 @@ classdef unity
 				fprintf(fid,'#SBATCH --mail-user=%s\n', cluster.email);
 			end
 			fprintf(fid,'\n');
-			fprintf(fid,'module load intel-oneapi-compilers/2024.1.0 intel-oneapi-mpi/2021.12.1 petsc/3.22.1\n');
+			fprintf(fid,'module load openmpi/4.1.6 petsc/3.22.1\n');
+			fprintf(fid,'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$NETLIB_SCALAPACK_SPACK_ROOT/lib"\n');
+			fprintf(fid,'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$PARMETIS_SPACK_ROOT/lib"\n');
+			fprintf(fid,'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$METIS_SPACK_ROOT/lib"\n');
+			fprintf(fid,'export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:$MUMPS_SPACK_ROOT/lib"\n');
 			fprintf(fid,'mpiexec -n %i %s/%s %s %s %s\n',cluster.nprocs(), cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
