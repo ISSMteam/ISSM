@@ -92,6 +92,11 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	delete analysis;
 	if(incomplete_adjoint) return Ke;
 
+	/*Prepare coordinate system list*/
+	int* cs_list = xNew<int>(vnumnodes+pnumnodes);
+	for(int i=0;i<vnumnodes;i++) cs_list[i]           = XYZEnum;
+	for(int i=0;i<pnumnodes;i++) cs_list[vnumnodes+i] = PressureEnum;
+
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
 	Input* vx_input = element->GetInput(VxEnum);_assert_(vx_input);
@@ -112,7 +117,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	while(gauss->next()){
 
 		element->JacobianDeterminant(&Jdet,xyz_list,gauss);
-		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
+		element->NodalFunctionsDerivativesVelocity(dbasis,xyz_list,gauss); 
 
 		element->StrainRateHO(&epsilon[0],xyz_list,gauss,vx_input,vy_input);
 		element->material->ViscosityFSDerivativeEpsSquare(&mu_prime,&epsilon[0],gauss);
@@ -146,10 +151,11 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	}
 
 	/*Transform Coordinate System*/
-	element->TransformStiffnessMatrixCoord(Ke,XYZEnum);
+	element->TransformStiffnessMatrixCoord(Ke, cs_list);
 
 	/*Clean up and return*/
 	delete gauss;
+	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(dbasis);
 	xDelete<IssmDouble>(xyz_list);
 	return Ke;
