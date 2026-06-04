@@ -71,9 +71,9 @@ void controlnudging_core(FemModel* femmodel){
 
          /*Compute thickness change for this vertex*/
          IssmDouble dH_now   = H[i] - H_obs[i];
-         IssmDouble dHdt_now = (H[i] - H_old[i])/(deltat/yts);
+         IssmDouble dHdt_now = (H[i] - H_old[i])/(deltat);
 			RMSE_H    += dH_now*dH_now;
-			RMSE_dHdt += dHdt_now*dHdt_now;
+			RMSE_dHdt += pow(dHdt_now*yts, 2); //Convert to m/yr
 
          /*1. : thickness error — push C to reduce H deviation
           *     Sign: if H > H_obs (too thick), decrease C (less friction → faster ice → larger flux, lower H)*/
@@ -98,7 +98,7 @@ void controlnudging_core(FemModel* femmodel){
 			//}
 
 			/*Compute total dC in log space*/
-			IssmDouble dC_log = deltat/yts*(dCdt1 + dCdt2 + dCdt3);
+			IssmDouble dC_log = deltat*(dCdt1 + dCdt2 + dCdt3);
 
          /*Clip dC_log to not change too much*/
          if(dC_log>maxstep) dC_log = maxstep;
