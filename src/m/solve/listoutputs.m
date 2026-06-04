@@ -239,6 +239,8 @@ Ice
 IceMaskNodeActivation
 Input
 InversionCostFunctionsCoefficients
+InversionMaxParameter
+InversionMinParameter
 InversionSurfaceObs
 InversionThicknessObs
 InversionVelObs

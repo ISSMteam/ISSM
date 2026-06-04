@@ -346,6 +346,7 @@ syn keyword cConstant InversionGttolEnum
 syn keyword cConstant InversionIncompleteAdjointEnum
 syn keyword cConstant InversionIscontrolEnum
 syn keyword cConstant InversionH0Enum
+syn keyword cConstant InversionMaxIncrementEnum
 syn keyword cConstant InversionMaxiterEnum
 syn keyword cConstant InversionMaxiterPerStepEnum
 syn keyword cConstant InversionMaxstepsEnum
@@ -1008,6 +1009,8 @@ syn keyword cConstant IceEnum
 syn keyword cConstant IceMaskNodeActivationEnum
 syn keyword cConstant InputEnum
 syn keyword cConstant InversionCostFunctionsCoefficientsEnum
+syn keyword cConstant InversionMaxParameterEnum
+syn keyword cConstant InversionMinParameterEnum
 syn keyword cConstant InversionSurfaceObsEnum
 syn keyword cConstant InversionThicknessObsEnum
 syn keyword cConstant InversionVelObsEnum

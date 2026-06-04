@@ -335,6 +335,7 @@
 	InversionIncompleteAdjointEnum
 	InversionIscontrolEnum
 	InversionH0Enum
+	InversionMaxIncrementEnum
 	InversionMaxiterEnum
 	InversionMaxiterPerStepEnum
 	InversionMaxstepsEnum
@@ -997,6 +998,8 @@
 	IceMaskNodeActivationEnum
 	InputEnum
 	InversionCostFunctionsCoefficientsEnum
+	InversionMaxParameterEnum
+	InversionMinParameterEnum
 	InversionSurfaceObsEnum
 	InversionThicknessObsEnum
 	InversionVelObsEnum
@@ -4174,6 +4177,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionIncompleteAdjointEnum) return "InversionIncompleteAdjoint" end
 	if(enum==InversionIscontrolEnum) return "InversionIscontrol" end
 	if(enum==InversionH0Enum) return "InversionH0" end
+	if(enum==InversionMaxIncrementEnum) return "InversionMaxIncrement" end
 	if(enum==InversionMaxiterEnum) return "InversionMaxiter" end
 	if(enum==InversionMaxiterPerStepEnum) return "InversionMaxiterPerStep" end
 	if(enum==InversionMaxstepsEnum) return "InversionMaxsteps" end
@@ -4836,6 +4840,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==IceMaskNodeActivationEnum) return "IceMaskNodeActivation" end
 	if(enum==InputEnum) return "Input" end
 	if(enum==InversionCostFunctionsCoefficientsEnum) return "InversionCostFunctionsCoefficients" end
+	if(enum==InversionMaxParameterEnum) return "InversionMaxParameter" end
+	if(enum==InversionMinParameterEnum) return "InversionMinParameter" end
 	if(enum==InversionSurfaceObsEnum) return "InversionSurfaceObs" end
 	if(enum==InversionThicknessObsEnum) return "InversionThicknessObs" end
 	if(enum==InversionVelObsEnum) return "InversionVelObs" end
@@ -8013,6 +8019,7 @@ function StringToEnum(name::String)
 	if(name=="InversionIncompleteAdjoint") return InversionIncompleteAdjointEnum  end
 	if(name=="InversionIscontrol") return InversionIscontrolEnum  end
 	if(name=="InversionH0") return InversionH0Enum  end
+	if(name=="InversionMaxIncrement") return InversionMaxIncrementEnum  end
 	if(name=="InversionMaxiter") return InversionMaxiterEnum  end
 	if(name=="InversionMaxiterPerStep") return InversionMaxiterPerStepEnum  end
 	if(name=="InversionMaxsteps") return InversionMaxstepsEnum  end
@@ -8675,6 +8682,8 @@ function StringToEnum(name::String)
 	if(name=="IceMaskNodeActivation") return IceMaskNodeActivationEnum  end
 	if(name=="Input") return InputEnum  end
 	if(name=="InversionCostFunctionsCoefficients") return InversionCostFunctionsCoefficientsEnum  end
+	if(name=="InversionMaxParameter") return InversionMaxParameterEnum  end
+	if(name=="InversionMinParameter") return InversionMinParameterEnum  end
 	if(name=="InversionSurfaceObs") return InversionSurfaceObsEnum  end
 	if(name=="InversionThicknessObs") return InversionThicknessObsEnum  end
 	if(name=="InversionVelObs") return InversionVelObsEnum  end

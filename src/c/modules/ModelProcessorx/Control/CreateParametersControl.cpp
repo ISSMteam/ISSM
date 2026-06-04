@@ -154,6 +154,7 @@ void CreateParametersControl(Parameters* parameters,IoModel* iomodel,int solutio
 				break;
 			case 5: /*Nudging*/
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.maxiter",InversionMaxiterEnum));
+				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.max_increment",InversionMaxIncrementEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.H0",InversionH0Enum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.relaxation",InversionRelaxationEnum));
 				parameters->AddObject(iomodel->CopyConstantObject("md.inversion.tau_C",InversionTauCEnum));

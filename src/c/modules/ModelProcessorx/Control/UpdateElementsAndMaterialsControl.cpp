@@ -27,6 +27,8 @@ void	UpdateElementsAndMaterialsControl(Elements* elements,Parameters* parameters
 	iomodel->FindConstant(&inversiontype,"md.inversion.type");
 	if(inversiontype==5){
 		iomodel->FetchDataToInput(inputs,elements,"md.inversion.dhdt_obs",BalancethicknessThickeningRateEnum);
+		iomodel->FetchDataToInput(inputs,elements,"md.inversion.max_parameters",InversionMaxParameterEnum);
+		iomodel->FetchDataToInput(inputs,elements,"md.inversion.min_parameters",InversionMinParameterEnum);
 		return;
 	}
 

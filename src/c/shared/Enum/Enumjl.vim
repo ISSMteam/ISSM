@@ -339,6 +339,7 @@ syn keyword juliaConstC InversionGttolEnum
 syn keyword juliaConstC InversionIncompleteAdjointEnum
 syn keyword juliaConstC InversionIscontrolEnum
 syn keyword juliaConstC InversionH0Enum
+syn keyword juliaConstC InversionMaxIncrementEnum
 syn keyword juliaConstC InversionMaxiterEnum
 syn keyword juliaConstC InversionMaxiterPerStepEnum
 syn keyword juliaConstC InversionMaxstepsEnum
@@ -1001,6 +1002,8 @@ syn keyword juliaConstC IceEnum
 syn keyword juliaConstC IceMaskNodeActivationEnum
 syn keyword juliaConstC InputEnum
 syn keyword juliaConstC InversionCostFunctionsCoefficientsEnum
+syn keyword juliaConstC InversionMaxParameterEnum
+syn keyword juliaConstC InversionMinParameterEnum
 syn keyword juliaConstC InversionSurfaceObsEnum
 syn keyword juliaConstC InversionThicknessObsEnum
 syn keyword juliaConstC InversionVelObsEnum

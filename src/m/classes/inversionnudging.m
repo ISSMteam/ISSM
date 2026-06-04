@@ -7,6 +7,9 @@ classdef inversionnudging
 	properties (SetAccess=public) 
 		iscontrol  = 0;
 		maxiter    = 0;
+		max_increment  = 0.0;
+		min_parameters = NaN
+		max_parameters = NaN
 		tau_C      = 0.0;
 		H0         = 0.0;
 		relaxation = 0.0;
@@ -31,6 +34,9 @@ classdef inversionnudging
 			% maximum number of nudging steps
 			self.maxiter = 100;
 
+			%maximum step size in log space
+			self.max_increment = 0.05;
+
 			% Cadjustment timescale 100 yrs used in van den Akker et al (2025)
 			self.tau_C = 100.0;
 
@@ -48,15 +54,21 @@ classdef inversionnudging
 
 			md = checkfield(md,'fieldname','inversion.iscontrol','values',[0 1]);
 			md = checkfield(md,'fieldname','inversion.maxiter','numel',1,'>=',0);
-			md = checkfield(md,'fieldname','inversion.tau_C','numel',1,'>',0);
+			md = checkfield(md,'fieldname','inversion.max_increment','numel',1,'>',0);
+			md = checkfield(md,'fieldname','inversion.min_parameters','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','inversion.max_parameters','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','inversion.H0','numel',1,'>',0);
          md = checkfield(md,'fieldname','inversion.relaxation','numel',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','inversion.dhdt_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
+
 		end % }}}
 		function disp(self) % {{{
 			disp(sprintf('   Nudging parameters:'));
 			fielddisplay(self,'iscontrol','is inversion activated?');
 			fielddisplay(self,'maxiter','maximum number of nudging steps');
+			fielddisplay(self,'max_increment','maximum increase *in log space* per step');
+			fielddisplay(self,'min_parameters','absolute minimum acceptable value of the inversed parameter on each vertex');
+			fielddisplay(self,'max_parameters','absolute maximum acceptable value of the inversed parameter on each vertex');
 			fielddisplay(self,'tau_C','adjustment timescale for friction coefficient [yr]');
 			fielddisplay(self,'H0','thickness error scale (smaller = more sensitive) [m]');
          fielddisplay(self,'relaxation','relaxation strength toward C_inv (0 = none, 1 = strong)');
@@ -70,6 +82,9 @@ classdef inversionnudging
 			WriteData(fid,prefix,'name','md.inversion.type','data',5,'format','Integer');
 			if ~self.iscontrol, return; end
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxiter','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','min_parameters','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_parameters','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','tau_C','format','Double','scale',yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','H0','format','Double');
          WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation','format','Double');

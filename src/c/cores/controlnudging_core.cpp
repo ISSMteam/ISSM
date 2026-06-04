@@ -15,24 +15,21 @@ void controlnudging_core(FemModel* femmodel){
    IssmDouble time;
 	int        maxiter;
 
-   /*Hard-coded nudging parameters*/
-   IssmDouble minstep    = -0.05; // max log10(C) decrease per step (was -0.05, too large), -0.03 or 0.03
-   IssmDouble maxstep    = 0.05;  // max log10(C) increase per step
-   IssmDouble C_log_min  = -2;    // log10(C) floor = C >= 1, 1 is the typical limit in a budd law
-   IssmDouble C_log_max  = 4.0;   // log10(C) ceiling = C <= 10000, 1000 would be the typical limit but I want it to give it a bit more leeway
-
    /*User-defined nudging parameters*/
    femmodel->parameters->FindParam(&maxiter, InversionMaxiterEnum);
-   IssmDouble tau_C  = femmodel->parameters->FindParam(InversionTauCEnum);
-	IssmDouble H0     = femmodel->parameters->FindParam(InversionH0Enum);
-	IssmDouble r      = femmodel->parameters->FindParam(InversionRelaxationEnum);
-   IssmDouble yts    = femmodel->parameters->FindParam(ConstantsYtsEnum);
-   IssmDouble tmax   = femmodel->parameters->FindParam(TimesteppingFinalTimeEnum);
-   IssmDouble tmin   = femmodel->parameters->FindParam(TimesteppingStartTimeEnum);
-   IssmDouble deltat = (tmax - tmin);
+   IssmDouble tau_C   = femmodel->parameters->FindParam(InversionTauCEnum);
+	IssmDouble max_inc = femmodel->parameters->FindParam(InversionMaxIncrementEnum);
+	IssmDouble H0      = femmodel->parameters->FindParam(InversionH0Enum);
+	IssmDouble r       = femmodel->parameters->FindParam(InversionRelaxationEnum);
+   IssmDouble yts     = femmodel->parameters->FindParam(ConstantsYtsEnum);
+   IssmDouble tmax    = femmodel->parameters->FindParam(TimesteppingFinalTimeEnum);
+   IssmDouble tmin    = femmodel->parameters->FindParam(TimesteppingStartTimeEnum);
+   IssmDouble deltat  = (tmax - tmin);
 
    /*Fields before/after*/
    IssmDouble *C0    = NULL;
+	IssmDouble *Cmin  = NULL;
+   IssmDouble *Cmax  = NULL;
    IssmDouble *C     = NULL;
    IssmDouble *H_obs = NULL;
    IssmDouble *H_old = NULL;
@@ -43,6 +40,8 @@ void controlnudging_core(FemModel* femmodel){
    /*Get Fields once and for all*/
    int numvertices = femmodel->vertices->NumberOfVertices();
    GetVectorFromInputsx(&C0, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
+	GetVectorFromInputsx(&Cmin,femmodel, InversionMinParameterEnum, VertexSIdEnum);
+	GetVectorFromInputsx(&Cmax,femmodel, InversionMaxParameterEnum, VertexSIdEnum);
    GetVectorFromInputsx(&H_obs, femmodel, ThicknessEnum, VertexSIdEnum);
 
    femmodel->parameters->SetParam(false,SaveResultsEnum);
@@ -59,10 +58,10 @@ void controlnudging_core(FemModel* femmodel){
 
       /*Extract results*/
 		xDelete<IssmDouble>(C);
-      GetVectorFromInputsx(&H, femmodel, ThicknessEnum, VertexSIdEnum);
-      GetVectorFromInputsx(&C, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
-		GetVectorFromInputsx(&V, femmodel, VelEnum, VertexSIdEnum);
-      GetVectorFromInputsx(&O_ls, femmodel, MaskOceanLevelsetEnum, VertexSIdEnum);
+      GetVectorFromInputsx(&H,   femmodel, ThicknessEnum, VertexSIdEnum);
+      GetVectorFromInputsx(&C,   femmodel, FrictionCoefficientEnum, VertexSIdEnum);
+		GetVectorFromInputsx(&V,   femmodel, VelEnum, VertexSIdEnum);
+      GetVectorFromInputsx(&O_ls,femmodel, MaskOceanLevelsetEnum, VertexSIdEnum);
 
       /*Update friction coefficient accordingly*/
 		IssmDouble RMSE_H    = 0.;
@@ -101,8 +100,8 @@ void controlnudging_core(FemModel* femmodel){
 			IssmDouble dC_log = deltat*(dCdt1 + dCdt2 + dCdt3);
 
          /*Clip dC_log to not change too much*/
-         if(dC_log>maxstep) dC_log = maxstep;
-         if(dC_log<minstep) dC_log = minstep;
+         if(dC_log> max_inc) dC_log = max_inc;
+         if(dC_log<-max_inc) dC_log = -max_inc;
 
          /*Correction: prevent C from decreasing where ice is too thin and
           * still thinning — the model needs more friction here, not less*/
@@ -112,12 +111,14 @@ void controlnudging_core(FemModel* femmodel){
 
          /*Update friction coefficient now*/
          C[i] = pow(10., C_log + dC_log);
+			if(C[i] > Cmax[i]) C[i] = Cmax[i];
+			if(C[i] < Cmin[i]) C[i] = Cmin[i];
       }
 
       InputUpdateFromVectorx(femmodel, C, FrictionCoefficientEnum, VertexSIdEnum);
 
 		/*Print statistics*/
-		_printf0_("   → RMSE H   : " << sqrt(RMSE_H/numvertices) << " m\n");
+		_printf0_("   → RMSE H   : " << sqrt(RMSE_H/numvertices)    << " m\n");
 		_printf0_("   → RMSE dHdt: " << sqrt(RMSE_dHdt/numvertices) << " m/yr\n");
 
       xDelete<IssmDouble>(H_old);
@@ -132,5 +133,7 @@ void controlnudging_core(FemModel* femmodel){
    /*Clean up and return*/
 	xDelete<IssmDouble>(C);
    xDelete<IssmDouble>(C0);
+	xDelete<IssmDouble>(Cmin);
+   xDelete<IssmDouble>(Cmax);
    xDelete<IssmDouble>(H_obs);
 }

@@ -348,6 +348,7 @@ const char* EnumToStringx(int en){
 		case InversionIncompleteAdjointEnum : return "InversionIncompleteAdjoint";
 		case InversionIscontrolEnum : return "InversionIscontrol";
 		case InversionH0Enum : return "InversionH0";
+		case InversionMaxIncrementEnum : return "InversionMaxIncrement";
 		case InversionMaxiterEnum : return "InversionMaxiter";
 		case InversionMaxiterPerStepEnum : return "InversionMaxiterPerStep";
 		case InversionMaxstepsEnum : return "InversionMaxsteps";
@@ -1010,6 +1011,8 @@ const char* EnumToStringx(int en){
 		case IceMaskNodeActivationEnum : return "IceMaskNodeActivation";
 		case InputEnum : return "Input";
 		case InversionCostFunctionsCoefficientsEnum : return "InversionCostFunctionsCoefficients";
+		case InversionMaxParameterEnum : return "InversionMaxParameter";
+		case InversionMinParameterEnum : return "InversionMinParameter";
 		case InversionSurfaceObsEnum : return "InversionSurfaceObs";
 		case InversionThicknessObsEnum : return "InversionThicknessObs";
 		case InversionVelObsEnum : return "InversionVelObs";
