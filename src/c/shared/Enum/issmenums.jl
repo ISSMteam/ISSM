@@ -334,18 +334,22 @@
 	InversionGttolEnum
 	InversionIncompleteAdjointEnum
 	InversionIscontrolEnum
-	InversionH0Enum
-	InversionMaxIncrementEnum
+	InversionH0CEnum
+	InversionH0MeltEnum
+	InversionMaxIncrementCEnum
+	InversionMaxIncrementMeltEnum
 	InversionMaxiterEnum
 	InversionMaxiterPerStepEnum
 	InversionMaxstepsEnum
 	InversionNstepsEnum
 	InversionNumControlParametersEnum
 	InversionNumCostFunctionsEnum
-	InversionRelaxationEnum
+	InversionRelaxationCEnum
+	InversionRelaxationMeltEnum
 	InversionStepThresholdEnum
 	InversionStopFlagEnum
 	InversionTauCEnum
+	InversionTauMeltEnum
 	InversionTypeEnum
 	IoConstantEnum
 	IvinsEnum
@@ -998,6 +1002,10 @@
 	IceMaskNodeActivationEnum
 	InputEnum
 	InversionCostFunctionsCoefficientsEnum
+	InversionMaxCEnum
+	InversionMinCEnum
+	InversionMaxMeltEnum
+	InversionMinMeltEnum
 	InversionMaxParameterEnum
 	InversionMinParameterEnum
 	InversionSurfaceObsEnum
@@ -4176,18 +4184,22 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionGttolEnum) return "InversionGttol" end
 	if(enum==InversionIncompleteAdjointEnum) return "InversionIncompleteAdjoint" end
 	if(enum==InversionIscontrolEnum) return "InversionIscontrol" end
-	if(enum==InversionH0Enum) return "InversionH0" end
-	if(enum==InversionMaxIncrementEnum) return "InversionMaxIncrement" end
+	if(enum==InversionH0CEnum) return "InversionH0C" end
+	if(enum==InversionH0MeltEnum) return "InversionH0Melt" end
+	if(enum==InversionMaxIncrementCEnum) return "InversionMaxIncrementC" end
+	if(enum==InversionMaxIncrementMeltEnum) return "InversionMaxIncrementMelt" end
 	if(enum==InversionMaxiterEnum) return "InversionMaxiter" end
 	if(enum==InversionMaxiterPerStepEnum) return "InversionMaxiterPerStep" end
 	if(enum==InversionMaxstepsEnum) return "InversionMaxsteps" end
 	if(enum==InversionNstepsEnum) return "InversionNsteps" end
 	if(enum==InversionNumControlParametersEnum) return "InversionNumControlParameters" end
 	if(enum==InversionNumCostFunctionsEnum) return "InversionNumCostFunctions" end
-	if(enum==InversionRelaxationEnum) return "InversionRelaxation" end
+	if(enum==InversionRelaxationCEnum) return "InversionRelaxationC" end
+	if(enum==InversionRelaxationMeltEnum) return "InversionRelaxationMelt" end
 	if(enum==InversionStepThresholdEnum) return "InversionStepThreshold" end
 	if(enum==InversionStopFlagEnum) return "InversionStopFlag" end
 	if(enum==InversionTauCEnum) return "InversionTauC" end
+	if(enum==InversionTauMeltEnum) return "InversionTauMelt" end
 	if(enum==InversionTypeEnum) return "InversionType" end
 	if(enum==IoConstantEnum) return "IoConstant" end
 	if(enum==IvinsEnum) return "Ivins" end
@@ -4840,6 +4852,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==IceMaskNodeActivationEnum) return "IceMaskNodeActivation" end
 	if(enum==InputEnum) return "Input" end
 	if(enum==InversionCostFunctionsCoefficientsEnum) return "InversionCostFunctionsCoefficients" end
+	if(enum==InversionMaxCEnum) return "InversionMaxC" end
+	if(enum==InversionMinCEnum) return "InversionMinC" end
+	if(enum==InversionMaxMeltEnum) return "InversionMaxMelt" end
+	if(enum==InversionMinMeltEnum) return "InversionMinMelt" end
 	if(enum==InversionMaxParameterEnum) return "InversionMaxParameter" end
 	if(enum==InversionMinParameterEnum) return "InversionMinParameter" end
 	if(enum==InversionSurfaceObsEnum) return "InversionSurfaceObs" end
@@ -8018,18 +8034,22 @@ function StringToEnum(name::String)
 	if(name=="InversionGttol") return InversionGttolEnum  end
 	if(name=="InversionIncompleteAdjoint") return InversionIncompleteAdjointEnum  end
 	if(name=="InversionIscontrol") return InversionIscontrolEnum  end
-	if(name=="InversionH0") return InversionH0Enum  end
-	if(name=="InversionMaxIncrement") return InversionMaxIncrementEnum  end
+	if(name=="InversionH0C") return InversionH0CEnum  end
+	if(name=="InversionH0Melt") return InversionH0MeltEnum  end
+	if(name=="InversionMaxIncrementC") return InversionMaxIncrementCEnum  end
+	if(name=="InversionMaxIncrementMelt") return InversionMaxIncrementMeltEnum  end
 	if(name=="InversionMaxiter") return InversionMaxiterEnum  end
 	if(name=="InversionMaxiterPerStep") return InversionMaxiterPerStepEnum  end
 	if(name=="InversionMaxsteps") return InversionMaxstepsEnum  end
 	if(name=="InversionNsteps") return InversionNstepsEnum  end
 	if(name=="InversionNumControlParameters") return InversionNumControlParametersEnum  end
 	if(name=="InversionNumCostFunctions") return InversionNumCostFunctionsEnum  end
-	if(name=="InversionRelaxation") return InversionRelaxationEnum  end
+	if(name=="InversionRelaxationC") return InversionRelaxationCEnum  end
+	if(name=="InversionRelaxationMelt") return InversionRelaxationMeltEnum  end
 	if(name=="InversionStepThreshold") return InversionStepThresholdEnum  end
 	if(name=="InversionStopFlag") return InversionStopFlagEnum  end
 	if(name=="InversionTauC") return InversionTauCEnum  end
+	if(name=="InversionTauMelt") return InversionTauMeltEnum  end
 	if(name=="InversionType") return InversionTypeEnum  end
 	if(name=="IoConstant") return IoConstantEnum  end
 	if(name=="Ivins") return IvinsEnum  end
@@ -8682,6 +8702,10 @@ function StringToEnum(name::String)
 	if(name=="IceMaskNodeActivation") return IceMaskNodeActivationEnum  end
 	if(name=="Input") return InputEnum  end
 	if(name=="InversionCostFunctionsCoefficients") return InversionCostFunctionsCoefficientsEnum  end
+	if(name=="InversionMaxC") return InversionMaxCEnum  end
+	if(name=="InversionMinC") return InversionMinCEnum  end
+	if(name=="InversionMaxMelt") return InversionMaxMeltEnum  end
+	if(name=="InversionMinMelt") return InversionMinMeltEnum  end
 	if(name=="InversionMaxParameter") return InversionMaxParameterEnum  end
 	if(name=="InversionMinParameter") return InversionMinParameterEnum  end
 	if(name=="InversionSurfaceObs") return InversionSurfaceObsEnum  end
