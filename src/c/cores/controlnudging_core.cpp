@@ -25,7 +25,7 @@ void controlnudging_core(FemModel* femmodel){
    IssmDouble H0_C         = femmodel->parameters->FindParam(InversionH0CEnum);
    IssmDouble H0_melt      = femmodel->parameters->FindParam(InversionH0MeltEnum);
    IssmDouble r_C          = femmodel->parameters->FindParam(InversionRelaxationCEnum);
-   IssmDouble r_melt       = femmodel->parameters->FindParam(InversionRelaxationCEnum);
+   IssmDouble r_melt       = femmodel->parameters->FindParam(InversionRelaxationMeltEnum);
    IssmDouble yts          = femmodel->parameters->FindParam(ConstantsYtsEnum);
    IssmDouble tmax         = femmodel->parameters->FindParam(TimesteppingFinalTimeEnum);
    IssmDouble tmin         = femmodel->parameters->FindParam(TimesteppingStartTimeEnum);
@@ -124,7 +124,7 @@ void controlnudging_core(FemModel* femmodel){
 			if(C[i] < Cmin[i]) C[i] = Cmin[i];
 
 			/*Melt update if floating*/
-			if(O_ls[i]<0.){
+			//if(O_ls[i]<0.){
 				/*1. : thickness error — push melt to reduce H deviation
 				 *     Sign: if H > H_obs (too thick), increase melt */
 				dMeltdt1 = +1*(dH_now/H0_melt) / tau_melt;
@@ -137,7 +137,7 @@ void controlnudging_core(FemModel* femmodel){
 				dMeltdt3 = -1*(r_melt / tau_melt)*(Melt[i]);
 
 				/*Compute total dMelt by combining all 3 contributions*/
-				IssmDouble dMelt = deltat*(dMeltdt1 + dMeltdt2 + dMeltdt3);
+				IssmDouble dMelt = deltat*(dMeltdt1 + dMeltdt2 + dMeltdt3)/yts;
 				if(dMelt> max_inc_melt) dMelt = max_inc_melt;
 				if(dMelt<-max_inc_melt) dMelt = -max_inc_melt;
 
@@ -145,7 +145,7 @@ void controlnudging_core(FemModel* femmodel){
 				Melt[i] += dMelt;
 				if(Melt[i] > Meltmax[i]) Melt[i] = Meltmax[i];
 				if(Melt[i] < Meltmin[i]) Melt[i] = Meltmin[i];
-			}
+			//}
       }
 
       InputUpdateFromVectorx(femmodel, C,    FrictionCoefficientEnum, VertexSIdEnum);

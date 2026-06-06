@@ -111,17 +111,17 @@ classdef inversionnudging
 			if ~self.iscontrol, return; end
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxiter','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment_C','format','Double');
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment_melt','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment_melt','format','Double','scale',1./yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','min_C','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_C','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','min_melt','format','DoubleMat','mattype',1,'scale',1./yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_melt','format','DoubleMat','mattype',1,'scale',1./yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','tau_C','format','Double','scale',yts);
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','tau_melt','format','Double','scale',yts);
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','tau_melt','format','Double','scale',yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','H0_C','format','Double');
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','H0_melt','format','Double');
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_C','format','Double');
-         WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_melt','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','H0_melt','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_C','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_melt','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dhdt_obs','format','DoubleMat','mattype',1,'scale',1./yts);
 		end % }}}
 	end
