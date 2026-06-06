@@ -334,6 +334,7 @@ syn keyword cConstant InputToExtrudeEnum
 syn keyword cConstant InputToL2ProjectEnum
 syn keyword cConstant InputToSmoothEnum
 syn keyword cConstant InversionAlgorithmEnum
+syn keyword cConstant InversionC0Enum
 syn keyword cConstant InversionControlParametersEnum
 syn keyword cConstant InversionControlScalingFactorsEnum
 syn keyword cConstant InversionCostFunctionsEnum
@@ -352,6 +353,7 @@ syn keyword cConstant InversionMaxIncrementMeltEnum
 syn keyword cConstant InversionMaxiterEnum
 syn keyword cConstant InversionMaxiterPerStepEnum
 syn keyword cConstant InversionMaxstepsEnum
+syn keyword cConstant InversionMelt0Enum
 syn keyword cConstant InversionNstepsEnum
 syn keyword cConstant InversionNumControlParametersEnum
 syn keyword cConstant InversionNumCostFunctionsEnum

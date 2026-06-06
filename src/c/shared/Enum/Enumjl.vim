@@ -327,6 +327,7 @@ syn keyword juliaConstC InputToExtrudeEnum
 syn keyword juliaConstC InputToL2ProjectEnum
 syn keyword juliaConstC InputToSmoothEnum
 syn keyword juliaConstC InversionAlgorithmEnum
+syn keyword juliaConstC InversionC0Enum
 syn keyword juliaConstC InversionControlParametersEnum
 syn keyword juliaConstC InversionControlScalingFactorsEnum
 syn keyword juliaConstC InversionCostFunctionsEnum
@@ -345,6 +346,7 @@ syn keyword juliaConstC InversionMaxIncrementMeltEnum
 syn keyword juliaConstC InversionMaxiterEnum
 syn keyword juliaConstC InversionMaxiterPerStepEnum
 syn keyword juliaConstC InversionMaxstepsEnum
+syn keyword juliaConstC InversionMelt0Enum
 syn keyword juliaConstC InversionNstepsEnum
 syn keyword juliaConstC InversionNumControlParametersEnum
 syn keyword juliaConstC InversionNumCostFunctionsEnum

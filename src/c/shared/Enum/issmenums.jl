@@ -323,6 +323,7 @@
 	InputToL2ProjectEnum
 	InputToSmoothEnum
 	InversionAlgorithmEnum
+	InversionC0Enum
 	InversionControlParametersEnum
 	InversionControlScalingFactorsEnum
 	InversionCostFunctionsEnum
@@ -341,6 +342,7 @@
 	InversionMaxiterEnum
 	InversionMaxiterPerStepEnum
 	InversionMaxstepsEnum
+	InversionMelt0Enum
 	InversionNstepsEnum
 	InversionNumControlParametersEnum
 	InversionNumCostFunctionsEnum
@@ -4173,6 +4175,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InputToL2ProjectEnum) return "InputToL2Project" end
 	if(enum==InputToSmoothEnum) return "InputToSmooth" end
 	if(enum==InversionAlgorithmEnum) return "InversionAlgorithm" end
+	if(enum==InversionC0Enum) return "InversionC0" end
 	if(enum==InversionControlParametersEnum) return "InversionControlParameters" end
 	if(enum==InversionControlScalingFactorsEnum) return "InversionControlScalingFactors" end
 	if(enum==InversionCostFunctionsEnum) return "InversionCostFunctions" end
@@ -4191,6 +4194,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionMaxiterEnum) return "InversionMaxiter" end
 	if(enum==InversionMaxiterPerStepEnum) return "InversionMaxiterPerStep" end
 	if(enum==InversionMaxstepsEnum) return "InversionMaxsteps" end
+	if(enum==InversionMelt0Enum) return "InversionMelt0" end
 	if(enum==InversionNstepsEnum) return "InversionNsteps" end
 	if(enum==InversionNumControlParametersEnum) return "InversionNumControlParameters" end
 	if(enum==InversionNumCostFunctionsEnum) return "InversionNumCostFunctions" end
@@ -8023,6 +8027,7 @@ function StringToEnum(name::String)
 	if(name=="InputToL2Project") return InputToL2ProjectEnum  end
 	if(name=="InputToSmooth") return InputToSmoothEnum  end
 	if(name=="InversionAlgorithm") return InversionAlgorithmEnum  end
+	if(name=="InversionC0") return InversionC0Enum  end
 	if(name=="InversionControlParameters") return InversionControlParametersEnum  end
 	if(name=="InversionControlScalingFactors") return InversionControlScalingFactorsEnum  end
 	if(name=="InversionCostFunctions") return InversionCostFunctionsEnum  end
@@ -8041,6 +8046,7 @@ function StringToEnum(name::String)
 	if(name=="InversionMaxiter") return InversionMaxiterEnum  end
 	if(name=="InversionMaxiterPerStep") return InversionMaxiterPerStepEnum  end
 	if(name=="InversionMaxsteps") return InversionMaxstepsEnum  end
+	if(name=="InversionMelt0") return InversionMelt0Enum  end
 	if(name=="InversionNsteps") return InversionNstepsEnum  end
 	if(name=="InversionNumControlParameters") return InversionNumControlParametersEnum  end
 	if(name=="InversionNumCostFunctions") return InversionNumCostFunctionsEnum  end

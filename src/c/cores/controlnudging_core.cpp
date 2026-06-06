@@ -18,6 +18,8 @@ void controlnudging_core(FemModel* femmodel){
 
    /*User-defined nudging parameters*/
    femmodel->parameters->FindParam(&maxiter, InversionMaxiterEnum);
+   IssmDouble C0           = femmodel->parameters->FindParam(InversionC0Enum);
+	IssmDouble melt0        = femmodel->parameters->FindParam(InversionMelt0Enum);
    IssmDouble tau_C        = femmodel->parameters->FindParam(InversionTauCEnum);
 	IssmDouble tau_melt     = femmodel->parameters->FindParam(InversionTauMeltEnum);
    IssmDouble max_inc_C    = femmodel->parameters->FindParam(InversionMaxIncrementCEnum);
@@ -33,7 +35,7 @@ void controlnudging_core(FemModel* femmodel){
 
    /*Fields before/after*/
 	IssmDouble *C       = NULL;
-	IssmDouble *C0      = NULL;
+	IssmDouble *Cinit      = NULL;
 	IssmDouble *Cmin    = NULL;
 	IssmDouble *Cmax    = NULL;
 	IssmDouble *Melt    = NULL;
@@ -48,7 +50,7 @@ void controlnudging_core(FemModel* femmodel){
    /*Get Fields once and for all*/
    int numvertices = femmodel->vertices->NumberOfVertices();
 	GetVectorFromInputsx(&Melt, femmodel, BasalforcingsPerturbationMeltingRateEnum, VertexSIdEnum);
-   GetVectorFromInputsx(&C0, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
+   GetVectorFromInputsx(&Cinit, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
 	GetVectorFromInputsx(&Cmin,femmodel, InversionMinCEnum, VertexSIdEnum);
 	GetVectorFromInputsx(&Cmax,femmodel, InversionMaxCEnum, VertexSIdEnum);
 	GetVectorFromInputsx(&Meltmin,femmodel, InversionMinMeltEnum, VertexSIdEnum);
@@ -87,18 +89,18 @@ void controlnudging_core(FemModel* femmodel){
 
          /*1. : thickness error — push C to reduce H deviation
           *     Sign: if H > H_obs (too thick), decrease C (less friction → faster ice → larger flux, lower H)*/
-         dCdt1 = -1*(dH_now/H0_C) / tau_C;
+         dCdt1 = -C0*(dH_now/H0_C) / tau_C;
 
          /*2. : tendency — damp ongoing thinning/thickening
           *     Sign: if dH/dt > 0 (thickening), if it is thickening and already too thick, decrease c faster.
           *     If it is thinning and the thickness is already to large, the ice is already moving in the correct
           *     direction, so make C decrease a little bit less */
-         dCdt2 = -1*(dHdt_now/H0_C);
+         dCdt2 = -C0*(dHdt_now/H0_C);
 
          /*3. Relaxation term*/
          IssmDouble C_log  = log10(max(C[i],  1.));
-         IssmDouble C_log0 = log10(max(C0[i], 1.));
-         dCdt3 = 1*(r_C / tau_C)*(C_log0 - C_log);
+         IssmDouble C_log0 = log10(max(Cinit[i], 1.));
+         dCdt3 = C0*(r_C / tau_C)*(C_log0 - C_log);
 
 			/* Do not nudge C where velocity ratio is very low AND ice is too thin
 			 * These cells need upstream replenishment, not local friction changes*/
@@ -127,17 +129,17 @@ void controlnudging_core(FemModel* femmodel){
 			//if(O_ls[i]<0.){
 				/*1. : thickness error — push melt to reduce H deviation
 				 *     Sign: if H > H_obs (too thick), increase melt */
-				dMeltdt1 = +1*(dH_now/H0_melt) / tau_melt;
+				dMeltdt1 = +melt0*(dH_now/H0_melt) / tau_melt;
 
 				/*2. : tendency — damp ongoing thinning/thickening
 				 *     Sign: if dH/dt > 0 (thickening), if it is thickening and already too thick, increase melt*/
-				dMeltdt2 = +1*(dHdt_now/H0_melt);
+				dMeltdt2 = +melt0*(dHdt_now/H0_melt);
 
 				/*3. Relaxation term*/
-				dMeltdt3 = -1*(r_melt / tau_melt)*(Melt[i]);
+				dMeltdt3 = -melt0*(r_melt / tau_melt)*(Melt[i]);
 
 				/*Compute total dMelt by combining all 3 contributions*/
-				IssmDouble dMelt = deltat*(dMeltdt1 + dMeltdt2 + dMeltdt3)/yts;
+				IssmDouble dMelt = deltat*(dMeltdt1 + dMeltdt2 + dMeltdt3);
 				if(dMelt> max_inc_melt) dMelt = max_inc_melt;
 				if(dMelt<-max_inc_melt) dMelt = -max_inc_melt;
 
@@ -169,7 +171,7 @@ void controlnudging_core(FemModel* femmodel){
 
    /*Clean up and return*/
 	xDelete<IssmDouble>(C);
-   xDelete<IssmDouble>(C0);
+   xDelete<IssmDouble>(Cinit);
 	xDelete<IssmDouble>(Melt);
 	xDelete<IssmDouble>(Meltmin);
    xDelete<IssmDouble>(Meltmax);

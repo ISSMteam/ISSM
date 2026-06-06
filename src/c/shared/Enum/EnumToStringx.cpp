@@ -336,6 +336,7 @@ const char* EnumToStringx(int en){
 		case InputToL2ProjectEnum : return "InputToL2Project";
 		case InputToSmoothEnum : return "InputToSmooth";
 		case InversionAlgorithmEnum : return "InversionAlgorithm";
+		case InversionC0Enum : return "InversionC0";
 		case InversionControlParametersEnum : return "InversionControlParameters";
 		case InversionControlScalingFactorsEnum : return "InversionControlScalingFactors";
 		case InversionCostFunctionsEnum : return "InversionCostFunctions";
@@ -354,6 +355,7 @@ const char* EnumToStringx(int en){
 		case InversionMaxiterEnum : return "InversionMaxiter";
 		case InversionMaxiterPerStepEnum : return "InversionMaxiterPerStep";
 		case InversionMaxstepsEnum : return "InversionMaxsteps";
+		case InversionMelt0Enum : return "InversionMelt0";
 		case InversionNstepsEnum : return "InversionNsteps";
 		case InversionNumControlParametersEnum : return "InversionNumControlParameters";
 		case InversionNumCostFunctionsEnum : return "InversionNumCostFunctions";

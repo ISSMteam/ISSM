@@ -7,12 +7,14 @@ classdef inversionnudging
 	properties (SetAccess=public) 
 		iscontrol          = 0;
 		maxiter            = 0;
+		C0                 = 0.0;
 		max_increment_C    = 0.0;
 		relaxation_C       = 0.0;
 		tau_C              = 0.0;
 		H0_C               = 0.0;
 		min_C              = NaN
 		max_C              = NaN
+		melt0              = 0.0;
 		max_increment_melt = 0.0;
 		relaxation_melt    = 0.0;
 		tau_melt           = 0.0;
@@ -60,6 +62,10 @@ classdef inversionnudging
          self.relaxation_C    = 0.5;
 			self.relaxation_melt = 0.3;
 
+			%default orders of magnitude for melt and C
+			self.C0    = 1.0; %SI
+			self.melt0 = 1.0; %m/yr
+
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -68,10 +74,12 @@ classdef inversionnudging
 
 			md = checkfield(md,'fieldname','inversion.iscontrol','values',[0 1]);
 			md = checkfield(md,'fieldname','inversion.maxiter','numel',1,'>=',0);
+			md = checkfield(md,'fieldname','inversion.C0','numel',1,'>',0);
 			md = checkfield(md,'fieldname','inversion.max_increment_C','numel',1,'>',0);
          md = checkfield(md,'fieldname','inversion.max_increment_melt','numel',1,'>',0);
 			md = checkfield(md,'fieldname','inversion.min_C','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','inversion.max_C','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','inversion.melt0','numel',1,'>',0);
 			md = checkfield(md,'fieldname','inversion.min_melt','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','inversion.max_melt','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','inversion.H0_C','numel',1,'>',0);
@@ -82,25 +90,39 @@ classdef inversionnudging
 
 		end % }}}
 		function disp(self) % {{{
-			disp(sprintf('   Nudging parameters:'));
+			disp('   Nudging parameters:');
+			disp(' ');
 			fielddisplay(self,'iscontrol','is inversion activated?');
 			fielddisplay(self,'maxiter','maximum number of nudging steps');
-
-			fielddisplay(self,'max_increment_C',   'maximum increase in C per nudging step *in log10 space*');
-			fielddisplay(self,'relaxation_C','relaxation strength toward C_inv (0 = none, 1 = strong)');
+			fielddisplay(self,'dhdt_obs','observed thickness rate of change [m/yr]');
+			disp(' ');
+			disp('     Friction parameters:');
+			disp(' ');
+			disp('         1   ∆C     H-Hobs    1  ∆H    rC          ');
+			disp('         --  -- = - ------- - - --- - ---  (C - Ci)');
+			disp('         C0  ∆t     tauC H0   H0 ∆t   tauC        ');
+			disp(' ');
+			fielddisplay(self,'C0', 'Friction scaling factor');
 			fielddisplay(self,'tau_C','adjustment timescale for friction coefficient [yr]');
 			fielddisplay(self,'H0_C','thickness error scale for C (smaller = more sensitive) [m]');
+			fielddisplay(self,'relaxation_C','relaxation strength toward C_inv (0 = none, 1 = strong)');
+			fielddisplay(self,'max_increment_C',   'maximum increase in C per nudging step *in log10 space*');
 			fielddisplay(self,'min_C','absolute minimum acceptable value of C');
 			fielddisplay(self,'max_C','absolute maximum acceptable value of C');
-
-			fielddisplay(self,'max_increment_melt','maximum increase in melt per nudging step');
-			fielddisplay(self,'relaxation_melt','relaxation strength toward perturbation = 0 (0 = none, 1 = strong)');
+			disp(' ');
+			disp('     Melt perturbation parameters:');
+			disp(' ');
+			disp('         1   ∆P     H-Hobs    1  ∆H    r_m  ');
+			disp('         --  -- = + ------- + - --- - ---  P');
+			disp('       melt0 ∆t     tauM H0   H0 ∆t   tau_m ');
+			disp(' ');
+			fielddisplay(self,'melt0', 'meltscaling factor [m/yr]');
          fielddisplay(self,'tau_melt','adjustment timescale for melt perturbation [yr]');
          fielddisplay(self,'H0_melt','thickness error scale for melt perturbation (smaller = more sensitive) [m]');
+			fielddisplay(self,'relaxation_melt','relaxation strength toward perturbation = 0 (0 = none, 1 = strong)');
+			fielddisplay(self,'max_increment_melt','maximum increase in melt per nudging step');
 			fielddisplay(self,'min_melt','absolute minimum acceptable value of melt perturbation [m/yr]');
 			fielddisplay(self,'max_melt','absolute maximum acceptable value of melt perturbation [m/yr]');
-
-			fielddisplay(self,'dhdt_obs','observed thickness rate of change [m/yr]');
 		end % }}}
 		function marshall(self, prefix, md, fid) % {{{
 
@@ -110,6 +132,9 @@ classdef inversionnudging
 			WriteData(fid,prefix,'name','md.inversion.type','data',5,'format','Integer');
 			if ~self.iscontrol, return; end
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','maxiter','format','Integer');
+
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','C0','format','Double');
+			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','melt0','format','Double','scale',1./yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment_C','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','max_increment_melt','format','Double','scale',1./yts);
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','min_C','format','DoubleMat','mattype',1);
