@@ -112,9 +112,9 @@ classdef inversionnudging
 			disp(' ');
 			disp('     Melt perturbation parameters:');
 			disp(' ');
-			disp('         1   ∆P     H-Hobs    1  ∆H    r_m  ');
+			disp('         1   ∆P     H-Hobs    1  ∆H   r_m  ');
 			disp('         --  -- = + ------- + - --- - ---  P');
-			disp('       melt0 ∆t     tauM H0   H0 ∆t   tau_m ');
+			disp('       melt0 ∆t     tauM H0   H0 ∆t  tau_m ');
 			disp(' ');
 			fielddisplay(self,'melt0', 'meltscaling factor [m/yr]');
          fielddisplay(self,'tau_melt','adjustment timescale for melt perturbation [yr]');
