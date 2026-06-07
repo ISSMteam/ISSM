@@ -1623,6 +1623,27 @@ void       Element::GetSolutionFromInputsOneDof(Vector<IssmDouble>* solution, in
 	delete gauss;
 }
 /*}}}*/
+void       Element::GetVectorFromInputs(IssmDouble* vector,int input_enum,int type){/*{{{*/
+
+	switch(type){
+		case VertexLIdEnum:{
+         int        doflist[MAXVERTICES];
+         IssmDouble values[MAXVERTICES];
+			const int  NUM_VERTICES = this->GetNumberOfVertices();
+
+			/*Fill in values*/
+			this->GetVerticesLidList(&doflist[0]);
+			this->GetInputListOnVertices(&values[0],input_enum);
+			for(int i=0;i<NUM_VERTICES;i++){
+				vector[doflist[i]] = values[i];
+			}
+         }
+			break;
+		default:
+			_error_("type " << type << " (" << EnumToStringx(type) << ") not implemented yet");
+	}
+
+}/*}}}*/
 void       Element::GetVectorFromInputs(Vector<IssmDouble>* vector,int input_enum,int type){/*{{{*/
 
 	switch(type){

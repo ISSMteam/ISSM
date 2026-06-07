@@ -227,7 +227,7 @@ void  Nodes::Finalize(){/*{{{*/
 	/*Here we do 4 things:
 	 * - count all nodes once for all so that we do not need to call MPI
 	 *   every time we need to know the total number of vertices
-	 * - Distribute lids (local ids): masters first, slaves second
+	 * - Distribute lids (local ids): masters first, clones second
 	 * - Distribute pids (parallel ids)
 	 * - Distribute Gset once for all
 	 */

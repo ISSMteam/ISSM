@@ -118,6 +118,7 @@ class Element: public Object{
 		void               GetNodesSidList(int* sidlist);
 		void               GetPhi(IssmDouble* phi, IssmDouble*  epsilon, IssmDouble viscosity);
 		void               GetSolutionFromInputsOneDof(Vector<IssmDouble>* solution,int solutionenum);
+		void               GetVectorFromInputs(IssmDouble* vector, int name_enum, int type);
 		void               GetVectorFromInputs(Vector<IssmDouble>* vector, int name_enum, int type);
 		void               GetVectorFromInputs(Vector<IssmDouble>* vector, int name_enum, int type,IssmDouble time);
 		void	             GetVerticesLidList(int* lidlist);

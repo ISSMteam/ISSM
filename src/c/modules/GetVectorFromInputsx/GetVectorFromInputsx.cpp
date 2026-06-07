@@ -34,6 +34,100 @@ void GetVectorFromInputsx(Vector<IssmDouble>** pvector,FemModel* femmodel,int na
 	/*Assign output pointers:*/
 	*pvector=vector;
 } /*}}}*/
+void GetVectorFromInputsx(Vector<IssmDouble>** pvector,FemModel* femmodel,int name,int type,IssmDouble time){/*{{{*/
+
+	Vector<IssmDouble>* vector=NULL;
+
+	switch(type){
+	case VertexPIdEnum: case VertexSIdEnum:
+		vector=new Vector<IssmDouble>(femmodel->vertices->NumberOfVertices());
+		break;
+	case NodesEnum:case NodeSIdEnum:
+		vector=new Vector<IssmDouble>(femmodel->nodes->NumberOfNodes());
+		break;
+	default:
+			_error_("vector type: " << EnumToStringx(type) << " not supported yet!");
+	}
+	/*Look up in elements*/
+	for(Object* & object : femmodel->elements->objects){
+		Element* element=xDynamicCast<Element*>(object);
+		element->GetVectorFromInputs(vector,name,type,time);
+	}
+
+	vector->Assemble();
+
+	/*Assign output pointers:*/
+	*pvector=vector;
+}/*}}}*/
+void GetVectorFromInputsx(IssmDouble** pvector,FemModel* femmodel,int name, int type){/*{{{*/
+
+	/*output: */
+	IssmDouble* vector=NULL;
+
+	if(type==VertexLIdEnum){
+
+		/*Allocate vector*/
+		int nv = femmodel->vertices->NumberOfVerticesLocalAll();
+		vector = xNew<IssmDouble>(nv);
+
+		/*Look up in elements*/
+		for(Object* & object : femmodel->elements->objects){
+			Element* element=xDynamicCast<Element*>(object);
+			element->GetVectorFromInputs(vector, name, type);
+		}
+
+	}
+	else{
+		Vector<IssmDouble>* vec_vector=NULL;
+		GetVectorFromInputsx(&vec_vector,femmodel,name,type);
+		vector=vec_vector->ToMPISerial();
+
+		/*Free resources:*/
+		delete vec_vector;
+	}
+
+	/*Assign output pointers:*/
+	*pvector=vector;
+}/*}}}*/
+void GetVectorFromInputsx(IssmDouble** pvector,int* pvector_size, FemModel* femmodel,int name){ /*{{{*/
+
+	int interpolation_type;
+	/*this one is special: we don't specify the type, but let the nature of the inputs dictate.
+	 * P0 -> ElementSIdEnum, P1 ->VertexSIdEnum: */
+
+	/*We go find the input of the first element, and query its interpolation type: */
+	Element* element=xDynamicCast<Element*>(femmodel->elements->GetObjectByOffset(0));
+	Input* input=element->GetInput(name);
+	if (!input) _error_("could not find input: " << name);
+
+	interpolation_type=input->GetInputInterpolationType();
+	if(interpolation_type==P0Enum){
+		*pvector_size=femmodel->elements->NumberOfElements();
+		GetVectorFromInputsx(pvector,femmodel,name, ElementSIdEnum);
+	}
+	else if(interpolation_type==P1Enum){
+		*pvector_size=femmodel->vertices->NumberOfVertices();
+		GetVectorFromInputsx(pvector,femmodel,name, VertexSIdEnum);
+	}
+	else _error_("interpolation type : " << interpolation_type << " not supported yet!");
+}/*}}}*/
+void GetVectoronBaseFromInputsx(IssmDouble** pvector,FemModel* femmodel,int name, int type){/*{{{*/
+
+	/*output: */
+	IssmDouble* vector=NULL;
+
+	/*intermediary: */
+	Vector<IssmDouble>* vec_vector=NULL;
+
+	GetVectoronBaseFromInputsx(&vec_vector,femmodel,name,type);
+	vector=vec_vector->ToMPISerial();
+
+	/*Free resources:*/
+	delete vec_vector;
+
+	/*Assign output pointers:*/
+	*pvector=vector;
+}/*}}}*/
 void GetVectoronBaseFromInputsx(Vector<IssmDouble>** pvector,FemModel* femmodel,int name,int type){ /*{{{*/
 
 	int domaintype;
@@ -72,84 +166,3 @@ void GetVectoronBaseFromInputsx(Vector<IssmDouble>** pvector,FemModel* femmodel,
 	/*Assign output pointers:*/
 	*pvector=vector;
 } /*}}}*/
-void GetVectorFromInputsx(Vector<IssmDouble>** pvector,FemModel* femmodel,int name,int type,IssmDouble time){/*{{{*/
-
-	Vector<IssmDouble>* vector=NULL;
-
-	switch(type){
-	case VertexPIdEnum: case VertexSIdEnum:
-		vector=new Vector<IssmDouble>(femmodel->vertices->NumberOfVertices());
-		break;
-	case NodesEnum:case NodeSIdEnum:
-		vector=new Vector<IssmDouble>(femmodel->nodes->NumberOfNodes());
-		break;
-	default:
-			_error_("vector type: " << EnumToStringx(type) << " not supported yet!");
-	}
-	/*Look up in elements*/
-	for(Object* & object : femmodel->elements->objects){
-		Element* element=xDynamicCast<Element*>(object);
-		element->GetVectorFromInputs(vector,name,type,time);
-	}
-
-	vector->Assemble();
-
-	/*Assign output pointers:*/
-	*pvector=vector;
-}/*}}}*/
-void GetVectorFromInputsx(IssmDouble** pvector,FemModel* femmodel,int name, int type){/*{{{*/
-
-	/*output: */
-	IssmDouble* vector=NULL;
-
-	/*intermediary: */
-	Vector<IssmDouble>* vec_vector=NULL;
-
-	GetVectorFromInputsx(&vec_vector,femmodel,name,type);
-	vector=vec_vector->ToMPISerial();
-
-	/*Free resources:*/
-	delete vec_vector;
-
-	/*Assign output pointers:*/
-	*pvector=vector;
-}/*}}}*/
-void GetVectoronBaseFromInputsx(IssmDouble** pvector,FemModel* femmodel,int name, int type){/*{{{*/
-
-	/*output: */
-	IssmDouble* vector=NULL;
-
-	/*intermediary: */
-	Vector<IssmDouble>* vec_vector=NULL;
-
-	GetVectoronBaseFromInputsx(&vec_vector,femmodel,name,type);
-	vector=vec_vector->ToMPISerial();
-
-	/*Free resources:*/
-	delete vec_vector;
-
-	/*Assign output pointers:*/
-	*pvector=vector;
-}/*}}}*/
-void GetVectorFromInputsx(IssmDouble** pvector,int* pvector_size, FemModel* femmodel,int name){ /*{{{*/
-
-	int interpolation_type;
-	/*this one is special: we don't specify the type, but let the nature of the inputs dictace.
-	 * P0 -> ElementSIdEnum, P1 ->VertexSIdEnum: */
-
-	/*We go find the input of the first element, and query its interpolation type: */
-	Element* element=xDynamicCast<Element*>(femmodel->elements->GetObjectByOffset(0));
-	Input* input=element->GetInput(name);
-	if (!input) _error_("could not find input: " << name);
-
-	interpolation_type=input->GetInputInterpolationType();
-	if(interpolation_type==P0Enum){
-		*pvector_size=femmodel->elements->NumberOfElements();
-		GetVectorFromInputsx(pvector,femmodel,name, ElementSIdEnum);
-	}
-	else if(interpolation_type==P1Enum){
-		*pvector_size=femmodel->vertices->NumberOfVertices();
-		GetVectorFromInputsx(pvector,femmodel,name, VertexSIdEnum);
-	}
-	else _error_("interpolation type : " << interpolation_type << " not supported yet!");
-}/*}}}*/
