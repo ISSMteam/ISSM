@@ -5630,7 +5630,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 
 				IssmDouble* lat_mappingpoint=NULL;
 				IssmDouble* lon_mappingpoint=NULL;
-				int* mappedforcingneighbors=NULL;
+				IssmDouble* mappedforcingneighbors=NULL;
 
 				if (ismappingneighborxy) {
 					parameters->FindParam(&lon_mappingpoint,&N,SmbXMappedforcingEnum);
@@ -5640,7 +5640,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 					parameters->FindParam(&lat_mappingpoint,&N,SmbLatMappedforcingEnum);
 				}
 
-				this->inputs->GetIntArray(SmbMappedforcingneighborsEnum,this->lid,&mappedforcingneighbors,&N2); _assert_(N2==3);
+				this->inputs->GetArray(SmbMappedforcingneighborsEnum,this->lid,&mappedforcingneighbors,&N2); _assert_(N2==3);
 
 				Qinterp = xNew<int>(4);
 				IssmDouble* xinterp = xNew<IssmDouble>(4);
@@ -5666,9 +5666,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 					neighbor3 = Mappedpoint;
 				}
 				else{
-					neighbor1 = mappedforcingneighbors[0];
-					neighbor2 = mappedforcingneighbors[1];
-					neighbor3 = mappedforcingneighbors[2];
+					neighbor1 = reCast<int>(mappedforcingneighbors[0]);
+					neighbor2 = reCast<int>(mappedforcingneighbors[1]);
+					neighbor3 = reCast<int>(mappedforcingneighbors[2]);
 				}
 
 				mappedforcingpoints[0]=Mappedpoint;
@@ -5697,7 +5697,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 					int latlon = 0;
 					int signlat = 1;
 					if (yinterp[0]<0) signlat = -1;
-					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat); _assert_(latlon>0);
+					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat);
 					lat = latelem[0];
 					lon = lonelem[0];
 					if(lon>180) lon=lon-360;
@@ -5748,7 +5748,7 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 				xDelete<double>(lonelem);
 				xDelete<IssmDouble>(lat_mappingpoint);
 				xDelete<IssmDouble>(lon_mappingpoint);
-				xDelete<int>(mappedforcingneighbors);
+				xDelete<IssmDouble>(mappedforcingneighbors);
 
 			} else {
 				// Get Qinterp for this element, set Q12, Q21, Q11, Q22 locally
