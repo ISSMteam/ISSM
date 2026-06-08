@@ -651,7 +651,7 @@ class SMBgemb(object):
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapseTaValue','format','DoubleMat','mattype',3)
             WriteData(fid,prefix,'object',self,'class','smb','fieldname','lapsedlwrfValue','format','DoubleMat','mattype',3)
             if self.ismappingusingneighbors:
-                WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','DoubleMat','mattype',3)
+                WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','IntMat','mattype',3)
                 if self.ismappingneighborxy:
                     WriteData(fid,prefix,'object',self,'class','smb','fieldname','x_mappedforcing','format','DoubleMat','mattype',3)
                     WriteData(fid,prefix,'object',self,'class','smb','fieldname','y_mappedforcing','format','DoubleMat','mattype',3)

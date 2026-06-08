@@ -697,7 +697,7 @@ classdef SMBgemb
 						WriteData(fid,prefix,'object',self,'class','smb','fieldname','lat_mappedforcing','format','DoubleMat','mattype',3);
 						WriteData(fid,prefix,'object',self,'class','smb','fieldname','lon_mappedforcing','format','DoubleMat','mattype',3);
 					end
-					WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','DoubleMat','mattype',3);
+					WriteData(fid,prefix,'object',self,'class','smb','fieldname','mappedforcingneighbors','format','IntMat','mattype',3);
 				end
 
 				if (self.isprecipforcingremapped)
