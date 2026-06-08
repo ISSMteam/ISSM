@@ -26,7 +26,8 @@ classdef cluster_defaults
 			system(compressstring);
 
 			%Copy tar.gz file over
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
+			port=0; if isprop(cluster,'port'), port=cluster.port; end
+			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']});
 		end %}}}
 		function LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, format) % {{{
 			% on cluster: open tar.gz file and submit job
@@ -68,14 +69,16 @@ classdef cluster_defaults
 			else
 				error('format not supported');
 			end
-			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
+			port=0; if isprop(cluster,'port'), port=cluster.port; end
+			issmssh(cluster.name,cluster.login,port,launchcommand);
 
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 
 			%Copy output files from the cluster back to the current directory via scp.
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
+			port=0; if isprop(cluster,'port'), port=cluster.port; end
+			issmscpin(cluster.name,cluster.login,port,directory,filelist);
 
 		end %}}}
 	end

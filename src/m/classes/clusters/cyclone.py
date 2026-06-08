@@ -5,6 +5,7 @@ try:
     from cyclone_settings import cyclone_settings
 except ImportError:
     print('You need cyclone_settings.py to proceed, check presence and sys.path')
+import cluster_defaults
 from fielddisplay import fielddisplay
 from helpers import *
 from pairoptions import pairoptions
@@ -32,7 +33,7 @@ class cyclone(object):
         self.time = 100
         self.codepath = ''
         self.executionpath = ''
-        self.port = ''
+        self.port = 0
         self.interactive = 0
 
         # Use provided options to change fields
@@ -101,17 +102,7 @@ class cyclone(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress the files into one zip.
-        # filelist contains full paths; use -C so only basenames are stored in the archive.
-        root = issmdir() + '/execution/' + dirname
-        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
-        for filepath in filelist:
-            if not os.path.isfile(filepath):
-                raise Exception('File {} not found'.format(filepath))
-            compressstring += ' {}'.format(os.path.basename(filepath))
-        subprocess.call(compressstring, shell=True)
-
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        cluster_defaults.UploadQueueJob(self, modelname, dirname, filelist)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -124,7 +115,5 @@ class cyclone(object):
     # }}}
 
     def Download(self, dirname, filelist):  # {{{
-        # Copy files from cluster to current directory
-        directory = '%s/%s/' % (self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        cluster_defaults.Download(self, dirname, filelist)
     # }}}

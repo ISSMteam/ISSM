@@ -346,6 +346,7 @@ syn keyword juliaConstC InversionNumControlParametersEnum
 syn keyword juliaConstC InversionNumCostFunctionsEnum
 syn keyword juliaConstC InversionStepThresholdEnum
 syn keyword juliaConstC InversionStopFlagEnum
+syn keyword juliaConstC InversionTauCEnum
 syn keyword juliaConstC InversionTypeEnum
 syn keyword juliaConstC IoConstantEnum
 syn keyword juliaConstC IvinsEnum

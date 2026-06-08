@@ -105,7 +105,7 @@ end
 
 %launch queue job: 
 disp('launching solution sequence')
-LaunchQueueJobIceOcean(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
+LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,restart,batch);
 
 %return if batch: 
 if batch

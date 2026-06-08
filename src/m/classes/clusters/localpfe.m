@@ -267,31 +267,7 @@ classdef localpfe
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
 
-			%figure out what shell extension we will use:
-			if isempty(strfind(cluster.shell,'csh'))
-				shellext='sh';
-			else
-				shellext='csh';
-			end
-
-			if cluster.verbose, %Execute Queue job end
-
 			launchcommand=['cd ' cluster.executionpath ' && rm -rf *.lock && rm -rf ADOLC* && tar -zxf ' dirname '.tar.gz  && rm -rf *.tar.gz'];
-			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
-
-		end %}}}
-		function LaunchQueueJobIceOcean(cluster,modelname,dirname,filelist,restart,batch)% {{{
-
-			%figure out what shell extension we will use:
-			if isempty(strfind(cluster.shell,'csh'))
-				shellext='sh';
-			else
-				shellext='csh';
-			end
-
-			if cluster.verbose, %Execute Queue job end
-
-			launchcommand=['cd ' cluster.executionpath ' && rm -rf *.lock && tar -zxf ' dirname '.tar.gz  && rm -rf *.tar.gz'];
 			issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
 
 		end %}}}

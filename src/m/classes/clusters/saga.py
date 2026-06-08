@@ -2,6 +2,7 @@ import datetime
 import os
 import subprocess
 
+import cluster_defaults
 from fielddisplay import fielddisplay
 from helpers import *
 from IssmConfig import IssmConfig
@@ -160,33 +161,16 @@ class saga(object):
     # }}}
 
     def UploadQueueJob(self, modelname, dirname, filelist):  # {{{
-        # Compress the files into one zip.
-        # filelist contains full paths; use -C so only basenames are stored in the archive.
-        root = issmdir() + '/execution/' + dirname
-        compressstring = 'tar -C {} -zcf {}.tar.gz'.format(root, dirname)
-        for filepath in filelist:
-            if not os.path.isfile(filepath):
-                raise Exception('File {} not found'.format(filepath))
-            compressstring += ' {}'.format(os.path.basename(filepath))
-        subprocess.call(compressstring, shell=True)
-
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        cluster_defaults.UploadQueueJob(self, modelname, dirname, filelist)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
-        #Execute Queue job
-        if not isempty(restart):
-            launchcommand = 'cd %s && cd %s && sbatch %s.queue' % (self.executionpath, dirname, modelname)
-        else:
-            launchcommand = 'cd %s && rm -rf ./%s && mkdir %s && cd %s && mv ../%s.tar.gz ./ && tar -zxf %s.tar.gz  && sbatch %s.queue' % (self.executionpath, dirname, dirname, dirname, dirname, dirname, modelname)
-        issmssh(self.name, self.login, self.port, launchcommand)
+        cluster_defaults.LaunchQueueJobSbatch(self, modelname, dirname, filelist, restart, batch, 2)
     # }}}
 
     def Download(self, dirname, filelist):  # {{{
-        # Copy files from cluster to current directory
-        directory = '%s/%s/' % (self.executionpath, dirname)
         try:
-            issmscpin(self.name, self.login, self.port, directory, filelist)
+            cluster_defaults.Download(self, dirname, filelist)
         except OSError:
             print("File does not exsit, skiping")
-            # }}}
+    # }}}

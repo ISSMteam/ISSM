@@ -321,34 +321,6 @@ classdef generic
 			end
 
 		end %}}}
-		function LaunchQueueJobIceOcean(cluster,modelname,dirname,filelist,restart,batch) % {{{
-
-			if ~ispc
-
-				%figure out what shell extension we will use:
-				if isempty(strfind(cluster.shell,'csh'))
-					shellext='sh';
-				else
-					shellext='csh';
-				end
-
-				if ~isempty(restart)
-					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
-				else
-					if ~batch
-					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && tar -zxf ' dirname '.tar.gz  && source  ' modelname '.queue '];
-					else
-					launchcommand=['source ' cluster.etcpath '/environment.' shellext ' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
-					end
-				end
-				issmssh(cluster.name,cluster.login,cluster.port,launchcommand);
-			else
-				batfile=[cluster.executionpath '\' dirname '\' modelname '.bat'];
-				system(['"' batfile '"']);
-			end
-
-		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 
 			%copy files from cluster to current directory

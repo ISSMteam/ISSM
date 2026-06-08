@@ -347,6 +347,7 @@ enum definitions{
 	InversionNumCostFunctionsEnum,
 	InversionStepThresholdEnum,
 	InversionStopFlagEnum,
+	InversionTauCEnum,
 	InversionTypeEnum,
 	IoConstantEnum,
 	IvinsEnum,
