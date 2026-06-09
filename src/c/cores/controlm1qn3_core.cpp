@@ -281,13 +281,19 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 	IssmDouble  Gnorm = 0.;
 	offset = 0;
 	for(int c=0;c<num_controls;c++){
+		int count = 0.;
 		for(int i=0;i<M[c]*N[c];i++){
 			int index = offset+i;
-			if(X[index]>=XU[index]) G[index]=0.;
-			if(X[index]<=XL[index]) G[index]=0.;
+			if(X[index]>=XU[index] || X[index]<=XL[index]){
+				G[index]=0.;
+				count++;
+			}
 			G[index] = G[index]*scaling_factors[c];
 			X[index] = X[index]/scaling_factors[c];
 			Gnorm += G[index]*G[index];
+		}
+		if(count==M[c]*N[c]){
+			_printf0_("WARNING: control field entirely exceeds the prescribed min/max_parameters and the gradient has been seet to 0. Please adjust accordingly.\n");
 		}
 		offset += M[c]*N[c];
 	}
