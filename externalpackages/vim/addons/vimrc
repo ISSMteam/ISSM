@@ -203,8 +203,9 @@ inoremap <s-tab> <c-r>=InsertTabWrapper ("backward")<cr>
 "source ~/.exrc 
 set wildmenu
 
-"Change to directory of current file automatically
-autocmd BufEnter * lcd %:p:h
+"Change to directory of current file automatically (handle git difftool
+"gracefully)
+autocmd BufEnter * if !&diff && empty(&buftype) && isdirectory(expand('%:p:h')) | silent! execute 'lcd' fnamemodify(resolve(expand('%:p')), ':h') | endif
 " ----------------------------------------------------------------------}}}
 
 " Abbreviations {{{
