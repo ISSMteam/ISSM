@@ -1,6 +1,8 @@
+import os.path
 from checkfield import checkfield
 from fielddisplay import fielddisplay
 from WriteData import WriteData
+from issmdir import issmdir
 
 
 class issmsettings(object):
@@ -18,6 +20,7 @@ class issmsettings(object):
         self.coupling_frequency = 0
         self.checkpoint_frequency = 0
         self.waitonlock = 0
+        self.stagingpath = ''
         self.solver_residue_threshold = 0
 
         # Set defaults
@@ -33,6 +36,7 @@ class issmsettings(object):
         s += '{}\n'.format(fielddisplay(self, "sb_coupling_frequency", "frequency at which StressBalance solver is coupled (default 1)"))
         s += '{}\n'.format(fielddisplay(self, "checkpoint_frequency", "frequency at which the runs are being recorded, allowing for a restart"))
         s += '{}\n'.format(fielddisplay(self, "waitonlock", "maximum number of minutes to wait for batch results, or return 0"))
+        s += '{}\n'.format(fielddisplay(self, "stagingpath", "local directory where input files are staged before upload to a remote cluster"))
         s += '{}\n'.format(fielddisplay(self, "solver_residue_threshold", "throw an error if solver residue exceeds this value (NaN to deactivate)"))
         return s
     # }}}
@@ -55,6 +59,9 @@ class issmsettings(object):
         self.waitonlock = pow(2, 31) - 1
         # Throw an error if solver residue exceeds this value
         self.solver_residue_threshold = 1e-6
+        #local directory where input files are staged before upload
+        #to a remote cluster. Defaults to $ISSM_DIR/execution
+        self.stagingpath = issmdir() + '/execution'
 
         return self
     # }}}
@@ -68,6 +75,8 @@ class issmsettings(object):
         md = checkfield(md, 'fieldname', 'settings.checkpoint_frequency', 'numel', [1], '>=', 0)
         md = checkfield(md, 'fieldname', 'settings.waitonlock', 'numel', [1])
         md = checkfield(md, 'fieldname', 'settings.solver_residue_threshold', 'numel', [1], '>', 0)
+        if not self.stagingpath or not os.path.isdir(self.stagingpath):
+            md = checkmessage(md, 'md.settings.stagingpath does not exist')
 
         return md
     # }}}

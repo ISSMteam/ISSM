@@ -126,14 +126,14 @@ def solve(md, solutionstring, *args):
 
     # Prepare directory in execution
     if cluster.name == oshostname():
-        localexecdir = cluster.executionpath
+        stagingpath = cluster.executionpath
     else:
-        localexecdir = issmdir() + '/execution'
-    if not os.path.isdir(localexecdir):
-        raise RuntimeError('Could not find directory ' + localexecdir)
-    elif len(os.listdir(localexecdir)) > 200:
-        warnings.warn(localexecdir + ' has more than 200 subdirectories. Consider cleaning up your execution directory')
-    root = localexecdir + '/' + md.private.runtimename
+        stagingpath = md.settings.stagingpath
+    if not os.path.isdir(stagingpath):
+        raise RuntimeError('Could not find directory ' + stagingpath)
+    elif len(os.listdir(stagingpath)) > 200:
+        warnings.warn(stagingpath + ' has more than 200 subdirectories. Consider cleaning up your execution directory')
+    root = stagingpath + '/' + md.private.runtimename
     if os.path.isdir(root):
         shutil.rmtree(root)
     os.mkdir(root)

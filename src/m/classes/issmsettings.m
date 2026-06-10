@@ -4,7 +4,7 @@
 %      issmsettings=issmsettings();
 
 classdef issmsettings
-	properties (SetAccess=public) 
+	properties (SetAccess=public)
 		results_on_nodes         = {};
 		io_gather                = 0;
 		lowmem                   = 0;
@@ -12,6 +12,7 @@ classdef issmsettings
 		sb_coupling_frequency    = 0;
 		checkpoint_frequency     = 0;
 		waitonlock               = 0;
+		stagingpath              = '';
 		upload_server            = '';
 		upload_path              = '';
 		upload_login             = '';
@@ -24,14 +25,21 @@ classdef issmsettings
 			% This function is directly called by matlab when a model object is
 			% loaded. Update old properties here
 
-			%2020 Oct 6
 			if isstruct(self)
 				objstruct = self;
 				self = structtoobj(issmsettings(),objstruct);
+
+				%2020 Oct 6
 				if isfield(objstruct,'recording_frequency')
 					self.checkpoint_frequency = objstruct.recording_frequency;
 				end
 			end
+
+			%2026 Jun 10
+			if isempty(self.stagingpath)
+				self.stagingpath = [issmdir() '/execution'];
+			end
+
 		end % }}}
 	end
 	methods
@@ -66,7 +74,11 @@ classdef issmsettings
 			%0 to deactivate
 			self.waitonlock=Inf;
 
-			%upload options: 
+			%local directory where input files are staged before upload
+			%to a remote cluster. Defaults to $ISSM_DIR/execution
+			self.stagingpath = [issmdir() '/execution'];
+
+			%upload options:
 			self.upload_port         = 0;
 
 			%throw an error if solver residue exceeds this value
@@ -83,6 +95,11 @@ classdef issmsettings
 			md = checkfield(md,'fieldname','settings.checkpoint_frequency','numel',[1],'>=',0);
 			md = checkfield(md,'fieldname','settings.waitonlock','numel',[1]);
 			md = checkfield(md,'fieldname','settings.solver_residue_threshold','numel',[1],'>',0);
+			md = checkfield(md,'fieldname','settings.stagingpath','stringrow',1);
+			if isempty(self.stagingpath) || exist(self.stagingpath,'dir')~=7
+				md = checkmessage(md, 'md.settings.stagingpath does not exist');
+			end
+
 
 		end % }}}
 		function disp(self) % {{{
@@ -95,6 +112,7 @@ classdef issmsettings
 			fielddisplay(self,'sb_coupling_frequency','frequency at which StressBalance solver is coupled (default 1)');
 			fielddisplay(self,'checkpoint_frequency','frequency at which the runs are being recorded, allowing for a restart');
 			fielddisplay(self,'waitonlock','maximum number of minutes to wait for batch results (NaN to deactivate)');
+			fielddisplay(self,'stagingpath','local directory where input files are staged before upload to a remote cluster');
 			fielddisplay(self,'upload_server','server hostname where model should be uploaded');
 			fielddisplay(self,'upload_path','path on server where model should be uploaded');
 			fielddisplay(self,'upload_login','server login');

@@ -16,7 +16,6 @@ from issmscpout import issmscpout
 from issmssh import issmssh
 from pairoptions import pairoptions
 
-
 class generic(object):
     """generic cluster class definition
 

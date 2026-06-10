@@ -124,16 +124,16 @@ end
 
 %Prepare directory in execution
 if strcmpi(cluster.name, oshostname())
-	localexecdir = cluster.executionpath;
+	stagingpath = cluster.executionpath;
 else
-	localexecdir = [issmdir() '/execution/'];
+	stagingpath = md.settings.stagingpath;
 end
-if ~exist(localexecdir, 'dir')
-	error(['Could not find directory ' issmdir() '/execution/']);
-elseif numel(dir(localexecdir))>200
-	warning([localexecdir ' has more than 200 subdirectories. Consider cleaning up your execution directory'])
+if ~exist(stagingpath, 'dir')
+	error(['Could not find directory ' stagingpath]);
+elseif numel(dir(stagingpath))>200
+	warning([stagingpath ' has more than 200 subdirectories. Consider cleaning up your execution directory'])
 end
-root = [localexecdir '/' md.private.runtimename];
+root = [stagingpath '/' md.private.runtimename];
 if exist(root, 'dir')
 	rmdir(root, 's');
 end
