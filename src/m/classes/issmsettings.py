@@ -75,6 +75,7 @@ class issmsettings(object):
         md = checkfield(md, 'fieldname', 'settings.checkpoint_frequency', 'numel', [1], '>=', 0)
         md = checkfield(md, 'fieldname', 'settings.waitonlock', 'numel', [1])
         md = checkfield(md, 'fieldname', 'settings.solver_residue_threshold', 'numel', [1], '>', 0)
+        md = checkfield(md, 'fieldname', 'settings.stagingpath', 'string', 1)
         if not self.stagingpath or not os.path.isdir(self.stagingpath):
             md = checkmessage(md, 'md.settings.stagingpath does not exist')
 

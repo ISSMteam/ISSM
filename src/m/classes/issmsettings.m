@@ -95,7 +95,7 @@ classdef issmsettings
 			md = checkfield(md,'fieldname','settings.checkpoint_frequency','numel',[1],'>=',0);
 			md = checkfield(md,'fieldname','settings.waitonlock','numel',[1]);
 			md = checkfield(md,'fieldname','settings.solver_residue_threshold','numel',[1],'>',0);
-			md = checkfield(md,'fieldname','settings.stagingpath','stringrow',1);
+			md = checkfield(md,'fieldname','settings.stagingpath','string',1);
 			if isempty(self.stagingpath) || exist(self.stagingpath,'dir')~=7
 				md = checkmessage(md, 'md.settings.stagingpath does not exist');
 			end
