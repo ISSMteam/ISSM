@@ -234,7 +234,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_DEFINE([_IS_MSYS2_], [1], [is Windows (MSYS2 MinGW)])
 			export CXXFLAGS="-D_MSYS2_ -std=c++11"
 			export LDFLAGS="-no-undefined"
-			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lmingwex -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
+			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
 		;;
 		*)
 			AC_MSG_ERROR([unsupported operating system type])
