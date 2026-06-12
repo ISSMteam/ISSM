@@ -46,6 +46,9 @@ void controlnudging_core(FemModel* femmodel){
 	IssmDouble *H       = NULL;
 	IssmDouble *V       = NULL;
 	IssmDouble *O_ls    = NULL;
+	
+	/*Cost functions*/
+	IssmDouble* J = xNewZeroInit<IssmDouble>(maxiter*2);
 
    /*Get Fields once and for all*/
    int numvertices = femmodel->vertices->NumberOfVertices();
@@ -159,6 +162,8 @@ void controlnudging_core(FemModel* femmodel){
 		/*Print statistics*/
 		_printf0_("   → RMSE H   : " << sqrt(RMSE_H/numvertices)    << " m\n");
 		_printf0_("   → RMSE dHdt: " << sqrt(RMSE_dHdt/numvertices) << " m/yr\n");
+		J[m*2+0] = sqrt(RMSE_H/numvertices);
+		J[m*2+1] = sqrt(RMSE_dHdt/numvertices);
 
       xDelete<IssmDouble>(H_old);
       xDelete<IssmDouble>(H);
@@ -166,11 +171,12 @@ void controlnudging_core(FemModel* femmodel){
 		xDelete<IssmDouble>(V);
    }
 
-	/*Add C to results*/
+	/*Add C/melt/J to results*/
 	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,
 					FrictionCoefficientEnum,C, numvertices, 1, 0, 0));
 	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,
 					BasalforcingsPerturbationMeltingRateEnum,Melt, numvertices, 1, 0, 0));
+	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,JEnum,J, maxiter, 2,0,0));
 
    /*Clean up and return*/
 	xDelete<IssmDouble>(C);
@@ -181,4 +187,5 @@ void controlnudging_core(FemModel* femmodel){
 	xDelete<IssmDouble>(Cmin);
 	xDelete<IssmDouble>(Cmax);
    xDelete<IssmDouble>(H_obs);
+	xDelete<IssmDouble>(J);
 }
