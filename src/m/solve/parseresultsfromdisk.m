@@ -252,6 +252,8 @@ else
 		field = field*yts;
 	elseif strcmp(fieldname,'BasalforcingsSpatialUpperwaterMeltingRate')
 		field = field*yts;
+	elseif strcmp(fieldname,'BasalforcingsPerturbationMeltingRate')
+		field = field*yts;
 	elseif strcmp(fieldname,'TotalFloatingBmb')
 		field = field/10.^12*yts; %(GigaTon/year)
 	elseif strcmp(fieldname,'TotalFloatingBmbScaled')
