@@ -57,7 +57,7 @@ void controlnudging_core(FemModel* femmodel){
 	GetVectorFromInputsx(&Meltmax,femmodel, InversionMaxMeltEnum, VertexSIdEnum);
    GetVectorFromInputsx(&H_obs, femmodel, ThicknessEnum, VertexSIdEnum);
 
-   femmodel->parameters->SetParam(false,SaveResultsEnum);
+   femmodel->parameters->SetParam(true, DoNotSaveResultsEnum);
    for(int m=0;m<maxiter;m++){
       _printf0_("\n=== NUDGING STEP "<< m+1 <<"/"<< maxiter << " ===\n");
 
@@ -67,6 +67,9 @@ void controlnudging_core(FemModel* femmodel){
       /*Solve another transient simulation*/
       femmodel->parameters->FindParam(&time,TimeEnum);
       femmodel->parameters->SetParam(time+deltat,TimesteppingFinalTimeEnum);
+		if(m==maxiter-1){
+			femmodel->parameters->SetParam(false, DoNotSaveResultsEnum);
+		}
       transient_core(femmodel);
 
       /*Extract results*/
