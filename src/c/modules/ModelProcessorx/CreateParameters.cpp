@@ -404,6 +404,7 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 
 	/*By default, save all results*/
 	parameters->AddObject(new BoolParam(SaveResultsEnum,true));
+	parameters->AddObject(new BoolParam(DoNotSaveResultsEnum,false)); /*Has priority*/
 	
 	/*Option to not save results after the final time step, e.g. for external coupling*/
 	parameters->AddObject(new BoolParam(SaveFinalResultsEnum,true));

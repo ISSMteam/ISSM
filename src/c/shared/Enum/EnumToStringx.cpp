@@ -188,6 +188,7 @@ const char* EnumToStringx(int en){
 		case DebugProfilingEnum : return "DebugProfiling";
 		case DomainDimensionEnum : return "DomainDimension";
 		case DomainTypeEnum : return "DomainType";
+		case DoNotSaveResultsEnum : return "DoNotSaveResults";
 		case DslModelEnum : return "DslModel";
 		case DslModelidEnum : return "DslModelid";
 		case DslNummodelsEnum : return "DslNummodels";

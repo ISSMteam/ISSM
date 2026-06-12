@@ -186,6 +186,7 @@ syn keyword cConstant DebrisPackingFractionEnum
 syn keyword cConstant DebugProfilingEnum
 syn keyword cConstant DomainDimensionEnum
 syn keyword cConstant DomainTypeEnum
+syn keyword cConstant DoNotSaveResultsEnum
 syn keyword cConstant DslModelEnum
 syn keyword cConstant DslModelidEnum
 syn keyword cConstant DslNummodelsEnum

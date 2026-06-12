@@ -180,6 +180,7 @@ enum definitions{
 	DebugProfilingEnum,
 	DomainDimensionEnum,
 	DomainTypeEnum,
+	DoNotSaveResultsEnum,
 	DslModelEnum,
 	DslModelidEnum,
 	DslNummodelsEnum,

@@ -175,6 +175,7 @@
 	DebugProfilingEnum
 	DomainDimensionEnum
 	DomainTypeEnum
+	DoNotSaveResultsEnum
 	DslModelEnum
 	DslModelidEnum
 	DslNummodelsEnum
@@ -4027,6 +4028,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==DebugProfilingEnum) return "DebugProfiling" end
 	if(enum==DomainDimensionEnum) return "DomainDimension" end
 	if(enum==DomainTypeEnum) return "DomainType" end
+	if(enum==DoNotSaveResultsEnum) return "DoNotSaveResults" end
 	if(enum==DslModelEnum) return "DslModel" end
 	if(enum==DslModelidEnum) return "DslModelid" end
 	if(enum==DslNummodelsEnum) return "DslNummodels" end
@@ -7879,6 +7881,7 @@ function StringToEnum(name::String)
 	if(name=="DebugProfiling") return DebugProfilingEnum  end
 	if(name=="DomainDimension") return DomainDimensionEnum  end
 	if(name=="DomainType") return DomainTypeEnum  end
+	if(name=="DoNotSaveResults") return DoNotSaveResultsEnum  end
 	if(name=="DslModel") return DslModelEnum  end
 	if(name=="DslModelid") return DslModelidEnum  end
 	if(name=="DslNummodels") return DslNummodelsEnum  end

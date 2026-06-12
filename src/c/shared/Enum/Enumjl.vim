@@ -179,6 +179,7 @@ syn keyword juliaConstC DebrisPackingFractionEnum
 syn keyword juliaConstC DebugProfilingEnum
 syn keyword juliaConstC DomainDimensionEnum
 syn keyword juliaConstC DomainTypeEnum
+syn keyword juliaConstC DoNotSaveResultsEnum
 syn keyword juliaConstC DslModelEnum
 syn keyword juliaConstC DslModelidEnum
 syn keyword juliaConstC DslNummodelsEnum

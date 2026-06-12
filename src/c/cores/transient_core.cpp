@@ -24,7 +24,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 
 	/*parameters: */
 	IssmDouble finaltime,dt,yts;
-	bool       save_final_results;
+	bool       save_final_results,do_not_save_results,save_results;
 	bool       iscontrol,isautodiff;
 	int        timestepping;
 	int        output_frequency,checkpoint_frequency;
@@ -50,6 +50,7 @@ void transient_core(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&iscontrol,InversionIscontrolEnum);
 	femmodel->parameters->FindParam(&isautodiff,AutodiffIsautodiffEnum);
 	femmodel->parameters->FindParam(&save_final_results,SaveFinalResultsEnum);
+	femmodel->parameters->FindParam(&do_not_save_results,DoNotSaveResultsEnum);
 
 	/*call modules that are not dependent on time stepping:*/
 	transient_precore(femmodel);
@@ -85,12 +86,25 @@ void transient_core(FemModel* femmodel){/*{{{*/
 			_printf0_("\e[92miteration " << step << "/" << ceil((finaltime-time)/dt)+step << \
 						"  time [yr]: " <<std::fixed<<setprecision(2)<< time/yts << "\e[m (time step: " << dt/yts << ")\n");
 		}
-		const bool save_results = step==1 //save first step
-		                       || step%output_frequency==0 //save at regular intervals
-		                       || (save_final_results && time >= finaltime - (yts*DBL_EPSILON)); //save last step (optional)
-		femmodel->parameters->SetParam(save_results,SaveResultsEnum);
+		
+		/*Will we save results?*/
+		if(do_not_save_results){
+			save_results = false;
+		}
+		else{
+			if(step==1 //save first step
+						|| step%output_frequency==0 //save at regular intervals
+						|| (save_final_results && time >= finaltime - (yts*DBL_EPSILON)) //save last step (optional)
+			  ){
+				save_results = true;
+			}
+			else{
+				save_results = false;
+			}
+		}
+		femmodel->parameters->SetParam(save_results, SaveResultsEnum);
 
-		/*Run transient step!*/
+		/*Run transient step*/
 		transient_step(femmodel);
 
 		/*unload results*/
