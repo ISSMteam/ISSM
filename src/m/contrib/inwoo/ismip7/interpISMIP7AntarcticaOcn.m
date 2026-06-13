@@ -27,7 +27,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	%		# Get observation dataset
 	%		md.basalforcings = interpISMIP7AntarcticaOcn(md,'obs')
 	%
-	%		md.basalforcings = interpISMIP7AntarcticaOcn(md,'cesm2-waccm','ssp126');
+	%		md.basalforcings = interpISMIP7AntarcticaOcn(md,'cesm2-waccm','ssp126',[2007,2299]);
 	%
 	%  TODO:
 	%  Do we really need to merge all forcings variables within single files using cdo? Or just search files in the data directory, which is synchronized with Globus?
@@ -39,7 +39,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		end_time   = 1996;
 	elseif nargin==3 % for ESM model
 		start_time = 1996;
-		end_time   = 2040;
+		end_time   = 2299;
 	elseif nargin==4
 		start_time = start_end(1);
 		end_time = start_end(2);
@@ -86,7 +86,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	time_data = [];
 	disp('   == loading Thermal forcing (TF)');
 	for i=1:numel(tf_file) 
-		disp(tf_file{i});
+		fprintf('      loading file %d/%d\r',i, numel(tf_file));
 		tf_data = cat(4,tf_data,double(ncread(tf_file{i},tf_name)));
 		try
 			time_data = cat(1,time_data,double(ncread(tf_file{i},'time')));
@@ -94,11 +94,14 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 			continue
 		end
 	end
+	fprintf('\n');
+
 	disp('   == loading Salinity (SO)');
 	for i=1:numel(so_file)
-		disp(so_file{i});
+		fprintf('      loading file %d/%d\r',i, numel(tf_file));
 		so_data = cat(4,so_data,double(ncread(so_file{i},so_name))); % FIXME: really "tf" variable in "so" (salinity)?
 	end
+	fprintf('\n');
 
 	% Correct time
 	time_data = time_data/365 + 1850;
@@ -114,13 +117,25 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		%Find start_idx and final_idx in given file
 		start_idx = find(time_data == start_time);
 		final_idx = find(time_data == end_time);
+		if ~any( start_idx)
+			start_idx = 1;
+		end
+		if ~any(final_idx)
+			final_idx = size(time_data,1);
+		end
+		assert(start_idx < final_idx,	'Error: start_idx must be less than final_idx.');
+
 		time = time_data(start_idx:final_idx);
-        if size(time,1) ~= 1
-            time = time';  % transpose to (1,ntime);
-        end
+		if size(time,1) ~= 1
+			time = time';  % transpose to (1,ntime);
+		end
+		tf_data = tf_data(:,:,:,start_idx:final_idx);
+		so_data = so_data(:,:,:,start_idx:final_idx);
 	else
 		error(['Error: Given ' modelanem ' is not supported.']);
 	end
+
+	%fprintf('   start_idx: %d, final_idx: %d\n',start_idx,final_idx);
 
 	for i=1:size(tf_data,3)  %Iterate over depths
 		disp(['   == Interpolating over depth ' num2str(i) '/' num2str(size(tf_data,3))]);
@@ -303,9 +318,33 @@ function [Kt,delta_t_basin]=calibrated_parameters_ismip7 % {{{
 	%FIXME: unit for ISMIP7 protocol...
 	yts = 31536000; % from md.constants.yts;
 
-	Kt = 7.5e-05*yts;
-	delta_t_basin = [-0.2,  -0.25, 0.15, 0.6 ,  0.1,...
-							0.65, -0.2, -0.15, 0.8 ,  2.0,...
-							0.55, -0.2,   0.5, 0.05, -0.2,...
-							0.15];
+	iscase = 4;
+
+	if iscase == 1
+		Kt = 7.5e-05*yts;
+		delta_t_basin = [-0.2,  -0.25, 0.15, 0.6 ,  0.1,...
+								0.65, -0.2, -0.15, 0.8 ,  2.0,...
+								0.55, -0.2,   0.5, 0.05, -0.2,...
+								0.15];
+	elseif iscase == 2
+		Kt = 11.5e-05*yts;
+		delta_t_basin = [	0.48,  0.52,  1.28,  2.  , -0.28,...
+								1.32, -0.16,  1.56,  2.  ,  2.  ,...
+								2.  ,  1.84,  1.08,  2.  ,  1.64,...
+								2.  ];
+	elseif iscase == 3
+		Kt = 10^(-4.14466801)*yts;
+		delta_t_basin = [1.0572074, 0.89879462,  1.81579414,  4.06579465,  0.37387145,...
+							 2.05993055, 0.11815812,  2.17765945,  4.99181153,  4.90234155,...
+							 4.02111009, 2.91716883,  1.66582333,  2.86419824,  2.26481034,...
+							 3.87826223];
+	elseif iscase == 4
+		Kt = 10^(-4.126984006455638)*yts;
+		delta_t_basin = [-0.28584663,  3.06517194,  3.05496316,  1.80197261, -0.25308133,...
+			0.72584912,  -0.72946566,  2.56894055,  2.99623614,  5.,...
+			2.45314857,   1.65558975,  0.02487998,  0.06562852,  2.71372531,...
+			1.91269999];
+	else
+		error('Error: not implemented yet.');
+	end
 end % }}}
