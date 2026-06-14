@@ -40,46 +40,61 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 	if nargin == 3
 		start_time = 1996;
 		end_time   = 2300;
+	elseif nargin == 4
+		start_time = start_end(1);
+		end_time   = start_end(2);
 	end
 
 	% Searching forcing files
 	smb_file = search_forcing_file(datadir, modelname, scenario, start_time, end_time);
 
-	% load data from files
-	disp('   == loading SMB climatology data');
+	% Load RACMO24p1_ERA5 dataset
+	% Compute climatological mean value of SMB (Jan. 1995 - Dec. 2014 in Nowicki et al. (2020@TC))
+	[smb_clim, ~] = interpRACMO24p1(md.mesh.x, md.mesh.y, 'smb','timebc',[1995,2014]);
+	smb_clim = mean(smb_clim,2); % climatological mean value.
+
+	% Load data from files
+	disp('   == loading SMB anomaly data');
 	x_n = double(ncread(smb_file{1},'x'));
 	y_n = double(ncread(smb_file{1},'y'));	
 
-	temp_matrix_smb = [];
+	temp_matrix_smb_anon = [];
 	temp_matrix_time= [];
 	for i = 1:length(smb_file)
 		fprintf('    processing file %d/%d \r',i,length(smb_file));
 
 		%NOTE: unit for acabf in netcdf file: kg m-2 s-1
-		smb_data = double(ncread(smb_file{i},'acabf')); % dimension = (x,y,time)
+		smb_data = double(ncread(smb_file{i},'acabf-anomaly')); % dimension = (x,y,time)
 		smb_data = smb_data/md.materials.rho_ice*md.constants.yts; % kg m-2 s-1 -> ice m yr-1
 
-		temp_time = double(ncread(smb_file{i},'time'));
+		%Load time data
+		temp_time = double(ncread(smb_file{i},'time')); % time since year from current file...
+
+		% configure out starting year of current file.
+		temp_time_start = strsplit(smb_file{i},'_');
+		temp_time_start = temp_time_start{7};
+		temp_time_start = split(temp_time_start,'.nc');
+		temp_time_start = str2int(temp_time_start{1});
+
+		% convert days in year decimal
+		%FIXME: standard calendar for time is 365 days in year (with noleap)?
+		temp_time = temp_time/365 + temp_time_start;
 		temp_matrix_time = cat(1,temp_matrix_time, temp_time); % concatenate time series
 
 		% Now, interpolate SMB 
 		for j = 1:size(smb_data,3)
-			temp_smb = InterpFromGridToMesh(x_n,y_n,smb_data(:,:,j)',md.mesh.x,md.mesh.y,NaN);
+			temp_smb_anon = InterpFromGridToMesh(x_n,y_n,smb_data(:,:,j)',md.mesh.x,md.mesh.y,NaN);
 
 			% Concatenate dataset
-			temp_matrix_smb = [temp_matrix_smb, temp_smb];
-			clear temp_smb;
+			temp_matrix_smb_anon = [temp_matrix_smb_anon, temp_smb_anon];
+			clear temp_smb_anon;
 		end
 	end
 
 	clear smb_data, x_n, y_n;
 
-	% convert days in year decimal
-	%FIXME: standard calendar for time is 365 days in year (with noleap)?
-	temp_matrix_time = temp_matrix_time/365 + 1850;
-	if size(temp_matrix_time,2) == 1
-		temp_matrix_time = transpose(temp_matrix_time);
-	end
+	% Now, SMB = SMB_ref + SMB_anomaly
+	temp_matrix_smb = repmat(smb_clim,1,size(temp_matrix_smb_anon,2)) + temp_matrix_smb_anon;	
 
 	% Save data
 	smb = SMBforcing();
@@ -124,8 +139,8 @@ function smb_file = search_forcing_file(datadir, modelname, scenario, start_time
 
 		case 'cesm2-waccm'
 			%FIXME: SDBN1 now is replaced with SDBN1-2000m or SDBN1-8000m. These search logic should be changed according to ISMIP7 repository.
-			smb_file_hist = dir(fullfile(datadir,'CESM2-WACCM','historical','SDBN1/acabf/v2/acabf*.nc'));
-			smb_file_proj = dir(fullfile(datadir,'CESM2-WACCM',scenario,'SDBN1/acabf/v2/acabf*.nc'));
+			smb_file_hist = dir(fullfile(datadir,'CESM2-WACCM','historical','SDBN1-8000m/acabf-anomaly/v2/acabf*.nc'));
+			smb_file_proj = dir(fullfile(datadir,'CESM2-WACCM',scenario,'SDBN1-8000m/acabf-anomaly/v2/acabf*.nc'));
 
 			[~,pos]=sort({smb_file_hist.name});
 			smb_file_hist = smb_file_hist(pos);
