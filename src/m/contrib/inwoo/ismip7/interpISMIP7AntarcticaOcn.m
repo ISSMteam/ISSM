@@ -1,4 +1,4 @@
-function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, start_end)
+function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, start_end,varargin)
 	%interpISMIP6AntarcticaOcn - interpolate chosen ISMIP7 ocean forcing to model
 	%
 	%   Globus directory:
@@ -46,6 +46,10 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 	else
 		error('not supported');
 	end
+
+	% Get options
+	options = pairoptions(varargin{:});
+	isdebug = getfieldvalue(options,'debug',false);
 
 	% Find appropriate directory
 	% NOTE: data directory for ISMIP7 follows Globus repository...
@@ -129,8 +133,6 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		if size(time,1) ~= 1
 			time = time';  % transpose to (1,ntime);
 		end
-		tf_data = tf_data(:,:,:,start_idx:final_idx);
-		so_data = so_data(:,:,:,start_idx:final_idx);
 	else
 		error(['Error: Given ' modelanem ' is not supported.']);
 	end
