@@ -1383,6 +1383,7 @@
 	ThicknessEnum
 	ThicknessOldEnum
 	ThicknessPositiveEnum
+	ThicknessPreviousNudgingStepEnum
 	ThicknessResidualEnum
 	TransientAccumulatedDeltaIceThicknessEnum
 	VelEnum
@@ -5236,6 +5237,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==ThicknessEnum) return "Thickness" end
 	if(enum==ThicknessOldEnum) return "ThicknessOld" end
 	if(enum==ThicknessPositiveEnum) return "ThicknessPositive" end
+	if(enum==ThicknessPreviousNudgingStepEnum) return "ThicknessPreviousNudgingStep" end
 	if(enum==ThicknessResidualEnum) return "ThicknessResidual" end
 	if(enum==TransientAccumulatedDeltaIceThicknessEnum) return "TransientAccumulatedDeltaIceThickness" end
 	if(enum==VelEnum) return "Vel" end
@@ -9089,6 +9091,7 @@ function StringToEnum(name::String)
 	if(name=="Thickness") return ThicknessEnum  end
 	if(name=="ThicknessOld") return ThicknessOldEnum  end
 	if(name=="ThicknessPositive") return ThicknessPositiveEnum  end
+	if(name=="ThicknessPreviousNudgingStep") return ThicknessPreviousNudgingStepEnum  end
 	if(name=="ThicknessResidual") return ThicknessResidualEnum  end
 	if(name=="TransientAccumulatedDeltaIceThickness") return TransientAccumulatedDeltaIceThicknessEnum  end
 	if(name=="Vel") return VelEnum  end

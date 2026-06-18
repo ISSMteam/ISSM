@@ -1394,6 +1394,7 @@ syn keyword cConstant ThicknessAlongGradientEnum
 syn keyword cConstant ThicknessEnum
 syn keyword cConstant ThicknessOldEnum
 syn keyword cConstant ThicknessPositiveEnum
+syn keyword cConstant ThicknessPreviousNudgingStepEnum
 syn keyword cConstant ThicknessResidualEnum
 syn keyword cConstant TransientAccumulatedDeltaIceThicknessEnum
 syn keyword cConstant VelEnum

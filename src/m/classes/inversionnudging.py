@@ -31,6 +31,8 @@ class inversionnudging(object):
         self.min_melt           = np.nan
         self.max_melt           = np.nan
         self.dhdt_obs           = np.nan
+        self.vx_obs             = np.nan
+        self.vy_obs             = np.nan
 
         self.setdefaultparameters()
     # }}}
@@ -40,6 +42,8 @@ class inversionnudging(object):
         s += '{}\n'.format(fielddisplay(self, 'iscontrol', 'is inversion activated?'))
         s += '{}\n'.format(fielddisplay(self, 'maxiter', 'maximum number of nudging steps'))
         s += '{}\n'.format(fielddisplay(self, 'dhdt_obs', 'observed thickness rate of change [m/yr]'))
+        s += '{}\n'.format(fielddisplay(self, 'vx_obs', 'observed velocity x component [m/yr]'))
+        s += '{}\n'.format(fielddisplay(self, 'vy_obs', 'observed velocity y component [m/yr]'))
         s += '\n     Friction parameters:\n\n'
         s += '         1   dC     H-Hobs    1  dH    rC\n'
         s += '         --  -- = - ------- - - --- - ---  (C - Ci)\n'
@@ -52,9 +56,9 @@ class inversionnudging(object):
         s += '{}\n'.format(fielddisplay(self, 'min_C', 'absolute minimum acceptable value of C'))
         s += '{}\n'.format(fielddisplay(self, 'max_C', 'absolute maximum acceptable value of C'))
         s += '\n     Melt perturbation parameters:\n\n'
-        s += '         1   dP     H-Hobs    1  dH   r_m\n'
-        s += '         --  -- = + ------- + - --- - ---  P\n'
-        s += '       melt0 dt     tauM H0   H0 dt  tau_m\n\n'
+        s += '           1   dP     H-Hobs    1  dH   r_m\n'
+        s += '           --  -- = + ------- + - --- - ---  P\n'
+        s += '         melt0 dt     tauM H0   H0 dt  tau_m\n\n'
         s += '{}\n'.format(fielddisplay(self, 'melt0', 'melt scaling factor [m/yr]'))
         s += '{}\n'.format(fielddisplay(self, 'tau_melt', 'adjustment timescale for melt perturbation [yr]'))
         s += '{}\n'.format(fielddisplay(self, 'H0_melt', 'thickness error scale for melt perturbation (smaller = more sensitive) [m]'))
@@ -98,6 +102,8 @@ class inversionnudging(object):
         self.min_melt = project3d(md, 'vector', self.min_melt, 'type', 'node')
         self.max_melt = project3d(md, 'vector', self.max_melt, 'type', 'node')
         self.dhdt_obs = project3d(md, 'vector', self.dhdt_obs, 'type', 'node')
+        self.vx_obs   = project3d(md, 'vector', self.vx_obs,   'type', 'node')
+        self.vy_obs   = project3d(md, 'vector', self.vy_obs,   'type', 'node')
         return self
     # }}}
 
@@ -121,6 +127,8 @@ class inversionnudging(object):
         md = checkfield(md, 'fieldname', 'inversion.relaxation_C', 'numel', [1], '>=', 0, '<=', 1)
         md = checkfield(md, 'fieldname', 'inversion.relaxation_melt', 'numel', [1], '>=', 0, '<=', 1)
         md = checkfield(md, 'fieldname', 'inversion.dhdt_obs', 'size', [md.mesh.numberofvertices, 1], 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'inversion.vx_obs', 'size', [md.mesh.numberofvertices, 1], 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'inversion.vy_obs', 'size', [md.mesh.numberofvertices, 1], 'NaN', 1, 'Inf', 1)
 
         return md
     # }}}
@@ -148,4 +156,6 @@ class inversionnudging(object):
         WriteData(fid, prefix, 'object', self, 'class', 'inversion', 'fieldname', 'relaxation_C', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'inversion', 'fieldname', 'relaxation_melt', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'inversion', 'fieldname', 'dhdt_obs', 'format', 'DoubleMat', 'mattype', 1, 'scale', 1. / yts)
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'vx_obs', 'format', 'DoubleMat', 'mattype', 1, 'scale', 1. / yts)
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'vy_obs', 'format', 'DoubleMat', 'mattype', 1, 'scale', 1. / yts)
     # }}}

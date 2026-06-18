@@ -1387,6 +1387,7 @@ syn keyword juliaConstC ThicknessAlongGradientEnum
 syn keyword juliaConstC ThicknessEnum
 syn keyword juliaConstC ThicknessOldEnum
 syn keyword juliaConstC ThicknessPositiveEnum
+syn keyword juliaConstC ThicknessPreviousNudgingStepEnum
 syn keyword juliaConstC ThicknessResidualEnum
 syn keyword juliaConstC TransientAccumulatedDeltaIceThicknessEnum
 syn keyword juliaConstC VelEnum

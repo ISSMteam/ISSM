@@ -617,6 +617,7 @@ ThicknessAlongGradient
 Thickness
 ThicknessOld
 ThicknessPositive
+ThicknessPreviousNudgingStep
 ThicknessResidual
 TransientAccumulatedDeltaIceThickness
 Vel

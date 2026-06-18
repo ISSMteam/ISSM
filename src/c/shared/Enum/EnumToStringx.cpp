@@ -1396,6 +1396,7 @@ const char* EnumToStringx(int en){
 		case ThicknessEnum : return "Thickness";
 		case ThicknessOldEnum : return "ThicknessOld";
 		case ThicknessPositiveEnum : return "ThicknessPositive";
+		case ThicknessPreviousNudgingStepEnum : return "ThicknessPreviousNudgingStep";
 		case ThicknessResidualEnum : return "ThicknessResidual";
 		case TransientAccumulatedDeltaIceThicknessEnum : return "TransientAccumulatedDeltaIceThickness";
 		case VelEnum : return "Vel";

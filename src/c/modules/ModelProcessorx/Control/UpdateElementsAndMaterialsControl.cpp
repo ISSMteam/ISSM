@@ -26,11 +26,13 @@ void	UpdateElementsAndMaterialsControl(Elements* elements,Parameters* parameters
 	int inversiontype;
 	iomodel->FindConstant(&inversiontype,"md.inversion.type");
 	if(inversiontype==5){
-		iomodel->FetchDataToInput(inputs,elements,"md.inversion.dhdt_obs",BalancethicknessThickeningRateEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.inversion.max_C",InversionMaxCEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.inversion.min_C",InversionMinCEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.inversion.max_melt",InversionMaxMeltEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.inversion.min_melt",InversionMinMeltEnum);
+		iomodel->FetchDataToInput(inputs,elements,"md.inversion.dhdt_obs",BalancethicknessThickeningRateEnum, 0.);
+		iomodel->FetchDataToInput(inputs,elements,"md.inversion.vx_obs",InversionVxObsEnum, 0.);
+		iomodel->FetchDataToInput(inputs,elements,"md.inversion.vy_obs",InversionVyObsEnum, 0.); 
 		return;
 	}
 

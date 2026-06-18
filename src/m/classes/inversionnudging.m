@@ -22,14 +22,18 @@ classdef inversionnudging
 		min_melt           = NaN
 		max_melt           = NaN
 		dhdt_obs           = NaN;
+		vx_obs             = NaN
+		vy_obs             = NaN
 	end
 	methods
 		function self = extrude(self,md) % {{{
-			self.min_C = project3d(md,'vector',self.min_C, 'type', 'node');
-			self.max_C = project3d(md,'vector',self.max_C, 'type', 'node');
+			self.min_C    = project3d(md,'vector',self.min_C, 'type', 'node');
+			self.max_C    = project3d(md,'vector',self.max_C, 'type', 'node');
 			self.min_melt = project3d(md,'vector',self.min_melt, 'type', 'node');
 			self.max_melt = project3d(md,'vector',self.max_melt, 'type', 'node');
-			self.dhdt_obs =project3d(md,'vector',self.dhdt_obs, 'type', 'node');
+			self.dhdt_obs = project3d(md,'vector',self.dhdt_obs, 'type', 'node');
+			self.vx_obs   = project3d(md,'vector',self.vx_obs,'type','node');
+			self.vy_obs   = project3d(md,'vector',self.vy_obs,'type','node');
 		end % }}}
 		function self = inversionnudging(varargin) % {{{
 			switch nargin
@@ -87,6 +91,8 @@ classdef inversionnudging
          md = checkfield(md,'fieldname','inversion.relaxation_C','numel',1,'>=',0,'<=',1);
          md = checkfield(md,'fieldname','inversion.relaxation_melt','numel',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','inversion.dhdt_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
+         md = checkfield(md,'fieldname','inversion.vx_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
+         md = checkfield(md,'fieldname','inversion.vy_obs','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 
 		end % }}}
 		function disp(self) % {{{
@@ -95,6 +101,8 @@ classdef inversionnudging
 			fielddisplay(self,'iscontrol','is inversion activated?');
 			fielddisplay(self,'maxiter','maximum number of nudging steps');
 			fielddisplay(self,'dhdt_obs','observed thickness rate of change [m/yr]');
+         fielddisplay(self,'vx_obs','observed velocity x component [m/yr]');
+         fielddisplay(self,'vy_obs','observed velocity y component [m/yr]');
 			disp(' ');
 			disp('     Friction parameters:');
 			disp(' ');
@@ -112,9 +120,9 @@ classdef inversionnudging
 			disp(' ');
 			disp('     Melt perturbation parameters:');
 			disp(' ');
-			disp('         1   ∆P     H-Hobs    1  ∆H   r_m  ');
-			disp('         --  -- = + ------- + - --- - ---  P');
-			disp('       melt0 ∆t     tauM H0   H0 ∆t  tau_m ');
+			disp('           1   ∆P     H-Hobs    1  ∆H   r_m  ');
+			disp('           --  -- = + ------- + - --- - ---  P');
+			disp('         melt0 ∆t     tauM H0   H0 ∆t  tau_m ');
 			disp(' ');
 			fielddisplay(self,'melt0', 'meltscaling factor [m/yr]');
          fielddisplay(self,'tau_melt','adjustment timescale for melt perturbation [yr]');
@@ -148,6 +156,8 @@ classdef inversionnudging
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_C','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','relaxation_melt','format','Double');
 			WriteData(fid,prefix,'object',self,'class','inversion','fieldname','dhdt_obs','format','DoubleMat','mattype',1,'scale',1./yts);
+         WriteData(fid,prefix,'object',self,'fieldname','vx_obs','format','DoubleMat','mattype',1,'scale',1./yts);
+         WriteData(fid,prefix,'object',self,'fieldname','vy_obs','format','DoubleMat','mattype',1,'scale',1./yts);
 		end % }}}
 	end
 end

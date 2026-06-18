@@ -1391,6 +1391,7 @@ enum definitions{
 	ThicknessEnum,
 	ThicknessOldEnum,
 	ThicknessPositiveEnum,
+	ThicknessPreviousNudgingStepEnum,
 	ThicknessResidualEnum,
 	TransientAccumulatedDeltaIceThicknessEnum,
 	VelEnum,

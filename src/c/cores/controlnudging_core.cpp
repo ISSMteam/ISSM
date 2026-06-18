@@ -8,6 +8,85 @@
 #include "../shared/shared.h"
 #include "../modules/modules.h"
 
+void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat){/*{{{*/
+
+	/*output: */
+	IssmDouble RMSE_H = 0.;
+	IssmDouble RMSE_H_sum;
+	IssmDouble RMSE_dHdt = 0.;
+	IssmDouble RMSE_dHdt_sum;
+	IssmDouble RMSE_vel = 0.;
+	IssmDouble RMSE_vel_sum;
+	IssmDouble S = 0.;
+	IssmDouble S_sum;
+
+	IssmDouble  weight,Jdet,H,Hobs,Hold;
+	IssmDouble  vx, vy, vxobs, vyobs;
+	IssmDouble* xyz_list = NULL;
+
+	/*Retrieve parameters*/
+   IssmDouble yts = femmodel->parameters->FindParam(ConstantsYtsEnum);
+
+	/*Compute Misfit: */
+	for(Object* & object : femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+
+		/*If on water, return 0: */
+		if(!element->IsOnSurface() || !element->IsIceInElement()) continue;
+
+		/*Spawn surface element*/
+		element = element->SpawnTopElement();
+
+		/* Get node coordinates*/
+		element->GetVerticesCoordinates(&xyz_list);
+		S += element->SurfaceArea();
+
+		/*Retrieve all inputs we will be needing: */
+		Input* vx_input   = element->GetInput(VxEnum);             _assert_(vx_input);
+		Input* vy_input   = element->GetInput(VyEnum);             _assert_(vy_input);
+		Input* vxobs_input= element->GetInput(InversionVxObsEnum); _assert_(vxobs_input);
+		Input* vyobs_input= element->GetInput(InversionVyObsEnum); _assert_(vyobs_input);
+		Input* H_input    = element->GetInput(ThicknessEnum);      _assert_(H_input);
+		Input* Hobs_input = element->GetInput(InversionThicknessObsEnum);        _assert_(Hobs_input);
+		Input* Hold_input = element->GetInput(ThicknessPreviousNudgingStepEnum); _assert_(Hold_input);
+
+		/* Start  looping on the number of gaussian points: */
+		Gauss* gauss=element->NewGauss(1);
+		while(gauss->next()){
+
+			/* Get Jacobian determinant: */
+			element->JacobianDeterminant(&Jdet,xyz_list,gauss);
+
+			/*Get all parameters at gaussian point*/
+			H_input->GetInputValue(&H, gauss);
+			Hobs_input->GetInputValue(&Hobs, gauss);
+			Hold_input->GetInputValue(&Hold, gauss);
+			vx_input->GetInputValue(&vx, gauss);
+			vxobs_input->GetInputValue(&vxobs, gauss);
+			vy_input->GetInputValue(&vy, gauss);
+			vyobs_input->GetInputValue(&vyobs, gauss);
+
+			RMSE_H    += pow(H-Hobs, 2)*Jdet*gauss->weight;
+			RMSE_dHdt += pow( (H - Hold)/deltat*yts, 2)*Jdet*gauss->weight;
+			RMSE_vel  += pow( (sqrt(vx*vx+vy*vy) - sqrt(vxobs*vxobs+vyobs*vyobs))*yts, 2)*Jdet*gauss->weight;
+		}
+
+		/*clean up and Return: */
+		xDelete<IssmDouble>(xyz_list);
+		delete gauss;
+	}
+
+	/*Sum all J from all cpus of the cluster:*/
+	ISSM_MPI_Reduce (&RMSE_H,   &RMSE_H_sum,    1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
+	ISSM_MPI_Reduce (&RMSE_dHdt,&RMSE_dHdt_sum, 1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
+	ISSM_MPI_Reduce (&RMSE_vel, &RMSE_vel_sum,  1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
+	ISSM_MPI_Reduce (&S,        &S_sum,         1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
+	_printf0_("   → RMSE H    (new): " << sqrt(RMSE_H_sum/S_sum)   << " m\n");
+	_printf0_("   → RMSE dHdt (new): " << sqrt(RMSE_dHdt_sum/S_sum)<< " m/yr\n");
+	_printf0_("   → RMSE v    (new): " << sqrt(RMSE_vel_sum/S_sum) << " m/yr\n");
+
+	/*Assign output pointers: */
+}/*}}}*/
 void controlnudging_core(FemModel* femmodel){
 
    /*Intermediaries*/
@@ -35,7 +114,7 @@ void controlnudging_core(FemModel* femmodel){
 
    /*Fields before/after*/
 	IssmDouble *C       = NULL;
-	IssmDouble *Cinit      = NULL;
+	IssmDouble *Cinit   = NULL;
 	IssmDouble *Cmin    = NULL;
 	IssmDouble *Cmax    = NULL;
 	IssmDouble *Melt    = NULL;
@@ -60,12 +139,16 @@ void controlnudging_core(FemModel* femmodel){
 	GetVectorFromInputsx(&Meltmax,femmodel, InversionMaxMeltEnum, VertexSIdEnum);
    GetVectorFromInputsx(&H_obs, femmodel, ThicknessEnum, VertexSIdEnum);
 
+	/*NEW*/
+	InputDuplicatex(femmodel, ThicknessEnum, InversionThicknessObsEnum);
+
    femmodel->parameters->SetParam(true, DoNotSaveResultsEnum);
    for(int m=0;m<maxiter;m++){
       _printf0_("\n=== NUDGING STEP "<< m+1 <<"/"<< maxiter << " ===\n");
 
       /*Get ice thickness before we run a transient step*/
       GetVectorFromInputsx(&H_old, femmodel, ThicknessEnum, VertexSIdEnum);
+		InputDuplicatex(femmodel, ThicknessEnum, ThicknessPreviousNudgingStepEnum);
 
       /*Solve another transient simulation*/
       femmodel->parameters->FindParam(&time,TimeEnum);
@@ -162,6 +245,7 @@ void controlnudging_core(FemModel* femmodel){
 		/*Print statistics*/
 		_printf0_("   → RMSE H   : " << sqrt(RMSE_H/numvertices)    << " m\n");
 		_printf0_("   → RMSE dHdt: " << sqrt(RMSE_dHdt/numvertices) << " m/yr\n");
+		ComputeRMSEs(femmodel, deltat);
 		J[m*2+0] = sqrt(RMSE_H/numvertices);
 		J[m*2+1] = sqrt(RMSE_dHdt/numvertices);
 
