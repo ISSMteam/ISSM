@@ -191,17 +191,17 @@ IssmDouble Cfsurfacelogvel::Cfsurfacelogvel_Calculation(Element* element, int de
 		/*Get all parameters at gaussian point*/
 		datasetinput->GetInputValue(&weight,gauss,WeightsSurfaceObservationEnum);
 		vx_input->GetInputValue(&vx,gauss);
-		datasetinput->GetInputValue(&vxobs,gauss,VxObsEnum);
+		datasetinput->GetInputValue(&vxobs,gauss,InversionVxObsEnum);
 		if(numcomponents==2){
 			vy_input->GetInputValue(&vy,gauss);
-			datasetinput->GetInputValue(&vyobs,gauss,VyObsEnum);
+			datasetinput->GetInputValue(&vyobs,gauss,InversionVyObsEnum);
 		}
 
 		/*Compute SurfaceLogVelMisfit:
-		 *        *                 [        vel + eps     ] 2
-		 *               * J = 4 \bar{v}^2 | log ( -----------  ) |
-		 *                          [       vel   + eps    ]
-		 *                                      obs
+		 *                  [        vel + eps     ] 2
+		 *  J = 4 \bar{v}^2 | log ( -----------  ) |
+		 *                  [       vel   + eps    ]
+		 *                             obs
 		 */
 		if(numcomponents==1){
 			velocity_mag    =fabs(vx)+epsvel;

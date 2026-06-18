@@ -604,8 +604,8 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 						Element* element=xDynamicCast<Element*>(object);
 
-						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vxobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vxobs_string[j]),VxObsEnum);
-							element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vyobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vyobs_string[j]),VyObsEnum);
+						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vxobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vxobs_string[j]),InversionVxObsEnum);
+							element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vyobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vyobs_string[j]),InversionVyObsEnum);
 						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_weights[j],inputs,iomodel,cfsurfacelogvel_weights_M[j],cfsurfacelogvel_weights_N[j],weight_vector_type,StringToEnumx(cfsurfacelogvel_weightstring[j]),WeightsSurfaceObservationEnum);
 
 					}
