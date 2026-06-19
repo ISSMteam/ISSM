@@ -50,7 +50,7 @@ classdef basalforcingsismip6
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 			self.gamma_0 = 14477; %m/yr
-			self.islocal = false;
+			self.islocal = 0;
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -80,7 +80,7 @@ classdef basalforcingsismip6
 			fielddisplay(self,'tf_depths','elevation of vertical layers in ocean thermal forcing dataset');
 			fielddisplay(self,'tf','thermal forcing (ocean temperature minus freezing point) (degrees C)');
 			fielddisplay(self,'delta_t','Ocean temperature correction per basin (degrees C)');
-			fielddisplay(self,'islocal','boolean to use the local version of the ISMIP6 melt rate parameterization (default false)');
+			fielddisplay(self,'islocal','boolean (0 or 1) to use the local version of the ISMIP6 melt rate parameterization (default 0)');
 			fielddisplay(self,'geothermalflux','geothermal heat flux (W/m^2)');
 			fielddisplay(self,'groundedice_melting_rate','basal melting rate (positive if melting) (m/yr)');
 			fielddisplay(self,'melt_anomaly','floating ice basal melt anomaly (m/yr)');
