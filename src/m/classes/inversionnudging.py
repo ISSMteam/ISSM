@@ -13,28 +13,43 @@ class inversionnudging(object):
         inversionnudging = inversionnudging()
     """
 
-    def __init__(self):  # {{{
-        self.iscontrol          = 0
-        self.maxiter            = 0
-        self.C0                 = 0.0
-        self.max_increment_C    = 0.0
-        self.relaxation_C       = 0.0
-        self.tau_C              = 0.0
-        self.H0_C               = 0.0
-        self.min_C              = np.nan
-        self.max_C              = np.nan
-        self.melt0              = 0.0
-        self.max_increment_melt = 0.0
-        self.relaxation_melt    = 0.0
-        self.tau_melt           = 0.0
-        self.H0_melt            = 0.0
-        self.min_melt           = np.nan
-        self.max_melt           = np.nan
-        self.dhdt_obs           = np.nan
-        self.vx_obs             = np.nan
-        self.vy_obs             = np.nan
+    def __init__(self, *args):  # {{{
+        if not len(args):
+            self.iscontrol          = 0
+            self.maxiter            = 0
+            self.C0                 = 0.0
+            self.max_increment_C    = 0.0
+            self.relaxation_C       = 0.0
+            self.tau_C              = 0.0
+            self.H0_C               = 0.0
+            self.min_C              = np.nan
+            self.max_C              = np.nan
+            self.melt0              = 0.0
+            self.max_increment_melt = 0.0
+            self.relaxation_melt    = 0.0
+            self.tau_melt           = 0.0
+            self.H0_melt            = 0.0
+            self.min_melt           = np.nan
+            self.max_melt           = np.nan
 
-        self.setdefaultparameters()
+            self.dhdt_obs           = np.nan
+            self.vx_obs             = np.nan
+            self.vy_obs             = np.nan
+
+            self.setdefaultparameters()
+        elif len(args) == 1 and args[0].__module__ == 'inversion':
+            print('converting inversion to inversionnudging')
+            inv = args[0]
+
+            #first call setdefaultparameters:
+            self.setdefaultparameters()
+
+            #then go fish whatever is available in the inversion object provided to the constructor
+            self.iscontrol = inv.iscontrol
+            self.vx_obs = inv.vx_obs
+            self.vy_obs = inv.vy_obs
+        else:
+            raise Exception('constructor not supported')
     # }}}
 
     def __repr__(self):  # {{{

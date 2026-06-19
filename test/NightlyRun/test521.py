@@ -19,7 +19,7 @@ md.cluster = generic('name', gethostname(), 'np', 3)
 # Time stepping for nudging
 md.timestepping.time_step = .5
 md.timestepping.final_time = 1.
-md.inversion = inversionnudging()
+md.inversion = inversionnudging(md.inversion)
 md.inversion.dhdt_obs = np.zeros((md.mesh.numberofvertices, 1))
 md.inversion.maxiter = 3
 # friction
