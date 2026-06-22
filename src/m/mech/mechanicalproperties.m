@@ -52,7 +52,7 @@ clear vxlist vylist
 %compute viscosity
 mu=zeros(numberofelements,1);
 B_bar=md.materials.rheology_B(index)*summation/3;
-power=(md.materials.rheology_n-1)./(2*md.materials.rheology_n);
+power=(md.materials.rheology_n-1)./(2*md.materials.rheology_n) .* ones(md.mesh.numberofelements,1);
 second_inv=(ux.^2+vy.^2+((uy+vx).^2)/4+ux.*vy);
 
 %some corrections
