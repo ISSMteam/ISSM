@@ -12,13 +12,13 @@ void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat, IssmDouble* pJ){/*{{{*/
 
 	/*output: */
 	IssmDouble RMSE_H = 0.;
-	IssmDouble RMSE_H_sum;
+	IssmDouble RMSE_H_sum = 0.;
 	IssmDouble RMSE_dHdt = 0.;
-	IssmDouble RMSE_dHdt_sum;
+	IssmDouble RMSE_dHdt_sum = 0.;
 	IssmDouble RMSE_vel = 0.;
-	IssmDouble RMSE_vel_sum;
+	IssmDouble RMSE_vel_sum = 0.;
 	IssmDouble S = 0.;
-	IssmDouble S_sum;
+	IssmDouble S_sum = 1.;
 
 	IssmDouble  weight,Jdet,H,Hobs,Hold;
 	IssmDouble  vx, vy, vxobs, vyobs;
