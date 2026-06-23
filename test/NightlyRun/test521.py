@@ -42,7 +42,8 @@ md.verbose.solution = 1
 md = solve(md, 'Transient')
 
 # Fields and tolerances to track changes
-field_names = ['PerturbationMeltingRate', 'FrictionCoefficient']
-field_tolerances = [1e-12, 2e-12]
+field_names = ['PerturbationMeltingRate', 'FrictionCoefficient', 'J']
+field_tolerances = [1e-12, 2e-12, 1e-12]
 field_values = [md.results.TransientSolution[0].BasalforcingsPerturbationMeltingRate,
-                md.results.TransientSolution[0].FrictionCoefficient]
+                md.results.TransientSolution[0].FrictionCoefficient,
+                md.results.TransientSolution[0].J]

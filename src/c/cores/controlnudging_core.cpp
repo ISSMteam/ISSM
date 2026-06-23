@@ -8,7 +8,7 @@
 #include "../shared/shared.h"
 #include "../modules/modules.h"
 
-void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat){/*{{{*/
+void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat, IssmDouble* pJ){/*{{{*/
 
 	/*output: */
 	IssmDouble RMSE_H = 0.;
@@ -81,9 +81,12 @@ void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat){/*{{{*/
 	ISSM_MPI_Reduce (&RMSE_dHdt,&RMSE_dHdt_sum, 1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
 	ISSM_MPI_Reduce (&RMSE_vel, &RMSE_vel_sum,  1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
 	ISSM_MPI_Reduce (&S,        &S_sum,         1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, 0, IssmComm::GetComm());
-	_printf0_("   → RMSE H    (new): " << sqrt(RMSE_H_sum/S_sum)   << " m\n");
-	_printf0_("   → RMSE dHdt (new): " << sqrt(RMSE_dHdt_sum/S_sum)<< " m/yr\n");
-	_printf0_("   → RMSE v    (new): " << sqrt(RMSE_vel_sum/S_sum) << " m/yr\n");
+	_printf0_("   → RMSE H   : " << sqrt(RMSE_H_sum/S_sum)   << " m\n");
+	_printf0_("   → RMSE dHdt: " << sqrt(RMSE_dHdt_sum/S_sum)<< " m/yr\n");
+	_printf0_("   → RMSE v   : " << sqrt(RMSE_vel_sum/S_sum) << " m/yr\n");
+	pJ[0] = sqrt(RMSE_H_sum/S_sum);
+	pJ[1] = sqrt(RMSE_dHdt_sum/S_sum);
+	pJ[2] = sqrt(RMSE_vel_sum/S_sum);
 
 	/*Assign output pointers: */
 }/*}}}*/
@@ -127,7 +130,7 @@ void controlnudging_core(FemModel* femmodel){
 	IssmDouble *O_ls    = NULL;
 	
 	/*Cost functions*/
-	IssmDouble* J = xNewZeroInit<IssmDouble>(maxiter*2);
+	IssmDouble* J = xNewZeroInit<IssmDouble>(maxiter*3);
 
    /*Get Fields once and for all*/
    int numvertices = femmodel->vertices->NumberOfVertices();
@@ -166,15 +169,11 @@ void controlnudging_core(FemModel* femmodel){
       GetVectorFromInputsx(&O_ls,femmodel, MaskOceanLevelsetEnum, VertexSIdEnum);
 
       /*Update friction coefficient accordingly*/
-		IssmDouble RMSE_H    = 0.;
-		IssmDouble RMSE_dHdt = 0.;
       for(int i=0;i<numvertices;i++){
 
          /*Compute thickness change for this vertex*/
          IssmDouble dH_now   = H[i] - H_obs[i];
          IssmDouble dHdt_now = (H[i] - H_old[i])/(deltat);
-			RMSE_H    += dH_now*dH_now;
-			RMSE_dHdt += pow(dHdt_now*yts, 2); //Convert to m/yr
 
          /*1. : thickness error — push C to reduce H deviation
           *     Sign: if H > H_obs (too thick), decrease C (less friction → faster ice → larger flux, lower H)*/
@@ -243,11 +242,7 @@ void controlnudging_core(FemModel* femmodel){
 		InputUpdateFromVectorx(femmodel, Melt, BasalforcingsPerturbationMeltingRateEnum, VertexSIdEnum);
 
 		/*Print statistics*/
-		_printf0_("   → RMSE H   : " << sqrt(RMSE_H/numvertices)    << " m\n");
-		_printf0_("   → RMSE dHdt: " << sqrt(RMSE_dHdt/numvertices) << " m/yr\n");
-		ComputeRMSEs(femmodel, deltat);
-		J[m*2+0] = sqrt(RMSE_H/numvertices);
-		J[m*2+1] = sqrt(RMSE_dHdt/numvertices);
+		ComputeRMSEs(femmodel, deltat,&J[3*m]);
 
       xDelete<IssmDouble>(H_old);
       xDelete<IssmDouble>(H);
@@ -260,7 +255,7 @@ void controlnudging_core(FemModel* femmodel){
 					FrictionCoefficientEnum,C, numvertices, 1, 0, 0));
 	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,
 					BasalforcingsPerturbationMeltingRateEnum,Melt, numvertices, 1, 0, 0));
-	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,JEnum,J, maxiter, 2,0,0));
+	femmodel->results->AddObject(new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,JEnum,J, maxiter, 3,0,0));
 
    /*Clean up and return*/
 	xDelete<IssmDouble>(C);
