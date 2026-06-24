@@ -169,9 +169,9 @@ def runme(id=None, exclude=None, benchmark='nightly', procedure='check', output=
     elif benchmark == 'referential':
         ids_to_run = ids_to_run.intersection(set(range(1601, 1603)))
     elif benchmark == 'slc':
-        ids_to_run = ids_to_run.intersection(set(range(2001, 2500)))
+        ids_to_run = ids_to_run.intersection(set(range(2001, 2501)))
     elif benchmark == 'adolc':
-        ids_to_run = ids_to_run.intersection(set(range(3001, 3200)))
+        ids_to_run = ids_to_run.intersection(set(range(3001, 3201)))
     elif benchmark == 'qmu':
         ids_to_run = ids_to_run.intersection(set((218, 234, 235, 417, 418, 420)).union(set(range(412, 414))))
     ids_to_run = list(ids_to_run)

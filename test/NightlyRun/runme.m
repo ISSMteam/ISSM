@@ -109,6 +109,7 @@ end
 [i1,i2]=parallelrange(rank,numprocs,length(list_ids)); %get tests for this CPU only
 list_ids=list_ids(i1:i2);
 
+ids_specified=isfield(options,'id');
 test_ids=getfieldvalue(options,'id',list_ids);
 test_ids=intersect(test_ids,list_ids);
 % }}}
@@ -118,8 +119,10 @@ exclude_ids=[exclude_ids];
 pos=find(ismember(test_ids,exclude_ids));
 test_ids(pos)=[];
 % }}}
-%Process IDs according to benchmarks{{{
-if strcmpi(benchmark,'nightly'),
+%Process IDs according to benchmarks (skip filtering when IDs were explicitly specified){{{
+if ids_specified,
+	%IDs were explicitly provided: run them regardless of benchmark range
+elseif strcmpi(benchmark,'nightly'),
 	test_ids=intersect(test_ids,[1:999]);
 elseif strcmpi(benchmark,'validation'),
 	test_ids=intersect(test_ids,[1001:1999]);
