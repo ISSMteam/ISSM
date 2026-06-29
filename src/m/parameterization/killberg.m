@@ -8,9 +8,6 @@ function ice_levelset = killberg(md)
 %   Usage:
 %      ice_levelset = killberg(md)
 
-%Get number of vertices per element
-nbv_per_element = size(md.mesh.elements,2);
-
 %Initialize vectors (mask = is active and connected to grounded ice)
 mask         = zeros(md.mesh.numberofvertices,1);
 element_flag = zeros(md.mesh.numberofelements,1);
