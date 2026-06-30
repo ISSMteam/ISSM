@@ -2521,7 +2521,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 
 	int         basinid,num_basins,M,N;
 	IssmDouble  delta_t_basin;
-	IssmDouble* xyz_list;
+	IssmDouble* xyz_list = NULL;
 	
 	IssmDouble  tf,gamma0;
 	IssmDouble  salinity; /*local salinity [psu]*/
@@ -2582,6 +2582,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	delete gauss;
 	xDelete<IssmDouble>(depths);
 	xDelete<IssmDouble>(delta_t);
+	xDelete<IssmDouble>(xyz_list);
 }/*}}}*/
 void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation){/*{{{*/
 
