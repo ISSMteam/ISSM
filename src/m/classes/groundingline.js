@@ -32,7 +32,7 @@ function groundingline (){
 			checkfield(md,'fieldname','groundingline.friction_interpolation','values',['NoFrictionOnPartiallyFloating', 'SubelementFriction1', 'SubelementFriction2']);
 			checkfield(md,'fieldname','groundingline.melt_interpolation','values',['NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt']);
 			checkfield(md,'fieldname','groundingline.intrusion_distance','NaN',1,'Inf',1,'>=',0);
-			checkfield(md,'fieldname','groundingline.nomelt_under_lakes','values',[0 1]);
+			checkfield(md,'fieldname','groundingline.nomelt_under_lakes','values',[0, 1]);
 
 			if (this.migration !='None'){
 				if (isNaN(md.geometry.bed)){

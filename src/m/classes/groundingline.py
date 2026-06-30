@@ -59,7 +59,7 @@ class groundingline(object):
         md = checkfield(md, 'fieldname', 'groundingline.friction_interpolation', 'values', ['SubelementFriction1', 'SubelementFriction2', 'NoFrictionOnPartiallyFloating'])
         md = checkfield(md, 'fieldname', 'groundingline.melt_interpolation', 'values', ['NoMeltOnPartiallyFloating', 'FullMeltOnPartiallyFloating', 'SubelementMelt1', 'SubelementMelt2', 'IntrusionMelt'])
         md = checkfield(md, 'fieldname', 'groundingline.intrusion_distance', 'NaN', 1, 'Inf', 1, '>=', 0)
-        md = checkfield(md, 'fieldname', 'groundingline.nomelt_under_lakes', 'values', [0 1])
+        md = checkfield(md, 'fieldname', 'groundingline.nomelt_under_lakes', 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'groundingline.requested_outputs', 'stringrow', 1)
 
         if(not m.strcmp(self.migration, 'None') and md.transient.isgroundingline and solution == 'TransientSolution'):
