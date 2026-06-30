@@ -541,6 +541,7 @@ if LEVELSET
 issm_sources += ./analyses/LevelsetAnalysis.cpp
 issm_sources += ./modules/Calvingx/Calvingx.cpp
 issm_sources += ./modules/KillIcebergsx/KillIcebergsx.cpp
+issm_sources += ./modules/MapOceanConnectivityx/MapOceanConnectivityx.cpp
 endif
 if EXTRAPOLATION
 issm_sources += ./analyses/ExtrapolationAnalysis.cpp

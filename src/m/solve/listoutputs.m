@@ -99,6 +99,7 @@ Calvingratex
 Calvingratey
 CalvingFluxLevelset
 CalvingMeltingFluxLevelset
+ConnectedToOcean
 Converged
 CrevasseDepth
 DamageD

@@ -262,6 +262,7 @@ syn keyword cConstant FrontalForcingsSdpolyparamsEnum
 syn keyword cConstant GrdModelEnum
 syn keyword cConstant GroundinglineFrictionInterpolationEnum
 syn keyword cConstant GroundinglineMeltInterpolationEnum
+syn keyword cConstant GroundinglineNomeltUnderLakesEnum
 syn keyword cConstant GroundinglineMigrationEnum
 syn keyword cConstant GroundinglineNumRequestedOutputsEnum
 syn keyword cConstant GroundinglineRequestedOutputsEnum
@@ -876,6 +877,7 @@ syn keyword cConstant CalvingratexEnum
 syn keyword cConstant CalvingrateyEnum
 syn keyword cConstant CalvingFluxLevelsetEnum
 syn keyword cConstant CalvingMeltingFluxLevelsetEnum
+syn keyword cConstant ConnectedToOceanEnum
 syn keyword cConstant ConvergedEnum
 syn keyword cConstant CrevasseDepthEnum
 syn keyword cConstant DamageDEnum

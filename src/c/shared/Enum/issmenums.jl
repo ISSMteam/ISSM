@@ -251,6 +251,7 @@
 	GrdModelEnum
 	GroundinglineFrictionInterpolationEnum
 	GroundinglineMeltInterpolationEnum
+	GroundinglineNomeltUnderLakesEnum
 	GroundinglineMigrationEnum
 	GroundinglineNumRequestedOutputsEnum
 	GroundinglineRequestedOutputsEnum
@@ -865,6 +866,7 @@
 	CalvingrateyEnum
 	CalvingFluxLevelsetEnum
 	CalvingMeltingFluxLevelsetEnum
+	ConnectedToOceanEnum
 	ConvergedEnum
 	CrevasseDepthEnum
 	DamageDEnum
@@ -4105,6 +4107,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==GrdModelEnum) return "GrdModel" end
 	if(enum==GroundinglineFrictionInterpolationEnum) return "GroundinglineFrictionInterpolation" end
 	if(enum==GroundinglineMeltInterpolationEnum) return "GroundinglineMeltInterpolation" end
+	if(enum==GroundinglineNomeltUnderLakesEnum) return "GroundinglineNomeltUnderLakes" end
 	if(enum==GroundinglineMigrationEnum) return "GroundinglineMigration" end
 	if(enum==GroundinglineNumRequestedOutputsEnum) return "GroundinglineNumRequestedOutputs" end
 	if(enum==GroundinglineRequestedOutputsEnum) return "GroundinglineRequestedOutputs" end
@@ -4719,6 +4722,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==CalvingrateyEnum) return "Calvingratey" end
 	if(enum==CalvingFluxLevelsetEnum) return "CalvingFluxLevelset" end
 	if(enum==CalvingMeltingFluxLevelsetEnum) return "CalvingMeltingFluxLevelset" end
+	if(enum==ConnectedToOceanEnum) return "ConnectedToOcean" end
 	if(enum==ConvergedEnum) return "Converged" end
 	if(enum==CrevasseDepthEnum) return "CrevasseDepth" end
 	if(enum==DamageDEnum) return "DamageD" end
@@ -7959,6 +7963,7 @@ function StringToEnum(name::String)
 	if(name=="GrdModel") return GrdModelEnum  end
 	if(name=="GroundinglineFrictionInterpolation") return GroundinglineFrictionInterpolationEnum  end
 	if(name=="GroundinglineMeltInterpolation") return GroundinglineMeltInterpolationEnum  end
+	if(name=="GroundinglineNomeltUnderLakes") return GroundinglineNomeltUnderLakesEnum  end
 	if(name=="GroundinglineMigration") return GroundinglineMigrationEnum  end
 	if(name=="GroundinglineNumRequestedOutputs") return GroundinglineNumRequestedOutputsEnum  end
 	if(name=="GroundinglineRequestedOutputs") return GroundinglineRequestedOutputsEnum  end
@@ -8573,6 +8578,7 @@ function StringToEnum(name::String)
 	if(name=="Calvingratey") return CalvingrateyEnum  end
 	if(name=="CalvingFluxLevelset") return CalvingFluxLevelsetEnum  end
 	if(name=="CalvingMeltingFluxLevelset") return CalvingMeltingFluxLevelsetEnum  end
+	if(name=="ConnectedToOcean") return ConnectedToOceanEnum  end
 	if(name=="Converged") return ConvergedEnum  end
 	if(name=="CrevasseDepth") return CrevasseDepthEnum  end
 	if(name=="DamageD") return DamageDEnum  end

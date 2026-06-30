@@ -5921,9 +5921,10 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*The fbmb[kg yr-1] of one element is area[m2] * melting_rate [kg m^-2 yr^-1]*/
 	int        point1;
-	bool       mainlyfloating;
+	bool       mainlyfloating,nomeltunderlakes;
 	IssmDouble fbmb=0;
-	IssmDouble rho_ice,fraction1,fraction2,floatingmelt,Jdet,scalefactor;
+	IssmDouble fraction1,fraction2,floatingmelt,groundedmelt,connected;
+	IssmDouble rho_ice,Jdet,scalefactor;
 	IssmDouble Total_Fbmb=0;
 	IssmDouble xyz_list[NUMVERTICES][3];
 	Gauss*     gauss     = NULL;
@@ -5932,11 +5933,18 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*Get material parameters :*/
 	rho_ice=FindParam(MaterialsRhoIceEnum);
+	this->parameters->FindParam(&nomeltunderlakes,GroundinglineNomeltUnderLakesEnum);
 	Input* floatingmelt_input = this->GetInput(BasalforcingsFloatingiceMeltingRateEnum); _assert_(floatingmelt_input);
 	Input* gllevelset_input   = this->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
 	Input* scalefactor_input  = NULL;
 	if(scaled==true){
 		scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
+	}
+	Input* connectedtoocean_input = NULL;
+	Input* groundedmelt_input     = NULL;
+	if(nomeltunderlakes){
+		connectedtoocean_input = GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
+		groundedmelt_input = GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(groundedmelt_input);
 	}
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 
@@ -5946,6 +5954,11 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 	while(gauss->next()){
 		this->JacobianDeterminant(&Jdet,&xyz_list[0][0],gauss);
 		floatingmelt_input->GetInputValue(&floatingmelt,gauss);
+		if(nomeltunderlakes){
+			groundedmelt_input->GetInputValue(&groundedmelt,gauss);
+			connectedtoocean_input->GetInputValue(&connected,gauss);
+			if(connected<0.01) floatingmelt = groundedmelt;
+		}
 		if(scaled==true){
 			scalefactor_input->GetInputValue(&scalefactor,gauss);
 		}

@@ -2392,6 +2392,17 @@ bool       Element::IsAllGrounded(){/*{{{*/
 		return true;
 	}
 }/*}}}*/
+bool       Element::IsFloating(){/*{{{*/
+	/*At least ONE node is floating (partially floating returns true)*/
+
+	Input* input=this->GetInput(MaskOceanLevelsetEnum); _assert_(input);
+	if(input->GetInputMin() < 0.){
+		return true;
+	}
+	else{
+		return false;
+	}
+}/*}}}*/
 bool       Element::IsGrounded(){/*{{{*/
 	/*At least ONE node is grounded (partially grounded returns true)*/
 
