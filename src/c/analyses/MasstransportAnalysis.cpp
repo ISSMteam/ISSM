@@ -717,7 +717,9 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* vxaverage_input  = element->GetInput(VxAverageEnum);						 _assert_(vxaverage_input);
 	Input* vyaverage_input  = element->GetInput(VyAverageEnum);						 _assert_(vyaverage_input);
 	Input* connectedtoocean_input = NULL;
-	if(nomeltunderlakes) connectedtoocean_input = element->GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
+	if(nomeltunderlakes){ 
+		connectedtoocean_input = element->GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
+	}
 
 	h=element->CharacteristicLength();
 
