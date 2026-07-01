@@ -1483,7 +1483,7 @@ void FemModel::GetLocalVectorWithClonesVertices(IssmDouble** plocal_vector,Vecto
 }/*}}}*/
 void FemModel::SyncLocalVectorWithClonesVertices(IssmDouble* local_vector){/*{{{*/
 
-	/*recover my_rank:*/
+	/*Get communication properties:*/
 	ISSM_MPI_Status status;
 	int my_rank   = IssmComm::GetRank();
 	int num_procs = IssmComm::GetSize();
