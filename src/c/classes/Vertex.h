@@ -22,9 +22,9 @@ class Vertex: public Object{
 		bool       clone;
 		int        domaintype;
 		int        id;           // random index
-		int        sid;          // "serial" id (rank of this vertex if the dataset was on 1 cpu)
+		int        sid;          // "serial" id   (rank of this vertex if the dataset was on 1 cpu)
 		int        pid;          // "parallel" id
-		int        lid;          // "local" id
+		int        lid;          // "local" id  (masters first, clones last)
 		IssmDouble x;
 		IssmDouble y;
 		IssmDouble z;
@@ -36,7 +36,7 @@ class Vertex: public Object{
 
 		/*Vertex constructors, destructors {{{*/
 		Vertex();
-		Vertex(int id, int sid,bool clone, IoModel* iomodel,bool isamr);
+		Vertex(int id, int sid, bool clone, IoModel* iomodel,bool isamr);
 		~Vertex();
 		/*}}}*/
 		/*Object virtual functions definitions:{{{ */

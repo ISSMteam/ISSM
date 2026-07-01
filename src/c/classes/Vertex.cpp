@@ -19,7 +19,7 @@ Vertex::Vertex(){/*{{{*/
 	return;
 }
 /*}}}*/
-Vertex::Vertex(int vertex_id, int vertex_sid,bool vertex_clone, IoModel* iomodel,bool isamr){/*{{{*/
+Vertex::Vertex(int vertex_id, int vertex_sid, bool vertex_clone, IoModel* iomodel,bool isamr){/*{{{*/
 
 	/*Checks in debugging mode*/
 	_assert_(vertex_sid>=0 && vertex_sid<iomodel->numberofvertices);
