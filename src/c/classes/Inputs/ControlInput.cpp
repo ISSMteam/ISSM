@@ -189,7 +189,7 @@ void ControlInput::SetGradient(int interp,int numindices,int* indices,IssmDouble
 	if(this->values->ObjectEnum()!=TransientInputEnum)_error_("you are in the wrong place, go home");
 	_assert_(this);
 	_assert_(this->gradient);
-	_error_("S");
+	_error_("NOT IMPLEMENTED, REMOVE?");
 
 	//NEW??
 	//this->gradient->SetInput(interp,numindices,indices,values_in);
