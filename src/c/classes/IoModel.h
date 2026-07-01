@@ -51,10 +51,6 @@ class IoModel {
 		std::vector<IoConstant*> constants; //this dataset holds all IssmDouble, int, bool and char from input
 		std::vector<IoData*>     data;      //this dataset holds temporary data, memory intensive
 
-		/*for AD mode: to keep track of our independent variables we fetch:*/
-		//bool    *independents;
-		//DataSet *independent_objects;
-
 	public:
 		/*pointer to input file*/
 		FILE *fid;
@@ -73,10 +69,17 @@ class IoModel {
 		int  *my_vertices_lids;
 		int  *epart;
 
+		/*Rank 0 needs to keep track of what data to send to other procs*/
+		int* numvertices_per_proc;
+		int* numelements_per_proc;
+		int** rank0_vert_send_ids; 
+		int** rank0_elem_send_ids; 
+
 		/*Mesh properties and connectivity tables*/
 		int  domaindim;
 		int  domaintype;
 		int *elements;
+		int *elements_local;
 		int *edges;
 		int *verticaledges;
 		int *horizontaledges;
@@ -147,6 +150,7 @@ class IoModel {
 		void        FetchData(IssmDouble** pmatrix,int* pM,int* pN, int layer_number,const char* data_name);
 		void        FetchData(Options *options,const char* data_name);
 		void        FetchData(int num,...);
+		void        FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN, const char* data_name);
 		void        FetchDataToInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum);
 		void        FetchDataToInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum,IssmDouble default_value);
 		void        FetchDataToDatasetInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum);

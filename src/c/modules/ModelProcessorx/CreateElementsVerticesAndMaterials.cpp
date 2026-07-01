@@ -11,7 +11,7 @@
 
 bool IsVertexInRank(int* vertices_ranks,int* vertices_proc_count,int vid,int rank){/*{{{*/
 
-	/*See if node is already in partition*/
+	/*See if node is in partition "rank"*/
 	for(int k=0;k<vertices_proc_count[vid];k++){
 		if(vertices_ranks[MAXCONNECTIVITY*vid+k] == rank) return true;
 	}
@@ -24,7 +24,9 @@ void AddVertexToRank(int* vertices_ranks,int* vertices_proc_count,int vid,int ra
 	if(IsVertexInRank(vertices_ranks,vertices_proc_count,vid,rank)) return;
 
 	/*This rank has not been marked for this node just yet so go ahead and add it*/
-	if(vertices_proc_count[vid]==MAXCONNECTIVITY) _error_("This vertex is connected to more than "<<MAXCONNECTIVITY<<" partition. Either reduce the number of processors, or increase MAXCONNECTIVITY");
+	if(vertices_proc_count[vid]==MAXCONNECTIVITY){
+		_error_("This vertex is connected to more than "<<MAXCONNECTIVITY<<" partition. Either reduce the number of processors, or increase MAXCONNECTIVITY");
+	}
 	vertices_ranks[MAXCONNECTIVITY*vid+vertices_proc_count[vid]] = rank;
 	vertices_proc_count[vid]++;
 }/*}}}*/
@@ -177,119 +179,119 @@ void CreateMaterials(Elements* elements,Inputs* inputs,Materials* materials,IoMo
 			for(int nat=0;nat<nnat;nat++){
 				switch(IoCodeToEnumNature(nature[nat])){ 
 					case MaticeEnum:{ /*{{{*/
-							iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
-							iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
-							for (int k=0;k<iomodel->numberofelements;k++) if(iomodel->my_elements[k]) materials->AddObject(new Matice(k+1,k,MaticeEnum));
-							switch(iomodel->domaindim){
-								case 2:
-									inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
-									break;
-								case 3:
-									break;
-								default:
-									_error_("Mesh not supported yet");
-							}
-						} /*}}}*/
-						break;
+											 iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
+											 iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
+											 for (int k=0;k<iomodel->numberofelements;k++) if(iomodel->my_elements[k]) materials->AddObject(new Matice(k+1,k,MaticeEnum));
+											 switch(iomodel->domaindim){
+												 case 2:
+													 inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
+													 break;
+												 case 3:
+													 break;
+												 default:
+													 _error_("Mesh not supported yet");
+											 }
+										 } /*}}}*/
+									  break;
 					case MatlithoEnum: { /*{{{*/
-							bool* issolid = NULL;
-							int*  rheologymodel = NULL;
-							iomodel->FetchData(&issolid, NULL, NULL, "md.materials.issolid");
-							iomodel->FetchData(&rheologymodel, NULL, NULL, "md.materials.rheologymodel");
-							iomodel->FetchData(11,"md.materials.radius","md.materials.viscosity","md.materials.lame_lambda","md.materials.lame_mu","md.materials.burgers_viscosity","md.materials.burgers_mu","md.materials.ebm_alpha","md.materials.ebm_delta","md.materials.ebm_taul","md.materials.ebm_tauh","md.materials.density");
-							materials->AddObject(new Matlitho(iomodel->numberofelements+1, iomodel, issolid, rheologymodel));
-							iomodel->DeleteData(11,"md.materials.radius","md.materials.viscosity","md.materials.lame_lambda","md.materials.lame_mu","md.materials.burgers_viscosity","md.materials.burgers_mu","md.materials.ebm_alpha","md.materials.ebm_delta","md.materials.ebm_taul","md.materials.ebm_tauh","md.materials.density");
-							xDelete<bool>(issolid);
-							xDelete<int>(rheologymodel);
-						}
-						/*}}}*/
-						break;
+												 bool* issolid = NULL;
+												 int*  rheologymodel = NULL;
+												 iomodel->FetchData(&issolid, NULL, NULL, "md.materials.issolid");
+												 iomodel->FetchData(&rheologymodel, NULL, NULL, "md.materials.rheologymodel");
+												 iomodel->FetchData(11,"md.materials.radius","md.materials.viscosity","md.materials.lame_lambda","md.materials.lame_mu","md.materials.burgers_viscosity","md.materials.burgers_mu","md.materials.ebm_alpha","md.materials.ebm_delta","md.materials.ebm_taul","md.materials.ebm_tauh","md.materials.density");
+												 materials->AddObject(new Matlitho(iomodel->numberofelements+1, iomodel, issolid, rheologymodel));
+												 iomodel->DeleteData(11,"md.materials.radius","md.materials.viscosity","md.materials.lame_lambda","md.materials.lame_mu","md.materials.burgers_viscosity","md.materials.burgers_mu","md.materials.ebm_alpha","md.materials.ebm_delta","md.materials.ebm_taul","md.materials.ebm_tauh","md.materials.density");
+												 xDelete<bool>(issolid);
+												 xDelete<int>(rheologymodel);
+											 }
+										  /*}}}*/
+										  break;
 					case MathydroEnum: {/*{{{*/
-							/*If we don't have any materials pointed to by elements (meaning, if we are running only litho or hydro), 
-							 * then we need to zero out the hmaterial pointers inside the elements dataset so that it won't error out 
-							 * during configuration: */
-							bool isice=false;
-							for (int j=0;j<nnat;j++){
-								if((IoCodeToEnumNature(nature[j])==MaticeEnum)||
-										(IoCodeToEnumNature(nature[j])==MatenhancediceEnum)||
-										(IoCodeToEnumNature(nature[j])==MatestarEnum)||
-										(IoCodeToEnumNature(nature[j])==MatdamageiceEnum)){
-									isice=true; break; }
-							}
-							if (!isice){
-								/*go through elements, and zero the hmaterials pointers: */
-								for(Object* & object : elements->objects){
-									Element* element=xDynamicCast<Element*>(object);
-									switch(element->ObjectEnum()){
-										case TriaEnum: 
-											{
-												Tria* tria= xDynamicCast<Tria*>(element);
-												if(tria->hmaterial)delete tria->hmaterial; 
-												tria->hmaterial=NULL;
-											}
-											break;
-										default: 
-											_error_("Not implemented yet");
-									}
-								}
-							}
-						} /*}}}*/
-						break;
+												 /*If we don't have any materials pointed to by elements (meaning, if we are running only litho or hydro), 
+												  * then we need to zero out the hmaterial pointers inside the elements dataset so that it won't error out 
+												  * during configuration: */
+												 bool isice=false;
+												 for (int j=0;j<nnat;j++){
+													 if((IoCodeToEnumNature(nature[j])==MaticeEnum)||
+																 (IoCodeToEnumNature(nature[j])==MatenhancediceEnum)||
+																 (IoCodeToEnumNature(nature[j])==MatestarEnum)||
+																 (IoCodeToEnumNature(nature[j])==MatdamageiceEnum)){
+														 isice=true; break; }
+												 }
+												 if (!isice){
+													 /*go through elements, and zero the hmaterials pointers: */
+													 for(Object* & object : elements->objects){
+														 Element* element=xDynamicCast<Element*>(object);
+														 switch(element->ObjectEnum()){
+															 case TriaEnum: 
+																	{
+																	 Tria* tria= xDynamicCast<Tria*>(element);
+																	 if(tria->hmaterial)delete tria->hmaterial; 
+																	 tria->hmaterial=NULL;
+																	}
+																 break;
+															 default: 
+																 _error_("Not implemented yet");
+														 }
+													 }
+												 }
+											 } /*}}}*/
+										  break;
 					case MatenhancediceEnum: /*{{{*/
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_E",MaterialsRheologyEEnum);
-						for(int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matice(j+1,j,MatenhancediceEnum));
-						switch(iomodel->domaindim){
-							case 2:
-								inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
-								inputs->DuplicateInput(MaterialsRheologyEEnum,MaterialsRheologyEbarEnum);
-								break;
-							case 3:
-								break;
-							default:
-								_error_("Mesh not supported yet");
-						}
-						/*}}}*/
-						break;
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_E",MaterialsRheologyEEnum);
+										  for(int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matice(j+1,j,MatenhancediceEnum));
+										  switch(iomodel->domaindim){
+											  case 2:
+												  inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
+												  inputs->DuplicateInput(MaterialsRheologyEEnum,MaterialsRheologyEbarEnum);
+												  break;
+											  case 3:
+												  break;
+											  default:
+												  _error_("Mesh not supported yet");
+										  }
+										  /*}}}*/
+										  break;
 					case MatdamageiceEnum: /*{{{*/
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.damage.D",DamageDEnum);
-						for (int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matice(j+1,j,MatdamageiceEnum));
-						switch(iomodel->domaindim){
-							case 2:
-								inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
-								inputs->DuplicateInput(DamageDEnum,DamageDbarEnum);
-								break;
-							case 3:
-								break;
-							default:
-								_error_("Mesh not supported yet");
-						}
-						/*}}}*/
-						break;
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_n",MaterialsRheologyNEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.damage.D",DamageDEnum);
+										  for (int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matice(j+1,j,MatdamageiceEnum));
+										  switch(iomodel->domaindim){
+											  case 2:
+												  inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
+												  inputs->DuplicateInput(DamageDEnum,DamageDbarEnum);
+												  break;
+											  case 3:
+												  break;
+											  default:
+												  _error_("Mesh not supported yet");
+										  }
+										  /*}}}*/
+										  break;
 					case MatestarEnum: /*{{{*/
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_Ec",MaterialsRheologyEcEnum);
-						iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_Es",MaterialsRheologyEsEnum);
-						for(int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matestar(j+1,j,iomodel));
-						switch(iomodel->domaindim){
-							case 2:
-								inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
-								inputs->DuplicateInput(MaterialsRheologyEcEnum,MaterialsRheologyEcbarEnum);
-								inputs->DuplicateInput(MaterialsRheologyEsEnum,MaterialsRheologyEsbarEnum);
-								break;
-							case 3:
-								break;
-							default:
-								_error_("Mesh not supported yet");
-						} 
-						/*}}}*/
-						break; 
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_B",MaterialsRheologyBEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_Ec",MaterialsRheologyEcEnum);
+										  iomodel->FetchDataToInput(inputs,elements,"md.materials.rheology_Es",MaterialsRheologyEsEnum);
+										  for(int j=0;j<iomodel->numberofelements;j++) if(iomodel->my_elements[j]) materials->AddObject(new Matestar(j+1,j,iomodel));
+										  switch(iomodel->domaindim){
+											  case 2:
+												  inputs->DuplicateInput(MaterialsRheologyBEnum,MaterialsRheologyBbarEnum);
+												  inputs->DuplicateInput(MaterialsRheologyEcEnum,MaterialsRheologyEcbarEnum);
+												  inputs->DuplicateInput(MaterialsRheologyEsEnum,MaterialsRheologyEsbarEnum);
+												  break;
+											  case 3:
+												  break;
+											  default:
+												  _error_("Mesh not supported yet");
+										  } 
+										  /*}}}*/
+										  break; 
 					default:
-						_error_("Materials nature type "<<EnumToStringx(IoCodeToEnumNature(nature[nat]))<<" not supported");
-						break;
+										  _error_("Materials nature type "<<EnumToStringx(IoCodeToEnumNature(nature[nat]))<<" not supported");
+										  break;
 				}
 			}
 			//Free resources:
@@ -326,7 +328,7 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 	for(int i=0;i<MAXCONNECTIVITY*iomodel->numberofvertices;i++) vertices_ranks[i] = -1;
 
 	/*For all vertices, count how many cpus hold vertex i (initialize with 0)*/
-	int* vertices_proc_count = xNewZeroInit<int>(iomodel->numberofvertices);
+	int* vertices_proc_count  = xNewZeroInit<int>(iomodel->numberofvertices);
 
 	/*Go through all elements and mark all vertices for all partitions*/
 	for(int i=0;i<iomodel->numberofelements;i++){
@@ -365,15 +367,21 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 		xDelete<int>(vertex_pairing);
 	}
 
-	/*Create vector of size total numnodes, initialized with -1, that will keep track of local ids*/
+	/*Loop over all vertices and:
+	 * - determine if it belongs to this partition (my_vertices=1/0)
+	 * - create vector of size total numnodes, initialized with -1, that will keep track of local ids*/
+	_assert_(!iomodel->my_vertices);
+	iomodel->my_vertices  = xNew<bool>(iomodel->numberofvertices);
+	int* vertices_offsets = xNew<int>(iomodel->numberofvertices);
 	int  offset = 0;
-	int* vertices_offsets  = xNew<int>(iomodel->numberofvertices);
 	for(int i=0;i<iomodel->numberofvertices;i++){
 		if(IsVertexInRank(vertices_ranks,vertices_proc_count,i,my_rank)){
-			vertices_offsets[i] = offset++;
+			vertices_offsets[i]     = offset++;
+			iomodel->my_vertices[i] = true;
 		}
 		else{
-			vertices_offsets[i] = -1;
+			vertices_offsets[i]     = -1;
+			iomodel->my_vertices[i] = false;
 		}
 	}
 
@@ -481,29 +489,88 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 			}
 		}
 	}
-	xDelete<int>(vertices_offsets);
 
-	/*Final step, create my_vertices*/
-	_assert_(!iomodel->my_vertices);
-	iomodel->my_vertices = xNew<bool>(iomodel->numberofvertices);
-	for(int i=0;i<iomodel->numberofvertices;i++){
-		if(IsVertexInRank(vertices_ranks,vertices_proc_count,i,my_rank)){
-			iomodel->my_vertices[i] = true;
+	/*When loading fields from binary file, IoModel will send only the data that is relevant
+	 * to each partition. We need to keep track of which vertices and elements belong to each
+	 * partition so that rank0 can extract and send the data*/
+	if(my_rank==0){
+
+		/*Count number of vertices per rank*/
+		int* numvertices_per_proc = xNewZeroInit<int>(num_procs);
+		int* numelements_per_proc = xNewZeroInit<int>(num_procs);
+		for(int i=0;i<iomodel->numberofvertices;i++){
+			for(int k=0;k<vertices_proc_count[i];k++){
+				int rank = vertices_ranks[MAXCONNECTIVITY*i+k];
+				if(rank>-1){
+					numvertices_per_proc[rank]++;
+				}
+			}
 		}
-		else{
-			iomodel->my_vertices[i] = false;
+		for(int i=0;i<iomodel->numberofelements;i++){
+			numelements_per_proc[epart[i]]++;
+		}
+
+		/*Now allocate ids for each rank for which we will send data*/
+		int** rank0_vert_send_ids = xNew<int*>(num_procs);
+		int** rank0_elem_send_ids = xNew<int*>(num_procs);
+		for(int r=0; r<num_procs; r++) rank0_vert_send_ids[r]=xNew<int>(numvertices_per_proc[r]);
+		for(int r=0; r<num_procs; r++) rank0_elem_send_ids[r]=xNew<int>(numelements_per_proc[r]);
+
+		/*Populate*/
+		int* counters= xNewZeroInit<int>(num_procs);
+		for(int i=0;i<iomodel->numberofvertices;i++){
+			for(int k=0;k<vertices_proc_count[i];k++){
+				int rank = vertices_ranks[MAXCONNECTIVITY*i+k];
+				if(rank>-1){
+					rank0_vert_send_ids[rank][counters[rank]] = i;
+					counters[rank]++;
+				}
+			}
+		}
+		for(int r=0;r<num_procs;r++) counters[r]=0;
+		for(int i=0;i<iomodel->numberofelements;i++){
+			int rank = epart[i];
+			rank0_elem_send_ids[rank][counters[rank]] = i;
+			counters[rank]++;
+		}
+		xDelete<int>(counters);
+
+		/*Assign communicators*/
+		iomodel->numvertices_per_proc = numvertices_per_proc;
+		iomodel->numelements_per_proc = numelements_per_proc;
+		iomodel->rank0_vert_send_ids = rank0_vert_send_ids;
+		iomodel->rank0_elem_send_ids = rank0_elem_send_ids;
+	}
+
+	/*Final step, create elements_local (of size number of elements local * local vertex id), used for IO only*/
+
+	/*First determine number of elements in local partition*/
+	int numelements_local = 0;
+	for(int i=0;i<iomodel->numberofelements;i++) if(iomodel->my_elements[i]) numelements_local++;
+	iomodel->elements_local = xNew<int>(elements_width*numelements_local);
+
+	/*Create elements_local based on local ids*/
+	int counter = 0;
+	for(int i=0;i<iomodel->numberofelements;i++){
+		if(iomodel->my_elements[i]){
+			for(int j=0;j<elements_width;j++){
+				_assert_(vertices_offsets[iomodel->elements[i*elements_width+j]-1]>-1);
+				iomodel->elements_local[counter*elements_width+j] = vertices_offsets[iomodel->elements[i*elements_width+j]-1];
+			}
+			counter++;
 		}
 	}
 
 	/*Free data: */
+	xDelete<int>(vertices_offsets);
 	xDelete<int>(vertices_ranks);
 	xDelete<int>(vertices_proc_count);
 
 	/*Assign communicators*/
-	vertices->common_send=common_send;
-	vertices->common_recv=common_recv;
-	vertices->common_send_ids=common_send_ids;
-	vertices->common_recv_ids=common_recv_ids;
+	vertices->common_send     = common_send;
+	vertices->common_recv     = common_recv;
+	vertices->common_send_ids = common_send_ids;
+	vertices->common_recv_ids = common_recv_ids;
 
 	/*Finalize Initialization*/
 	vertices->Finalize(iomodel);

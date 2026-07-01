@@ -12,7 +12,7 @@
  * 7: IssmDouble vector*/
 
 #ifdef HAVE_CONFIG_H
-	#include <config.h>
+#include <config.h>
 #else
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
@@ -130,6 +130,11 @@ IoModel::IoModel(){/*{{{*/
 	this->fid=NULL;
 	this->solution_enum=-1;
 
+	this->numvertices_per_proc = NULL;
+	this->numelements_per_proc = NULL;
+	this->rank0_vert_send_ids  = NULL;
+	this->rank0_elem_send_ids  = NULL;
+
 	this->my_elements=NULL;
 	this->my_faces=NULL;
 	this->my_vfaces=NULL;
@@ -152,6 +157,7 @@ IoModel::IoModel(){/*{{{*/
 	this->numberofhorizontaledges=-1;
 	this->facescols=-1;
 	this->elements=NULL;
+	this->elements_local=NULL;
 	this->faces=NULL;
 	this->verticalfaces=NULL;
 	this->edges=NULL;
@@ -167,8 +173,39 @@ IoModel::IoModel(){/*{{{*/
 }/*}}}*/
 IoModel::IoModel(FILE* iomodel_handle,int solution_enum_in,bool trace,IssmPDouble* X){/*{{{*/
 
-	bool autodiff=false;
-	bool iscontrol=false;
+	/*Initialize permanent data: */
+	this->my_elements      = NULL;
+	this->my_faces         = NULL;
+	this->my_vfaces        = NULL;
+	this->my_edges         = NULL;
+	this->my_vedges        = NULL;
+	this->my_hedges        = NULL;
+	this->my_vertices      = NULL;
+	this->my_vertices_lids = NULL;
+	this->epart            = NULL;
+
+	this->numvertices_per_proc = NULL;
+	this->numelements_per_proc = NULL;
+	this->rank0_vert_send_ids  = NULL;
+	this->rank0_elem_send_ids  = NULL;
+
+	this->facescols                           = -1;
+	this->faces                               = NULL;
+	this->verticalfaces                       = NULL;
+	this->edges                               = NULL;
+	this->verticaledges                       = NULL;
+	this->horizontaledges                     = NULL;
+	this->elementtofaceconnectivity           = NULL;
+	this->elementtoverticalfaceconnectivity   = NULL;
+	this->elementtoedgeconnectivity           = NULL;
+	this->elementtoverticaledgeconnectivity   = NULL;
+	this->elementtohorizontaledgeconnectivity = NULL;
+	this->singlenodetoelementconnectivity     = NULL;
+	this->numbernodetoelementconnectivity     = NULL;
+	this->elements_local                      = NULL;
+
+
+
 
 	/*First, keep track of the file handle: */
 	this->fid=iomodel_handle;
@@ -189,6 +226,7 @@ IoModel::IoModel(FILE* iomodel_handle,int solution_enum_in,bool trace,IssmPDoubl
 	this->FetchConstants(); /*this routine goes through the input file, and fetches bool, int, IssmDouble and string only, nothing memory intensive*/
 
 	/*Is this an autodiff run?*/
+	bool autodiff, iscontrol;
 	this->FindConstant(&autodiff,"md.autodiff.isautodiff");
 	this->FindConstant(&iscontrol,"md.inversion.iscontrol");
 	if(trace){
@@ -202,37 +240,12 @@ IoModel::IoModel(FILE* iomodel_handle,int solution_enum_in,bool trace,IssmPDoubl
 	}
 	this->AddConstant(new IoConstant(autodiff,"md.autodiff.isautodiff"));
 
-	/*Initialize permanent data: */
-	this->my_elements      = NULL;
-	this->my_faces         = NULL;
-	this->my_vfaces        = NULL;
-	this->my_edges         = NULL;
-	this->my_vedges        = NULL;
-	this->my_hedges        = NULL;
-	this->my_vertices      = NULL;
-	this->my_vertices_lids = NULL;
-	this->epart            = NULL;
-
 	FindConstant(&this->domaintype,"md.mesh.domain_type");
 	FindConstant(&this->meshelementtype,"md.mesh.elementtype");
-
 	FetchData(&this->domaindim,"md.mesh.domain_dimension");
 	FetchData(&this->numberofvertices,"md.mesh.numberofvertices");
 	FetchData(&this->numberofelements,"md.mesh.numberofelements");
 	FetchData(&this->elements,NULL,NULL,"md.mesh.elements");
-	this->facescols                           = -1;
-	this->faces                               = NULL;
-	this->verticalfaces                       = NULL;
-	this->edges                               = NULL;
-	this->verticaledges                       = NULL;
-	this->horizontaledges                     = NULL;
-	this->elementtofaceconnectivity           = NULL;
-	this->elementtoverticalfaceconnectivity   = NULL;
-	this->elementtoedgeconnectivity           = NULL;
-	this->elementtoverticaledgeconnectivity   = NULL;
-	this->elementtohorizontaledgeconnectivity = NULL;
-	this->singlenodetoelementconnectivity     = NULL;
-	this->numbernodetoelementconnectivity     = NULL;
 }/*}}}*/
 IoModel::~IoModel(){/*{{{*/
 
@@ -255,6 +268,21 @@ IoModel::~IoModel(){/*{{{*/
 	}
 	this->data.clear();
 
+	/*Delete communicators*/
+	int my_rank = IssmComm::GetRank();
+	if(my_rank==0){
+		int num_procs = IssmComm::GetSize();
+		for(int i=0;i<num_procs;i++){
+			xDelete<int>(rank0_vert_send_ids[i]);
+			xDelete<int>(rank0_elem_send_ids[i]);
+		}
+		xDelete<int*>(rank0_vert_send_ids);
+		xDelete<int*>(rank0_elem_send_ids);
+
+		xDelete<int>(numvertices_per_proc);
+		xDelete<int>(numelements_per_proc);
+	}
+
 	xDelete<bool>(this->my_elements);
 	xDelete<bool>(this->my_faces);
 	xDelete<bool>(this->my_vfaces);
@@ -266,6 +294,7 @@ IoModel::~IoModel(){/*{{{*/
 	xDelete<int>(this->epart);
 
 	xDelete<int>(this->elements);
+	xDelete<int>(this->elements_local);
 	xDelete<int>(this->faces);
 	xDelete<int>(this->verticalfaces);
 	xDelete<int>(this->edges);
@@ -342,12 +371,12 @@ void  IoModel::CheckFile(void){/*{{{*/
 
 	bool        found;
 	int         record_enum,record_name_size;
-   long long   record_length;
+	long long   record_length;
 	char       *record_name = NULL;
 	const char *mddot = "md.";
 
 	/*recover my_rank:*/
-	int my_rank=IssmComm::GetRank();
+	int my_rank = IssmComm::GetRank();
 
 	/*Check that some fields have been allocated*/
 	_assert_(this->fid || my_rank);
@@ -897,39 +926,39 @@ void  IoModel::FetchConstants(void){/*{{{*/
 					case 8: break; //do nothing. not interested in this type of data, which is memory intensive.
 					case 10: break; //do nothing. not interested in this type of data, which is memory intensive.
 					case 9:
-							  ISSM_MPI_Bcast(&numstrings,1,ISSM_MPI_INT,0,IssmComm::GetComm());
-							  /*Now allocate string array: */
-							  if(numstrings){
-								  strings=xNew<char*>(numstrings);
-								  for(int i=0;i<numstrings;i++)strings[i]=NULL;
+								ISSM_MPI_Bcast(&numstrings,1,ISSM_MPI_INT,0,IssmComm::GetComm());
+								/*Now allocate string array: */
+								if(numstrings){
+									strings=xNew<char*>(numstrings);
+									for(int i=0;i<numstrings;i++)strings[i]=NULL;
 
-								  /*Go through strings, and read: */
-								  for(int i=0;i<numstrings;i++){
+									/*Go through strings, and read: */
+									for(int i=0;i<numstrings;i++){
 
-									  ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
-									  if(string_size){
-										  string=xNew<char>((string_size+1));
-										  string[string_size]='\0';
-										  ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
-									  }
-									  else{
-										  string=xNew<char>(1);
-										  string[0]='\0';
-									  }
-									  strings[i]=string;
-								  }
-							  }
+										ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
+										if(string_size){
+											string=xNew<char>((string_size+1));
+											string[string_size]='\0';
+											ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
+										}
+										else{
+											string=xNew<char>(1);
+											string[0]='\0';
+										}
+										strings[i]=string;
+									}
+								}
 
-							  /*Add strings to parameters: */
-							  this->AddConstant(new IoConstant(strings,numstrings,record_name));
+								/*Add strings to parameters: */
+								this->AddConstant(new IoConstant(strings,numstrings,record_name));
 
-							  /*Free string*/
-							  for(int i=0;i<numstrings;i++) xDelete<char>(strings[i]);
-							  xDelete<char*>(strings);
-							  break;
+								/*Free string*/
+								for(int i=0;i<numstrings;i++) xDelete<char>(strings[i]);
+								xDelete<char*>(strings);
+								break;
 					default:
-							  _error_("unknown record type:" << record_code);
-							  break;
+								_error_("unknown record type:" << record_code);
+								break;
 				}
 				xDelete<char>(record_name);
 			}
@@ -1013,31 +1042,31 @@ void  IoModel::FetchData(IssmDouble* pscalar,const char* data_name){/*{{{*/
 /*}}}*/
 void  IoModel::FetchData(IssmDouble** pscalar, const char* data_name){/*{{{*/
 
-   /*output: */
-   IssmPDouble *scalar = NULL;
-   int          code   = 0;
+	/*output: */
+	IssmPDouble *scalar = NULL;
+	int          code   = 0;
 
-   /*recover my_rank:*/
-   int my_rank=IssmComm::GetRank();
+	/*recover my_rank:*/
+	int my_rank=IssmComm::GetRank();
 
-   /*Set file pointer to beginning of the data: */
-   fid=this->SetFilePointerToData(&code,NULL,data_name);
-   if(code!=3)_error_("expecting a IssmDouble for \""<<data_name<<"\"");
+	/*Set file pointer to beginning of the data: */
+	fid=this->SetFilePointerToData(&code,NULL,data_name);
+	if(code!=3)_error_("expecting a IssmDouble for \""<<data_name<<"\"");
 
-   /*Now fetch: */
+	/*Now fetch: */
 
-   /*We have to read a matrix from disk. First read the dimensions of the matrix, then the whole matrix: */
+	/*We have to read a matrix from disk. First read the dimensions of the matrix, then the whole matrix: */
 
-   /*Now allocate matrix: */
-   /*Read matrix on node 0, then broadcast: */
-   scalar=xNew<IssmPDouble>(1);
-   if(my_rank==0) if(fread(scalar,sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix ");
-   ISSM_MPI_Bcast(scalar,1,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
+	/*Now allocate matrix: */
+	/*Read matrix on node 0, then broadcast: */
+	scalar=xNew<IssmPDouble>(1);
+	if(my_rank==0) if(fread(scalar,sizeof(IssmPDouble),1,fid)!=1) _error_("could not read matrix ");
+	ISSM_MPI_Bcast(scalar,1,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
-   _printf0_("scalar: " << *scalar << "\n");
-   *pscalar=xNew<IssmDouble>(1);
-   *pscalar[0]=scalar[0];
-   xDelete<IssmPDouble>(scalar);
+	_printf0_("scalar: " << *scalar << "\n");
+	*pscalar=xNew<IssmDouble>(1);
+	*pscalar[0]=scalar[0];
+	xDelete<IssmPDouble>(scalar);
 }
 /*}}}*/
 void  IoModel::FetchData(char** pstring,const char* data_name){/*{{{*/
@@ -1361,6 +1390,139 @@ void  IoModel::FetchData(IssmDouble** pmatrix,int* pM,int* pN,const char* data_n
 	if(pN) *pN=N;
 }
 /*}}}*/
+void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* data_name){/*{{{*/
+
+	/*First, look if has already been loaded (might be an independent variable)*/
+	vector<IoData*>::iterator iter;
+	for(iter=data.begin();iter<data.end();iter++){
+		IoData* iodata=*iter;
+		if(strcmp(iodata->name,data_name)==0){
+			*pmatrix=iodata->data;
+			if(pM) *pM=iodata->M;
+			if(pN) *pN=iodata->N;
+			return;
+		}
+	}
+
+	/*output: */
+	int  M,N,M_local,M_local2;
+	bool istimeseries = false;
+	int  code,layout;
+
+	/*Get communication properties:*/
+	ISSM_MPI_Status status;
+	int my_rank   = IssmComm::GetRank();
+	int num_procs = IssmComm::GetSize();
+	ISSM_MPI_Request  *send_requests = xNew<ISSM_MPI_Request>(num_procs);
+
+	/*Set file pointer to beginning of the data: */
+	fid=this->SetFilePointerToData(&code, &layout, data_name);
+	if(code!=5 && code!=6 && code!=7 && code!=10)_error_("expecting a IssmDouble, integer or boolean matrix for \""<<data_name<<"\""<<" (Code is "<<code<<")");
+
+	/*First read the dimensions (MxN) of the matrix*/
+	if(my_rank==0){
+		if(fread(&M,sizeof(int),1,fid)!=1) _error_("could not read number of rows for matrix ");
+		if(fread(&N,sizeof(int),1,fid)!=1) _error_("could not read number of columns for matrix ");
+	}
+	int buffer[2] = {M,N};
+	ISSM_MPI_Bcast(&buffer[0], 2, ISSM_MPI_INT, 0, IssmComm::GetComm());
+	M = buffer[0]; N=buffer[1];
+
+	/*Special case if matrix is empty*/
+	if(M*N==0){
+		*pmatrix=NULL;
+		if(pM) *pM=M;
+		if(pN) *pN=N;
+		return;
+	}
+
+	/*Now determine layout to allocate local matrix size:
+	 * layout:
+	 * - 1: vertices
+	 * - 2: elements
+	 * - 3: arbitrary (send everyting)
+	 * - 4: vertices time series
+	 * - 5: elements time series
+	 *   */
+	int* M_local_list = xNew<int>(num_procs);
+	if(my_rank==0){
+		if(layout==1){
+			if(M==this->numberofvertices){
+				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = this->numvertices_per_proc[rank];
+			}
+			else if(M==this->numberofvertices+1){
+				istimeseries = true;
+				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = this->numvertices_per_proc[rank]+1;
+			}
+			else{
+				_error_("Size "<<M<<"x"<<N<<" not supported yet for layout=1 (while fetching "<<data_name<<")");
+			}
+		}
+		else if(layout==2){
+			_error_("not supported yet");
+		}
+		else{
+			_error_("layout "<<layout<<" not support yet (while fetching "<<data_name<<")");
+		}
+		for(int rank=0;rank<num_procs;rank++){
+			ISSM_MPI_Isend(&M_local_list[rank], 1, ISSM_MPI_INT, rank,0,IssmComm::GetComm(),&send_requests[rank]);
+		}
+	}
+	ISSM_MPI_Recv(&M_local, 1, ISSM_MPI_INT, 0, 0, IssmComm::GetComm(), &status);
+	if(my_rank==0){ for(int rank=0;rank<num_procs;rank++){ ISSM_MPI_Wait(&send_requests[rank],&status); } }
+
+	/*Read matrix on node 0, then broadcast: */
+	IssmPDouble** all_matrices = NULL;
+	if(my_rank==0){
+
+		IssmPDouble* fullmatrix=xNew<IssmPDouble>(M*N);
+		if(fread(fullmatrix, M*N*sizeof(IssmPDouble), 1, fid)!=1){
+			_error_("could not read matrix \""<<data_name<<"\" (you may not have enough memory, size is "<<M<<"x"<<N<<")");
+		}
+
+		all_matrices = xNew<IssmPDouble*>(num_procs);
+		for(int rank=0;rank<num_procs;rank++){
+
+			/*Construct matrix relevant to this rank*/
+			all_matrices[rank] = xNew<IssmPDouble>(M_local_list[rank]*N);
+			for(int i=0; i<this->numvertices_per_proc[rank]; i++){
+				for(int j=0; j<N; j++){
+					all_matrices[rank][i*N+j] = fullmatrix[this->rank0_vert_send_ids[rank][i]*N+j];
+				}
+			}
+
+			/*Add time for time series*/
+			if(istimeseries){
+				for(int j=0; j<N; j++){
+					all_matrices[rank][this->numvertices_per_proc[rank]*N+j] = fullmatrix[(M-1)*N+j];
+				}
+			}
+			ISSM_MPI_Isend(all_matrices[rank], M_local_list[rank]*N, ISSM_MPI_PDOUBLE, rank, 0, IssmComm::GetComm(), &send_requests[rank]);
+		}
+		xDelete<IssmPDouble>(fullmatrix);
+	}
+
+	/*Now allocate matrix: */
+	IssmPDouble* matrix = xNew<IssmPDouble>(M_local*N);
+	ISSM_MPI_Recv(matrix, M_local*N, ISSM_MPI_PDOUBLE, 0, 0, IssmComm::GetComm(), &status);
+	if(my_rank==0){ for(int rank=1;rank<num_procs;rank++) ISSM_MPI_Wait(&send_requests[rank], &status); }
+
+	/*Recast to active Double for AD*/
+	*pmatrix = xNew<IssmDouble>(M_local*N);
+	for(int i=0;i<M*N;++i) (*pmatrix)[i] = reCast<IssmDouble>(matrix[i]);
+	xDelete<IssmPDouble>(matrix);
+
+	/*Clean-up*/
+	xDelete<ISSM_MPI_Request>(send_requests);
+	for(int rank=0;rank<num_procs;rank++) xDelete<IssmPDouble>(all_matrices[rank]);
+	xDelete<IssmPDouble*>(all_matrices);
+	xDelete<int>(M_local_list);
+
+	/*Assign output pointers: */
+	if(pM) *pM=M;
+	if(pN) *pN=N;
+}
+/*}}}*/
 #ifdef _HAVE_AD_
 void  IoModel::FetchData(IssmPDouble** pmatrix,int* pM,int* pN,const char* data_name){/*{{{*/
 
@@ -1447,27 +1609,27 @@ void  IoModel::FetchData(IssmPDouble** pmatrix,int* pM,int* pN,const char* data_
 /*}}}*/
 void  IoModel::FetchData(IssmPDouble** pscalar,const char* data_name){/*{{{*/
 
-   /*output: */
-   IssmPDouble   *scalar = NULL;
-   int      code;
+	/*output: */
+	IssmPDouble   *scalar = NULL;
+	int      code;
 
-   /*recover my_rank:*/
-   int my_rank=IssmComm::GetRank();
+	/*recover my_rank:*/
+	int my_rank=IssmComm::GetRank();
 
-   /*Set file pointer to beginning of the data: */
-   fid=this->SetFilePointerToData(&code,NULL,data_name);
+	/*Set file pointer to beginning of the data: */
+	fid=this->SetFilePointerToData(&code,NULL,data_name);
 
-   if(code!=3)_error_("expecting a IssmDouble for \""<<data_name<<"\"");
+	if(code!=3)_error_("expecting a IssmDouble for \""<<data_name<<"\"");
 
-   /*We have to read a scalar from disk. First read the dimensions of the scalar, then the scalar: */
-   scalar=xNew<IssmPDouble>(1);
-   if(my_rank==0){
-      if(fread(scalar,sizeof(IssmPDouble),1,fid)!=1)_error_("could not read scalar ");
-   }
-   ISSM_MPI_Bcast(scalar,1,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
+	/*We have to read a scalar from disk. First read the dimensions of the scalar, then the scalar: */
+	scalar=xNew<IssmPDouble>(1);
+	if(my_rank==0){
+		if(fread(scalar,sizeof(IssmPDouble),1,fid)!=1)_error_("could not read scalar ");
+	}
+	ISSM_MPI_Bcast(scalar,1,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
 
-   /*Assign output pointers: */
-   *pscalar=scalar;
+	/*Assign output pointers: */
+	*pscalar=scalar;
 }
 /*}}}*/
 #endif
@@ -1539,7 +1701,7 @@ void  IoModel::FetchData(IssmDouble*** pmatrices,int** pmdims,int** pndims, int*
 				xDelete<IssmPDouble>(matrix);
 			}
 			else
-			  matrices[i]=NULL;
+			 matrices[i]=NULL;
 			/*Assign: */
 			mdims[i]=M;
 			ndims[i]=N;
@@ -1736,32 +1898,32 @@ void  IoModel::FetchData(Options* options,const char* lastnonoption){/*{{{*/
 					break;
 				case 4:
 					  {
-					/*We have to read a string from disk. First read the dimensions of the string, then the string: */
-					if(fread(&string_size,sizeof(int),1,this->fid)!=1) _error_("could not read length of string ");
-					ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
+						/*We have to read a string from disk. First read the dimensions of the string, then the string: */
+						if(fread(&string_size,sizeof(int),1,this->fid)!=1) _error_("could not read length of string ");
+						ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
 
-					if(string_size){
-						string=xNew<char>(string_size+1);
-						string[string_size]='\0';
+						if(string_size){
+							string=xNew<char>(string_size+1);
+							string[string_size]='\0';
 
-						/*Read string, then broadcast: */
-						if(fread(string,string_size*sizeof(char),1,this->fid)!=1)_error_(" could not read string ");
-						ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
-					}
-					else{
-						string=xNew<char>(1);
-						string[0]='\0';
-					}
+							/*Read string, then broadcast: */
+							if(fread(string,string_size*sizeof(char),1,this->fid)!=1)_error_(" could not read string ");
+							ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
+						}
+						else{
+							string=xNew<char>(1);
+							string[0]='\0';
+						}
 
-					/*Add string to parameters: */
-					GenericOption<char*>* option = new GenericOption<char*>();
-					char* optionname=xNew<char>(strlen(record_name)-3+1);
-					xMemCpy(optionname,&record_name[3],strlen(record_name)-3+1);
-					option->value = string;
-					option->name  = optionname;
-					option->size[0] = 1;
-					option->size[1] = 1;
-					options->AddOption(option);
+						/*Add string to parameters: */
+						GenericOption<char*>* option = new GenericOption<char*>();
+						char* optionname=xNew<char>(strlen(record_name)-3+1);
+						xMemCpy(optionname,&record_name[3],strlen(record_name)-3+1);
+						option->value = string;
+						option->name  = optionname;
+						option->size[0] = 1;
+						option->size[1] = 1;
+						options->AddOption(option);
 
 					  }
 					break;
@@ -1801,32 +1963,32 @@ void  IoModel::FetchData(Options* options,const char* lastnonoption){/*{{{*/
 						break;
 					case 4:
 						  {
-						/*We have to read a string from disk. First read the dimensions of the string, then the string: */
-						if(fread(&string_size,sizeof(int),1,this->fid)!=1) _error_("could not read length of string ");
-						ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
+							/*We have to read a string from disk. First read the dimensions of the string, then the string: */
+							if(fread(&string_size,sizeof(int),1,this->fid)!=1) _error_("could not read length of string ");
+							ISSM_MPI_Bcast(&string_size,1,ISSM_MPI_INT,0,IssmComm::GetComm());
 
-						if(string_size){
-							string=xNew<char>(string_size+1);
-							string[string_size]='\0';
+							if(string_size){
+								string=xNew<char>(string_size+1);
+								string[string_size]='\0';
 
-							/*Read string, then broadcast: */
-							if(fread(string,string_size*sizeof(char),1,this->fid)!=1)_error_(" could not read string ");
-							ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
-						}
-						else{
-							string=xNew<char>(1);
-							string[0]='\0';
-						}
+								/*Read string, then broadcast: */
+								if(fread(string,string_size*sizeof(char),1,this->fid)!=1)_error_(" could not read string ");
+								ISSM_MPI_Bcast(string,string_size,ISSM_MPI_CHAR,0,IssmComm::GetComm());
+							}
+							else{
+								string=xNew<char>(1);
+								string[0]='\0';
+							}
 
-						/*Add string to parameters: */
-						char* optionname=xNew<char>(strlen(record_name)-3+1);
-						xMemCpy(optionname,&record_name[3],strlen(record_name)-3+1);
-						GenericOption<char*>* option = new GenericOption<char*>();
-						option->value = string;
-						option->name  = optionname;
-						option->size[0] = 1;
-						option->size[1] = 1;
-						options->AddOption(option);
+							/*Add string to parameters: */
+							char* optionname=xNew<char>(strlen(record_name)-3+1);
+							xMemCpy(optionname,&record_name[3],strlen(record_name)-3+1);
+							GenericOption<char*>* option = new GenericOption<char*>();
+							option->value = string;
+							option->name  = optionname;
+							option->size[0] = 1;
+							option->size[1] = 1;
+							options->AddOption(option);
 						  }
 						break;
 					default:
@@ -1914,6 +2076,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	if(code!=7 && code!=10) _error_(vector_name<<" is not a double array");
 
 	this->FetchData(&doublearray,&M,&N,vector_name);
+	//this->FetchDataLocal(&doublearray,&M,&N,vector_name);
 
 	for(Object* & object : elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
@@ -1921,6 +2084,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 			element->SetElementInput(inputs,input_enum,default_value);
 		}
 		else{
+			//element->InputCreateLocal(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
 			element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
 		}
 	}
@@ -1998,151 +2162,151 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 			break;
 		case 8: { //MatArray {{{
 
-			/*variables:*/
-			int numarray;
-			IssmDouble** array=NULL; 
-			IssmDouble*  matrix=NULL;
-			IssmDouble*  times = NULL;
-			int* pM = NULL;
-			int* pN = NULL;
-			int M,N;
+					  /*variables:*/
+					  int numarray;
+					  IssmDouble** array=NULL; 
+					  IssmDouble*  matrix=NULL;
+					  IssmDouble*  times = NULL;
+					  int* pM = NULL;
+					  int* pN = NULL;
+					  int M,N;
 
-			/*fetch array of matrices:*/
-			this->FetchData(&array,&pM,&pN,&numarray,vector_name);
+					  /*fetch array of matrices:*/
+					  this->FetchData(&array,&pM,&pN,&numarray,vector_name);
 
-			for (int i=0;i<numarray;i++){
+					  for (int i=0;i<numarray;i++){
 
-				M=pM[i];
-				N=pN[i];
-				matrix=array[i];
+						  M=pM[i];
+						  N=pN[i];
+						  matrix=array[i];
 
-				//initialize times:
-				if(M==this->numberofvertices || M==(this->numberofvertices+1)){
-					times=xNew<IssmDouble>(N);
-					if(M==this->numberofvertices) times[0] = matrix[M-1];
-					if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-				}
-				else if(M==this->numberofelements || M==(this->numberofelements+1)){
-					times=xNew<IssmDouble>(N);
-					if(M==this->numberofelements) times[0] = matrix[M-1];
-					if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-				}
-				else if(M==2 || M==1){
-					times=xNew<IssmDouble>(N);
-					if(M==1) times[0] = 0;
-					if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-				}
-				else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
+						  //initialize times:
+						  if(M==this->numberofvertices || M==(this->numberofvertices+1)){
+							  times=xNew<IssmDouble>(N);
+							  if(M==this->numberofvertices) times[0] = matrix[M-1];
+							  if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+						  }
+						  else if(M==this->numberofelements || M==(this->numberofelements+1)){
+							  times=xNew<IssmDouble>(N);
+							  if(M==this->numberofelements) times[0] = matrix[M-1];
+							  if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+						  }
+						  else if(M==2 || M==1){
+							  times=xNew<IssmDouble>(N);
+							  if(M==1) times[0] = 0;
+							  if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+						  }
+						  else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
 
 
-				//initialize transient input dataset:
-				TransientInput* transientinput=inputs->SetDatasetTransientInput(input_enum,i, times,N);
-				for(Object* & object : elements->objects){
+						  //initialize transient input dataset:
+						  TransientInput* transientinput=inputs->SetDatasetTransientInput(input_enum,i, times,N);
+						  for(Object* & object : elements->objects){
 
-					/*Get the right transient input*/
-					Element* element=xDynamicCast<Element*>(object);
+							  /*Get the right transient input*/
+							  Element* element=xDynamicCast<Element*>(object);
 
-					/*Get values and lid list*/
-					const int   numvertices = element->GetNumberOfVertices();
-					int        *vertexlids = xNew<int>(numvertices);
-					int        *vertexsids = xNew<int>(numvertices);
+							  /*Get values and lid list*/
+							  const int   numvertices = element->GetNumberOfVertices();
+							  int        *vertexlids = xNew<int>(numvertices);
+							  int        *vertexsids = xNew<int>(numvertices);
 
-					/*Recover vertices ids needed to initialize inputs*/
-					_assert_(this->elements);
-					for(int k=0;k<numvertices;k++){
-						vertexsids[k] =reCast<int>(this->elements[numvertices*element->Sid()+k]-1); //ids for vertices are in the elements array from Matlab
-						vertexlids[k]=this->my_vertices_lids[vertexsids[k]];
-					}
+							  /*Recover vertices ids needed to initialize inputs*/
+							  _assert_(this->elements);
+							  for(int k=0;k<numvertices;k++){
+								  vertexsids[k] =reCast<int>(this->elements[numvertices*element->Sid()+k]-1); //ids for vertices are in the elements array from Matlab
+								  vertexlids[k]=this->my_vertices_lids[vertexsids[k]];
+							  }
 
-					if(M==this->numberofvertices || M==(this->numberofvertices+1)){
+							  if(M==this->numberofvertices || M==(this->numberofvertices+1)){
 
-						//recover time vector: 
-						times=xNew<IssmDouble>(N);
-						if(M==this->numberofvertices) times[0] = matrix[M-1];
-						if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+								  //recover time vector: 
+								  times=xNew<IssmDouble>(N);
+								  if(M==this->numberofvertices) times[0] = matrix[M-1];
+								  if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
 
-						IssmDouble* values=xNew<IssmDouble>(numvertices);
+								  IssmDouble* values=xNew<IssmDouble>(numvertices);
 
-						for(int t=0;t<N;t++){
-							for (int k=0;k<numvertices;k++)values[k]=matrix[N*vertexsids[k]+t];
+								  for(int t=0;t<N;t++){
+									  for (int k=0;k<numvertices;k++)values[k]=matrix[N*vertexsids[k]+t];
 
-							switch(element->ObjectEnum()){
-								case TriaEnum:  transientinput->AddTriaTimeInput( t,numvertices,vertexlids,values,P1Enum); break;
-								case PentaEnum: transientinput->AddPentaTimeInput(t,numvertices,vertexlids,values,P1Enum); break;
-								default: _error_("Not implemented yet");
-							}
-						}
-						xDelete<IssmDouble>(values);
-					}
-					else if(M==this->numberofelements || M==(this->numberofelements+1)){
+									  switch(element->ObjectEnum()){
+										  case TriaEnum:  transientinput->AddTriaTimeInput( t,numvertices,vertexlids,values,P1Enum); break;
+										  case PentaEnum: transientinput->AddPentaTimeInput(t,numvertices,vertexlids,values,P1Enum); break;
+										  default: _error_("Not implemented yet");
+									  }
+								  }
+								  xDelete<IssmDouble>(values);
+							  }
+							  else if(M==this->numberofelements || M==(this->numberofelements+1)){
 
-						IssmDouble value;
+								  IssmDouble value;
 
-						//recover time vector: 
-						times=xNew<IssmDouble>(N);
-						if(M==this->numberofelements) times[0] = matrix[M-1];
-						if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+								  //recover time vector: 
+								  times=xNew<IssmDouble>(N);
+								  if(M==this->numberofelements) times[0] = matrix[M-1];
+								  if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
 
-						for(int t=0;t<N;t++){ 
+								  for(int t=0;t<N;t++){ 
 
-							value=matrix[N*element->Sid()+t];
-							switch(element->ObjectEnum()){
-								case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-								case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-								default: _error_("Not implemented yet");
-							}
-						}
-					}
-					else if(M==2 || M==1){
-						IssmDouble value;
+									  value=matrix[N*element->Sid()+t];
+									  switch(element->ObjectEnum()){
+										  case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
+										  case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
+										  default: _error_("Not implemented yet");
+									  }
+								  }
+							  }
+							  else if(M==2 || M==1){
+								  IssmDouble value;
 
-						//recover time vector: 
-						times=xNew<IssmDouble>(N);
-						if(M==1) times[0] = 0;
-						if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+								  //recover time vector: 
+								  times=xNew<IssmDouble>(N);
+								  if(M==1) times[0] = 0;
+								  if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
 
-						for(int t=0;t<N;t++){ 
+								  for(int t=0;t<N;t++){ 
 
-							value=matrix[t];
-							switch(element->ObjectEnum()){
-								case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-								case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-								default: _error_("Not implemented yet");
-							}
-						}
+									  value=matrix[t];
+									  switch(element->ObjectEnum()){
+										  case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
+										  case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
+										  default: _error_("Not implemented yet");
+									  }
+								  }
 
-					}
-					else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
+							  }
+							  else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
 
-					xDelete<int>(vertexlids);
-					xDelete<int>(vertexsids);
-				}
+							  xDelete<int>(vertexlids);
+							  xDelete<int>(vertexsids);
+						  }
 
-				xDelete<IssmDouble>(times);
-			}
+						  xDelete<IssmDouble>(times);
+					  }
 
-			/*Delete data:*/
-			for(int i=0;i<numarray;i++){
-				IssmDouble* matrix=array[i];
-				xDelete<IssmDouble>(matrix);
-			}
-			xDelete<IssmDouble*>(array);
-			xDelete<int>(pM);
-			xDelete<int>(pN); 
-			} //}}}
-			break;
+					  /*Delete data:*/
+					  for(int i=0;i<numarray;i++){
+						  IssmDouble* matrix=array[i];
+						  xDelete<IssmDouble>(matrix);
+					  }
+					  xDelete<IssmDouble*>(array);
+					  xDelete<int>(pM);
+					  xDelete<int>(pN); 
+				  } //}}}
+				break;
 		case 7: //IssmDouble vector
 		case 10:
-			this->FetchData(&doublearray,&M,&N,vector_name);
-			if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
-			for(Object* & object : elements->objects){
-				Element* element=xDynamicCast<Element*>(object);
-				element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
-			}
-			break;
+				this->FetchData(&doublearray,&M,&N,vector_name);
+				if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
+				for(Object* & object : elements->objects){
+					Element* element=xDynamicCast<Element*>(object);
+					element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
+				}
+				break;
 		default:
-			_error_("data code " << code << " not supported yet (detected while processing \""<<vector_name<<"\")");
-			break;
+				_error_("data code " << code << " not supported yet (detected while processing \""<<vector_name<<"\")");
+				break;
 	}
 	/*Free resources:*/
 	xDelete<IssmDouble>(doublearray);
@@ -2190,32 +2354,32 @@ void  IoModel::FetchDataToDatasetInput(Inputs* inputs,Elements* elements,const c
 			break;
 		case 7: //IssmDouble vector
 			  {
-			this->FetchData(&doublearray,&M,&N,vector_name);
-			if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
+				this->FetchData(&doublearray,&M,&N,vector_name);
+				if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
 
-			int* ids = xNew<int>(N);
-			for(int i=0;i<N;i++) ids[i] = i;
+				int* ids = xNew<int>(N);
+				for(int i=0;i<N;i++) ids[i] = i;
 
-			for(Object* & object : elements->objects){
-				Element* element=xDynamicCast<Element*>(object);
-				element->DatasetInputCreate(doublearray,M,N,ids,N,inputs,this,input_enum);
-			}
-			xDelete<int>(ids);
+				for(Object* & object : elements->objects){
+					Element* element=xDynamicCast<Element*>(object);
+					element->DatasetInputCreate(doublearray,M,N,ids,N,inputs,this,input_enum);
+				}
+				xDelete<int>(ids);
 			  }
 			break;
 		case 10: //Compressed matrix
 			  {
-			this->FetchData(&doublearray,&M,&N,vector_name);
-			if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
+				this->FetchData(&doublearray,&M,&N,vector_name);
+				if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
 
-			int* ids = xNew<int>(N);
-			for(int i=0;i<N;i++) ids[i] = i;
+				int* ids = xNew<int>(N);
+				for(int i=0;i<N;i++) ids[i] = i;
 
-			for(Object* & object : elements->objects){
-				Element* element=xDynamicCast<Element*>(object);
-				element->DatasetInputCreate(doublearray,M,N,ids,N,inputs,this,input_enum);
-			}
-			xDelete<int>(ids);
+				for(Object* & object : elements->objects){
+					Element* element=xDynamicCast<Element*>(object);
+					element->DatasetInputCreate(doublearray,M,N,ids,N,inputs,this,input_enum);
+				}
+				xDelete<int>(ids);
 			  }
 			break;
 
@@ -2254,19 +2418,19 @@ void  IoModel::FetchIndependentConstant(int* pXcount,IssmPDouble* X,const char* 
 		/*Now, before we even broadcast this to other nodes, declare the scalar  as an independent variable!. If we
 		 *have been supplied an X vector, use it instead of what we just read: */
 		#if defined(_HAVE_CODIPACK_)
-			if(X){
-				scalar=X[Xcount];
-			} else {
-				scalar=pscalar;
-			}
-			codi_global.registerInput(scalar);
+		if(X){
+			scalar=X[Xcount];
+		} else {
+			scalar=pscalar;
+		}
+		codi_global.registerInput(scalar);
 		#else
-			if(X){
-				scalar<<=X[Xcount];
-			}
-			else{
-				scalar<<=pscalar;
-			}
+		if(X){
+			scalar<<=X[Xcount];
+		}
+		else{
+			scalar<<=pscalar;
+		}
 		#endif
 	}
 
@@ -2314,8 +2478,8 @@ void  IoModel::FetchIndependentData(int* pXcount,IssmPDouble* X,const char* data
 	/*Now allocate matrix: */
 	if(M*N){
 		buffer=xNew<IssmPDouble>(M*N);
-// AD performance is sensitive to calls to ensurecontiguous.
-// Providing "t" will cause ensurecontiguous to be called.
+		// AD performance is sensitive to calls to ensurecontiguous.
+		// Providing "t" will cause ensurecontiguous to be called.
 #ifdef _HAVE_AD_
 		matrix=xNew<IssmDouble>(M*N,"t");
 #else
@@ -2329,25 +2493,25 @@ void  IoModel::FetchIndependentData(int* pXcount,IssmPDouble* X,const char* data
 			/*Now, before we even broadcast this to other nodes, declare the whole matrix as a independent variable!
 			  If we have been supplied an X vector, use it instead of what we just read: */
 			#if defined(_HAVE_CODIPACK_)
-				if(X){
-					for (int i=0;i<M*N;i++) {
-						matrix[i]=X[Xcount+i];
-						codi_global.registerInput(matrix[i]);
-					}
+			if(X){
+				for (int i=0;i<M*N;i++) {
+					matrix[i]=X[Xcount+i];
+					codi_global.registerInput(matrix[i]);
 				}
-				else{
-					for (int i=0;i<M*N;i++) {
-						matrix[i]=buffer[i];
-						codi_global.registerInput(matrix[i]);
-					}
+			}
+			else{
+				for (int i=0;i<M*N;i++) {
+					matrix[i]=buffer[i];
+					codi_global.registerInput(matrix[i]);
 				}
+			}
 			#else /*ADOLC*/
-				if(X){
-					for(int i=0;i<M*N;i++) matrix[i]<<=X[Xcount+i];  /*<<= ADOLC overloaded operator to declare independent*/
-				}
-				else{
-					for(int i=0;i<M*N;i++) matrix[i]<<=buffer[i];
-				}
+			if(X){
+				for(int i=0;i<M*N;i++) matrix[i]<<=X[Xcount+i];  /*<<= ADOLC overloaded operator to declare independent*/
+			}
+			else{
+				for(int i=0;i<M*N;i++) matrix[i]<<=buffer[i];
+			}
 			#endif
 		}
 		ISSM_MPI_Bcast(matrix,M*N,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
@@ -2601,13 +2765,13 @@ void  IoModel::FetchMultipleData(IssmDouble*** pmatrices,int** pmdims,int** pndi
 				//	matrix=this->data[data_enum];
 				//}
 				//else{
-					matrix=xNew<IssmDouble>(M*N);
-					for (int i=0;i<M*N;++i) matrix[i]=pmatrix[i];
+				matrix=xNew<IssmDouble>(M*N);
+				for (int i=0;i<M*N;++i) matrix[i]=pmatrix[i];
 				//}
 				xDelete<IssmPDouble>(pmatrix);
 			}
 			else
-				matrix=NULL;
+			 matrix=NULL;
 
 			/*Assign: */
 			mdims[i]=M;
@@ -2707,12 +2871,12 @@ void  IoModel::FetchMultipleData(int*** pmatrices,int** pmdims,int** pndims, int
 				//	for (int i=0;i<M*N;++i) integer_matrix[i]=reCast<int>(matrix[i]);
 				//}
 				//else{
-					for (int i=0;i<M*N;++i) integer_matrix[i]=pmatrix[i];
+				for (int i=0;i<M*N;++i) integer_matrix[i]=pmatrix[i];
 				//}
 				xDelete<IssmPDouble>(pmatrix);
 			}
 			else
-				integer_matrix=NULL;
+			 integer_matrix=NULL;
 
 			/*Assign: */
 			mdims[i]=M;
