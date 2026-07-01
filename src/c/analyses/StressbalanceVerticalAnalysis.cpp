@@ -178,6 +178,7 @@ void StressbalanceVerticalAnalysis::UpdateElements(Elements* elements,Inputs* in
 void StressbalanceVerticalAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int solution_enum,int analysis_enum){/*{{{*/
 
 	/* specific parameters*/
+	parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.nomelt_under_lakes",GroundinglineNomeltUnderLakesEnum));
 
 }/*}}}*/
 

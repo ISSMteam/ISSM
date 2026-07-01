@@ -56,6 +56,7 @@
 #include "./Krigingx/Krigingx.h"
 #include "./FloatingiceMeltingRatex/FloatingiceMeltingRatex.h"
 #include "./FloatingiceMeltingRatePicox/FloatingiceMeltingRatePicox.h"
+#include "./MapOceanConnectivityx/MapOceanConnectivityx.h"
 #include "./Mergesolutionfromftogx/Mergesolutionfromftogx.h"
 #include "./MeshPartitionx/MeshPartitionx.h"
 #include "./MeshProfileIntersectionx/MeshProfileIntersectionx.h"

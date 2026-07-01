@@ -91,11 +91,20 @@ function smb = interpISMIP7AntarcticaSMB(md, modelname, scenario, start_end)
 		end
 	end
 
-	clear smb_data, x_n, y_n;
+
+	clear smb_data;
+	clear x_n, y_n;
 
 	% Now, SMB = SMB_ref + SMB_anomaly
 	temp_matrix_smb = repmat(smb_clim,1,size(temp_matrix_smb_anon,2)) + temp_matrix_smb_anon;	
+	clear temp_matrix_smb_anon;
 
+	% Check nan values
+	if any(isnan(temp_matrix_smb))
+		warning('There are NaN values in SMB forcing. Please check your data. We fill these NaN values with 0.0.');
+		temp_matrix_smb(isnan(temp_matrix_smb)) = 0.0;
+	end
+	
 	% Save data
 	smb = SMBforcing();
 	smb.mass_balance = [temp_matrix_smb; temp_matrix_time'];
@@ -147,7 +156,11 @@ function smb_file = search_forcing_file(datadir, modelname, scenario, start_time
 			[~,pos]=sort({smb_file_proj.name});
 			smb_file_proj = smb_file_proj(pos);
 
-			smb_file = cat(1,smb_file_hist, smb_file_proj);
+			if strcmpi(scenario,'historical')
+				smb_file = smb_file_hist;
+			else
+				smb_file = cat(1,smb_file_hist, smb_file_proj);
+			end
 
 			% Choose specific year
 			%NOTE:

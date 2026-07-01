@@ -255,6 +255,7 @@ syn keyword juliaConstC FrontalForcingsSdpolyparamsEnum
 syn keyword juliaConstC GrdModelEnum
 syn keyword juliaConstC GroundinglineFrictionInterpolationEnum
 syn keyword juliaConstC GroundinglineMeltInterpolationEnum
+syn keyword juliaConstC GroundinglineNomeltUnderLakesEnum
 syn keyword juliaConstC GroundinglineMigrationEnum
 syn keyword juliaConstC GroundinglineNumRequestedOutputsEnum
 syn keyword juliaConstC GroundinglineRequestedOutputsEnum
@@ -869,6 +870,7 @@ syn keyword juliaConstC CalvingratexEnum
 syn keyword juliaConstC CalvingrateyEnum
 syn keyword juliaConstC CalvingFluxLevelsetEnum
 syn keyword juliaConstC CalvingMeltingFluxLevelsetEnum
+syn keyword juliaConstC ConnectedToOceanEnum
 syn keyword juliaConstC ConvergedEnum
 syn keyword juliaConstC CrevasseDepthEnum
 syn keyword juliaConstC DamageDEnum

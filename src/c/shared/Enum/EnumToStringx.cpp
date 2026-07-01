@@ -264,6 +264,7 @@ const char* EnumToStringx(int en){
 		case GrdModelEnum : return "GrdModel";
 		case GroundinglineFrictionInterpolationEnum : return "GroundinglineFrictionInterpolation";
 		case GroundinglineMeltInterpolationEnum : return "GroundinglineMeltInterpolation";
+		case GroundinglineNomeltUnderLakesEnum : return "GroundinglineNomeltUnderLakes";
 		case GroundinglineMigrationEnum : return "GroundinglineMigration";
 		case GroundinglineNumRequestedOutputsEnum : return "GroundinglineNumRequestedOutputs";
 		case GroundinglineRequestedOutputsEnum : return "GroundinglineRequestedOutputs";
@@ -878,6 +879,7 @@ const char* EnumToStringx(int en){
 		case CalvingrateyEnum : return "Calvingratey";
 		case CalvingFluxLevelsetEnum : return "CalvingFluxLevelset";
 		case CalvingMeltingFluxLevelsetEnum : return "CalvingMeltingFluxLevelset";
+		case ConnectedToOceanEnum : return "ConnectedToOcean";
 		case ConvergedEnum : return "Converged";
 		case CrevasseDepthEnum : return "CrevasseDepth";
 		case DamageDEnum : return "DamageD";

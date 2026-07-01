@@ -315,6 +315,7 @@ void MasstransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.stabilization",MasstransportStabilizationEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.min_thickness",MasstransportMinThicknessEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.masstransport.penalty_factor",MasstransportPenaltyFactorEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.nomelt_under_lakes",GroundinglineNomeltUnderLakesEnum));
 	//parameters->AddObject(iomodel->CopyConstantObject("md.groundingline.intrusion_distance",GroundinglineIntrusionDistanceEnum));
 
 	iomodel->FindConstant(&requestedoutputs,&numoutputs,"md.masstransport.requested_outputs");
@@ -671,10 +672,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	/*Intermediaries */
 	int			stabilization,dim,domaintype;
 	int         melt_style,point1;
-	bool        mainlyfloating;
+	bool        mainlyfloating, nomeltunderlakes;
 	IssmDouble  fraction1,fraction2;
 	IssmDouble  Jdet,dt,intrusiondist_avg;
-	IssmDouble  ms,mb,gmb,fmb,thickness,fmb_pert,gldistance;
+	IssmDouble  ms,mb,gmb,fmb,thickness,fmb_pert,gldistance,conn;
 	IssmDouble  vx,vy,vel,dvxdx,dvydy,xi,h,tau;
 	IssmDouble  dvx[2],dvy[2];
 	IssmDouble  gllevelset,phi=1.;
@@ -700,6 +701,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
+	element->FindParam(&nomeltunderlakes,GroundinglineNomeltUnderLakesEnum);
 	element->FindParam(&melt_style,GroundinglineMeltInterpolationEnum);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,MasstransportStabilizationEnum);
@@ -714,6 +716,10 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* thickness_input  = element->GetInput(ThicknessEnum);                      _assert_(thickness_input);
 	Input* vxaverage_input  = element->GetInput(VxAverageEnum);						 _assert_(vxaverage_input);
 	Input* vyaverage_input  = element->GetInput(VyAverageEnum);						 _assert_(vyaverage_input);
+	Input* connectedtoocean_input = NULL;
+	if(nomeltunderlakes){ 
+		connectedtoocean_input = element->GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
+	}
 
 	h=element->CharacteristicLength();
 
@@ -743,6 +749,12 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 		ms_input->GetInputValue(&ms,gauss);
 		gmb_input->GetInputValue(&gmb,gauss);
 		fmb_input->GetInputValue(&fmb,gauss);
+		if(nomeltunderlakes){
+			connectedtoocean_input->GetInputValue(&conn,gauss);
+			if(conn<0.01){ // the ice is not connected to the ocean so the value should be that of grounded melt
+				fmb = gmb;
+			}
+		}
 		#ifdef MELTPERTURBATION
 		fmb_pert_input->GetInputValue(&fmb_pert,gauss);
 		#endif

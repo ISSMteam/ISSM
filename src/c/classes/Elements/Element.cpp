@@ -2551,6 +2551,17 @@ bool       Element::IsAllGrounded(){/*{{{*/
 		return true;
 	}
 }/*}}}*/
+bool       Element::IsFloating(){/*{{{*/
+	/*At least ONE node is floating (partially floating returns true)*/
+
+	Input* input=this->GetInput(MaskOceanLevelsetEnum); _assert_(input);
+	if(input->GetInputMin() < 0.){
+		return true;
+	}
+	else{
+		return false;
+	}
+}/*}}}*/
 bool       Element::IsGrounded(){/*{{{*/
 	/*At least ONE node is grounded (partially grounded returns true)*/
 
@@ -2669,7 +2680,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 
 	int         basinid,num_basins,M,N;
 	IssmDouble  delta_t_basin;
-	IssmDouble* xyz_list;
+	IssmDouble* xyz_list = NULL;
 	
 	IssmDouble  tf,gamma0;
 	IssmDouble  salinity; /*local salinity [psu]*/
@@ -2730,6 +2741,7 @@ void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	delete gauss;
 	xDelete<IssmDouble>(depths);
 	xDelete<IssmDouble>(delta_t);
+	xDelete<IssmDouble>(xyz_list);
 }/*}}}*/
 void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, IssmDouble* elevbins,IssmDouble* refelevation){/*{{{*/
 

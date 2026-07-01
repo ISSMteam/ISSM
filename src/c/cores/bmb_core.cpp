@@ -14,7 +14,9 @@ void bmb_core(FemModel* femmodel){
 	/*First, get BMB model from parameters*/
 	int  basalforcing_model;
 	bool isplume = false;
+	bool nomeltunderlakes;
 	femmodel->parameters->FindParam(&basalforcing_model,BasalforcingsEnum);
+	femmodel->parameters->FindParam(&nomeltunderlakes,GroundinglineNomeltUnderLakesEnum);
 
 	if(VerboseSolution()) _printf0_("   computing basal mass balance\n");
 
@@ -34,7 +36,10 @@ void bmb_core(FemModel* femmodel){
 
 	/*Call module now*/
 	FloatingiceMeltingRatex(femmodel);
-
+	if(nomeltunderlakes){
+		MapOceanConnectivityx(femmodel);
+	}
+	
 	/*Extrude basal melt if not default melting rate (which may be a transient input that can't be extruded)*/
 	if(basalforcing_model!=FloatingMeltRateEnum){
 		femmodel->parameters->SetParam(BasalforcingsFloatingiceMeltingRateEnum,InputToExtrudeEnum);
