@@ -271,16 +271,18 @@ IoModel::~IoModel(){/*{{{*/
 	/*Delete communicators*/
 	int my_rank = IssmComm::GetRank();
 	if(my_rank==0){
-		int num_procs = IssmComm::GetSize();
-		for(int i=0;i<num_procs;i++){
-			xDelete<int>(rank0_vert_send_ids[i]);
-			xDelete<int>(rank0_elem_send_ids[i]);
-		}
-		xDelete<int*>(rank0_vert_send_ids);
-		xDelete<int*>(rank0_elem_send_ids);
+		if(this->rank0_vert_send_ids){
+			int num_procs = IssmComm::GetSize();
+			for(int i=0;i<num_procs;i++){
+				xDelete<int>(rank0_vert_send_ids[i]);
+				xDelete<int>(rank0_elem_send_ids[i]);
+			}
+			xDelete<int*>(rank0_vert_send_ids);
+			xDelete<int*>(rank0_elem_send_ids);
 
-		xDelete<int>(numvertices_per_proc);
-		xDelete<int>(numelements_per_proc);
+			xDelete<int>(numvertices_per_proc);
+			xDelete<int>(numelements_per_proc);
+		}
 	}
 
 	xDelete<bool>(this->my_elements);
