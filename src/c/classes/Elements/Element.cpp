@@ -2129,10 +2129,9 @@ void       Element::InputCreateLocal(IssmDouble* vector,Inputs* inputs,IoModel* 
 			this->SetElementInput(inputs,NUM_VERTICES,vertexlids,values,vector_enum);
 		}
 		else if(M==iomodel->numberofvertices+1){
-			_error_("TO BE ADDED 1");
 			/*create transient input: */
 			IssmDouble* times = xNew<IssmDouble>(N);
-			for(int t=0;t<N;t++) times[t] = vector[(M-1)*N+t];
+			for(int t=0;t<N;t++) times[t] = vector[iomodel->numberofvertices_local*N+t];
 			inputs->SetTransientInput(vector_enum,times,N);
 			TransientInput* transientinput = inputs->GetTransientInput(vector_enum);
 			for(int t=0;t<N;t++){

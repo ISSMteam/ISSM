@@ -78,6 +78,9 @@ void CreateElements(Elements* elements,IoModel* iomodel,const int nummodels){/*{
 			_error_("Mesh not supported yet");
 	}
 
+	/*Set number of elements local*/
+	iomodel->numberofelements_local = count;
+
 	/*Free data: */
 	iomodel->DeleteData(4,"md.mesh.upperelements","md.mesh.lowerelements","md.mesh.vertexonbase","md.mesh.vertexonsurface");
 
@@ -384,6 +387,9 @@ void CreateVertices(Elements* elements,Vertices* vertices,IoModel* iomodel,int s
 			iomodel->my_vertices[i] = false;
 		}
 	}
+
+	/*Set numberofvertices_local*/
+	iomodel->numberofvertices_local = offset;
 
 	/*Now, Count how many clones we have with other partitions*/
 	int*  common_send = xNew<int>(num_procs);

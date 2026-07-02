@@ -1404,16 +1404,12 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 		}
 	}
 
-	/*output: */
-	int  M,N,M_local,M_local2;
-	bool istimeseries = false;
-	int  code,layout;
-
-	/*Get communication properties:*/
-	ISSM_MPI_Status status;
-	int my_rank   = IssmComm::GetRank();
-	int num_procs = IssmComm::GetSize();
-	ISSM_MPI_Request  *send_requests = xNew<ISSM_MPI_Request>(num_procs);
+	/*Intermediaries */
+	int          M,N,M_local,M_local2;
+   int          code,layout;
+	bool         istimeseries = false;
+	IssmPDouble *matrix       = NULL;
+	int          my_rank      = IssmComm::GetRank();
 
 	/*Set file pointer to beginning of the data: */
 	fid=this->SetFilePointerToData(&code, &layout, data_name);
@@ -1428,13 +1424,37 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 	ISSM_MPI_Bcast(&buffer[0], 2, ISSM_MPI_INT, 0, IssmComm::GetComm());
 	M = buffer[0]; N=buffer[1];
 
-	/*Special case if matrix is empty*/
+	/*Special cases first*/
 	if(M*N==0){
+		/*Empty Matrix*/
 		*pmatrix=NULL;
 		if(pM) *pM=M;
 		if(pN) *pN=N;
 		return;
 	}
+	else if(M==1){
+		/*Single value*/
+		matrix=xNew<IssmPDouble>(M*N);
+		if(my_rank==0){
+			if(fread(matrix,M*N*sizeof(IssmPDouble),1,fid)!=1){
+				_error_("could not read matrix \""<<data_name<<"\" (you may not have enough memory, size is "<<M<<"x"<<N<<")");
+			}
+		}
+		ISSM_MPI_Bcast(matrix,M*N,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
+
+		*pmatrix=xNew<IssmDouble>(M*N);
+		for(int i=0;i<M*N;++i) (*pmatrix)[i]=matrix[i];
+		if(pM) *pM=M;
+		if(pN) *pN=N;
+
+		xDelete<IssmPDouble>(matrix);
+		return;
+	}
+
+	/*Get communication properties:*/
+	int num_procs = IssmComm::GetSize();
+	ISSM_MPI_Status   status;
+	ISSM_MPI_Request *send_requests = xNew<ISSM_MPI_Request>(num_procs);
 
 	/*Now determine layout to allocate local matrix size:
 	 * layout:
@@ -1447,6 +1467,9 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 	int* M_local_list = xNew<int>(num_procs);
 	if(my_rank==0){
 		if(layout==1){
+			if(M==1){
+				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = 1;
+			}
 			if(M==this->numberofvertices){
 				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = this->numvertices_per_proc[rank];
 			}
@@ -1503,19 +1526,23 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 	}
 
 	/*Now allocate matrix: */
-	IssmPDouble* matrix = xNew<IssmPDouble>(M_local*N);
+	matrix = xNew<IssmPDouble>(M_local*N);
 	ISSM_MPI_Recv(matrix, M_local*N, ISSM_MPI_PDOUBLE, 0, 0, IssmComm::GetComm(), &status);
-	if(my_rank==0){ for(int rank=1;rank<num_procs;rank++) ISSM_MPI_Wait(&send_requests[rank], &status); }
+	if(my_rank==0){
+		for(int rank=0;rank<num_procs;rank++) {
+			ISSM_MPI_Wait(&send_requests[rank], &status); 
+			xDelete<IssmPDouble>(all_matrices[rank]);
+		}
+		xDelete<IssmPDouble*>(all_matrices);
+	}
 
 	/*Recast to active Double for AD*/
 	*pmatrix = xNew<IssmDouble>(M_local*N);
-	for(int i=0;i<M*N;++i) (*pmatrix)[i] = reCast<IssmDouble>(matrix[i]);
+	for(int i=0;i<M_local*N;++i) (*pmatrix)[i] = reCast<IssmDouble>(matrix[i]);
 	xDelete<IssmPDouble>(matrix);
 
 	/*Clean-up*/
 	xDelete<ISSM_MPI_Request>(send_requests);
-	for(int rank=0;rank<num_procs;rank++) xDelete<IssmPDouble>(all_matrices[rank]);
-	xDelete<IssmPDouble*>(all_matrices);
 	xDelete<int>(M_local_list);
 
 	/*Assign output pointers: */
@@ -2075,8 +2102,13 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	/*Defaulting only supported for double arrays*/
 	if(code!=7 && code!=10) _error_(vector_name<<" is not a double array");
 
-	this->FetchData(&doublearray,&M,&N,vector_name);
-	//this->FetchDataLocal(&doublearray,&M,&N,vector_name);
+	bool testnewapproach = false;
+	if(testnewapproach){
+		this->FetchDataLocal(&doublearray,&M,&N,vector_name);
+	}
+	else{
+		this->FetchData(&doublearray,&M,&N,vector_name);
+	}
 
 	for(Object* & object : elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
@@ -2084,8 +2116,12 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 			element->SetElementInput(inputs,input_enum,default_value);
 		}
 		else{
-			//element->InputCreateLocal(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
-			element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
+			if(testnewapproach){
+				element->InputCreateLocal(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+			}
+			else{
+				element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+			} 
 		}
 	}
 

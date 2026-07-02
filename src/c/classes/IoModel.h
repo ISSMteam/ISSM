@@ -97,9 +97,11 @@ class IoModel {
 		int  numberofverticaledges;
 		int  numberofhorizontaledges;
 		int  numberofelements;
+		int  numberofelements_local;
 		int  numberoffaces;
 		int  numberofverticalfaces;
 		int  numberofvertices;
+		int  numberofvertices_local;
 		int *singlenodetoelementconnectivity;
 
 		/*Methods*/
