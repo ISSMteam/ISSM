@@ -10,8 +10,8 @@ ISSM_CONFIG='\
 	--enable-debugging \
 	--with-numthreads=4 \
 	--with-matlab-dir="${MATLAB_PATH}" \
-	--with-mpi-include="${MSMPI_ROOT}/include" \
-	--with-mpi-libdir="-Wl,-L${MSMPI_ROOT}/lib" \
+	--with-mpi-include="/c/msys64/mingw64/include" \
+	--with-mpi-libdir="-Wl,-L/c/msys64/mingw64/lib" \
 	--with-mpi-libflags="-Wl,-lmsmpi" \
 	--with-fortran-lib="-Wl,-L/c/msys64/mingw64/lib -Wl,-lgfortran" \
 	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
@@ -28,8 +28,7 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	msmpi		install.sh
-	petsc		install-3.23-win-msys2-mingw-msmpi.sh
+	petsc		install-3.25-win-msys2-mingw-msmpi.sh
 	triangle	install-win-msys2-mingw.sh
 	shell2junit	install.sh
 "
