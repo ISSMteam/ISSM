@@ -135,19 +135,21 @@ void controlnudging_core(FemModel* femmodel){
    /*Get Fields once and for all*/
    int numvertices = femmodel->vertices->NumberOfVertices();
 	GetVectorFromInputsx(&Melt, femmodel, BasalforcingsPerturbationMeltingRateEnum, VertexSIdEnum);
-   GetVectorFromInputsx(&Cinit, femmodel, FrictionCoefficientEnum, VertexSIdEnum);
-	GetVectorFromInputsx(&Cmin,femmodel, InversionMinCEnum, VertexSIdEnum);
-	GetVectorFromInputsx(&Cmax,femmodel, InversionMaxCEnum, VertexSIdEnum);
+	GetVectorFromInputsx(&C,    femmodel, FrictionCoefficientEnum, VertexSIdEnum);
+   GetVectorFromInputsx(&Cinit,femmodel, FrictionCoefficientEnum, VertexSIdEnum);
+	GetVectorFromInputsx(&Cmin, femmodel, InversionMinCEnum, VertexSIdEnum);
+	GetVectorFromInputsx(&Cmax, femmodel, InversionMaxCEnum, VertexSIdEnum);
 	GetVectorFromInputsx(&Meltmin,femmodel, InversionMinMeltEnum, VertexSIdEnum);
 	GetVectorFromInputsx(&Meltmax,femmodel, InversionMaxMeltEnum, VertexSIdEnum);
-   GetVectorFromInputsx(&H_obs, femmodel, ThicknessEnum, VertexSIdEnum);
+   GetVectorFromInputsx(&H_obs,  femmodel, ThicknessEnum, VertexSIdEnum);
 
 	/*NEW*/
 	InputDuplicatex(femmodel, ThicknessEnum, InversionThicknessObsEnum);
 
    femmodel->parameters->SetParam(true, DoNotSaveResultsEnum);
    for(int m=0;m<maxiter;m++){
-      _printf0_("\n=== NUDGING STEP "<< m+1 <<"/"<< maxiter << " ===\n");
+		int size = femmodel->Size();
+      _printf0_("\n=== NUDGING STEP "<< m+1 <<"/"<< maxiter << " === SIZE = "<<size<<"\n");
 
       /*Get ice thickness before we run a transient step*/
       GetVectorFromInputsx(&H_old, femmodel, ThicknessEnum, VertexSIdEnum);
@@ -162,9 +164,7 @@ void controlnudging_core(FemModel* femmodel){
       transient_core(femmodel);
 
       /*Extract results*/
-		xDelete<IssmDouble>(C);
       GetVectorFromInputsx(&H,   femmodel, ThicknessEnum, VertexSIdEnum);
-      GetVectorFromInputsx(&C,   femmodel, FrictionCoefficientEnum, VertexSIdEnum);
 		GetVectorFromInputsx(&V,   femmodel, VelEnum, VertexSIdEnum);
       GetVectorFromInputsx(&O_ls,femmodel, MaskOceanLevelsetEnum, VertexSIdEnum);
 
@@ -246,8 +246,8 @@ void controlnudging_core(FemModel* femmodel){
 
       xDelete<IssmDouble>(H_old);
       xDelete<IssmDouble>(H);
-      xDelete<IssmDouble>(O_ls);
 		xDelete<IssmDouble>(V);
+      xDelete<IssmDouble>(O_ls);
    }
 
 	/*Add C/melt/J to results*/
