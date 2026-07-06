@@ -959,24 +959,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 			/*}}}*/
 			}
-			else if (output_definition_enums[i]==RadarEnum){		
-				/*Deal with radar: {{{*/
-				int    numout;
-				char **radar_name_s             = NULL;
-				char **radar_definitionstring_s = NULL;
-				int  **radar_ice_period_s       = NULL;
-
-				/*Fetch name and definition, etc ... (see src/m/classes/radar.m): */
-				iomodel->FetchMultipleData(&radar_definitionstring_s,&numout,"md.radar.definitionstring");
-				iomodel->FetchMultipleData(&radar_name_s,&numout,"md.radar.name");
-				if(numout>1) _error_("not suppored yet"); 
-				/*Fetch necessary inputs for calculation*/
-				//iomodel->FetchDataToInput(elements,"md.ice_period",RadarIcePeriodEnum);
-
-				/*Add to output definitions*/
-				output_definitions->AddObject(new Radar(radar_name_s[0],StringToEnumx(radar_definitionstring_s[0])));
-				/*}}}*/ 
-			}
 		else _error_("output definition enum " << EnumToStringx(output_definition_enums[i]) << " not supported yet!");
 		}		
 	}
