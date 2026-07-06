@@ -291,7 +291,6 @@ P0
 P1
 Partitioning
 Pressure
-Radar
 RadarAttenuationMacGregor
 RadarAttenuationWolff
 RadarIcePeriod

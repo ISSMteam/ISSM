@@ -1062,7 +1062,6 @@ syn keyword juliaConstC P0Enum
 syn keyword juliaConstC P1Enum
 syn keyword juliaConstC PartitioningEnum
 syn keyword juliaConstC PressureEnum
-syn keyword juliaConstC RadarEnum
 syn keyword juliaConstC RadarAttenuationMacGregorEnum
 syn keyword juliaConstC RadarAttenuationWolffEnum
 syn keyword juliaConstC RadarIcePeriodEnum

@@ -33,10 +33,6 @@
 #include "./codipack/codipackincludes.h"
 #endif
 
-#ifdef _HAVE_TRIANGLE_
-#include "./triangle/triangleincludes.h"
-#endif
-
 #include "./objects/toolkitobjects.h"
 #include "./toolkitsenums.h"
 #include "./issm/issmtoolkit.h"

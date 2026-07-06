@@ -1071,7 +1071,6 @@ const char* EnumToStringx(int en){
 		case P1Enum : return "P1";
 		case PartitioningEnum : return "Partitioning";
 		case PressureEnum : return "Pressure";
-		case RadarEnum : return "Radar";
 		case RadarAttenuationMacGregorEnum : return "RadarAttenuationMacGregor";
 		case RadarAttenuationWolffEnum : return "RadarAttenuationWolff";
 		case RadarIcePeriodEnum : return "RadarIcePeriod";

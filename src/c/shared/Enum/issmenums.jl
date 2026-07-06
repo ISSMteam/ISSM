@@ -1058,7 +1058,6 @@
 	P1Enum
 	PartitioningEnum
 	PressureEnum
-	RadarEnum
 	RadarAttenuationMacGregorEnum
 	RadarAttenuationWolffEnum
 	RadarIcePeriodEnum
@@ -4914,7 +4913,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==P1Enum) return "P1" end
 	if(enum==PartitioningEnum) return "Partitioning" end
 	if(enum==PressureEnum) return "Pressure" end
-	if(enum==RadarEnum) return "Radar" end
 	if(enum==RadarAttenuationMacGregorEnum) return "RadarAttenuationMacGregor" end
 	if(enum==RadarAttenuationWolffEnum) return "RadarAttenuationWolff" end
 	if(enum==RadarIcePeriodEnum) return "RadarIcePeriod" end
@@ -8770,7 +8768,6 @@ function StringToEnum(name::String)
 	if(name=="P1") return P1Enum  end
 	if(name=="Partitioning") return PartitioningEnum  end
 	if(name=="Pressure") return PressureEnum  end
-	if(name=="Radar") return RadarEnum  end
 	if(name=="RadarAttenuationMacGregor") return RadarAttenuationMacGregorEnum  end
 	if(name=="RadarAttenuationWolff") return RadarAttenuationWolffEnum  end
 	if(name=="RadarIcePeriod") return RadarIcePeriodEnum  end

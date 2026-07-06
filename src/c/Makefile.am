@@ -93,7 +93,6 @@ issm_sources += \
 	./classes/Node.cpp \
 	./classes/Vertex.cpp \
 	./classes/Hook.cpp \
-	./classes/Radar.cpp \
 	./classes/BarystaticContributions.cpp \
 	./classes/ExternalResults/Results.cpp \
 	./classes/Elements/Element.cpp \

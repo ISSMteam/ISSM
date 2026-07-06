@@ -1065,7 +1065,6 @@ enum definitions{
 	P1Enum,
 	PartitioningEnum,
 	PressureEnum,
-	RadarEnum,
 	RadarAttenuationMacGregorEnum,
 	RadarAttenuationWolffEnum,
 	RadarIcePeriodEnum,

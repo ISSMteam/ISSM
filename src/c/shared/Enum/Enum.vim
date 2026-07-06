@@ -1069,7 +1069,6 @@ syn keyword cConstant P0Enum
 syn keyword cConstant P1Enum
 syn keyword cConstant PartitioningEnum
 syn keyword cConstant PressureEnum
-syn keyword cConstant RadarEnum
 syn keyword cConstant RadarAttenuationMacGregorEnum
 syn keyword cConstant RadarAttenuationWolffEnum
 syn keyword cConstant RadarIcePeriodEnum

@@ -39,7 +39,6 @@
 #include "./Masscon.h"
 #include "./Massconaxpby.h"
 #include "./Regionaloutput.h"
-#include "./Radar.h"
 
 /*Constraints: */
 #include "./Constraints/Constraints.h"
