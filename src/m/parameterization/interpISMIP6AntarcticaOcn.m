@@ -32,7 +32,7 @@ function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
 if nargin<3
    start_time = 1995;
    end_time = 2100;
-elseif
+elseif nargin == 3
    start_time = start_end(1);
    end_time = start_end(2);
 else

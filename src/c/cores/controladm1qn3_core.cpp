@@ -411,7 +411,7 @@ void simul_ad(long* indic,long* n,double* X,double* pf,double* G,long izs[1],flo
 	}		
 	
 	/*Print info*/
-	write_control_output(*Jlisti, X, G, M, N, num_controls);
+	write_control_output(*Jlisti, X, G, scaling_factors, XU, XL, M, N, num_controls);
 	InversionStatsIter((*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
 
 	/*Clean-up and return*/
@@ -631,40 +631,52 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 }/*}}}*/
 
 
-void write_control_output(int iter, double* X, double* G, int* spatial_size, int* temporal_size, int num_controls)
+void write_control_output(int iter, double* X, double* G, double* scaling_factors, double* XU, double* XL, int* spatial_size, int* temporal_size, int num_controls)
 {
-    for (int c = 0; c < num_controls; c++)
+
+  int offset = 0;
+  for (int c=0;c<num_controls;c++){
+    for(int i=0;i<M[c]*N[c];i++){
+      int index = offset+i;
+      Xmin[index] = Xmin[index]*scaling_factors[c];
+      if(Xmin[index]>XU[index]) Xmin[index]=XU[index];
+      if(Xmin[index]<XL[index]) Xmin[index]=XL[index];
+    }
+    offset += M[c]*N[c];
+  }
+	
+  for (int c = 0; c < num_controls; c++)
     {
-        std::string filename = "control" + std::to_string(c) + "_iter_" + std::to_string(iter) + ".bin";
-        std::ofstream out(filename, std::ios::binary);
-        if (!out) {
-            std::cerr << "Error: Failed to open file " << filename << " for writing\n";
-            continue;
-        }
+      std::string filename = "control" + std::to_string(c) + "_iter_" + std::to_string(iter) + ".bin";
+      std::ofstream out(filename, std::ios::binary);
+      if (!out) {
+	std::cerr << "Error: Failed to open file " << filename << " for writing\n";
+	continue;
+      }
 
-        uint64_t s = static_cast<uint64_t>(spatial_size[c]);
-        uint64_t t = static_cast<uint64_t>(temporal_size[c]);
-        uint64_t n = s * t;
+      uint64_t s = static_cast<uint64_t>(spatial_size[c]);
+      uint64_t t = static_cast<uint64_t>(temporal_size[c]);
+      uint64_t n = s * t;
 
-        if (!out.write(reinterpret_cast<const char*>(&s), sizeof(s))) {
-            std::cerr << "Error: Failed to write spatial size for control " << c << "\n";
-            continue;
-        }
-        if (!out.write(reinterpret_cast<const char*>(&t), sizeof(t))) {
-            std::cerr << "Error: Failed to write temporal size for control " << c << "\n";
-            continue;
-        }
+      if (!out.write(reinterpret_cast<const char*>(&s), sizeof(s))) {
+	std::cerr << "Error: Failed to write spatial size for control " << c << "\n";
+	continue;
+      }
+      if (!out.write(reinterpret_cast<const char*>(&t), sizeof(t))) {
+	std::cerr << "Error: Failed to write temporal size for control " << c << "\n";
+	continue;
+      }
 
-        if (!out.write(reinterpret_cast<const char*>(X + n * c), n * sizeof(double))) {
-            std::cerr << "Error: Failed to write X data for control " << c << "\n";
-            continue;
-        }
-        if (!out.write(reinterpret_cast<const char*>(G + n * c), n * sizeof(double))) {
-            std::cerr << "Error: Failed to write G data for control " << c << "\n";
-            continue;
-        }
-
-        out.close();
+      if (!out.write(reinterpret_cast<const char*>(X + n * c), n * sizeof(double))) {
+	std::cerr << "Error: Failed to write X data for control " << c << "\n";
+	continue;
+      }
+      if (!out.write(reinterpret_cast<const char*>(G + n * c), n * sizeof(double))) {
+	std::cerr << "Error: Failed to write G data for control " << c << "\n";
+	continue;
+      }
+p
+      out.close();
     }
 }
 
