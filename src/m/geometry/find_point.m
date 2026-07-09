@@ -5,6 +5,9 @@ function f=find_point(tabx,taby,pointx,pointy)
 %
 %   Usage:
 %      f=find_point(tabx,taby,pointx,pointy)
+%
+%   Example:
+%      pos = find_point(md.mesh.x, md.mesh.y, 1e3, 1e3);
 
 %Compute distance between point and cloud of points
 distance=sqrt((tabx-pointx).^2+(taby-pointy).^2);
