@@ -5,7 +5,6 @@
 /*Header files: {{{*/
 #include "./Trianglex.h"
 #include "../../shared/shared.h"
-#include "../../toolkits/toolkits.h"
 /*ANSI_DECLARATORS needed to call triangle library: */
 #if defined(_HAVE_TRIANGLE_)
 	#ifndef ANSI_DECLARATORS
