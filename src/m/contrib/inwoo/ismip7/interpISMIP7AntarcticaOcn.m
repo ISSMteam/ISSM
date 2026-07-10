@@ -1,4 +1,4 @@
-function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, start_end,varargin)
+function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, start_end, varargin)
 	%interpISMIP6AntarcticaOcn - interpolate chosen ISMIP7 ocean forcing to model
 	%
 	%   Globus directory:
@@ -34,18 +34,28 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 
 	% Parse inputs
 	if nargin==2 % for observation
-		scenario   = '';
-		start_time = 1996;
-		end_time   = 1996;
+		scenario   = 'obs';
+		start_time = 2007;
+		end_time   = 2007;
 	elseif nargin==3 % for ESM model
 		start_time = 1996;
 		end_time   = 2299;
-	elseif nargin==4
+	elseif nargin>=4
 		start_time = start_end(1);
 		end_time = start_end(2);
 	else
 		error('not supported');
 	end
+
+	% Check consistency
+	assert(any(strcmpi(scenario,{'obs','historical','ssp126','ssp585','ssp370'})));
+	if any(strcmpi(scenario,{'historical'}))
+		assert(end_time <= 2015,'Error: start_end(2) must be less than 2015 under ''historical'' scenario.');
+	end
+	if any(strcmpi(scenario,{'historical','ssp126','ssp585','ssp370'}))
+		assert(end_time >= 2015,'Error: start_end(2) must be greater than 2015 under ''ssp'' scenarios.');
+	end
+
 
 	% Get options
 	options = pairoptions(varargin{:});
@@ -73,7 +83,7 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		case 'obs'
 			%FIXME: Really salinity field name in observaiton is "tf"?
 			tf_name = 'tf';
-			so_name = 'tf';
+			so_name = 'so';
 		otherwise
 			tf_name = 'tf';
 			so_name = 'so';
@@ -121,13 +131,15 @@ function basalforcings = interpISMIP7AntarcticaOcn(md, modelname, scenario, star
 		%Find start_idx and final_idx in given file
 		start_idx = find(time_data == start_time);
 		final_idx = find(time_data == end_time);
-		if ~any( start_idx)
+		if ~any(start_idx)
 			start_idx = 1;
 		end
 		if ~any(final_idx)
 			final_idx = size(time_data,1);
 		end
-		assert(start_idx < final_idx,	'Error: start_idx must be less than final_idx.');
+		assert(length(start_idx) == 1);
+		assert(length(final_idx) == 1);
+		assert(start_idx < final_idx,	['Error: start_idx (=' num2str(start_idx) ') must be less than final_idx (=' num2str(final_idx) ').']);
 
 		time = time_data(start_idx:final_idx);
 		if size(time,1) ~= 1
@@ -227,7 +239,7 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 	switch modelname
 		case 'obs'
 			tf_file = fullfile(datadir,'obs/ocean/climatology/zhou_annual_06_nov/tf/v3/tf_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc');
-			so_file = fullfile(datadir,'obs/ocean/climatology/zhou_annual_06_nov/so/v3/so_AIS_obs_ocean_climatology_zhou_annual_06_nov_v3_1972-2024.nc');
+			so_file = fullfile(datadir,'obs/ocean/climatology/zhou_annual_06_nov/so/v4/so_AIS_obs_ocean_climatology_zhou_annual_06_nov_v4_1972-2024.nc');
 
 			assert(isfile(tf_file),'Error: we cannot find tf_file for observation. %s',tf_file)
 			assert(isfile(so_file),'Error: we cannot find so_file for observation. %s',so_file)
@@ -251,13 +263,18 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 			[~,pos]=sort({so_file_proj.name});
 			so_file_proj = so_file_proj(pos);
 
-			tf_file = cat(1,tf_file_hist, tf_file_proj);
-			so_file = cat(1,so_file_hist, so_file_proj);
+			if strcmpi(scenario,'historical')
+				tf_file = tf_file_hist;
+				so_file = so_file_hist;
+			else % NOTE: Other scenarios.
+				tf_file = cat(1,tf_file_hist, tf_file_proj);
+				so_file = cat(1,so_file_hist, so_file_proj);
+			end
 
 			% Choose specific year
 			%NOTE:
 			%File format: tf_AIS_CESM2-WACCM_historical_ocean_v3_2000-2009.nc
-            years = [start_time:1:end_time];
+			years = [start_time:1:end_time];
 
 			pos = zeros(numel(tf_file),1);
 			for i = 1:numel(tf_file)
@@ -272,8 +289,11 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 				tmp_end   = str2num(tmp_end{2});
 
 				% Now, check this find in years
-				if any(years == tmp_start) | any(years == tmp_end)
-					pos(i) = 1;
+				for tmp_year = tmp_start:tmp_end
+					if any(tmp_year == years)
+						pos(i) = 1;
+						break
+					end
 				end
 			end
 			tf_file = tf_file(find(pos));
@@ -291,8 +311,11 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 				tmp_end   = str2num(tmp_end{2});
 
 				% Now, check this find in years
-				if any(years == tmp_start) | any(years == tmp_end)
-					pos(i) = 1;
+				for tmp_year = tmp_start:tmp_end
+					if any(tmp_year == years)
+						pos(i) = 1;
+						break
+					end
 				end
 			end
 			so_file = so_file(find(pos));
@@ -304,6 +327,9 @@ function [tf_file, so_file] = search_forcing_file(datadir, modelname, scenario, 
 		otherwise
 			error('Error: not implemented yet.');
 	end
+
+	assert(length(tf_file) > 0, ['Error: no thermal forcing files found.']);
+	assert(length(so_file) > 0, ['Error: no salinity files found.']);
 end % }}}
 
 function [Kt,delta_t_basin]=calibrated_parameters_ismip7 % {{{
@@ -320,32 +346,24 @@ function [Kt,delta_t_basin]=calibrated_parameters_ismip7 % {{{
 	%FIXME: unit for ISMIP7 protocol...
 	yts = 31536000; % from md.constants.yts;
 
-	iscase = 4;
+	iscase = 2;
 
 	if iscase == 1
-		Kt = 7.5e-05*yts;
-		delta_t_basin = [-0.2,  -0.25, 0.15, 0.6 ,  0.1,...
-								0.65, -0.2, -0.15, 0.8 ,  2.0,...
-								0.55, -0.2,   0.5, 0.05, -0.2,...
-								0.15];
+		Kt = 10^(-5.3737454)*yts;
+		delta_t_basin = [0.77770618,  0.31441155,  0.80067001,  2.20641656,  1.098832,...
+				1.51589658,  0.23850945,  0.79624342,  3.57994535,  4.86367174,...
+				3.01984297,  2.89252678,  0.97019149,  1.29479108,  0.84029172,...
+				1.48367211];
 	elseif iscase == 2
-		Kt = 11.5e-05*yts;
-		delta_t_basin = [	0.48,  0.52,  1.28,  2.  , -0.28,...
-								1.32, -0.16,  1.56,  2.  ,  2.  ,...
-								2.  ,  1.84,  1.08,  2.  ,  1.64,...
-								2.  ];
+		Kt = 10^(-4.799572805921373)*yts;
+		delta_t_basin = [-0.9407537   0.58494678  0.45316308  0.08541776 -1.19998336 -0.66106441,...
+			-0.98033621  0.27426227  0.88836344  1.83509204  0.58499364  0.00370923,...
+			-0.88130295 -0.55646587  0.3053191   0.15185878];
 	elseif iscase == 3
-		Kt = 10^(-4.14466801)*yts;
-		delta_t_basin = [1.0572074, 0.89879462,  1.81579414,  4.06579465,  0.37387145,...
-							 2.05993055, 0.11815812,  2.17765945,  4.99181153,  4.90234155,...
-							 4.02111009, 2.91716883,  1.66582333,  2.86419824,  2.26481034,...
-							 3.87826223];
-	elseif iscase == 4
-		Kt = 10^(-4.126984006455638)*yts;
-		delta_t_basin = [-0.28584663,  3.06517194,  3.05496316,  1.80197261, -0.25308133,...
-			0.72584912,  -0.72946566,  2.56894055,  2.99623614,  5.,...
-			2.45314857,   1.65558975,  0.02487998,  0.06562852,  2.71372531,...
-			1.91269999];
+		Kt = 10^(-3.799572805921373)*yts;
+		delta_t_basin = [-0.9407537   0.58494678  0.45316308  0.08541776 -1.19998336 -0.66106441,...
+			-0.98033621  0.27426227  0.88836344  1.83509204  0.58499364  0.00370923,...
+			-0.88130295 -0.55646587  0.3053191   0.15185878];
 	else
 		error('Error: not implemented yet.');
 	end
