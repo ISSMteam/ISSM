@@ -42,6 +42,7 @@ void solutionsequence_nonlinear(FemModel* femmodel,bool conserve_loads){
 	Loads* savedloads=NULL;
 	if(conserve_loads){
 		savedloads = static_cast<Loads*>(femmodel->loads->Copy());
+		savedloads->Configure(femmodel->elements, savedloads, femmodel->nodes, femmodel->vertices, femmodel->materials, femmodel->parameters);
 	}
 
 	int  count=0;

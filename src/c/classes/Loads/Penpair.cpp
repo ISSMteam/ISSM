@@ -145,7 +145,10 @@ void  Penpair::GetNodesLidList(int* lidlist){/*{{{*/
 	_assert_(lidlist);
 	_assert_(nodes);
 
-	for(int i=0;i<NUMVERTICES;i++) lidlist[i]=nodes[i]->Lid();
+	for(int i=0;i<NUMVERTICES;i++){
+		_assert_(nodes[i]);
+		lidlist[i]=nodes[i]->Lid();
+	}
 }
 /*}}}*/
 void  Penpair::GetNodesSidList(int* sidlist){/*{{{*/
