@@ -229,6 +229,27 @@ if getfieldvalue(options,'colorbar',1)==1
 					mean(tick_vals(2:3)); tick_vals(3)];
 				set(c,'YTick',tick_vals);
 			end
+			labels = arrayfun(@num2str, tick_vals, 'uniformoutput', 0);
+		elseif ~isnumeric(tick_vals) & iscell(tick_vals)
+			% NOTE: Maybe we want to use the string for colorbar YTickLabel at specific YTick.
+			% Example:
+			% plotmodel(md,'data',md.mask.ice_levelset,'cbytick',[-1, 1],'cbyticklabel',{'ocean','ice'});
+			assert(length(tick_vals) >= 1, 'Error: "cbyticklabel" must be cell array of string.');
+			labels = cell(1,numel(tick_vals));
+			for i= 1:numel(tick_vals)
+				if isnumeric(tick_vals{i})
+					labels{i} = num2str(tick_vals{i});
+				else
+					labels{i} = tick_vals{i};
+				end
+			end
+			if ~exist(options,'cbYTick')
+				disp('usage');
+				disp([' plotmodel(md,' '''data''' ',source,' '''cbytick''', ',[1 2 3 4 5],' ...
+					'''cbyticklabel''' ',{' '''bedmap2''' ',' '''...''' '})']);
+				error('Check "cbYTick" option for appropriate index for Yticklabel at colorbar');
+			end
+			set(c,'YTickLabel',labels,'YTick',getfieldvalue(options,'cbYTick'));
 		else
 			if exist(options,'log')
 				logvalue=getfieldvalue(options,'log');
@@ -236,12 +257,19 @@ if getfieldvalue(options,'colorbar',1)==1
 			else
 				set(c,'YTick',tick_vals);
 			end
-		end
-		labels = cell(1,numel(tick_vals));
-		for i = 1:numel(tick_vals)
-			labels{i} = num2str(tick_vals(i));
+			labels = arrayfun(@num2str, tick_vals, 'uniformoutput', 0);
 		end
 		set(c,'YTickLabel',labels);
+	end
+
+	% rotate ticks in colorbar
+	if exist(options,'cbytickrotation'),
+		set(c.Label,'rotation',getfieldvalue(options,'cbytickrotation'));
+	end
+	
+	% set tick interpreter (e.g., tex, latex, none)
+	if exist(options,'colorbarinterpreter')
+		set(get(c,'title'),'interpreter',getfieldvalue(options,'colorbarinterpreter'));
 	end
 
 elseif getfieldvalue(options,'colorbar',1)==0
