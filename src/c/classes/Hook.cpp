@@ -66,10 +66,15 @@ Object* Hook::copy(void){/*{{{*/
 	/*initalize output: */
 	output=new Hook(this->ids,this->num);
 
-	for(int i=0;i<output->num;i++){
-		output->objects[i] = this->objects[i];
-		output->offsets[i] = this->offsets[i];
-	}
+	/*We need to reset pointers because we are potentially not pointint to the 
+	 * same objects if they are themselves copies (e.g., if we are copying an 
+	 * element, the nodes and vertices will also be copied and we do not want
+	 * to point to the old ones
+	 * */
+	//for(int i=0;i<output->num;i++){
+	//	output->objects[i] = this->objects[i];
+	//	output->offsets[i] = this->offsets[i];
+	//}
 
 	return (Object*)output;
 }

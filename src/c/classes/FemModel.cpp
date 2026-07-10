@@ -352,11 +352,8 @@ void FemModel::CleanUp(void){/*{{{*/
 } /*}}}*/
 FemModel* FemModel::copy(void){/*{{{*/
 
-	FemModel* output=NULL;
-	int       i;
-	int       analysis_type;
-
-	output=new FemModel(*this); //Use default copy constructor.
+	/*Instantiate output*/
+	FemModel* output=new FemModel(*this); //Use default copy constructor.
 
 	output->nummodels = this->nummodels;
 	output->solution_type = this->solution_type;
@@ -386,11 +383,11 @@ FemModel* FemModel::copy(void){/*{{{*/
 	output->materials->ResetHooks();
 
 	/*do the post-processing of the datasets to get an FemModel that can actually run analyses: */
-	for(i=0;i<nummodels;i++){
+	for(int i=0;i<nummodels;i++){
 		output->constraints_list[i] = static_cast<Constraints*>(this->constraints_list[i]->Copy());
 		output->loads_list[i] = static_cast<Loads*>(this->loads_list[i]->Copy());
 		output->nodes_list[i] = static_cast<Nodes*>(this->nodes_list[i]->Copy());
-		analysis_type=output->analysis_type_list[i];
+		int analysis_type=output->analysis_type_list[i];
 		output->SetCurrentConfiguration(analysis_type);
 		SpcNodesx(output->nodes_list[i],output->constraints_list[i],output->parameters);
 		NodesDofx(output->nodes_list[i],output->parameters);
@@ -406,7 +403,7 @@ FemModel* FemModel::copy(void){/*{{{*/
 	#endif
 
 	/*Reset current configuration: */
-	analysis_type=output->analysis_type_list[analysis_counter];
+	int analysis_type=output->analysis_type_list[analysis_counter];
 	output->SetCurrentConfiguration(analysis_type);
 
 	return output;
