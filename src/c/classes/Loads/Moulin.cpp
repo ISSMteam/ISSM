@@ -68,27 +68,25 @@ Moulin::~Moulin(){/*{{{*/
 /*Object virtual functions definitions:*/
 Object* Moulin::copy() {/*{{{*/
 
-	Moulin* pengrid=NULL;
-
-	pengrid=new Moulin();
+	Moulin* moulin=new Moulin();
 
 	/*copy fields: */
-	pengrid->id=this->id;
+	moulin->id=this->id;
 
 	/*point parameters: */
-	pengrid->parameters=this->parameters;
+	moulin->parameters=this->parameters;
 
 	/*now deal with hooks and objects: */
-	pengrid->hnode=(Hook*)this->hnode->copy();
-	pengrid->hvertex=(Hook*)this->hvertex->copy();
-	pengrid->helement=(Hook*)this->helement->copy();
+	moulin->hnode=(Hook*)this->hnode->copy();
+	moulin->hvertex=(Hook*)this->hvertex->copy();
+	moulin->helement=(Hook*)this->helement->copy();
 
 	/*corresponding fields*/
-	pengrid->node  =(Node*)pengrid->hnode->delivers();
-	pengrid->vertex=(Vertex*)pengrid->hvertex->delivers();
-	pengrid->element=(Element*)pengrid->helement->delivers();
+	moulin->node  =(Node*)moulin->hnode->delivers();
+	moulin->vertex=(Vertex*)moulin->hvertex->delivers();
+	moulin->element=(Element*)moulin->helement->delivers();
 
-	return pengrid;
+	return moulin;
 }
 /*}}}*/
 void    Moulin::DeepEcho(void){/*{{{*/
@@ -109,8 +107,8 @@ void    Moulin::Echo(void){/*{{{*/
 	hnode->Echo();
 	hvertex->Echo();
 	helement->Echo();
-	_printf_("   parameters\n");
-	parameters->Echo();
+	_printf_("   parameters: not shown\n");
+	//parameters->Echo();
 	//this->DeepEcho();
 }
 /*}}}*/
@@ -163,6 +161,7 @@ void  Moulin::Configure(Elements* elementsin,Loads* loadsin,Nodes* nodesin,Verti
 
 	/*point parameters to real dataset: */
 	this->parameters=parametersin;
+
 }
 /*}}}*/
 void  Moulin::CreateKMatrix(Matrix<IssmDouble>* Kff, Matrix<IssmDouble>* Kfs){/*{{{*/

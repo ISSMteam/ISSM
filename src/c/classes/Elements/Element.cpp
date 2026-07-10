@@ -1528,7 +1528,7 @@ int        Element::GetNodeIndex(Node* node){/*{{{*/
 	int numnodes = this->GetNumberOfNodes(this->element_type);
 
 	for(int i=0;i<numnodes;i++){
-		if(node==nodes[i]) return i;
+		if(node==this->nodes[i]) return i;
 	}
 	_error_("Node provided not found among element nodes");
 

@@ -242,6 +242,11 @@ void FieldAndEnumFromCode(int* out_enum,char** pfield,const char* string_in){/*{
 		input_enum        = BedEnum;
 		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
 	}
+	else if(strcmp(string_in,"HydrologyMoulinInput")==0){
+		const char* field = "md.hydrology.moulin_input";
+		input_enum        = HydrologyMoulinInputEnum;
+		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
+	}
 	else{
 		_error_("Field \""<<string_in<<"\" not supported yet");
 	}
