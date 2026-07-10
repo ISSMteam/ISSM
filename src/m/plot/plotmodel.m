@@ -101,8 +101,6 @@ if numberofplots
 		else
 			set(gcf,'Position',figposition);
 		end
-	elseif strcmpi(getenv('USER'),'inwoo')
-		set(gcf,'Position',[910 242 560 420]);
 	end % }}}
 
 	%Use zbuffer renderer (smoother colors) and white background
