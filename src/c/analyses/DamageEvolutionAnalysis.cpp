@@ -398,7 +398,8 @@ void           DamageEvolutionAnalysis::CreateDamageFInputPralong(Element* eleme
 				Chi=s1;
 			}
 			Psi=Chi-stress_threshold;
-			NegPsi=max(-Chi,0.); /* healing only for compressive stresses */
+			//NegPsi=max(-Chi,0.); /* healing only for compressive stresses */
+			NegPsi=max(-Psi,0.); /* healing only for compressive stresses */
 			PosPsi=max(Psi,0.);
 			f[i]= c1*(pow(PosPsi,c2) - healing*pow(NegPsi,c2))*pow((1./(1.-damage)),c3);
 		}
@@ -411,7 +412,8 @@ void           DamageEvolutionAnalysis::CreateDamageFInputPralong(Element* eleme
 				Chi=sqrt(((s_xx-s_yy)*(s_xx-s_yy)+(s_yy-s_zz)*(s_yy-s_zz)+(s_zz-s_xx)*(s_zz-s_xx)+6.*(s_xy*s_xy+s_yz*s_yz+s_xz*s_xz))/2.);
 			}
 			Psi=Chi-stress_threshold;
-			NegPsi=max(-Chi,0.); /* healing only for compressive stresses */
+			//NegPsi=max(-Chi,0.); /* healing only for compressive stresses */
+			NegPsi=max(-Psi,0.); /* healing only for compressive stresses */
 			PosPsi=max(Psi,0.);
 			f[i]= c1*(pow(PosPsi,c2) - healing*pow(NegPsi,c2))*pow((1./(1.-damage)),c3);
 		}
