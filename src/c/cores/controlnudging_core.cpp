@@ -74,6 +74,7 @@ void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat, IssmDouble* pJ){/*{{{*/
 		/*clean up and Return: */
 		xDelete<IssmDouble>(xyz_list);
 		delete gauss;
+		if(element->IsSpawnedElement()){element->DeleteMaterials(); delete element;};
 	}
 
 	/*Sum all J from all cpus of the cluster:*/
