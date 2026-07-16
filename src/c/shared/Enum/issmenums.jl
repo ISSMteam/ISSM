@@ -1090,7 +1090,7 @@
 	SealevelBarystaticIceLatbarEnum
 	SealevelBarystaticIceLongbarEnum
 	SealevelBarystaticIceLoadEnum
-	SealevelBarystaticSeaLevelLoadEnum
+	SealevelBarystaticOceanMigrationLoadEnum
 	SealevelBarystaticHydroMaskEnum
 	SealevelBarystaticHydroWeightsEnum
 	SealevelBarystaticHydroAreaEnum
@@ -4952,7 +4952,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SealevelBarystaticIceLatbarEnum) return "SealevelBarystaticIceLatbar" end
 	if(enum==SealevelBarystaticIceLongbarEnum) return "SealevelBarystaticIceLongbar" end
 	if(enum==SealevelBarystaticIceLoadEnum) return "SealevelBarystaticIceLoad" end
-	if(enum==SealevelBarystaticSeaLevelLoadEnum) return "SealevelBarystaticSeaLevelLoad" end
+	if(enum==SealevelBarystaticOceanMigrationLoadEnum) return "SealevelBarystaticOceanMigrationLoad" end
 	if(enum==SealevelBarystaticHydroMaskEnum) return "SealevelBarystaticHydroMask" end
 	if(enum==SealevelBarystaticHydroWeightsEnum) return "SealevelBarystaticHydroWeights" end
 	if(enum==SealevelBarystaticHydroAreaEnum) return "SealevelBarystaticHydroArea" end
@@ -7723,7 +7723,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SubelementMigration4Enum) return "SubelementMigration4" end
 	if(enum==TimesteppingTimeAdaptEnum) return "TimesteppingTimeAdapt" end
 	if(enum==TriangleInterpEnum) return "TriangleInterp" end
-	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitions" end
+	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitionsE" end
 end
 
 function StringToEnum(name::String)
@@ -8814,7 +8814,7 @@ function StringToEnum(name::String)
 	if(name=="SealevelBarystaticIceLatbar") return SealevelBarystaticIceLatbarEnum  end
 	if(name=="SealevelBarystaticIceLongbar") return SealevelBarystaticIceLongbarEnum  end
 	if(name=="SealevelBarystaticIceLoad") return SealevelBarystaticIceLoadEnum  end
-	if(name=="SealevelBarystaticSeaLevelLoad") return SealevelBarystaticSeaLevelLoadEnum  end
+	if(name=="SealevelBarystaticOceanMigrationLoad") return SealevelBarystaticOceanMigrationLoadEnum  end
 	if(name=="SealevelBarystaticHydroMask") return SealevelBarystaticHydroMaskEnum  end
 	if(name=="SealevelBarystaticHydroWeights") return SealevelBarystaticHydroWeightsEnum  end
 	if(name=="SealevelBarystaticHydroArea") return SealevelBarystaticHydroAreaEnum  end
@@ -11585,6 +11585,6 @@ function StringToEnum(name::String)
 	if(name=="SubelementMigration4") return SubelementMigration4Enum  end
 	if(name=="TimesteppingTimeAdapt") return TimesteppingTimeAdaptEnum  end
 	if(name=="TriangleInterp") return TriangleInterpEnum  end
-	if(name=="MaximumNumberOfDefinitions") return MaximumNumberOfDefinitionsEnum  end
+	if(name=="MaximumNumberOfDefinitionsE") return MaximumNumberOfDefinitionsEnum  end
 	error("Enum ", name, " not found");
 end

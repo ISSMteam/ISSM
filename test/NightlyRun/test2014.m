@@ -87,7 +87,7 @@ md.transient.isgroundingline=1;
 md.transient.isslc=1;
 md.groundingline.migration='SubelementMigration';
 md.solidearth.requested_outputs={'Sealevel','Bed','Thickness','MaskOceanLevelset','MaskIceLevelset',...
-	'SealevelBarystaticIceLoad','SealevelBarystaticSeaLevelLoad',...
+	'SealevelBarystaticIceLoad','SealevelBarystaticOceanMigrationLoad',...
 	'SealevelBarystaticIceWeights','SealevelBarystaticIceArea',...
 	'SealevelBarystaticOceanWeights','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask'};
 md.settings.results_on_nodes={'SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights'};
@@ -117,36 +117,36 @@ H0avg=sum(H0v.*iceweights,2);
 haf0avg=sum(haf0.*iceweights,2);
 
 iceload=sum(results.SealevelBarystaticIceLoad);
-sealevelload=sum(results.SealevelBarystaticSeaLevelLoad);
-netload=iceload+sealevelload;
+oceanmigrationload=sum(results.SealevelBarystaticOceanMigrationLoad);
+netload=iceload+oceanmigrationload;
 
 iceload_geom=-sum(H0avg.*icearea)*rhoi;
-sealevelload_geom=sum((H0avg-haf0avg).*icearea)*rhoi;
+oceanmigrationload_geom=sum((H0avg-haf0avg).*icearea)*rhoi;
 netload_geom=-sum(haf0avg.*icearea)*rhoi;
 
 bslcice=results.BslcIce;
 bslcice_geom=-iceload_geom/rhow/oceanarea;
 bslcice_load=-iceload/rhow/oceanarea;
 
-bslcsealevelload=-sealevelload/rhow/oceanarea;
-bslcsealevelload_geom=-sealevelload_geom/rhow/oceanarea;
+bslcoceanmigrationload=-oceanmigrationload/rhow/oceanarea;
+bslcoceanmigrationload_geom=-oceanmigrationload_geom/rhow/oceanarea;
 
 bslcnetload=-netload/rhow/oceanarea;
 bslcnetload_geom=-netload_geom/rhow/oceanarea;
 
 bslcice_diff=single(bslcice_geom)-single(bslcice);
 bslcice_load_diff=single(bslcice_load)-single(bslcice);
-bslcsealevelload_diff=single(bslcsealevelload_geom)-single(bslcsealevelload);
+bslcoceanmigrationload_diff=single(bslcoceanmigrationload_geom)-single(bslcoceanmigrationload);
 bslcnetload_diff=single(bslcnetload_geom)-single(bslcnetload);
 cumbslcice_diff=single(results.CumBslcIce)-single(bslcice);
 
 %Fields and tolerances to track changes
 field_names={'BslcIce','BslcIceGeom','BslcIceDiff','BslcIceLoadDiff',...
-	'BslcSeaLevelLoad','BslcSeaLevelLoadGeom','BslcSeaLevelLoadDiff',...
+	'BslcOceanMigrationLoad','BslcOceanMigrationLoadGeom','BslcOceanMigrationLoadDiff',...
 	'BslcNetLoad','BslcNetLoadGeom','BslcNetLoadDiff','CumBslcIceDiff'};
 field_tolerances={2e-12,2e-12,1e-13,1e-13,...
 	2e-12,2e-12,1e-13,...
 	2e-12,2e-12,1e-13,1e-13};
 field_values={bslcice,bslcice_geom,bslcice_diff,bslcice_load_diff,...
-	bslcsealevelload,bslcsealevelload_geom,bslcsealevelload_diff,...
+	bslcoceanmigrationload,bslcoceanmigrationload_geom,bslcoceanmigrationload_diff,...
 	bslcnetload,bslcnetload_geom,bslcnetload_diff,cumbslcice_diff};

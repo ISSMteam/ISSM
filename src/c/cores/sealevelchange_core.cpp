@@ -947,15 +947,15 @@ IssmDouble SealevelloadsOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceana
 
 	IssmDouble sealevelloadsaverage;	
 	IssmDouble subsealevelloadsaverage;	
-	IssmDouble barystaticsealevelloadsaverage;
-	IssmDouble subbarystaticsealevelloadsaverage;
+	IssmDouble oceanmigrationloadsaverage;
+	IssmDouble suboceanmigrationloadsaverage;
 
 	loads->vsealevelloads->Sum(&sealevelloadsaverage);
 	loads->vsubsealevelloads->Sum(&subsealevelloadsaverage);
-	loads->vbarystaticsealevelloads->Sum(&barystaticsealevelloadsaverage);
-	loads->vsubbarystaticsealevelloads->Sum(&subbarystaticsealevelloadsaverage);
+	loads->voceanmigrationloads->Sum(&oceanmigrationloadsaverage);
+	loads->vsuboceanmigrationloads->Sum(&suboceanmigrationloadsaverage);
 
-	return (sealevelloadsaverage+subsealevelloadsaverage+barystaticsealevelloadsaverage+subbarystaticsealevelloadsaverage)/totaloceanarea;
+	return (sealevelloadsaverage+subsealevelloadsaverage+oceanmigrationloadsaverage+suboceanmigrationloadsaverage)/totaloceanarea;
 } /*}}}*/
 void       PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoads* loads, SealevelGeometry* slgeom, bool computefuture){ /*{{{*/
 	//The purpose of this routine is to get the polar motion vector m=(m1, m2, m3) induced by the GrdLoads

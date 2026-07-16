@@ -1101,7 +1101,7 @@ syn keyword cConstant SealevelBarystaticIceAreaEnum
 syn keyword cConstant SealevelBarystaticIceLatbarEnum
 syn keyword cConstant SealevelBarystaticIceLongbarEnum
 syn keyword cConstant SealevelBarystaticIceLoadEnum
-syn keyword cConstant SealevelBarystaticSeaLevelLoadEnum
+syn keyword cConstant SealevelBarystaticOceanMigrationLoadEnum
 syn keyword cConstant SealevelBarystaticHydroMaskEnum
 syn keyword cConstant SealevelBarystaticHydroWeightsEnum
 syn keyword cConstant SealevelBarystaticHydroAreaEnum

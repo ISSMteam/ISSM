@@ -18,9 +18,11 @@ classdef generic
 		npocean       = 1;
 		port          = 0;
 		interactive   = 1;
-		codepath      = [issmdir() '/bin'];
+		%codepath      = [issmdir() '/bin'];
+        codepath = '/home/caronlam/Codes/trunk-exp/build-fw/bin';
 		etcpath       = [issmdir() '/etc'];
-		executionpath = [issmdir() '/execution'];
+        executionpath = '/home/caronlam/Codes/trunk-exp/build-fw/bin';
+		%executionpath = [issmdir() '/execution'];
 		valgrind      = [issmdir() '/externalpackages/valgrind/install/bin/valgrind'];
 		valgrindlib   = [issmdir() '/externalpackages/valgrind/install/lib/libmpidebug.so'];
 		valgrindsup   = [issmdir() '/externalpackages/valgrind/issm.supp'];

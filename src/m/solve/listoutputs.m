@@ -324,7 +324,7 @@
 %SealevelBarystaticIceLatbar
 %SealevelBarystaticIceLongbar
 %SealevelBarystaticIceLoad
-%SealevelBarystaticSeaLevelLoad
+%SealevelBarystaticOceanMigrationLoad
 %SealevelBarystaticHydroMask
 %SealevelBarystaticHydroWeights
 %SealevelBarystaticHydroArea

@@ -88,7 +88,7 @@ md.transient.isstressbalance=0;
 md.transient.isthermal=0;
 md.transient.ismasstransport=1;
 md.transient.isslc=1;
-md.solidearth.requested_outputs={'Sealevel','DeltaIceThickness','SealevelBarystaticIceLoad','SealevelBarystaticSeaLevelLoad','SealevelBarystaticOceanLoad','SealevelBarystaticIceMask','SealevelBarystaticHydroMask','SealevelBarystaticBpMask','Bed','SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights','SealevelBarystaticIceArea','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask','SealevelGRD','SealevelBarystaticOceanLongbar'};
+md.solidearth.requested_outputs={'Sealevel','DeltaIceThickness','SealevelBarystaticIceLoad','SealevelBarystaticOceanMigrationLoad','SealevelBarystaticOceanLoad','SealevelBarystaticIceMask','SealevelBarystaticHydroMask','SealevelBarystaticBpMask','Bed','SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights','SealevelBarystaticIceArea','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask','SealevelGRD','SealevelBarystaticOceanLongbar'};
 md.settings.results_on_nodes={'SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights'};
 
 %eustatic + rigid + elastic + rotation run:
@@ -111,11 +111,11 @@ oceanarea=sum(md.results.TransientSolution(1).SealevelBarystaticOceanArea);
 bslc2=-sum(dHavg.*area)*md.materials.rho_ice/md.materials.rho_water/oceanarea;
 
 %check load accounting: this test has no migrating grounding/coast line, so
-%the passive sea-level load should be zero and the net load should match BslcIce.
+%the ocean migration load should be zero and the net load should match BslcIce.
 iceload=md.results.TransientSolution(1).SealevelBarystaticIceLoad;
-sealevelload=md.results.TransientSolution(1).SealevelBarystaticSeaLevelLoad;
-bslc_load=-sum(iceload+sealevelload)/md.materials.rho_water/oceanarea;
-bslc_sealevelload=-sum(sealevelload)/md.materials.rho_water/oceanarea;
+oceanmigrationload=md.results.TransientSolution(1).SealevelBarystaticOceanMigrationLoad;
+bslc_load=-sum(iceload+oceanmigrationload)/md.materials.rho_water/oceanarea;
+bslc_oceanmigrationload=-sum(oceanmigrationload)/md.materials.rho_water/oceanarea;
 
 %another way of computing barystatic from the final solved RSL field:
 oceanarea=md.results.TransientSolution(1).SealevelBarystaticOceanArea;
@@ -136,6 +136,6 @@ bslc_load_diff=single(bslc_load)-single(bslc1);
 %Fields and tolerances to track changes
 %BarystaticIce3 is reconstructed from final GRD fields and is limited by the
 %SLE/convolution numerical floor; direct source and load accounting remain strict.
-field_names={'BarystaticIce1','BarystaticIce2','BarystaticIceDiff21','BarystaticIce3','BarystaticSeaLevelLoad','BarystaticLoad','BarystaticLoadDiff'};
+field_names={'BarystaticIce1','BarystaticIce2','BarystaticIceDiff21','BarystaticIce3','BarystaticOceanMigrationLoad','BarystaticLoad','BarystaticLoadDiff'};
 field_tolerances={2e-12,1e-13,1e-13,1e-6,1e-13,2e-12,1e-13};
-field_values={bslc1,bslc2,bslc_diff21,bslc3,bslc_sealevelload,bslc_load,bslc_load_diff};
+field_values={bslc1,bslc2,bslc_diff21,bslc3,bslc_oceanmigrationload,bslc_load,bslc_load_diff};

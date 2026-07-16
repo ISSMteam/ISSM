@@ -1130,7 +1130,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SealevelBarystaticIceLatbar")==0) return SealevelBarystaticIceLatbarEnum;
 	      else if (strcmp(name,"SealevelBarystaticIceLongbar")==0) return SealevelBarystaticIceLongbarEnum;
 	      else if (strcmp(name,"SealevelBarystaticIceLoad")==0) return SealevelBarystaticIceLoadEnum;
-	      else if (strcmp(name,"SealevelBarystaticSeaLevelLoad")==0) return SealevelBarystaticSeaLevelLoadEnum;
+	      else if (strcmp(name,"SealevelBarystaticOceanMigrationLoad")==0) return SealevelBarystaticOceanMigrationLoadEnum;
 	      else if (strcmp(name,"SealevelBarystaticHydroMask")==0) return SealevelBarystaticHydroMaskEnum;
 	      else if (strcmp(name,"SealevelBarystaticHydroWeights")==0) return SealevelBarystaticHydroWeightsEnum;
 	      else if (strcmp(name,"SealevelBarystaticHydroArea")==0) return SealevelBarystaticHydroAreaEnum;
@@ -3970,7 +3970,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"SubelementMigration4")==0) return SubelementMigration4Enum;
 	      else if (strcmp(name,"TimesteppingTimeAdapt")==0) return TimesteppingTimeAdaptEnum;
 	      else if (strcmp(name,"TriangleInterp")==0) return TriangleInterpEnum;
-	      else if (strcmp(name,"MaximumNumberOfDefinitions")==0) return MaximumNumberOfDefinitionsEnum;
+	      else if (strcmp(name,"MaximumNumberOfDefinitionsE")==0) return MaximumNumberOfDefinitionsEnum;
          else stage=34;
    }
 	/*If we reach this point, the string provided has not been found*/

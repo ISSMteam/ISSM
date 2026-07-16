@@ -1097,7 +1097,7 @@ enum definitions{
 	SealevelBarystaticIceLatbarEnum,
 	SealevelBarystaticIceLongbarEnum,
 	SealevelBarystaticIceLoadEnum,
-	SealevelBarystaticSeaLevelLoadEnum,
+	SealevelBarystaticOceanMigrationLoadEnum,
 	SealevelBarystaticHydroMaskEnum,
 	SealevelBarystaticHydroWeightsEnum,
 	SealevelBarystaticHydroAreaEnum,

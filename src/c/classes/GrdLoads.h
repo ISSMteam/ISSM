@@ -23,10 +23,10 @@ class GrdLoads{
 		IssmDouble*         sealevelloads=NULL;
 		Vector<IssmDouble>* vsubsealevelloads=NULL;
 		IssmDouble*         subsealevelloads=NULL;
-		Vector<IssmDouble>* vbarystaticsealevelloads=NULL;
-		IssmDouble*         barystaticsealevelloads=NULL;
-		Vector<IssmDouble>* vsubbarystaticsealevelloads=NULL;
-		IssmDouble*         subbarystaticsealevelloads=NULL;
+		Vector<IssmDouble>* voceanmigrationloads=NULL;
+		IssmDouble*         oceanmigrationloads=NULL;
+		Vector<IssmDouble>* vsuboceanmigrationloads=NULL;
+		IssmDouble*         suboceanmigrationloads=NULL;
 		int*         	    combined_loads_index=NULL;
 		int*         	    combined_subloads_index[SLGEOM_NUMLOADS];
 		IssmDouble*         combined_loads=NULL;

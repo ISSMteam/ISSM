@@ -48,7 +48,6 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		void  InputUpdateFromVectorDakota(IssmDouble* vector, int name, int type);
 		void  InputScaleFromDakota(IssmDouble* distributed_values, IssmDouble* partition, int npart, int nt, int name);
 		#endif
-		void  InputUpdateFromIoModel(int index, IoModel* iomodel);
 		void  InputUpdateFromVector(IssmDouble* vector, int name, int type);
 		/*}}}*/
 		/*Element virtual functions definitions: {{{*/

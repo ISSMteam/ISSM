@@ -4311,34 +4311,6 @@ void       Tria::InputDepthAverageAtBase(int enum_type,int average_enum_type){/*
 	_error_("not implemented");
 }
 /*}}}*/
-void       Tria::InputUpdateFromIoModel(int index, IoModel* iomodel){ //i is the element index/*{{{*/
-
-	/*Intermediaries*/
-	int        i,j;
-	int        tria_vertex_ids[3];
-	IssmDouble nodeinputs[3];
-	IssmDouble cmmininputs[3];
-	IssmDouble cmmaxinputs[3];
-	bool       control_analysis,ad_analysis   = false;
-	int        num_control_type,num_responses;
-	char**     controls = NULL;
-	IssmDouble yts;
-
-	/*Get parameters: */
-	iomodel->FindConstant(&yts,"md.constants.yts");
-	iomodel->FindConstant(&control_analysis,"md.inversion.iscontrol");
-	iomodel->FindConstant(&ad_analysis, "md.autodiff.isautodiff");
-	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_control_type,"md.inversion.num_control_parameters");
-	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_responses,"md.inversion.num_cost_functions");
-	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_control_type,"md.autodiff.num_independent_objects");
-	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_responses,"md.autodiff.num_dependent_objects");
-
-	/*Recover vertices ids needed to initialize inputs*/
-	for(i=0;i<3;i++){
-		tria_vertex_ids[i]=reCast<int>(iomodel->elements[3*index+i]); //ids for vertices are in the elements array from Matlab
-	}
-}
-/*}}}*/
 void       Tria::InputUpdateFromSolutionOneDof(IssmDouble* solution,int enum_type){/*{{{*/
 
 	/*Intermediary*/
@@ -5949,9 +5921,10 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*The fbmb[kg yr-1] of one element is area[m2] * melting_rate [kg m^-2 yr^-1]*/
 	int        point1;
-	bool       mainlyfloating;
+	bool       mainlyfloating,nomeltunderlakes;
 	IssmDouble fbmb=0;
-	IssmDouble rho_ice,fraction1,fraction2,floatingmelt,Jdet,scalefactor;
+	IssmDouble fraction1,fraction2,floatingmelt,groundedmelt,connected;
+	IssmDouble rho_ice,Jdet,scalefactor;
 	IssmDouble Total_Fbmb=0;
 	IssmDouble xyz_list[NUMVERTICES][3];
 	Gauss*     gauss     = NULL;
@@ -5960,11 +5933,18 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*Get material parameters :*/
 	rho_ice=FindParam(MaterialsRhoIceEnum);
+	this->parameters->FindParam(&nomeltunderlakes,GroundinglineNomeltUnderLakesEnum);
 	Input* floatingmelt_input = this->GetInput(BasalforcingsFloatingiceMeltingRateEnum); _assert_(floatingmelt_input);
 	Input* gllevelset_input   = this->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
 	Input* scalefactor_input  = NULL;
 	if(scaled==true){
 		scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
+	}
+	Input* connectedtoocean_input = NULL;
+	Input* groundedmelt_input     = NULL;
+	if(nomeltunderlakes){
+		connectedtoocean_input = GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
+		groundedmelt_input = GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(groundedmelt_input);
 	}
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 
@@ -5974,6 +5954,11 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 	while(gauss->next()){
 		this->JacobianDeterminant(&Jdet,&xyz_list[0][0],gauss);
 		floatingmelt_input->GetInputValue(&floatingmelt,gauss);
+		if(nomeltunderlakes){
+			groundedmelt_input->GetInputValue(&groundedmelt,gauss);
+			connectedtoocean_input->GetInputValue(&connected,gauss);
+			if(connected<0.01) floatingmelt = groundedmelt;
+		}
 		if(scaled==true){
 			scalefactor_input->GetInputValue(&scalefactor,gauss);
 		}
@@ -7952,7 +7937,7 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	BPavg*=rho_water;
 
 	this->AddInput(SealevelBarystaticIceLoadEnum,&Iavg,P0Enum);
-	this->AddInput(SealevelBarystaticSeaLevelLoadEnum,&SLavg,P0Enum);
+	this->AddInput(SealevelBarystaticOceanMigrationLoadEnum,&SLavg,P0Enum);
 	#ifdef _ISSM_DEBUG_
 	this->AddInput(SealevelBarystaticHydroLoadEnum,&Wavg,P0Enum);
 	this->AddInput(SealevelBarystaticBpLoadEnum,&BPavg,P0Enum);
@@ -7986,12 +7971,12 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	}
 	if(slgeom->issubelement[SLGEOM_OCEAN][this->lid]){
 		int intj=slgeom->subelementmapping[SLGEOM_OCEAN][this->lid];
-		loads->vsubbarystaticsealevelloads->SetValue(intj,SLavg,INS_VAL);
+		loads->vsuboceanmigrationloads->SetValue(intj,SLavg,INS_VAL);
 		SLavg=0;
 	}
 	/*Plug remaining values into centroid load vector:*/
 	loads->vloads->SetValue(this->sid,Iavg+Wavg+BPavg,INS_VAL);
-	loads->vbarystaticsealevelloads->SetValue(this->sid,SLavg,INS_VAL);
+	loads->voceanmigrationloads->SetValue(this->sid,SLavg,INS_VAL);
 
 	/*Keep track of barystatic contributions:*/
 	barycontrib->Set(this->Sid(),bslcice,bslchydro,bslcbp);

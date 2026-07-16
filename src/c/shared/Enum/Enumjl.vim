@@ -1094,7 +1094,7 @@ syn keyword juliaConstC SealevelBarystaticIceAreaEnum
 syn keyword juliaConstC SealevelBarystaticIceLatbarEnum
 syn keyword juliaConstC SealevelBarystaticIceLongbarEnum
 syn keyword juliaConstC SealevelBarystaticIceLoadEnum
-syn keyword juliaConstC SealevelBarystaticSeaLevelLoadEnum
+syn keyword juliaConstC SealevelBarystaticOceanMigrationLoadEnum
 syn keyword juliaConstC SealevelBarystaticHydroMaskEnum
 syn keyword juliaConstC SealevelBarystaticHydroWeightsEnum
 syn keyword juliaConstC SealevelBarystaticHydroAreaEnum
