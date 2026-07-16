@@ -1088,6 +1088,12 @@ syn keyword cConstant SamplingTauEnum
 syn keyword cConstant SealevelEnum
 syn keyword cConstant SealevelGRDEnum
 syn keyword cConstant SatGraviGRDEnum
+syn keyword cConstant SealevelchangeOldThicknessEnum
+syn keyword cConstant SealevelchangeOldOceanLevelsetEnum
+syn keyword cConstant SealevelchangeOldIceLevelsetEnum
+syn keyword cConstant SealevelchangeOldIceHeightAboveFloatationEnum
+syn keyword cConstant SealevelchangeOldWaterColumnEnum
+syn keyword cConstant SealevelchangeOldBottomPressureEnum
 syn keyword cConstant SealevelBarystaticMaskEnum
 syn keyword cConstant SealevelBarystaticIceMaskEnum
 syn keyword cConstant SealevelBarystaticIceWeightsEnum
@@ -1095,6 +1101,7 @@ syn keyword cConstant SealevelBarystaticIceAreaEnum
 syn keyword cConstant SealevelBarystaticIceLatbarEnum
 syn keyword cConstant SealevelBarystaticIceLongbarEnum
 syn keyword cConstant SealevelBarystaticIceLoadEnum
+syn keyword cConstant SealevelBarystaticSeaLevelLoadEnum
 syn keyword cConstant SealevelBarystaticHydroMaskEnum
 syn keyword cConstant SealevelBarystaticHydroWeightsEnum
 syn keyword cConstant SealevelBarystaticHydroAreaEnum
@@ -3962,6 +3969,7 @@ syn keyword cType Observation
 syn keyword cType Observations
 syn keyword cType Option
 syn keyword cType Options
+syn keyword cType OptionUtilities
 syn keyword cType Param
 syn keyword cType Parameters
 syn keyword cType Pengrid

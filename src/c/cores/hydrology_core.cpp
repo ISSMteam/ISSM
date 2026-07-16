@@ -48,7 +48,7 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
 
 	}
 	/*Using the Tws based Model*/
-	if (hydrology_model==HydrologyTwsEnum){
+	else if (hydrology_model==HydrologyTwsEnum){
 		if(VerboseSolution()) _printf0_("   computing water column\n");
 
 		femmodel->SetCurrentConfiguration(HydrologyTwsAnalysisEnum);
@@ -59,7 +59,7 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
 		/*grab tws from the hydrology.spcwatercolumn field input and update
 		 * the solution with it:*/
 		Vector<IssmDouble>*  ug  = NULL;
-		GetVectorFromInputsx(&ug,femmodel,HydrologyTwsSpcEnum,VertexPIdEnum);
+		GetSolutionFromInputsx(&ug,femmodel);
 		InputUpdateFromSolutionx(femmodel,ug);
 
 		/*solid earth considerations:*/

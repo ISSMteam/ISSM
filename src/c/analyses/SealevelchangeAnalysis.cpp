@@ -37,6 +37,7 @@ void SealevelchangeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
 	/*Create inputs: */
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ocean_levelset",MaskOceanLevelsetEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ice_levelset",MaskIceLevelsetEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.geometry.thickness",ThicknessEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.bed",BedEnum);
 
 	iomodel->FetchDataToInput(inputs,elements,"md.solidearth.transfercount",CouplingTransferCountEnum);
@@ -71,6 +72,8 @@ void SealevelchangeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,Io
     iomodel->FetchDataToInput(inputs,elements,"md.initialization.sealevel",SealevelEnum);
 
 	/*Initialize loads: no! this should be done by the corresponding mass transports!*/
+	iomodel->FetchDataToInput(inputs,elements,"md.initialization.watercolumn",WatercolumnEnum,0.);
+	iomodel->FetchDataToInput(inputs,elements,"md.initialization.bottompressure",BottomPressureEnum,0.);
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaTwsEnum,P1Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaIceThicknessEnum,P1Enum);
 	iomodel->ConstantToInput(inputs,elements,0.,DeltaBottomPressureEnum,P1Enum);
