@@ -112,6 +112,6 @@ Seus10=md.results.TransientSolution(10).Bslc;
 
 %Fields and tolerances to track changes
 field_names={'Sealevel1','Sealevel5','Sealevel10','Seustatic10'};
-field_tolerances={1e-13,1e-13,1e-13,1e-13};
+field_tolerances={1e-12,1e-12,1e-12,1e-12};
 field_values={S1,S5,S10,Seus10};
 

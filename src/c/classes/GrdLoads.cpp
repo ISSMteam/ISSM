@@ -31,9 +31,11 @@ GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	this->vsealevelloads->Set(0);vsealevelloads->Assemble();
 
 	this->vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsubsealevelloads->Set(0);vsubsealevelloads->Assemble();
 	this->vbarystaticsealevelloads=new Vector<IssmDouble>(nel);
 	this->vbarystaticsealevelloads->Set(0);vbarystaticsealevelloads->Assemble();
 	this->vsubbarystaticsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsubbarystaticsealevelloads->Set(0);vsubbarystaticsealevelloads->Assemble();
 
 	this->combined_loads=NULL;
 	this->combined_loads_index=NULL;

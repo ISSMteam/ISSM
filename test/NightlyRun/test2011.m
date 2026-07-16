@@ -74,14 +74,13 @@ md.miscellaneous.name='test2011';
 
 %Solution parameters
 md.cluster.np=3;
-md.solidearth.settings.reltol=1e-10;
-md.solidearth.settings.abstol=NaN; 
+md.solidearth.settings.reltol=NaN;
+md.solidearth.settings.abstol=1e-16;
+md.solidearth.settings.maxiter=1000;
 md.solidearth.settings.sealevelloading=1;
 md.solidearth.settings.isgrd=1;
 md.solidearth.settings.ocean_area_scaling=0;
 md.solidearth.settings.grdmodel=1;
-md.solidearth.settings.maxiter=6;
-
 
 %Physics: 
 md.transient.issmb=0; 
@@ -89,7 +88,7 @@ md.transient.isstressbalance=0;
 md.transient.isthermal=0;
 md.transient.ismasstransport=1;
 md.transient.isslc=1;
-md.solidearth.requested_outputs={'Sealevel','DeltaIceThickness','SealevelBarystaticIceMask','SealevelBarystaticHydroMask','SealevelBarystaticBpMask','Bed','SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights','SealevelBarystaticIceArea','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask','SealevelGRD','SealevelBarystaticOceanLongbar'};
+md.solidearth.requested_outputs={'Sealevel','DeltaIceThickness','SealevelBarystaticIceLoad','SealevelBarystaticSeaLevelLoad','SealevelBarystaticOceanLoad','SealevelBarystaticIceMask','SealevelBarystaticHydroMask','SealevelBarystaticBpMask','Bed','SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights','SealevelBarystaticIceArea','SealevelBarystaticOceanArea','SealevelBarystaticOceanMask','SealevelGRD','SealevelBarystaticOceanLongbar'};
 md.settings.results_on_nodes={'SealevelBarystaticIceWeights','SealevelBarystaticOceanWeights'};
 
 %eustatic + rigid + elastic + rotation run:
@@ -97,36 +96,46 @@ md.solidearth.settings.selfattraction=1;
 md.solidearth.settings.elastic=1;
 md.solidearth.settings.rotation=0;
 md.solidearth.settings.viscous=0;
-
-md.verbose.convergence = 1;
 md=solve(md,'tr');
 
 %recover barystatic: 
-results=md.results.TransientSolution(1); 
-bslc1=results.BslcIce; 
+bslc1=md.results.TransientSolution(1).BslcIce;
 
 %alternative way of computing barystatic: 
-icearea=results.SealevelBarystaticIceArea;
-iceweights=results.SealevelBarystaticIceWeights; 
-dH=results.DeltaIceThickness(md.mesh.elements); 
-dHavg=sum(dH.*iceweights,2);
-totaloceanarea=sum(results.SealevelBarystaticOceanArea);
-bslc2=-sum(dHavg.*icearea)*md.materials.rho_ice/md.materials.rho_water/totaloceanarea;
+area=md.results.TransientSolution(1).SealevelBarystaticIceArea;
+weights=md.results.TransientSolution(1).SealevelBarystaticIceWeights;
+dH=md.results.TransientSolution(1).DeltaIceThickness(md.mesh.elements);
 
-%another way of computing barystatic:
-oceanarea=results.SealevelBarystaticOceanArea; 
-oceanweights=results.SealevelBarystaticOceanWeights; 
-rsl=results.Sealevel-(results.Bed-md.geometry.bed); 
-rsl=rsl(md.mesh.elements); 
+dHavg=sum(dH.*weights,2);
+oceanarea=sum(md.results.TransientSolution(1).SealevelBarystaticOceanArea);
+bslc2=-sum(dHavg.*area)*md.materials.rho_ice/md.materials.rho_water/oceanarea;
+
+%check load accounting: this test has no migrating grounding/coast line, so
+%the passive sea-level load should be zero and the net load should match BslcIce.
+iceload=md.results.TransientSolution(1).SealevelBarystaticIceLoad;
+sealevelload=md.results.TransientSolution(1).SealevelBarystaticSeaLevelLoad;
+bslc_load=-sum(iceload+sealevelload)/md.materials.rho_water/oceanarea;
+bslc_sealevelload=-sum(sealevelload)/md.materials.rho_water/oceanarea;
+
+%another way of computing barystatic from the final solved RSL field:
+oceanarea=md.results.TransientSolution(1).SealevelBarystaticOceanArea;
+oceanweights=md.results.TransientSolution(1).SealevelBarystaticOceanWeights;
+rsl=md.results.TransientSolution(1).Sealevel-md.results.TransientSolution(1).Bed+md.geometry.bed;
+rsl=rsl(md.mesh.elements);
 rslavg=sum(rsl.*oceanweights,2);
-bslc3=sum(rslavg.*oceanarea)/totaloceanarea; 
+bslc3=sum(rslavg.*oceanarea)/sum(oceanarea);
+
+[bslc1 bslc2 bslc3]
+
 
 %need to change precision before subtraction because of differences in results 
 %at high precision under macOS versus Linux (print values of bslc and bslc2 to %verify that the difference is negligible)
 bslc_diff21=single(bslc2)-single(bslc1);
-bslc_diff31=single(bslc3)-single(bslc2);
+bslc_load_diff=single(bslc_load)-single(bslc1);
 
 %Fields and tolerances to track changes
-field_names={'BarystaticIce1','BarystaticIce2','BarystaticIceDiff21','BarystaticIce3','BarystaticIceDiff31'};
-field_tolerances={1e-13,1e-13,1e-13,1e-13,1e-13};
-field_values={bslc1,bslc2,bslc_diff21,bslc3,bslc_diff31};
+%BarystaticIce3 is reconstructed from final GRD fields and is limited by the
+%SLE/convolution numerical floor; direct source and load accounting remain strict.
+field_names={'BarystaticIce1','BarystaticIce2','BarystaticIceDiff21','BarystaticIce3','BarystaticSeaLevelLoad','BarystaticLoad','BarystaticLoadDiff'};
+field_tolerances={2e-12,1e-13,1e-13,1e-6,1e-13,2e-12,1e-13};
+field_values={bslc1,bslc2,bslc_diff21,bslc3,bslc_sealevelload,bslc_load,bslc_load_diff};

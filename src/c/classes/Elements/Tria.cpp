@@ -4311,6 +4311,34 @@ void       Tria::InputDepthAverageAtBase(int enum_type,int average_enum_type){/*
 	_error_("not implemented");
 }
 /*}}}*/
+void       Tria::InputUpdateFromIoModel(int index, IoModel* iomodel){ //i is the element index/*{{{*/
+
+	/*Intermediaries*/
+	int        i,j;
+	int        tria_vertex_ids[3];
+	IssmDouble nodeinputs[3];
+	IssmDouble cmmininputs[3];
+	IssmDouble cmmaxinputs[3];
+	bool       control_analysis,ad_analysis   = false;
+	int        num_control_type,num_responses;
+	char**     controls = NULL;
+	IssmDouble yts;
+
+	/*Get parameters: */
+	iomodel->FindConstant(&yts,"md.constants.yts");
+	iomodel->FindConstant(&control_analysis,"md.inversion.iscontrol");
+	iomodel->FindConstant(&ad_analysis, "md.autodiff.isautodiff");
+	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_control_type,"md.inversion.num_control_parameters");
+	if(control_analysis && !ad_analysis) iomodel->FindConstant(&num_responses,"md.inversion.num_cost_functions");
+	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_control_type,"md.autodiff.num_independent_objects");
+	if(control_analysis && ad_analysis) iomodel->FindConstant(&num_responses,"md.autodiff.num_dependent_objects");
+
+	/*Recover vertices ids needed to initialize inputs*/
+	for(i=0;i<3;i++){
+		tria_vertex_ids[i]=reCast<int>(iomodel->elements[3*index+i]); //ids for vertices are in the elements array from Matlab
+	}
+}
+/*}}}*/
 void       Tria::InputUpdateFromSolutionOneDof(IssmDouble* solution,int enum_type){/*{{{*/
 
 	/*Intermediary*/
@@ -5921,10 +5949,9 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*The fbmb[kg yr-1] of one element is area[m2] * melting_rate [kg m^-2 yr^-1]*/
 	int        point1;
-	bool       mainlyfloating,nomeltunderlakes;
+	bool       mainlyfloating;
 	IssmDouble fbmb=0;
-	IssmDouble fraction1,fraction2,floatingmelt,groundedmelt,connected;
-	IssmDouble rho_ice,Jdet,scalefactor;
+	IssmDouble rho_ice,fraction1,fraction2,floatingmelt,Jdet,scalefactor;
 	IssmDouble Total_Fbmb=0;
 	IssmDouble xyz_list[NUMVERTICES][3];
 	Gauss*     gauss     = NULL;
@@ -5933,18 +5960,11 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 
 	/*Get material parameters :*/
 	rho_ice=FindParam(MaterialsRhoIceEnum);
-	this->parameters->FindParam(&nomeltunderlakes,GroundinglineNomeltUnderLakesEnum);
 	Input* floatingmelt_input = this->GetInput(BasalforcingsFloatingiceMeltingRateEnum); _assert_(floatingmelt_input);
 	Input* gllevelset_input   = this->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
 	Input* scalefactor_input  = NULL;
 	if(scaled==true){
 		scalefactor_input = this->GetInput(MeshScaleFactorEnum); _assert_(scalefactor_input);
-	}
-	Input* connectedtoocean_input = NULL;
-	Input* groundedmelt_input     = NULL;
-	if(nomeltunderlakes){
-		connectedtoocean_input = GetInput(ConnectedToOceanEnum);	  _assert_(connectedtoocean_input);
-		groundedmelt_input = GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(groundedmelt_input);
 	}
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 
@@ -5954,11 +5974,6 @@ IssmDouble Tria::TotalFloatingBmb(bool scaled){/*{{{*/
 	while(gauss->next()){
 		this->JacobianDeterminant(&Jdet,&xyz_list[0][0],gauss);
 		floatingmelt_input->GetInputValue(&floatingmelt,gauss);
-		if(nomeltunderlakes){
-			groundedmelt_input->GetInputValue(&groundedmelt,gauss);
-			connectedtoocean_input->GetInputValue(&connected,gauss);
-			if(connected<0.01) floatingmelt = groundedmelt;
-		}
 		if(scaled==true){
 			scalefactor_input->GetInputValue(&scalefactor,gauss);
 		}
@@ -7789,9 +7804,10 @@ void       Tria::SealevelchangeInitializeOldIceState(void){ /*{{{*/
 	Element::GetInputListOnVertices(&icelevelset[0],MaskIceLevelsetEnum);
 
 	for(int i=0;i<NUMVERTICES;i++){
+		bool groundedice=oceanlevelset[i]>0. && icelevelset[i]<0.;
 		IssmDouble watercolumn=sealevel[i]-bed[i];
 		if(watercolumn<0.) watercolumn=0.;
-		haf[i]=H[i]-rho_water/rho_ice*watercolumn;
+		haf[i]=groundedice ? H[i]-rho_water/rho_ice*watercolumn : 0.;
 	}
 
 	this->AddInput(SealevelchangeOldThicknessEnum,H,P1Enum);
@@ -7812,12 +7828,19 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	IssmDouble BP[NUMVERTICES];
 	IssmDouble BPold[NUMVERTICES];
 	IssmDouble H[NUMVERTICES];
+	IssmDouble DeltaH[NUMVERTICES];
+	IssmDouble Hice[NUMVERTICES];
 	IssmDouble Hold[NUMVERTICES];
+	IssmDouble Holdice[NUMVERTICES];
 	IssmDouble HF[NUMVERTICES];
 	IssmDouble HFold[NUMVERTICES];
 	IssmDouble correction[NUMVERTICES];
 	IssmDouble bed[NUMVERTICES];
 	IssmDouble sealevel[NUMVERTICES];
+	IssmDouble oceanlevelset[NUMVERTICES];
+	IssmDouble icelevelset[NUMVERTICES];
+	IssmDouble oldoceanlevelset[NUMVERTICES];
+	IssmDouble oldicelevelset[NUMVERTICES];
 	IssmDouble weights[NUMVERTICES];
 	IssmDouble loadarea,latbar,longbar;
 	IssmDouble* areae=NULL;
@@ -7831,6 +7854,7 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	IssmDouble Iavg=0;
 	IssmDouble SLavg=0;
 	IssmDouble Wavg=0;
+	bool planethasocean=false;
 
 	/*ice properties: */
 	IssmDouble rho_ice,rho_water,rho_freshwater;
@@ -7838,7 +7862,8 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	/*recover some parameters:*/
 	this->parameters->FindParam(&rho_ice,MaterialsRhoIceEnum);
 	this->parameters->FindParam(&rho_water,MaterialsRhoSeawaterEnum);
-	this->parameters->FindParam(&rho_freshwater,MaterialsRhoFreshwaterEnum);
+	this->parameters->FindParam(&planethasocean,SolidearthSettingsGrdOceanEnum);
+	if(planethasocean) this->parameters->FindParam(&rho_freshwater,MaterialsRhoFreshwaterEnum);
 	this->parameters->FindParam(&areae,&nel,AreaeEnum);
 
 	/*Retrieve inputs:*/
@@ -7847,58 +7872,83 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	Element::GetInputListOnVertices(&BP[0],BottomPressureEnum);
 	Element::GetInputListOnVertices(&BPold[0],SealevelchangeOldBottomPressureEnum);
 	Element::GetInputListOnVertices(&H[0],ThicknessEnum);
+	Element::GetInputListOnVertices(&DeltaH[0],DeltaIceThicknessEnum);
 	Element::GetInputListOnVertices(&Hold[0],SealevelchangeOldThicknessEnum);
 	Element::GetInputListOnVertices(&HFold[0],SealevelchangeOldIceHeightAboveFloatationEnum);
 	Element::GetInputListOnVertices(&bed[0],BedEnum);
 	Element::GetInputListOnVertices(&sealevel[0],SealevelEnum);
+	Element::GetInputListOnVertices(&oceanlevelset[0],MaskOceanLevelsetEnum);
+	Element::GetInputListOnVertices(&icelevelset[0],MaskIceLevelsetEnum);
+	Element::GetInputListOnVertices(&oldoceanlevelset[0],SealevelchangeOldOceanLevelsetEnum);
+	Element::GetInputListOnVertices(&oldicelevelset[0],SealevelchangeOldIceLevelsetEnum);
 
+	bool unchangedgeometry=true;
 	for(int i=0;i<NUMVERTICES;i++){
+		bool currentice=icelevelset[i]<0.;
+		bool oldice=oldicelevelset[i]<0.;
+		bool currentgrounded=oceanlevelset[i]>0. && currentice;
+		bool oldgrounded=oldoceanlevelset[i]>0. && oldice;
 		IssmDouble watercolumn=sealevel[i]-bed[i];
 		if(watercolumn<0.) watercolumn=0.;
-		HF[i]=H[i]-rho_water/rho_ice*watercolumn;
-		correction[i]=(H[i]-Hold[i])-(HF[i]-HFold[i]);
+		Hice[i]=currentice ? H[i] : 0.;
+		Holdice[i]=oldice ? Hold[i] : 0.;
+		HF[i]=currentgrounded ? H[i]-rho_water/rho_ice*watercolumn : 0.;
+		if(!oldgrounded) HFold[i]=0.;
+		correction[i]=(Hice[i]-Holdice[i])-(HF[i]-HFold[i]);
+		if((oceanlevelset[i]<0.)!=(oldoceanlevelset[i]<0.)) unchangedgeometry=false;
+		if((icelevelset[i]<0.)!=(oldicelevelset[i]<0.)) unchangedgeometry=false;
 	}
 
-	/*Ice follows Adhikari et al. Eq. 11:
-	 * DeltaHM = DeltaHF + persistent_land * (DeltaH - DeltaHF). */
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum,MaskIceLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Ieq+=HF[i]*weights[i]*loadarea;
+	if(unchangedgeometry){
+		for(int i=0;i<NUMVERTICES;i++) Iavg+=DeltaH[i]*slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]*slgeom->LoadArea[SLGEOM_ICE][this->lid];
+		Ieq=Iavg;
+		SLavg=0.;
+	}
+	else{
+		/*Ice follows Adhikari et al. Eq. 11:
+		 * DeltaHM = DeltaHF + persistent_land * (DeltaH - DeltaHF). */
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum,MaskIceLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Ieq+=HF[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,SealevelchangeOldIceLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Ieq-=HFold[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,SealevelchangeOldIceLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Ieq-=HFold[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,-MaskOceanLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Ieq+=correction[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,-MaskOceanLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Ieq+=correction[i]*weights[i]*loadarea;
 
-	/*Reservoir accounting tracks full grounded ice mass. The difference between
-	 * this and Eq. 11 is the passive resting-ocean load associated with changing
-	 * ocean/grounded geometry. */
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum,MaskIceLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Iavg+=H[i]*weights[i]*loadarea;
+		/*Reservoir accounting tracks full grounded ice mass. The difference between
+		 * this and Eq. 11 is the passive resting-ocean load associated with changing
+		 * ocean/grounded geometry. */
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum,MaskIceLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Iavg+=H[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,SealevelchangeOldIceLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Iavg-=Hold[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum,SealevelchangeOldIceLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Iavg-=Hold[i]*weights[i]*loadarea;
 
-	SLavg=Ieq-Iavg;
+		SLavg=Ieq-Iavg;
+	}
 
 	/*TWS and BP use endpoint support integration so migrating coastlines do not
-	 * discard loads that leave the current mask. */
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Wavg+=W[i]*weights[i]*loadarea;
+	 * discard loads that leave the current mask. Solid-earth-only runs have no
+	 * ocean load geometry, so keep these components inactive there. */
+	if(planethasocean){
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-MaskOceanLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Wavg+=W[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) Wavg-=Wold[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],-SealevelchangeOldOceanLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) Wavg-=Wold[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],MaskOceanLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) BPavg+=BP[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],MaskOceanLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) BPavg+=BP[i]*weights[i]*loadarea;
 
-	this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],SealevelchangeOldOceanLevelsetEnum);
-	for(int i=0;i<NUMVERTICES;i++) BPavg-=BPold[i]*weights[i]*loadarea;
+		this->GetNodalWeightsAndAreaAndCentroidsFromLeveset(&weights[0],&loadarea,&latbar,&longbar,slgeom->late[this->lid],slgeom->longe[this->lid],areae[this->sid],SealevelchangeOldOceanLevelsetEnum);
+		for(int i=0;i<NUMVERTICES;i++) BPavg-=BPold[i]*weights[i]*loadarea;
+	}
 
 	/*convert from m^3 to kg:*/
 	Iavg*=rho_ice;
 	SLavg*=rho_ice;
-	Wavg*=rho_freshwater;
+	if(planethasocean) Wavg*=rho_freshwater;
 	BPavg*=rho_water;
 
 	this->AddInput(SealevelBarystaticIceLoadEnum,&Iavg,P0Enum);

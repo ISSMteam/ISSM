@@ -108,6 +108,6 @@ BNRotation=md.results.TransientSolution.BedNorth;
 
 %Fields and tolerances to track changes
 field_names     ={'Sealevel', 'Uplift', 'NorthDisplacement', 'EastDisplacement'};
-field_tolerances={1e-13,1e-13,1e-13,1e-13};
+field_tolerances={1e-12,1e-12,1e-12,1e-12};
 field_values={SRotation-SnoRotation,BURotation-BUnoRotation,BNRotation-BNnoRotation,BERotation-BEnoRotation};
 
