@@ -20,8 +20,34 @@ co(i).nods=length(co(i).x);co(i).closed=1;co(i).density=1;co(i).name='Icedisklim
 co(i).BoundingBox=[min(co(i).x) min(co(i).y); max(co(i).x) max(co(i).y)];
 end
 
-defaultoptions={'KeepVertices',0,'MaxCornerAngle',0.0000000001,'NoBoundaryRefinement',1}; 
+profile_colat=(0:1:179)';
+profile_x=profile_colat/180*pi*re;
+profile_y=profile_x*0;
+requiredprofile=true(length(profile_colat),1);
+geometry_x=dom.x;
+geometry_y=dom.y;
+for i=1:length(co)
+	geometry_x=[geometry_x;co(i).x];
+	geometry_y=[geometry_y;co(i).y];
+end
+for i=1:length(profile_colat)
+	if min((geometry_x-profile_x(i)).^2+(geometry_y-profile_y(i)).^2)<1.
+		requiredprofile(i)=false;
+	end
+end
+requiredvertices=[profile_x(requiredprofile) profile_y(requiredprofile)];
+
+defaultoptions={'KeepVertices',0,'MaxCornerAngle',0.0000000001,'NoBoundaryRefinement',1,'RequiredVertices',requiredvertices};
 md2d=bamg(model,'domain',dom,'subdomains',co,'hmin',100e3,'hmax',10000e3,defaultoptions{:});
+
+profile_indices=zeros(length(profile_colat),1);
+for i=1:length(profile_colat)
+	dist=(md2d.mesh.x-profile_x(i)).^2+(md2d.mesh.y-profile_y(i)).^2;
+	[distmin,profile_indices(i)]=min(dist);
+	if(distmin>1.) 
+        error('Could not recover required profile vertex in test2091');
+    end
+end
 
 colat=sqrt(md2d.mesh.x.^2+md2d.mesh.y.^2)/re;
 lon=atan2(md2d.mesh.y,md2d.mesh.x);
@@ -177,7 +203,6 @@ md.solidearth.settings.horiz=1;
 md=solve(md,'tr');
 
 
-
 %%validation against spada curves
 clear S B H E
 for i=1:length(time1)-1
@@ -192,12 +217,19 @@ B=cumsum(B,2);
 H=cumsum(H,2);
 E=cumsum(E,2); %E should theoretically be 0, in practice there is a residual due to the resolution and imperfect symmetry of the ice load. This can serve as an accuracy check of the horizontals
 
+%Archive values at required profile vertices rather than raw node fields. The
+%BAMG mesh for this circular-cap benchmark can have platform-dependent node counts.
+S=S(profile_indices,:);
+B=B(profile_indices,:);
+H=H(profile_indices,:);
+
 %Fields and tolerances to track changes
 field_names={'Sealevel','Bed', 'Horizontals'};
 field_tolerances={1e-13,1e-13,1e-13};
 field_values={S,B,H};
 
 return
+%%
 %Spada benchmark curves
 [ali,ia,~]=unique(90-md.mesh.lat);
 fid=fopen('../Data/SpadaBenchmark/T1-2/GS-disp_t0_d1_cap.dat');
@@ -270,5 +302,3 @@ title('Bedrock horiz error');
 subplot(2,3,6)
 plot(ali,(S(ia,indB))*fact-gi)
 title('Geoid error');
-
-
