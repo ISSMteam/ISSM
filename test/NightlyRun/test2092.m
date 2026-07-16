@@ -1,61 +1,15 @@
 %Test Name: PolarMotion
 
 %mesh earth:
-md=model;md.mesh=mesh3dsurface();
-re= md.solidearth.planetradius;
-phi1=(0:10:360)/180*pi;
-phi2=(0:10:360)/180*pi;
-
-dom=struct;
-dom.x=cos(phi1')*re*pi;
-dom.y=sin(phi1')*re*pi;dom.y(end)=dom.y(1);
-dom.nods=length(dom.x);   
-
-co=struct;
-rad=re*pi*[linspace(1e-1,1,3)/18];
-for i=1:length(rad);
-co(i).x=cos(phi2')*rad(i);
-co(i).y=sin(phi2')*rad(i);co(i).y(end)=co(i).y(1);
-co(i).nods=length(co(i).x);co(i).closed=1;co(i).density=1;co(i).name='Icedisklimit';co(i).Geometry='Polygon';
-co(i).BoundingBox=[min(co(i).x) min(co(i).y); max(co(i).x) max(co(i).y)];
-end
-
-defaultoptions={'KeepVertices',0,'MaxCornerAngle',0.0000000001,'NoBoundaryRefinement',1}; 
-md2d=bamg(model,'domain',dom,'subdomains',co,'hmin',50e3,'hmax',10000e3,defaultoptions{:});
-
-colat=sqrt(md2d.mesh.x.^2+md2d.mesh.y.^2)/re;
-lon=atan2(md2d.mesh.y,md2d.mesh.x);
-
-x=sin(colat).*cos(lon)*re;
-y=sin(colat).*sin(lon)*re;
-z=cos(colat)*re;
+%mesh earth:
+md=model;
+load ../Data/SlcTestMesh.mat;
+md.mesh=SlcMesh; %fixed mesh for platform-stable polar-motion regression
+re=md.solidearth.planetradius;
 
 %load
 longL=75;
 latL=65;
-
-%rotate mesh around load center
-R1=[cosd(90-latL) 0 sind(90-latL) ;0 1 0; -sind(90-latL) 0 cosd(90-latL)];
-R2=[cosd(longL) -sind(longL) 0; sind(longL) cosd(longL) 0; 0 0 1];
-
-for i=1:length(x);
-	coord= R2*R1*[x(i);y(i);z(i)];
-	x(i)=coord(1);
-	y(i)=coord(2);
-	z(i)=coord(3);
-end
-
-colat=acos(z/re);
-lon=atan2(y,x);
-
-
-md.mesh.x=x;md.mesh.y=y;md.mesh.z=z;md.mesh.lat=90-colat*180/pi;md.mesh.long=lon*180/pi;
-md.mesh.r=sqrt(x.^2+y.^2+z.^2);
-md.mesh.numberofelements=md2d.mesh.numberofelements;md.mesh.numberofvertices=md2d.mesh.numberofvertices;
-md.mesh.elements=md2d.mesh.elements;
-md.mesh.vertexconnectivity=NodeConnectivity(md.mesh.elements,md.mesh.numberofvertices);
-%md.mesh.area=averaging(md,GetAreas3DTria(md.mesh.elements,md.mesh.x,md.mesh.y,md.mesh.z),4);
-md.mesh.area=GetAreas3DTria(md.mesh.elements,md.mesh.x,md.mesh.y,md.mesh.z);
 
 %Geometry for the bed
 md.geometry.bed=-zeros(md.mesh.numberofvertices,1);
@@ -84,16 +38,16 @@ longe=atan2d(ye,xe);
 longi=md.mesh.long;
 lati=md.mesh.lat;
 delPhi=abs(lati-latL); delLambda=abs(longi-longL); if (delLambda>pi)delLambda=2*pi-delLambda; end
+longi=md.mesh.long;
+lati=md.mesh.lat;
+delPhi=abs(lati-latL);
+delLambda=abs(longi-longL);
+delLambda=min(delLambda,360-delLambda);
 alpha=2.*asin(sqrt(sind(delPhi/2).^2+cosd(lati).*cosd(latL).*sind(delLambda/2).^2));
 
 pos=find(alpha<=10/180*pi-0.01);
-
-%mass=3.607171340900778E+018;
-area_element=GetAreasSphericalTria(md.mesh.elements,md.mesh.lat,md.mesh.long,md.solidearth.planetradius);
-
+md.masstransport.spcthickness(pos,1)=1500 * sqrt((cos(alpha(pos)) - cosd(10))/(1-cosd(10)));
 %md.masstransport.spcthickness(md.mesh.elements(pos,:))=mass/md.materials.rho_ice/area_element(pos);
-md.masstransport.spcthickness(pos,1)=1500 * sqrt( (cos(alpha(pos)) - cosd(10)) /(1-cosd(10)) );
-
 
 %visco-elastic loading from love numbers that we load ourselves. We 
 %still use the lovenumbers constructor to initialize the fields: 
