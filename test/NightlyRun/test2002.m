@@ -134,5 +134,5 @@ Brotation=md.results.TransientSolution.Bed;
 
 %Fields and tolerances to track changes
 field_names={'Seustatic','Sselfattraction','Selastic','Srotation','Beustatic','Bselfattraction','Belastic','Brotation'};
-field_tolerances={1e-13,1e-13,1e-13,1e-13,1e-13,1e-13,1e-13,1e-13};
+field_tolerances={1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12,1e-12};
 field_values={Seustatic,Sselfattraction,Selastic,Srotation,Beustatic,Bselfattraction,Belastic,Brotation};

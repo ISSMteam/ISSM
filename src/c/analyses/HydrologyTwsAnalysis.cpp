@@ -21,8 +21,6 @@ int  HydrologyTwsAnalysis::DofsPerNode(int** doflist,int domaintype,int approxim
 }/*}}}*/
 void HydrologyTwsAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
-	int nature=0;
-
 	/*Update elements: */
 	int counter=0;
 	for(int i=0;i<iomodel->numberofelements;i++){
@@ -83,7 +81,33 @@ ElementVector* HydrologyTwsAnalysis::CreatePVector(Element* element){/*{{{*/
 _error_("not implemented yet");
 }/*}}}*/
 void           HydrologyTwsAnalysis::GetSolutionFromInputs(Vector<IssmDouble>* solution,Element* element){/*{{{*/
-	   _error_("not implemented yet");
+
+	/*retrieve water column from the prescribed TWS input in our element:*/
+	int       *doflist = NULL;
+
+	/*Fetch number of nodes and initialize values*/
+	int         numnodes = element->GetNumberOfNodes();
+	IssmDouble* values   = xNew<IssmDouble>(numnodes);
+
+	/*Get dof list and input */
+	element->GetDofList(&doflist,NoneApproximationEnum,GsetEnum);
+	Input* watercolumn_input=element->GetInput(HydrologyTwsSpcEnum); _assert_(watercolumn_input);
+
+	/*Fill in solution from the prescribed input */
+	Gauss* gauss=element->NewGauss();
+	for(int i=0;i<numnodes;i++){
+		gauss->GaussVertex(i);
+		watercolumn_input->GetInputValue(&values[i],gauss);
+	}
+
+	/*Add values to global vector*/
+	solution->SetValues(numnodes,doflist,values,INS_VAL);
+
+	/*Free resources:*/
+	delete gauss;
+	xDelete<int>(doflist);
+	xDelete<IssmDouble>(values);
+
 }/*}}}*/
 void           HydrologyTwsAnalysis::GradientJ(Vector<IssmDouble>* gradient,Element*  element,int control_type,int control_interp,int control_index){/*{{{*/
 	_error_("Not implemented yet");

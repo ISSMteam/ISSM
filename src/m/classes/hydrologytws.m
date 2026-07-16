@@ -22,7 +22,7 @@ classdef hydrologytws
 			end
 		end % }}}
 		function list = defaultoutputs(self,md) % {{{
-			list = {''};
+			list = {'Watercolumn'};
 		end % }}}
 
 		function self = setdefaultparameters(self) % {{{
@@ -60,4 +60,3 @@ classdef hydrologytws
 		end % }}}
 	end
 end
-

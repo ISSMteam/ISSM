@@ -1090,6 +1090,12 @@ const char* EnumToStringx(int en){
 		case SealevelEnum : return "Sealevel";
 		case SealevelGRDEnum : return "SealevelGRD";
 		case SatGraviGRDEnum : return "SatGraviGRD";
+		case SealevelchangeOldThicknessEnum : return "SealevelchangeOldThickness";
+		case SealevelchangeOldOceanLevelsetEnum : return "SealevelchangeOldOceanLevelset";
+		case SealevelchangeOldIceLevelsetEnum : return "SealevelchangeOldIceLevelset";
+		case SealevelchangeOldIceHeightAboveFloatationEnum : return "SealevelchangeOldIceHeightAboveFloatation";
+		case SealevelchangeOldWaterColumnEnum : return "SealevelchangeOldWaterColumn";
+		case SealevelchangeOldBottomPressureEnum : return "SealevelchangeOldBottomPressure";
 		case SealevelBarystaticMaskEnum : return "SealevelBarystaticMask";
 		case SealevelBarystaticIceMaskEnum : return "SealevelBarystaticIceMask";
 		case SealevelBarystaticIceWeightsEnum : return "SealevelBarystaticIceWeights";
@@ -1097,6 +1103,7 @@ const char* EnumToStringx(int en){
 		case SealevelBarystaticIceLatbarEnum : return "SealevelBarystaticIceLatbar";
 		case SealevelBarystaticIceLongbarEnum : return "SealevelBarystaticIceLongbar";
 		case SealevelBarystaticIceLoadEnum : return "SealevelBarystaticIceLoad";
+		case SealevelBarystaticOceanMigrationLoadEnum : return "SealevelBarystaticOceanMigrationLoad";
 		case SealevelBarystaticHydroMaskEnum : return "SealevelBarystaticHydroMask";
 		case SealevelBarystaticHydroWeightsEnum : return "SealevelBarystaticHydroWeights";
 		case SealevelBarystaticHydroAreaEnum : return "SealevelBarystaticHydroArea";
@@ -3867,7 +3874,7 @@ const char* EnumToStringx(int en){
 		case SubelementMigration4Enum : return "SubelementMigration4";
 		case TimesteppingTimeAdaptEnum : return "TimesteppingTimeAdapt";
 		case TriangleInterpEnum : return "TriangleInterp";
-		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitions";
+		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitionsE";
 		default : return "unknown";
 
 	}

@@ -1,6 +1,9 @@
 import numpy as np
 
+from checkfield import checkfield
+from fielddisplay import fielddisplay
 from structtoobj import structtoobj
+from WriteData import WriteData
 
 class hydrologytws(object):
     """HYDROLOGYTWS class definition
@@ -9,9 +12,9 @@ class hydrologytws(object):
         hydrologytws = hydrologytws()
     """
 
-    def __init__(self):  # {{{
+    def __init__(self, *args):  # {{{
         self.spcwatercolumn = np.nan
-        self.requested_outputs = np.nan
+        self.requested_outputs = []
 
         nargs = len(args)
         if nargs == 0:
@@ -30,7 +33,7 @@ class hydrologytws(object):
     # }}}
 
     def defaultoutputs(self, md):  # {{{
-        return ['']
+        return ['Watercolumn']
     # }}}
 
     def setdefaultparameters(self):  # {{{
@@ -45,20 +48,18 @@ class hydrologytws(object):
     def checkconsistency(self, md, solution, analyses):  # {{{
         # Early return
         if 'HydrologyTwsAnalysis' not in analyses:
-            return
+            return md
         md = checkfield(md, 'fieldname', 'hydrology.spcwatercolumn', 'Inf', 1, 'timeseries', 1)
+        return md
     # }}}
 
     def marshall(self, prefix, md, fid):  # {{{
         WriteData(fid, prefix, 'name', 'md.hydrology.model', 'data', 6, 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'fieldname', 'spcwatercolumn', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
         outputs = self.requested_outputs
-        pos  = find(ismember(outputs,'default'))
-        if not len(pos):
-            outputs[pos] = [];  # remove 'default' from outputs
-            outputs.extend(defaultoutputs(self, md)) # add defaults
-        end
+        indices = [i for i, x in enumerate(outputs) if x == 'default']
+        if len(indices):
+            outputscopy = outputs[:indices[0]] + self.defaultoutputs(md) + outputs[indices[0] + 1:]
+            outputs = outputscopy
         WriteData(fid, prefix, 'data', outputs, 'name', 'md.hydrology.requested_outputs', 'format', 'StringArray')
     # }}}
-
-

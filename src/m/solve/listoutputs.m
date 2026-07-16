@@ -311,6 +311,12 @@
 %Sealevel
 %SealevelGRD
 %SatGraviGRD
+%SealevelchangeOldThickness
+%SealevelchangeOldOceanLevelset
+%SealevelchangeOldIceLevelset
+%SealevelchangeOldIceHeightAboveFloatation
+%SealevelchangeOldWaterColumn
+%SealevelchangeOldBottomPressure
 %SealevelBarystaticMask
 %SealevelBarystaticIceMask
 %SealevelBarystaticIceWeights
@@ -318,6 +324,7 @@
 %SealevelBarystaticIceLatbar
 %SealevelBarystaticIceLongbar
 %SealevelBarystaticIceLoad
+%SealevelBarystaticOceanMigrationLoad
 %SealevelBarystaticHydroMask
 %SealevelBarystaticHydroWeights
 %SealevelBarystaticHydroArea

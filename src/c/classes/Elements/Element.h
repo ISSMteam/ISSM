@@ -432,6 +432,7 @@ class Element: public Object{
 		virtual void       SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae, int* lids, int* vcount)=0;
 		virtual void       SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae)=0;
 		virtual void       SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom, IssmDouble* areae)=0;
+		virtual void       SealevelchangeInitializeOldIceState(void){_error_("not implemented yet");};
 		virtual void       SealevelchangeBarystaticLoads(GrdLoads* loads, BarystaticContributions* barycontrib, SealevelGeometry* slgeom)=0;
 		virtual void       SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom)=0;
 		virtual void       SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom)=0;

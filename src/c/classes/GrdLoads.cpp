@@ -31,6 +31,11 @@ GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	this->vsealevelloads->Set(0);vsealevelloads->Assemble();
 
 	this->vsubsealevelloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsubsealevelloads->Set(0);vsubsealevelloads->Assemble();
+	this->voceanmigrationloads=new Vector<IssmDouble>(nel);
+	this->voceanmigrationloads->Set(0);voceanmigrationloads->Assemble();
+	this->vsuboceanmigrationloads=new Vector<IssmDouble>(slgeom->nbar[SLGEOM_OCEAN]);
+	this->vsuboceanmigrationloads->Set(0);vsuboceanmigrationloads->Assemble();
 
 	this->combined_loads=NULL;
 	this->combined_loads_index=NULL;
@@ -45,6 +50,8 @@ GrdLoads::GrdLoads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	for(int i=0;i<SLGEOM_NUMLOADS;i++) this->subloads[i]=NULL;
 	this->sealevelloads=NULL;
 	this->subsealevelloads=NULL;
+	this->oceanmigrationloads=NULL;
+	this->suboceanmigrationloads=NULL;
 
 }; /*}}}*/
 GrdLoads::~GrdLoads(){ /*{{{*/
@@ -55,6 +62,10 @@ GrdLoads::~GrdLoads(){ /*{{{*/
 	xDelete<IssmDouble>(sealevelloads);
 	delete vsubsealevelloads;
 	xDelete<IssmDouble>(subsealevelloads);
+	delete voceanmigrationloads;
+	xDelete<IssmDouble>(oceanmigrationloads);
+	delete vsuboceanmigrationloads;
+	xDelete<IssmDouble>(suboceanmigrationloads);
 	if (combined_loads) xDelete<IssmDouble>(combined_loads);
 	if (combined_loads_index) xDelete<int>(combined_loads_index);
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
@@ -70,18 +81,24 @@ void GrdLoads::BroadcastLoads(void){ /*{{{*/
 
 	/*Initialize barycentre vectors, now that we know their size: */
 	this->vloads->Assemble();
+	this->voceanmigrationloads->Assemble();
+	this->vsuboceanmigrationloads->Assemble();
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		vsubloads[i]->Assemble();
 	}
 
 	/*Avoid leaks:*/
 	if(loads) xDelete<IssmDouble>(loads);
+	if(oceanmigrationloads) xDelete<IssmDouble>(oceanmigrationloads);
+	if(suboceanmigrationloads) xDelete<IssmDouble>(suboceanmigrationloads);
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		if(subloads[i])xDelete<IssmDouble>(subloads[i]);
 	}
 
 	/*Serialize:*/
 	loads=vloads->ToMPISerial();
+	oceanmigrationloads=voceanmigrationloads->ToMPISerial();
+	suboceanmigrationloads=vsuboceanmigrationloads->ToMPISerial();
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		subloads[i]=vsubloads[i]->ToMPISerial();
 	}
@@ -122,6 +139,7 @@ void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, 
 		S+=loads[element->Sid()];
 
 		if(sealevelloads) S+=sealevelloads[element->Sid()];
+		if(oceanmigrationloads) S+=oceanmigrationloads[element->Sid()];
 		if(S!=0){
 
 			for (int c=0;c<5;c++){ //degree l=2 has 2*l+1=5 coefficients: 2,0; 2,1cos; 2,1sin; 2,2cos; 2,2sin
@@ -136,6 +154,7 @@ void GrdLoads::SHDegree2Coefficients(IssmDouble* deg2coeff, FemModel* femmodel, 
 				S=0;
 				S+=subloads[i][intj];
 				if(i==SLGEOM_OCEAN && sealevelloads) S+=subsealevelloads[intj];
+				if(i==SLGEOM_OCEAN && suboceanmigrationloads) S+=suboceanmigrationloads[intj];
 				if(S!=0){
 					//area=slgeom->area_subel[i][intj];
 					for (int c=0;c<5;c++){ //degree l=2 has 2*l+1=5 coefficients
@@ -165,10 +184,13 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	if (combined_loads) xDelete<IssmDouble>(combined_loads);
 	if (combined_loads_index) xDelete<int>(combined_loads_index);
 
-	//find non zero centroid loads, combine with sealevelloads
-	if(sealevelloads){
+	//find non-zero centroid loads, including solved sea-level and ocean-migration loads
+	if(sealevelloads || oceanmigrationloads){
 		for (e=0;e<nel;e++){
-			if (loads[e]+sealevelloads[e]!=0) nactiveloads++;
+			IssmDouble S=loads[e];
+			if(sealevelloads) S+=sealevelloads[e];
+			if(oceanmigrationloads) S+=oceanmigrationloads[e];
+			if(S!=0) nactiveloads++;
 		}
 	}
 	else { 
@@ -181,10 +203,13 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 	combined_loads_index=xNewZeroInit<int>(nactiveloads);
 
 	ae=0;
-	if(sealevelloads){
+	if(sealevelloads || oceanmigrationloads){
 		for (e=0;e<nel;e++){
-			if (loads[e]+sealevelloads[e]!=0){
-				combined_loads[ae]=loads[e]+sealevelloads[e];
+			IssmDouble S=loads[e];
+			if(sealevelloads) S+=sealevelloads[e];
+			if(oceanmigrationloads) S+=oceanmigrationloads[e];
+			if(S!=0){
+				combined_loads[ae]=S;
 				combined_loads_index[ae]=e;
 				ae++;
 			}
@@ -207,10 +232,13 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 		if (combined_subloads[l]) xDelete<IssmDouble>(combined_subloads[l]);
 		if (combined_subloads_index[l]) xDelete<int>(combined_subloads_index[l]);
 
-		//find non zero subelement loads, combine with subsealevelloads
-		if(subsealevelloads && l==SLGEOM_OCEAN){
+		//find non-zero subelement loads, including solved sea-level and ocean-migration loads
+		if((subsealevelloads || suboceanmigrationloads) && l==SLGEOM_OCEAN){
 			for (e=0;e<nbar;e++){
-				if (subloads[l][e]+subsealevelloads[e]!=0) nactivesubloads[l]++;
+				IssmDouble S=subloads[l][e];
+				if(subsealevelloads) S+=subsealevelloads[e];
+				if(suboceanmigrationloads) S+=suboceanmigrationloads[e];
+				if(S!=0) nactivesubloads[l]++;
 			}
 		}
 		else { 
@@ -223,10 +251,13 @@ void GrdLoads::Combineloads(int nel,SealevelGeometry* slgeom){ /*{{{*/
 		combined_subloads_index[l]=xNewZeroInit<int>(nactivesubloads[l]);
 
 		ae=0;
-		if(subsealevelloads && l==SLGEOM_OCEAN){
+		if((subsealevelloads || suboceanmigrationloads) && l==SLGEOM_OCEAN){
 			for (e=0;e<nbar;e++){
-				if(subloads[l][e]+subsealevelloads[e]!=0){
-					combined_subloads[l][ae]=subloads[l][e]+subsealevelloads[e];
+				IssmDouble S=subloads[l][e];
+				if(subsealevelloads) S+=subsealevelloads[e];
+				if(suboceanmigrationloads) S+=suboceanmigrationloads[e];
+				if(S!=0){
+					combined_subloads[l][ae]=S;
 					combined_subloads_index[l][ae]=e;
 					ae++;
 				}

@@ -1081,6 +1081,12 @@ syn keyword juliaConstC SamplingTauEnum
 syn keyword juliaConstC SealevelEnum
 syn keyword juliaConstC SealevelGRDEnum
 syn keyword juliaConstC SatGraviGRDEnum
+syn keyword juliaConstC SealevelchangeOldThicknessEnum
+syn keyword juliaConstC SealevelchangeOldOceanLevelsetEnum
+syn keyword juliaConstC SealevelchangeOldIceLevelsetEnum
+syn keyword juliaConstC SealevelchangeOldIceHeightAboveFloatationEnum
+syn keyword juliaConstC SealevelchangeOldWaterColumnEnum
+syn keyword juliaConstC SealevelchangeOldBottomPressureEnum
 syn keyword juliaConstC SealevelBarystaticMaskEnum
 syn keyword juliaConstC SealevelBarystaticIceMaskEnum
 syn keyword juliaConstC SealevelBarystaticIceWeightsEnum
@@ -1088,6 +1094,7 @@ syn keyword juliaConstC SealevelBarystaticIceAreaEnum
 syn keyword juliaConstC SealevelBarystaticIceLatbarEnum
 syn keyword juliaConstC SealevelBarystaticIceLongbarEnum
 syn keyword juliaConstC SealevelBarystaticIceLoadEnum
+syn keyword juliaConstC SealevelBarystaticOceanMigrationLoadEnum
 syn keyword juliaConstC SealevelBarystaticHydroMaskEnum
 syn keyword juliaConstC SealevelBarystaticHydroWeightsEnum
 syn keyword juliaConstC SealevelBarystaticHydroAreaEnum
