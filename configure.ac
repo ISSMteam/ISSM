@@ -16,7 +16,7 @@ AS_IF([test "x$prefix" = "xNONE"],[AC_MSG_ERROR([--prefix is not provided.
 		 Maybe you meant to run ./configure.sh?])])
 
 #Define variables
-AC_DEFINE([ISSM_PREFIX], "$prefix", [ISSM install prefix])
+AC_DEFINE_UNQUOTED([ISSM_PREFIX], "$prefix", [ISSM install prefix])
 
 #Determine System type and OS
 AC_CANONICAL_TARGET
