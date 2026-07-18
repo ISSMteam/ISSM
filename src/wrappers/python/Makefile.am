@@ -1,9 +1,6 @@
 AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @BOOSTINCL@ @PYTHONINCL@ @PYTHON_NUMPYINCL@ @PETSCINCL@ @MPIINCL@ @SPOOLESINCL@ @PARMETISINCL@ @METISINCL@ @TRIANGLEINCL@ @CHACOINCL@ @AMPIINCL@ @MEDIPACKINCL@ @ADJOINTPETSCINCL@ @CODIPACKINCL@ @PROJINCL@ @PyBind11INCL@
 AUTOMAKE_OPTIONS = subdir-objects
 
-#define prefix (from http://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Defining-Directories.html)
-AM_CPPFLAGS += -DISSM_PREFIX='"$(prefix)"'
-
 #python io{{{
 lib_LTLIBRARIES = libISSMPython.la
 

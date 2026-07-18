@@ -3,9 +3,6 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 EXEEXT=$(JAVASCRIPTWRAPPEREXT)
 
-# Define prefix (from http://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Defining-Directories.html)
-AM_CPPFLAGS += -DISSM_PREFIX='"$(prefix)"'
-
 js_scripts = \
 	${ISSM_DIR}/src/wrappers/BamgMesher/BamgMesher.js \
 	${ISSM_DIR}/src/wrappers/Triangle/Triangle.js \

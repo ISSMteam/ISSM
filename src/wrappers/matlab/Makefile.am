@@ -3,9 +3,6 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 EXEEXT=$(MATLABWRAPPEREXT)
 
-#define prefix (from http://www.gnu.org/software/autoconf/manual/autoconf-2.67/html_node/Defining-Directories.html)
-AM_CPPFLAGS += -DISSM_PREFIX='"$(prefix)"'
-
 #matlab io{{{
 lib_LTLIBRARIES = libISSMMatlab.la
 
