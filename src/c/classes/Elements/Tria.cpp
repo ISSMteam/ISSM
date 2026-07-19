@@ -7789,10 +7789,16 @@ void       Tria::SealevelchangeInitializeOldIceState(void){ /*{{{*/
 	Element::GetInputListOnVertices(&icelevelset[0],MaskIceLevelsetEnum);
 
 	for(int i=0;i<NUMVERTICES;i++){
-		bool groundedice=oceanlevelset[i]>0. && icelevelset[i]<0.;
-		IssmDouble watercolumn=sealevel[i]-bed[i];
-		if(watercolumn<0.) watercolumn=0.;
-		haf[i]=groundedice ? H[i]-rho_water/rho_ice*watercolumn : 0.;
+
+		if(oceanlevelset[i]>0. && icelevelset[i]<0.){
+			/*Grounded ice*/
+			IssmDouble watercolumn = sealevel[i]-bed[i];
+			if(watercolumn<0.) watercolumn=0.;
+			haf[i] = H[i]-rho_water/rho_ice*watercolumn;
+		}
+		else{
+			haf[i] = 0.;
+		}
 	}
 
 	this->AddInput(SealevelchangeOldThicknessEnum,H,P1Enum);
@@ -7869,15 +7875,30 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 
 	bool unchangedgeometry=true;
 	for(int i=0;i<NUMVERTICES;i++){
-		bool currentice=icelevelset[i]<0.;
-		bool oldice=oldicelevelset[i]<0.;
-		bool currentgrounded=oceanlevelset[i]>0. && currentice;
-		bool oldgrounded=oldoceanlevelset[i]>0. && oldice;
+		bool currentice      = icelevelset[i]<0.;
+		bool oldice          = oldicelevelset[i]<0.;
+		bool currentgrounded = (oceanlevelset[i]>0. && currentice);
+		bool oldgrounded     = oldoceanlevelset[i]>0. && oldice;
 		IssmDouble watercolumn=sealevel[i]-bed[i];
 		if(watercolumn<0.) watercolumn=0.;
-		Hice[i]=currentice ? H[i] : 0.;
-		Holdice[i]=oldice ? Hold[i] : 0.;
-		HF[i]=currentgrounded ? H[i]-rho_water/rho_ice*watercolumn : 0.;
+      if(currentice){
+         Hice[i]= H[i] ;
+      }
+      else{ 
+         Hice[i]= 0.;
+      }
+      if(oldice){
+         Holdice[i]=Hold[i];
+      }
+      else{
+         Holdice[i]=0.;
+      }
+      if(currentgrounded){
+         HF[i]=H[i]-rho_water/rho_ice*watercolumn;
+      }
+      else{
+         HF[i]= 0;
+      }
 		if(!oldgrounded) HFold[i]=0.;
 		correction[i]=(Hice[i]-Holdice[i])-(HF[i]-HFold[i]);
 		if((oceanlevelset[i]<0.)!=(oldoceanlevelset[i]<0.)) unchangedgeometry=false;
