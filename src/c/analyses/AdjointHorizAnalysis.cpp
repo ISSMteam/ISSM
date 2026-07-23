@@ -92,6 +92,8 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	delete analysis;
 	if(incomplete_adjoint) return Ke;
 
+	_error_("The implementation of full-adjoint with FS is currently not validated");
+
 	/*Prepare coordinate system list*/
 	int* cs_list = xNew<int>(vnumnodes+pnumnodes);
 	for(int i=0;i<vnumnodes;i++) cs_list[i]           = XYZEnum;
