@@ -21,6 +21,9 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	% Greenland (default) or Antarctica
 	hem = getfieldvalue(options,'hemisphere', 'n');
 	 
+	% Customize folder path
+	folder = getfieldvalue(options,'folder', '/totten_1/ModelData/');
+
 	if strcmp(hem,'n')
 		icesheet = 'Greenland';
 	else
@@ -28,9 +31,9 @@ function [vx_out, vy_out, time_out] = interpFromITSLIVE(X,Y,Tstart,Tend,varargin
 	end
 
 	if data_version == 1
-		foldername = ['/totten_1/ModelData/', icesheet, '/ITS_LIVE/v01/'];
+		foldername = [folder, icesheet, '/ITS_LIVE/v01/'];
 	elseif data_version == 2
-		foldername = ['/totten_1/ModelData/', icesheet, '/ITS_LIVE/'];
+		foldername = [folder, icesheet, '/ITS_LIVE/'];
 	else
 		error(['ITS_LIVE version ', data_version, ' is not supported!'])
 	end
