@@ -44,8 +44,9 @@ classdef cluster_defaults
 					if ~batch
 						launchcommand=['source ' cluster.etcpath '/environment.sh && source ' cluster.executionpath '/' dirname '/'  modelname '.queue '];
 					else
-						launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-							' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
+						launchcommand=['']; %Nothing for now if local
+						%launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
+						%	' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
 					end
 				end
 
