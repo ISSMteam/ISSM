@@ -64,8 +64,9 @@ classdef frictionschoof
 			fielddisplay(self,'C','friction coefficient [SI]');
 			fielddisplay(self,'Cmax','Iken''s bound (typically between 0.17 and 0.84) [SI]');
 			fielddisplay(self,'m','m exponent (generally taken as m = 1/n = 1/3)');
+			fielddisplay(self,'linearize','0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)');
 			fielddisplay(self,'effective_pressure','Effective Pressure for the forcing if not coupled [Pa]');
-         fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model (not implemented yet)');
+         fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model');
 			fielddisplay(self,'effective_pressure_limit','Neff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
@@ -77,6 +78,7 @@ classdef frictionschoof
 			WriteData(fid,prefix,'class','friction','object',self,'fieldname','m','format','DoubleMat','mattype',2);
 			WriteData(fid,prefix,'object',self,'class','friction','fieldname','effective_pressure_limit','format','Double');
          WriteData(fid,prefix,'class','friction','object',self,'fieldname','coupling','format','Integer');
+			WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'linearize', 'format', 'Integer')
          if self.coupling==3 || self.coupling==4
             WriteData(fid,prefix,'class','friction','object',self,'fieldname','effective_pressure','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
          end
