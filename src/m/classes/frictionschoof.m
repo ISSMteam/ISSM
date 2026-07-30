@@ -4,11 +4,12 @@
 %      frictionschoof=frictionschoof();
 
 classdef frictionschoof
-	properties (SetAccess=public) 
+	properties (SetAccess=public)
 		C                        = NaN;
 		Cmax                     = NaN;
 		m                        = NaN;
 		coupling                 = 0;
+		linearize                = 0;
 		effective_pressure       = NaN;
 		effective_pressure_limit = 0;
 	end
@@ -33,7 +34,8 @@ classdef frictionschoof
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
-         self.coupling = 0;
+			self.coupling  = 0;
+			self.linearize = 0;
 			self.effective_pressure_limit = 0;
 
 		end % }}}
@@ -44,8 +46,9 @@ classdef frictionschoof
 			md = checkfield(md,'fieldname','friction.C','timeseries',1,'NaN',1,'Inf',1,'>=',0.);
 			md = checkfield(md,'fieldname','friction.Cmax','timeseries',1,'NaN',1,'Inf',1,'>',0.);
 			md = checkfield(md,'fieldname','friction.m','NaN',1,'Inf',1,'>',0.,'size',[md.mesh.numberofelements,1]);
+			md = checkfield(md,'fieldname','friction.linearize','numel',[1],'values',[0:2]);
 			md = checkfield(md,'fieldname','friction.effective_pressure_limit','numel',[1],'>=',0);
-         md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
+			md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
          end

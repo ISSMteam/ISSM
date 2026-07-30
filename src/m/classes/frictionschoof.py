@@ -18,6 +18,7 @@ class frictionschoof(object):
         self.Cmax                     = np.nan
         self.m                        = np.nan
         self.coupling                 = 0
+        self.linearize                = 0
         self.effective_pressure       = np.nan
         self.effective_pressure_limit = 0
 
@@ -41,11 +42,14 @@ class frictionschoof(object):
         s += "{}\n".format(fielddisplay(self, 'Cmax', 'Iken\'s bound (typically between 0.17 and 0.84) [SI]'))
         s += "{}\n".format(fielddisplay(self, 'm', 'm exponent (generally taken as m = 1/n = 1/3)'))
         s += '{}\n'.format(fielddisplay(self, 'coupling', 'Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: used coupled model (not implemented yet)'))
+        s += '{}\n'.format(fielddisplay(self, 'linearize', '0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)'))
         s += '{}\n'.format(fielddisplay(self, 'effective_pressure', 'Effective Pressure for the forcing if not coupled [Pa]'))
         s += "{}\n".format(fielddisplay(self, 'effective_pressure_limit', 'fNeff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)'))
         return s
     # }}}
     def setdefaultparameters(self):  # {{{
+        self.linearize = 0
+        self.coupling = 0
         self.effective_pressure_limit = 0
         return self
     # }}}
@@ -64,6 +68,7 @@ class frictionschoof(object):
         md = checkfield(md, 'fieldname', 'friction.C', 'timeseries', 1, 'NaN', 1, 'Inf', 1, '>',0.)
         md = checkfield(md, 'fieldname', 'friction.Cmax', 'timeseries', 1, 'NaN', 1, 'Inf', 1, '>', 0.)
         md = checkfield(md, 'fieldname', 'friction.m', 'NaN', 1, 'Inf', 1, '>', 0., 'size', [md.mesh.numberofelements, 1])
+        md = checkfield(md, 'fieldname', 'friction.linearize', 'numel', [1], 'values', [0, 1, 2])
         md = checkfield(md, 'fieldname', 'friction.effective_pressure_limit', 'numel', [1], '>=', 0)
         md = checkfield(md, 'fieldname', 'friction.coupling', 'numel', [1], 'values', [0, 1, 2, 3, 4])
         if self.coupling == 3:
@@ -78,6 +83,7 @@ class frictionschoof(object):
         WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'Cmax', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
         WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'm', 'format', 'DoubleMat', 'mattype', 2)
         WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'coupling', 'format', 'Integer')
+        WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'linearize', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'friction', 'fieldname', 'effective_pressure_limit', 'format', 'Double')
         if self.coupling == 3 or self.coupling == 4:
             WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'effective_pressure', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)

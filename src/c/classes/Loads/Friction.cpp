@@ -1454,7 +1454,7 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 	int frictionlaw;
 	iomodel->FindConstant(&frictionlaw,"md.friction.law");
 	switch(frictionlaw){
-		case 1:
+		case 1: /*friction*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
@@ -1497,7 +1497,8 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.delta",FrictionDeltaEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.void_ratio",FrictionVoidRatioEnum));
 			break;
-		case 11:
+		case 11: /*frictionschoof*/
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
 			break;
