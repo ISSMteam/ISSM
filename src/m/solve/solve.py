@@ -112,7 +112,7 @@ def solve(md, solutionstring, *args):
 
     # Recover some fields
     cluster = md.cluster
-    if options.getfieldvalue('batch', 'no') == 'yes':
+    if options.getfieldvalue('batch', 'no') == 'yes' or options.getfieldvalue('batch', 0) == 1:
         batch = 1
     else:
         batch = 0
@@ -180,8 +180,8 @@ def solve(md, solutionstring, *args):
 
     # Return if batch
     if batch:
-        print('batch mode requested: not launching job interactively')
-        print('launch solution sequence on remote cluster by hand')
+        print('batch mode requested: job not submitted')
+        print('Files available in {}/{}'.format(cluster.executionpath, md.private.runtimename))
         return md
 
     # Wait on lock

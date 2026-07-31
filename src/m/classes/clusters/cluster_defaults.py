@@ -45,45 +45,41 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
         3 - PBS/Torque, use qsub
     """
     from helpers import isempty
-    if fmt == 1:
-        # No scheduler: source .queue directly
-        if not isempty(restart):
-            launchcommand = 'source {}/environment.sh && cd {} && cd {} && source {}.queue'.format(
-                cluster.etcpath, cluster.executionpath, dirname, modelname)
+    from MatlabFuncs import oshostname
+
+    # Defaults
+    sourceetc_str = 'source {}/environment.sh '.format(cluster.etcpath)
+    untar_str     = (' && cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'
+                     .format(cluster.executionpath, dirname, dirname, dirname, dirname, dirname))
+
+    if not batch:
+        if fmt == 1:
+            submit_str = ' && source {}.queue '.format(modelname)
+        elif fmt == 2:
+            submit_str = ' && sbatch {}.queue '.format(modelname)
+        elif fmt == 3:
+            submit_str = ' && /PBS/bin/qsub {}.queue '.format(modelname)
         else:
-            if batch:
-                launchcommand = ('source {}/environment.sh && cd {} && rm -rf ./{} && mkdir {} && '
-                                 'cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'
-                                 .format(cluster.etcpath, cluster.executionpath, dirname, dirname,
-                                         dirname, dirname, dirname))
-            else:
-                launchcommand = 'source {}/environment.sh && source {}/{}/{}.queue'.format(
-                    cluster.etcpath, cluster.executionpath, dirname, modelname)
-    elif fmt == 2:
-        # SLURM sbatch
-        if not isempty(restart):
-            launchcommand = 'cd {} && cd {} && sbatch {}.queue'.format(
-                cluster.executionpath, dirname, modelname)
-        else:
-            launchcommand = (
-                'cd {} && rm -rf ./{} && mkdir {} && cd {} && '
-                'mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && sbatch {}.queue'
-                .format(cluster.executionpath, dirname, dirname, dirname,
-                        dirname, dirname, modelname))
-    elif fmt == 3:
-        # PBS/Torque qsub
-        if not isempty(restart):
-            launchcommand = 'cd {} && cd {} && /PBS/bin/qsub {}.queue'.format(
-                cluster.executionpath, dirname, modelname)
-        else:
-            launchcommand = (
-                'cd {} && rm -rf ./{} && mkdir {} && cd {} && '
-                'mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz && /PBS/bin/qsub {}.queue'
-                .format(cluster.executionpath, dirname, dirname, dirname,
-                        dirname, dirname, modelname))
+            raise ValueError('fmt={} not supported'.format(fmt))
     else:
-        raise ValueError('fmt={} not supported'.format(fmt))
+        submit_str = ' '
+
+    if cluster.name == oshostname():
+        untar_str = ' '
+        if not batch and fmt == 1:
+            # Special case: do not change directory
+            submit_str = ' && source {}/{}/{}.queue '.format(cluster.executionpath, dirname, modelname)
+
+    # Prepare launchcommand
+    if not isempty(restart):
+        launchcommand = '{} && cd {}/{} && {}'.format(sourceetc_str, cluster.executionpath, dirname, submit_str)
+    else:
+        launchcommand = '{}{}{}'.format(sourceetc_str, untar_str, submit_str)
+
+    # Figure out port
     port = getattr(cluster, 'port', 0)
+
+    # Execute launch command
     issmssh(cluster.name, cluster.login, port, launchcommand)
 # }}}
 

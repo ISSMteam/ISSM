@@ -26,7 +26,7 @@ classdef cluster_defaults
 			system(compressstring);
 
 			%Copy tar.gz file over
-			port=0; if isprop(cluster,'port'), port=cluster.port; end
+			port=0; if isprop(cluster,'port'); port=cluster.port; end
 			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']});
 		end %}}}
 		function LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, format) % {{{
@@ -36,42 +36,50 @@ classdef cluster_defaults
 			% format 2: SLURM, use sbatch
 			% format 3: PBS, use qsub
 
-			if format==1
-				%No scheduler: source .queue directly
-				if ~isempty(restart)
-					launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
-				else
-					if ~batch
-						launchcommand=['source ' cluster.etcpath '/environment.sh && source ' cluster.executionpath '/' dirname '/'  modelname '.queue '];
-					else
-						launchcommand=['']; %Nothing for now if local
-						%launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						%	' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
-					end
-				end
+			%defaults
+			sourceetc_str = ['source ' cluster.etcpath '/environment.sh '];
+			untar_str     = [' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
 
-			elseif format==2
-				%SLURM sbatch launch: unpack the tar and submit the queue script via SSH.
-				if ~isempty(restart)
-					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && sbatch ' modelname '.queue'];
+			if ~batch
+				if format==1
+					%No scheduler: source .queue directly
+					submit_str = [' && source ' modelname '.queue '];
+				elseif format==2
+					%SLURM sbatch launch: unpack the tar and submit the queue script via SSH.
+					submit_str = [' && sbatch ' modelname '.queue '];
+				elseif format==3
+					%BPS: use qsub
+					submit_str = [' && /PBS/bin/qsub ' modelname '.queue '];
 				else
-					launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && sbatch ' modelname '.queue'];
+					error('format not supported');
 				end
-			elseif format==3
-				%BPS: use qsub
-				if ~isempty(restart)
-					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && /PBS/bin/qsub ' modelname '.queue '];
-				else
-					launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && /PBS/bin/qsub ' modelname '.queue '];
-				end
-
 			else
-				error('format not supported');
+				submit_str = [' '];
 			end
-			port=0; if isprop(cluster,'port'), port=cluster.port; end
-			issmssh(cluster.name,cluster.login,port,launchcommand);
+
+			if strcmp(cluster.name, oshostname())
+				untar_str = [' '];
+				if ~batch && format==1
+					%Special case, do not change directory
+					submit_str = [' && source ' cluster.executionpath '/' dirname '/'  modelname '.queue '];
+				end
+			end
+
+			%Prepare launchcommand
+			if ~isempty(restart)
+				launchcommand=[sourceetc_str ' && cd ' cluster.executionpath '/' dirname ' && ' submit_str];
+			else
+				launchcommand=[sourceetc_str untar_str submit_str];
+			end
+
+			%Figure out port
+			port=0;
+			if isprop(cluster,'port')
+				port=cluster.port; 
+			end
+
+			%execute launch command
+			issmssh(cluster.name, cluster.login, port, launchcommand);
 
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{

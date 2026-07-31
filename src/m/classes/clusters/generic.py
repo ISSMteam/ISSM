@@ -108,10 +108,11 @@ class generic(object):
 
         if not ispc():
 
-            # Verify the executable exists
-            exepath = '{}/{}'.format(self.codepath, executable)
-            if not os.path.isfile(exepath):
-                raise RuntimeError('File {} does not exist'.format(exepath))
+            # Verify the executable exists (only when running on this machine)
+            if self.name == oshostname():
+                exepath = '{}/{}'.format(self.codepath, executable)
+                if not os.path.isfile(exepath):
+                    raise RuntimeError('File {} does not exist'.format(exepath))
 
             execpath   = '{}/{}'.format(self.executionpath, dirname)
             mpiprefix  = 'mpiexec -np {} '.format(self.np) if IssmConfig('_HAVE_MPI_')[0] else ''

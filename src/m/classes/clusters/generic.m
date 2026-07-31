@@ -108,9 +108,11 @@ classdef generic
 			if ~ispc()
 
 				% Verify the executable exists
-				exepath = [cluster.codepath '/' executable];
-				if ~exist(exepath, 'file')
-					error('File %s does not exist', exepath);
+				if strcmp(cluster.name, oshostname)
+					exepath = [cluster.codepath '/' executable];
+					if ~exist(exepath, 'file')
+						error('File %s does not exist', exepath);
+					end
 				end
 
 				% Escape spaces in codepath for the shell script
