@@ -67,7 +67,7 @@ classdef cluster_defaults
 
 			%Prepare launchcommand
 			if ~isempty(restart)
-				launchcommand=[sourceetc_str ' && cd ' cluster.executionpath '/' dirname ' && ' submit_str];
+				launchcommand=[sourceetc_str ' && cd ' cluster.executionpath '/' dirname submit_str];
 			else
 				launchcommand=[sourceetc_str untar_str submit_str];
 			end

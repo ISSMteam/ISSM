@@ -72,7 +72,7 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
 
     # Prepare launchcommand
     if not isempty(restart):
-        launchcommand = '{} && cd {}/{} && {}'.format(sourceetc_str, cluster.executionpath, dirname, submit_str)
+        launchcommand = '{} && cd {}/{} {}'.format(sourceetc_str, cluster.executionpath, dirname, submit_str)
     else:
         launchcommand = '{}{}{}'.format(sourceetc_str, untar_str, submit_str)
 
