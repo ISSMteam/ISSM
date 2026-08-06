@@ -190,6 +190,7 @@
 %UGiaRate
 %Gradient
 %GroundinglineHeight
+%Hurst
 %HydraulicPotential
 %HydraulicPotentialOld
 %HydrologyBasalFlux
@@ -252,6 +253,7 @@
 %InversionVelObs
 %InversionVxObs
 %InversionVyObs
+%LakeDepth
 %LevelsetfunctionSlopeX
 %LevelsetfunctionSlopeY
 %LevelsetObservation
@@ -274,6 +276,7 @@
 %MaterialsRheologyEs
 %MaterialsRheologyEsbar
 %MaterialsRheologyN
+%MeltSupply
 %MeshScaleFactor
 %MeshVertexonbase
 %MeshVertexonboundary
@@ -383,6 +386,7 @@
 %SedimentHeadTransient
 %SedimentHeadResidual
 %SedimentHeadStacked
+%Sigma
 %SigmaNN
 %SigmaVM
 %SmbAblation
@@ -652,6 +656,7 @@
 %VzSSA
 %WaterColumnOld
 %Watercolumn
+%WaterDepth
 %WaterfractionDrainage
 %WaterfractionDrainageIntegrated
 %Waterfraction

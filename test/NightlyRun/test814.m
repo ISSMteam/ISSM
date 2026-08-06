@@ -1,4 +1,4 @@
-%Test Name: SSA2dCDCalvingButtressing
+%Test Name: SSA2dCDCalvingButtressingWaterHeight
 md=triangle(model(),'../Exp/Square.exp',50000);
 md=setmask(md,'','');
 md=parameterize(md,'../Par/ValleyGlacierShelf.par');
@@ -17,6 +17,7 @@ md.transient.isgroundingline=1;
 
 md.calving=calvingcrevassedepth();
 md.calving.crevasse_opening_stress=2;
+md.calving.surface_hydrology_type=0;
 md.calving.water_height=50*ones(md.mesh.numberofvertices,1);
 md.frontalforcings.meltingrate=zeros(md.mesh.numberofvertices,1);
 md.levelset.spclevelset=NaN(md.mesh.numberofvertices,1);

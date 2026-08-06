@@ -502,6 +502,7 @@ syn keyword juliaConstC SealevelchangeViscousPolarMotionEnum
 syn keyword juliaConstC SealevelchangeRunCountEnum
 syn keyword juliaConstC SealevelchangeTransitionsEnum
 syn keyword juliaConstC SealevelchangeRequestedOutputsEnum
+syn keyword juliaConstC SurfaceHydrologyTypeEnum
 syn keyword juliaConstC RotationalAngularVelocityEnum
 syn keyword juliaConstC RotationalEquatorialMoiEnum
 syn keyword juliaConstC RotationalPolarMoiEnum
@@ -960,6 +961,7 @@ syn keyword juliaConstC UGiaEnum
 syn keyword juliaConstC UGiaRateEnum
 syn keyword juliaConstC GradientEnum
 syn keyword juliaConstC GroundinglineHeightEnum
+syn keyword juliaConstC HurstEnum
 syn keyword juliaConstC HydraulicPotentialEnum
 syn keyword juliaConstC HydraulicPotentialOldEnum
 syn keyword juliaConstC HydrologyBasalFluxEnum
@@ -1022,6 +1024,7 @@ syn keyword juliaConstC InversionThicknessObsEnum
 syn keyword juliaConstC InversionVelObsEnum
 syn keyword juliaConstC InversionVxObsEnum
 syn keyword juliaConstC InversionVyObsEnum
+syn keyword juliaConstC LakeDepthEnum
 syn keyword juliaConstC LevelsetfunctionSlopeXEnum
 syn keyword juliaConstC LevelsetfunctionSlopeYEnum
 syn keyword juliaConstC LevelsetObservationEnum
@@ -1044,6 +1047,7 @@ syn keyword juliaConstC MaterialsRheologyEcbarEnum
 syn keyword juliaConstC MaterialsRheologyEsEnum
 syn keyword juliaConstC MaterialsRheologyEsbarEnum
 syn keyword juliaConstC MaterialsRheologyNEnum
+syn keyword juliaConstC MeltSupplyEnum
 syn keyword juliaConstC MeshScaleFactorEnum
 syn keyword juliaConstC MeshVertexonbaseEnum
 syn keyword juliaConstC MeshVertexonboundaryEnum
@@ -1153,6 +1157,7 @@ syn keyword juliaConstC SedimentHeadSubstepEnum
 syn keyword juliaConstC SedimentHeadTransientEnum
 syn keyword juliaConstC SedimentHeadResidualEnum
 syn keyword juliaConstC SedimentHeadStackedEnum
+syn keyword juliaConstC SigmaEnum
 syn keyword juliaConstC SigmaNNEnum
 syn keyword juliaConstC SigmaVMEnum
 syn keyword juliaConstC SmbAblationEnum
@@ -1422,6 +1427,7 @@ syn keyword juliaConstC VzMeshEnum
 syn keyword juliaConstC VzSSAEnum
 syn keyword juliaConstC WaterColumnOldEnum
 syn keyword juliaConstC WatercolumnEnum
+syn keyword juliaConstC WaterDepthEnum
 syn keyword juliaConstC WaterfractionDrainageEnum
 syn keyword juliaConstC WaterfractionDrainageIntegratedEnum
 syn keyword juliaConstC WaterfractionEnum
