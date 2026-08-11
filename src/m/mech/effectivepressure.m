@@ -1,9 +1,15 @@
 function N = effectivepressure(md,varargin)
-% EFFECTIVEPRESSURE - Calculate the effective basal pressure N from md.geometry and effective pressure coupling rule in md.friction
-% USEAGE:
+% EFFECTIVEPRESSURE - calculate effective pressure
+% 
+% Calculate the effective basal pressure N from md.geometry and effective
+% pressure coupling rule in md.friction
+%
+% USAGE:
 %   N = effectivepressure(md); 
+%
 % INPUT:
 %   md      ISSM model from which to calculate pressure
+%
 % OUTPUT:
 %   N			effective pressure at base (Pa)
 %
