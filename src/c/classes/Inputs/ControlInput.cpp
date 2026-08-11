@@ -21,7 +21,6 @@ ControlInput::ControlInput(){/*{{{*/
 	values      = NULL;
 	minvalues   = NULL;
 	maxvalues   = NULL;
-	gradient    = NULL;
 }
 /*}}}*/
 ControlInput::ControlInput(int nbe, int nbv,int input_layout_enum,int interp,int id){/*{{{*/
@@ -34,13 +33,11 @@ ControlInput::ControlInput(int nbe, int nbv,int input_layout_enum,int interp,int
 			this->values     =new TriaInput(nbe,nbv,interp);
 			this->minvalues  =new TriaInput(nbe,nbv,interp);
 			this->maxvalues  =new TriaInput(nbe,nbv,interp);
-			this->gradient   =new TriaInput(nbe,nbv,interp);
 			break;
 		case PentaInputEnum:
 			this->values     =new PentaInput(nbe,nbv,interp);
 			this->minvalues  =new PentaInput(nbe,nbv,interp);
 			this->maxvalues  =new PentaInput(nbe,nbv,interp);
-			this->gradient   =new PentaInput(nbe,nbv,interp);
 			break;
 		default:
 			_error_("Input of Enum \"" << EnumToStringx(input_layout_enum) << "\" not supported yet by ControlInput");
@@ -56,14 +53,12 @@ ControlInput::ControlInput(int enum_in,int nbe, int nbv,int id,IssmDouble* times
 	this->values     =new TransientInput(enum_in,nbe,nbv,times,numtimes);
 	this->minvalues  =new TransientInput(enum_in,nbe,nbv,times,numtimes);
 	this->maxvalues  =new TransientInput(enum_in,nbe,nbv,times,numtimes);
-	this->gradient   =new TransientInput(enum_in,nbe,nbv,times,numtimes);
 }
 /*}}}*/
 ControlInput::~ControlInput(){/*{{{*/
 	delete values;
 	delete minvalues;
 	delete maxvalues;
-	delete gradient;
 }
 /*}}}*/
 
@@ -80,7 +75,6 @@ Input* ControlInput::copy() {/*{{{*/
 	if(values)      output->values      = this->values->copy();
 	if(minvalues)   output->minvalues   = this->minvalues->copy();
 	if(maxvalues)   output->maxvalues   = this->maxvalues->copy();
-	if(gradient)    output->gradient    = this->gradient->copy();
 
 	return output;
 }
@@ -89,7 +83,6 @@ void ControlInput::Configure(Parameters* params){/*{{{*/
 	this->values->Configure(params);
 	this->minvalues->Configure(params);
 	this->maxvalues->Configure(params);
-	this->gradient->Configure(params);
 }
 /*}}}*/
 void ControlInput::DeepEcho(void){/*{{{*/
@@ -100,7 +93,6 @@ void ControlInput::DeepEcho(void){/*{{{*/
 	_printf_("---values: \n");     if (values)      values->Echo();
 	_printf_("---minvalues: \n");  if (minvalues)   minvalues->Echo();
 	_printf_("---maxvalues: \n");  if (maxvalues)   maxvalues->Echo();
-	_printf_("---gradient: \n");   if (gradient){    gradient->Echo();} else{_printf_("     Not set yet\n");}
 }
 /*}}}*/
 void ControlInput::Echo(void){/*{{{*/
@@ -125,19 +117,16 @@ void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 				this->values     =new TriaInput();
 				this->minvalues  =new TriaInput();
 				this->maxvalues  =new TriaInput();
-				this->gradient   =new TriaInput();
 				break;
 			case PentaInputEnum:
 				this->values     =new PentaInput();
 				this->minvalues  =new PentaInput();
 				this->maxvalues  =new PentaInput();
-				this->gradient   =new PentaInput();
 				break;
 			case TransientInputEnum:
 				this->values     =new TransientInput();
 				this->minvalues  =new TransientInput();
 				this->maxvalues  =new TransientInput();
-				this->gradient   =new TransientInput();
 				break;
 			default:
 				_error_("Input of Enum \"" << EnumToStringx(this->layout_enum) << "\" not supported yet");
@@ -147,7 +136,6 @@ void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	this->values->Marshall(marshallhandle);
 	this->minvalues->Marshall(marshallhandle);
 	this->maxvalues->Marshall(marshallhandle);
-	this->gradient->Marshall(marshallhandle);
 }
 /*}}}*/
 int  ControlInput::ObjectEnum(void){/*{{{*/
@@ -170,29 +158,6 @@ void ControlInput::SetControl(int interp,int numindices,int* indices,IssmDouble*
 	else{
 		_error_("not supported");
 	}
-}
-/*}}}*/
-void ControlInput::SetGradient(int interp,int numindices,int* indices,IssmDouble* values_in){/*{{{*/
-
-	_assert_(this);
-	_assert_(this->gradient);
-	if(this->gradient->ObjectEnum()==TriaInputEnum || this->gradient->ObjectEnum()==PentaInputEnum){
-		xDynamicCast<ElementInput*>(this->gradient)->SetInput(interp,numindices,indices,values_in);
-	}
-	else{
-		_error_("not supported");
-	}
-}
-/*}}}*/
-void ControlInput::SetGradient(int interp,int numindices,int* indices,IssmDouble* values_in,int n){/*{{{*/
-
-	if(this->values->ObjectEnum()!=TransientInputEnum)_error_("you are in the wrong place, go home");
-	_assert_(this);
-	_assert_(this->gradient);
-	_error_("NOT IMPLEMENTED, REMOVE?");
-
-	//NEW??
-	//this->gradient->SetInput(interp,numindices,indices,values_in);
 }
 /*}}}*/
 void ControlInput::AverageAndReplace(void){/*{{{*/
@@ -226,32 +191,21 @@ PentaInput* ControlInput::GetPentaInput(){/*{{{*/
 /*}}}*/
 ElementInput* ControlInput::GetInput(const char* data){/*{{{*/
 
-	if(this->gradient->ObjectEnum()==TriaInputEnum || this->gradient->ObjectEnum()==PentaInputEnum){
-		if(strcmp(data,"value")==0){
-			_assert_(values);
-			return xDynamicCast<ElementInput*>(values);
-		}
-		else if (strcmp(data,"lowerbound")==0){
-			_assert_(minvalues);
-			return xDynamicCast<ElementInput*>(minvalues);
-		}
-		else if (strcmp(data,"upperbound")==0){
-			_assert_(maxvalues);
-			return xDynamicCast<ElementInput*>(maxvalues);
-		}
-		else if (strcmp(data,"gradient")==0){
-			_assert_(gradient);
-			return xDynamicCast<ElementInput*>(gradient);
-		}
-		else{
-			_error_("Data " << data << " not supported yet");
-		}
+	if(strcmp(data,"value")==0){
+		_assert_(values);
+		return xDynamicCast<ElementInput*>(values);
+	}
+	else if (strcmp(data,"lowerbound")==0){
+		_assert_(minvalues);
+		return xDynamicCast<ElementInput*>(minvalues);
+	}
+	else if (strcmp(data,"upperbound")==0){
+		_assert_(maxvalues);
+		return xDynamicCast<ElementInput*>(maxvalues);
 	}
 	else{
-		int* temp = xNew<int>(3);
-		_error_("Gradient is of type "<<EnumToStringx(this->gradient->ObjectEnum()) <<", which is not supported yet");
+		_error_("Data " << data << " not supported yet");
 	}
-
 }
 /*}}}*/
 TransientInput* ControlInput::GetTransientInput(const char* data){/*{{{*/
@@ -268,10 +222,6 @@ TransientInput* ControlInput::GetTransientInput(const char* data){/*{{{*/
 		else if (strcmp(data,"upperbound")==0){
 			_assert_(maxvalues);
 			return xDynamicCast<TransientInput*>(maxvalues);
-		}
-		else if (strcmp(data,"gradient")==0){
-			_assert_(gradient);
-			return xDynamicCast<TransientInput*>(gradient);
 		}
 		else{
 			_error_("Data " << data << " not supported yet");

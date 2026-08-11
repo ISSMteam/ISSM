@@ -17,7 +17,6 @@ class ControlInput: public Input{
 		int    control_id;
 		int    enum_type;
 		int    layout_enum;
-		Input *gradient;
 		Input *maxvalues;
 		Input *minvalues;
 		Input *values;
@@ -43,7 +42,6 @@ class ControlInput: public Input{
 		TransientInput* GetTransientInput(const char* data);
 		void SetControl(int interp,int numindices,int* indices,IssmDouble* values_in,IssmDouble* values_min,IssmDouble* values_max);
 		void SetGradient(int interp,int numindices,int* indices,IssmDouble* values_in);
-		void SetGradient(int interp,int numindices,int* indices,IssmDouble* values_in,int n);
 		TriaInput* GetTriaInput();
 		PentaInput* GetPentaInput();
 		void AverageAndReplace(void);
