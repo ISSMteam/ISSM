@@ -76,6 +76,9 @@ void coupleroutput_core(FemModel* femmodel);
 
 //optimization
 void ControlSaveResults(FemModel* femmodel, IssmDouble* G);
+#ifdef _HAVE_AD_
+void ControlSaveResults(FemModel* femmodel, IssmPDouble* G);
+#endif
 
 //diverse
 void ProcessArguments(int* solution,char** pbinname,char** poutbinname,char** ptoolkitsname,char** plockname,char** prestartname, char** prootpath,char** pmodelname, int argc,char **argv);

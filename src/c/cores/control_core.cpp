@@ -292,8 +292,8 @@ void ControlSaveResults(FemModel* femmodel,IssmDouble* G){/*{{{*/
 	for(int i=0;i<num_controls;i++){
 
 		/*Disect results*/
-		GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
-		GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X0[offset],N[i],M[i]);
+		GenericExternalResult<IssmDouble*>* G_output = new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
+		GenericExternalResult<IssmDouble*>* X_output = new GenericExternalResult<IssmDouble*>(femmodel->results->Size()+1,control_enum[i],&X0[offset],N[i],M[i]);
 
 		/*transpose for consistency with MATLAB's formating*/
 		G_output->Transpose();
@@ -312,3 +312,45 @@ void ControlSaveResults(FemModel* femmodel,IssmDouble* G){/*{{{*/
 	xDelete<IssmDouble>(X0);
 	xDelete<int>(control_enum);
 }/*}}}*/
+#ifdef _HAVE_AD_
+void ControlSaveResults(FemModel* femmodel,IssmPDouble* G){/*{{{*/
+
+	/*Get control sizes*/
+	int *N = NULL;
+	int *M = NULL;
+	int *control_enum = NULL;
+	int  num_controls;
+	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
+	femmodel->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
+	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
+	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
+
+	/*Get control from input (it has been processed)*/
+	IssmPDouble* X0 = NULL;
+	GetPassiveVectorFromControlInputsx(&X0,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"value");
+
+	int offset = 0;
+	for(int i=0;i<num_controls;i++){
+
+		/*Disect results*/
+		GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
+		GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X0[offset],N[i],M[i]);
+
+		/*transpose for consistency with MATLAB's formating*/
+		G_output->Transpose();
+		X_output->Transpose();
+
+		/*Add to results*/
+		femmodel->results->AddObject(G_output);
+		femmodel->results->AddObject(X_output);
+
+		offset += N[i]*M[i];
+	}
+
+	/*Free resources: */
+	xDelete<int>(M);
+	xDelete<int>(N);
+	xDelete<IssmPDouble>(X0);
+	xDelete<int>(control_enum);
+}/*}}}*/
+#endif
