@@ -287,7 +287,6 @@ issm_sources += \
 	./cores/bmb_core.cpp \
 	./cores/debris_core.cpp \
 	./solutionsequences/solutionsequence_thermal_nonlinear.cpp \
-	./modules/ControlInputSetGradientx/ControlInputSetGradientx.cpp \
 	./modules/GetVectorFromControlInputsx/GetVectorFromControlInputsx.cpp \
 	./modules/SetControlInputsFromVectorx/SetControlInputsFromVectorx.cpp \
 	./modules/ModelProcessorx/Control/CreateParametersControl.cpp \

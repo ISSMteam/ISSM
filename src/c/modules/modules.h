@@ -19,7 +19,6 @@
 #include "./ConfigureObjectsx/ConfigureObjectsx.h"
 #include "./ContourToMeshx/ContourToMeshx.h"
 #include "./ContourToNodesx/ContourToNodesx.h"
-#include "./ControlInputSetGradientx/ControlInputSetGradientx.h"
 #include "./CreateNodalConstraintsx/CreateNodalConstraintsx.h"
 #include "./CreateJacobianMatrixx/CreateJacobianMatrixx.h"
 #include "./Damagex/Damagex.h"
