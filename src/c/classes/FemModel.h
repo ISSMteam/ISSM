@@ -151,7 +151,6 @@ class FemModel {
 		void DakotaResponsesx(double* d_responses,char** responses_descriptors,int numresponsedescriptors,int d_numresponses);
 		#endif
 		void CostFunctionx(IssmDouble* pJ,IssmDouble** pJlist,int* pn);
-		void OutputControlsx(Results **presults);
 		void RequestedDependentsx(void);
 		void RequestedOutputsx(Results **presults,char** requested_outputs, int numoutputs,bool save_results=true);
 		void RequestedOutputsx(Results **presults,int* requested_outputs, int numoutputs,bool save_results=true);

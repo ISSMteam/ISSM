@@ -2319,65 +2319,6 @@ void FemModel::EtaDiffx( IssmDouble* pJ){/*{{{*/
 	*pJ=J;
 }
 /*}}}*/
-void FemModel::OutputControlsx(Results **presults){/*{{{*/
-
-	/*parameters: */
-	int         num_controls,step;
-	IssmDouble  time;
-	int        *control_type   = NULL;
-	int        *control_interp = NULL;
-	int        *M = NULL;
-	int        *N = NULL;
-
-	/*recover results*/
-	Results* results = *presults;
-	if(!results) results = new Results();
-
-	/*Get list of Controls*/
-	this->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
-	this->parameters->FindParam(&control_type,NULL,InversionControlParametersEnum);
-	this->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
-	this->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
-	this->parameters->FindParam(&control_interp,NULL,ControlInputInterpolationEnum);
-	this->parameters->FindParam(&step,StepEnum);
-	this->parameters->FindParam(&time,TimeEnum);
-
-	for(int i=0;i<num_controls;i++){
-
-		int control_enum = control_type[i];
-		int gradient_enum;
-
-		switch(i){
-			case 0: gradient_enum = Gradient1Enum; break;
-			case 1: gradient_enum = Gradient2Enum; break;
-			case 2: gradient_enum = Gradient3Enum; break;
-			case 3: gradient_enum = Gradient4Enum; break;
-			default: _error_("more than 4 controls not implemented yet");
-		}
-
-		/*Allocate vector*/
-		Vector<IssmPDouble> *vector_control  = new Vector<IssmPDouble>(M[i]*N[i]);
-		Vector<IssmPDouble> *vector_gradient = new Vector<IssmPDouble>(M[i]*N[i]);
-
-		/*Fill in vector*/
-		for(Object* & object : this->elements->objects){
-			Element* element = xDynamicCast<Element*>(object);
-			element->ControlToVectors(vector_control,vector_gradient,control_enum,control_interp[i]);
-		}
-		vector_control->Assemble();
-		vector_gradient->Assemble();
-
-		results->AddResult(new GenericExternalResult<Vector<IssmPDouble>*>(results->Size()+1,control_enum,vector_control ,step,time));
-		results->AddResult(new GenericExternalResult<Vector<IssmPDouble>*>(results->Size()+1,gradient_enum,vector_gradient,step,time));
-	}
-
-	/*Clean up and return*/
-	xDelete<int>(control_type);
-	xDelete<int>(control_interp);
-	xDelete<int>(M);
-	xDelete<int>(N);
-}
-/*}}}*/
 void FemModel::RequestedDependentsx(void){/*{{{*/
 
 	/*AD mode on?: */
