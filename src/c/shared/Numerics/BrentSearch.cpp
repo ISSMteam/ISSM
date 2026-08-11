@@ -20,7 +20,7 @@
 #include "./types.h"
 #include "./isnan.h"
 
-void BrentSearch(IssmDouble** pJ,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(IssmDouble*,void*),IssmDouble (*g)(IssmDouble**,IssmDouble*,void*),void* usr){
+void BrentSearch(IssmDouble** pJ,IssmDouble** pG,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(IssmDouble*,void*),IssmDouble (*g)(IssmDouble**,IssmDouble*,void*),void* usr){
 
 	/* This routine is optimizing a given function using Brent's method
 	 * (Golden or parabolic procedure)*/
@@ -66,6 +66,7 @@ void BrentSearch(IssmDouble** pJ,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(
 		cout<<setprecision(5);
 
 		/*Get current Gradient at xmin=0*/
+		xDelete<IssmDouble>(G);
 		_printf0_(" x = "<<setw(9)<<xmin<<" | ");
 		fxmin = (*g)(&G,X0,usr); if(xIsNan<IssmDouble>(fxmin)) _error_("Function evaluation returned NaN");
 
@@ -78,7 +79,6 @@ void BrentSearch(IssmDouble** pJ,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(
 		/*test if jump option activated and xmin==0*/
 		if(!xIsNan<IssmDouble>(cm_jump[n]) && (xmin==0) && (fxmax/fxmin)<cm_jump[n]){
 			for(int i=0;i<nsize;i++) X0[i]=X0[i]+xmax*G[i];
-			xDelete<IssmDouble>(G);
 			J[n]=fxmax;
 			continue;
 		}
@@ -241,11 +241,11 @@ void BrentSearch(IssmDouble** pJ,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(
 
 		/*Assign output pointers: */
 		for(int i=0;i<nsize;i++) X0[i]=X0[i]+xbest*G[i];
-		xDelete<IssmDouble>(G);
 		J[n]=fxbest;
 	}
 
 	/*return*/
 	xDelete<IssmDouble>(X);
-	*pJ=J;
+	*pJ = J;
+	*pG = G;
 }
