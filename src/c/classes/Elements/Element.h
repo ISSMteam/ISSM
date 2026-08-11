@@ -270,7 +270,6 @@ class Element: public Object{
 		virtual void       ComputeStressTensor(void)=0;
 		virtual void       ComputeEsaStrainAndVorticity(void)=0;
 		virtual void       Configure(Elements* elements,Loads* loads,Nodes* nodes,Vertices* vertices,Materials* materials,Parameters* parameters,Inputs* inputsin)=0;
-		virtual void       ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp)=0;
 		virtual void       CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum){_error_("not implemented yet");};
 		virtual void       CreateInputTimeAverage(int transientinput_enum,int averagedinput_enum,IssmDouble init_time,IssmDouble end_time,int averaging_method){_error_("not implemented yet "<<this->ObjectEnum());};
 		virtual void       ElementResponse(IssmDouble* presponse,int response_enum)=0;

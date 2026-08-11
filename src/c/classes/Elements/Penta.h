@@ -66,7 +66,6 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		void           ComputeStressTensor();
 		//void           ComputeMeanEla(IssmDouble* paltitude, int* pcounter);
 		void           Configure(Elements* elements,Loads* loads,Nodes* nodes,Vertices* vertices,Materials* materials,Parameters* parameters,Inputs* inputsin);
-		void           ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp);
 		void				CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum);
 		ElementMatrix* CreateBasalMassMatrix(void);
 		void           CreateInputTimeAverage(int transientinput_enum,int averagedinput_enum,IssmDouble start_time,IssmDouble end_time,int averaging_method);

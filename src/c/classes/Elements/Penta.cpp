@@ -988,61 +988,6 @@ void       Penta::Configure(Elements* elementsin, Loads* loadsin, Nodes* nodesin
 	this->inputs=inputsin;
 }
 /*}}}*/
-void       Penta::ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp){/*{{{*/
-
-	int         sidlist[NUMVERTICES];
-	int         lidlist[NUMVERTICES];
-	int         connectivity[NUMVERTICES];
-	IssmPDouble values[NUMVERTICES];
-	IssmPDouble gradients[NUMVERTICES];
-	IssmDouble  value,gradient;
-
-	/*Get relevant inputs*/
-	if(control_enum==MaterialsRheologyBbarEnum) control_enum = MaterialsRheologyBEnum;
-	if(control_enum==DamageDbarEnum)            control_enum = DamageDEnum;
-	ElementInput* control_value    = this->inputs->GetControlInputData(control_enum,"value");    _assert_(control_value);
-	ElementInput* control_gradient = this->inputs->GetControlInputData(control_enum,"gradient"); _assert_(control_gradient);
-
-	if(control_interp==P1Enum){
-		_assert_(control_value->GetInputInterpolationType()==P1Enum);
-		_assert_(control_gradient->GetInputInterpolationType()==P1Enum);
-
-		this->GetVerticesConnectivityList(&connectivity[0]);
-		this->GetVerticesSidList(&sidlist[0]);
-		this->GetVerticesLidList(&lidlist[0]);
-
-		control_value->Serve(NUMVERTICES,&lidlist[0]);
-		control_gradient->Serve(NUMVERTICES,&lidlist[0]);
-
-		GaussPenta gauss;
-		for (int iv=0;iv<NUMVERTICES;iv++){
-			gauss.GaussVertex(iv);
-
-			control_value->GetInputValue(&value,&gauss);
-			control_gradient->GetInputValue(&gradient,&gauss);
-
-			values[iv]    = reCast<IssmPDouble>(value)/reCast<IssmPDouble>(connectivity[iv]);
-			gradients[iv] = reCast<IssmPDouble>(gradient)/reCast<IssmPDouble>(connectivity[iv]);
-		}
-
-		vector_control->SetValues(NUMVERTICES,&sidlist[0],&values[0],ADD_VAL);
-		vector_gradient->SetValues(NUMVERTICES,&sidlist[0],&gradients[0],ADD_VAL);
-	}
-	else if(control_interp==P0Enum){
-		_assert_(control_value->GetInputInterpolationType()==P0Enum);
-		_assert_(control_gradient->GetInputInterpolationType()==P0Enum);
-
-		control_value->Serve(1,&this->lid);
-		control_gradient->Serve(1,&this->lid);
-
-		vector_control->SetValue(this->sid,reCast<IssmPDouble>(control_value->element_values[0]),ADD_VAL);
-		vector_gradient->SetValue(this->sid,reCast<IssmPDouble>(control_gradient->element_values[0]),ADD_VAL);
-	}
-	else{
-		_error_("not supported");
-	}
-
-}/*}}}*/
 void       Penta::CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum){/*{{{*/
 
 	/*Get current field and vertex coordinates*/
@@ -2407,29 +2352,19 @@ void       Penta::ControlInputExtrude(int enum_type,int start){/*{{{*/
 	ElementInput* input  = this->inputs->GetControlInputData(enum_type,"value");
 	if(input->ObjectEnum()!=PentaInputEnum) _error_("not supported yet");
 	PentaInput* pentainput = xDynamicCast<PentaInput*>(input);
-	/*FIXME: this should not be necessary*/
-	ElementInput* input3 = this->inputs->GetControlInputData(enum_type,"gradient");
-	if(input->ObjectEnum()!=PentaInputEnum) _error_("not supported yet");
-	PentaInput* pentainput3= xDynamicCast<PentaInput*>(input3);
 
 	int lidlist[NUMVERTICES];
 	this->GetVerticesLidList(&lidlist[0]);
 	pentainput->Serve(NUMVERTICES,&lidlist[0]);
-	pentainput3->Serve(NUMVERTICES,&lidlist[0]);
 
 	if(pentainput->GetInterpolation()==P1Enum){
 
 		/*Extrude values first*/
 		IssmDouble extrudedvalues[NUMVERTICES];
-		IssmDouble extrudedvalues3[NUMVERTICES];
-
 		this->GetInputListOnVertices(&extrudedvalues[0],pentainput,0.);
-		this->GetInputListOnVertices(&extrudedvalues3[0],pentainput3,0.);
 
 		if(start==-1){
 			for(int i=0;i<NUMVERTICES2D;i++) extrudedvalues[i+NUMVERTICES2D]=extrudedvalues[i];
-			for(int i=0;i<NUMVERTICES2D;i++) extrudedvalues3[i+NUMVERTICES2D]=extrudedvalues3[i]/2.; /*FIXME: this is just for NR*/
-			for(int i=0;i<NUMVERTICES2D;i++) extrudedvalues3[i]=extrudedvalues3[i]/2.; /*FIXME: this is just for NR*/
 		}
 		else{
 			for(int i=0;i<NUMVERTICES2D;i++) extrudedvalues[i]=extrudedvalues[i+NUMVERTICES2D];
@@ -2439,17 +2374,10 @@ void       Penta::ControlInputExtrude(int enum_type,int start){/*{{{*/
 		Penta* penta=this;
 		for(;;){
 
-			if(penta->IsOnSurface() && start==-1){ /*FIXME: this is just for NR*/
-				for(int i=0;i<NUMVERTICES2D;i++) extrudedvalues3[i+NUMVERTICES2D]=0.;
-			}
-
 			/*Add input of the basal element to penta->inputs*/
 			int vertexlids[NUMVERTICES];
 			penta->GetVerticesLidList(&vertexlids[0]);
 			pentainput->SetInput(P1Enum,NUMVERTICES,&vertexlids[0],&extrudedvalues[0]);
-			if(start==-1 && !penta->IsOnBase()){
-				pentainput3->SetInput(P1Enum,NUMVERTICES,&vertexlids[0],&extrudedvalues3[0]);
-			}
 
 			/*Stop if we have reached the surface/base*/
 			if(start==-1 && penta->IsOnSurface()) break;

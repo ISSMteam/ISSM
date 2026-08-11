@@ -1680,59 +1680,6 @@ void       Tria::Configure(Elements* elementsin, Loads* loadsin,Nodes* nodesin,V
 	this->parameters=parametersin;
 	this->inputs=inputsin;
 }/*}}}*/
-void       Tria::ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp){/*{{{*/
-
-	int         sidlist[NUMVERTICES];
-	int         lidlist[NUMVERTICES];
-	int         connectivity[NUMVERTICES];
-	IssmPDouble values[NUMVERTICES];
-	IssmPDouble gradients[NUMVERTICES];
-	IssmDouble  value,gradient;
-
-	/*Get relevant inputs*/
-	ElementInput* control_value    = this->inputs->GetControlInputData(control_enum,"value");    _assert_(control_value);
-	ElementInput* control_gradient = this->inputs->GetControlInputData(control_enum,"gradient"); _assert_(control_gradient);
-
-	if(control_interp==P1Enum){
-		_assert_(control_value->GetInputInterpolationType()==P1Enum);
-		_assert_(control_gradient->GetInputInterpolationType()==P1Enum);
-
-		this->GetVerticesConnectivityList(&connectivity[0]);
-		this->GetVerticesSidList(&sidlist[0]);
-		this->GetVerticesLidList(&lidlist[0]);
-
-		control_value->Serve(NUMVERTICES,&lidlist[0]);
-		control_gradient->Serve(NUMVERTICES,&lidlist[0]);
-
-		GaussTria gauss;
-		for (int iv=0;iv<NUMVERTICES;iv++){
-			gauss.GaussVertex(iv);
-
-			control_value->GetInputValue(&value,&gauss);
-			control_gradient->GetInputValue(&gradient,&gauss);
-
-			values[iv]    = reCast<IssmPDouble>(value)/reCast<IssmPDouble>(connectivity[iv]);
-			gradients[iv] = reCast<IssmPDouble>(gradient)/reCast<IssmPDouble>(connectivity[iv]);
-		}
-
-		vector_control->SetValues(NUMVERTICES,&sidlist[0],&values[0],ADD_VAL);
-		vector_gradient->SetValues(NUMVERTICES,&sidlist[0],&gradients[0],ADD_VAL);
-	}
-	else if(control_interp==P0Enum){
-		_assert_(control_value->GetInputInterpolationType()==P0Enum);
-		_assert_(control_gradient->GetInputInterpolationType()==P0Enum);
-
-		control_value->Serve(1,&this->lid);
-		control_gradient->Serve(1,&this->lid);
-
-		vector_control->SetValue(this->sid,reCast<IssmPDouble>(control_value->element_values[0]),ADD_VAL);
-		vector_gradient->SetValue(this->sid,reCast<IssmPDouble>(control_gradient->element_values[0]),ADD_VAL);
-	}
-	else{
-		_error_("not supported");
-	}
-
-}/*}}}*/
 void       Tria::CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum){/*{{{*/
 
 	/*Get current field and vertex coordinates*/
