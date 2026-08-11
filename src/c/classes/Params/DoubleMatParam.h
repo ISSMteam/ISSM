@@ -74,7 +74,6 @@ class DoubleMatParam: public Param{
 		void  SetValue(FILE* fid){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a FILE");}
 		void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold an array of matrices");}
 		void  SetEnum(int enum_in){this->enum_type = enum_in;};
-		void  SetGradient(IssmDouble* poutput, int M, int N){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold an IssmDouble");};
 		/*}}}*/
 		/*DoubleMatParam specific routines:{{{*/
 		void  GetParameterValueByPointer(IssmDouble** pIssmDoublearray,int* pM,int* pN);

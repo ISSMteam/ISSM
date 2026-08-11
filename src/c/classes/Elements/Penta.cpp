@@ -988,43 +988,6 @@ void       Penta::Configure(Elements* elementsin, Loads* loadsin, Nodes* nodesin
 	this->inputs=inputsin;
 }
 /*}}}*/
-void       Penta::ControlInputSetGradient(IssmDouble* gradient,int control_enum,int control_index,int offset,int M,int N,int interp){/*{{{*/
-
-	IssmDouble  values[NUMVERTICES];
-	int         lidlist[NUMVERTICES];
-	int         idlist[NUMVERTICES];
-
-	if(control_enum==MaterialsRheologyBbarEnum) control_enum = MaterialsRheologyBEnum;
-	if(control_enum==DamageDbarEnum)            control_enum = DamageDEnum;
-
-	ElementInput* input=this->inputs->GetControlInputData(control_enum,"gradient");   _assert_(input);
-	this->GetVerticesLidList(&lidlist[0]);
-	GradientIndexing(&idlist[0],control_index);
-
-	/*Get values on vertices*/
-	if(input->ObjectEnum()==PentaInputEnum && input->GetInputInterpolationType()==P1Enum){
-		_assert_(N==1);
-		for(int i=0;i<NUMVERTICES;i++){
-			values[i] = gradient[idlist[i]];
-		}
-		input->SetInput(P1Enum,NUMVERTICES,&lidlist[0],&values[0]);
-	}
-	else if(input->ObjectEnum()==PentaInputEnum && input->GetInputInterpolationType()==P0Enum){
-		_assert_(N==1);
-		input->SetInput(P0Enum,this->lid,gradient[idlist[0]]);
-	}
-	else if(input->ObjectEnum()==TransientInputEnum){
-		for(int n=0;n<N;n++){
-			_error_("not implemented");
-			//Input* new_input = new PentaInput(control_enum,gradient,P1Enum);
-			//controlinput->SetInput(new_input,n);
-			//controlinput->Configure(parameters);
-		}
-	}
-	else _error_("Type not supported");
-
-}
-/*}}}*/
 void       Penta::ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp){/*{{{*/
 
 	int         sidlist[NUMVERTICES];

@@ -99,7 +99,6 @@ template <class P> class GenericParam: public Param{
                 void  SetValue(Matrix<IssmDouble>* mat){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot hold a Mat");}
                 void  SetValue(FILE* fid){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot hold a FILE");}
                 void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot hold an array of matrices");}
-                void  SetGradient(IssmDouble* poutput, int M, int N){_error_("Param "<< EnumToStringx(myEnumVal) << " cannot hold an IssmDouble");};
 
                 /*}}}*/
 };

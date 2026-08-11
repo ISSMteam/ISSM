@@ -79,7 +79,6 @@ class Parameters{
 		void  SetParam(FILE* fid,int enum_type);
 		void  SetParam(DataSet* dataset,int enum_type);
 		void  SetControlFromVector(IssmDouble* array, int enum_type, int M, int N, int offset);
-		void  SetGradientFromVector(IssmDouble* array, int enum_type, int M, int N, int offset);
 		void  GetVectorFromControl(Vector<IssmDouble>* vector,int control_enum,int control_index,int N,const char* data,int offset);
 		Param* FindParamObject(int enum_type);
 

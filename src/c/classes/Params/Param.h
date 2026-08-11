@@ -70,7 +70,6 @@ class Param: public Object{
 		virtual void  SetValue(Matrix<IssmDouble>* mat)=0;
 		virtual void  SetValue(FILE* fid)=0;
 		virtual void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array)=0;
-		virtual void  SetGradient(IssmDouble* poutput, int M, int N)=0;
 		virtual void  GetVectorFromControl(Vector<IssmDouble>* vector,int control_index,int N,const char* data,int offset){_error_("not implemented yet");};
 };
 #endif

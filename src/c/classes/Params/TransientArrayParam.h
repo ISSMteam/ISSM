@@ -79,7 +79,6 @@ class TransientArrayParam: public Param{
 		void  SetValue(Matrix<IssmDouble>* mat){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot hold a Mat");}
 		void  SetValue(FILE* fid){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot hold a FILE");}
 		void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot hold an array of matrices");}
-		void  SetGradient(IssmDouble* poutput, int M, int N){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold an IssmDouble");};
 		/*}}}*/
 };
 #endif  /* _TRANSIENTARRAYPARAM_H */

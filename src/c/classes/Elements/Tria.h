@@ -73,7 +73,6 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		void        ComputeStressTensor();
 		void        ComputeSurfaceNormalVelocity();
 		void        Configure(Elements* elements,Loads* loads,Nodes* nodesin,Vertices* verticesin,Materials* materials,Parameters* parameters,Inputs* inputsin);
-		void        ControlInputSetGradient(IssmDouble* gradient,int enum_type,int control_index,int offset,int M,int N,int interp);
 		void        ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp);
 		void        CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum);
 		void        ElementCoordinates(Vector<IssmDouble>* vxe,Vector<IssmDouble>* vye,Vector<IssmDouble>* vze, Vector<IssmDouble>* vareae, bool spherical=false);

@@ -38,11 +38,10 @@ class ControlInput: public Input{
 		/*}}}*/
 		void SetInput(Input* in_input){_error_("not impelemented");};
 		void SetInput(Input* in_input,int timeoffset){_error_("not impelemented");};
-		ElementInput* GetInput(const char* data);
+		ElementInput*   GetInput(const char* data);
 		TransientInput* GetTransientInput(const char* data);
-		void SetControl(int interp,int numindices,int* indices,IssmDouble* values_in,IssmDouble* values_min,IssmDouble* values_max);
-		void SetGradient(int interp,int numindices,int* indices,IssmDouble* values_in);
-		TriaInput* GetTriaInput();
+		void        SetControl(int interp,int numindices,int* indices,IssmDouble* values_in,IssmDouble* values_min,IssmDouble* values_max);
+		TriaInput*  GetTriaInput();
 		PentaInput* GetPentaInput();
 		void AverageAndReplace(void);
 };

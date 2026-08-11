@@ -74,7 +74,6 @@ class DataSetParam: public Param{
 		void  SetValue(Matrix<IssmDouble>* mat){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a Mat");}
 		void  SetValue(DataSet* dataset);
 		void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("DataSet param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot hold an array of matrices");}
-		void  SetGradient(IssmDouble* poutput, int M, int N){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold an IssmDouble");};
 		/*}}}*/
 };
 #endif  /* _INTPARAM_H */

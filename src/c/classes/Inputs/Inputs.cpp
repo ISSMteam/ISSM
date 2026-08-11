@@ -909,19 +909,6 @@ void Inputs::SetTransientControlInput(int enum_in,int control_id,IssmDouble* tim
 	}
 
 }/*}}}*/
-void Inputs::SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values){/*{{{*/
-
-	/*Get input id*/
-	int id = EnumToIndex(enum_in);
-
-	/*Create it if necessary*/
-	if(!this->inputs[id]) _error_("could not find Input "<<EnumToStringx(enum_in));
-	if( this->inputs[id]->ObjectEnum()!=ControlInputEnum) _error_("Input "<<EnumToStringx(enum_in)<<" is not a ControlInput");
-
-	/*Set input*/
-	ControlInput* input = xDynamicCast<ControlInput*>(this->inputs[id]);
-	input->SetGradient(interpolation,numindices,indices,values);
-}/*}}}*/
 void Inputs::SetTriaDatasetInput(int enum_in,int id_in,int interpolation,int numindices,int* indices,IssmDouble* values){/*{{{*/
 
 	bool recreate = false;
@@ -1002,19 +989,6 @@ void Inputs::SetTriaInput(int enum_in,int interpolation,int row,int numindices,I
 	/*Set input*/
 	TriaInput* input = xDynamicCast<TriaInput*>(this->inputs[id]);
 	input->SetInput(interpolation,row,numindices,values);
-}/*}}}*/
-void Inputs::SetPentaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values){/*{{{*/
-
-	/*Get input id*/
-	int id = EnumToIndex(enum_in);
-
-	/*Create it if necessary*/
-	if(!this->inputs[id]) _error_("could not find Input "<<EnumToStringx(enum_in));
-	if( this->inputs[id]->ObjectEnum()!=ControlInputEnum) _error_("Input "<<EnumToStringx(enum_in)<<" is not a ControlInput");
-
-	/*Set input*/
-	ControlInput* input = xDynamicCast<ControlInput*>(this->inputs[id]);
-	input->SetGradient(interpolation,numindices,indices,values);
 }/*}}}*/
 void Inputs::SetPentaDatasetInput(int enum_in,int id_in,int interpolation,int numindices,int* indices,IssmDouble* values){/*{{{*/
 

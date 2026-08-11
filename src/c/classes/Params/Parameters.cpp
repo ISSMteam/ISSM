@@ -683,16 +683,6 @@ void   Parameters::SetControlFromVector(IssmDouble* vector, int enum_type, int M
 	else _error_("Param "<< EnumToStringx(enum_type) << " cannot setValue");
 }
 /*}}}*/
-void   Parameters::SetGradientFromVector(IssmDouble* vector, int enum_type, int M, int N, int offset){/*{{{*/
-
-	/*first, figure out if the param has already been created: */
-	Param* param=NULL;
-	param=xDynamicCast<Param*>(this->FindParamObject(enum_type));
-
-	if(param) param->SetGradient(&vector[offset], M, N);
-	else _error_("Param "<< EnumToStringx(enum_type) << " cannot setValue");
-}
-/*}}}*/
 
 void  Parameters::GetVectorFromControl(Vector<IssmDouble>* vector,int control_enum,int control_index,int N,const char* data,int offset){/*{{{*/
 

@@ -229,12 +229,6 @@ void  ControlParam::SetValue(IssmDouble* poutput,int in_M, int in_N){/*{{{*/
 	xMemCpy<IssmDouble>(this->value,poutput,in_N);
 }
 /*}}}*/
-void  ControlParam::SetGradient(IssmDouble* poutput,int in_M, int in_N){/*{{{*/
-
-	_assert_(in_M==1);
-	xMemCpy<IssmDouble>(this->gradient,poutput,in_N);
-}
-/*}}}*/
 void  ControlParam::GetVectorFromControl(Vector<IssmDouble>* vector,int control_index,int in_N,const char* data,int offset){/*{{{*/
 
 	/*Get list of ids for this element and this control*/

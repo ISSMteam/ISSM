@@ -1680,62 +1680,6 @@ void       Tria::Configure(Elements* elementsin, Loads* loadsin,Nodes* nodesin,V
 	this->parameters=parametersin;
 	this->inputs=inputsin;
 }/*}}}*/
-void       Tria::ControlInputSetGradient(IssmDouble* gradient,int control_enum,int control_index,int offset,int M,int N,int interp){/*{{{*/
-
-	IssmDouble  values[NUMVERTICES];
-	int         lidlist[NUMVERTICES];
-
-	/*Get list of ids for this element and this control*/
-	int* idlist = xNew<int>(NUMVERTICES*N);
-	GradientIndexing(&idlist[0],control_index);
-
-	ControlInput* control_input=this->inputs->GetControlInput(control_enum); _assert_(control_input);
-	this->GetVerticesLidList(&lidlist[0]);
-
-	/*Get values on vertices*/
-	if(control_input->layout_enum==TriaInputEnum){
-		ElementInput* gradient_input = control_input->GetInput("gradient"); _assert_(gradient_input);
-		if(gradient_input->GetInputInterpolationType()==P1Enum){
-			_assert_(N==1);
-			for(int i=0;i<NUMVERTICES;i++) values[i] = gradient[idlist[i]];
-			gradient_input->SetInput(P1Enum,NUMVERTICES,&lidlist[0],&values[0]);
-		}
-		else if(gradient_input->GetInputInterpolationType()==P0Enum){
-			_assert_(N==1);
-			gradient_input->SetInput(P0Enum,this->lid,gradient[idlist[0]]);
-		}
-		else{
-			_error_("not implemented yet");
-		}
-	}
-	else if(control_input->layout_enum==TransientInputEnum){
-		_assert_(N>1);
-
-		int* interp = NULL;
-		parameters->FindParam(&interp,NULL,ControlInputInterpolationEnum);
-
-		TransientInput* gradient_input = control_input->GetTransientInput("gradient"); _assert_(gradient_input);
-
-		for(int n=0;n<N;n++){
-			if(interp[control_index]==P1Enum){
-				for(int i=0;i<NUMVERTICES;i++) values[i] = gradient[idlist[i]];
-				gradient_input->AddTriaTimeInput(n,NUMVERTICES,&lidlist[0],&values[0],P1Enum);
-			}
-			else if(interp[control_index]==P0Enum){
-				gradient_input->AddTriaTimeInput(n,1,&(this->lid),&gradient[idlist[n]],P0Enum);
-			}
-			else{
-				_error_("not implemented yet");
-			}
-		}
-		xDelete<int>(interp);
-	}
-	else _error_("Type not supported");
-
-	/*Clean up*/
-	xDelete<int>(idlist);
-
-}/*}}}*/
 void       Tria::ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp){/*{{{*/
 
 	int         sidlist[NUMVERTICES];
