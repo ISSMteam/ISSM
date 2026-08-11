@@ -75,8 +75,7 @@ void couplerinput_core(FemModel* femmodel);
 void coupleroutput_core(FemModel* femmodel);
 
 //optimization
-int GradJSearch(IssmDouble* search_vector,FemModel* femmodel,int step);
-IssmDouble objectivefunction(IssmDouble search_scalar,FemModel* femmodel);
+void ControlSaveResults(FemModel* femmodel, IssmDouble* G);
 
 //diverse
 void ProcessArguments(int* solution,char** pbinname,char** poutbinname,char** ptoolkitsname,char** plockname,char** prestartname, char** prootpath,char** pmodelname, int argc,char **argv);

@@ -276,13 +276,10 @@ void controlvalidation_core(FemModel* femmodel){
 	xDelete<IssmPDouble>(J_passive);
 	IssmDouble* aG=xNew<IssmDouble>(n);
 	for(int i=0;i<n;i++) aG[i] = G[i];
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
 	xDelete<IssmDouble>(aG);
 	#else
 	femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,output,num,2,0,0));
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,G);
 	#endif
-	femmodel->OutputControlsx(&femmodel->results);
 
 	/*Clean up and return*/
 	xDelete<IssmDouble>(output);

@@ -34,12 +34,13 @@ void controlm1qn3_core(FemModel* femmodel){/*{{{*/
 	int     maxsteps,maxiter;
 	int     intn,num_controls,num_cost_functions,solution_type;
 	double *scaling_factors = NULL;
-	double *X  = NULL;
-	double *G  = NULL;
+	double *X               = NULL;
+	double *G               = NULL;
+   int    *N               = NULL;
+   int    *M               = NULL;
+	int    *control_enum    = NULL;
 
 	/*Get control sizes*/
-	int* M = NULL;
-	int* N = NULL;
 	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 	femmodel->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
 
@@ -53,6 +54,7 @@ void controlm1qn3_core(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParamAndMakePassive(&dfmin_frac,InversionDfminFracEnum);
 	femmodel->parameters->FindParamAndMakePassive(&gttol,InversionGttolEnum);
 	femmodel->parameters->FindParamAndMakePassive(&scaling_factors,NULL,InversionControlScalingFactorsEnum);
+	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
 	femmodel->parameters->SetParam(false,SaveResultsEnum);
 
 	/*Initialize M1QN3 parameters*/
@@ -156,18 +158,16 @@ void controlm1qn3_core(FemModel* femmodel){/*{{{*/
 		aX[i] = reCast<IssmDouble>(X[i]); 
 		aG[i] = reCast<IssmDouble>(G[i]);
 	}
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
 	SetControlInputsFromVectorx(femmodel,aX);
 	xDelete(aX);
 	xDelete(aG);
 	#else
 	SetControlInputsFromVectorx(femmodel,X);
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,G);
 	#endif
 
-	femmodel->OutputControlsx(&femmodel->results);
 	femmodel->results->AddObject(new GenericExternalResult<double*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N,0,0));
 	femmodel->results->AddObject(new GenericExternalResult<int>(femmodel->results->Size()+1,InversionStopFlagEnum,int(omode)));
+	ControlSaveResults(femmodel, G);
 
 	/*Finalize*/
 	if(VerboseControl()) _printf0_("   preparing final solution\n");
@@ -179,6 +179,7 @@ void controlm1qn3_core(FemModel* femmodel){/*{{{*/
 	/*Clean-up and return*/
 	xDelete<int>(M);
 	xDelete<int>(N);
+	xDelete<int>(control_enum);
 	xDelete<double>(G);
 	xDelete<double>(X);
 	xDelete<double>(dz);
@@ -199,11 +200,11 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 	int          *Jlisti       = input_struct->i;
 
 	/*Recover some parameters*/
-	int num_responses,num_controls,solution_type;
+	int num_cost_functions,num_controls,solution_type;
 	double* scaling_factors = NULL;
 	int* M = NULL;
 	int* N = NULL;
-	femmodel->parameters->FindParam(&num_responses,InversionNumCostFunctionsEnum);
+	femmodel->parameters->FindParam(&num_cost_functions,InversionNumCostFunctionsEnum);
 	femmodel->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
 	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
@@ -244,7 +245,7 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 
 	/*Check size of Jlist to avoid crashes*/
 	_assert_((*Jlisti)<JlistM);
-	_assert_(JlistN==num_responses+1);
+	_assert_(JlistN==num_cost_functions+1);
 
 	/*Compute objective function*/
 	IssmDouble* Jtemp = NULL;
@@ -253,13 +254,13 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 	*pf = reCast<double>(J);
 
 	/*Record cost function values and delete Jtemp*/
-	for(int i=0;i<num_responses;i++) Jlist[(*Jlisti)*JlistN+i] = reCast<double>(Jtemp[i]);
-	Jlist[(*Jlisti)*JlistN+num_responses] = *pf;
+	for(int i=0;i<num_cost_functions;i++) Jlist[(*Jlisti)*JlistN+i] = reCast<double>(Jtemp[i]);
+	Jlist[(*Jlisti)*JlistN+num_cost_functions] = *pf;
 	xDelete<IssmDouble>(Jtemp);
 
 	if(*indic==0){
 		/*dry run, no gradient required*/
-		InversionStatsIter( (*Jlisti)+1, *pf, NAN, &Jlist[(*Jlisti)*JlistN], num_responses);
+		InversionStatsIter( (*Jlisti)+1, *pf, NAN, &Jlist[(*Jlisti)*JlistN], num_cost_functions);
 
 		*Jlisti = (*Jlisti) +1;
 		xDelete<double>(XU);
@@ -300,7 +301,7 @@ void simul(long* indic,long* n,double* X,double* pf,double* G,long izs[1],float 
 	Gnorm = sqrt(Gnorm);
 
 	/*Print info*/
-	InversionStatsIter( (*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_responses);
+	InversionStatsIter( (*Jlisti)+1, *pf, reCast<double>(Gnorm), &Jlist[(*Jlisti)*JlistN], num_cost_functions);
 
 	/*Clean-up and return*/
 	*Jlisti = (*Jlisti) +1;

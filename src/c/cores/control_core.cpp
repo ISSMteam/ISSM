@@ -9,8 +9,7 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 
-/*Local prototypes*/
-/*{{{*/
+/*Local prototypes {{{*/
 IssmDouble FormFunction(IssmDouble* X,void* usr);
 IssmDouble FormFunctionGradient(IssmDouble** pG,IssmDouble* X,void* usr);
 typedef struct {
@@ -22,21 +21,19 @@ typedef struct {
 void control_core(FemModel* femmodel){/*{{{*/
 
 	/*parameters: */
-	int         num_controls,nsize,nsteps;
+	int         nsize,nsteps;
 	int         solution_type;
 	bool        isFS,dakota_analysis;
-	int        *control_type  = NULL;
-	int        *maxiter       = NULL;
-	IssmDouble *cm_jump       = NULL;
-	IssmDouble *J             = NULL;
+	int        *maxiter      = NULL;
+	IssmDouble *cm_jump      = NULL;
+	IssmDouble *J            = NULL;
+	IssmDouble *G            = NULL;
 
 	/*Solution and Adjoint core pointer*/
 	void (*solutioncore)(FemModel*) = NULL;
 	void (*adjointcore)(FemModel*)  = NULL;
 
 	/*Recover parameters used throughout the solution*/
-	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
-	femmodel->parameters->FindParam(&control_type,NULL,InversionControlParametersEnum);
 	femmodel->parameters->FindParam(&nsteps,InversionNstepsEnum);
 	femmodel->parameters->FindParam(&maxiter,NULL,InversionMaxiterPerStepEnum);
 	femmodel->parameters->FindParam(&cm_jump,NULL,InversionStepThresholdEnum);
@@ -75,7 +72,7 @@ void control_core(FemModel* femmodel){/*{{{*/
 	usr.nsize    = nsize;
 
 	/*Call Brent optimization*/
-	BrentSearch(&J,optpars,X0,&FormFunction,&FormFunctionGradient,(void*)&usr);
+	BrentSearch(&J,&G,optpars,X0,&FormFunction,&FormFunctionGradient,(void*)&usr);
 
 	if(VerboseControl()) _printf0_("   preparing final solution\n");
 	IssmDouble  *XL = NULL;
@@ -94,7 +91,8 @@ void control_core(FemModel* femmodel){/*{{{*/
 
 	/*some results not computed by steadystate_core or stressbalance_core: */
 	if(!dakota_analysis){ //do not save this if we are running the control core from a qmu run!
-		femmodel->OutputControlsx(&femmodel->results);
+								 //
+		ControlSaveResults(femmodel, G);
 
 		#ifdef _HAVE_AD_
 		IssmPDouble* J_passive=xNew<IssmPDouble>(nsteps);
@@ -107,10 +105,10 @@ void control_core(FemModel* femmodel){/*{{{*/
 	}
 
 	/*Free resources: */
-	xDelete<int>(control_type);
 	xDelete<int>(maxiter);
 	xDelete<IssmDouble>(cm_jump);
 	xDelete<IssmDouble>(J);
+	xDelete<IssmDouble>(G);
 	xDelete<IssmDouble>(X0);
 }/*}}}*/
 IssmDouble FormFunction(IssmDouble* X,void* usrvoid){/*{{{*/
@@ -149,23 +147,24 @@ IssmDouble FormFunction(IssmDouble* X,void* usrvoid){/*{{{*/
 			femmodel->SetCurrentConfiguration(StressbalanceAnalysisEnum);
 			stressbalance_core(femmodel);	//We need a 3D velocity!! (vz is required for the next thermal run)
 			break;
-		case StressbalanceSolutionEnum:{
-			femmodel->SetCurrentConfiguration(StressbalanceAnalysisEnum);
+		case StressbalanceSolutionEnum:
+			  {
+				femmodel->SetCurrentConfiguration(StressbalanceAnalysisEnum);
 
-			bool is_schur_cg_solver = false;
-			#ifdef _HAVE_PETSC_
-			int solver_type;
-			PetscOptionsDetermineSolverType(&solver_type);
-			if(solver_type==FSSolverEnum) is_schur_cg_solver = true;
-			#endif
+				bool is_schur_cg_solver = false;
+				#ifdef _HAVE_PETSC_
+				int solver_type;
+				PetscOptionsDetermineSolverType(&solver_type);
+				if(solver_type==FSSolverEnum) is_schur_cg_solver = true;
+				#endif
 
-			if(is_schur_cg_solver){
-			 solutionsequence_schurcg(femmodel);
-			}else{
-			 solutionsequence_nonlinear(femmodel,conserve_loads); 
-			}
-			}
-			 break;
+				if(is_schur_cg_solver){
+					solutionsequence_schurcg(femmodel);
+				}else{
+					solutionsequence_nonlinear(femmodel,conserve_loads); 
+				}
+			  }
+			break;
 		case BalancethicknessSolutionEnum:
 			femmodel->SetCurrentConfiguration(BalancethicknessAnalysisEnum);
 			solutionsequence_linear(femmodel); 
@@ -257,9 +256,6 @@ IssmDouble FormFunctionGradient(IssmDouble** pG,IssmDouble* X,void* usrvoid){/*{
 		if(X[i]<=XL[i]) G[i]=0.;
 	}
 
-	/*Needed for output results*/
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,G);
-
 	/*Compute misfit for this velocity field.*/
 	femmodel->CostFunctionx(&J,&Jlist,NULL);
 	_printf0_("f(x) = "<<setw(12)<<setprecision(7)<<J<<"  |  ");
@@ -274,4 +270,45 @@ IssmDouble FormFunctionGradient(IssmDouble** pG,IssmDouble* X,void* usrvoid){/*{
 	xDelete<IssmDouble>(Jlist);
 	*pG = G;
 	return J;
+}/*}}}*/
+
+void ControlSaveResults(FemModel* femmodel,IssmDouble* G){/*{{{*/
+
+	/*Get control sizes*/
+	int *N = NULL;
+	int *M = NULL;
+	int *control_enum = NULL;
+	int  num_controls;
+	femmodel->parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
+	femmodel->parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
+	femmodel->parameters->FindParam(&num_controls,InversionNumControlParametersEnum);
+	femmodel->parameters->FindParam(&control_enum,NULL,InversionControlParametersEnum);
+
+	/*Get control from input (it has been processed)*/
+	IssmDouble* X0 = NULL;
+	GetVectorFromControlInputsx(&X0,NULL,femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,"value");
+
+	int offset = 0;
+	for(int i=0;i<num_controls;i++){
+
+		/*Disect results*/
+		GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
+		GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X0[offset],N[i],M[i]);
+
+		/*transpose for consistency with MATLAB's formating*/
+		G_output->Transpose();
+		X_output->Transpose();
+
+		/*Add to results*/
+		femmodel->results->AddObject(G_output);
+		femmodel->results->AddObject(X_output);
+
+		offset += N[i]*M[i];
+	}
+
+	/*Free resources: */
+	xDelete<int>(M);
+	xDelete<int>(N);
+	xDelete<IssmDouble>(X0);
+	xDelete<int>(control_enum);
 }/*}}}*/

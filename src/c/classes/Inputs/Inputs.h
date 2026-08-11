@@ -88,7 +88,6 @@ class Inputs{
 		void  SetArrayInput(int enum_in,int row,IssmDouble* layers,int numlayers);
 		void  SetIntArrayInput(int enum_in,int row,int* layers,int numlayers);
 		void  SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);
-		void  SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values,int n);
 		void  SetTriaDatasetInput(int enum_in,int id,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetTriaInput(int enum_in,int interpolation,int row,IssmDouble values);
 		void  SetTriaInput(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);

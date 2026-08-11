@@ -922,19 +922,6 @@ void Inputs::SetTriaControlInputGradient(int enum_in,int interpolation,int numin
 	ControlInput* input = xDynamicCast<ControlInput*>(this->inputs[id]);
 	input->SetGradient(interpolation,numindices,indices,values);
 }/*}}}*/
-void Inputs::SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values,int n){/*{{{*/
-
-	/*Get input id*/
-	int id = EnumToIndex(enum_in);
-
-	/*Create it if necessary*/
-	if(!this->inputs[id]) _error_("could not find Input "<<EnumToStringx(enum_in));
-	if( this->inputs[id]->ObjectEnum()!=ControlInputEnum) _error_("Input "<<EnumToStringx(enum_in)<<" is not a ControlInput");
-
-	/*Set input*/
-	ControlInput* input = xDynamicCast<ControlInput*>(this->inputs[id]);
-	input->SetGradient(interpolation,numindices,indices,values,n);
-}/*}}}*/
 void Inputs::SetTriaDatasetInput(int enum_in,int id_in,int interpolation,int numindices,int* indices,IssmDouble* values){/*{{{*/
 
 	bool recreate = false;
