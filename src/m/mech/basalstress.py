@@ -41,7 +41,6 @@ def basalstress(md):
     if isinstance(md.friction,friction):
         # calculate effective pressure using coupling definition in md.friction
         N = effectivepressure(md) # effective pressure (Pa)
-        print(np.any(np.isnan(N)))
 
         # compute exponents
         s=averaging(md,1/md.friction.p,0)
