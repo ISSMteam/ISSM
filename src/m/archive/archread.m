@@ -1,9 +1,11 @@
 function [archive_data]=archread(filename,varargin) % {{{
-%ARCHREAD - Given a variable name list of variable names (given as separate arguments),
-%	find and return the data associated with those variable names
+%ARCHREAD - return field from test archive
 %
-%	Usage:
-%		archive_data = archread('archive101.arch','archive101_field1');
+%   Given a variable name list of variable names (given as separate arguments),
+%   find and return the data associated with those variable names
+%
+%   Usage:
+%      archive_data = archread('../Archives/Archive101.arch','Archive101_field1');
 
 	nvarargs=length(varargin);
 
@@ -69,7 +71,7 @@ function [archive_data]=archread(filename,varargin) % {{{
 	fclose(fid);
 end%}}}
 
-%Helper functions{{{
+%Helper functions
 function [code]=format_archive_code(format) % {{{
 %Given a format, return corresponding code (for reading and writing)
 	if ischar(format)
@@ -98,4 +100,3 @@ function [data]=read_vector(fid) % {{{
 	cols=fread(fid,1,'int','ieee-be');
 	data=fread(fid,[rows,cols],'double','ieee-be');
 end%}}}
-%}}}
