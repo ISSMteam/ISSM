@@ -76,36 +76,35 @@ Friction::Friction(Element* element_in){/*{{{*/
       default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
 
-	if(this->law==1 || this->law==2){
-		element_in->FindParam(&linearization_type,FrictionLinearizeEnum);
-		if(linearization_type==0){
-			/*Don't do anything*/
+	/*How is friction integrated (linearized or not)*/
+	element_in->FindParam(&linearization_type,FrictionLinearizeEnum);
+	if(linearization_type==0){
+		/*Don't do anything*/
+	}
+	else if(linearization_type==1){
+		int numvertices = this->element->GetNumberOfVertices();
+		this->alpha2_list            = xNew<IssmDouble>(numvertices);
+		this->alpha2_complement_list = xNew<IssmDouble>(numvertices);
+		Gauss* gauss=this->element->NewGauss();
+		for(int iv=0;iv<numvertices;iv++){
+			gauss->GaussVertex(iv);
+			this->GetAlpha2(&this->alpha2_list[iv], gauss);
+			this->GetAlphaComplement(&this->alpha2_complement_list[iv], gauss);
 		}
-		else if(linearization_type==1){
-			int numvertices = this->element->GetNumberOfVertices();
-			this->alpha2_list            = xNew<IssmDouble>(numvertices);
-			this->alpha2_complement_list = xNew<IssmDouble>(numvertices);
-			Gauss* gauss=this->element->NewGauss();
-			for(int iv=0;iv<numvertices;iv++){
-				gauss->GaussVertex(iv);
-				this->GetAlpha2(&this->alpha2_list[iv], gauss);
-				this->GetAlphaComplement(&this->alpha2_complement_list[iv], gauss);
-			}
-			this->linearize = linearization_type; /*Change back, we are now all set!*/
-			delete gauss;
-		}
-		else if(linearization_type==2){
-			this->alpha2_list            = xNew<IssmDouble>(1);
-			this->alpha2_complement_list = xNew<IssmDouble>(1);
-			Gauss* gauss=element->NewGauss(1); gauss->GaussPoint(0);
-			this->GetAlpha2(&this->alpha2_list[0], gauss);
-			this->GetAlphaComplement(&this->alpha2_complement_list[0], gauss);
-			this->linearize = linearization_type; /*Change back, we are now all set!*/
-			delete gauss;
-		}
-		else{
-			_error_("not supported yet");
-		}
+		this->linearize = linearization_type; /*Change back, we are now all set!*/
+		delete gauss;
+	}
+	else if(linearization_type==2){
+		this->alpha2_list            = xNew<IssmDouble>(1);
+		this->alpha2_complement_list = xNew<IssmDouble>(1);
+		Gauss* gauss=element->NewGauss(1); gauss->GaussPoint(0);
+		this->GetAlpha2(&this->alpha2_list[0], gauss);
+		this->GetAlphaComplement(&this->alpha2_complement_list[0], gauss);
+		this->linearize = linearization_type; /*Change back, we are now all set!*/
+		delete gauss;
+	}
+	else{
+		_error_("not supported yet");
 	}
 
 	#ifdef _HAVE_PyBind11_
