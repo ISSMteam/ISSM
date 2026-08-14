@@ -2,7 +2,7 @@ function str = convert2str(field)
 
 	str = parsedisplay(field);
 
-end %function
+end
 
 function str = parsedisplay(field) % {{{
 
@@ -62,8 +62,7 @@ function str = parsedisplay(field) % {{{
 
     end
 
-end
-
+end % }}}
 function str = displayunit(characterization)% {{{
 
 	%take care of characterization
@@ -77,8 +76,7 @@ function str = displayunit(characterization)% {{{
     str = characterization;
 	
 end% }}}
-
-function str = cell_display(field)
+function str = cell_display(field) % {{{
 
 	%initialization
 	string='{';
@@ -104,8 +102,7 @@ function str = cell_display(field)
     str = string;
     
     %disp(sprintf(string));
-end
-
+end % }}}
 function str = struct_display(field) % {{{
 
 	if ~isempty(fieldnames(field))
