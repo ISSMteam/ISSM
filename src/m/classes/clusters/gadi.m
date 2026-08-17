@@ -13,7 +13,7 @@ classdef gadi
 		moduleload     = {};
 		moduleuse      = {};
 		numnodes       = 1;
-		cpuspernode		= 4; 
+		cpuspernode		= 48; 
 		memory			= 40 % e.g., '40GB'
 		port           = 0; % typical SSH port
 		queue          = 'normal';
@@ -76,7 +76,7 @@ classdef gadi
 		function md = checkconsistency(cluster,md,solution,analyses) % {{{
 
 			queuestruct = struct('normal',[48*60, 3072],... % e.g. up to 48h, 3072 cores
-				'express',[2*60, 960],... % e.g. up to 2h, 960 cors
+				'express',[2*60, 960],... % e.g. up to 2h, 960 cores
 				'hugemem',[48*60, 3072]);
 			available_queues = fieldnames(queuestruct);
 			queue_requirements_time = zeros(length(available_queues),1);
