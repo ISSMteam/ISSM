@@ -14,9 +14,20 @@ end
 %Do we specify axes?
 if exist(options,'axes')
 	ax = getfieldvalue(options,'axes');
-	ha = axes('Units','normalized', ...
-		'Position',ax,'XTickLabel','','YTickLabel','',...
-		'Visible',visible,'box',box);
+
+	%Check whether axis is a handle
+	if isa(ax,'matlab.graphics.axis.Axes')
+		% Specified axes is a handle.
+		axes(ax);
+	elseif isa(ax,'double')
+		% Specified axes is a position vector.
+		assert(length(ax) == 4, 'Error: axes option for poisition must be (1, 4) = [x0, y0, width, height].');
+		ha = axes('Units','normalized', ...
+			'Position',ax,'XTickLabel','','YTickLabel','',...
+			'Visible',visible,'box',box);
+	else
+		error('Error: not supported axes option type.');
+	end
 	return
 end
 
