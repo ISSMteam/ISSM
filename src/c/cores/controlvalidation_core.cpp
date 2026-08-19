@@ -274,9 +274,6 @@ void controlvalidation_core(FemModel* femmodel){
 	for(int i=0;i<2*num;i++) J_passive[i]=reCast<IssmPDouble>(output[i]);
 	femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,J_passive,num,2,0,0));
 	xDelete<IssmPDouble>(J_passive);
-	IssmDouble* aG=xNew<IssmDouble>(n);
-	for(int i=0;i<n;i++) aG[i] = G[i];
-	xDelete<IssmDouble>(aG);
 	#else
 	femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,output,num,2,0,0));
 	#endif

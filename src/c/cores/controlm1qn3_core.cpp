@@ -153,14 +153,11 @@ void controlm1qn3_core(FemModel* femmodel){/*{{{*/
 	/*Set X as our new control (need to recast)*/
 	#ifdef _HAVE_AD_
 	IssmDouble* aX=xNew<IssmDouble>(intn);
-	IssmDouble* aG=xNew<IssmDouble>(intn);
 	for(int i=0;i<intn;i++) {
 		aX[i] = reCast<IssmDouble>(X[i]); 
-		aG[i] = reCast<IssmDouble>(G[i]);
 	}
 	SetControlInputsFromVectorx(femmodel,aX);
 	xDelete(aX);
-	xDelete(aG);
 	#else
 	SetControlInputsFromVectorx(femmodel,X);
 	#endif
