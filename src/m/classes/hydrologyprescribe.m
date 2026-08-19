@@ -10,6 +10,7 @@ classdef hydrologyprescribe
 	end
 	methods
 		function self = extrude(self,md) % {{{
+			self.head=project3d(md,'vector',self.head,'type','node','layer',1);
 		end % }}}
 		function self = hydrologyprescribe(varargin) % {{{
 			switch nargin 
