@@ -23,7 +23,6 @@ class ControlParam: public Param{
 		IssmDouble* value;   //Can either be a VecParam or a TransientParam
 		IssmDouble* minvalue;
 		IssmDouble* maxvalue;
-		IssmDouble* gradient; 
 		int         enum_type;
 		int         M,N;
 

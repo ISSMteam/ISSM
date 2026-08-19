@@ -16,7 +16,6 @@ ControlParam::ControlParam(){/*{{{*/
 	this->value = NULL;
 	this->minvalue = NULL;
 	this->maxvalue = NULL;
-	this->gradient = NULL; 
 	return;
 }
 /*}}}*/
@@ -40,14 +39,12 @@ ControlParam::ControlParam(IssmDouble* in_value, IssmDouble* in_minvalue, IssmDo
 	xMemCpy<IssmDouble>(minvalue,in_minvalue,N);
 	this->maxvalue=xNew<IssmDouble>(N);
 	xMemCpy<IssmDouble>(maxvalue,in_maxvalue,N);
-	this->gradient=xNewZeroInit<IssmDouble>(N);
 }
 /*}}}*/
 ControlParam::~ControlParam(){/*{{{*/
 	xDelete<IssmDouble>(value);
 	xDelete<IssmDouble>(minvalue);
 	xDelete<IssmDouble>(maxvalue);
-	xDelete<IssmDouble>(gradient);
 	return;
 }
 /*}}}*/
@@ -71,10 +68,6 @@ Param* ControlParam::copy() {/*{{{*/
 		output->maxvalue=xNew<IssmDouble>(this->N);
 		xMemCpy<IssmDouble>(output->maxvalue,this->maxvalue,this->N);
 	}
-	if(gradient){
-		output->gradient=xNew<IssmDouble>(this->N);
-		xMemCpy<IssmDouble>(output->gradient,this->gradient,this->N);
-	}
 	return output;
 
 }
@@ -91,7 +84,6 @@ void ControlParam::DeepEcho(void){/*{{{*/
 	if (maxvalue) _printf_("---maxvalue: ");
 	for(int i=0;i<this->M;i++) _printf_(" "<< this->maxvalue[i]);
 	_printf_("]\n");
-	if (gradient) _printf_("---gradient: " << this->gradient << "\n");
 }
 /*}}}*/
 void ControlParam::Echo(void){/*{{{*/
@@ -110,7 +102,6 @@ void ControlParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->value,this->M*this->N);
 	marshallhandle->call(this->minvalue,this->N);
 	marshallhandle->call(this->maxvalue,this->N);
-	marshallhandle->call(this->gradient,this->N);
 
 }
 /*}}}*/
@@ -133,9 +124,6 @@ void  ControlParam::GetParameterValue(IssmDouble** poutput,int* pN, const char* 
 	}
 	else if (strcmp(data,"upperbound")==0){
 		xMemCpy<IssmDouble>(output,maxvalue,N);
-	}
-	else if (strcmp(data,"gradient")==0){
-		xMemCpy<IssmDouble>(output,gradient,N);
 	}
 	else{
 		_error_("Data " << data << " not supported yet");
