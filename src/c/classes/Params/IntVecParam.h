@@ -6,7 +6,6 @@
 #define _INTVECPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,31 +14,29 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class IntVecParam: public Param{
 
-	private: 
+	private:
 		int  M;
 		int* values;
 
 	public:
-		/*IntVecParam constructors, destructors: {{{*/
+		/*IntVecParam constructors, destructors:*/
 		IntVecParam();
 		IntVecParam(int enum_type,int* values,int M);
 		IntVecParam(int enum_type,IssmDouble* values,int M);
 		~IntVecParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return IntVecParamEnum;}
-		/*}}}*/
-		/*Param virtual functions definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return IntVecParamEnum;}
+
+		/*Param virtual functions definitions:*/
 		void  GetParameterValue(int** pintarray,int* pM);
 		void  SetValue(int* intarray,int M);
-		/*}}}*/
 };
 #endif

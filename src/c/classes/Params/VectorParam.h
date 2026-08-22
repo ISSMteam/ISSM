@@ -6,7 +6,6 @@
 #define _VECTORPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,29 +14,27 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class VectorParam: public Param{
 
-	private: 
+	private:
 		Vector<IssmDouble>* value;
 
 	public:
-		/*VectorParam constructors, destructors: {{{*/
+		/*VectorParam constructors, destructors:*/
 		VectorParam();
 		VectorParam(int enum_type,Vector<IssmDouble>* value);
 		~VectorParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
-		int   ObjectEnum(){return VectorParamEnum;}
-		/*}}}*/
-		/*Param vritual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
+		int    ObjectEnum(){return VectorParamEnum;}
+
+		/*Param vritual function definitions:*/
 		void  GetParameterValue(Vector<IssmDouble>** poutput);
 		void  SetValue(Vector<IssmDouble>* vec);
-		/*}}}*/
 };
 #endif  /* _VECTORPARAM_H */

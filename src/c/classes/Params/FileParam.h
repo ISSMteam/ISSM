@@ -6,7 +6,6 @@
 #define _FILEPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,28 +14,26 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class FileParam: public Param{
 
-	private: 
+	private:
 		FILE* value;
 
 	public:
-		/*FileParam constructors, destructors: {{{*/
+		/*FileParam constructors, destructors:*/
 		FileParam();
 		FileParam(int enum_type,FILE* fid);
 		~FileParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return FileParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return FileParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(FILE** pfid){*pfid=value;};
-		/*}}}*/
 };
 #endif  /* _INTPARAM_H */

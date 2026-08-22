@@ -6,7 +6,6 @@
 #define _DOUBLETRANSIENTMATPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,13 +14,11 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class DoubleTransientMatParam: public DoubleMatParam{
 
 	public:
-		/*DoubleTransientMatParam constructors, destructors: {{{*/
+		/*DoubleTransientMatParam constructors, destructors:*/
 		DoubleTransientMatParam(int enum_type,IssmDouble* value,int M,int N);
-		/*}}}*/
 };
 #endif  /* _DOUBLETRANSIENTMATPARAM_H */

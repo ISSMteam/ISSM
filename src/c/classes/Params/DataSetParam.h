@@ -6,7 +6,6 @@
 #define _DATASETPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,28 +14,26 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class DataSetParam: public Param{
 
 	public:
 		DataSet* value;
 
-		/*DataSetParam constructors, destructors: {{{*/
+		/*DataSetParam constructors, destructors:*/
 		DataSetParam();
 		DataSetParam(int enum_type,DataSet* dataset);
 		~DataSetParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return DataSetParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return DataSetParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(DataSet** pdataset);
 		void  SetValue(DataSet* dataset);
-		/*}}}*/
 };
 #endif  /* _INTPARAM_H */

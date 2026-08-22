@@ -6,7 +6,6 @@
 #define _INTMATPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,31 +14,29 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class IntMatParam: public Param{
 
-	private: 
+	private:
 		int* value;
 		int M;
 		int N;
 
 	public:
-		/*IntMatParam constructors, destructors: {{{*/
+		/*IntMatParam constructors, destructors:*/
 		IntMatParam();
 		IntMatParam(int enum_type,int* value,int M,int N);
 		~IntMatParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return IntMatParamEnum;}
-		/*}}}*/
-		/*Param vritual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return IntMatParamEnum;}
+
+		/*Param vritual function definitions:*/
 		void  GetParameterValue(int** pintarray,int* pM,int* pN);
 		void  SetValue(int* intarray,int M,int N);
-		/*}}}*/
 };
 #endif  /* _INTMATPARAM_H */

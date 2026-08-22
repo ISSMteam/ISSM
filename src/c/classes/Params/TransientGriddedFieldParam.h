@@ -6,7 +6,6 @@
 #define _TRANSIENTGRIDDEDFIELDPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,11 +14,10 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class TransientGriddedFieldParam: public Param{
 
-	protected: 
+	protected:
 		int         N;
 		int         M;
 		int         MN;
@@ -30,29 +28,24 @@ class TransientGriddedFieldParam: public Param{
 		IssmDouble *timesteps;
 
 	public:
-		/*TransientGriddedFieldParam: constructors, destructors: {{{*/
+		/*TransientGriddedFieldParam: constructors, destructors:*/
 		TransientGriddedFieldParam();
 		TransientGriddedFieldParam(int in_enum_type,IssmDouble* in_values,IssmDouble* in_time,bool interpolation_on,bool cycle_in,int in_N,int in_M, int in_T);
 		~TransientGriddedFieldParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return TransientGriddedFieldParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
-		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time) {_error_("Parameter " <<EnumToStringx(enum_type) << " needs row and column to be specified");}
-		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time, int timestepping, IssmDouble dt){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row and column to be specified");}
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return TransientGriddedFieldParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time);
 		void  GetParameterValue(IssmDouble* pdouble,int* index,int row,int column,IssmDouble time);
 		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble timestart,IssmDouble timeend);
 		void  GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time, int timestepping, IssmDouble dt);
-		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}
-		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping, IssmDouble dt){_error_("Parameter " <<EnumToStringx(enum_type) << " needs row to be specified");}
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time);
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble starttime,IssmDouble endtime);
-		/*}}}*/
 };
 #endif  /* _TRANSIENTGRIDDEDFIELDPARAM_H_ */

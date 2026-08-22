@@ -6,7 +6,6 @@
 #define _TRANSIENTPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,11 +14,10 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class TransientParam: public Param{
 
-	protected: 
+	protected:
 		int         N;
 		bool        interpolation;
 		bool        cycle;
@@ -27,21 +25,20 @@ class TransientParam: public Param{
 		IssmDouble *timesteps;
 
 	public:
-		/*TransientParam constructors, destructors: {{{*/
+		/*TransientParam constructors, destructors:*/
 		TransientParam();
 		TransientParam(int in_enum_type,IssmDouble* in_values,IssmDouble* in_time,bool interpolation_in,bool cycle_in,int in_N);
 		~TransientParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return TransientParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return TransientParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time);
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping,IssmDouble dt);
-		/*}}}*/
 };
 #endif  /* _TRANSIENTPARAM_H */

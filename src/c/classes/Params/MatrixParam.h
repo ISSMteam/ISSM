@@ -6,7 +6,6 @@
 #define _MATRIXPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,29 +14,27 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class MatrixParam: public Param{
 
-	private: 
+	private:
 		Matrix<IssmDouble>* value;
 
 	public:
-		/*MatrixParam constructors, destructors: {{{*/
+		/*MatrixParam constructors, destructors:*/
 		MatrixParam();
 		MatrixParam(int enum_type,Matrix<IssmDouble>* value);
 		~MatrixParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
-		int   ObjectEnum(){return MatrixParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
+		int    ObjectEnum(){return MatrixParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(Matrix<IssmDouble>** poutput);
 		void  SetValue(Matrix<IssmDouble>* mat);
-		/*}}}*/
 };
 #endif  /* _MATRIXPARAM_H */

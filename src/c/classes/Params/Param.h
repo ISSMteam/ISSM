@@ -6,8 +6,6 @@
 #define _PARAM_H_
 
 /*Headers:*/
-/*{{{*/
-
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -16,7 +14,6 @@
 
 #include "../../datastructures/datastructures.h"
 #include "../Node.h"
-/*}}}*/
 
 class Param: public Object{
 

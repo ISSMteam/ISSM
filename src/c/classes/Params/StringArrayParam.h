@@ -6,7 +6,6 @@
 #define _STRINGARRAYPARAM_H_
 
 /*Headers:*/
-/*{{{*/
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #else
@@ -15,30 +14,28 @@
 
 #include "./Param.h"
 #include "../../shared/shared.h"
-/*}}}*/
 
 class StringArrayParam: public Param{
 
-	private: 
+	private:
 		char**   value;
 		int      numstrings;
 
 	public:
-		/*StringArrayParam constructors, destructors: {{{*/
+		/*StringArrayParam constructors, destructors:*/
 		StringArrayParam();
 		StringArrayParam(int enum_type,char** values, int numstrings);
 		~StringArrayParam();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Param* copy();
-		void  DeepEcho();
-		void  Echo();
-		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum(){return StringArrayParamEnum;}
-		/*}}}*/
-		/*Param virtual function definitions: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return StringArrayParamEnum;}
+
+		/*Param virtual function definitions:*/
 		void  GetParameterValue(char*** pstringarray,int* pM);
 		void  SetValue(char** stringarray,int M);
-		/*}}}*/
 };
 #endif  /* _STRINGARRAYPARAM_H */
