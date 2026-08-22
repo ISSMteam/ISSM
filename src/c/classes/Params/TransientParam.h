@@ -41,22 +41,8 @@ class TransientParam: public Param{
 		int   ObjectEnum();
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
-		void  GetParameterValue(int* pinteger){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return an integer");}
-		void  GetParameterValue(int** pintarray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return an array of integers");}
-		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a array of integers");}
-		void  GetParameterValue(IssmDouble* pIssmDouble){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time);
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time,int timestepping,IssmDouble dt);
-		void  GetParameterValue(char** pstring){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a string");}
-		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a string array");}
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, const char* data){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
-		void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a matrix array");}
-		void  GetParameterValue(Vector<IssmDouble>** pvec){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a Vec");}
-		void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a Mat");}
-		void  GetParameterValue(FILE** pfid){_error_("Parameter " <<EnumToStringx(enum_type) << " cannot return a FILE");}
-		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a DataSet");}
 		/*}}}*/
 };
 #endif  /* _TRANSIENTPARAM_H */

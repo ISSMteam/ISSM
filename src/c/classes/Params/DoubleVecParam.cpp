@@ -100,10 +100,6 @@ void  DoubleVecParam::GetParameterValue(IssmDouble** poutput,int* pM,int* pN){/*
 	*poutput=output;
 }
 /*}}}*/
-void  DoubleVecParam::GetParameterValue(int** pintarray,int* pM){/*{{{*/
-	_error_("DoubleVec param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of int");
-}
-/*}}}*/
 void  DoubleVecParam::SetValue(IssmDouble* IssmDoublearray,int in_M){/*{{{*/
 
 	/*avoid leak: */

@@ -98,10 +98,6 @@ void  DoubleMatParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,in
 	*pIssmDoublearray=output;
 }
 /*}}}*/
-void  DoubleMatParam::GetParameterValue(int** pintarray,int* pM,int* pN){/*{{{*/
-	_error_("DoubleMat of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of int");
-}
-/*}}}*/
 void  DoubleMatParam::SetValue(IssmDouble* IssmDoublearray,int in_M,int in_N){/*{{{*/
 
 	/*avoid leak: */

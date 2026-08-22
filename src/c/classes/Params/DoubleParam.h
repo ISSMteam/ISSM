@@ -38,23 +38,9 @@ class DoubleParam: public Param{
 		int   ObjectEnum();
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
-		void  GetParameterValue(bool* pbool);
-		void  GetParameterValue(int* pinteger);
-		void  GetParameterValue(int** pintarray,int* pM);
-		void  GetParameterValue(int** pintarray,int* pM,int* pN);
 		void  GetParameterValue(IssmDouble* pIssmDouble){*pIssmDouble=value;};
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time){*pdouble=value;};
 		void  GetParameterValue(IssmDouble* pdouble,IssmDouble time, int timestepping, IssmDouble dt){*pdouble=value;};
-		void  GetParameterValue(char** pstring){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string");}
-		void  GetParameterValue(char*** pstringarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a string array");}
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM);
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, int* pN);
-		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM, const char* data){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble array");}
-		void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a matrix array");}
-		void  GetParameterValue(Vector<IssmDouble>** pvec){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Vec");}
-		void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Mat");}
-		void  GetParameterValue(FILE** pfid){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a FILE");}
-		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a DataSet");}
 		void  SetValue(bool boolean){this->value=(IssmDouble)boolean;}
 		void  SetValue(int integer){this->value=(IssmDouble)integer;}
 		void  SetValue(IssmDouble scalar){this->value=(IssmDouble)scalar;}
