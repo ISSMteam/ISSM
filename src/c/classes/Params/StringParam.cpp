@@ -56,12 +56,6 @@ void StringParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->value);
 }
 /*}}}*/
-int StringParam::ObjectEnum(void){/*{{{*/
-
-	return StringParamEnum;
-
-}
-/*}}}*/
 
 /*StringParam virtual functions definitions: */
 void  StringParam::GetParameterValue(char** pstring){/*{{{*/

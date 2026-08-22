@@ -32,7 +32,7 @@ class DataSetParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return DataSetParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(DataSet** pdataset);

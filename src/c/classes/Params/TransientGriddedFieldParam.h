@@ -40,7 +40,7 @@ class TransientGriddedFieldParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return TransientGriddedFieldParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time) {_error_("Parameter " <<EnumToStringx(enum_type) << " needs row and column to be specified");}

@@ -84,12 +84,6 @@ void IntVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  IntVecParam::ObjectEnum(void){/*{{{*/
-
-	return IntVecParamEnum;
-
-}
-/*}}}*/
 
 /*IntVecParam virtual functions definitions: */
 void  IntVecParam::GetParameterValue(int** pintarray,int* pM){/*{{{*/

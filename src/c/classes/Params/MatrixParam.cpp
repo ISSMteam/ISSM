@@ -56,12 +56,6 @@ void MatrixParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int MatrixParam::ObjectEnum(void){/*{{{*/
-
-	return MatrixParamEnum;
-
-}
-/*}}}*/
 
 /*MatrixParam virtual functions definitions: */
 void  MatrixParam::GetParameterValue(Matrix<IssmDouble>** poutput){/*{{{*/

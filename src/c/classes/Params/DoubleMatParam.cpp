@@ -59,12 +59,6 @@ void DoubleMatParam::DeepEcho(void){/*{{{*/
 	}
 }
 /*}}}*/
-int DoubleMatParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleMatParamEnum;
-
-}
-/*}}}*/
 Param* DoubleMatParam::copy() {/*{{{*/
 
 	return new DoubleMatParam(this->enum_type,this->value,this->M,this->N);

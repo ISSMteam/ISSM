@@ -33,7 +33,7 @@ class MatrixParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
-		int   ObjectEnum();
+		int   ObjectEnum(){return MatrixParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(Matrix<IssmDouble>** poutput);

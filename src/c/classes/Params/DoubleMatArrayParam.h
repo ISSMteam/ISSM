@@ -36,7 +36,7 @@ class DoubleMatArrayParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return DoubleMatArrayParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(IssmDouble*** parray, int* pM,int** pmdims, int** pndims);

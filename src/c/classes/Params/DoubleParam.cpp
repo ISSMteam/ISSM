@@ -52,10 +52,4 @@ void DoubleParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  DoubleParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleParamEnum;
-
-}
-/*}}}*/
 

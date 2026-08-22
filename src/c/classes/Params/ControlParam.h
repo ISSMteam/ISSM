@@ -36,7 +36,7 @@ class ControlParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return ControlParamEnum;}
 		/*}}}*/
 		/*Param virtual functions definitions: {{{*/
 		void  GetParameterValue(IssmDouble* pIssmDouble);

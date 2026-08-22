@@ -93,11 +93,6 @@ void TransientArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->timesteps,N);
 
 }/*}}}*/
-int  TransientArrayParam::ObjectEnum(void){/*{{{*/
-
-	return TransientArrayParamEnum;
-
-}/*}}}*/
 
 /*TransientArrayParam virtual functions definitions: */
 void  TransientArrayParam::GetParameterValue(IssmDouble* pdouble,int row,IssmDouble time){/*{{{*/

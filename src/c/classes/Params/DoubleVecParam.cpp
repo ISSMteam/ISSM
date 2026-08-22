@@ -66,12 +66,6 @@ void DoubleVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->values,this->M);
 }
 /*}}}*/
-int DoubleVecParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleVecParamEnum;
-
-}
-/*}}}*/
 
 /*DoubleVecParam virtual functions definitions: */
 void  DoubleVecParam::GetParameterValue(IssmDouble** poutput,int* pM){/*{{{*/

@@ -98,11 +98,6 @@ void TransientGriddedFieldParam::Marshall(MarshallHandle* marshallhandle){ /*{{{
 	marshallhandle->call(this->timesteps,T);
 
 }/*}}}*/
-int  TransientGriddedFieldParam::ObjectEnum(void){/*{{{*/
-
-	return TransientGriddedFieldParamEnum;
-
-}/*}}}*/
 
 /*TransientGriddedFieldParam virtual functions definitions: */
 void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,int column,IssmDouble time){/*{{{*/

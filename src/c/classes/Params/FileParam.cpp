@@ -61,9 +61,3 @@ void FileParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  FileParam::ObjectEnum(void){/*{{{*/
-
-	return FileParamEnum;
-
-}
-/*}}}*/

@@ -164,11 +164,5 @@ void EmulatorParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int EmulatorParam::ObjectEnum(void){/*{{{*/
-
-	return EmulatorParamEnum;
-
-}
-/*}}}*/
 
 /*EmulatorParam virtual functions definitions: */

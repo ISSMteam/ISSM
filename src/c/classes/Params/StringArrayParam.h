@@ -34,7 +34,7 @@ class StringArrayParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return StringArrayParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		void  GetParameterValue(char*** pstringarray,int* pM);

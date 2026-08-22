@@ -33,7 +33,7 @@ class VectorParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
-		int   ObjectEnum();
+		int   ObjectEnum(){return VectorParamEnum;}
 		/*}}}*/
 		/*Param vritual function definitions: {{{*/
 		void  GetParameterValue(Vector<IssmDouble>** poutput);

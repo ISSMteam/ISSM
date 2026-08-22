@@ -35,7 +35,7 @@ class IntMatParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return IntMatParamEnum;}
 		/*}}}*/
 		/*Param vritual function definitions: {{{*/
 		void  GetParameterValue(int** pintarray,int* pM,int* pN);

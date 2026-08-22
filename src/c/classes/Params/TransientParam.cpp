@@ -86,12 +86,6 @@ void TransientParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  TransientParam::ObjectEnum(void){/*{{{*/
-
-	return TransientParamEnum;
-
-}
-/*}}}*/
 
 /*TransientParam virtual functions definitions: */
 void  TransientParam::GetParameterValue(IssmDouble* pdouble,IssmDouble time){/*{{{*/

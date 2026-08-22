@@ -60,12 +60,6 @@ void DataSetParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int DataSetParam::ObjectEnum(void){/*{{{*/
-
-	return DataSetParamEnum;
-
-}
-/*}}}*/
 
 /*DataSetParam virtual functions definitions: */
 void DataSetParam::GetParameterValue(DataSet** pdataset){/*{{{*/

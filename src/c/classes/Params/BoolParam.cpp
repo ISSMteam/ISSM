@@ -53,9 +53,3 @@ void BoolParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->value);
 
 }/*}}}*/
-int BoolParam::ObjectEnum(void){/*{{{*/
-
-	return BoolParamEnum;
-
-}
-/*}}}*/

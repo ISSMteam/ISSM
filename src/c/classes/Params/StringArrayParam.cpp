@@ -90,12 +90,6 @@ void StringArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	}
 }
 /*}}}*/
-int StringArrayParam::ObjectEnum(void){/*{{{*/
-
-	return StringArrayParamEnum;
-
-}
-/*}}}*/
 
 /*StringArrayParam virtual functions definitions: */
 void  StringArrayParam::GetParameterValue(char*** pstringarray,int* pM){/*{{{*/

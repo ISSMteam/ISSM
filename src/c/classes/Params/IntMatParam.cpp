@@ -75,12 +75,6 @@ void IntMatParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->value,M*N);
 }
 /*}}}*/
-int  IntMatParam::ObjectEnum(void){/*{{{*/
-
-	return IntMatParamEnum;
-
-}
-/*}}}*/
 
 /*IntMatParam virtual functions definitions: */
 void  IntMatParam::GetParameterValue(int** pintarray,int* pM,int* pN){/*{{{*/

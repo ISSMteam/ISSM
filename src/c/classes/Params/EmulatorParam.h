@@ -37,7 +37,7 @@ class EmulatorParam: public Param{
 		void   DeepEcho();
 		void   Echo();
 		void   Marshall(MarshallHandle* marshallhandle);
-		int    ObjectEnum();
+		int    ObjectEnum(){return EmulatorParamEnum;}
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
 		/*}}}*/

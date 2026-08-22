@@ -54,9 +54,3 @@ void IntParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->enum_type);
 	marshallhandle->call(this->value);
 }/*}}}*/
-int  IntParam::ObjectEnum(void){/*{{{*/
-
-	return IntParamEnum;
-
-}
-/*}}}*/

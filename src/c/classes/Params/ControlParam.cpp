@@ -103,12 +103,6 @@ void ControlParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  ControlParam::ObjectEnum(void){/*{{{*/
-
-	return ControlParamEnum;
-
-}
-/*}}}*/
 
 void  ControlParam::GetParameterValue(IssmDouble** poutput,int* pN, const char* data){/*{{{*/
 

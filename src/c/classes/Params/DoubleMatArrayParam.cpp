@@ -138,12 +138,6 @@ void DoubleMatArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	}
 }
 /*}}}*/
-int DoubleMatArrayParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleMatArrayParamEnum;
-
-}
-/*}}}*/
 
 /*DoubleMatArrayParam virtual functions definitions: */
 void  DoubleMatArrayParam::GetParameterValue(IssmDouble*** pout_array, int* pout_M,int** pout_mdim_array, int** pout_ndim_array){/*{{{*/

@@ -34,7 +34,7 @@ class DoubleVecParam: public Param{
 		void  DeepEcho();
 		void  Echo();
 		void Marshall(MarshallHandle* marshallhandle);
-		int   ObjectEnum();
+		int   ObjectEnum(){return DoubleVecParamEnum;}
 		/*}}}*/
 		/*Param virtual functions definitions: {{{*/
 		void  GetParameterValue(IssmDouble** pIssmDoublearray,int* pM);
