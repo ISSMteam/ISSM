@@ -80,8 +80,6 @@ void DatasetInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  DatasetInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DatasetInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DatasetInputEnum;
@@ -140,9 +138,6 @@ void DatasetInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  DatasetInput::ObjectEnum(void){/*{{{*/
-	return DatasetInputEnum;
-}/*}}}*/
 
 void DatasetInput::SetTriaInput(int id,int interp_in,int numinds,int* rows,IssmDouble* values_in){ /*{{{*/
 

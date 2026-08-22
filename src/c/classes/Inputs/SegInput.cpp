@@ -104,9 +104,6 @@ void SegInput::Echo(void){/*{{{*/
 	}
 }
 /*}}}*/
-int  SegInput::Id(void){/*{{{*/
-	return -1;
-}/*}}}*/
 void SegInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = SegInputEnum;
@@ -127,10 +124,6 @@ void SegInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		this->element_values = xNewZeroInit<IssmDouble>(SegRef::NumberofNodes(this->interpolation));
 	}
 
-}
-/*}}}*/
-int  SegInput::ObjectEnum(void){/*{{{*/
-	return SegInputEnum;
 }
 /*}}}*/
 

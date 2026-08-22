@@ -99,8 +99,6 @@ void ControlInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  ControlInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = ControlInputEnum;
@@ -136,12 +134,6 @@ void ControlInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	this->values->Marshall(marshallhandle);
 	this->minvalues->Marshall(marshallhandle);
 	this->maxvalues->Marshall(marshallhandle);
-}
-/*}}}*/
-int  ControlInput::ObjectEnum(void){/*{{{*/
-
-	return ControlInputEnum;
-
 }
 /*}}}*/
 

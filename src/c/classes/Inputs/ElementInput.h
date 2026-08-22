@@ -1,5 +1,5 @@
-#ifndef _ELEMENTINPUT2_H_
-#define _ELEMENTINPUT2_H_
+#ifndef _ELEMENTINPUT_H_
+#define _ELEMENTINPUT_H_
 
 /*Headers:*/
 #include "./Input.h"
@@ -21,13 +21,13 @@ class ElementInput: public Input{
 		ElementInput();
 		~ElementInput();
 
+		/*Non virtual functions*/
 		int  GetInputInterpolationType();
 
 		/*Object virtual functions definitions:*/
 		virtual Input *copy()=0;
 		virtual void    DeepEcho()=0;
 		virtual void    Echo()=0;
-		virtual int     Id()=0;
 		virtual void    Marshall(MarshallHandle* marshallhandle)=0;
 		virtual int     ObjectEnum()=0;
 		/*Other*/

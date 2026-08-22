@@ -70,9 +70,6 @@ void ArrayInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  ArrayInput::Id(void){/*{{{*/
-	return -1;
-}/*}}}*/
 void ArrayInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = ArrayInputEnum;
@@ -112,10 +109,6 @@ void ArrayInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 			}
 		}
 	}
-}
-/*}}}*/
-int  ArrayInput::ObjectEnum(void){/*{{{*/
-	return ArrayInputEnum;
 }
 /*}}}*/
 

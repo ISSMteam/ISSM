@@ -21,21 +21,20 @@ class ControlInput: public Input{
 		Input *minvalues;
 		Input *values;
 
-		/*ControlInput constructors, destructors: {{{*/
+		/*ControlInput constructors, destructors:*/
 		ControlInput();
 		ControlInput(int nbe, int nbv,int input_layout_enum,int interp,int id);
 		ControlInput(int enum_in,int nbe, int nbv,int id,IssmDouble* times, int numtimes);
 		~ControlInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input* copy();
 		void   Configure(Parameters* params);
 		void   DeepEcho();
 		void   Echo();
-		int    Id(); 
 		void   Marshall(MarshallHandle* marshallhandle);
-		int    ObjectEnum();
-		/*}}}*/
+		int    ObjectEnum(){return ControlInputEnum;}
+
 		void SetInput(Input* in_input){_error_("not impelemented");};
 		void SetInput(Input* in_input,int timeoffset){_error_("not impelemented");};
 		ElementInput*   GetInput(const char* data);

@@ -122,9 +122,6 @@ void PentaInput::Echo(void){/*{{{*/
 	}
 }
 /*}}}*/
-int  PentaInput::Id(void){/*{{{*/
-	return -1;
-}/*}}}*/
 void PentaInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = PentaInputEnum;
@@ -145,10 +142,6 @@ void PentaInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
 		this->element_values = xNewZeroInit<IssmDouble>(PentaRef::NumberofNodes(this->interpolation));
 	}
-}
-/*}}}*/
-int  PentaInput::ObjectEnum(void){/*{{{*/
-	return PentaInputEnum;
 }
 /*}}}*/
 

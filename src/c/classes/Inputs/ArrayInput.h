@@ -12,19 +12,18 @@ class ArrayInput: public Input{
 		IssmDouble** values;
 
 	public:
-		/*ArrayInput constructors, destructors: {{{*/
+		/*ArrayInput constructors, destructors:*/
 		ArrayInput();
 		ArrayInput(int nbe_in);
 		~ArrayInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return ArrayInputEnum;}
+
 		/*ArrayInput management:*/
 		void SetInput(int row,int numinds,IssmDouble* values_in);
 		void GetArray(int row,IssmDouble** pvalues,int* pN);

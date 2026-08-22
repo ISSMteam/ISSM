@@ -23,6 +23,7 @@ class Input: public Object{
 	public:
 
 		/*Non virtual functions*/
+		int  Id(){return -1;};
 		int  InstanceEnum(){return this->enum_type;};
 		void ChangeEnum(int newenumtype){this->enum_type=newenumtype;};
 

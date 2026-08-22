@@ -12,19 +12,18 @@ class IntArrayInput: public Input{
 		int** values;
 
 	public:
-		/*IntArrayInput constructors, destructors: {{{*/
+		/*IntArrayInput constructors, destructors:*/
 		IntArrayInput();
 		IntArrayInput(int nbe_in);
 		~IntArrayInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return IntArrayInputEnum;}
+
 		/*IntArrayInput management:*/
 		void SetInput(int row,int numinds,int* values_in);
 		void GetArray(int row,int** pvalues,int* pN);

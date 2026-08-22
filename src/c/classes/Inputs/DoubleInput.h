@@ -11,23 +11,20 @@ class DoubleInput: public Input{
 		IssmDouble*  values;
 
 	public:
-		/*DoubleInput constructors, destructors: {{{*/
+		/*DoubleInput constructors, destructors:*/
 		DoubleInput();
 		DoubleInput(int size_in);
 		~DoubleInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
-		/*DoubleInput management: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return DoubleInputEnum;}
+
+		/*DoubleInput management:*/
 		void GetInput(IssmDouble* pvalue,int index);
 		void SetInput(int index,IssmDouble value);
-		/*}}}*/
-
 };
 #endif  /* _BOOLINPUT_H */

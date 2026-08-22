@@ -51,8 +51,6 @@ void DoubleInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  DoubleInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleInputEnum;
@@ -63,12 +61,6 @@ void DoubleInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		marshallhandle->call(this->values,this->size);
 	}
 	else this->values = NULL;
-
-}
-/*}}}*/
-int  DoubleInput::ObjectEnum(void){/*{{{*/
-
-	return DoubleInputEnum;
 
 }
 /*}}}*/

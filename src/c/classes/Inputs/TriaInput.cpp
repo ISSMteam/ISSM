@@ -109,9 +109,6 @@ void TriaInput::Echo(void){/*{{{*/
 	}
 }
 /*}}}*/
-int  TriaInput::Id(void){/*{{{*/
-	return -1;
-}/*}}}*/
 void TriaInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = TriaInputEnum;
@@ -133,10 +130,6 @@ void TriaInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		this->element_values = xNewZeroInit<IssmDouble>(TriaRef::NumberofNodes(this->interpolation));
 	}
 
-}
-/*}}}*/
-int  TriaInput::ObjectEnum(void){/*{{{*/
-	return TriaInputEnum;
 }
 /*}}}*/
 
