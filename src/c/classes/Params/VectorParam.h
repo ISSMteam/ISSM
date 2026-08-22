@@ -20,8 +20,6 @@
 class VectorParam: public Param{
 
 	private: 
-		/*just hold 3 values for 3 vertices: */
-		int enum_type;
 		Vector<IssmDouble>* value;
 
 	public:
@@ -39,7 +37,6 @@ class VectorParam: public Param{
 		int   ObjectEnum();
 		/*}}}*/
 		/*Param vritual function definitions: {{{*/
-		void  GetParameterValue(bool* pbool){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an integer");}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an array of integers");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an array of integers");}
@@ -56,8 +53,6 @@ class VectorParam: public Param{
 		void  GetParameterValue(Vector<IssmDouble>** poutput);
 		void  GetParameterValue(FILE** pfid){_error_("Vector of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return a FILE");}
 		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a DataSet");}
-		int   InstanceEnum(){return enum_type;}
-
 		void  SetEnum(int enum_in){this->enum_type = enum_in;};
 		void  SetValue(bool boolean){_error_("Vector of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot hold a boolean");}
 		void  SetValue(int integer){_error_("Vector of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot hold an integer");}

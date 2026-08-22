@@ -19,6 +19,7 @@ class Input: public Object{
 
 	private:
 		int enum_type;
+
 	public:
 
 		/*Non virtual functions*/

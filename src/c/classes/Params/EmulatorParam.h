@@ -19,9 +19,6 @@
 namespace py = pybind11;
 class EmulatorParam: public Param{
 
-	private: 
-		int   enum_type;
-
 	public:
 		char*                module_dir;
 		char*                   pt_name;
@@ -44,7 +41,6 @@ class EmulatorParam: public Param{
 		int    ObjectEnum();
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
-		void  GetParameterValue(bool* pbool){  _error_("Param "<< EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a IssmDouble");}
@@ -61,8 +57,6 @@ class EmulatorParam: public Param{
 		void  GetParameterValue(Vector<IssmDouble>** pvec){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Vec");}
 		void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Mat");}
 		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Dataset");}
-		int   InstanceEnum(){return enum_type;}
-
 		void  SetEnum(int enum_in){this->enum_type = enum_in;};
 		void  SetValue(bool boolean){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}
 		void  SetValue(int integer){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}

@@ -20,8 +20,6 @@
 class IntParam: public Param{
 
 	private: 
-		/*just hold 3 values for 3 vertices: */
-		int enum_type;
 		IssmInt value;
 
 	public:
@@ -39,7 +37,6 @@ class IntParam: public Param{
 		int   ObjectEnum();
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
-		void  GetParameterValue(bool* pbool){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){*pinteger=value;}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an array of integers");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an array of integers");}
@@ -56,8 +53,6 @@ class IntParam: public Param{
 		void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Mat");}
 		void  GetParameterValue(FILE** pfid){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a FILE");}
 		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a DataSet");}
-		int   InstanceEnum(){return enum_type;}
-
 		void  SetEnum(int enum_in){this->enum_type = enum_in;};
 		void  SetValue(bool boolean){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a bool");}
 		void  SetValue(int integer){this->value=integer;}

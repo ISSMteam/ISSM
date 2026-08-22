@@ -20,7 +20,6 @@
 class DoubleMatParam: public Param{
 
 	protected: 
-		int         enum_type;
 		IssmDouble *value;
 		int         M;
 		int         N;
@@ -40,8 +39,6 @@ class DoubleMatParam: public Param{
 		void Marshall(MarshallHandle* marshallhandle);
 		/*}}}*/
 		/*Param virtual function definitions: {{{*/
-		int   InstanceEnum(){return enum_type;}
-		void  GetParameterValue(bool* pbool){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a bool");}
 		void  GetParameterValue(int* pinteger){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an integer");}
 		void  GetParameterValue(int** pintarray,int* pM){_error_("Param "<< EnumToStringx(enum_type) << " cannot return an array of integers");}
 		void  GetParameterValue(int** pintarray,int* pM,int* pN);

@@ -20,14 +20,20 @@
 
 class Param: public Object{
 
+	protected:
+		int enum_type;
+
 	public: 
-		virtual        ~Param(){};
+
+		/*Non virtual functions*/
+		int InstanceEnum(){return enum_type;}
 
 		/*Virtual functions:*/
+		virtual        ~Param(){};
 		virtual void  DeepEcho()=0;
 		virtual Param* copy()=0;
 		virtual void  Echo()=0;
-		virtual void  GetParameterValue(bool* pbool)=0;
+		virtual void  GetParameterValue(bool* pbool){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a bool");}
 		virtual void  GetParameterValue(int* pinteger)=0;
 		virtual void  GetParameterValue(int** pintarray,int* pM)=0;
 		virtual void  GetParameterValue(int** pintarray,int* pM,int* pN)=0;
@@ -50,7 +56,6 @@ class Param: public Object{
 		virtual void  GetParameterValue(Matrix<IssmDouble>** pmat)=0;
 		virtual void  GetParameterValue(FILE** pfid)=0;
 		virtual void  GetParameterValue(DataSet** pdataset)=0;
-		virtual int   InstanceEnum()=0;
 		virtual void  Marshall(MarshallHandle* marshallhandle)=0;
 		virtual int   ObjectEnum()=0;
 
