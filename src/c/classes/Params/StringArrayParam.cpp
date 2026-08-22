@@ -69,8 +69,6 @@ void StringArrayParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    StringArrayParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void StringArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = StringArrayParamEnum;

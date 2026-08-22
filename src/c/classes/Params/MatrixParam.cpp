@@ -56,8 +56,6 @@ void MatrixParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  MatrixParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 int MatrixParam::ObjectEnum(void){/*{{{*/
 
 	return MatrixParamEnum;

@@ -32,7 +32,6 @@ class FileParam: public Param{
 		Param* copy();
 		void  DeepEcho();
 		void  Echo();
-		int   Id(); 
 		void Marshall(MarshallHandle* marshallhandle);
 		int   ObjectEnum();
 		/*}}}*/

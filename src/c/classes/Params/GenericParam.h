@@ -44,7 +44,6 @@ template <class P> class GenericParam: public Param{
 			_printf_("   value: " << myP << "\n");;
 		}
 		void  Echo() {DeepEcho();};
-		int   Id(){ return -1; };
 
 		// the "copy"  has to implement the base class abstract function
 		// but I would prefer to drop this not to hide a "new" in here because

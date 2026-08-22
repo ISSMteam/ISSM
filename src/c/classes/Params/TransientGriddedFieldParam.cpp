@@ -78,8 +78,6 @@ void TransientGriddedFieldParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  TransientGriddedFieldParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void TransientGriddedFieldParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = TransientGriddedFieldParamEnum;

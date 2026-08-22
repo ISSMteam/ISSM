@@ -57,8 +57,6 @@ void DoubleVecParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int    DoubleVecParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleVecParamEnum;

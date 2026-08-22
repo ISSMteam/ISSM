@@ -33,7 +33,6 @@ class DoubleMatParam: public Param{
 		/*Object virtual functions definitions:{{{ */
 		void  Echo();
 		void  DeepEcho();
-		int   Id(); 
 		int   ObjectEnum();
 		Param* copy();
 		void Marshall(MarshallHandle* marshallhandle);

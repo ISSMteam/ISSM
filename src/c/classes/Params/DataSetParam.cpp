@@ -49,8 +49,6 @@ void DataSetParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    DataSetParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DataSetParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	if(marshallhandle->OperationNumber()==MARSHALLING_LOAD)value=new DataSet();

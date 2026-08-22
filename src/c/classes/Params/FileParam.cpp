@@ -47,8 +47,6 @@ void FileParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  FileParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void FileParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = FileParamEnum;

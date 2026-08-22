@@ -68,8 +68,6 @@ void TransientParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  TransientParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void TransientParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = TransientParamEnum;

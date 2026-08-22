@@ -64,8 +64,6 @@ void IntMatParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  IntMatParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void IntMatParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = IntMatParamEnum;

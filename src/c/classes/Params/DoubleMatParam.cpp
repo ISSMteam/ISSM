@@ -59,8 +59,6 @@ void DoubleMatParam::DeepEcho(void){/*{{{*/
 	}
 }
 /*}}}*/
-int    DoubleMatParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 int DoubleMatParam::ObjectEnum(void){/*{{{*/
 
 	return DoubleMatParamEnum;

@@ -43,8 +43,6 @@ void DoubleParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  DoubleParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleParamEnum;

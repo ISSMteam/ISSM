@@ -32,7 +32,6 @@ class MatrixParam: public Param{
 		Param* copy();
 		void  DeepEcho();
 		void  Echo();
-		int   Id(); 
 		void Marshall(MarshallHandle* marshallhandle){ _error_("not implemented yet!"); };
 		int   ObjectEnum();
 		/*}}}*/

@@ -46,8 +46,6 @@ void IntParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  IntParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void IntParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = IntParamEnum;
