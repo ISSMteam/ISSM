@@ -53,21 +53,6 @@ class FileParam: public Param{
 		void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a Mat");}
 		void  GetParameterValue(FILE** pfid){*pfid=value;};
 		void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(enum_type) << " cannot return a DataSet");}
-		void  SetEnum(int enum_in){this->enum_type = enum_in;};
-		void  SetValue(bool boolean){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}
-		void  SetValue(int integer){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}
-		void  SetValue(IssmDouble scalar){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}
-		void  SetValue(char* string){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string");}
-		void  SetValue(char** stringarray,int M){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a string array");}
-		void  SetValue(IssmDouble* IssmDoublearray){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a IssmDouble array");}
-		void  SetValue(IssmDouble* IssmDoublearray,int M){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a IssmDouble array");}
-		void  SetValue(IssmDouble* pIssmDoublearray,int M,int N){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a IssmDouble array");}
-		void  SetValue(int* intarray,int M){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a int array");}
-		void  SetValue(int* pintarray,int M,int N){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a int array");}
-		void  SetValue(Vector<IssmDouble>* vec){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a Vec");}
-		void  SetValue(Matrix<IssmDouble>* mat){_error_("Param "<< EnumToStringx(enum_type) << " cannot hold a Mat");}
-		void  SetValue(FILE* fid){_error_("File param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot hold a FILE");}
-		void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("File param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot hold an array of matrices");}
 		/*}}}*/
 };
 #endif  /* _INTPARAM_H */

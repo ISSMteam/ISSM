@@ -59,22 +59,22 @@ class Param: public Object{
 		virtual void  Marshall(MarshallHandle* marshallhandle)=0;
 		virtual int   ObjectEnum()=0;
 
-		virtual void  SetEnum(int enum_in)=0;
-		virtual void  SetValue(bool boolean)=0;
-		virtual void  SetValue(int integer)=0;
-		virtual void  SetValue(IssmDouble scalar)=0;
-		virtual void  SetValue(char* string)=0;
-		virtual void  SetValue(char** stringarray,int M)=0;
-		virtual void  SetValue(DataSet* dataset){_error_("not implemented yet");};
-		virtual void  SetValue(IssmDouble* IssmDoublearray,int M)=0;
-		virtual void  SetValue(IssmDouble* IssmDoublearray)=0;
-		virtual void  SetValue(IssmDouble* pIssmDoublearray,int M,int N)=0;
-		virtual void  SetValue(int* intarray,int M)=0;
-		virtual void  SetValue(int* pintarray,int M,int N)=0;
-		virtual void  SetValue(Vector<IssmDouble>* vec)=0;
-		virtual void  SetValue(Matrix<IssmDouble>* mat)=0;
-		virtual void  SetValue(FILE* fid)=0;
-		virtual void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array)=0;
+		void  SetEnum(int enum_in){this->enum_type = enum_in;}
+		virtual void  SetValue(bool boolean)                                               {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a bool");}
+		virtual void  SetValue(int integer)                                                {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an int");}
+		virtual void  SetValue(IssmDouble scalar)                                          {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an IssmDouble");}
+		virtual void  SetValue(char* string)                                               {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a string");}
+		virtual void  SetValue(char** stringarray,int M)                                   {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a string array");}
+		virtual void  SetValue(DataSet* dataset)                                           {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a DataSet");}
+		virtual void  SetValue(IssmDouble* IssmDoublearray)                                {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an IssmDouble array");}
+		virtual void  SetValue(IssmDouble* IssmDoublearray,int M)                          {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an IssmDouble array");}
+		virtual void  SetValue(IssmDouble* pIssmDoublearray,int M,int N)                   {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an IssmDouble array");}
+		virtual void  SetValue(int* intarray,int M)                                        {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an int array");}
+		virtual void  SetValue(int* pintarray,int M,int N)                                 {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an int array");}
+		virtual void  SetValue(Vector<IssmDouble>* vec)                                    {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a Vec");}
+		virtual void  SetValue(Matrix<IssmDouble>* mat)                                    {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a Mat");}
+		virtual void  SetValue(FILE* fid)                                                  {_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold a FILE");}
+		virtual void  SetValue(IssmDouble** array, int M, int* mdim_array, int* ndim_array){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot hold an array of matrices");}
 		virtual void  GetVectorFromControl(Vector<IssmDouble>* vector,int control_index,int N,const char* data,int offset){_error_("not implemented yet");};
 };
 #endif
