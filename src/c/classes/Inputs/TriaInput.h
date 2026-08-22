@@ -39,7 +39,6 @@ class TriaInput: public ElementInput, public TriaRef{
 		void Pow(IssmDouble scalar);
 		void AXPY(Input* xinput,IssmDouble scalar);
 		void Shift(IssmDouble scalar);
-		void AverageAndReplace(void);
 		void PointWiseMult(Input* xinput);
 		void Serve(int numindices,int* indices);
 		void Serve(int row,int numindices);

@@ -152,10 +152,6 @@ void ControlInput::SetControl(int interp,int numindices,int* indices,IssmDouble*
 	}
 }
 /*}}}*/
-void ControlInput::AverageAndReplace(void){/*{{{*/
-	this->values->AverageAndReplace();
-}
-/*}}}*/
 TriaInput* ControlInput::GetTriaInput(){/*{{{*/
 
 	/*Cast and return*/

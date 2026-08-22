@@ -405,29 +405,4 @@ void TriaInput::PointWiseMult(Input* xinput){/*{{{*/
 	for(int i=0;i<numnodes;i++) this->element_values[i] = xtriainput->element_values[i] * this->element_values[i];
 }
 /*}}}*/
-void TriaInput::AverageAndReplace(void){/*{{{*/
-
-	if(this->M!=this->numberofelements_local) _error_("not implemented for P1");
-
-	/*Get local sum and local size*/
-	IssmDouble sum  = 0.;
-	int        weight;
-	for(int i=0;i<this->M*this->N;i++) sum += this->values[i];
-	weight = this->M*this->N;
-
-	/*Get sum across all procs*/
-	IssmDouble all_sum;
-	int        all_weight;
-	ISSM_MPI_Allreduce((void*)&sum,(void*)&all_sum,1,ISSM_MPI_DOUBLE,ISSM_MPI_SUM,IssmComm::GetComm());
-	ISSM_MPI_Allreduce((void*)&weight,(void*)&all_weight,1,ISSM_MPI_INT,ISSM_MPI_SUM,IssmComm::GetComm());
-
-	/*Divide by number of procs*/
-	IssmDouble newvalue = all_sum/reCast<IssmPDouble>(all_weight);
-
-	/*Now replace existing input*/
-	this->Reset(P0Enum);
-	for(int i=0;i<this->M*this->N;i++) this->values[i] = newvalue;
-}
-/*}}}*/
-
 /*Object functions*/

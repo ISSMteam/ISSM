@@ -42,6 +42,5 @@ class ControlInput: public Input{
 		void        SetControl(int interp,int numindices,int* indices,IssmDouble* values_in,IssmDouble* values_min,IssmDouble* values_max);
 		TriaInput*  GetTriaInput();
 		PentaInput* GetPentaInput();
-		void AverageAndReplace(void);
 };
 #endif  /* _CONTROLINPUT_H */

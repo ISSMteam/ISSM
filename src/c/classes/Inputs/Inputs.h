@@ -49,7 +49,6 @@ class Inputs{
 		void     ZAXPY(IssmDouble alpha, int xenum, int yenum, int zenum);
 		void     AXPY(IssmDouble alpha, int xenum, int yenum);
 		void     Shift(int inputenum, IssmDouble alpha);
-		void     AverageAndReplace(int inputenum);
 		void     DeepEcho(void);
 		void     DeepEcho(int enum_in);
 		void     Echo(void);

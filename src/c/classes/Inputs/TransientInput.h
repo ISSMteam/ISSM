@@ -54,7 +54,6 @@ class TransientInput: public Input{
 		PentaInput* GetPentaInput(IssmDouble time);
 		PentaInput* GetPentaInput(int offset);
 		PentaInput* GetPentaInput(IssmDouble start_time,IssmDouble end_time,int averaging_method);
-		Input*      GetTimeInput(IssmDouble time){_error_("This should not happen!");};
 		IssmDouble   GetTimeByOffset(int offset);
 		int          GetTimeInputOffset(IssmDouble time);
 		void         SetCurrentTimeInput(IssmDouble time);

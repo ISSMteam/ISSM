@@ -316,17 +316,6 @@ void Inputs::Shift(int xenum, IssmDouble alpha){/*{{{*/
 	this->inputs[index_x]->Shift(alpha);
 }
 /*}}}*/
-void Inputs::AverageAndReplace(int inputenum){/*{{{*/
-
-	_assert_(this);
-
-	/*Get indices from enums*/
-	int index = EnumToIndex(inputenum);
-	if(!this->inputs[index]) _error_("Input "<<EnumToStringx(inputenum)<<" not found");
-
-	this->inputs[index]->AverageAndReplace();
-}
-/*}}}*/
 int  Inputs::EnumToIndex(int enum_in){/*{{{*/
 
 	_assert_(this);
