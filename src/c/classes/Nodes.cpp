@@ -408,11 +408,6 @@ bool  Nodes::RequiresDofReindexing(void){/*{{{*/
 
 void  Nodes::CheckDofListAcrossPartitions(void){/*{{{*/
 
-	/*recover my_rank:*/
-	ISSM_MPI_Status status;
-	int my_rank   = IssmComm::GetRank();
-	int num_procs = IssmComm::GetSize();
-
 	/*Display message*/
 	if(VerboseModule()) _printf0_("   Checking degrees of freedom across partitions\n");
 
@@ -456,7 +451,6 @@ void  Nodes::CheckDofListAcrossPartitions(void){/*{{{*/
 		/*Write degree of freedom if active*/
 		int countg = 0;
 		int countf = 0;
-		int counts = 0;
 		for(int j=0;j<node->gsize;j++){
 			int index = node->gdoflist_local[countg];
 			if(node->f_set[j]){
@@ -469,7 +463,6 @@ void  Nodes::CheckDofListAcrossPartitions(void){/*{{{*/
 				if(local_dofs_check[index] != -1.){
 					_error_("Dof #"<<j<<" of node sid "<<node->Sid()<<" not consistently in s set");
 				}
-				counts++;
 			}
 			countg++;
 		}
@@ -480,9 +473,7 @@ void  Nodes::CheckDofListAcrossPartitions(void){/*{{{*/
 }/*}}}*/
 void  Nodes::GetLocalVectorWithClonesGset(IssmDouble** plocal_ug,Vector<IssmDouble> *ug){/*{{{*/
 
-	/*recover my_rank:*/
 	ISSM_MPI_Status status;
-	int my_rank   = IssmComm::GetRank();
 	int num_procs = IssmComm::GetSize();
 
 	/*retrieve node info*/

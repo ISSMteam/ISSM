@@ -165,7 +165,6 @@ void  TransientGriddedFieldParam::GetParameterValue(IssmDouble* pdouble,int row,
 	IssmDouble  datastart, dataend;
 	int         startid, endid;
 	bool        found;
-	IssmDouble yts=3600*24*365;
 	_assert_(row>=0 && row<this->M);
 	_assert_(column>=0 && column<this->N);
 	_assert_(starttime<endtime);

@@ -382,7 +382,6 @@ void       Penta::CalvingFluxLevelset(){/*{{{*/
 		this->AddInput(CalvingFluxLevelsetEnum,&flux_per_area,P0Enum);
 	}
 	else{
-		int               index1,index2;
 		const IssmPDouble epsilon = 1.e-15;
 		IssmDouble        s1,s2;
 		IssmDouble        gl[NUMVERTICES];
@@ -502,7 +501,6 @@ void       Penta::CalvingMeltingFluxLevelset(){/*{{{*/
 		this->AddInput(CalvingMeltingFluxLevelsetEnum,&flux_per_area,P0Enum);
 	}
 	else{
-		int               index1,index2;
 		const IssmPDouble epsilon = 1.e-15;
 		IssmDouble        s1,s2;
 		IssmDouble        gl[NUMVERTICES];
@@ -633,7 +631,7 @@ void       Penta::CalvingRateCalvingMIP(){/*{{{*/
 	IssmDouble  calvingrate[NUMVERTICES];
 	int			experiment = 1;  /* exp:1 by default */
 	int         dim, domaintype;
-	IssmDouble	vx, vy, vel, c, wrate;
+	IssmDouble	vx, vy, vel, wrate;
 	IssmDouble  time, groundedice, yts;
 
 	/*Get problem dimension and whether there is moving front or not*/
@@ -716,17 +714,14 @@ void       Penta::ComputeBasalStress(void){/*{{{*/
 
 	_error_("not implemented (needs to be redone)");
 	int         i,j;
-	int         dofv[3]={0,1,2};
-	int         dofp[1]={3};
 	int         analysis_type,approximation;
 	IssmDouble  xyz_list[NUMVERTICES][3];
 	IssmDouble  xyz_list_tria[3][3];
-	IssmDouble  rho_ice,gravity,FSreconditioning;
+	IssmDouble  FSreconditioning;
 	IssmDouble  pressure,viscosity,Jdet2d;
 	IssmDouble  bed_normal[3];
 	IssmDouble  basalforce[3] = {0.};
 	IssmDouble  epsilon[6]; /* epsilon=[exx,eyy,ezz,exy,exz,eyz];*/
-	IssmDouble  stresstensor[6]={0.0};
 	IssmDouble  sigma_xx,sigma_yy,sigma_zz;
 	IssmDouble  sigma_xy,sigma_xz,sigma_yz;
 	IssmDouble  surface=0,value=0;
@@ -748,10 +743,6 @@ void       Penta::ComputeBasalStress(void){/*{{{*/
 		//sigma_b->SetValue(id-1,0.0,INS_VAL);
 		return;
 	}
-
-	/*recovre material parameters: */
-	rho_ice=FindParam(MaterialsRhoIceEnum);
-	gravity=FindParam(ConstantsGEnum);
 
 	/* Get node coordinates and dof list: */
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
@@ -907,7 +898,7 @@ void       Penta::ComputeSigmaVM(){/*{{{*/
 
 	IssmDouble  xyz_list[NUMVERTICES][3];
 	IssmDouble  epsilon[3]; /* epsilon=[exx,eyy,exy];*/
-	IssmDouble  lambda1,lambda2,ex,ey,vx,vy,vel;
+	IssmDouble  lambda1,lambda2,ex,ey,vx,vy;
 	IssmDouble  B,n;
 	IssmDouble  sigma_vm[NUMVERTICES];
 
@@ -935,7 +926,6 @@ void       Penta::ComputeSigmaVM(){/*{{{*/
 		n_input->GetInputValue(&n,&gauss);
 		vx_input->GetInputValue(&vx,&gauss);
 		vy_input->GetInputValue(&vy,&gauss);
-		vel=sqrt(vx*vx+vy*vy)+1.e-14;
 
 		/*Compute strain rate and viscosity: */
 		this->StrainRateSSA(&epsilon[0],&xyz_list[0][0],&gauss,vx_input,vy_input);
@@ -1122,7 +1112,7 @@ void       Penta::FSContactMigration(Vector<IssmDouble>* vertex_sigmann,Vector<I
 
 	/*Intermediaries*/
 	IssmDouble  bed_normal[3],base[NUMVERTICES],bed[NUMVERTICES],surface[NUMVERTICES],phi[NUMVERTICES];
-	IssmDouble  water_pressure[NUMVERTICES],pressureice[NUMVERTICES],pressure[NUMVERTICES];
+	IssmDouble  water_pressure[NUMVERTICES],pressure[NUMVERTICES];
 	IssmDouble  sigmaxx[NUMVERTICES],sigmayy[NUMVERTICES],sigmazz[NUMVERTICES],sigmaxy[NUMVERTICES];
 	IssmDouble  sigmayz[NUMVERTICES],sigmaxz[NUMVERTICES],sigma_nn[NUMVERTICES];
 	IssmDouble  viscosity,epsilon[NUMVERTICES];
@@ -1131,7 +1121,6 @@ void       Penta::FSContactMigration(Vector<IssmDouble>* vertex_sigmann,Vector<I
 	Element::GetInputListOnVertices(&surface[0],SurfaceEnum);
 	Element::GetInputListOnVertices(&pressure[0],PressureEnum);
 	Element::GetInputListOnVertices(&phi[0],MaskOceanLevelsetEnum);
-	IssmDouble rho_ice   = FindParam(MaterialsRhoIceEnum);
 	IssmDouble rho_water = FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble gravity   = FindParam(ConstantsGEnum);
 
@@ -1339,7 +1328,7 @@ void       Penta::GetFractionGeometry2D(IssmDouble* weights, IssmDouble* pphi, i
 void       Penta::GetGroundedPart(int* point1,IssmDouble* fraction1,IssmDouble* fraction2, bool* mainlyfloating, int distance_enum, IssmDouble intrusion_distance){/*{{{*/
 	/*Compute portion of the element that is grounded*/
 	bool               floating=true;
-	int                point, melt_style;
+	int                point;
 	const IssmPDouble  epsilon= 1.e-15;
 	IssmDouble         gl[NUMVERTICES];
 	IssmDouble         f1,f2;
@@ -1808,7 +1797,6 @@ void       Penta::GetVectorFromControlInputs(Vector<IssmDouble>* vector,int cont
 					int* idlist = xNew<int>(NUMVERTICES*N);
 					IssmDouble* values = xNew<IssmDouble>(NUMVERTICES*N);
 					for(int t=0;t<transientinput->numtimesteps;t++) {
-						IssmDouble time = transientinput->GetTimeByOffset(t);
 						_error_("not implemented, SEE TRIA!");
 						//PentaInput* timeinput = xDynamicCast<PentaInput*>(transientinput->GetTimeInput(time));
 						//if(timeinput->interpolation_type!=P1Enum) _error_("not supported yet");
@@ -1884,7 +1872,6 @@ IssmDouble Penta::GroundinglineMassFlux(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
-	int               index1,index2;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
 	IssmDouble        gl[NUMVERTICES];
@@ -1999,7 +1986,6 @@ IssmDouble Penta::IcefrontMassFluxLevelset(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
-	int               index1,index2;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
 	IssmDouble        gl[NUMVERTICES];
@@ -2216,14 +2202,12 @@ void       Penta::InputDepthAverageAtBase(int original_enum,int average_enum){/*
 	int         lidlist[NUMVERTICES];
 	IssmDouble  intz[NUMVERTICES]        = {0.};
 	Input     *original_input           = NULL;
-	Input     *depth_averaged_input     = NULL;
 
 	/*Are we on the base? If not, return*/
 	if(!IsOnBase()) return;
 
 	/*Now follow all the upper element from the base to the surface to integrate the input*/
 	Penta* penta = this;
-	int    step  = 0;
 	Gauss* gauss[3];
 	for(int iv=0;iv<3;iv++) gauss[iv] = penta->NewGaussLine(iv,iv+3,3);
 
@@ -2256,7 +2240,6 @@ void       Penta::InputDepthAverageAtBase(int original_enum,int average_enum){/*
 
 		/* get upper Penta*/
 		penta=penta->GetUpperPenta(); _assert_(penta->Id()!=this->id);
-		step++;
 	}
 	for(int iv=0;iv<3;iv++) delete gauss[iv];
 
@@ -2729,10 +2712,10 @@ IssmDouble Penta::MinEdgeLength(IssmDouble* xyz_list){/*{{{*/
 void	      Penta::MovingFrontalVelocity(void){/*{{{*/
 
 	if(!this->IsOnBase()) return;
-	int        domaintype, calvinglaw, i;
+	int        calvinglaw, i;
 	IssmDouble v[3],w[3],c[3],m[3],dlsf[3];
-	IssmDouble norm_dlsf, norm_calving, calvingrate, meltingrate, groundedice;
-	IssmDouble migrationmax, calvinghaf, heaviside, haf_eps;
+	IssmDouble norm_dlsf, calvingrate, meltingrate, groundedice;
+	IssmDouble calvinghaf, heaviside, haf_eps;
 	IssmDouble xyz_list[NUMVERTICES][3];
 	IssmDouble movingfrontvx[NUMVERTICES];
 	IssmDouble movingfrontvy[NUMVERTICES];
@@ -3191,7 +3174,6 @@ void       Penta::ResetFSBasalBoundaryCondition(void){/*{{{*/
 	bool		isNitsche;
 	IssmDouble   slopex,slopey,groundedice;
 	IssmDouble   xz_plane[6];
-	IssmDouble*  vertexapproximation= NULL;
 
 	/*For FS only: we want the CS to be tangential to the bedrock*/
 	this->Element::GetInputValue(&approximation,ApproximationEnum);
@@ -3464,7 +3446,7 @@ void Penta::StabilizationParameterAnisotropic(IssmDouble* tau_parameter_anisotro
 	/*kappa=thermalconductivity/(rho_ice*heatcapacity) for thermal model*/
 	/*kappa=enthalpydiffusionparameter for enthalpy model*/
 
-	IssmDouble normu,hk,C,area,p;
+	IssmDouble normu,hk,C,p;
 
 	/* compute tau for the horizontal direction */
 	p=2.; C=3.;
@@ -3576,9 +3558,6 @@ void       Penta::StressIntensityFactor(){/*{{{*/
 	if(!IsOnBase()) return;
 
 	IssmDouble  ki[6]={0.};
-	IssmDouble  const_grav=9.81;
-	IssmDouble  rho_ice=900;
-	IssmDouble  rho_water=1000;
 	IssmDouble  Jdet[3];
 	IssmDouble  pressure,vx,vy,vel,deviaxx,deviaxy,deviayy,water_depth,prof,stress_xx,thickness;
 
@@ -3790,7 +3769,6 @@ IssmDouble Penta::TotalCalvingFluxLevelset(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
-	int               index1,index2;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
 	IssmDouble        gl[NUMVERTICES];
@@ -3904,7 +3882,6 @@ IssmDouble Penta::TotalCalvingMeltingFluxLevelset(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
-	int               index1,index2;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
 	IssmDouble        gl[NUMVERTICES];

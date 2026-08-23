@@ -650,7 +650,6 @@ void Inputs::GetInputValue(int* pvalue,int enum_in,int index){/*{{{*/
 		if(this->inputs[id]->ObjectEnum()!=IntInputEnum) _error_(EnumToStringx(this->inputs[id]->ObjectEnum())<<" cannot return a int");
 	}
 	else{
-		int* temp = xNew<int>(3);
 		_error_("Input "<<EnumToStringx(enum_in)<<" not found");
 	}
 
@@ -668,7 +667,6 @@ void Inputs::GetInputValue(IssmDouble* pvalue,int enum_in,int index){/*{{{*/
 		if(this->inputs[id]->ObjectEnum()!=DoubleInputEnum) _error_(EnumToStringx(this->inputs[id]->ObjectEnum())<<" cannot return a double!");
 	}
 	else{
-		int* temp = xNew<int>(3);
 		_error_("Input "<<EnumToStringx(enum_in)<<" not found");
 	}
 

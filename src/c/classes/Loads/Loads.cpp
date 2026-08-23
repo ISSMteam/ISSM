@@ -41,8 +41,6 @@ Loads::~Loads(){/*{{{*/
 
 Loads* Loads::Copy() {/*{{{*/
 
-	int num_proc = IssmComm::GetSize();
-
 	/*Copy dataset*/
 	Loads* output=new Loads();
 	output->sorted=this->sorted;

@@ -217,7 +217,6 @@ int* Hook::Ids(void){/*{{{*/
 void Hook::reset(){/*{{{*/
 
 	/*intermediary: */
-	Object* object=NULL;
 	int i;
 
 	for(i=0;i<this->num;i++){

@@ -308,8 +308,6 @@ GaussTria::GaussTria(int index,IssmDouble r1,IssmDouble r2,int order){/*{{{*/
 	 *  0               1
 	 *
 	 */
-	IssmDouble x,y;
-	IssmDouble xy_list[3][2];
 
 	/*Double number of gauss points*/
 	GaussTria *gauss1    = NULL;
@@ -366,8 +364,6 @@ GaussTria::GaussTria(IssmDouble r1,IssmDouble r2,int order){/*{{{*/
 	 *
 	 */
 	int         ii;
-	IssmDouble x,y;
-	IssmDouble xy_list[3][2];
 
 	/*Double number of gauss points*/
 	GaussTria *gauss1    = NULL; //blue

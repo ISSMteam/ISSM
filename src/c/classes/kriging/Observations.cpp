@@ -706,7 +706,7 @@ void Observations::QuadtreeColoring(IssmPDouble* A,IssmPDouble *x,IssmPDouble *y
 void Observations::Variomap(IssmPDouble* gamma,IssmPDouble *x,int n){/*{{{*/
 
 	/*Output and Intermediaries*/
-	int          i,j,k;
+	int          j,k;
 	IssmPDouble  distance;
 	Observation *observation1 = NULL;
 	Observation *observation2 = NULL;

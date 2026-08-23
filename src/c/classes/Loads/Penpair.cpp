@@ -234,7 +234,6 @@ void  Penpair::SetwiseNodeConnectivity(int* pd_nz,int* po_nz,Node* node,bool* fl
 
 			flagsindices[flagsindices_counter[0]]=this->nodes[i]->Lid();
          flagsindices_counter[0]++;
-			int counter=0;
 
 			/*if node is clone, we have an off-diagonal non-zero, else it is a diagonal non-zero*/
 			switch(set2_enum){

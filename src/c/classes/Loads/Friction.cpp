@@ -232,7 +232,7 @@ void Friction::GetAlphaTempComplement(IssmDouble* palpha_complement, Gauss* gaus
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha_complement;
 
 	/*Get viscous part*/
@@ -497,9 +497,6 @@ void Friction::GetAlpha2Coulomb(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	element->GetInputValue(&drag_q,gauss,FrictionQEnum);
 	element->GetInputValue(&drag_coefficient, gauss,FrictionCoefficientEnum);
 	element->GetInputValue(&drag_coefficient_coulomb, gauss,FrictionCoefficientcoulombEnum);
-	IssmDouble rho_water = element->FindParam(MaterialsRhoSeawaterEnum);
-	IssmDouble rho_ice   = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble gravity   = element->FindParam(ConstantsGEnum);
 
 	//compute r and q coefficients: */
 	r=drag_q/drag_p;
@@ -636,7 +633,7 @@ void Friction::GetAlpha2Temp(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha2;
 
 	/*Get viscous part*/
@@ -663,9 +660,8 @@ void Friction::GetAlpha2Josh(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  T,Tpmp,deltaT,deltaTref,pressure,diff,drag_coefficient;
+	IssmDouble  T,Tpmp,deltaT,deltaTref,pressure,drag_coefficient;
 	IssmDouble  alpha2,time,gamma,ref,alp_new,alphascaled,max_coefficient;
-	const IssmDouble yts = 365*24*3600.;
 
 	/*Get viscous part*/
 	this->GetAlpha2Budd(&alpha2,gauss);
@@ -837,7 +833,7 @@ void Friction::GetAlpha2WeertmanTemp(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha2;
 
 	/*Get viscous part*/
@@ -1148,7 +1144,7 @@ IssmDouble Friction::EffectivePressure(Gauss* gauss){/*{{{*/
 
 	/*diverse: */
 	int         coupled_flag;
-	IssmDouble  thickness,base,sealevel;
+	IssmDouble  base,sealevel;
 	IssmDouble  p_ice,p_water;
 	IssmDouble  Neff,Neff_limit;
 

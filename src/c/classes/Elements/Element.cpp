@@ -56,7 +56,7 @@ bool       Element::AnyFSet(){/*{{{*/
 void       Element::ArmaProcess(bool isstepforarma,int arorder,int maorder,int numparams,int numbreaks,IssmDouble tstep_arma,IssmDouble* polyparams,IssmDouble* arlagcoefs,IssmDouble* malagcoefs,IssmDouble* datebreaks,bool isfieldstochastic,int enum_type){/*{{{*/
    const int numvertices = this->GetNumberOfVertices();
 	int         numperiods = numbreaks+1; 
-   int         basinid,M,N,arenum_type,maenum_type,basinenum_type,noiseenum_type,outenum_type,indperiod;
+   int         basinid,M,arenum_type,maenum_type,basinenum_type,noiseenum_type,outenum_type,indperiod;
    IssmDouble  time,dt,starttime,noiseterm;
    IssmDouble* arlagcoefs_basin     = xNew<IssmDouble>(arorder);
    IssmDouble* malagcoefs_basin     = xNew<IssmDouble>(maorder);
@@ -410,8 +410,7 @@ void       Element::ComputeNewDamage(){/*{{{*/
 	IssmDouble  eps_xx,eps_xy,eps_yy,eps_xz,eps_yz,eps_zz,eps_eff;
 	IssmDouble  epsmin=1.e-27;
 	IssmDouble  eps_0,kappa,sigma_0,B,D,n,envelopeD;
-	int         dim,counter=0;
-	IssmDouble  k1,k2,threshold=1.e-12;
+	int         dim;
 
 	/* Retrieve parameters */
 	this->GetVerticesCoordinates(&xyz_list);
@@ -706,7 +705,6 @@ void       Element::Delta18oParameterization(void){/*{{{*/
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&finaltime,TimesteppingFinalTimeEnum);
 	this->GetVerticesLidList(vertexlids);
-	IssmDouble time_yr=floor(time/yts)*yts;
 
 	/*Recover present day temperature and precipitation*/
 	DatasetInput* dinput1=this->GetDatasetInput(SmbTemperaturesPresentdayEnum);   _assert_(dinput1);
@@ -789,7 +787,7 @@ void       Element::Delta18opdParameterization(void){/*{{{*/
 	const int NUM_VERTICES 					= this->GetNumberOfVertices();
 	const int NUM_VERTICES_MONTHS_PER_YEAR	= NUM_VERTICES * 12;
 
-	int        	i,offset;
+	int        	i;
 	int*        vertexlids=xNew<int>(NUM_VERTICES);
 	IssmDouble* monthlytemperatures=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);
 	IssmDouble* monthlyprec=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);
@@ -800,14 +798,12 @@ void       Element::Delta18opdParameterization(void){/*{{{*/
 	IssmDouble* tmp=xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble Delta18oTime;
 	IssmDouble f;
-	IssmDouble time,yts,time_yr,month,time_climt,time_climp,del_clim;
+	IssmDouble time,yts,time_climt;
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&f,SmbFEnum);
 	this->GetVerticesLidList(vertexlids);
-	time_yr=floor(time/yts)*yts;
 	time_climt=ceil(time/yts + 1e-10)*yts;
-	time_climp=ceil(time/yts + 1e-10)*yts;
 
 	/*Get some pdd parameters*/
 	bool isTemperatureScaled,isPrecipScaled;
@@ -1817,7 +1813,6 @@ void       Element::GradientIndexing(int* indexing,int control_index){/*{{{*/
 
 	/*Get number of controls*/
 	int num_controls;
-	bool isautodiff;
 	int* N=NULL;
 	int* M=NULL;
 	int* interp=NULL;
@@ -2445,8 +2440,6 @@ void       Element::DatasetInputAdd(int enum_type,IssmDouble* vector,Inputs* inp
 	else if(vector_type==2){ //element vector
 		_error_("not supported");
 
-		IssmDouble value;
-
 		/*Are we in transient or static? */
 		if(M==iomodel->numberofelements){
 			_error_("not implemented");
@@ -2615,7 +2608,7 @@ void       Element::Ismip6FloatingiceMeltingRate(){/*{{{*/
 	if(!this->IsIceInElement() || !this->IsAllFloating() || !this->IsOnBase()) return;
 
 	int         basinid,num_basins,M,N;
-	IssmDouble  tf,gamma0,base,delta_t_basin,mean_tf_basin,absval,meltanomaly;
+	IssmDouble  tf,gamma0,delta_t_basin,mean_tf_basin,absval,meltanomaly;
 	bool        islocal;
 	IssmDouble* delta_t = NULL;
 	IssmDouble* mean_tf = NULL;
@@ -2677,7 +2670,7 @@ void       Element::Ismip6FloatingiceMeltingRate(){/*{{{*/
 void       Element::Ismip7FloatingiceMeltingRate(){/*{{{*/
 	if(!this->IsIceInElement() || !this->IsAllFloating() || !this->IsOnBase()) return;
 
-	int         basinid,num_basins,M,N;
+	int         basinid,num_basins,M;
 	IssmDouble  delta_t_basin;
 	IssmDouble* xyz_list = NULL;
 	
@@ -2748,7 +2741,7 @@ void       Element::LapseRateBasinSMB(int numelevbins, IssmDouble* lapserates, I
    const int numvertices = this->GetNumberOfVertices();
    bool isadjustsmb = false;
 	int basinid,bb1,bb2,mindex;
-	IssmDouble ela,refelevation_b,time,dt,fracyear,yts;
+	IssmDouble refelevation_b,time,dt,fracyear,yts;
    IssmDouble monthsteps[12]  = {0.,1./12,2./12,3./12,4./12,5./12,6./12,7./12,8./12,9./12,10./12,11./12};
    IssmDouble* surfacelist  = xNew<IssmDouble>(numvertices);
    IssmDouble* smblist      = xNew<IssmDouble>(numvertices);
@@ -2901,7 +2894,7 @@ void       Element::MantlePlumeGeothermalFlux(){/*{{{*/
 	const int NUM_VERTICES = this->GetNumberOfVertices();
 	IssmDouble  mantleconductivity,nusselt,dtbg,plumeradius,topplumedepth,bottomplumedepth,plumex,plumey;
 	IssmDouble  crustthickness,uppercrustthickness,uppercrustheat,lowercrustheat;
-	IssmDouble  crustheat,plumeheat,dt,middleplumedepth,a,e,eprime,A0,lambda,Alambda,dAlambda;
+	IssmDouble  crustheat,plumeheat,dt,a,e,eprime,A0,lambda,Alambda,dAlambda;
 	IssmDouble  x,y,z,c;
 	IssmDouble  values[MAXVERTICES];
 	IssmDouble *xyz_list = NULL;
@@ -2964,7 +2957,6 @@ void       Element::MigrateGroundingLine(IssmDouble* phi_ungrounding){/*{{{*/
 	const int  NUM_VERTICES = this->GetNumberOfVertices();
 	int        migration_style;
 	IssmDouble bed_hydro,yts;
-	IssmDouble melting[MAXVERTICES];
 	IssmDouble phi[MAXVERTICES];
 	IssmDouble h[MAXVERTICES];
 	IssmDouble s[MAXVERTICES];
@@ -3077,8 +3069,8 @@ void       Element::MonthlyFactorBasin(IssmDouble* monthlyfac,int enum_type){/*{
 	/*Variable declaration*/
 	bool ratevariable;
    const int numvertices = this->GetNumberOfVertices();
-	int basinid,mindex,mindexnext,basinenum_type,varenum_type,indperiod;
-   IssmDouble time,dt,fracyear,fracyearnext,fracmonth,fracmonthnext,yts; 
+	int basinid,mindex,mindexnext,basinenum_type,varenum_type;
+   IssmDouble time,dt,fracyear,fracyearnext,yts;
    IssmDouble monthsteps[12]  = {0.,1./12,2./12,3./12,4./12,5./12,6./12,7./12,8./12,9./12,10./12,11./12};
    IssmDouble* monthlyfac_b   = xNew<IssmDouble>(12);
    IssmDouble* monthlyrate_b  = xNew<IssmDouble>(12);
@@ -3295,11 +3287,10 @@ void       Element::MungsmtpParameterization(void){/*{{{*/
 	IssmDouble TdiffTime,PfacTime;
 
 	/*Recover parameters*/
-	IssmDouble time,yts,time_yr;
+	IssmDouble time,yts;
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->GetVerticesLidList(vertexlids);
-	time_yr=floor(time/yts)*yts;
 
 	/*Recover present day temperature and precipitation*/
 	DatasetInput* dinput1=this->GetDatasetInput(SmbTemperaturesPresentdayEnum);   _assert_(dinput1);
@@ -3435,7 +3426,7 @@ void       Element::PicoUpdateBox(int loopboxid){/*{{{*/
 	if(loopboxid!=boxid) return;
 
 	const int NUM_VERTICES = this->GetNumberOfVertices();
-	int        basinid, maxbox, num_basins, numnodes, M;
+	int        basinid, maxbox, num_basins, M;
 	IssmDouble gamma_T, overturning_coeff, thickness;
 	IssmDouble pressure, T_star,p_coeff, q_coeff;
 	bool       isplume;
@@ -3668,7 +3659,7 @@ void       Element::PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDoubl
 	const int NUM_VERTICES 		= this->GetNumberOfVertices();
 	const int NUM_VERTICES_MONTHS_PER_YEAR = NUM_VERTICES * 12;
 
-	int  		i,vertexlids[MAXVERTICES];
+	int  		vertexlids[MAXVERTICES];
 	bool     isinitialized=false;
 	IssmDouble* agd=xNew<IssmDouble>(NUM_VERTICES); // surface mass balance
 	IssmDouble* melt=xNew<IssmDouble>(NUM_VERTICES); // surface melt
@@ -3690,7 +3681,7 @@ void       Element::PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDoubl
 	IssmDouble avgSMB = 0.0;
 	IssmDouble avgP = 0.0;
 	IssmDouble rho_water,rho_ice,desfac,rlaps,rlapslgm;
-	IssmDouble PfacTime,TdiffTime,sealevTime;
+	IssmDouble TdiffTime,sealevTime;
 	IssmDouble mavg=1./12.; //factor for monthly average
 
 	/*Get vertex Lids for later*/
@@ -3708,11 +3699,10 @@ void       Element::PositiveDegreeDay(IssmDouble* pdds,IssmDouble* pds,IssmDoubl
 	rlaps=this->FindParam(SmbRlapsEnum);
 	rlapslgm=this->FindParam(SmbRlapslgmEnum);
 
-	IssmDouble time,yts,time_yr,dt;
+	IssmDouble time,yts,dt;
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
 	this->parameters->FindParam(&dt,TimesteppingTimeStepEnum);          /*transient core time step*/
-	time_yr=floor(time/yts)*yts;
 
 	/*Get inputs*/
 	DatasetInput* dinput =this->GetDatasetInput(SmbMonthlytemperaturesEnum); _assert_(dinput);
@@ -3918,7 +3908,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	const int NUM_VERTICES 		= this->GetNumberOfVertices();
 	const int NUM_VERTICES_MONTHS_PER_YEAR	= NUM_VERTICES * 12;
 
-	int        	i,vertexlids[MAXVERTICES];;
+	int        	vertexlids[MAXVERTICES];
 	IssmDouble* smb=xNew<IssmDouble>(NUM_VERTICES);		// surface mass balance
 	IssmDouble* melt=xNew<IssmDouble>(NUM_VERTICES);		// melting comp. of surface mass balance
 	IssmDouble* accu=xNew<IssmDouble>(NUM_VERTICES);		// accuumulation comp. of surface mass balance
@@ -3935,7 +3925,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	IssmDouble rho_water,rho_ice,desfac,rlaps;
 	IssmDouble pdd_fac_ice,pdd_fac_snow;
 	IssmDouble inv_twelve=1./12.;								//factor for monthly average
-	IssmDouble time,yts,time_yr;
+	IssmDouble time,yts;
 
 	/*Get vertex Lids for later*/
 	this->GetVerticesLidList(&vertexlids[0]);
@@ -3955,7 +3945,6 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	/* Get time */
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
-	time_yr=floor(time/yts)*yts;
 
 	/* Set parameters for finrnwarming */
 	IssmDouble MU_0         = 9.7155; //Firn-warming correction, in (d*deg C)/(mm WE)
@@ -4110,7 +4099,7 @@ void       Element::PositiveDegreeDayFast(bool isfirnwarming){/*{{{*/
 	const int NUM_VERTICES 		= this->GetNumberOfVertices();
 	const int NUM_VERTICES_MONTHS_PER_YEAR	= NUM_VERTICES * 12;
 
-	int        	i,vertexlids[MAXVERTICES];;
+	int        	vertexlids[MAXVERTICES];
 	IssmDouble* smb=xNew<IssmDouble>(NUM_VERTICES);		// surface mass balance
 	IssmDouble* melt=xNew<IssmDouble>(NUM_VERTICES);		// melting comp. of surface mass balance
 	IssmDouble* accu=xNew<IssmDouble>(NUM_VERTICES);		// accuumulation comp. of surface mass balance
@@ -4127,7 +4116,7 @@ void       Element::PositiveDegreeDayFast(bool isfirnwarming){/*{{{*/
 	IssmDouble rho_water,rho_ice,desfac,rlaps;
 	IssmDouble pdd_fac_ice,pdd_fac_snow;
 	IssmDouble inv_twelve=1./12.;								//factor for monthly average
-	IssmDouble time,yts,time_yr;
+	IssmDouble time,yts;
 
 	/*Get vertex Lids for later*/
 	this->GetVerticesLidList(&vertexlids[0]);
@@ -4147,7 +4136,6 @@ void       Element::PositiveDegreeDayFast(bool isfirnwarming){/*{{{*/
 	/* Get time */
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
-	time_yr=floor(time/yts)*yts;
 
 	/* Set parameters for finrnwarming */
 	IssmDouble MU_0         = 9.7155; //Firn-warming correction, in (d*deg C)/(mm WE)
@@ -4405,7 +4393,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 	const int NUM_VERTICES          = this->GetNumberOfVertices();
 	const int NUM_VERTICES_DAYS_PER_YEAR  = NUM_VERTICES * 365; // 365 FIXME
 
-	int             i,vertexlids[MAXVERTICES];;
+	int             i;
 	IssmDouble* smb=xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* melt=xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* summermelt=xNew<IssmDouble>(NUM_VERTICES); 
@@ -4433,9 +4421,8 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 	IssmDouble* snowheight=xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* debriscover=xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble rho_water,rho_ice,Tf,debris,debris_here;
-	IssmDouble qlaps,rlaps,dsgrad,dlgrad,windspeedgrad,humiditygrad,Tm;
-	IssmDouble inv_twelve=1./365.;
-	IssmDouble time,yts,time_yr,lambda;
+	IssmDouble qlaps,rlaps,dsgrad,dlgrad,windspeedgrad,humiditygrad;
+	IssmDouble time,yts,lambda;
 	IssmDouble DailyMelt,CleanIceDailyMelt, CumDailyMelt=0,CleanIceMelt,CumDailySummerMelt=0;
 	IssmDouble MeanAlbedo=0, MeanSummerAlbedo=0;
 	bool isdebris,isAnderson,iscryokarst;
@@ -4458,7 +4445,7 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 		dim=2;
 	}
 	IssmDouble taud_plus=110e3, taud_minus=60e3;
-	IssmDouble taud, slope, gravity, taudx, taudy;
+	IssmDouble taud, gravity, taudx, taudy;
 	this->parameters->FindParam(&gravity,ConstantsGEnum);
 	IssmDouble* slopex         = xNew<IssmDouble>(NUM_VERTICES);
 	IssmDouble* slopey         = xNew<IssmDouble>(NUM_VERTICES);
@@ -4481,7 +4468,6 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 	/* Get time */
 	this->parameters->FindParam(&time,TimeEnum);
 	this->parameters->FindParam(&yts,ConstantsYtsEnum);
-	time_yr=floor(time/yts)*yts;
 
 	/*Get inputs*/
 	DatasetInput* tempday     =this->GetDatasetInput(SmbMonthlytemperaturesEnum); _assert_(tempday);
@@ -4528,7 +4514,6 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 		if(dim==2) taudy=rho_ice*gravity*icethickness[i]*slopey[i];
 		taud=sqrt(taudx*taudx+taudy*taudy);
 	}
-	IssmDouble Alphaeff,Alphaeff_cleanice;
 
 	/*measure the surface mass balance*/
 	for (int iv = 0; iv<NUM_VERTICES; iv++){
@@ -4569,8 +4554,6 @@ void       Element::SmbDebrisEvatt(){/*{{{*/
 			IssmDouble P;           // precip
 
 			// other parameters
-			IssmDouble Qh=0.006;   // kg m^-3      saturated humidity level // not used
-			IssmDouble Qm=0.8*Qh;  // kg m^-3      measured humiditiy level // not used
 			IssmDouble Rhoaa=1.22; // kgm^-3       air densitiy
 			IssmDouble K=0.585;    // Wm^-1K^-1    thermal conductivity          0.585
 			IssmDouble Xr=0.01;    // ms^-1        surface roughness             0.01
@@ -4906,7 +4889,6 @@ void       Element::ResultToVector(Vector<IssmDouble>* vector,int output_enum){/
 											switch(input2->GetResultInterpolation()){
 												case P0Enum:{
 																	IssmDouble  value;
-																	bool        bvalue;
 																	Gauss* gauss = this->NewGauss();
 																	input2->GetInputValue(&value,gauss);
 																	delete gauss;
@@ -5107,7 +5089,7 @@ void       Element::SmbSemic(){/*{{{*/
 	IssmDouble* saccu_out=xNew<IssmDouble>(NUM_VERTICES); memset(saccu_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 	IssmDouble* smelt_out=xNew<IssmDouble>(NUM_VERTICES); memset(smelt_out, 0., NUM_VERTICES*sizeof(IssmDouble));
 
-	IssmDouble rho_water,rho_ice,desfac,rlaps,rdl;
+	IssmDouble desfac,rlaps,rdl;
 	IssmDouble time,yts,time_yr;
 
 	/* Get time: */
@@ -5116,8 +5098,6 @@ void       Element::SmbSemic(){/*{{{*/
 	time_yr=floor(time/yts)*yts;
 
 	/*Get material parameters :*/
-	rho_water=this->FindParam(MaterialsRhoSeawaterEnum);
-	rho_ice=this->FindParam(MaterialsRhoIceEnum);
 	desfac=this->FindParam(SmbDesfacEnum);
 	rlaps=this->FindParam(SmbRlapsEnum);
 	rdl=this->FindParam(SmbRdlEnum);
@@ -5607,7 +5587,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble cldFrac,t0wet, t0dry, K;
 	IssmDouble lhf=0.0;
 	IssmDouble shf=0.0;
-	IssmDouble dayEC=0.0;
 	IssmDouble initMass=0.0;
    IssmDouble sumR=0.0;
 	IssmDouble sumF=0.0;
@@ -5642,8 +5621,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 	IssmDouble adThresh=1023.0;
 	IssmDouble teThresh=10;
 	IssmDouble teDefault=1;
-	IssmDouble tlapse=0.0;
-	IssmDouble dlwlapse=0.0;
 	/*}}}*/
 	/*Output variables:{{{ */
 	IssmDouble* dz=NULL;
@@ -5705,7 +5682,6 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 
 	/*Retrieve material properties and parameters:{{{ */
 	IssmDouble rho_ice   = FindParam(MaterialsRhoIceEnum);
-	IssmDouble rho_water = FindParam(MaterialsRhoFreshwaterEnum);
 	IssmDouble aSnow     = parameters->FindParam(SmbASnowEnum);
 	IssmDouble aIce      = parameters->FindParam(SmbAIceEnum);
 	parameters->FindParam(&time,TimeEnum);                        /*transient core time at which we run the smb core*/
@@ -5864,10 +5840,9 @@ void       Element::SmbGemb(IssmDouble timeinputs, int count, int steps){/*{{{*/
 					if(xinterp[2]>180) xinterp[2]=xinterp[2]-360;
 					if(xinterp[3]>180) xinterp[3]=xinterp[3]-360;
 
-					int latlon = 0;
 					int signlat = 1;
 					if (yinterp[0]<0) signlat = -1;
-					latlon = Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat);
+					Xy2llx(latelem, lonelem, xelem, yelem, 1, signlat);
 					lat = latelem[0];
 					lon = lonelem[0];
 					if(lon>180) lon=lon-360;

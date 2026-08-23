@@ -190,7 +190,6 @@ IssmDouble Misfit::Response(FemModel* femmodel){/*{{{*/
 		 else{
 
 			 IssmDouble misfit_t=0.;
-			 IssmDouble all_misfit_t=0.;
 
 			 /*If we are locked, return time average: */
 			 if(this->lock)return misfit/(time-starttime);

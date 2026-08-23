@@ -435,7 +435,6 @@ ElementVector* Moulin::CreatePVectorHydrologyDCInefficient(void){/*{{{*/
 	if(node->IsClone()) return NULL;
 	bool isefficientlayer, active_element;
 	IssmDouble moulin_load,dt;
-	IssmDouble epl_active;
 	/*Initialize Element matrix*/
 	ElementVector* pe=new ElementVector(&node,1,this->parameters);
 

@@ -472,10 +472,6 @@ void Parameters::FindControlParam(IssmDouble** pvec,int* pM, int param_enum, con
 
 	int index = EnumToIndex(param_enum);
 
-	/*Output*/
-	int         n;
-	IssmDouble* vector = NULL;
-
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pvec,pM,data);
 
@@ -712,9 +708,7 @@ char* OptionsFromAnalysis(char** pouttoolkit,Parameters* parameters,int analysis
 	int          dummy;
 	int         *analyses    = NULL;
 	char       **strings     = NULL;
-	char        *string      = NULL;
 	char       **toolkits    = NULL;
-	char        *toolkit     = NULL;
 	int          numanalyses;
 	int          found       = -1;
 	int          i;

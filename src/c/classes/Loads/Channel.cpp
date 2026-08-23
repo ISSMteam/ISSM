@@ -359,9 +359,9 @@ ElementMatrix* Channel::CreateKMatrixHydrologyGlaDS(void){/*{{{*/
 
 	/*Intermediaries */
 	IssmDouble  Jdet,v1,qc,fFactor,Afactor,Bfactor,Xifactor;
-	IssmDouble  A,B,n,phi_old,phi,phi_0,dPw,ks,kc,Ngrad;
+	IssmDouble  A,B,n,phi,phi_0,dPw,ks,kc,Ngrad;
 	IssmDouble  h_r;
-	IssmDouble  H,h,b,dphi[2],dphids,dphimds,db[2],dbds;
+	IssmDouble  H,h,b,dphi[2],dphids,dphimds,db[2];
 	IssmDouble  xyz_list[NUMVERTICES][3];
 	IssmDouble  xyz_list_tria[3][3];
 	const int   numnodes = NUMNODES;
@@ -525,7 +525,7 @@ ElementVector* Channel::CreatePVectorHydrologyGlaDS(void){/*{{{*/
 
 	/*Intermediaries */
 	IssmDouble  Jdet,v2,Afactor,Bfactor,fFactor;
-	IssmDouble  A,B,n,phi_old,phi,phi_0,dphimds,dphi[2];
+	IssmDouble  A,B,n,phi,phi_0,dphimds,dphi[2];
 	IssmDouble  H,h,b,db[2],dphids,qc,dPw,ks,kc,Ngrad;
 	IssmDouble  h_r;
 	IssmDouble  xyz_list[NUMVERTICES][3];
@@ -683,7 +683,7 @@ void           Channel::UpdateChannelCrossSection(void){/*{{{*/
 	/*Intermediaries */
 	IssmDouble  A,B,n,phi,phi_0,ks,kc,Ngrad;
 	IssmDouble  h_r;
-	IssmDouble  H,h,b,dphi[2],dphids,dphimds,db[2],dbds;
+	IssmDouble  H,h,b,dphi[2],dphids,dphimds,db[2];
 	IssmDouble  xyz_list[NUMVERTICES][3];
 	IssmDouble  xyz_list_tria[3][3];
 

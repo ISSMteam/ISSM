@@ -35,8 +35,6 @@ Riftfront::Riftfront(int riftfront_id,int i, IoModel* iomodel){/*{{{*/
 	const int RIFTINFOSIZE = 12;
 	int    riftfront_node_ids[2];
 	int    riftfront_elem_ids[2];
-	IssmDouble riftfront_friction;
-	IssmDouble riftfront_fractionincrement;
 	int    penalty_lock;
 
 	/*intermediary: */
@@ -501,7 +499,6 @@ ElementMatrix* Riftfront::PenaltyCreateKMatrixStressbalanceHoriz(IssmDouble kmax
 /*}}}*/
 ElementVector* Riftfront::PenaltyCreatePVectorStressbalanceHoriz(IssmDouble kmax){/*{{{*/
 
-	int        j;
 	IssmDouble rho_ice;
 	IssmDouble rho_water;
 	IssmDouble gravity;

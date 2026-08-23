@@ -35,7 +35,7 @@ ElementMatrix::ElementMatrix(ElementMatrix* Ke){/*{{{*/
 ElementMatrix::ElementMatrix(ElementMatrix* Ke1, ElementMatrix* Ke2){/*{{{*/
 
 	/*intermediaries*/
-	int i,j,counter;
+	int i,j;
 
 	/*If one of the two matrix is NULL, we copy the other one*/
 	if(!Ke1 && !Ke2){
