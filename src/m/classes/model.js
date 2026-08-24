@@ -449,7 +449,7 @@ function model(planet) {
 		//OK, now create the new model!
 
 		//take every field from model
-		var md2=md.deepcopy(md);
+		var md2=md.deepCopy();
 		//var md2=new model(); md2.mesh=new mesh3dsurface();
 		
 		//deal with mesh: {{{
@@ -678,7 +678,7 @@ function model(planet) {
 
 		return md;
 	} /*}}}*/
-	this.deepCopy = function(md) { //{{{
+	this.deepCopy = function() { //{{{
 		/*
 		 *DEEPCOPY - returns a deep copy of the model.
 		 *
@@ -687,42 +687,13 @@ function model(planet) {
 		 *   so that changes in one do not affect the other.
 		 *
 		 *   Usage:
-		 *	 md1=deepCopy(md)
+		 *	 md2=md.deepCopy()
+		 *
+		 *	 NOTE:
+		 *	 - Replaces original custom copy function; see revision history for reference
 		 *
 		 */
-		function recursiveDeepCopy(obj) {
-			var returnValue;
-
-			switch (typeof obj) {
-				case "object":
-					if (obj === null) {
-						// null => null
-						returnValue = null;
-					} else {
-						switch (toString.call(obj)) {
-							case "[object Array]":
-								// It's an array, create a new array with deep copies of the entries
-								returnValue = obj.map(recursiveDeepCopy);
-								break;
-							default:
-								// Some other kind of object, deep-copy its properties into a new object
-								returnValue = Object.keys(obj).reduce(function(prev, key) {
-									prev[key] = recursiveDeepCopy(obj[key]);
-									return prev;
-								}, {});
-								break;
-						}
-					}
-					break;
-				default:
-					// It's a primitive, copy via assignment
-					returnValue = obj;
-					break;
-			}
-			return returnValue;
-		}
-		
-		return recursiveDeepCopy(md);
+		return JSON.parse(JSON.stringify(this));
 	} /*}}}*/
 //properties
 // {{{

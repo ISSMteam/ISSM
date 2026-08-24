@@ -7,7 +7,7 @@
 //   - Finish translation (function -> class)
 //
 
-function transient (){
+function transient(){
 	//methods
 	this.setdefaultparameters = function(){// {{{
 
@@ -33,7 +33,7 @@ function transient (){
 		this.requested_outputs=['default'];
 
 	}// }}}
-	this.disp= function(){// {{{
+	this.disp = function() {// {{{
 
 		console.log(sprintf('   transient solution parameters:'));
 
@@ -57,10 +57,10 @@ function transient (){
 
 
 	}// }}}
-	this.classname= function(){// {{{
+	this.classname = function() {// {{{
 		return "transient";
 	}// }}}
-		this.checkconsistency = function(md,solution,analyses) { // {{{
+		this.checkconsistency = function(md,solution,analyses) {// {{{
 
 			//Early return
 			if (solution!='TransientSolution') return;
@@ -82,8 +82,8 @@ function transient (){
 			checkfield(md,'fieldname','transient.issampling','numel',[1],'values',[0, 1]);
 			checkfield(md,'fieldname','transient.amr_frequency','numel',[1],'>=',0,'NaN',1,'Inf',1);
 			checkfield(md,'fieldname','transient.requested_outputs','stringrow',1);
-		} // }}}
-		this.marshall=function(md,prefix,fid) { //{{{
+		}// }}}
+		this.marshall =function(md,prefix,fid) {// {{{
 
 			prefix='md.transient';
 			WriteData(fid,prefix,'object',this,'fieldname','isage','format','Boolean');
@@ -111,15 +111,16 @@ function transient (){
 					var newoutputs=this.defaultoutputs(md);
 					for (var j=0;j<newoutputs.length;j++) outputs.push(newoutputs[j]);
 				}
-			}			
+			}
+
 			WriteData(fid,prefix,'data',outputs,'name','md.transient.requested_outputs','format','StringArray');
-		}//}}}
-		this.defaultoutputs = function(md) { //{{{
+		}// }}}
+		this.defaultoutputs = function(md) {// {{{
 			return [];
-		}//}}}
-		this.fix=function() { //{{{
-		}//}}}
-	//properties 
+		}// }}}
+		this.fix = function() {// {{{
+		}// }}}
+	//properties
 	// {{{
 
 	this.isage             = 0;

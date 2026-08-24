@@ -83,9 +83,6 @@ classdef mmemasstransport
 			WriteData(fid,prefix,'data',outputs,'name','md.mmemasstransport.requested_outputs','format','StringArray');
 
 		end % }}}
-		function savemodeljs(self,fid,modelname) % {{{
-			error('mmemasstransport error message: not implemented yet');
-		end % }}}
 		function self = extrude(self,md) % {{{
 		end % }}}
 	end
