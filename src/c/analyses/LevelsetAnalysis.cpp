@@ -181,7 +181,6 @@ void LevelsetAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,
 
 	int  calvinglaw;
    IssmDouble *transparam = NULL;
-   IssmDouble  yts;
    int         N,M;
    bool        interp,cycle;
 
@@ -373,7 +372,7 @@ ElementMatrix* LevelsetAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries */
 	int  stabilization,dim,domaintype;
-	int i,j,k,row, col;
+	int i,j,k;
 	IssmDouble kappa,factor;
 	IssmDouble Jdet, dt, D_scalar;
 	IssmDouble h,hx,hy,hz;
@@ -547,7 +546,6 @@ ElementMatrix* LevelsetAnalysis::CreateKMatrix(Element* element){/*{{{*/
 				Input* levelset_input = NULL;
 
 				IssmDouble kappa;
-				IssmDouble p=4, q=4;
 				IssmDouble phi[3];
 
 			   levelset_input=basalelement->GetInput(MaskIceLevelsetEnum); _assert_(levelset_input);

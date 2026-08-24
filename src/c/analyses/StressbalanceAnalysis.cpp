@@ -29,7 +29,7 @@ void StressbalanceAnalysis::CreateConstraints(Constraints* constraints,IoModel* 
 
 	/*Intermediary*/
 	int        i,j;
-	int        finiteelement,p_fe,v_fe;
+	int        finiteelement,v_fe;
 	IssmDouble g;
 	IssmDouble rho_ice;
 	IssmDouble FSreconditioning;
@@ -85,16 +85,16 @@ void StressbalanceAnalysis::CreateConstraints(Constraints* constraints,IoModel* 
 		else if(isFS){  iomodel->FindConstant(&finiteelement,"md.flowequation.fe_FS");
 			/*Deduce velocity interpolation from finite element*/
 			switch(finiteelement){
-				case P1P1Enum              : v_fe = P1Enum;       p_fe = P1Enum;   break;
-				case P1P1GLSEnum           : v_fe = P1Enum;       p_fe = P1Enum;   break;
-				case MINIcondensedEnum     : v_fe = P1bubbleEnum; p_fe = P1Enum;   break;
-				case MINIEnum              : v_fe = P1bubbleEnum; p_fe = P1Enum;   break;
-				case TaylorHoodEnum        : v_fe = P2Enum;       p_fe = P1Enum;   break;
-				case XTaylorHoodEnum       : v_fe = P2Enum;       p_fe = P1Enum;   break;
-				case LATaylorHoodEnum      : v_fe = P2Enum;       p_fe = NoneEnum; break;
-				case LACrouzeixRaviartEnum : v_fe = P2bubbleEnum; p_fe = NoneEnum; break;
-				case OneLayerP4zEnum       : v_fe = P2xP4Enum;    p_fe = P1Enum;   break;
-				case CrouzeixRaviartEnum   : v_fe = P2bubbleEnum; p_fe = P1DGEnum; break;
+				case P1P1Enum              : v_fe = P1Enum;       break;
+				case P1P1GLSEnum           : v_fe = P1Enum;       break;
+				case MINIcondensedEnum     : v_fe = P1bubbleEnum; break;
+				case MINIEnum              : v_fe = P1bubbleEnum; break;
+				case TaylorHoodEnum        : v_fe = P2Enum;       break;
+				case XTaylorHoodEnum       : v_fe = P2Enum;       break;
+				case LATaylorHoodEnum      : v_fe = P2Enum;       break;
+				case LACrouzeixRaviartEnum : v_fe = P2bubbleEnum; break;
+				case OneLayerP4zEnum       : v_fe = P2xP4Enum;    break;
+				case CrouzeixRaviartEnum   : v_fe = P2bubbleEnum; break;
 				default: _error_("finite element "<<EnumToStringx(finiteelement)<<" not supported");
 			}
 		}
@@ -1170,15 +1170,15 @@ void           StressbalanceAnalysis::GetSolutionFromInputs(Vector<IssmDouble>* 
 void           StressbalanceAnalysis::GetSolutionFromInputsHoriz(Vector<IssmDouble>* solution,Element* element){/*{{{*/
 
 	IssmDouble   vx,vy;
-	int          domaintype,dim,approximation,dofpernode;
+	int          domaintype,approximation,dofpernode;
 	int*         doflist = NULL;
 
 	/*Get some parameters*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DhorizontalEnum: dim = 2; dofpernode = 2; break;
-		case Domain2DverticalEnum:   dim = 2; dofpernode = 1; break;
-		case Domain3DEnum:           dim = 3; dofpernode = 2; break;
+		case Domain2DhorizontalEnum: dofpernode = 2; break;
+		case Domain2DverticalEnum:   dofpernode = 1; break;
+		case Domain3DEnum:           dofpernode = 2; break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
 
@@ -1407,7 +1407,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAFriction(Element* element)
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*dim;
 
 	/*Initialize Element matrix and vectors*/
 	ElementMatrix* Ke = element->NewElementMatrix(SSAApproximationEnum);
@@ -1565,7 +1564,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*dim;
 
 	/*Initialize Element matrix and vectors*/
 	ElementMatrix* Ke     = element->NewElementMatrix(SSAApproximationEnum);
@@ -1692,7 +1690,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 	element->GetVerticesCoordinates(&xyz_list);
 	Input*     thickness_input=element->GetInput(ThicknessEnum); _assert_(thickness_input);
 	Input*     surface_input  =element->GetInput(SurfaceEnum);   _assert_(surface_input);
-	Input*     hydrologysheetthickness_input;
 	Input*     hr_input;
 	Input*     h_input;
 	IssmDouble rhog = element->FindParam(MaterialsRhoIceEnum)*element->FindParam(ConstantsGEnum);
@@ -2876,7 +2873,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixMOLHOFriction(Element* elemen
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*dim;
 
 	/*Initialize Element matrix and vectors*/
 	ElementMatrix* Ke = element->NewElementMatrix(MOLHOApproximationEnum);
@@ -2943,7 +2939,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixMOLHOViscous(Element* element
 	/*Intermediaries*/
 	IssmDouble  viscosity[4],Jdet,thickness,n;
 	IssmDouble *xyz_list = NULL;
-	int      domaintype;
 	int dim=2;
 
 	/*Fetch number of nodes and dof for this finite element*/
@@ -3360,14 +3355,14 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* s
 void           StressbalanceAnalysis::GetSolutionFromInputsMOLHO(Vector<IssmDouble>* solution,Element* element){/*{{{*/
 
 	IssmDouble   vbx,vby,vshx,vshy;
-	int          domaintype,dim,approximation,dofpernode;
+	int          domaintype,approximation,dofpernode;
 	int*         doflist = NULL;
 
 	/*Get some parameters*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DhorizontalEnum: dim = 2; dofpernode = 4; break;
-		case Domain3DEnum: dim = 2; dofpernode = 4; break;
+		case Domain2DhorizontalEnum: dofpernode = 4; break;
+		case Domain3DEnum: dofpernode = 4; break;
 		case Domain2DverticalEnum: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet"); break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
@@ -3510,7 +3505,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOFriction(Element* element){
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*(dim-1);
 
 	/*Initialize Element matrix and vectors*/
 	ElementMatrix* Ke     = element->NewElementMatrix(HOApproximationEnum);
@@ -3591,7 +3585,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOViscous(Element* element){/
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries*/
-	int         dim,bsize;
+	int         dim;
 	IssmDouble  viscosity,Jdet;
 	IssmDouble *xyz_list = NULL;
 
@@ -3600,7 +3594,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixHOViscous(Element* element){/
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*(dim-1);
 
 	/*Initialize Element matrix and vectors*/
 	ElementMatrix* Ke     = element->NewElementMatrix(HOApproximationEnum);
@@ -3794,7 +3787,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorHOFront(Element* element){/*{
 	/*Intermediaries*/
 	int         dim;
 	IssmDouble  Jdet,surface,sealevel,z,water_pressure,ice_pressure;
-	IssmDouble  surface_under_water,base_under_water,pressure;
+	IssmDouble  pressure;
 	IssmDouble* xyz_list       = NULL;
 	IssmDouble* xyz_list_front = NULL;
 	IssmDouble  normal[3];
@@ -4143,7 +4136,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSShelf(Element* element){/*{
 	if(shelf_dampening==0) return NULL;
 
 	/*Intermediaries*/
-	bool        mainlyfloating;
 	int         j,i,dim;
 	IssmDouble  Jdet,slope2,scalar,dt;
 	IssmDouble  slope[3];
@@ -4287,8 +4279,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscous(Element* element){/
 ElementMatrix* StressbalanceAnalysis::CreatePressureMassMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries*/
-	int         i,dim;
-	IssmDouble  FSreconditioning,Jdet;
+	int         dim;
+	IssmDouble  Jdet;
 	IssmDouble *xyz_list = NULL;
 
 	/*Get problem dimension*/
@@ -4305,7 +4297,6 @@ ElementMatrix* StressbalanceAnalysis::CreatePressureMassMatrix(Element* element)
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
-	//element->FindParam(&FSreconditioning,StressbalanceFSreconditioningEnum);
 
 	/* Start  looping on the number of gaussian points: */
 	Gauss* gauss = element->NewGauss(5);
@@ -4336,8 +4327,8 @@ ElementMatrix* StressbalanceAnalysis::CreatePressureMassMatrix(Element* element)
 ElementMatrix* StressbalanceAnalysis::CreateSchurPrecondMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries*/
-	int         i,dim;
-	IssmDouble  viscosity,FSreconditioning,Jdet;
+	int         dim;
+	IssmDouble  viscosity,Jdet;
 	IssmDouble *xyz_list = NULL;
 
 	/*Get problem dimension*/
@@ -4354,7 +4345,6 @@ ElementMatrix* StressbalanceAnalysis::CreateSchurPrecondMatrix(Element* element)
 
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinates(&xyz_list);
-	//element->FindParam(&FSreconditioning,StressbalanceFSreconditioningEnum);
 	Input* vx_input=element->GetInput(VxEnum);     _assert_(vx_input);
 	Input* vy_input=element->GetInput(VyEnum);     _assert_(vy_input);
 	Input* vz_input = NULL;
@@ -4430,7 +4420,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscousGLS(Element* element
 	/* prepare viscosity gradient for GLS */
 	IssmDouble NodalViscosity[6];
 	IssmDouble gradViscos[3];
-	IssmDouble etapq, s, Tau, mk, hk;
+	IssmDouble s, Tau, mk, hk;
 	IssmDouble hx, hy, hz;
 	IssmDouble SU[3*(3+1)*6];
     Gauss* vert = element->NewGauss();
@@ -4576,7 +4566,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousGLS(Element* element
 	IssmDouble viscosity,FSreconditioning;
 	IssmDouble NodalViscosity[6];
 	IssmDouble gradViscos[3];
-	IssmDouble etapq, s, Tau, mk, hk;
+	IssmDouble Tau, mk, hk;
 	IssmDouble hx, hy, hz;
 	IssmDouble SU[3*(3+1)*6];
     Gauss* vert = element->NewGauss();
@@ -4603,8 +4593,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorFSViscousGLS(Element* element
 
 		/* compute viscosity gradient at the gaussian point */
 		element->ValueP1DerivativesOnGauss(&gradViscos[0],NodalViscosity,xyz_list,gauss);
-		/*  weight*detJ */
-		s = gauss->weight*Jdet;
 		/* GLS Stabilization */
 		element->material->ViscosityFS(&viscosity,dim,xyz_list,gauss,vx_input,vy_input,vz_input);
 		mk = 1.0 /3.0;
@@ -4661,7 +4649,7 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixFSViscousLA(Element* element)
 
 	/*Intermediaries*/
 	int         i,dim,epssize;
-	IssmDouble  r,rl,Jdet,viscosity,DU,DUl;
+	IssmDouble  r,rl,Jdet,viscosity,DU;
 	IssmDouble	normal[3];
 	IssmDouble *xyz_list = NULL;
 	IssmDouble *xyz_list_base = NULL;
@@ -6626,7 +6614,7 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionFS(IssmDouble* solu
 void           StressbalanceAnalysis::InputUpdateFromSolutionFSXTH_d(Elements* elements,Parameters* parameters){/*{{{*/
 
 	/*Intermediaries*/
-	int         dim,tausize;
+	int         dim;
 	IssmDouble  epsxx,epsyy,epszz,epsxy,epsxz,epsyz,D_scalar;
 	IssmDouble  epsxx_old,epsyy_old,epszz_old,epsxy_old,epsxz_old,epsyz_old;
 	IssmDouble  sigmapxx,sigmapyy,sigmapzz,sigmapxy,sigmapxz,sigmapyz;
@@ -6636,8 +6624,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionFSXTH_d(Elements* e
 
 	parameters->FindParam(&r,AugmentedLagrangianREnum);
 	parameters->FindParam(&dim,DomainDimensionEnum);
-	if(dim==2) tausize = 3;
-	else       tausize = 6;
 
 	for(Object* & object : elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
@@ -6839,18 +6825,16 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionFSXTH_d(Elements* e
 void           StressbalanceAnalysis::InputUpdateFromSolutionFSXTH_tau(Elements* elements,Parameters* parameters){/*{{{*/
 
 	/*Intermediaries*/
-	int         dim,tausize;
-	IssmDouble  epsxx,epsyy,epszz,epsxy,epsxz,epsyz,D_scalar;
+	int         dim;
+	IssmDouble  epsxx,epsyy,epszz,epsxy,epsxz,epsyz;
 	IssmDouble  d_xx,d_yy,d_zz,d_xy,d_xz,d_yz;
 	IssmDouble  sigmapxx,sigmapyy,sigmapzz,sigmapxy,sigmapxz,sigmapyz;
 	IssmDouble  dvx[3],dvy[3],dvz[3];
 	IssmDouble *xyz_list = NULL;
-	IssmDouble  Jdet,r;
+	IssmDouble  r;
 
 	parameters->FindParam(&r,AugmentedLagrangianREnum);
 	parameters->FindParam(&dim,DomainDimensionEnum);
-	if(dim==2) tausize = 3;
-	else       tausize = 6;
 
 	for(Object* & object : elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
@@ -7555,8 +7539,6 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSA3dViscous(Element* element
 	int         i,j,approximation;
 	int         dim=3;
 	IssmDouble  Jdet,viscosity;
-	IssmDouble  epsilon[5],oldepsilon[5];       /* epsilon=[exx,eyy,exy,exz,eyz];*/
-	IssmDouble  epsilons[6];                    //6 for FS
 	IssmDouble  B[3][numdof2d];
 	IssmDouble  Bprime[3][numdof2d];
 	IssmDouble  D[3][3]= {0.0};                 // material matrix, simple scalar matrix.
@@ -7639,7 +7621,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingHOFSFriction(Element*
 	/*Intermediaries*/
 	int         i,approximation;
 	int         dim=3;
-	IssmDouble  Jdet,Jdet2d,FSreconditioning;
+	IssmDouble  Jdet2d,FSreconditioning;
 	IssmDouble	bed_normal[3];
 	IssmDouble  viscosity, w, alpha2_gauss;
 	IssmDouble  dw[3];
@@ -7654,7 +7636,6 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingHOFSFriction(Element*
 
 	int vnumnodes = element->NumberofNodesVelocity();
 	int pnumnodes = element->NumberofNodesPressure();
-	int numnodes  = vnumnodes+pnumnodes;
 
 	/*Prepare coordinate system list*/
 	int*   cs_list   = xNew<int>(vnumnodes+pnumnodes);
@@ -7806,9 +7787,9 @@ ElementVector* StressbalanceAnalysis::CreatePVectorCouplingSSAFSFriction(Element
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries*/
-	int         i,j,approximation;
+	int         i,approximation;
 	int         dim=3;
-	IssmDouble  Jdet,Jdet2d,FSreconditioning;
+	IssmDouble  Jdet2d,FSreconditioning;
 	IssmDouble	bed_normal[3];
 	IssmDouble  viscosity, w, alpha2_gauss;
 	IssmDouble  dw[3];
@@ -8640,7 +8621,7 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionSSAFS(IssmDouble* s
 }/*}}}*/
 void           StressbalanceAnalysis::InputUpdateFromSolutionSSAHO(IssmDouble* solution,Element* element){/*{{{*/
 
-	int         i,domaintype;
+	int         i;
 	IssmDouble  rho_ice,g;
 	int*        SSAdoflist = NULL;
 	int*        HOdoflist  = NULL;

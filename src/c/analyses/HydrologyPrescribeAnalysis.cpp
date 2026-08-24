@@ -31,7 +31,7 @@ int  HydrologyPrescribeAnalysis::DofsPerNode(int** doflist,int domaintype,int ap
 void HydrologyPrescribeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	/*Fetch data needed: */
-	int    hydrology_model,frictionlaw;
+	int    hydrology_model;
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
 	/*Now, do we really want Prescribe?*/

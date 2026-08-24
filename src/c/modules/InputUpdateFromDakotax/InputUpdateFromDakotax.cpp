@@ -16,7 +16,7 @@
 
 void  InputUpdateFromDakotax(FemModel* femmodel,double* variables,char* *variables_descriptors,int numdakotavariables){ /*{{{*/
 
-	int     i,j,k,l;
+	int     i,j;
 
 	IssmDouble **variable_partitions         = NULL;
 	IssmDouble * variable_partition         = NULL;

@@ -87,7 +87,7 @@ ElementMatrix* ExtrapolationAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	/*Intermediaries */
 	bool	      extrapolatebydiffusion = true;
 	int	      dim, domaintype, extrapolationcase;
-	int	      i,row,col,stabilization;
+	int	      i,stabilization;
 	IssmDouble  Jdet,D_scalar,h;
 	IssmDouble  norm_dlsf;
 	IssmDouble  hx,hy,hz,kappa;

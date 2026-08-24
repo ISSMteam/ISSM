@@ -675,7 +675,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	bool        mainlyfloating, nomeltunderlakes;
 	IssmDouble  fraction1,fraction2;
 	IssmDouble  Jdet,dt,intrusiondist_avg;
-	IssmDouble  ms,mb,gmb,fmb,thickness,fmb_pert,gldistance,conn;
+	IssmDouble  ms,mb,gmb,fmb,thickness,gldistance,conn;
 	IssmDouble  vx,vy,vel,dvxdx,dvydy,xi,h,tau;
 	IssmDouble  dvx[2],dvy[2];
 	IssmDouble  gllevelset,phi=1.;
@@ -709,6 +709,7 @@ ElementVector* MasstransportAnalysis::CreatePVectorCG(Element* element){/*{{{*/
 	Input* gmb_input        = element->GetInput(BasalforcingsGroundediceMeltingRateEnum);  _assert_(gmb_input);
 	Input* fmb_input        = element->GetInput(BasalforcingsFloatingiceMeltingRateEnum);  _assert_(fmb_input);
 	#ifdef MELTPERTURBATION
+	IssmDouble fmb_pert;
 	Input* fmb_pert_input   = element->GetInput(BasalforcingsPerturbationMeltingRateEnum); _assert_(fmb_pert_input);
 	#endif
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum);              _assert_(gllevelset_input);
@@ -1182,14 +1183,12 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries */
-	int			stabilization,dim,domaintype;
+	int			stabilization,domaintype;
 	int         melt_style,point1;
 	bool        mainlyfloating;
 	IssmDouble  fraction1,fraction2;
 	IssmDouble  Jdet;
 	IssmDouble  ms,mb,gmb,fmb;
-	IssmDouble  vx,vy,dvxdx,dvydy;
-	IssmDouble  dvx[2],dvy[2];
 	IssmDouble  gllevelset,phi=1.;
 	IssmDouble* xyz_list = NULL;
 	Gauss*      gauss     = NULL;
@@ -1197,9 +1196,9 @@ ElementVector* MasstransportAnalysis::CreateFctPVector(Element* element){/*{{{*/
 	/*Get problem dimension*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DverticalEnum:   dim = 1; break;
-		case Domain2DhorizontalEnum: dim = 2; break;
-		case Domain3DEnum:           dim = 2; break;
+		case Domain2DverticalEnum:   break;
+		case Domain2DhorizontalEnum: break;
+		case Domain3DEnum:           break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
 

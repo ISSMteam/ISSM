@@ -46,8 +46,6 @@ class GenericOption: public Option {
 		} /*}}}*/
 		void DeepEcho(char* indent){ /*{{{*/
 
-			char  cstr[81];
-
 			_printf_(indent << "          name: \"" << name << "\"\n");
 			_printf_(indent << "          size: " << size[0] <<"x"<<size[1]<< "\n");
 			_printf_(indent << "         value: " << value << "\n");

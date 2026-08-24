@@ -327,13 +327,11 @@ ElementVector* HydrologyDCInefficientAnalysis::CreatePVector(Element* element){/
 	int        smb_model,smb_averaging;
 	int        smbsubstepping, hydrologysubstepping;
 	IssmDouble dt,scalar,water_head;
-	IssmDouble sediment_storing,sediment_transmitivity;
+	IssmDouble sediment_storing;
 	IssmDouble water_load,runoff_value,transfer;
 	IssmDouble Jdet,time;
-	IssmDouble active_node;
 
 	IssmDouble *xyz_list             = NULL;
-	Input     *active_element_input = NULL;
 	Input     *old_wh_input         = NULL;
 	Input     *dummy_input          = NULL;
 	Input     *surface_runoff_input = NULL;
@@ -391,7 +389,6 @@ ElementVector* HydrologyDCInefficientAnalysis::CreatePVector(Element* element){/
 	while(gauss->next()){
 		basalelement->JacobianDeterminant(&Jdet,xyz_list,gauss);
 		basalelement->NodalFunctions(basis,gauss);
-		sediment_transmitivity = SedimentTransmitivity(basalelement,gauss,sed_head_input,base_input,SedTrans_input);
 
 		/*Loading term*/
 		if(!isefficientlayer){
@@ -692,7 +689,6 @@ void HydrologyDCInefficientAnalysis::ElementizeEplMask(FemModel* femmodel){/*{{{
 
 	bool     element_active;
 	Element* element=NULL;
-	int      elementssize=femmodel->elements->Size();
 	for(Object* & object : femmodel->elements->objects){
 		element = xDynamicCast<Element*>(object);
 		Input* input=element->GetInput(HydrologydcMaskEplactiveNodeEnum); _assert_(input);
@@ -706,7 +702,6 @@ void HydrologyDCInefficientAnalysis::ElementizeEplMask(FemModel* femmodel){/*{{{
 	}
 }/*}}}*/
 void  HydrologyDCInefficientAnalysis::HydrologyIDSGetMask(Vector<IssmDouble>* vec_mask, Element* element){/*{{{*/
-	bool        active_element;
 	int         domaintype;
 	Element*    basalelement=NULL;
 
@@ -748,7 +743,6 @@ void HydrologyDCInefficientAnalysis::ElementizeIdsMask(FemModel* femmodel){/*{{{
 
 	bool     element_active;
 	Element* element=NULL;
-	int elementssize = femmodel->elements->Size();
 	for(Object* & object : femmodel->elements->objects){
 		element = xDynamicCast<Element*>(object);
 

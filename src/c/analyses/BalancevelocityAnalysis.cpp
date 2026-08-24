@@ -73,7 +73,7 @@ _error_("Not implemented");
 ElementMatrix* BalancevelocityAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries */
-	IssmDouble  dhdt,mb,ms,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  h,gamma,thickness;
 	IssmDouble  hnx,hny,dhnx[2],dhny[2];
 	IssmDouble *xyz_list = NULL;

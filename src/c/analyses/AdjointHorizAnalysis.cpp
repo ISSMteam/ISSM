@@ -69,7 +69,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 
 	/*Intermediaries */
 	bool        incomplete_adjoint;
-	int         dim,epssize;
+	int         dim;
 	IssmDouble  Jdet,mu_prime,factor;
 	IssmDouble  eps1dotdphii,eps1dotdphij,eps2dotdphii,eps2dotdphij,eps3dotdphii,eps3dotdphij;
 	IssmDouble  eps1[3],eps2[3],eps3[3],epsilon[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
@@ -77,8 +77,6 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 
 	/*Get problem dimension*/
 	element->FindParam(&dim,DomainDimensionEnum);
-	if(dim==2) epssize = 3;
-	else       epssize = 6;
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int vnumnodes = element->NumberofNodesVelocity();
@@ -103,11 +101,7 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixFS(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	Input* vx_input = element->GetInput(VxEnum);_assert_(vx_input);
 	Input* vy_input = element->GetInput(VyEnum);_assert_(vy_input);
-	Input* vz_input = NULL;
-	if(dim==3){
-		vz_input = element->GetInput(VzEnum);
-	}
-	else{
+	if(dim!=3){
 		_error_("Not implemented yet");
 	}
 
@@ -236,14 +230,14 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHO(Element* element){/*{{{*
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries */
-	IssmDouble  Jdet,mu_prime,n,thickness,mu,effmu,factor;
+	IssmDouble  Jdet,n,thickness,effmu,factor;
 	IssmDouble *xyz_list = NULL;
 	IssmDouble  viscosity[9]; //9 mu for different integrand
    int			domaintype;
 	int			dim=2;
 
 	IssmDouble  eb1i,eb1j,esh1i,esh1j,eb2i,eb2j,esh2i,esh2j;
-	IssmDouble  epsilon[5],epsilonbase[5],epsilonshear[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
+	IssmDouble  epsilonbase[5],epsilonshear[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
 	IssmDouble  e1b[2], e2b[2], e1sh[2], e2sh[2];
 	IssmDouble  vxshear, vyshear;
 
@@ -368,11 +362,10 @@ ElementMatrix* AdjointHorizAnalysis::CreateKMatrixMOLHOVerticalIntergrated(Eleme
 	if(!element->IsIceInElement()) return NULL;
 
 	/*Intermediaries */
-	IssmDouble  Jdet,mu_prime,n,thickness,mu,effmu;
+	IssmDouble  Jdet,n,thickness,mu,effmu;
 	IssmDouble *xyz_list = NULL;
 	IssmDouble	zeta, epsilon_eff;
    int			domaintype;
-	int			dim=2;
 
 	IssmDouble  e1phi1i, e1phi1j, e2phi1i, e2phi1j, e1phi2i, e1phi2j, e2phi2i, e2phi2j;
 	IssmDouble  epsilon[5];/* epsilon=[exx,eyy,exy,exz,eyz];*/
@@ -1875,9 +1868,9 @@ void           AdjointHorizAnalysis::GradientJBbarMOLHO(Element* element,Vector<
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble thickness,dmudB,n;
-	IssmDouble dvx[3],dvy[3],dadjbx[3],dadjby[3],dadjshx[3],dadjshy[3]; 
+	IssmDouble dadjbx[3],dadjby[3],dadjshx[3],dadjshy[3];
 	IssmDouble *xyz_list= NULL;
 
 	/*Fetch number of vertices for this finite element*/
@@ -2002,7 +1995,7 @@ void           AdjointHorizAnalysis::GradientJBbarSSA(Element* element,Vector<Is
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble thickness,dmudB;
 	IssmDouble dvx[3],dvy[3],dadjx[3],dadjy[3]; 
 	IssmDouble *xyz_list= NULL;
@@ -2221,7 +2214,7 @@ void           AdjointHorizAnalysis::GradientJBHO(Element* element,Vector<IssmDo
 	element->FindParam(&domaintype,DomainTypeEnum);
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble thickness,dmudB;
 	IssmDouble dvx[3],dvy[3],dadjx[3],dadjy[3]; 
 	IssmDouble *xyz_list= NULL;
@@ -2319,7 +2312,7 @@ void           AdjointHorizAnalysis::GradientJBSSA(Element* element,Vector<IssmD
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble thickness,dmudB;
 	IssmDouble dvx[3],dvy[3],dadjx[3],dadjy[3]; 
 	IssmDouble *xyz_list= NULL;
@@ -2480,7 +2473,7 @@ void           AdjointHorizAnalysis::GradientJDragFS(Element* element,Vector<Iss
 
 	/*Intermediaries*/
 	int        domaintype,dim;
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble drag,dalpha2dk,normal[3];
 	IssmDouble vx,vy,vz,lambda,mu,xi;
 	IssmDouble *xyz_list_base= NULL;
@@ -2593,7 +2586,7 @@ void           AdjointHorizAnalysis::GradientJDragHO(Element* element,Vector<Iss
 	if(!element->IsOnBase()) return;
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble drag,dalpha2dk;
 	IssmDouble vx,vy,lambda,mu;
 	IssmDouble *xyz_list_base= NULL;
@@ -2722,7 +2715,7 @@ void           AdjointHorizAnalysis::GradientJDragMOLHO(Element* element,Vector<
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble drag,dalpha2dk;
 	IssmDouble vx,vy,lambda,mu;
 	IssmDouble *xyz_list= NULL;
@@ -2841,7 +2834,7 @@ void           AdjointHorizAnalysis::GradientJDragSSA(Element* element,Vector<Is
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble drag,dalpha2dk;
 	IssmDouble vx,vy,lambda,mu;
 	IssmDouble *xyz_list= NULL;
@@ -2940,8 +2933,8 @@ void           AdjointHorizAnalysis::GradientJDragHydroFS(Element* element,Vecto
 
 	/*Intermediaries*/
 	int        domaintype,dim;
-	IssmDouble Jdet,weight;
-	IssmDouble drag,dalpha2dk,normal[3];
+	IssmDouble Jdet;
+	IssmDouble dalpha2dk,normal[3];
 	IssmDouble vx,vy,vz,lambda,mu,xi;
 	IssmDouble *xyz_list_base= NULL;
 
@@ -3038,8 +3031,8 @@ void           AdjointHorizAnalysis::GradientJDragHydroHO(Element* element,Vecto
 	if(control_interp!=P1Enum) _error_("not implemented yet...");
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
-	IssmDouble drag,dalpha2dk;
+	IssmDouble Jdet;
+	IssmDouble dalpha2dk;
 	IssmDouble vx,vy,lambda,mu;
 	IssmDouble *xyz_list_base= NULL;
 
@@ -3134,7 +3127,7 @@ void           AdjointHorizAnalysis::GradientJDragHydroSSA(Element* element,Vect
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble dalpha2dk;
 	IssmDouble vx,vy,lambda,mu;
 	IssmDouble *xyz_list= NULL;
@@ -3165,7 +3158,7 @@ void           AdjointHorizAnalysis::GradientJDragHydroSSA(Element* element,Vect
 	IssmDouble  n;
 	IssmDouble  alpha;
 	IssmDouble  Chi,Gamma;
-	IssmDouble  vz,vmag;
+	IssmDouble  vmag;
 	IssmDouble  Uder;
 
 	/*Recover parameters: */
@@ -3255,7 +3248,7 @@ void           AdjointHorizAnalysis::GradientJDSSA(Element* element,Vector<IssmD
 	}
 
 	/*Intermediaries*/
-	IssmDouble Jdet,weight;
+	IssmDouble Jdet;
 	IssmDouble thickness,dmudD;
 	IssmDouble dvx[3],dvy[3],dadjx[3],dadjy[3]; 
 	IssmDouble *xyz_list= NULL;

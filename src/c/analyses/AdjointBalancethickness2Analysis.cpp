@@ -203,7 +203,6 @@ void           AdjointBalancethickness2Analysis::GradientJdHdt(Element* element,
 void           AdjointBalancethickness2Analysis::GradientJOmega(Element* element,Vector<IssmDouble>* gradient,int control_index){/*{{{*/
 
 	/*Intermediaries*/
-	int         n=3;
 	IssmDouble  dlambda[2],ds[2],slopex,slopey,slope,omega,Jdet,velobs,factor;
 	IssmDouble *xyz_list= NULL;
 

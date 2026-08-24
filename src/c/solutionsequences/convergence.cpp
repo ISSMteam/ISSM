@@ -19,7 +19,6 @@ void convergence(bool* pconverged, Matrix<IssmDouble>* Kff,Vector<IssmDouble>* p
 	IssmDouble nKUoldF;
 	IssmDouble nF;
 	IssmDouble res;
-	int analysis_type;
 	int ufsize;
 
 	if(VerboseModule()) _printf0_("   checking convergence\n");

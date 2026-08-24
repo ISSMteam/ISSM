@@ -102,7 +102,6 @@ void              solidearthexternal_core(FemModel* femmodel){ /*{{{*/
 	Vector<IssmDouble> *geoid= NULL; 
 	Vector<IssmDouble> *geoid_rate= NULL; 
 	int horiz=0;
-	int modelid=-1;
 	int  isexternal=0;
 
 	/*parameters: */
@@ -979,8 +978,7 @@ void       PolarMotion(IssmDouble* polarmotionvector, FemModel* femmodel,GrdLoad
 	IssmDouble* viscoustimes=NULL;
 	IssmDouble* viscouspolarmotion=NULL;
 	int         viscousnumsteps;
-	int         viscousindex=0; 
-	int         dummy;
+	int         viscousindex=0;
 	IssmDouble  currenttime, final_time, lincoeff, timeacc;
 
 	/*early return?:*/
@@ -1102,8 +1100,7 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 	IssmDouble* viscoustimes=NULL;
 	int         viscousnumsteps;
 	int         viscousindex=0; 
-	int         newindex=0; 
-	int         dummy;
+	int         newindex=0;
 	bool        viscous=false;
 	bool        rotation=false;
 	IssmDouble  currenttime;

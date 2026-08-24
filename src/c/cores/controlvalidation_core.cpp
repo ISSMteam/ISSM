@@ -123,10 +123,9 @@ void controlvalidation_core(FemModel* femmodel){
 	int         solution_type,n;
 	int         num_responses;
 	IssmDouble  j0,j;
-	IssmDouble  Ialpha,exponent,alpha;
+	IssmDouble  Ialpha,alpha;
 	IssmDouble* scaling_factors = NULL;
 	IssmDouble* jlist = NULL;
-	int my_rank=IssmComm::GetRank();
 
 	/*Recover parameters used throughout the solution*/
 	femmodel->parameters->FindParam(&solution_type,SolutionTypeEnum);
@@ -148,6 +147,7 @@ void controlvalidation_core(FemModel* femmodel){
 
 	#if defined(_HAVE_ADOLC_)
 	/*{{{*/
+	int my_rank=IssmComm::GetRank();
 	IssmDouble* aX=xNew<IssmDouble>(n);
 	if(my_rank==0){
 		for(int i=0;i<n;i++){
@@ -158,6 +158,7 @@ void controlvalidation_core(FemModel* femmodel){
 	/*}}}*/
 	#elif defined(_HAVE_CODIPACK_)
 	/*{{{*/
+	int my_rank=IssmComm::GetRank();
 	simul_starttrace2(femmodel);
 	IssmDouble* aX=xNew<IssmDouble>(n);
 

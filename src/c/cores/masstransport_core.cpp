@@ -18,7 +18,7 @@ void masstransport_core(FemModel* femmodel){ /*{{{*/
 	/*parameters: */
 	int    numoutputs,domaintype;
 	bool   save_results;
-	bool   isFS,isfreesurface,dakota_analysis;
+	bool   isFS,isfreesurface;
 	int    solution_type,stabilization;
 	char** requested_outputs = NULL;
 

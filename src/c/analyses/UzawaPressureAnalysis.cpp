@@ -75,7 +75,6 @@ _error_("Not implemented");
 ElementMatrix* UzawaPressureAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries*/
-	IssmDouble  D_scalar,Jdet;
 	IssmDouble *xyz_list = NULL;
 	int numnodes = element->GetNumberOfNodes();
 
@@ -158,7 +157,7 @@ void           UzawaPressureAnalysis::InputUpdateFromSolution(IssmDouble* soluti
 
 	int        dim;
 	int        *doflist       = NULL;
-	IssmDouble rholambda,un,vx,vy,vz,sigmann;
+	IssmDouble rholambda,un,vx,vy,sigmann;
 	IssmDouble *xyz_list_base = NULL;
 
 	/*Fetch number of nodes and dof for this finite element*/

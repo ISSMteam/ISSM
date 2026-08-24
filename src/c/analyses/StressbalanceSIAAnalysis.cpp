@@ -88,7 +88,6 @@ void StressbalanceSIAAnalysis::CreateNodes(Nodes* nodes,IoModel* iomodel,bool is
 	if(!isSIA) return;
 
 	/*First create nodes*/
-	int    lid=0;
 	iomodel->FetchData(4,"md.flowequation.borderSSA","md.flowequation.borderFS","md.flowequation.vertex_equation","md.stressbalance.referential");
 	if(iomodel->domaintype!=Domain2DhorizontalEnum){
 		iomodel->FetchData(2,"md.mesh.vertexonbase","md.mesh.vertexonsurface");
@@ -216,7 +215,7 @@ ElementMatrix* StressbalanceSIAAnalysis::CreateKMatrix3D(Element* element){/*{{{
 
 	/*Intermediaries */
 	int         i0,i1,j0,j1,nodeup,nodedown,numsegments;
-	IssmDouble  slope[2],connectivity[2],one0,one1;
+	IssmDouble  connectivity[2],one0,one1;
 	int        *pairindices = NULL;
 
 	/*Fetch number vertices for this element*/
@@ -388,9 +387,6 @@ ElementVector* StressbalanceSIAAnalysis::CreatePVector3D(Element* element){/*{{{
 	IssmDouble  slope[2],connectivity[2],xyz_list_line[2][3];
 	IssmDouble *xyz_list = NULL;
 	int        *pairindices = NULL;
-
-	/*Fetch number vertices for this element*/
-	int numvertices = element->GetNumberOfVertices();
 
 	/*Initialize Element vector*/
 	ElementVector* pe=element->NewElementVector();

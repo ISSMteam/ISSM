@@ -299,7 +299,6 @@ ElementVector* HydrologyDCEfficientAnalysis::CreatePVector(Element* element){/*{
 	IssmDouble epl_storing;  //,epl_transmitivity;
 	IssmDouble Jdet,time;
 	IssmDouble residual,connectivity;
-	IssmDouble active_node;
 
 	IssmDouble *xyz_list             = NULL;
 	Input     *old_wh_input         = NULL;

@@ -500,7 +500,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble** cfrheogradt_weights_s             = NULL;
 				int*         cfrheogradt_weights_M_s           = NULL;
 				int*         cfrheogradt_weights_N_s           = NULL;
-				char**       cfrheogradt_weights_string_s      = NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cfrheologybbarabsgradtransient.m): */
 				iomodel->FetchMultipleData(&cfrheogradt_name_s,&num_cfrheologybbarabsgradtransients,                                                        "md.cfrheologybbarabsgradtransient.name");

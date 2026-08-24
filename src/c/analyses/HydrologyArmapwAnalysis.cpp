@@ -24,7 +24,7 @@ int  HydrologyArmapwAnalysis::DofsPerNode(int** doflist,int domaintype,int appro
 void HydrologyArmapwAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	/*Fetch data needed: */
-   int    hydrology_model,frictionlaw;
+   int    hydrology_model;
    iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
    /*Now, do we really want armapw?*/
@@ -113,7 +113,7 @@ void HydrologyArmapwAnalysis::UpdateSubglacialWaterPressure(FemModel* femmodel){
    /*Load parameters*/
    bool isstochastic;
    bool ispwstochastic = false;
-   int M,N,arorder,maorder,numbasins,numparams,numbreaks,my_rank;
+   int M,N,arorder,maorder,numbasins,numparams,numbreaks;
    femmodel->parameters->FindParam(&numbasins,HydrologyNumBasinsEnum);
    femmodel->parameters->FindParam(&numparams,HydrologyarmaNumParamsEnum);
    femmodel->parameters->FindParam(&numbreaks,HydrologyarmaNumBreaksEnum);

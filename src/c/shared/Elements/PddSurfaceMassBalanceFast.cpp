@@ -23,7 +23,6 @@ IssmDouble PddSurfaceMassBalanceFast(IssmDouble* monthlytemperatures, IssmDouble
   IssmDouble precip;				// total precipitation during 1 year
   IssmDouble sconv;				//rhow_rain/rhoi / 12 months
   IssmDouble st;					// elevation between altitude of the temp record and current altitude
-  IssmDouble sp;					// elevation between altitude of the prec record and current altitude
   IssmDouble q;					// q is desert/elev. fact
   IssmDouble pdd;					// pdd factor (a * degC)
   IssmDouble tstar;				// monthly temp. after lapse rate correction (degC)

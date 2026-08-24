@@ -186,7 +186,6 @@ class IssmMpiVec:public IssmAbsVec<doubletype>{
 			DataSet     **bucketsforcpu       = NULL;
 
 			int        **row_indices_fromcpu = NULL;
-			int        **col_indices_fromcpu = NULL;
 			int        **modes_fromcpu       = NULL;
 			doubletype **values_fromcpu      = NULL;
 			int         *numvalues_fromcpu   = NULL;

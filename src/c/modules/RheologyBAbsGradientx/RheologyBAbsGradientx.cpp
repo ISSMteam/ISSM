@@ -31,9 +31,9 @@ void RheologyBAbsGradientx( IssmDouble* pJ, Elements* elements,Nodes* nodes, Ver
 
 IssmDouble RheologyBAbsGradient(Element* element){
 
-	int         domaintype,numcomponents;
+	int         domaintype;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  dp[3],weight;
 	IssmDouble* xyz_list      = NULL;
 
@@ -43,9 +43,9 @@ IssmDouble RheologyBAbsGradient(Element* element){
 	/*Get problem dimension*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DverticalEnum:   numcomponents   = 1; break;
-		case Domain3DEnum:           numcomponents   = 2; break;
-		case Domain2DhorizontalEnum: numcomponents   = 2; break;
+		case Domain2DverticalEnum:   break;
+		case Domain3DEnum:           break;
+		case Domain2DhorizontalEnum: break;
 		default: _error_("not supported yet");
 	}
 
@@ -100,9 +100,9 @@ void RheologyBInitialguessMisfitx( IssmDouble* pJ, Elements* elements,Nodes* nod
 
 IssmDouble RheologyBInitialguessMisfit(Element* element){
 
-	int         domaintype,numcomponents;
+	int         domaintype;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  B,B0,weight;
 	IssmDouble* xyz_list      = NULL;
 
@@ -112,9 +112,9 @@ IssmDouble RheologyBInitialguessMisfit(Element* element){
 	/*Get problem dimension*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DverticalEnum:   numcomponents   = 1; break;
-		case Domain3DEnum:           numcomponents   = 2; break;
-		case Domain2DhorizontalEnum: numcomponents   = 2; break;
+		case Domain2DverticalEnum:   break;
+		case Domain3DEnum:           break;
+		case Domain2DhorizontalEnum: break;
 		default: _error_("not supported yet");
 	}
 

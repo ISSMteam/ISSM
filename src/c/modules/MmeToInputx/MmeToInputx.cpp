@@ -13,7 +13,6 @@ void  MmeToInputx(FemModel* femmodel,IssmDouble* distributed_values,IssmDouble* 
 
 	TransientInput* transientinput  = NULL;
 	TransientInput* transientinput2 = NULL;
-	Tria* element                    = NULL;
 	IssmDouble value;
 	IssmDouble* values               = NULL;
 	IssmDouble* times                = NULL;

@@ -118,7 +118,6 @@ ElementMatrix* SamplingAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries*/
 	bool robin;
-	int      domaintype;
 
 	/*compute all stiffness matrices for this element*/
 

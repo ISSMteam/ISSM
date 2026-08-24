@@ -41,8 +41,6 @@ void	UpdateElementsAndMaterialsControl(Elements* elements,Parameters* parameters
 	int        control,cost_function,domaintype;
 	int        num_controls,num_cost_functions;
 	IssmDouble yts,scale;
-	Element     *element          = NULL;
-	Material    *material         = NULL;
 	int         *control_enums    = NULL;
 	char       **controls         = NULL;
 	char       **cost_functions   = NULL;

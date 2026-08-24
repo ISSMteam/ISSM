@@ -202,7 +202,6 @@ IssmDouble FormFunctionGradient(IssmDouble** pG,IssmDouble* X,void* usrvoid){/*{
 	/*parameters: */
 	void (*adjointcore)(FemModel*)=NULL;
 	int         solution_type,analysis_type,num_responses,num_controls,numvertices;
-	bool        conserve_loads = true;
 	IssmDouble *scalar_list    = NULL;
 	IssmDouble *Jlist          = NULL;
 	IssmDouble *G              = NULL;

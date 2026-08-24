@@ -182,18 +182,15 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
    double       barr    = barmin;
 
    double td = 0.0, tg = 0.0;
-   double fn = f, fg = fn, fpg = fpn;
+   double fn = f, fg = fn;
    double ta = 0.0, fa = fn, fpa = fpn;
-   double d2 = dot(n, d, d);
 
    /* eliminate ridiculously small initial t */
    if (t < tmin) {
       t = tmin;
       if (t > tmax) tmin = tmax;
    }
-   bool t_increased = false;
    while (fn + t * fpn >= fn + 0.9 * t * fpn) {
-      t_increased = true;
       t *= 2.0;
    }
 
@@ -295,7 +292,7 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
              * The old "else if (logic==0) accept" branch was WRONG: it caused the
              * line search to return a step that doesn't satisfy the strong Wolfe
              * curvature condition, corrupting (y,s) pairs and producing <y,s><=0. */
-            tg = t; fg = f; fpg = fp;
+            tg = t; fg = f;
 
             if (td != 0.0) {
                /* interpolation (label 500 in Fortran) */

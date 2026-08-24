@@ -16,9 +16,7 @@ void oceantransport_core(FemModel* femmodel){ /*{{{*/
 	femmodel->profiler->Start(OCEANTRANSPORTCORE);
 
 	/*parameters: */
-	int    numoutputs;
 	bool   save_results;
-	bool   dakota_analysis;
 	int    solution_type;
 	Vector<IssmDouble>*  ug  = NULL;
 

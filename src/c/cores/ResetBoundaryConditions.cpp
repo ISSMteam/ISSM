@@ -16,7 +16,7 @@ void ResetBoundaryConditions(FemModel* femmodel, int analysis_type){
 
 	/*set current analysis: */
 	femmodel->SetCurrentConfiguration(analysis_type);
-	int index = femmodel->AnalysisIndex(analysis_type);
+	femmodel->AnalysisIndex(analysis_type);
 
 	/*retrieve boundary conditions from element inputs :*/
 	GetSolutionFromInputsx(&yg,femmodel);

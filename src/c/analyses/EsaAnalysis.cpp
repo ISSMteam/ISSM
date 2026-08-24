@@ -95,7 +95,7 @@ void EsaAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 
 	/*compute U_elastic_local, H_elastic_local, and G_elastic_local {{{ */
 	for(int i=lower_row;i<upper_row;i++){
-		IssmDouble alpha,x;
+		IssmDouble alpha;
 		alpha= reCast<IssmDouble>(i)*degacc * PI / 180.0;
 
 		U_elastic_local[i-lower_row]= 0.5*love_h[nl-1]/sin(alpha/2.0);

@@ -16,7 +16,7 @@ void stressbalance_core(FemModel* femmodel){
 	femmodel->profiler->Start(STRESSBALANCECORE);
 
 	/*parameters: */
-	bool       dakota_analysis,control_analysis;
+	bool       control_analysis;
 	int        domaintype;
 	bool       isSIA,isSSA,isL1L2,isMOLHO,isHO,isFS,isNitsche;
 	bool       save_results;

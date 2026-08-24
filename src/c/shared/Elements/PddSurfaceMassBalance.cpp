@@ -67,7 +67,7 @@ IssmDouble PddSurfaceMassBalance(IssmDouble* monthlytemperatures, IssmDouble* mo
   IssmDouble dfrz=1.5, CovrLm=2009./3.35e+5, dCovrLm=dfrz*CovrLm; //m*J kg^-1 C^-1 /(J kg^-1)=m/C yr
   IssmDouble supice,supcap,diffndd;
   IssmDouble fsupT=0.5,  fsupndd=0.5;  // Tsurf mode factors for supice
-  IssmDouble pddtj, hmx2;
+  IssmDouble hmx2;
   IssmDouble pddsnowfac0=4.3, pddicefac0=8.3;
   IssmDouble snowfac, icefac;
 
@@ -243,7 +243,6 @@ IssmDouble PddSurfaceMassBalance(IssmDouble* monthlytemperatures, IssmDouble* mo
   accu[0]=saccu/yts;
   B = saccu - smelt;
   B = B/yts;
-  pddtj=pddt;
 
   return B;
 }

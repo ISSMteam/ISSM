@@ -427,7 +427,7 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorSurface(Element* elem
 	IssmDouble *xyz_list_surface= NULL;
 	IssmDouble  Jdet,slope[3];
 	IssmDouble  vx,vy,vz=0.,dsdx,dsdy;
-	IssmDouble  smb,smbvalue;
+	IssmDouble  smb;
 
 	if(!element->IsOnSurface()) return NULL;
 

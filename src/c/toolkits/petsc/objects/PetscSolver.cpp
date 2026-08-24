@@ -48,9 +48,9 @@ void	SolverxPetsc(PVec* puf, PMat Kff, PVec pf, PVec uf0,PVec df, Parameters* pa
 	int        solver_type;
 	bool       fromlocalsize    = true;
 	#if PETSC_VERSION_LT(3,2,0)
-	PetscTruth flag,flg;
+	PetscTruth flg;
 	#else
-	PetscBool flag,flg;
+	PetscBool flg;
 	#endif
 
 	/*FS: */

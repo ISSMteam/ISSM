@@ -15,7 +15,7 @@ void movingfront_core(FemModel* femmodel){
 	femmodel->profiler->Start(MOVINGFRONTCORE);
 
 	/* intermediaries */
-	bool save_results,isstressbalance,ismasstransport,isthermal,isenthalpy,islevelset,ismovingfront,killicebergs;
+	bool save_results,isstressbalance,ismasstransport,isthermal,isenthalpy,ismovingfront,killicebergs;
 	int  domaintype, reinit_frequency,step;
 	Analysis  *analysis=NULL;
 	IssmDouble maxVel;

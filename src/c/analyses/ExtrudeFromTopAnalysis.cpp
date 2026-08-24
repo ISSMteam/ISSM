@@ -52,7 +52,7 @@ _error_("Not implemented");
 ElementMatrix* ExtrudeFromTopAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries */
-	IssmDouble  Jdet,D;
+	IssmDouble  Jdet;
 	IssmDouble *xyz_list = NULL;
 
 	/*Get dimension*/
@@ -74,7 +74,6 @@ ElementMatrix* ExtrudeFromTopAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	while(gauss->next()){
 
 		element->JacobianDeterminant(&Jdet,xyz_list,gauss);
-		D=gauss->weight*Jdet;
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
 		IssmDouble factor = gauss->weight*Jdet;

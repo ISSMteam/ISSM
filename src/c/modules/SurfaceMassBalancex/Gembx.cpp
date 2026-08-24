@@ -37,7 +37,6 @@ void Gembx(FemModel* femmodel){  /*{{{*/
 	IssmDouble time,dt,finaltime;
 	IssmDouble timeclim=0.0;
 	IssmDouble t,smb_dt;
-   IssmDouble delta;
 	bool       linear_interp=true;
 
 	femmodel->parameters->FindParam(&linear_interp,TimesteppingInterpForcingEnum); /*is interpolation requested*/
@@ -771,7 +770,6 @@ void thermo(IssmDouble* pshf, IssmDouble* plhf, IssmDouble* pEC, IssmDouble** pT
 	IssmDouble coefH=0.0;
 	IssmDouble coefHT=0.0;
 	IssmDouble coefHQ=0.0;
-	IssmDouble An_num=0.0;
 	IssmDouble An_den_T=0.0;
 	IssmDouble An_den_Q=0.0;
 	IssmDouble An=0.0;
@@ -1670,7 +1668,6 @@ void melt(IssmDouble* pM, IssmDouble* pMs, IssmDouble* pR, IssmDouble* pF, IssmD
 	IssmDouble* surpT=NULL;
 	IssmDouble* surpE=NULL;
 	IssmDouble* flxDn=NULL;
-	IssmDouble  ER=0.0;
 	IssmDouble* EI=NULL;
 	IssmDouble* EW=NULL;
 	IssmDouble* M=NULL;
@@ -1694,7 +1691,6 @@ void melt(IssmDouble* pM, IssmDouble* pMs, IssmDouble* pR, IssmDouble* pF, IssmD
 	IssmDouble  Msurf = 0.0;
 	IssmDouble  mAdd = 0.0;
 	IssmDouble  surplusE = 0.0;
-	IssmDouble  surplusT = 0.0;
 	IssmDouble  dz_add = 0.0;
 	IssmDouble  Rsum = 0.0;
 	IssmDouble  Fsum = 0.0;
@@ -1708,7 +1704,6 @@ void melt(IssmDouble* pM, IssmDouble* pMs, IssmDouble* pR, IssmDouble* pF, IssmD
 	IssmDouble* gdn=*pgdn;
 	IssmDouble* gsp=*pgsp;
 	int         n=*pn;
-	IssmDouble* R=NULL;
 
 	if(VerboseSmb() && sid==0 && IssmComm::GetRank()==0)_printf0_("   melt module\n");
 
@@ -1813,7 +1808,6 @@ void melt(IssmDouble* pM, IssmDouble* pMs, IssmDouble* pR, IssmDouble* pF, IssmD
 					surpE[i+1] = surpT[i+1] * CI * m[i+1];
 				}
 				else{
-					surplusT=max(0.0, exsT[i] - LF/CI);
 					surplusE=surpE[i];
 					if(VerboseSmb() && sid==0 && IssmComm::GetRank()==0){
 						_printf0_(" WARNING: surplus energy at the base of GEMB column\n");

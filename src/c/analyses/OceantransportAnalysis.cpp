@@ -21,7 +21,6 @@ int  OceantransportAnalysis::DofsPerNode(int** doflist,int domaintype,int approx
 }/*}}}*/
 void OceantransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
-	int  nature=0;
 	bool isdakota=0;
 
 	/*Update elements: */
@@ -156,7 +155,7 @@ void           OceantransportAnalysis::GradientJ(Vector<IssmDouble>* gradient,El
 }/*}}}*/
 void           OceantransportAnalysis::InputUpdateFromSolution(IssmDouble* solution,Element* element){/*{{{*/
 
-	int         i,domaintype;
+	int         i;
 	int*        doflist=NULL;
 
 	/*Fetch number of nodes and dof for this finite element*/

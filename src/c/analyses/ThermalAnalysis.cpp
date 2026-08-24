@@ -261,7 +261,6 @@ ElementMatrix* ThermalAnalysis::CreateKMatrixShelf(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
-	IssmDouble gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
@@ -312,9 +311,7 @@ ElementMatrix* ThermalAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,ThermalStabilizationEnum);
-	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
 	IssmDouble  thermalconductivity = element->FindParam(MaterialsThermalconductivityEnum);
 	IssmDouble  kappa = thermalconductivity/(rho_ice*heatcapacity);
@@ -530,7 +527,6 @@ ElementVector* ThermalAnalysis::CreatePVectorShelf(Element* element){/*{{{*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	Input*      pressure_input=element->GetInput(PressureEnum); _assert_(pressure_input);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);

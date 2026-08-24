@@ -152,7 +152,7 @@ void           DamageEvolutionAnalysis::CreateDamageFInputArctan(Element* elemen
 	IssmDouble principalDevStress1, principalDevStress2;
 	IssmDouble tensileStress, compressiveStress;
 
-	int equivstress, domaintype, dim;
+	int domaintype, dim;
 
 	/*Fetch number of vertices and allocate output*/
 	int numnodes = element->GetNumberOfNodes();
@@ -308,8 +308,8 @@ void           DamageEvolutionAnalysis::CreateDamageFInputPralong(Element* eleme
 
 	/*Intermediaries */
 	IssmDouble c1,c2,c3,healing,stress_threshold;
-	IssmDouble s_xx,s_xy,s_xz,s_yy,s_yz,s_zz,s1,s2,s3,stmp;
-	IssmDouble J2s,Chi,Psi,PosPsi,NegPsi;
+	IssmDouble s_xx,s_xy,s_xz,s_yy,s_yz,s_zz,s1,s2,stmp;
+	IssmDouble Chi,Psi,PosPsi,NegPsi;
 	IssmDouble damage,tau_xx,tau_xy,tau_xz,tau_yy,tau_yz,tau_zz,stressMaxPrincipal;
 	int equivstress,domaintype,dim;
 

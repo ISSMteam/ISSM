@@ -24,14 +24,10 @@ void SchurCGSolver(Vector<IssmDouble>** puf,PMat Kff, PVec pf, PVec uf0,IS isv,I
 	PVec						tmpu,tmpu2,resu,resp,tmpp,tmpp2,rhsu,rhsp; /* temp. vectors, arbitrary RHS in vel. / pressure space */
 	PVec						gold,gnew,wold,wnew,chi; /* CG intermediaries */
 	PVec						f1,f2;					/* RHS of the global system */
-	IssmDouble			rho,gamma,tmpScalar,tmpScalar2; /* Step sizes, arbitrary double */
+	IssmDouble			rho,gamma,tmpScalar; /* Step sizes, arbitrary double */
 	PKSP						  kspu,kspip;		/* KSP contexts for vel. / pressure systems*/
-	KSPConvergedReason	reason;					/* Convergence reason for troubleshooting */
-	int						its;						/* No. of iterations for troubleshooting */
 	IssmDouble			initRnorm, rnorm, TOL,ELLTOL; /* residual norms, STOP tolerance */
 	PC							pcu,pcp;					/* Preconditioner contexts pertaining the KSP contexts*/
-	PetscViewer				viewer;					/* Viewer for troubleshooting */
-	IssmDouble				t1,t2;					/* Time measurement for bottleneck analysis */
 
 	IssmDouble tmp1,tmp2,tmp3;
 	int tmpi;
@@ -42,9 +38,9 @@ void SchurCGSolver(Vector<IssmDouble>** puf,PMat Kff, PVec pf, PVec uf0,IS isv,I
 	int precond = 0;
 
 	#if PETSC_VERSION_LT(3,2,0)
-	PetscTruth flag,flg;
+	PetscTruth flg;
 	#else
-	PetscBool flag,flg;
+	PetscBool flg;
 	#endif
 
 	char ksp_type[50];
@@ -474,7 +470,6 @@ void convergence_schurcg(bool* pconverged, Matrix<IssmDouble>* Kff,Vector<IssmDo
 	IssmDouble nKUoldF;
 	IssmDouble nF;
 	IssmDouble solver_residue,res;
-	int analysis_type;
 
 	PMat A, B, BT;
 	PVec u,p,uold,pold,f1,f2,tmp,res1,res2;
@@ -670,7 +665,6 @@ void solutionsequence_schurcg(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&eps_abs,StressbalanceAbstolEnum);
 	femmodel->parameters->FindParam(&configuration_type,ConfigurationTypeEnum);
 	femmodel->UpdateConstraintsx();
-	int size;
 	int  count=0;
 	bool converged=false;
 

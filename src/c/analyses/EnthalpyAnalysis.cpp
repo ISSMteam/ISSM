@@ -10,9 +10,7 @@
 void EnthalpyAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
 
 	/*Intermediary*/
-	int        count;
 	int        M,N;
-	bool       spcpresent = false;
 	int        finiteelement;
 	IssmDouble heatcapacity;
 	IssmDouble referencetemperature;
@@ -294,7 +292,7 @@ void           EnthalpyAnalysis::ComputeBasalMeltingrate(Element* element){/*{{{
 	IssmDouble  vec_heatflux[dim],normal_base[dim],d1enthalpy[dim],d1pressure[dim];
 	IssmDouble  basalfriction,alpha2,geothermalflux,heatflux;
 	IssmDouble  dt,yts;
-	IssmDouble  melting_overshoot,lambda;
+	IssmDouble  lambda;
 	IssmDouble  vx,vy,vz;
 	IssmDouble *xyz_list      = NULL;
 	IssmDouble *xyz_list_base = NULL;
@@ -508,11 +506,7 @@ ElementMatrix* EnthalpyAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,ThermalStabilizationEnum);
-	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
-	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
-	IssmDouble  thermalconductivity = element->FindParam(MaterialsThermalconductivityEnum);
 	Input* vx_input  = element->GetInput(VxEnum);     _assert_(vx_input);
 	Input* vy_input  = element->GetInput(VyEnum);     _assert_(vy_input);
 	Input* vz_input  = element->GetInput(VzEnum);     _assert_(vz_input);
@@ -654,7 +648,6 @@ ElementMatrix* EnthalpyAnalysis::CreateKMatrixShelf(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
@@ -706,9 +699,8 @@ ElementVector* EnthalpyAnalysis::CreatePVectorVolume(Element* element){/*{{{*/
 	IssmDouble  Jdet,phi,dt;
 	IssmDouble  enthalpy, Hpmp;
 	IssmDouble  enthalpypicard, d1enthalpypicard[3];
-	IssmDouble  pressure, d1pressure[3], d2pressure;
-	IssmDouble  waterfractionpicard;
-	IssmDouble  kappa,tau_parameter,diameter,hx,hy,hz,kappa_w;
+	IssmDouble  pressure, d1pressure[3];
+	IssmDouble  kappa,tau_parameter,diameter,hx,hy,hz;
 	IssmDouble  tau_parameter_anisotropic[2],tau_parameter_hor,tau_parameter_ver;
 	IssmDouble  u,v,w;
 	IssmDouble  scalar_def, scalar_sens ,scalar_transient;
@@ -717,7 +709,6 @@ ElementVector* EnthalpyAnalysis::CreatePVectorVolume(Element* element){/*{{{*/
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes    = element->GetNumberOfNodes();
-	int numvertices = element->GetNumberOfVertices();
 
 	/*Initialize Element vector*/
 	ElementVector* pe             = element->NewElementVector();
@@ -767,7 +758,6 @@ ElementVector* EnthalpyAnalysis::CreatePVectorVolume(Element* element){/*{{{*/
 		if(enthalpypicard>=Hpmp){
 			enthalpypicard_input->GetInputDerivativeValue(&d1enthalpypicard[0],xyz_list,gauss);
 			pressure_input->GetInputDerivativeValue(&d1pressure[0],xyz_list,gauss);
-			d2pressure=0.; // for linear elements, 2nd derivative is zero
 
 			d1H_d1P=0.;
 			for(i=0;i<3;i++) d1H_d1P+=d1enthalpypicard[i]*d1pressure[i];
@@ -944,7 +934,6 @@ ElementVector* EnthalpyAnalysis::CreatePVectorShelf(Element* element){/*{{{*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	Input*      pressure_input=element->GetInput(PressureEnum); _assert_(pressure_input);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
@@ -1399,7 +1388,6 @@ void           EnthalpyAnalysis::InputUpdateFromSolution(IssmDouble* solution,El
 
 	bool        converged;
 	int         i,rheology_law;
-	IssmDouble  B_average,s_average,T_average=0.,P_average=0.;
 	int        *doflist   = NULL;
 	IssmDouble *xyz_list  = NULL;
 

@@ -59,7 +59,6 @@ void GiaDeflectionCorex( IssmDouble* pwi, IssmDouble* pdwidt, GiaDeflectionCoreA
 	IssmDouble *hes                       = arguments->hes;                       //loading history (in ice thickness)
 	IssmDouble *times                     = arguments->times;                     //loading history times
 	int         numtimes                  = arguments->numtimes;                  //loading history length
-	IssmDouble  currenttime               = arguments->currenttime;
 	IssmDouble  lithosphere_shear_modulus = arguments->lithosphere_shear_modulus;
 	IssmDouble  lithosphere_density       = arguments->lithosphere_density;
 	IssmDouble  mantle_shear_modulus      = arguments->mantle_shear_modulus;
@@ -67,7 +66,6 @@ void GiaDeflectionCorex( IssmDouble* pwi, IssmDouble* pdwidt, GiaDeflectionCoreA
 	IssmDouble  mantle_density            = arguments->mantle_density;
 	IssmDouble  lithosphere_thickness     = arguments->lithosphere_thickness;
 	IssmDouble  rho_ice                   = arguments->rho_ice;
-	int         disk_id                   = arguments->idisk;
 	int         iedge                     = arguments->iedge;
 	IssmDouble  yts                       = arguments->yts;
 

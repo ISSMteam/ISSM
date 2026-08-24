@@ -17,7 +17,6 @@ void thermal_core(FemModel* femmodel){
 
 	/*intermediary*/
 	bool   save_results,isenthalpy;
-	bool   dakota_analysis;
 	int    solution_type,numoutputs;
 	char** requested_outputs = NULL;
 	EnthalpyAnalysis * enthalpy_analysis = NULL;

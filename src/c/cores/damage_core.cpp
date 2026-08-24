@@ -16,7 +16,6 @@ void damage_core(FemModel* femmodel){
 
 	/*intermediary*/
 	bool   save_results;
-	bool   dakota_analysis     = false;
 	int    solution_type,stabilization;
 	int    numoutputs          = 0;
 	char   **requested_outputs = NULL;

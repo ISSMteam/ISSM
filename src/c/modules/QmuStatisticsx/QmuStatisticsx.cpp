@@ -7,7 +7,6 @@
 
 int readdata(IssmDouble** pdoublemat, int* pdoublematsize, IssmDouble* pdouble, FILE* fid,char* field,int step){ /*{{{*/
 
-	int length;
 	char fieldname[1000];
 	int   fieldname_size;
 	IssmDouble   rtime;
@@ -310,7 +309,6 @@ int ComputeHistogram(Parameters* parameters,Results* results,int color, ISSM_MPI
 				IssmDouble minscalar=*minxs[counter];
 				IssmDouble allmaxscalar;
 				IssmDouble allminscalar;
-				IssmDouble sumscalar_alltimes=0;
 
 				ISSM_MPI_Allreduce(&maxscalar,&allmaxscalar,1,ISSM_MPI_PDOUBLE,ISSM_MPI_MAX,IssmComm::GetComm());
 				ISSM_MPI_Allreduce(&minscalar,&allminscalar,1,ISSM_MPI_PDOUBLE,ISSM_MPI_MIN,IssmComm::GetComm());
@@ -1016,7 +1014,6 @@ int ComputeSampleSeries(Parameters* parameters,Results* results,int color, ISSM_
 	int nsteps;
 	int nfields;
 	int range,lower_row,upper_row;
-	int nfilesperdirectory;
 	int* indices=NULL;
 	int  nindices;
 
@@ -1172,7 +1169,6 @@ int OutputStatistics(Parameters* parameters,Results* results,int color,ISSM_MPI_
 	char   outputfilename[1000];
 	char* directory=NULL;
 	char* model=NULL;
-	char* method=NULL;
 	int   nsamples;
 	int* steps=NULL;
 	int nsteps;
@@ -1360,9 +1356,6 @@ int DakotaStatistics(int argc,char** argv){ /*{{{*/
 		iomodel->FindConstant(&numstatistics,"md.qmu.statistics.numstatistics");
 		for (int i=1;i<=numstatistics;i++){
 
-			char* directory=NULL;
-			char* model=NULL;
-			int   nsamples;
 			_printf0_("Dealing with qmu statistical computation #" << i << "\n");
 
 			sprintf(string,"md.qmu.statistics.method(%i).name",i);

@@ -154,7 +154,6 @@ ElementMatrix* DebrisAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	int        stabilization,domaintype,dim;
 	IssmDouble Jdet,D_scalar,dt,h;
 	IssmDouble vel,vx,vy,dvxdx,dvydy;
-	IssmDouble yts=31536000.;
 	IssmDouble tau;
 	IssmDouble dvx[2],dvy[2];
 	Element*    topelement = NULL;
@@ -400,7 +399,6 @@ ElementVector* DebrisAnalysis::CreatePVector(Element* element){/*{{{*/
 	IssmDouble  Jdet,dt;
 	IssmDouble  smb,thickness,psi;
 	IssmDouble  vx,vy,vel,dvxdx,dvydy,h,tau,pf;
-	IssmDouble yts=31536000.;
 	IssmDouble  dvx[2],dvy[2];
 	IssmDouble* xyz_list = NULL;
 	Element*    topelement = NULL;
@@ -597,7 +595,6 @@ void           DebrisAnalysis::PostProcessing(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
 	femmodel->parameters->FindParam(&removalmodel,DebrisRemovalmodelEnum);
 	Element* element= NULL;
-	Element*    topelement = NULL;
 
 	if(removalmodel==0){
 		// no removal, do nothing
@@ -629,9 +626,8 @@ void           DebrisAnalysis::PostProcessing(FemModel* femmodel){/*{{{*/
 			IssmDouble slope,rad2deg=180./M_PI; //=57.2958
 			bool isminthicknessinelement=false;
 			bool remove_debris=false;
-			bool isactive=false;
 
-			IssmDouble iceminthickness=element->FindParam(MasstransportMinThicknessEnum);                        
+			IssmDouble iceminthickness=element->FindParam(MasstransportMinThicknessEnum);
 
 			switch(removalmodel){
 				case 1:{
@@ -677,7 +673,6 @@ void           DebrisAnalysis::PostProcessing(FemModel* femmodel){/*{{{*/
 					       isminthicknessinelement=true;
 					       if(kk<numnodes && isminthicknessinelement){
 						       //stress=0;
-						       IssmDouble stress_sum=0.;
 						       for(k=0; k<numnodes;k++){
 							       slope=fabs(slopex[k]);
 							       if(dim==2) slope=pow(pow(slopex[k],2)+pow(slopey[k],2),0.5);

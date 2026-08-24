@@ -29,7 +29,6 @@ void transient_core(FemModel* femmodel){/*{{{*/
 	int        timestepping;
 	int        output_frequency,checkpoint_frequency;
 	int        amr_frequency;
-	char     **requested_outputs = NULL;
 
 	/*intermediary: */
 	int        step;

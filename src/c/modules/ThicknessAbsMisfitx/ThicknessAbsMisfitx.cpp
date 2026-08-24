@@ -33,7 +33,7 @@ IssmDouble ThicknessAbsMisfit(Element* element){
 
 	IssmDouble  thickness,thicknessobs,weight;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble* xyz_list = NULL;
 
 	/*If on water, return 0: */

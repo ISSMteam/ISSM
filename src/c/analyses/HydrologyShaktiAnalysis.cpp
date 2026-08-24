@@ -92,7 +92,7 @@ int  HydrologyShaktiAnalysis::DofsPerNode(int** doflist,int domaintype,int appro
 void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	/*Fetch data needed: */
-	int    hydrology_model,frictionlaw;
+	int    hydrology_model;
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
 	/*Now, do we really want Shakti?*/
@@ -283,9 +283,9 @@ ElementVector* HydrologyShaktiAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Intermediaries */
 	IssmDouble  Jdet,meltrate,G,dh[2],B,A,n;
 	IssmDouble  gap,bed,thickness,head,ieb,head_old,storage;
-	IssmDouble  lr,br,vx,vy,beta,lc;
+	IssmDouble  lr,br,vx,vy,beta;
 	IssmDouble  alpha2,frictionheat;
-   IssmDouble  PMPheat,dissipation,dpressure_water[2],dbed[2];	
+   IssmDouble  dpressure_water[2],dbed[2];
 	IssmDouble* xyz_list = NULL;
 	int         meltflag;
 
@@ -489,10 +489,6 @@ void           HydrologyShaktiAnalysis::UpdateConstraints(FemModel* femmodel){/*
 	GetMaskOfIceVerticesLSMx(femmodel,true);
 	SetActiveNodesLSMx(femmodel,true);
 
-	IssmDouble rho_ice   = femmodel->parameters->FindParam(MaterialsRhoIceEnum);
-	IssmDouble rho_water = femmodel->parameters->FindParam(MaterialsRhoFreshwaterEnum);
-	IssmDouble g         = femmodel->parameters->FindParam(ConstantsGEnum);
-
 	/*Constrain all nodes that are grounded and unconstrain the ones that float*/
 	for(Object* & object : femmodel->elements->objects){
 
@@ -572,7 +568,7 @@ void HydrologyShaktiAnalysis::UpdateGapHeight(Element* element){/*{{{*/
 	IssmDouble  newgap = 0.;
 	IssmDouble  Jdet,meltrate,G,dh[3],B,A,n,dt;
 	IssmDouble  gap,bed,thickness,head;
-	IssmDouble  lr,br,vx,vy,beta,lc;
+	IssmDouble  lr,br,vx,vy,beta;
 	IssmDouble  alpha2,frictionheat;
 	IssmDouble* xyz_list = NULL;
 	IssmDouble  dpressure_water[3],dbed[3],PMPheat,dissipation;

@@ -10,7 +10,7 @@
 void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vector<IssmDouble>** ppf, Vector<IssmDouble>** pdf, IssmDouble* pkmax,FemModel* femmodel, bool isAllocated){
 
 	/*intermediary: */
-	int      i,M,N;
+	int      M,N;
 	int      analysisenum;
 	Element *element = NULL;
 	Load    *load    = NULL;

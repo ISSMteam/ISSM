@@ -20,7 +20,7 @@ void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat, IssmDouble* pJ){/*{{{*/
 	IssmDouble S = 0.;
 	IssmDouble S_sum = 1.;
 
-	IssmDouble  weight,Jdet,H,Hobs,Hold;
+	IssmDouble  Jdet,H,Hobs,Hold;
 	IssmDouble  vx, vy, vxobs, vyobs;
 	IssmDouble* xyz_list = NULL;
 
@@ -94,7 +94,7 @@ void ComputeRMSEs(FemModel* femmodel, IssmDouble deltat, IssmDouble* pJ){/*{{{*/
 void controlnudging_core(FemModel* femmodel){
 
    /*Intermediaries*/
-	IssmDouble dCdt1, dCdt2, dCdt3, dHdt;
+	IssmDouble dCdt1, dCdt2, dCdt3;
 	IssmDouble dMeltdt1, dMeltdt2, dMeltdt3;
    IssmDouble time;
 	int        maxiter;
@@ -111,7 +111,6 @@ void controlnudging_core(FemModel* femmodel){
    IssmDouble H0_melt      = femmodel->parameters->FindParam(InversionH0MeltEnum);
    IssmDouble r_C          = femmodel->parameters->FindParam(InversionRelaxationCEnum);
    IssmDouble r_melt       = femmodel->parameters->FindParam(InversionRelaxationMeltEnum);
-   IssmDouble yts          = femmodel->parameters->FindParam(ConstantsYtsEnum);
    IssmDouble tmax         = femmodel->parameters->FindParam(TimesteppingFinalTimeEnum);
    IssmDouble tmin         = femmodel->parameters->FindParam(TimesteppingStartTimeEnum);
    IssmDouble deltat       = (tmax - tmin);

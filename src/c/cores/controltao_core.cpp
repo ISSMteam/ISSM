@@ -35,7 +35,6 @@ typedef struct {
 void controltao_core(FemModel* femmodel){
 
 	/*TAO*/
-	int                 ierr;
 	int                 num_controls,num_cost_functions,solution_type;
 	int                 maxsteps,maxiter;
 	IssmDouble          gatol,grtol,gttol;
@@ -56,7 +55,7 @@ void controltao_core(FemModel* femmodel){
 	#if PETSC_VERSION_LT(3,5,0)
 	int argc; char **args=NULL;
 	PetscGetArgs(&argc,&args);
-	ierr = TaoInitialize(&argc,&args,(char*)0,"");
+	int ierr = TaoInitialize(&argc,&args,(char*)0,"");
 	if(ierr) _error_("Could not initialize Tao");
 	#endif
 

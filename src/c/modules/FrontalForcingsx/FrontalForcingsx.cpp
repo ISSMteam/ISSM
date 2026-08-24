@@ -52,7 +52,7 @@ void Thermalforcingarmax(FemModel* femmodel){/*{{{*/
    /*Load parameters*/
 	bool isstochastic;
    bool istfstochastic = false;
-	int M,N,arorder,maorder,numbasins,numparams,numbreaks,nummonthbreaks,my_rank;
+	int M,N,arorder,maorder,numbasins,numparams,numbreaks,nummonthbreaks;
    femmodel->parameters->FindParam(&numbasins,FrontalForcingsNumberofBasinsEnum);
    femmodel->parameters->FindParam(&numparams,FrontalForcingsNumberofParamsEnum);
    femmodel->parameters->FindParam(&numbreaks,FrontalForcingsNumberofBreaksEnum);
@@ -128,7 +128,7 @@ void Subglacialdischargearmax(FemModel* femmodel){/*{{{*/
    /*Load parameters*/
 	bool isstochastic;
    bool isdischargestochastic = false;
-	int M,N,arorder,maorder,numbasins,numparams,numbreaks,my_rank;
+	int M,N,arorder,maorder,numbasins,numparams,numbreaks;
    femmodel->parameters->FindParam(&numbasins,FrontalForcingsNumberofBasinsEnum);
    femmodel->parameters->FindParam(&numparams,FrontalForcingsSdNumberofParamsEnum);
    femmodel->parameters->FindParam(&numbreaks,FrontalForcingsSdNumberofBreaksEnum);

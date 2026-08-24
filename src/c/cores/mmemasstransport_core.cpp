@@ -18,7 +18,6 @@ void mmemasstransport_core(FemModel* femmodel){ /*{{{*/
 	/*parameters: */
 	int    numoutputs;
 	bool   save_results;
-	bool   dakota_analysis;
 	int    solution_type;
 	Vector<IssmDouble>*  ug  = NULL;
 	char** requested_outputs = NULL;

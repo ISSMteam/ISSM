@@ -32,8 +32,6 @@ void SmbGradientsx(FemModel* femmodel){/*{{{*/
 	//    INPUT: surface elevation (m): hd(NA)
 	//    OUTPUT: mass-balance (m/yr ice): agd(NA)
 	int v;
-	IssmDouble rho_water;                   // density of fresh water
-	IssmDouble rho_ice;                     // density of ice
 	IssmDouble yts;								// conversion factor year to second
 
 	/*Loop over all the elements of this partition*/
@@ -57,10 +55,6 @@ void SmbGradientsx(FemModel* femmodel){/*{{{*/
 
 		/*Recover surface elevation at vertices: */
 		element->GetInputListOnVertices(s,SurfaceEnum);
-
-		/*Get material parameters :*/
-		rho_ice=element->FindParam(MaterialsRhoIceEnum);
-		rho_water=element->FindParam(MaterialsRhoFreshwaterEnum);
 
 		/* Get constants */
 		femmodel->parameters->FindParam(&yts,ConstantsYtsEnum);
@@ -174,7 +168,7 @@ void Smbarmax(FemModel* femmodel){/*{{{*/
    /*Load parameters*/
    bool isstochastic;
    bool issmbstochastic = false;
-   int M,N,arorder,maorder,numbasins,numparams,numbreaks,numelevbins,my_rank;
+   int M,N,arorder,maorder,numbasins,numparams,numbreaks,numelevbins;
    femmodel->parameters->FindParam(&numbasins,SmbNumBasinsEnum);
    femmodel->parameters->FindParam(&numparams,SmbNumParamsEnum);
    femmodel->parameters->FindParam(&numbreaks,SmbNumBreaksEnum);
@@ -268,13 +262,13 @@ void PositiveDegreeDayx(FemModel* femmodel){/*{{{*/
 	IssmDouble signorm = 5.5;      // signorm : sigma of the temperature distribution for a normal day
 	IssmDouble siglim;       // sigma limit for the integration which is equal to 2.5 sigmanorm
 	IssmDouble signormc = signorm - 0.5;     // sigma of the temperature distribution for cloudy day
-	IssmDouble siglimc, siglim0, siglim0c;
+	IssmDouble siglimc;
 	IssmDouble tstep, tsint, tint, tstepc;
 	int    NPDMAX = 1504, NPDCMAX = 1454;
 	//IssmDouble pdds[NPDMAX]={0};
 	//IssmDouble pds[NPDCMAX]={0};
 	IssmDouble pddt, pd ; // pd : snow/precip fraction, precipitation falling as snow
-	IssmDouble PDup, PDCUT = 2.0;    // PDcut: rain/snow cutoff temperature (C)
+	IssmDouble PDCUT = 2.0;    // PDcut: rain/snow cutoff temperature (C)
 	IssmDouble tstar; // monthly mean surface temp
 
 	bool ismungsm;
@@ -300,9 +294,6 @@ void PositiveDegreeDayx(FemModel* femmodel){/*{{{*/
 	snormfac = 1.0/(signorm*sqrt(2.0*acos(-1.0)));
 	siglim   = 2.5*signorm;
 	siglimc  = 2.5*signormc;
-	siglim0  = siglim/DT + 0.5;
-	siglim0c = siglimc/DT + 0.5;
-	PDup     = siglimc+PDCUT;
 
 	itm = reCast<int,IssmDouble>((2*siglim/DT + 1.5));
 
@@ -615,7 +606,7 @@ void SmbHenningx(FemModel* femmodel){/*{{{*/
 	IssmDouble  f = 1.;
 	IssmDouble  g = -0.0011;
 	IssmDouble  h = -1.54e-5;
-	IssmDouble  smb,smbref,anomaly,yts,z;
+	IssmDouble  smb,anomaly,yts,z;
 
 	/* Get constants */
 	femmodel->parameters->FindParam(&yts,ConstantsYtsEnum);

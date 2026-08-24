@@ -193,9 +193,6 @@ class IssmMpiSparseMat:public IssmAbsMat<doubletype>{
 			int          upper_row;
 			int         *sendcnts = NULL;
 			int         *displs   = NULL;
-			int          this_row_numvalues;
-			int         *this_row_cols       = NULL;
-			int         *this_row_mods       = NULL;
 			int         *numvalues_perrow    = NULL;
 
 			doubletype **values_perrow       = NULL;
@@ -366,7 +363,6 @@ class IssmMpiSparseMat:public IssmAbsMat<doubletype>{
 		doubletype Norm(NormMode mode){/*{{{*/
 
 			doubletype norm,local_norm;
-			doubletype absolute;
 			int i;
 
 			switch(mode){
