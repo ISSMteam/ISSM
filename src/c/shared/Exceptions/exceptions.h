@@ -25,7 +25,6 @@ using namespace std;
 
 /*Only include forward declaration to save compile time*/
 #include <iosfwd>
-#include <sstream>
 
 /*macros: (should move somewhere else)*/
 #include "../io/Comm/IssmComm.h"
