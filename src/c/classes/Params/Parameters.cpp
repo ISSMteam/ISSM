@@ -689,7 +689,7 @@ void  Parameters::GetVectorFromControl(Vector<IssmDouble>* vector,int control_en
 	param->GetVectorFromControl(vector, control_index, N, data, offset);
 }/*}}}*/
 
-bool Parameters::RequestedOutput(int requested_outputs_enum,int output_enum){/*{{{*/
+bool Parameters::IsInRequestedOutput(int requested_outputs_enum,int output_enum){/*{{{*/
 
 	Param* param=this->FindParamObject(requested_outputs_enum);
 	if(!param) return false;
