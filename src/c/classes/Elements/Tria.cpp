@@ -7389,6 +7389,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 /*}}}*/
 void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae){ /*{{{*/
 
+
 	/* Classic buildup of load weights, centroids and areas *for elements which are fully inside a mask. 
 	 * At the same time, we'll tag the elements that are fractionally only inside a mask*/
 
@@ -7482,26 +7483,22 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 		slgeom->LoadArea[SLGEOM_OCEAN][this->lid]=area;
 		for(int i=0;i<NUMVERTICES;i++) slgeom->LoadWeigths[SLGEOM_OCEAN][i][this->lid]=1.0/3.0;
 
-		#ifdef _ISSM_DEBUG_ /*{{{*/
 		/*Inform mask: */
 		constant=1.0;
 		for(int i=0;i<NUMVERTICES;i++) loadweightsocean[i]=1.0/3.0;
-		this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
-		this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
-		this->AddInput(SealevelBarystaticOceanAreaEnum,&area,P0Enum);
-		#endif /*}}}*/
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanMaskEnum)) this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanWeightsEnum)) this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanAreaEnum)) this->AddInput(SealevelBarystaticOceanAreaEnum,&area,P0Enum);
 	}
 	else if(!isocean){
 		slgeom->LoadArea[SLGEOM_OCEAN][this->lid]=0;
 		for(int i=0;i<NUMVERTICES;i++) slgeom->LoadWeigths[SLGEOM_OCEAN][i][this->lid]=0.0;
-		#ifdef _ISSM_DEBUG_ /*{{{*/
 		/*Inform mask: */
 		constant=0.0;
 		for(int i=0;i<NUMVERTICES;i++) loadweightsocean[i]=0.0;
-		this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
-		this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
-		this->AddInput(SealevelBarystaticOceanAreaEnum,&constant,P0Enum);
-		#endif /*}}}*/
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanMaskEnum)) this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanWeightsEnum)) this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanAreaEnum)) this->AddInput(SealevelBarystaticOceanAreaEnum,&constant,P0Enum);
 	}
 	else{
 		slgeom->issubelement[SLGEOM_OCEAN][this->lid]=true;
@@ -7512,18 +7509,16 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 	 *hydrology or bottom pressure loads :*/
 	if(!computebp && !computehydro){
 		if(!hasiceload) {
-			#ifdef _ISSM_DEBUG_
 			constant=0; 
-			this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
-			#endif
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceMaskEnum)) this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceAreaEnum)) this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceWeightsEnum)) this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroMaskEnum)) this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroWeightsEnum)) this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroAreaEnum)) this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpMaskEnum)) this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpWeightsEnum)) this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpAreaEnum)) this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
 			for(int i=0;i<NUMVERTICES;i++){
 				slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]=0;
 				slgeom->LoadWeigths[SLGEOM_WATER][i][this->lid]=0;
@@ -7537,18 +7532,16 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 	/*early return if we are fully floating and we are not doing bottom pressure loads:*/
 	if(!computebp){
 		if (isoceanonly && !hasiceload && (!computehydro || !haswaterload)){
-			#ifdef _ISSM_DEBUG_
 			constant=0;
-			this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
-			#endif
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceMaskEnum)) this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceWeightsEnum)) this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceAreaEnum)) this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroMaskEnum)) this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroWeightsEnum)) this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroAreaEnum)) this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpMaskEnum)) this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpWeightsEnum)) this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpAreaEnum)) this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
 			for(int i=0;i<NUMVERTICES;i++){
 				slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]=0;
 				slgeom->LoadWeigths[SLGEOM_WATER][i][this->lid]=0;
@@ -7563,18 +7556,16 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 	 * hydrology:*/
 	if(!computeice  && !computehydro){
 		if(!isocean && (!computebp || !hasbpload)){
-			#ifdef _ISSM_DEBUG_
 			constant=0;
-			this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
-			this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
-			#endif
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceMaskEnum)) this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceWeightsEnum)) this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceAreaEnum)) this->AddInput(SealevelBarystaticIceAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroMaskEnum)) this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroWeightsEnum)) this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroAreaEnum)) this->AddInput(SealevelBarystaticHydroAreaEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpMaskEnum)) this->AddInput(SealevelBarystaticBpMaskEnum,&constant,P0Enum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpWeightsEnum)) this->AddInput(SealevelBarystaticBpWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpAreaEnum)) this->AddInput(SealevelBarystaticBpAreaEnum,&constant,P0Enum);
 			for(int i=0;i<NUMVERTICES;i++){
 				slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]=0;
 				slgeom->LoadWeigths[SLGEOM_WATER][i][this->lid]=0;
@@ -7591,14 +7582,12 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 			slgeom->LoadArea[SLGEOM_ICE][this->lid]=area;
 			for(int i=0;i<NUMVERTICES;i++) slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]=1.0/3.0;
 
-			#ifdef _ISSM_DEBUG_ /*{{{*/
 			/*Inform mask: */
 			constant=1.0;
 			for(int i=0;i<NUMVERTICES;i++) loadweights[i]=1.0/3.0;
-			this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum); 
-			this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticIceAreaEnum,&area,P0Enum);
-			#endif /*}}}*/
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceMaskEnum)) this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum); 
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceWeightsEnum)) this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceAreaEnum)) this->AddInput(SealevelBarystaticIceAreaEnum,&area,P0Enum);
 		}
 		else{
 			slgeom->issubelement[SLGEOM_ICE][this->lid]=true;
@@ -7613,14 +7602,12 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 			slgeom->LoadArea[SLGEOM_WATER][this->lid]=area;
 			for(int i=0;i<NUMVERTICES;i++) slgeom->LoadWeigths[SLGEOM_WATER][i][this->lid]=1.0/3.0;
 
-			#ifdef _ISSM_DEBUG_ /*{{{*/
 			/*Inform mask: */
 			constant=1.0;
 			for(int i=0;i<NUMVERTICES;i++) loadweights[i]=1.0/3.0;
-			this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum); 
-			this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
-			this->AddInput(SealevelBarystaticHydroAreaEnum,&area,P0Enum);
-			#endif /*}}}*/
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroMaskEnum)) this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum); 
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroWeightsEnum)) this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
+			if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroAreaEnum)) this->AddInput(SealevelBarystaticHydroAreaEnum,&area,P0Enum);
 		}
 		else{
 			slgeom->issubelement[SLGEOM_WATER][this->lid]=true;
@@ -7675,6 +7662,7 @@ void       Tria::SealevelchangeInitializeOldIceState(void){ /*{{{*/
 
 }/*}}}*/
 void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContributions* barycontrib, SealevelGeometry* slgeom){ /*{{{*/
+
 
 	int nel;
 
@@ -7822,12 +7810,10 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 	if(planethasocean) Wavg*=rho_freshwater;
 	BPavg*=rho_water;
 
-	this->AddInput(SealevelBarystaticIceLoadEnum,&Iavg,P0Enum);
-	this->AddInput(SealevelBarystaticOceanMigrationLoadEnum,&SLavg,P0Enum);
-	#ifdef _ISSM_DEBUG_
-	this->AddInput(SealevelBarystaticHydroLoadEnum,&Wavg,P0Enum);
-	this->AddInput(SealevelBarystaticBpLoadEnum,&BPavg,P0Enum);
-	#endif
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLoadEnum)) this->AddInput(SealevelBarystaticIceLoadEnum,&Iavg,P0Enum);
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanMigrationLoadEnum)) this->AddInput(SealevelBarystaticOceanMigrationLoadEnum,&SLavg,P0Enum);
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroLoadEnum)) this->AddInput(SealevelBarystaticHydroLoadEnum,&Wavg,P0Enum);
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticBpLoadEnum)) this->AddInput(SealevelBarystaticBpLoadEnum,&BPavg,P0Enum);
 
 	/*Compute barystatic component in kg:*/
 	// Note: Iavg, etc, already include partial area factor phi for subelement loading
@@ -7873,6 +7859,7 @@ void       Tria::SealevelchangeBarystaticLoads(GrdLoads* loads,  BarystaticContr
 }/*}}}*/
 void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom, IssmDouble* areae){ /*{{{*/
 
+
 	/* Classic buildup of load weights, centroids and areas *for elements which are fully inside a mask. 
 	 * At the same time, we'll tag the elements that are fractionally only inside a mask*/
 
@@ -7889,14 +7876,12 @@ void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom,
 	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
 	area=areae[this->sid];
 
-	#ifdef _ISSM_DEBUG_
-	this->AddInput(SealevelBarystaticIceLatbarEnum,&latbar,P0Enum); 
-	this->AddInput(SealevelBarystaticIceLongbarEnum,&longbar,P0Enum); 
-	this->AddInput(SealevelBarystaticHydroLatbarEnum,&latbar,P0Enum); 
-	this->AddInput(SealevelBarystaticHydroLongbarEnum,&longbar,P0Enum); 
-	this->AddInput(SealevelBarystaticOceanLatbarEnum,&latbar,P0Enum); 
-	this->AddInput(SealevelBarystaticOceanLongbarEnum,&longbar,P0Enum); 
-	#endif
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLatbarEnum)) this->AddInput(SealevelBarystaticIceLatbarEnum,&latbar,P0Enum); 
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLongbarEnum)) this->AddInput(SealevelBarystaticIceLongbarEnum,&longbar,P0Enum); 
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroLatbarEnum)) this->AddInput(SealevelBarystaticHydroLatbarEnum,&latbar,P0Enum); 
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroLongbarEnum)) this->AddInput(SealevelBarystaticHydroLongbarEnum,&longbar,P0Enum); 
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanLatbarEnum)) this->AddInput(SealevelBarystaticOceanLatbarEnum,&latbar,P0Enum); 
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanLongbarEnum)) this->AddInput(SealevelBarystaticOceanLongbarEnum,&longbar,P0Enum); 
 
 	if(slgeom->issubelement[SLGEOM_OCEAN][this->lid]){
 		int intj=slgeom->subelementmapping[SLGEOM_OCEAN][this->lid];
@@ -7909,16 +7894,14 @@ void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom,
 
 		for(int i=0;i<NUMVERTICES;i++) slgeom->LoadWeigths[SLGEOM_OCEAN][i][this->lid]=loadweightsocean[i];
 
-		#ifdef _ISSM_DEBUG_ /*{{{*/
 		/*Inform mask: */
 		constant=loadareaocean/area;
-		this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
-		this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
-		this->AddInput(SealevelBarystaticOceanAreaEnum,&loadareaocean,P0Enum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanMaskEnum)) this->AddInput(SealevelBarystaticOceanMaskEnum,&constant,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanWeightsEnum)) this->AddInput(SealevelBarystaticOceanWeightsEnum,loadweightsocean,P1DGEnum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanAreaEnum)) this->AddInput(SealevelBarystaticOceanAreaEnum,&loadareaocean,P0Enum);
 
-		this->AddInput(SealevelBarystaticOceanLatbarEnum,&latbar,P0Enum); 
-		this->AddInput(SealevelBarystaticOceanLongbarEnum,&longbar,P0Enum); 
-		#endif /*}}}*/
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanLatbarEnum)) this->AddInput(SealevelBarystaticOceanLatbarEnum,&latbar,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanLongbarEnum)) this->AddInput(SealevelBarystaticOceanLongbarEnum,&longbar,P0Enum); 
 	}
 	if(slgeom->issubelement[SLGEOM_ICE][this->lid]){
 		int intj=slgeom->subelementmapping[SLGEOM_ICE][this->lid];
@@ -7946,17 +7929,15 @@ void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom,
 
 		for(int i=0;i<NUMVERTICES;i++)slgeom->LoadWeigths[SLGEOM_ICE][i][this->lid]=loadweights[i];
 
-		#ifdef _ISSM_DEBUG_
 		/*Inform mask: */
 		constant=loadarea/area; 
-		this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
-		this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
-		this->AddInput(SealevelBarystaticIceAreaEnum,&loadarea,P0Enum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceMaskEnum)) this->AddInput(SealevelBarystaticIceMaskEnum,&constant,P0Enum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceWeightsEnum)) this->AddInput(SealevelBarystaticIceWeightsEnum,loadweights,P1DGEnum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceAreaEnum)) this->AddInput(SealevelBarystaticIceAreaEnum,&loadarea,P0Enum);
 
-		this->AddInput(SealevelBarystaticIceLatbarEnum,&latbar,P0Enum); 
-		this->AddInput(SealevelBarystaticIceLongbarEnum,&longbar,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLatbarEnum)) this->AddInput(SealevelBarystaticIceLatbarEnum,&latbar,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLongbarEnum)) this->AddInput(SealevelBarystaticIceLongbarEnum,&longbar,P0Enum); 
 
-		#endif
 	}
 	if(slgeom->issubelement[SLGEOM_WATER][this->lid]){
 		int intj=slgeom->subelementmapping[SLGEOM_WATER][this->lid];
@@ -7982,17 +7963,15 @@ void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom,
 
 		for(int i=0;i<NUMVERTICES;i++)slgeom->LoadWeigths[SLGEOM_WATER][i][this->lid]=loadweights[i];
 
-		#ifdef _ISSM_DEBUG_
 		/*Inform mask: */
 		constant=loadarea/area; 
-		this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
-		this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
-		this->AddInput(SealevelBarystaticHydroAreaEnum,&loadarea,P0Enum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroMaskEnum)) this->AddInput(SealevelBarystaticHydroMaskEnum,&constant,P0Enum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroWeightsEnum)) this->AddInput(SealevelBarystaticHydroWeightsEnum,loadweights,P1DGEnum);
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroAreaEnum)) this->AddInput(SealevelBarystaticHydroAreaEnum,&loadarea,P0Enum);
 
-		this->AddInput(SealevelBarystaticHydroLatbarEnum,&latbar,P0Enum); 
-		this->AddInput(SealevelBarystaticHydroLongbarEnum,&longbar,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroLatbarEnum)) this->AddInput(SealevelBarystaticHydroLatbarEnum,&latbar,P0Enum); 
+		if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticHydroLongbarEnum)) this->AddInput(SealevelBarystaticHydroLongbarEnum,&longbar,P0Enum); 
 
-		#endif
 	}
 
 }
@@ -8035,6 +8014,7 @@ void       Tria::SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newi
 /*}}}*/
 void       Tria::SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom){ /*{{{*/
 
+
 	IssmDouble oceanaverage=0;
 	IssmDouble oceanarea=0;
 	IssmDouble rho_water;
@@ -8057,9 +8037,7 @@ void       Tria::SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>*
 	}
 	else loads->vsealevelloads->SetValue(this->sid,oceanaverage,INS_VAL);
 
-	#ifdef _ISSM_DEBUG_ 
-	this->AddInput(SealevelBarystaticOceanLoadEnum,&oceanaverage,P0Enum);
-	#endif
+	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticOceanLoadEnum)) this->AddInput(SealevelBarystaticOceanLoadEnum,&oceanaverage,P0Enum);
 
 	/*add ocean area into a global oceanareas vector:*/
 	if(!loads->sealevelloads){

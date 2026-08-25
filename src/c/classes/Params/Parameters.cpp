@@ -689,6 +689,18 @@ void  Parameters::GetVectorFromControl(Vector<IssmDouble>* vector,int control_en
 	param->GetVectorFromControl(vector, control_index, N, data, offset);
 }/*}}}*/
 
+bool Parameters::IsInRequestedOutput(int requested_outputs_enum,int output_enum){/*{{{*/
+
+	Param* param=this->FindParamObject(requested_outputs_enum);
+	if(!param) return false;
+
+	if(param->ObjectEnum()!=StringArrayParamEnum){
+		_error_("Parameter "<<EnumToStringx(requested_outputs_enum)<<" is not a StringArrayParam");
+	}
+
+	StringArrayParam* requested_outputs=xDynamicCast<StringArrayParam*>(param);
+	return requested_outputs->IsMember(EnumToStringx(output_enum));
+}/*}}}*/
 Param* Parameters::FindParamObject(int param_enum){/*{{{*/
 
 	return this->params[EnumToIndex(param_enum)];
