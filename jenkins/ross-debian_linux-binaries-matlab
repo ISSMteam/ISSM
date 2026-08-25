@@ -16,6 +16,7 @@ ISSM_CONFIG='\
 	--enable-standalone-executables \
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
+	--enable-debugging \
 	--disable-dependency-tracking \
 	--with-pic \
 	--with-matlab-dir=${MATLAB_PATH} \

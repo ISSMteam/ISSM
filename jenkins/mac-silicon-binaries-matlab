@@ -19,6 +19,7 @@ ISSM_CONFIG='\
 	--enable-standalone-executables \
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
+	--enable-debugging \
 	--disable-dependency-tracking \
 	--with-matlab-dir=${MATLAB_PATH} \
 	--with-fortran-lib="${LIBGFORTRAN_PATH}/libgfortran.a ${LIBGFORTRAN_PATH}/libquadmath.a ${LIBGCC_PATH}/libgcc.a" \
@@ -45,7 +46,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.22-mac-static.sh
+	petsc		install-3.23-mac-static.sh
 	boost		install-1.7-mac-static.sh
 	dakota		install-6.2-mac-static.sh
 	chaco		install-mac.sh
