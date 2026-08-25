@@ -122,6 +122,14 @@ void  StringArrayParam::GetParameterValue(char*** pstringarray,int* pM){/*{{{*/
 	*pstringarray=outstrings;
 }
 /*}}}*/
+bool  StringArrayParam::IsMember(const char* string){/*{{{*/
+
+	for(int i=0;i<this->numstrings;i++){
+		if(strcmp(this->value[i],string)==0) return true;
+	}
+
+	return false;
+}/*}}}*/
 void  StringArrayParam::SetValue(char** stringarray,int M){/*{{{*/
 
 	int   i;

@@ -36,6 +36,7 @@ class StringArrayParam: public Param{
 
 		/*Param virtual function definitions:*/
 		void  GetParameterValue(char*** pstringarray,int* pM);
+		bool  IsMember(const char* string);
 		void  SetValue(char** stringarray,int M);
 };
 #endif  /* _STRINGARRAYPARAM_H */
