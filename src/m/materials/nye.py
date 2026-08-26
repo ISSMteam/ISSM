@@ -21,10 +21,8 @@ def nye(temperature, ice_type):
 
     # Beyond-melting-point cases
     if (ice_type == 1):
-        for i in range(len(T)):
-            if (200 < T[i] < 220):
-                print('Warning: nye.py: CO2 ICE - POSSIBLE MELTING. Some temperature values are between 200K and 220K.')
-            break
+        if (((200 < T) & (T < 220)).any()):
+            print('Warning: nye.py: CO2 ICE - POSSIBLE MELTING. Some temperature values are between 200K and 220K.')
         if ((T >= 220).any()):
             print('Warning: nye.py: CO2 ICE - GUARANTEED MELTING. Some temperature values are beyond 220K.')
     elif (ice_type == 2) and ((T > 273.15).any()):

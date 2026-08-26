@@ -12,7 +12,7 @@ def cfl_step(md, vx, vy):
 
     import numpy as np
     # Return the maximum time step for the model in years
-    if vx.shape[0] != md.mesh.numberofvertices and vy.shape[0] != md.mesh.numberofvertices:
+    if vx.shape[0] != md.mesh.numberofvertices or vy.shape[0] != md.mesh.numberofvertices:
         sys.exit('timesteps error message: size of velocity components must be the same as md.mesh.numberofvertices')
 
 

@@ -44,7 +44,7 @@ def GetAreas(index, x, y, z=np.array([])):
         areas = (0.5 * ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1)))
     else:
         # V = area(triangle) * 1/3(z1 + z2 + z3)
-        thickness = np.mean(z[index[:, 3:6] - 1]) - np.mean(z[index[:, 0:3] - 1])
+        thickness = np.mean(z[index[:, 3:6] - 1], axis=1) - np.mean(z[index[:, 0:3] - 1], axis=1)
         areas = (0.5 * ((x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1))) * thickness
 
     return areas
