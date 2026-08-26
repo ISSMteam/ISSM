@@ -1,5 +1,7 @@
+%PARAM_WRITE - write a single parameter field to a Dakota input file
 %
-%  function to write a parameter
+%   Usage:
+%      []=param_write(fidi,sbeg,pname,smid,send,params)
 %
 function []=param_write(fidi,sbeg,pname,smid,send,params)
 

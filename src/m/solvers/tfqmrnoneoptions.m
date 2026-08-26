@@ -1,4 +1,8 @@
 function solverOptions=tfqmrmgoptions(varargin)
+%TFQMRNONEOPTIONS - return PETSc options for the TFQMR solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrnoneoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

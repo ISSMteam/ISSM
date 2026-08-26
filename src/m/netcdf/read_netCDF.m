@@ -1,18 +1,18 @@
 function md = read_netCDF(filename, varargin)
-% READ_NETCDF - Load an ISSM model from a NetCDF4 file written by write_netCDF.m or write_netCDF.py.
-% 
-% Usage:
-%     md = read_netCDF(filename)
-%     md = read_netCDF(filename, 'verbose', true)
-% 
-% Inputs:
-%     filename - path to the .nc file
-% 
-% Optional name-value pair:
-%     'verbose' - true/false  (default false)
-% 
-% Returns:
-%     md  - an ISSM model() object populated from the file
+%READ_NETCDF - Load an ISSM model from a NetCDF4 file written by write_netCDF.m or write_netCDF.py
+%
+%   Usage:
+%      md = read_netCDF(filename)
+%      md = read_netCDF(filename, 'verbose', true)
+%
+%   Inputs:
+%      filename - path to the .nc file
+%
+%   Optional name-value pair:
+%      'verbose' - true/false  (default false)
+%
+%   Returns:
+%      md - an ISSM model() object populated from the file
 
     % --- parse options ------------------------------------------------
     if nargin > 1 && islogical(varargin{1})

@@ -1,6 +1,10 @@
 function npart=partition_npart(vector)
+%PARTITION_NPART - return the number of partitions described by a partition vector
+%
+%   Usage:
+%      npart=partition_npart(vector)
 
-	%vector could be on vertices or elements, and will have a small amount of possible integer 
+	%vector could be on vertices or elements, and will have a small amount of possible integer
 	%values: 
 	uvec=unique(vector);
 	uvec(uvec==-1)=[];

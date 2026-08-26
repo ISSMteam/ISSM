@@ -1,5 +1,6 @@
 %CALVINGPARAMETERIZATION class definition
 %   For test calving laws and coefficients
+%
 %   Usage:
 %      calvingparameterization=calvingparameterization();
 

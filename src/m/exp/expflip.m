@@ -1,9 +1,11 @@
 function expflip(domainname)
-%EXPFLIP: flip orientation of all contours and domains in domainname exp file.
+%EXPFLIP - flip orientation of all contours and domains in domainname exp file
 %
-%Usage: expflip('MassFlux1.exp');a
+%   Usage:
+%      expflip(domainname)
 %
-%
+%   Example:
+%      expflip('MassFlux1.exp')
 
 a=expread(domainname);
 

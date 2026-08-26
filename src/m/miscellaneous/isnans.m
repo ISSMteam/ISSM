@@ -1,9 +1,11 @@
 function returnvalue=isnans(array)
-%ISNANS: figure out if an array is nan. wrapper to isnan from matlab which stupidly does not allow this test  for structures!
+%ISNANS - figure out if an array is nan; wrapper to isnan from MATLAB, which does not allow this test for structures
 %
-%  Usage:    isnans(array)
+%   Usage:
+%      returnvalue=isnans(array);
 %
-%  See also : ISNAN 
+%   See Also:
+%      ISNAN
 
 if isstruct(array) 
 	returnvalue=0;

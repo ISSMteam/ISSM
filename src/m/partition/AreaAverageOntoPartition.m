@@ -1,11 +1,10 @@
 function partvector=AreaAverageOntoPartition(md,vector,partition,layer)
-%AREAAVERAGEONTOPARTITION 
-%   compute partition values for a certain vector expressed on the vertices of the mesh.
+%AREAAVERAGEONTOPARTITION - compute partition values for a certain vector expressed on the vertices of the mesh
 %   Use area weighted average.
 %
 %   Usage:
-%      average=AreaAverageOntoPartition(md,vector)
-%      average=AreaAverageOntoPartition(md,vector,layer) %if in 3D, chose which layer is partitioned
+%      partvector=AreaAverageOntoPartition(md,vector,partition)
+%      partvector=AreaAverageOntoPartition(md,vector,partition,layer) %if in 3D, chose which layer is partitioned
 
 %some checks
 if dimension(md.mesh)==3

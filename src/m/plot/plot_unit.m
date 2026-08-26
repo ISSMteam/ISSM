@@ -4,7 +4,7 @@ function plot_unit(x,y,z,elements,data,is2d,isplanet,datatype,options)
 %   Usage:
 %      plot_unit(x,y,z,elements,data,is2d,isplanet,datatype,options);
 %
-%   See also: PLOTMODEL, PLOT_MANAGER
+%   See Also: PLOTMODEL, PLOT_MANAGER
 
 %edgecolor
 edgecolor=getfieldvalue(options,'edgecolor','none');

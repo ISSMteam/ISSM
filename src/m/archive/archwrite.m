@@ -1,11 +1,11 @@
 function archwrite(filename,varargin) % {{{
 %ARCHWRITE - Write data to a field, given the file name, field name, and data.
 %
-%	Usage:
-%		archwrite('archive101.arch','variable_name',data);
-%		archwrite('archive102.arch','archive102_field1',transpose(field_value{1}),...
-%					'archive_field2',transpose(field_value{2}),...
-%					'archive_field3',-6.2420512521312);
+%   Usage:
+%      archwrite('archive101.arch','variable_name',data);
+%      archwrite('archive102.arch','archive102_field1',transpose(field_value{1}),...
+%                'archive_field2',transpose(field_value{2}),...
+%                'archive_field3',-6.2420512521312);
 
 	nvarargs=length(varargin);
 

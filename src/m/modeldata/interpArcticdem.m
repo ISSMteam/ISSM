@@ -1,4 +1,8 @@
 function sout = interpArcticdem(X,Y),
+%INTERPARCTICDEM - interpolate ArcticDEM mosaic surface elevation onto X and Y
+%
+%   Usage:
+%      sout = interpArcticdem(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

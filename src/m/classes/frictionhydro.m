@@ -1,4 +1,4 @@
-%FRICTIONWEERTMAN class definition
+%FRICTIONHYDRO class definition
 %
 %   Usage:
 %      friction=frictionhydro();

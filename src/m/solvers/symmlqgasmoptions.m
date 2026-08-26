@@ -1,4 +1,8 @@
 function solverOptions=symmlqgasmoptions(varargin)
+%SYMMLQGASMOPTIONS - return PETSc options for the SYMMLQ solver with a GASM (Generalized Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqgasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

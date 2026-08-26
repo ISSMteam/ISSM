@@ -1,7 +1,7 @@
+%CALIBRATION_FUNCTION class definition
 %
-%  definition for the calibration_function class.
-%
-%  [cf]=calibration_function(varargin)
+%   Usage:
+%      cf=calibration_function(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

@@ -1,4 +1,4 @@
-%CALVINCREVASSEDEPTH class definition
+%CALVINGCREVASSEDEPTH class definition
 %
 %   Usage:
 %      calvingcrevassedepth=calvingcrevassedepth();

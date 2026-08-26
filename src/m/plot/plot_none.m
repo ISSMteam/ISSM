@@ -2,7 +2,7 @@ function plot_none(md,options,nlines,ncols,i)
 %PLOT_NONE - plot nothing, just apply options
 %
 %   Usage:
-%      plot_mesh(md,options,nlines,ncols,i);
+%      plot_none(md,options,nlines,ncols,i);
 %
 %   See also: PLOTMODEL
 return;

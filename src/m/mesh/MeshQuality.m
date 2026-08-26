@@ -2,7 +2,7 @@ function quality=MeshQuality(md,epsilon,hmin,hmax)
 %MESHQUALITY - compute mesh quality
 %
 %   Usage:
-%      MeshQuality(md,epsilon,hmin,hmax);
+%      quality=MeshQuality(md,epsilon,hmin,hmax);
 
 %Get some variables from the model
 index=md.mesh.elements;

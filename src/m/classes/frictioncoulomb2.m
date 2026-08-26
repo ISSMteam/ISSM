@@ -36,7 +36,7 @@ classdef frictioncoulomb2
 					error('not supported yet');		
 			end
 		end % }}}
-		function self = frictioncoulomb(varargin) % {{{
+		function self = frictioncoulomb2(varargin) % {{{
 			switch nargin
 				case 0
 					self=setdefaultparameters(self);

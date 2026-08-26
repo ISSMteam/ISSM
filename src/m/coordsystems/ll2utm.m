@@ -1,6 +1,11 @@
 function [x,y,f]=ll2utm(varargin)
-%LL2UTM Lat/Lon to UTM coordinates precise conversion.
-%	[X,Y]=LL2UTM2(LAT,LON) or LL2UTM([LAT,LON]) converts coordinates 
+%LL2UTM - Lat/Lon to UTM coordinates precise conversion.
+%
+%	Usage:
+%		[x,y]=ll2utm(lat,lon);
+%		[x,y,zone]=ll2utm(lat,lon);
+%
+%	[X,Y]=LL2UTM2(LAT,LON) or LL2UTM([LAT,LON]) converts coordinates
 %	LAT,LON (in degrees) to UTM X and Y (in meters). Default datum is WGS84.
 %
 %	LAT and LON can be scalars, vectors or matrix. Outputs X and Y will

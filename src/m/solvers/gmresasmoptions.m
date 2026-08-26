@@ -1,4 +1,8 @@
 function solverOptions=gmresasmoptions(varargin)
+%GMRESASMOPTIONS - PETSc solver options using the GMRES Krylov method with additive Schwarz (ASM) preconditioning
+%
+%   Usage:
+%      solverOptions=gmresasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

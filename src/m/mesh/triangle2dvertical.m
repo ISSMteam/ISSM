@@ -1,10 +1,10 @@
 function md=triangle(md,domainname,resolution)
 %TRIANGLE - create model mesh using the triangle package
 %
-%   This routine creates a model mesh using Triangle and a domain outline, to within a certain resolution
-%   where md is a @model object, domainname is the name of an Argus domain outline file, 
+%   This routine creates a 2D vertical model mesh using Triangle and a domain outline, to within a certain resolution
+%   where md is a @model object, domainname is the name of an Argus domain outline file,
 %   and resolution is a characteristic length for the mesh (same unit as the domain outline
-%   unit). Riftname is an optional argument (Argus domain outline) describing rifts.
+%   unit).
 %
 %   Usage:
 %      md=triangle(md,domainname,resolution)

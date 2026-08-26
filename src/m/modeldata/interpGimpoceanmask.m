@@ -1,4 +1,8 @@
 function sout = interpGimpoceanmask(X,Y),
+%INTERPGIMPOCEANMASK - interpolate GIMP Greenland ocean mask onto X and Y
+%
+%   Usage:
+%      sout = interpGimpoceanmask(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

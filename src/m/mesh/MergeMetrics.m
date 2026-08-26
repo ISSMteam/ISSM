@@ -1,4 +1,11 @@
 function metric=MergeMetrics(metric1,metric2)
+%MERGEMETRICS - merge two anisotropic mesh size metrics
+%
+%   At each vertex, keep whichever of the two metrics is more restrictive
+%   (i.e. has the smaller minimum eigenvalue).
+%
+%   Usage:
+%      metric=MergeMetrics(metric1,metric2);
 
 M1xx=metric1(:,1); M1xy=metric1(:,2); M1yy=metric1(:,3);
 M1lambda1=0.5*((M1xx+M1yy)+sqrt(4*M1xy.^2+(M1xx-M1yy).^2));

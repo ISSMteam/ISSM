@@ -1,4 +1,8 @@
 function solverOptions=lsqrpbjacobioptions(varargin)
+%LSQRPBJACOBIOPTIONS - return PETSc options for the LSQR Krylov solver with a point-block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrpbjacobioptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

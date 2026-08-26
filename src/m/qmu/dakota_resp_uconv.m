@@ -1,23 +1,23 @@
+%DAKOTA_RESP_UCONV - convert the units for dakota responses
 %
-%  convert the units for dakota responses.
+%   where the required input is:
+%      dresp         (structure array, responses)
 %
-%  [dresp]=dakota_resp_uconv(dresp)
+%   the required output is:
+%      dresp         (structure array, responses)
 %
-%  where the required input is:
-%    dresp         (structure array, responses)
+%   this function reads through a dakota response structure, and
+%   for those quantities whose descriptors are recognized, converts
+%   the units of all the applicable fields.  a "unit" field is added
+%   to the response structure.
 %
-%  the required output is:
-%    dresp         (structure array, responses)
+%   this data would typically be read by dakota_out_parse and be used
+%   for plotting and other post-processing within matlab or excel.
 %
-%  this function reads through a dakota response structure, and
-%  for those quantities whose descriptors are recognized, converts
-%  the units of all the applicable fields.  a "unit" field is added
-%  to the response structure.
+%   Usage:
+%      [dresp]=dakota_resp_uconv(dresp)
 %
-%  this data would typically be read by dakota_out_parse and be used
-%  for plotting and other post-processing within matlab or excel.
-%
-%  "Copyright 2010, by the California Institute of Technology.
+%   "Copyright 2010, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship
 %  acknowledged. Any commercial use must be negotiated with
 %  the Office of Technology Transfer at the California Institute

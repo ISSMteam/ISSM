@@ -1,4 +1,8 @@
 function md=meshyamsrecreateriftsegments(md)
+%MESHYAMSRECREATERIFTSEGMENTS - recreate rift segments after remeshing with yams
+%
+%   Usage:
+%      md=meshyamsrecreateriftsegments(md);
 
 	%recreate rift segments: just used for yams. temporaroy routine.
 	pos_record=[];

@@ -1,4 +1,8 @@
 function solverOptions=richardsonasmoptions(varargin)
+%RICHARDSONASMOPTIONS - return PETSc options for the Richardson iteration Krylov solver with an ASM (Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=richardsonasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

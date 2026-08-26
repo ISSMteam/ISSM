@@ -1,7 +1,8 @@
 function varargout=loadmodel(path)
-%LOADMODEL - load a model using built-in load module 
+%LOADMODEL - load a model from a .mat file
 %
-%   check that model prototype has not changed. if so, adapt to new model prototype.
+%   Loads the model instance saved in a .mat file, checking that the
+%   file contains only one variable (the model).
 %
 %   Usage:
 %      md=loadmodel(path)

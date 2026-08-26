@@ -1,9 +1,9 @@
 %HPC_SIMBA cluster class definition
 %
 %   Usage:
-%      cluster=hpc();
-%      cluster=hpc('np',3);
-%      cluster=hpc('np',3,'login','username');
+%      cluster=hpc_simba();
+%      cluster=hpc_simba('np',3);
+%      cluster=hpc_simba('np',3,'login','username');
 
 classdef hpc_simba
 	properties (SetAccess=public)

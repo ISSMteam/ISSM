@@ -1,5 +1,10 @@
 function solverOptions=cgsasmoptions(varargin)
 
+%CGSASMOPTIONS - define PETSc solver options for the Conjugate Gradient Squared (CGS) Krylov method with Additive Schwarz Method (ASM) preconditioning
+%
+%   Usage:
+%      solverOptions=cgsasmoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

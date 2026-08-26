@@ -1,4 +1,4 @@
-%PICO BASAL FORCINGS class definition
+%BASALFORCINGSPICO class definition
 %
 %   Usage:
 %      basalforcingspico=basalforcingspico();

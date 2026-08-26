@@ -1,6 +1,9 @@
 function output = interpBedmachineGreenland(X,Y,string,method,ncdate)
 %INTERPBEDMACHINEGREENLAND - interpolate BedMachine data onto X and Y
 %
+%   Usage:
+%      output = interpBedmachineGreenland(X,Y,string,method,ncdate)
+%
 %   Examples:
 %      bed       = interpBedmachineGreenland(X,Y,'bed');
 %      surface   = interpBedmachineGreenland(X,Y,'surface');

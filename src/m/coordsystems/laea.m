@@ -1,5 +1,5 @@
 function string = laea(lat,long)
-%Lambert Azimuthal Equal Area projection at lat,long projection center. 
+%LAEA - Lambert Azimuthal Equal Area projection at lat,long projection center.
 %
 %   Usage:
 %      string = laea(45,-90);

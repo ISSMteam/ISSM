@@ -1,4 +1,8 @@
 function cmap = paraview(n)
+%PARAVIEW - ParaView-style blue-white-red colormap
+%
+%   Usage:
+%      cmap = paraview(n)
 
 J=[...
 0.0 59 76 192

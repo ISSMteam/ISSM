@@ -1,11 +1,11 @@
 function J=velocitymisfit(md)
-%MISFIT - compute misfit
+%VELOCITYMISFIT - compute velocity misfit between modeled and observed velocities
+%
+%   modeled  velocities are pulled from md.results.StressbalanceSolution.Vx/Vy
+%   observed velocities are pulled from md.inversion.vx_obs/vy_obs
 %
 %   Usage:
-%      J = velocitymisfit(md)
-%
-%   - modeled  velocities will be pulled from md.initialization.vx/vy
-%   - observed velocities will be pulled from md.inversion.vx_obs/vy_obs
+%      J=velocitymisfit(md)
 
 
 if dimension(md.mesh)==2

@@ -1,7 +1,7 @@
+%CONTINUOUS_DESIGN class definition
 %
-%  definition for the continuous_design class.
-%
-%  [cdv]=continuous_design(varargin)
+%   Usage:
+%      self=continuous_design(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

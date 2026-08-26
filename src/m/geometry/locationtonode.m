@@ -1,9 +1,9 @@
 function nodes=locationtonode(md,location,varargin)
-%LOCATIONTONODE - find, given a string location (ex: 'LA', 'new york', the nearest node on a mesh3dsurface.
+%LOCATIONTONODE - find, given a string location (ex: 'LA', 'new york'), the nearest node on a mesh3dsurface
 %
 %   Usage:
-%      node=locationnode(md,'LA');
-%      nodes=locationnode(md,'LA',100); %option, specify a distance (km) around the location that will return nodes
+%      nodes=locationtonode(md,'LA');
+%      nodes=locationtonode(md,'LA',100); %option, specify a distance (km) around the location that will return nodes
 %
 %   See also: geoCode (in externalpackages), find_point
 

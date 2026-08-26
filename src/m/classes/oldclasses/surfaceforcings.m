@@ -1,4 +1,4 @@
-%SURFACEFORCINGS Class definition
+%SURFACEFORCINGS class definition
 %
 %   Usage:
 %      smb=surfaceforcings();

@@ -1,5 +1,8 @@
 function status=IsScaled(variablename)
-%ISSCALED decide whether a variable should be scaled or not. 
+%ISSCALED - decide whether a variable should be scaled or not
+%
+%   Usage:
+%      status=IsScaled(variablename)
 
 switch variablename,
 case {'MaterialsRhoIce','MaterialsRhoSeawater','MaterialsHeatCapacity','MaterialsThermalConductivity','Gravity','MaxVel'},

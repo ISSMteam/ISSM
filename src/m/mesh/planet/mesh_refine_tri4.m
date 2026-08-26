@@ -1,16 +1,13 @@
 function [ FV ] = mesh_refine_tri4(FV)
-
-% mesh_refine_tri4 - creates 4 triangle from each triangle of a mesh
+%MESH_REFINE_TRI4 - creates 4 triangles from each triangle of a mesh
 %
-% [ FV ] = mesh_refine_tri4( FV )
+%   FV.vertices   - mesh vertices (Nx3 matrix)
+%   FV.faces      - faces with indices into 3 rows
+%                   of FV.vertices (Mx3 matrix)
 %
-% FV.vertices   - mesh vertices (Nx3 matrix)
-% FV.faces      - faces with indices into 3 rows
-%                 of FV.vertices (Mx3 matrix)
-% 
-% For each face, 3 new vertices are created at the 
-% triangle edge midpoints.  Each face is divided into 4
-% faces and returned in FV.
+%   For each face, 3 new vertices are created at the
+%   triangle edge midpoints.  Each face is divided into 4
+%   faces and returned in FV.
 %
 %        B
 %       /\
@@ -20,13 +17,17 @@ function [ FV ] = mesh_refine_tri4(FV)
 %   /  \  /  \      [a,B,b]
 %  /____\/____\     [c,b,C]
 % A	     c	   C    [a,b,c]
-% 
-% It is assumed that the vertices are listed in clockwise order in
-% FV.faces (A,B,C above), as viewed from the outside in a RHS coordinate
-% system.
-% 
-% See also: mesh_refine, sphere_tri, sphere_project
-% 
+%
+%   It is assumed that the vertices are listed in clockwise order in
+%   FV.faces (A,B,C above), as viewed from the outside in a RHS coordinate
+%   system.
+%
+%   Usage:
+%      [FV]=mesh_refine_tri4(FV);
+%
+%   See Also:
+%      mesh_refine, sphere_tri, sphere_project
+%
 
 % ---this method is not implemented, but the idea here remains...
 % This can be done until some minimal distance (D) of the mean 

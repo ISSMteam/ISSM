@@ -1,21 +1,24 @@
 function [bx by b]=basalstress(md)
-%BASALSTRESS - compute basal stress from friction law and geometric information. 
+%BASALSTRESS - compute basal stress from friction law and geometric information
 %
 %   Computes basal stress from basal sliding parametrization in md.friction and
 %   geometry and ice velocity in md.initialization. Follows the basal stress
-%   definition in "src/c/classes/Loads/Friction.cpp", lines 1102-1136. 
+%   definition in "src/c/classes/Loads/Friction.cpp", lines 1102-1136.
 %
-% USAGE:
-%      b         = basalstress(md); % one argout returns the scalar magnitude				
+%   Usage:
+%      b         = basalstress(md); % one argout returns the scalar magnitude
 %      [bx by b] = basalstress(md); % multiple argout returns the horizontal vector components
-% INPUT:
-%   md		ISSM model from which to take md.friction and md.initialization.
-% OUTPUT:
-%   bx		x component of basal stress
-%   by		y component of basal stress
-%   b			scalar magnitude of basal stress
 %
-%   See also: EFFECTIVEPRESSURE, PLOT_BASALDRAG
+%   Input:
+%      md - ISSM model from which to take md.friction and md.initialization
+%
+%   Output:
+%      bx - x component of basal stress
+%      by - y component of basal stress
+%      b  - scalar magnitude of basal stress
+%
+%   See Also:
+%      EFFECTIVEPRESSURE, PLOT_BASALDRAG
 
 	% compute sliding velocity
 	ub  = sqrt(md.initialization.vx.^2+md.initialization.vy.^2)/md.constants.yts; % horizontal vel (m/s)

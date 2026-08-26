@@ -1,4 +1,4 @@
-%FRICTIONWEERTMAN class definition
+%FRICTIONWEERTMANTEMP class definition
 %
 %   Usage:
 %      frictionweertmantemp=frictionweertmantemp();

@@ -1,10 +1,10 @@
 function plot_referential(md,options,width,i,data)
-%PLOT_PRESSURELOAD - plot segment on neumann BC
+%PLOT_REFERENTIAL - plot the stressbalance local referential axes
 %
 %   Usage:
 %      plot_referential(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %plot mesh boundaries
 subplot(width,width,i); 

@@ -1,8 +1,8 @@
 %CFRHEOLOGYBBARABSGRADTRANSIENT class definition
 %
 %   Usage:
-%      cfrheologybbarabsgradtransient=cfdragcoeffabsgradtransient();
-%      cfrheologybbarabsgradtransient=cfdragcoeffabsgradtransient('name','SurfaceAltimetry',...
+%      cfrheologybbarabsgradtransient=cfrheologybbarabsgradtransient();
+%      cfrheologybbarabsgradtransient=cfrheologybbarabsgradtransient('name','SurfaceAltimetry',...
 %                    'definitionstring','Outputdefinition1',... 
 %                    'weights',ones(md.mesh.numberofvertices+1,1))%
 %

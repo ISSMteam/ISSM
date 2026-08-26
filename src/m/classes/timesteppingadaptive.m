@@ -1,4 +1,4 @@
-%TIMESTEPPINGADAPTIVE Class definition
+%TIMESTEPPINGADAPTIVE class definition
 %
 %   Usage:
 %      timesteppingadaptive=timesteppingadaptive();

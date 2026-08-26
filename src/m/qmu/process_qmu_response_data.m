@@ -1,9 +1,11 @@
 function md=process_qmu_response_data(md)
-%PROCESS_QMU_RESPONSE_DATA - process any data necessary for the solutions to process the data. 
+%PROCESS_QMU_RESPONSE_DATA - process any data necessary for computing qmu responses
 %
-% Usage: md=process_qmu_response_data(md)
+%   Usage:
+%      md=process_qmu_response_data(md)
 %
-% See also PREQMU, PRESOLVE
+%   See Also:
+%      PREQMU, PRESOLVE
 
 %preliminary data
 process_mass_flux_profiles=0;

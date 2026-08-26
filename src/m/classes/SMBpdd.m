@@ -1,4 +1,4 @@
-%SMBpdd Class definition
+%SMBPDD class definition
 %
 %   Usage:
 %      SMBpdd=SMBpdd();

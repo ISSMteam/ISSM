@@ -4,7 +4,7 @@ function plot_sarpwr(md,options,width,i)
 %   Usage:
 %      plot_sarpwr(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %plot mesh sarpwr
 subplot(width,width,i); 

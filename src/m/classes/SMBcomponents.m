@@ -1,4 +1,4 @@
-%SMBcomponents Class definition
+%SMBcomponents class definition
 %
 %   Usage:
 %      SMBcomponents=SMBcomponents();

@@ -1,5 +1,10 @@
 function solverOptions=bicggamgoptions(varargin)
 
+%BICGGAMGOPTIONS - define PETSc solver options for the BiConjugate Gradient (BiCG) Krylov method with Geometric-Algebraic Multigrid (GAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=bicggamgoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

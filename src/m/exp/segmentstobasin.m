@@ -5,10 +5,10 @@ function segmentstobasin(basin,varargin)
 %   each segment should be inverted or not. 
 %
 %   Usage:
-%      segmentstobasin(basinname,basin1,invert1,basin2,invert2,...)
+%      segmentstobasin(basin,basin1,invert1,basin2,invert2,...)
 %
 %   Example:
-%      segmentstobasin('Antarctica.exp','Antarctica1.exp',0,'Antarctica2.shp',1); %we inverte the segments in Antarctica2.shp
+%      segmentstobasin('Antarctica.exp','Antarctica1.exp',0,'Antarctica2.shp',1); %we invert the segments in Antarctica2.shp
 %
 %   See also EXPREAD
 

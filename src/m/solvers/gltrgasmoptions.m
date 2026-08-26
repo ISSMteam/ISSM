@@ -1,4 +1,8 @@
 function solverOptions=gltrgasmoptions(varargin)
+%GLTRGASMOPTIONS - PETSc solver options using the generalized Lanczos trust-region (gltr) Krylov method with generalized additive Schwarz (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=gltrgasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

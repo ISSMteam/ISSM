@@ -1,5 +1,5 @@
 function [lat lon]=mercator2ll(mx,my),
-%LL2MERCATOR - transform mercator projection to lat/lon
+%MERCATOR2LL - transform mercator projection to lat/lon
 %
 %   Usage:
 %      [lat lon]=mercator2ll(mx,my)

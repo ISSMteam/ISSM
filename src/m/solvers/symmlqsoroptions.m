@@ -1,4 +1,8 @@
 function solverOptions=symmlqsoroptions(varargin)
+%SYMMLQSOROPTIONS - return PETSc options for the SYMMLQ solver with a SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqsoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

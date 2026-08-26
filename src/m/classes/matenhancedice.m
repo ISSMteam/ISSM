@@ -1,4 +1,4 @@
-%MATICE class definition
+%MATENHANCEDICE class definition
 %
 %   Usage:
 %      matenhancedice=matenhancedice();

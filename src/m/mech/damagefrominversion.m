@@ -6,11 +6,11 @@ function damage=damagefrominversion(md)
 %	rigidity B is assumed to be parameterized by the ice temperature in
 %	md.materials.rheology_B. 
 %
-%	Usage:
-%		damage=damagefrominversion(md)
+%   Usage:
+%      damage=damagefrominversion(md)
 %
-%	Example:
-%		damage=damagefrominversion(md)
+%   Example:
+%      damage=damagefrominversion(md)
 
 % check inputs
 if (nargin<1)

@@ -6,7 +6,7 @@ function [profsel indsel]=closestsegment(A,numprofiles,xi,yi)
 %   the first point belonging to this closest segment
 %
 %   Usage:
-%     [profsel indsel]=closestsegment(A,numprofiles,xi,yi) 
+%      [profsel indsel]=closestsegment(A,numprofiles,xi,yi)
 
 	%loop over the middles of each profile, find the closest to (xi,yi)
 	profsel=0;

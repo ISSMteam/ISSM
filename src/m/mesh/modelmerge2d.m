@@ -1,8 +1,8 @@
 function md=modelmerge2d(md1,md2,varargin)
-%MODELMERGE  - merge two models by merging their meshes
+%MODELMERGE2D - merge two 2d models by merging their meshes
 %
 %   Usage:
-%      md=modelmerge(md1,md2);
+%      md=modelmerge2d(md1,md2);
 	
 	%process options: 
 	options=pairoptions(varargin{:});

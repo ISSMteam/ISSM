@@ -1,4 +1,4 @@
-%CFSURFACESQUARE Class definition
+%CFSURFACESQUARE class definition
 %
 %   Usage:
 %      cfsurfacesquare=cfsurfacesquare();

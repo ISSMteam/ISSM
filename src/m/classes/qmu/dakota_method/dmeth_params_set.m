@@ -1,7 +1,7 @@
+%DMETH_PARAMS_SET - set parameters of a dakota_method object
 %
-%  set parameters of a dakota_method object.
-%
-%  [dm]=dmeth_params_set(dm,varargin)
+%   Usage:
+%      dm=dmeth_params_set(dm,varargin)
 %
 function [dm]=dmeth_params_set(dm,varargin)
 

@@ -1,4 +1,8 @@
 function solverOptions=lsqrgamgoptions(varargin)
+%LSQRGAMGOPTIONS - return PETSc options for the LSQR Krylov solver with a GAMG (geometric-algebraic multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrgamgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

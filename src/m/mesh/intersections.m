@@ -1,7 +1,12 @@
 function [x0,y0,iout,jout] = intersections(x1,y1,x2,y2,robust)
-%INTERSECTIONS Intersections of curves.
+%INTERSECTIONS - compute the (x,y) locations where two curves intersect
+%
 %   Computes the (x,y) locations where two curves intersect.  The curves
 %   can be broken with NaNs or have vertical segments.
+%
+%   Usage:
+%      [x0,y0] = intersections(x1,y1,x2,y2,robust);
+%      [x0,y0,iout,jout] = intersections(x1,y1,x2,y2,robust);
 %
 % Example:
 %   [X0,Y0] = intersections(X1,Y1,X2,Y2,ROBUST);

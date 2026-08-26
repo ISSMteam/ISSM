@@ -1,7 +1,11 @@
 function md=qmuname(md,varargin)
-%INPUT function md=qmuname(md)
-%Pick up the number from a file, or get it directly from the Dakota structure.  Then modify the name of this 
-%model to reflect this new number.
+%QMUNAME - update the model name to include a Dakota run number
+%
+%   Pick up the number from a file, or get it directly from the Dakota structure. Then modify
+%   the name of this model to reflect this new number.
+%
+%   Usage:
+%      md=qmuname(md,varargin)
 
 if nargin==1
 	fid=fopen('number','r');

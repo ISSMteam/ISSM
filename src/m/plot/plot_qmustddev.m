@@ -1,10 +1,10 @@
 function plot_qmustddev(md,options,nlines,ncols,i)
-%PLOT_QMUMEAN - plot stddev of a scaled response 
+%PLOT_QMUSTDDEV - plot stddev of a scaled response
 %
 %   Usage:
 %      plot_qmustddev(md,options,nlines,ncols,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %plot mesh
 subplot(nlines,ncols,i); 

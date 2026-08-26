@@ -4,7 +4,7 @@ function plot_section(md,data,options,nlines,ncols,i)
 %   Usage:
 %      plot_section(md,data,options,nlines,ncols,i)
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %How many subplots?
 if exist(options,'showsection')

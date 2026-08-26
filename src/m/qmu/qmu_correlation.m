@@ -1,9 +1,8 @@
 function factors=qmu_correlation(md,variablename,responsename)
-%QMU_CORRELATION - compute correlation between qmu output and a certain input variable.
+%QMU_CORRELATION - compute correlation between qmu output and a certain input variable
 %
 %   Usage:
 %      factors=qmu_correlation(md,variablename,responsename)
-%
 %
 %   Example:
 %      mass_flux_drag_correlation=qmu_correlation(md,'drag','mass_flux');

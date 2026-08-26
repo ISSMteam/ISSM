@@ -1,5 +1,5 @@
 function md=solveiceocean(md,solutionstring,varargin)
-%SOLVE - apply ice/ocean solution sequence for this model
+%SOLVEICEOCEAN - apply ice/ocean solution sequence for this model
 %
 %   Usage:
 %      md=solveiceocean(md,solutionstring,varargin)
@@ -18,8 +18,8 @@ function md=solveiceocean(md,solutionstring,varargin)
 %      - outbinread  : if 0, download the outbin but do not process is (md.results is not updated)
 %
 %   Examples:
-%      md=solve(md,'Transient');
-%      md=solve(md,'tr');
+%      md=solveiceocean(md,'Transient');
+%      md=solveiceocean(md,'tr');
 
 if ~ischar(solutionstring)
 	error('ISSM''s solve function only accepts strings for solution sequences. Type help solve to get a list of supported solutions');

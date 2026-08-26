@@ -1,5 +1,10 @@
 function solverOptions=bicgasmoptions(varargin)
 
+%BICGASMOPTIONS - define PETSc solver options for the BiConjugate Gradient (BiCG) Krylov method with Additive Schwarz Method (ASM) preconditioning
+%
+%   Usage:
+%      solverOptions=bicgasmoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

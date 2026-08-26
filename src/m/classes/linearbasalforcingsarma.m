@@ -1,4 +1,4 @@
-%LINEAR BASAL FORCINGS ARMA class definition
+%LINEARBASALFORCINGSARMA class definition
 %
 %   Usage:
 %      linearbasalforcingsarma=linearbasalforcingsarma();

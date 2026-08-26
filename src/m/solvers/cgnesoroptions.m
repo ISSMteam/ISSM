@@ -1,5 +1,10 @@
 function solverOptions=cgnesoroptions(varargin)
 
+%CGNESOROPTIONS - define PETSc solver options for the Conjugate Gradient on the Normal Equations (CGNE) Krylov method with Successive Over-Relaxation (SOR) preconditioning
+%
+%   Usage:
+%      solverOptions=cgnesoroptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

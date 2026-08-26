@@ -1,79 +1,78 @@
+%PLOT_HIST_NORM - plot a relative histogram and cdf optionally along with a normal distribution
 %
-%  plot a relative histogram and cdf optionally along with
-%  a normal distribution.
+%   Usage:
+%      []=plot_hist_norm(dresp1      ,dresp2      ,params)
+%      []=plot_hist_norm(dresp1,desc1,dresp2,desc2,params)
+%      []=plot_hist_norm(sampr ,descr,mu,sigma    ,params)
 %
-%  []=plot_hist_norm(dresp1      ,dresp2      ,params)
-%  []=plot_hist_norm(dresp1,desc1,dresp2,desc2,params)
-%  []=plot_hist_norm(sampr ,descr,mu,sigma    ,params)
+%   where the required input is:
+%     dresp1        (structure array, responses)
+%       or
+%     dresp1        (structure array, responses)
+%     desc1         (cell array, list of response descriptions desired)
+%       or
+%     sampr         (double array, lists of samples)
+%     descr         (cell array, list of descriptions)
 %
-%  where the required input is:
-%    dresp1        (structure array, responses)
-%      or
-%    dresp1        (structure array, responses)
-%    desc1         (cell array, list of response descriptions desired)
-%      or
-%    sampr         (double array, lists of samples)
-%    descr         (cell array, list of descriptions)
+%   and the optional input is:
+%     dresp2        (structure array, responses)
+%       or
+%     dresp2        (structure array, responses)
+%     desc2         (cell array, list of response descriptions desired)
+%       or
+%     mu            (double vector, means)
+%     sigma         (double vector, standard deviations)
 %
-%  and the optional input is:
-%    dresp2        (structure array, responses)
-%      or
-%    dresp2        (structure array, responses)
-%    desc2         (cell array, list of response descriptions desired)
-%      or
-%    mu            (double vector, means)
-%    sigma         (double vector, standard deviations)
+%   the required fields of dresp1 are:
+%     descriptor    (char, description)
+%     sample        (double vector, list of samples)
 %
-%  the required fields of dresp1 are:
-%    descriptor    (char, description)
-%    sample        (double vector, list of samples)
+%   and the required fields of dresp2 are:
+%     mean          (double, mean of sample)
+%     stddev        (double, standard deviation of sample)
 %
-%  and the required fields of dresp2 are:
-%    mean          (double, mean of sample)
-%    stddev        (double, standard deviation of sample)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   where the optional parameters are:
+%     hmin          (numeric, minimum for histogram)
+%     hmax          (numeric, maximum for histogram)
+%     hnint         (numeric, number of intervals for histogram)
+%     ymin1         (numeric, minimum of histogram y-axis)
+%     ymax1         (numeric, maximum of histogram y-axis)
+%     ymin2         (numeric, minimum of cdf y-axis)
+%     ymax2         (numeric, maximum of cdf y-axis)
+%     nrmplt        (char, pass 'l' or 'off' to change nrm plots 
+%                    from default of 'bar' or 'b' to 'line' instead, 
+%                    pass 's' to change nrm plot to 'stairs')                                                  
+%     cdfplt        (char, 'off' to turn off cdf line plots)
+%     cdfleg        (char, 'off' to turn off cdf legends)
+%     cmap          (char or numeric, colormap definition)
 %
-%  where the optional parameters are:
-%    hmin          (numeric, minimum for histogram)
-%    hmax          (numeric, maximum for histogram)
-%    hnint         (numeric, number of intervals for histogram)
-%    ymin1         (numeric, minimum of histogram y-axis)
-%    ymax1         (numeric, maximum of histogram y-axis)
-%    ymin2         (numeric, minimum of cdf y-axis)
-%    ymax2         (numeric, maximum of cdf y-axis)
-%    nrmplt        (char, pass 'l' or 'off' to change nrm plots 
-%                   from default of 'bar' or 'b' to 'line' instead, 
-%                   pass 's' to change nrm plot to 'stairs')                                                  
-%    cdfplt        (char, 'off' to turn off cdf line plots)
-%    cdfleg        (char, 'off' to turn off cdf legends)
-%    cmap          (char or numeric, colormap definition)
+%   for each response in the input array, this function
+%   calculates and plots a relative histogram and CDF of the list
+%   of samples, and annotates it with the description.  in
+%   addition, a mean and standard deviation may be supplied or,
+%   if empty, calculated so that a normal distribution and CDF may
+%   be plotted.
 %
-%  for each response in the input array, this function
-%  calculates and plots a relative histogram and CDF of the list
-%  of samples, and annotates it with the description.  in
-%  addition, a mean and standard deviation may be supplied or,
-%  if empty, calculated so that a normal distribution and CDF may
-%  be plotted.
+%   dresp1 data would typically be contained in the dakota tabular
+%   output file from a sampling analysis, and dresp2 data would
+%   typically be contained in the dakota output file from a local
+%   sensitivity analysis, both read by dakota_out_parse.
 %
-%  dresp1 data would typically be contained in the dakota tabular
-%  output file from a sampling analysis, and dresp2 data would
-%  typically be contained in the dakota output file from a local
-%  sensitivity analysis, both read by dakota_out_parse.
+%   "Copyright 2009, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2009, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_hist_norm(varargin)
 

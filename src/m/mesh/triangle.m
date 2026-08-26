@@ -8,7 +8,7 @@ function md=triangle(md,domainname,varargin)
 %
 %   Usage:
 %      md=triangle(md,domainname,resolution)
-%   or md=triangle(md,domainname,riftname, resolution)
+%      md=triangle(md,domainname,riftname,resolution)
 %
 %   Examples:
 %      md=triangle(md,'DomainOutline.exp',1000);

@@ -1,4 +1,8 @@
 function data = marshallcostfunctions(cost_functions)
+%MARSHALLCOSTFUNCTIONS - convert numeric cost function codes into their string names
+%
+%   Usage:
+%      data=marshallcostfunctions(cost_functions)
 
 	pos=find(cost_functions==101); data(pos) = {'SurfaceAbsVelMisfit'};
 	pos=find(cost_functions==102); data(pos) = {'SurfaceRelVelMisfit'};

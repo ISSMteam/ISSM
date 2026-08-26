@@ -10,8 +10,10 @@ function mesh=gmshplanet(varargin)
 %
 %   Returns 'mesh3dsurface' type mesh
 %
-%   Examples:
-%      md.mesh=gmshplanet('radius',6000,'resolution',100);
+%   Usage:
+%      mesh=gmshplanet(varargin);
+%
+%   Example:
 %      md.mesh=gmshplanet('radius',6000,'resolution',100);
 
 	%Get Gmsh version

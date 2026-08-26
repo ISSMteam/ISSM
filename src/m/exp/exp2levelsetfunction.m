@@ -1,11 +1,11 @@
 function lsf=exp2levelsetfunction(md, exp_icedomain)
-	%EXP2LEVELSETFUNCTION: returns signed distance function from EXP-file
+	%EXP2LEVELSETFUNCTION - returns signed distance function from EXP-file
 	%
 	%   This routine computes a signed distance function from an EXP-file given in the input.
 	%   It can be used with the level-set method.
 	%
-	%   USAGE:
-	%      levelsetfunction=exp2levelsetfunction(md, exp_icedomain)
+	%   Usage:
+	%      lsf=exp2levelsetfunction(md, exp_icedomain)
 	%
 
 	mesh=md.mesh;

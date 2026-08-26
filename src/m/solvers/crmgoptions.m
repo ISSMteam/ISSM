@@ -1,5 +1,10 @@
 function solverOptions=crmgoptions(varargin)
 
+%CRMGOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Multigrid preconditioning
+%
+%   Usage:
+%      solverOptions=crmgoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

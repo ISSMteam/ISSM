@@ -1,4 +1,8 @@
 function comparemodels(md1,md2);
+%COMPAREMODELS - compare all fields of two model objects and display any differences
+%
+%   Usage:
+%      comparemodels(md1,md2);
 
 	%loop over model fields
 	model_fields=fieldnames(md1);

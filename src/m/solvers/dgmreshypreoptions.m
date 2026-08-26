@@ -1,4 +1,8 @@
 function solverOptions=dgmreshypreoptions(varargin)
+%DGMRESHYPREOPTIONS - PETSc solver options using the deflated GMRES (dgmres) Krylov method with Hypre preconditioning
+%
+%   Usage:
+%      solverOptions=dgmreshypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

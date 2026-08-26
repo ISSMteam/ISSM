@@ -1,5 +1,5 @@
 function [bamgmesh,bamggeom] = BamgMesher(bamgmesh,bamggeom,bamgoptions);
-%BAMGMESHER
+%BAMGMESHER - mesh a domain using the bamg mesher
 %
 %   Usage:
 %      [bamgmesh, bamggeom] = BamgMesher(bamgmesh,bamggeom,bamgoptions);

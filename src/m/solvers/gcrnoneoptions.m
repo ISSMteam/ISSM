@@ -1,4 +1,8 @@
 function solverOptions=gcrmgoptions(varargin)
+%GCRMGOPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with no preconditioning
+%
+%   Usage:
+%      solverOptions=gcrmgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

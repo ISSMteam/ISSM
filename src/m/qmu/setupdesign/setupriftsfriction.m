@@ -1,4 +1,8 @@
 function dvar=setupriftsfriction(md,dvar,variables)
+%SETUPRIFTSFRICTION - expand a rifts friction qmu variable into one entry per rift
+%
+%   Usage:
+%      dvar=setupriftsfriction(md,dvar,variables)
 
 %we have several rifts.
 

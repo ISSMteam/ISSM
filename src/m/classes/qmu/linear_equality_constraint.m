@@ -1,7 +1,7 @@
+%LINEAR_EQUALITY_CONSTRAINT class definition
 %
-%  constructor for the linear_equality_constraint class.
-%
-%  [lec]=linear_equality_constraint(varargin)
+%   Usage:
+%      lec=linear_equality_constraint(varargin)
 %
 %  where the required varargin are:
 %    matrix        (double row, variable coefficients, NaN)

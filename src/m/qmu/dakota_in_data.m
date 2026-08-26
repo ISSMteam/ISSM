@@ -1,7 +1,9 @@
+%DAKOTA_IN_DATA - define the data to write the dakota .in and .m files
 %
 %  define the data to write the dakota .in and .m files.
 %
-%  []=dakota_in_data(dmeth,variables,responses,dparams,filei,corrin,varargin)
+%   Usage:
+%      []=dakota_in_data(dmeth,variables,responses,dparams,filei,corrin,varargin);
 %
 %  where the required input is:
 %    dmeth         (dakota_method, method class object)

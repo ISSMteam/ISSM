@@ -1,4 +1,4 @@
-%DAMAGEICE class definition
+%DAMAGE class definition
 %
 %   Usage:
 %      damage=damage();

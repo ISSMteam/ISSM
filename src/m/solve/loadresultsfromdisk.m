@@ -4,9 +4,9 @@ function md=loadresultsfromdisk(md,filename)
 %   Usage:
 %      md=loadresultsfromdisk(md,filename);
 %
-%	 Input: 
+%   Input:
 %      md         the initialized model() object which matches the results to be loaded
-%      filename	complete path to the .outbin file (typically [md.miscellaneous.name '.outbin'] in the execution directory)
+%      filename   complete path to the .outbin file (typically [md.miscellaneous.name '.outbin'] in the execution directory)
 %
 %   Output:
 %      md         the returned model() object with the results loaded into md.results

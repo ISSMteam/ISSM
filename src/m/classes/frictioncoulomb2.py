@@ -56,6 +56,7 @@ class frictioncoulomb2(object):
             raise ValueError('not supported yet')
         return self
     # }}}
+
     def checkconsistency(self, md, solution, analyses):  # {{{
         # Early return
         if 'StressbalanceAnalysis' not in analyses and 'ThermalAnalysis' not in analyses:

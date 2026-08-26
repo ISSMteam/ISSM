@@ -1,5 +1,10 @@
 function solverOptions=crhypreoptions(varargin)
 
+%CRHYPREOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Hypre (BoomerAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=crhypreoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

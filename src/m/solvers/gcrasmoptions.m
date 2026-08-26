@@ -1,4 +1,8 @@
 function solverOptions=gcrasmoptions(varargin)
+%GCRASMOPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with additive Schwarz (ASM) preconditioning
+%
+%   Usage:
+%      solverOptions=gcrasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -1,7 +1,7 @@
 function issmscpout(host, path, login, port, packages, bracketstyle)
-%ISSMSCPOUT send files to host
+%ISSMSCPOUT - Send files to host
 %
-%   usage:
+%   Usage:
 %      issmscpout(host,path,login,port,packages,bracketstyle)
 %
 %      bracketstyle:  1 - \{\}    (escaped; default)

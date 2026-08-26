@@ -1,11 +1,11 @@
 function rigidity=arrhenius(temperature, waterfraction, pressure)
 %ARRHENIUS - figure out the rigidity of ice for a given temperature and waterfraction
 %
-%   rigidity (in s^(1/3)Pa) is the flow law parameter in the flow law sigma=B*e(1/3) (Paterson, p97). 
+%   rigidity (in s^(1/3)Pa) is the flow law parameter in the flow law sigma=B*e(1/3) (Paterson, p97).
 %   temperature is in Kelvin degrees
-%   
+%
 %   Usage:
-%   rigidity=arrhenius(temperature, waterfraction, pressure)
+%      rigidity=arrhenius(temperature, waterfraction, pressure)
 
 %variables
 T0=273.15;

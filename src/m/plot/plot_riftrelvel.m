@@ -4,7 +4,7 @@ function plot_riftrelvel(md,options,nlines,ncols,index)
 %   Usage:
 %      plot_riftrelvel(md,options,nlines,ncols,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %some checks
 if (length(md.initialization.vx)~=md.mesh.numberofvertices | length(md.initialization.vy)~=md.mesh.numberofvertices)

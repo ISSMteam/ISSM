@@ -1,7 +1,10 @@
 function indices=flaglatlongradius(lat,long,lat0,long0,radius) % {{{
-%FLAGLATLONGRADIUS - given a vector of lat,long, and a circle of radius degrees around lat0,long0, 
-%                    return the indices into lat,long that are within this circle. 
+%FLAGLATLONGRADIUS - given a vector of lat,long, and a circle of radius degrees around lat0,long0,
+%                    return the indices into lat,long that are within this circle.
 %                    lat and long should be between -90 and 90, and -180 and +180 respectively.
+%
+%   Usage:
+%      indices=flaglatlongradius(lat,long,lat0,long0,radius);
 
 	%three cases, depending on whether our circle goes past the -180 +180 longitude line: 
 	if (long0-radius)<=-180

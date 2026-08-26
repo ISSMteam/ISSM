@@ -1,4 +1,4 @@
-%SMBpddFast Class definition
+%SMBPDDFAST class definition
 %
 %   Usage:
 %      SMBpddFast=SMBpddFast();

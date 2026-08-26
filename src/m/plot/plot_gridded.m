@@ -1,8 +1,8 @@
 function plot_gridded(md,data,options,plotlines,plotcols,i)
-%PLOT_OVERLAY - superimpose radar image to a given field
+%PLOT_GRIDDED - superimpose gridded (interpolated) data to a given field
 %
 %   Usage:
-%      plot_gridded(md,options,plotlines,plotcols,i)
+%      plot_gridded(md,data,options,plotlines,plotcols,i)
 %
 %   See also: PLOTMODEL
 

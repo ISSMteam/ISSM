@@ -1,4 +1,8 @@
 function solverOptions=gcrsoroptions(varargin)
+%GCRSOROPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with successive over-relaxation (SOR) preconditioning
+%
+%   Usage:
+%      solverOptions=gcrsoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

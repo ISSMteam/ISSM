@@ -1,12 +1,11 @@
-%
-%  function to find an array size from a list of arrays.
-%  
-%  [asize]=array_size(varargin)
-%
-%  see array_numel to check only the number of elements, if
-%  single indices will be used.
-%
 function [asize]=array_size(varargin)
+%ARRAY_SIZE - find an array size from a list of arrays
+%
+%   See array_numel to check only the number of elements, if
+%   single indices will be used.
+%
+%   Usage:
+%      asize=array_size(a1,a2,...);
 
 asize=[1 1];
 

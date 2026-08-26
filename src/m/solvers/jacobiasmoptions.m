@@ -1,8 +1,8 @@
 function jacobiasm=jacobiasmoptions(varargin)
-%ASMOPTIONS - return Additive Shwartz Method with Jacobi preconditioner petsc options
+%JACOBIASMOPTIONS - return PETSc options for the GMRES Krylov solver with an ASM (Additive Schwarz Method) preconditioner using a Jacobi sub-block preconditioner
 %
 %   Usage:
-%      options=jacobiasmoptions;
+%      jacobiasm=jacobiasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

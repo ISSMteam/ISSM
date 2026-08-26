@@ -1,5 +1,5 @@
 function bool=isshp(filename)
-%ISSHP - is a file an shpfile? 
+%ISSHP - is a file a shpfile?
 %
 %   Usage:
 %      isshp(filename);

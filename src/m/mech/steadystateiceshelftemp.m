@@ -1,20 +1,20 @@
 function temperature=steadystateiceshelftemp(md,surfacetemp,basaltemp)
-%STEADYSTATEICESHELFTEMP - compute depth-averaged steady-state temperature of an ice shelf 
+%STEADYSTATEICESHELFTEMP - compute depth-averaged steady-state temperature of an ice shelf
 %
-%   This routine computes the depth-averaged temperature accounting for vertical advection 
-%   and diffusion of heat into the base of the ice shelf as a function of surface and 
-%   basal temperature and the basal melting rate.  Horizontal advection is ignored.
+%   This routine computes the depth-averaged temperature accounting for vertical advection
+%   and diffusion of heat into the base of the ice shelf as a function of surface and
+%   basal temperature and the basal melting rate. Horizontal advection is ignored.
 %   The solution is a depth-averaged version of Equation 25 in Holland and Jenkins (1999).
 %
-%	 In addition to supplying md, the surface and basal temperatures of the ice shelf must
-%	 be supplied in degrees Kelvin.
+%   In addition to supplying md, the surface and basal temperatures of the ice shelf must
+%   be supplied in degrees Kelvin.
 %
-%	 The model md must also contain the fields: 
-%	 md.geometry.thickness
-%	 md.basalforcings.floatingice_melting_rate (positive for melting, negative for freezing)
-
+%   The model md must also contain the fields:
+%   md.geometry.thickness
+%   md.basalforcings.floatingice_melting_rate (positive for melting, negative for freezing)
+%
 %   Usage:
-%      temperature=steadystateiceshelftemp(md,surfacetemp,basaltemp)
+%      temperature=steadystateiceshelftemp(md,surfacetemp,basaltemp);
 
 if (length(md.geometry.thickness)~=md.mesh.numberofvertices)
 	error(['steadystateiceshelftemp error message: thickness should have a length of ' num2str(md.mesh.numberofvertices)])

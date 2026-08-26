@@ -1,4 +1,8 @@
 function solverOptions=minresmgoptions(varargin)
+%MINRESNONEOPTIONS - return PETSc options for the MINRES (minimum residual) Krylov solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=minresnoneoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

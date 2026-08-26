@@ -1,7 +1,10 @@
 function outelements=flaglatlongradiuselements(elements,lat,long,lat0,long0,radius)
-%FLAGLATLONGRADIUSELEMENTS - given a vector of lat,long, and a circle of radius degrees around lat0,long0, 
-%                    return the indices into lat,long that are within this circle. 
-%                    lat and long should be between -90 and 90, and -180 and +180 respectively. 
+%FLAGLATLONGRADIUSELEMENTS - given a vector of lat,long, and a circle of radius degrees around lat0,long0,
+%                    return the elements that own indices into lat,long that are within this circle.
+%                    lat and long should be between -90 and 90, and -180 and +180 respectively.
+%
+%   Usage:
+%      outelements=flaglatlongradiuselements(elements,lat,long,lat0,long0,radius);
 
 	distance=sqrt( (lat-lat0).^2+ (long-long0).^2);
 	

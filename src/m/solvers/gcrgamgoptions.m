@@ -1,4 +1,8 @@
 function solverOptions=gcrgamgoptions(varargin)
+%GCRGAMGOPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with geometric algebraic multigrid (GAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=gcrgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -1,8 +1,8 @@
 function archdisp(filename) % {{{
 %ARCHDISP - Display the contents of a .arch file
 %
-%	Usage:
-%		archdisp('archive101.arch');
+%   Usage:
+%      archdisp('archive101.arch');
 
 	if nargin~=1
 		help archdisplay

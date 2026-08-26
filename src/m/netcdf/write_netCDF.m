@@ -1,16 +1,16 @@
 function write_netCDF(md, filename, varargin)
-%WRITE_NETCDF - Save an ISSM model to a NetCDF4 file.
+%WRITE_NETCDF - Save an ISSM model to a NetCDF4 file
 %
-% Usage:
-%    write_netCDF(md, filename)
-%    write_netCDF(md, filename, 'verbose', true)
+%   Usage:
+%      write_netCDF(md, filename)
+%      write_netCDF(md, filename, 'verbose', true)
 %
-% Inputs:
-%    md       - ISSM model object
-%    filename - path/name for the output .nc file (overwritten if it exists)
+%   Inputs:
+%      md       - ISSM model object
+%      filename - path/name for the output .nc file (overwritten if it exists)
 %
-% Optional name-value pair:
-%    'verbose' - true/false  (default false)
+%   Optional name-value pair:
+%      'verbose' - true/false  (default false)
 %
 % The file can be read back by read_netCDF.m (MATLAB) or read_netCDF.py (Python).
 %

@@ -1,4 +1,4 @@
-%MISFIT class definition
+%CFSURFACELOGVEL class definition
 %
 %   Usage:
 %      cfsurfacelogvel=cfsurfacelogvel();

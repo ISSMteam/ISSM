@@ -1,5 +1,5 @@
 function rigidity=buddjacka(temperature)
-% BUDDJACKA - calculates ice rigidity as a function of temperature
+%BUDDJACKA - calculates ice rigidity as a function of temperature
 %
 %   rigidity (in s^(1/3)Pa) is the flow law parameter in the flow law sigma=B*e(1/3)
 %   Budd and Jacka (1989)

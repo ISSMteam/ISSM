@@ -9,6 +9,9 @@ function output = interpBedmap3(X,Y,string,method)
 %      - ice_thickness
 %      - thickness_survey_count
 %      - thickness_uncertainty
+%
+%   Usage:
+%      output = interpBedmap3(X,Y,string,method)
 
 if nargin<3, string = 'bed_topography'; end
 if nargin<4

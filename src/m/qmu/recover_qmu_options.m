@@ -1,10 +1,11 @@
 function options=recover_qmu_options(md,varargin)
-%RECOVER_SOLVE_OPTIONS - recover solution options for qmu runs.
+%RECOVER_QMU_OPTIONS - recover solution options for qmu runs
 %
 %   Usage:
 %      options=recover_qmu_options(md,varargin);
 %
-%   See also: SOLVE
+%   See Also:
+%      SOLVE
 
 %initialize options.
 options=cell(0,2);

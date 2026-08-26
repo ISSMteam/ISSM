@@ -1,4 +1,8 @@
 function solverOptions=dgmresgamgoptions(varargin)
+%DGMRESGAMGOPTIONS - PETSc solver options using the deflated GMRES (dgmres) Krylov method with geometric algebraic multigrid (GAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=dgmresgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

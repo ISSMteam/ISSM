@@ -1,10 +1,12 @@
 function mesh_profile=ProfileProjectOntoMesh(md,profile)
-%PROFILEPROJECTONTOMESH: project a profile (made of arbitrary points) onto a mesh, so that we end 
-%                        up with a list of segments self contained onto elements.
+%PROFILEPROJECTONTOMESH - project a profile (made of arbitrary points) onto a mesh, so that we end
+%                         up with a list of segments self contained onto elements.
 %
-% Usage: mesh_profile=ProfileProjectOntoMesh(md,profile)
+%   Usage:
+%      mesh_profile=ProfileProjectOntoMesh(md,profile);
 %
-% See also intersections.m
+%   See Also:
+%      intersections
 
 %make a curve out of the mesh, to use the intersections routine.
 rows=[md.mesh.elements md.mesh.elements(:,1)]'; rows=rows(:);

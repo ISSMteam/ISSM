@@ -1,6 +1,10 @@
 function mh=patchglobe(mh,mh2d,varargin)
+%PATCHGLOBE - patch a local 2d mesh into a global 3D planet mesh
+%
+%   Usage:
+%      mh=patchglobe(mh,mh2d);
 
-	%process options: 
+	%process options:
 	options=pairoptions(varargin{:});
 
 	%recover basic options:

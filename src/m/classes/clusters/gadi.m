@@ -1,4 +1,4 @@
-%HPC cluster class definition
+%GADI cluster class definition
 %
 %   Usage:
 %      cluster=gadi();

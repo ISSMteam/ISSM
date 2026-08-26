@@ -1,4 +1,4 @@
-%SMBgradientsela Class definition
+%SMBGRADIENTSELA class definition
 %
 %   Usage:
 %      SMBgradientsela=SMBgradientsela();

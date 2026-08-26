@@ -1,13 +1,12 @@
 function kmlgroundoverlay(md,options)
-%KMLGROUNDOVERLAY: create ground overlay image in kml format
+%KMLGROUNDOVERLAY - create ground overlay image in kml format
 %
+%   options:
+%      kmlfilename
+%      imagename
 %
-%    options: 
-%         kmlfilename
-%         imagename
-%
-%    Usage: 
-%         kmlgroundoverlay(md,'kmlfilename','temp.kml','imagename','greenland.jpeg');
+%   Usage:
+%      kmlgroundoverlay(md,'kmlfilename','temp.kml','imagename','greenland.jpeg');
 %
 
 %first figure out if lat and long were computed!

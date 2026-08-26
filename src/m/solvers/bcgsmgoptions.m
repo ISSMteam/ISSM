@@ -1,5 +1,10 @@
 function solverOptions=bcgsmgoptions(varargin)
 
+%BCGSMGOPTIONS - define PETSc solver options for the BiCGSTAB (stabilized BiConjugate Gradient) Krylov method with Multigrid preconditioning
+%
+%   Usage:
+%      solverOptions=bcgsmgoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

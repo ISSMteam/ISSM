@@ -1,4 +1,8 @@
 function [output] = interpRACMO1km(X,Y),
+%INTERPRACMO1KM - interpolate RACMO2 1-km Greenland SMB data onto X and Y
+%
+%   Usage:
+%      output = interpRACMO1km(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

@@ -1,9 +1,8 @@
-%
-%  function to return the string size of an array
-%
-%  function [ssize]=string_size(a,varargin)
-%
 function [ssize]=string_size(a,varargin)
+%STRING_SIZE - return the string size of an array
+%
+%   Usage:
+%      ssize=string_size(a,varargin);
 
 if ~nargin
     help string_size

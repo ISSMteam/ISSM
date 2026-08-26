@@ -1,4 +1,4 @@
-%MASSTRANSPORT class definition
+%PROGNOSTIC class definition
 %
 %   Usage:
 %      prognostic=prognostic();

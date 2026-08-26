@@ -1,4 +1,9 @@
 classdef restable
+%RESTABLE class definition
+%
+%   Usage:
+%      restable=restable();
+
 	properties(SetAccess=public)
 		data=[];
 		sizes=[];

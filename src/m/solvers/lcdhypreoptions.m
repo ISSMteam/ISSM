@@ -1,4 +1,8 @@
 function solverOptions=lcdhypreoptions(varargin)
+%LCDHYPREOPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with a Hypre (BoomerAMG) preconditioner
+%
+%   Usage:
+%      solverOptions=lcdhypreoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

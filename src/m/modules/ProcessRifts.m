@@ -1,5 +1,5 @@
 function [index2,x2,y2,segments2,segmentmarkers2,rifts2] = ProcessRifts(index1,x1,y1,segments1,segmentmarkers1);
-%TRIMESHPROCESSRIFTS - Split a mesh where a rift (or fault) is present
+%PROCESSRIFTS - Split a mesh where a rift (or fault) is present
 %
 %   Usage: 
 %      [index2,x2,y2,segments2,segmentmarkers2,rifts2]=ProcessRifts(index1,x1,y1,segments1,segmentmarkers1); 

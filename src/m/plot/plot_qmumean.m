@@ -4,7 +4,7 @@ function plot_qmumean(md,options,nlines,ncols,i)
 %   Usage:
 %      plot_qmumean(md,options,nlines,ncols,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %plot mesh
 subplot(nlines,ncols,i); 

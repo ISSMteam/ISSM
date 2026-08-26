@@ -10,10 +10,10 @@ function projected_vector=project3d(md,varargin)
 %   options: 
 %      'layer' a layer number where vector should keep its values. If not specified, all layers adopt the 
 %             value of the 2d vector.
-%      'padding': default to 0 (value adopted by other 3d layers not being projected0
+%      'padding': default to 0 (value adopted by other 3d layers not being projected)
 %		 'degree': degree of polynomials when extrude from bottom to the top
 %
-%   Egs:
+%   Examples:
 %      extruded_vector=project3d(md,'vector',vector2d,'type','node','layer',1,'padding',NaN);
 %      extruded_vector=project3d(md,'vector',vector2d,'type','element','padding',0);
 %      extruded_vector=project3d(md,'vector',vector2d,'type','node');

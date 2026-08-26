@@ -4,7 +4,7 @@ function plot_tensor_principal(md,options,width,i,tensor,type,plot_options)
 %   Usage:
 %      plot_tensor_principal(md,options,width,i,tensor,type,plot_options);
 %
-%   See also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
+%   See Also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
 
 %Compute the indexes of the components plots
 upperplots=fix((i-1)/width);

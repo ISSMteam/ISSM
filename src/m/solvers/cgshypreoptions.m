@@ -1,5 +1,10 @@
 function solverOptions=cgshypreoptions(varargin)
 
+%CGSHYPREOPTIONS - define PETSc solver options for the Conjugate Gradient Squared (CGS) Krylov method with Hypre (BoomerAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=cgshypreoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

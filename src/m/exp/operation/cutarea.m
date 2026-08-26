@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=cutarea(A,numprofiles,numpoints,closed,prevplot,root,options)
-%CUTAREA - cut several point of a profile
+%CUTAREA - cut several points of a profile
 %
 %
 %   this script is used by exptool as an elementary operation

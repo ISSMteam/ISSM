@@ -1,6 +1,9 @@
 function tips=rifttipsonmesh(md,riftoutline)
-%RIFTTIPSONMESH: identify, using a rift outline, the nodes that are tips of 
-%                rifts.
+%RIFTTIPSONMESH - identify, using a rift outline, the nodes that are tips of
+%                 rifts.
+%
+%   Usage:
+%      tips=rifttipsonmesh(md,riftoutline);
 
 %read rift file according to its extension: 
 [path,name,ext]=fileparts(riftoutline);

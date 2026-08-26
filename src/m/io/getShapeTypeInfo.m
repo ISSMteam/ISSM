@@ -3,7 +3,8 @@ function result = getShapeTypeInfo(shapeTypeCode,requestOrQuery)
 % CAUTION:  This file contains experimental code that has had only
 %           minimal, informal testing.
 %
-%GETSHAPETYPEINFO   Get information about a shape type.
+%GETSHAPETYPEINFO - get information about a shape type
+%
 %   Returns a single value, based on the second argument:
 %     'TypeString'             -- Return a string
 %     'IsValid'                -- Return a scalar logical
@@ -11,6 +12,9 @@ function result = getShapeTypeInfo(shapeTypeCode,requestOrQuery)
 %     'BoundingBoxSubscripts'  -- Return a 1-by-n double array
 %     'ShapeRecordReadFcn'     -- Return a function handle
 %     'ShapeDataFieldNames'    -- Return a cell array of string.
+%
+%   Usage:
+%      result = getShapeTypeInfo(shapeTypeCode,requestOrQuery)
 
 % Copyright 1996-2010 The MathWorks, Inc.
 % $Revision$  $Date$

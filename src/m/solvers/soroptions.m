@@ -1,8 +1,8 @@
 function sor=soroptions(varargin)
-%SOROPTIONS - return Relaxation Solver petsc options
+%SOROPTIONS - return PETSc options for the CG Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
 %
 %   Usage:
-%      options=soroptions;
+%      sor=soroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -1,50 +1,50 @@
+%PLOT_NORMPLOT - plot a normal probability plot of the responses
 %
-%  plot a normal probability plot of the responses.
+%   Usage:
+%      []=plot_normplot(dresp      ,params)
+%      []=plot_normplot(dresp,descr,params)
+%      []=plot_normplot(sampr,descr,params)
 %
-%  []=plot_normplot(dresp      ,params)
-%  []=plot_normplot(dresp,descr,params)
-%  []=plot_normplot(sampr,descr,params)
+%   where the required input is:
+%     dresp         (structure array, responses)
+%       or
+%     dresp         (structure array, responses)
+%     descr         (cell array, list of response descriptions desired)
+%       or
+%     sampr         (double array, lists of response samples)
+%     descr         (cell array, list of response descriptions)
 %
-%  where the required input is:
-%    dresp         (structure array, responses)
-%      or
-%    dresp         (structure array, responses)
-%    descr         (cell array, list of response descriptions desired)
-%      or
-%    sampr         (double array, lists of response samples)
-%    descr         (cell array, list of response descriptions)
+%   the required fields of dresp are:
+%     descriptor    (char, description)
+%     sample        (double vector, list of samples)
 %
-%  the required fields of dresp are:
-%    descriptor    (char, description)
-%    sample        (double vector, list of samples)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   where the optional parameters are:
+%     xmin          (numeric, minimum of x-axis)
+%     xmax          (numeric, maximum of x-axis)
 %
-%  where the optional parameters are:
-%    xmin          (numeric, minimum of x-axis)
-%    xmax          (numeric, maximum of x-axis)
+%   for each response in the input array, this function plots
+%   a matlab normal probability plot of the list of samples
+%   and annotates it with the description.  the lists of samples
+%   need not all be the same length.
 %
-%  for each response in the input array, this function plots
-%  a matlab normal probability plot of the list of samples
-%  and annotates it with the description.  the lists of samples
-%  need not all be the same length.
+%   this data would typically be contained in the dakota tabular
+%   output file and read by dakota_out_parse.
 %
-%  this data would typically be contained in the dakota tabular
-%  output file and read by dakota_out_parse.
+%   "Copyright 2009, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2009, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_normplot(varargin)
 

@@ -1,4 +1,4 @@
-%MISFIT class definition
+%CFLEVELSETMISFIT class definition
 %
 %   Usage:
 %      cflevelsetmisfit=cflevelsetmisfit();

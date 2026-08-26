@@ -4,7 +4,7 @@ function plot_transient_field(md,options,width,i,data)
 %   Usage:
 %      plot_transient_field(md,options,width,i,data);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %Check that they are transient results
 if (~isfield(md.results,'TransientSolution'))

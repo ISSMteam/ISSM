@@ -1,4 +1,8 @@
 function solverOptions=gcrjacobioptions(varargin)
+%GCRJACOBIOPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=gcrjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

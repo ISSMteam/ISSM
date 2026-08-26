@@ -1,13 +1,11 @@
 function pos = plotboxpos(h)
-%PLOTBOXPOS Returns the position of the plotted axis region
-%
-% pos = plotboxpos(h)
+%PLOTBOXPOS - returns the position of the plotted axis region
 %
 % This function returns the position of the plotted region of an axis,
 % which may differ from the actual axis position, depending on the axis
 % limits, data aspect ratio, and plot box aspect ratio.  The position is
 % returned in the same units as the those used to define the axis itself.
-% This function can only be used for a 2D plot.  
+% This function can only be used for a 2D plot.
 %
 % Input variables:
 %
@@ -16,6 +14,9 @@ function pos = plotboxpos(h)
 % Output variables:
 %
 %   pos:    four-element position vector, in same units as h
+%
+%   Usage:
+%      pos = plotboxpos(h);
 
 % Copyright 2010 Kelly Kearney
 

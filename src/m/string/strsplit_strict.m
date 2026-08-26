@@ -2,7 +2,7 @@ function splittedstring = strsplit_strict(inpstr,delimiter)
 %STRSPLIT_STRICT - split a string of delimiter separated values
 %
 %   Usage:
-%      output = strsplit_strict(inpstr,delimiter)
+%      splittedstring = strsplit_strict(inpstr,delimiter)
 
 %Check input arguments
 if(nargin ~= 2)

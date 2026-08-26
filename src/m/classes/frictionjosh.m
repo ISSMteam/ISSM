@@ -1,4 +1,4 @@
-%FRICTIONTEMP class definition
+%FRICTIONJOSH class definition
 %
 %   Usage:
 %      frictionjosh=frictionjosh();

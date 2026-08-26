@@ -4,7 +4,7 @@ function plot_riftnumbering(md,options,nlines,ncols,index)
 %   Usage:
 %      plot_riftnumbering(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %process data and model
 [x y z elements is2d isplanet]=processmesh(md,[],options);

@@ -1,4 +1,8 @@
 function solverOptions=ibcgsgasmoptions(varargin)
+%IBCGSGASMOPTIONS - PETSc solver options using the improved stabilized biconjugate gradient squared (ibcgs) Krylov method with generalized additive Schwarz (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=ibcgsgasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

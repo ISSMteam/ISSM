@@ -1,4 +1,4 @@
-%SMBhenning Class definition
+%SMBHENNING class definition
 %
 %   Usage:
 %      SMBhenning=SMBhenning();

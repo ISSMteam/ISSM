@@ -1,4 +1,8 @@
 function solverOptions=gmresmgoptions(varargin)
+%GMRESMGOPTIONS - PETSc solver options using the GMRES Krylov method with no preconditioning
+%
+%   Usage:
+%      solverOptions=gmresmgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

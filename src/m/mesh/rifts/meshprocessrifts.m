@@ -8,7 +8,7 @@ function md=meshprocessrifts(md,domainoutline)
 %   Usage:
 %      md=meshprocessrifts(md,domainoutline)
 %
-%   Ex: 
+%   Example:
 %      md=meshprocessrifts(md,'DomainOutline.exp');
 %
 

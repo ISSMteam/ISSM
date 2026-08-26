@@ -1,3 +1,8 @@
+%MESH class definition
+%
+%   Usage:
+%      mesh=mesh();
+
 classdef mesh
 	properties (SetAccess=public) 
 		x                           = NaN;

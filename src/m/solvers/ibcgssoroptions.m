@@ -1,4 +1,8 @@
 function solverOptions=ibcgssoroptions(varargin)
+%IBCGSSOROPTIONS - return PETSc options for the IBCGS (improved stabilized biconjugate gradient squared) Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=ibcgssoroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

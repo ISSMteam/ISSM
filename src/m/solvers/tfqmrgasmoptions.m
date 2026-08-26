@@ -1,4 +1,8 @@
 function solverOptions=tfqmrgasmoptions(varargin)
+%TFQMRGASMOPTIONS - return PETSc options for the TFQMR solver with a GASM (Generalized Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrgasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

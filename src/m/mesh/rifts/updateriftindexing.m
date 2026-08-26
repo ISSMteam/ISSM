@@ -1,6 +1,11 @@
 function rift=updateriftindexing(rift,elconv,nodeconv)
 %UPDATERIFTINDEXING - update rift indexing, using mesh to new mesh conversion tables
-%     See also meshaddrift
+%
+%   Usage:
+%      rift=updateriftindexing(rift,elconv,nodeconv);
+%
+%   See Also:
+%      meshaddrifts
 
 rift.segments(:,1:2)=nodeconv(rift.segments(:,1:2));
 rift.segments(:,3)=elconv(rift.segments(:,3));

@@ -1,7 +1,7 @@
 %FRICTION class definition
 %
-%	Usage:
-%		friction=friction();
+%   Usage:
+%      friction=friction();
 
 classdef friction
 	properties (SetAccess=public) 

@@ -1,5 +1,5 @@
 function ExportXml(md,filename)
-%EXPORTGMSH - export mesh to xml format (For FEniCS)
+%EXPORTXML - export mesh to xml format (For FEniCS)
 %
 %   Usage:
 %      ExportXml(md,filename)

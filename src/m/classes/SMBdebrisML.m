@@ -1,4 +1,4 @@
-%SMBdebrisML Class definition
+%SMBdebrisML class definition
 %
 %   Usage:
 %      SMBdebrisML=SMBdebrisML();

@@ -1,5 +1,10 @@
 function solverOptions=bcgspbjacobioptions(varargin)
 
+%BCGSPBJACOBIOPTIONS - define PETSc solver options for the BiCGSTAB (stabilized BiConjugate Gradient) Krylov method with Point-block Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=bcgspbjacobioptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

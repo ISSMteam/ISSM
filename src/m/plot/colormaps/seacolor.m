@@ -1,5 +1,8 @@
 function y = seacolor(n)
-%SEACOLOR Sea colormap adapted from NGDC ETOPO1
+%SEACOLOR - Sea colormap adapted from NGDC ETOPO1
+%
+%   Usage:
+%      y = seacolor(n)
 %
 %	Author: Francois Beauducel <beauducel@ipgp.fr>
 

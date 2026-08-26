@@ -1,10 +1,14 @@
 function basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
-%interpISMIP6AntarcticaOcn - interpolate chosen ISMIP6 atmospheric forcing to model
+%INTERPISMIP6ANTARCTICAOCN - interpolate chosen ISMIP6 ocean (thermal) forcing to model
+%
+%   Usage:
+%      basalforcings = interpISMIP6AntarcticaOcn(md, model_name)
+%      basalforcings = interpISMIP6AntarcticaOcn(md, model_name, start_end)
 %
 %   Input:
 %     - md (model object)
 %     - model_name (string): name of the climate model and scenario
-%     - suppported models:
+%     - supported models:
 %
 %             2.6 scenario             8.5 scenario
 %             ---------------------------------------------

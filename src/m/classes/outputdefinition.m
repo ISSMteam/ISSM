@@ -1,4 +1,4 @@
-%CONSTANTS class definition
+%OUTPUTDEFINITION class definition
 %
 %   Usage:
 %      outputdefinition=outputdefinition();

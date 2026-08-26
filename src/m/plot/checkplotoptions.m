@@ -1,5 +1,5 @@
 function options=checkplotoptions(md,options)
-%PARSE_OPTIONS - build a structure that holds all plot options
+%CHECKPLOTOPTIONS - build a structure that holds all plot options
 %
 %   Usage:
 %      options=checkplotoptions(md,options);

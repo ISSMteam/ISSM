@@ -1,4 +1,9 @@
 function export_netCDF(md,filename)
+%EXPORT_NETCDF - Save an ISSM model to a NetCDF4 file (legacy version, superseded by write_netCDF)
+%
+%   Usage:
+%      export_netCDF(md,filename);
+
 %verbosity of the code, 0 is no messages, 5 is chatty
 	verbose = 5;
 	if exist(filename),

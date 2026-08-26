@@ -8,7 +8,7 @@ function flag=ismemberi(string,list),
 %      flag=ismemberi(string,list);
 %
 %   Example:
-%      flag=ismemberi('test','{'test1','test2','test3'});
+%      flag=ismemberi('test',{'test1','test2','test3'});
 
 if ~iscell(list)
 	error('ismemberi error message: the list of string must be a cell!')

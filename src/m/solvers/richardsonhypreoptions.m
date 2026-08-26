@@ -1,4 +1,8 @@
 function solverOptions=richardsonhypreoptions(varargin)
+%RICHARDSONHYPREOPTIONS - return PETSc options for the Richardson iteration Krylov solver with a Hypre (BoomerAMG) preconditioner
+%
+%   Usage:
+%      solverOptions=richardsonhypreoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

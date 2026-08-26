@@ -1,8 +1,13 @@
 function [data datatype] = processdatalatlong(md,data,options);
+%PROCESSDATALATLONG - process data to be plotted in lat/long coordinates
+%
+%   datatype = 1 -> elements
+%   datatype = 2 -> nodes
+%
+%   Usage:
+%      [data datatype]=processdatalatlong(md,data,options);
 
-	%   datatype = 1 -> elements
-	%   datatype = 2 -> nodes
-	%what is the mesh we are using: 
+	%what is the mesh we are using:
 	x0=md.mesh.long;
 	y0=md.mesh.lat;
 

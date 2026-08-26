@@ -2,7 +2,7 @@ function output = interpRignotIceShelfMelt(X,Y,string,ncdata)
 %INTERPRIGNOTICESHELFMELT - interp melt rates from Rignot et al. 2013
 %
 %   Usage:
-%      output = interpRignotIceShelfMelt(X,Y)
+%      output = interpRignotIceShelfMelt(X,Y,string,ncdata)
 
 if nargin < 4
 	switch (oshostname())

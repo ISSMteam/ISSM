@@ -1,10 +1,10 @@
 function [ps,ix] = dpsimplify(p,tol)
-
-% Recursive Douglas-Peucker Polyline Simplification, Simplify
+%DPSIMPLIFY - Recursive Douglas-Peucker Polyline Simplification
 %
-% [ps,ix] = dpsimplify(p,tol)
+%   Usage:
+%      [ps,ix] = dpsimplify(p,tol);
 %
-% dpsimplify uses the recursive Douglas-Peucker line simplification 
+% dpsimplify uses the recursive Douglas-Peucker line simplification
 % algorithm to reduce the number of vertices in a piecewise linear curve 
 % according to a specified tolerance. The algorithm is also know as
 % Iterative Endpoint Fit. It works also for polylines and polygons

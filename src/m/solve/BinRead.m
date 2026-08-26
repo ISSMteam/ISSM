@@ -1,7 +1,8 @@
 function md = BinReadMatlab(infile)
-%BINREADMATLAB - Read ISSM input binary 
+%BINREADMATLAB - Read ISSM input binary
 %
-%   struct = BinReadMatlab(infile)
+%   Usage:
+%      md = BinReadMatlab(infile)
 
 	% Open binary file for reading
 	fid = fopen(infile, 'rb');

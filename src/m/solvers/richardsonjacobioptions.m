@@ -1,4 +1,8 @@
 function solverOptions=richardsonjacobioptions(varargin)
+%RICHARDSONJACOBIOPTIONS - return PETSc options for the Richardson iteration Krylov solver with a Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=richardsonjacobioptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

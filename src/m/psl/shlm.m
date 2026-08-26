@@ -1,15 +1,14 @@
-function sh_lm = shlm(index,sh,lMax,func,areas) 
-
-%SHLM :: a function to compute SH coefficients of a function 
-% 
-%USAGE: sh_lm = shlm(index,sh,lMax,func,areas); 
+function sh_lm = shlm(index,sh,lMax,func,areas)
+%SHLM - compute spherical harmonic (SH) coefficients of a function
 %
-%index (md.mesh.elements) 
-%sh (spherical harmonics) 
-%lMax (maximum SH degree to be considered) 
-%func (any function) 
-%areas (area of elements) 
+%   index (md.mesh.elements)
+%   sh    (spherical harmonics)
+%   lMax  (maximum SH degree to be considered)
+%   func  (any function)
+%   areas (area of elements)
 %
+%   Usage:
+%      sh_lm = shlm(index,sh,lMax,func,areas);
 
 p = 0; 
 

@@ -1,9 +1,11 @@
 function [var_id,counter] = structtonc(ncid,fieldname,field,depth,var_id,counter,step);
-%STRUCTTONC- fill nc file with structure fields
+%STRUCTTONC - fill nc file with structure fields
 %
 %   WARNING: Do not use this function, this function is called
 %            by netcdf(model);
 %
+%   Usage:
+%      [var_id,counter] = structtonc(ncid,fieldname,field,depth,var_id,counter,step)
 
 %update counter
 counter   = counter+1;

@@ -13,7 +13,7 @@ function dhdt=interpSmith2020(X,Y,string,varargin)
 %		gris
 %
 %   Usage:
-%      [dataout] = interpSmith2020(X,Y,'ais_floating_filt')
+%      dhdt = interpSmith2020(X,Y,'ais_floating_filt')
 
 options={'ais_floating_filt','ais_grounded_filt','gris_filt','ais_floating','ais_grounded','gris'};
 tf=strcmp(string,options);

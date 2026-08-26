@@ -2,9 +2,7 @@ function info=gdalinfo(imagename)
 %GDALINFO - retrieve information from a geotiff or georeferenced image
 %
 %   Usage:
-%      gdalinfo(imagename)
-%
-%
+%      info=gdalinfo(imagename);
 
 	%first, get pixel size: 
 	[s,r]=system(sprintf('gdalinfo %s | command grep "Pixel Size"',imagename));

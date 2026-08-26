@@ -1,4 +1,4 @@
-%HPC (Tongji) cluster class definition
+%TJHPC (Tongji) cluster class definition
 %
 %   Usage:
 %      cluster=tjhpc();

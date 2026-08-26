@@ -1,5 +1,10 @@
 function solverOptions=cggasmoptions(varargin)
 
+%CGGASMOPTIONS - define PETSc solver options for the Conjugate Gradient (CG) Krylov method with Generalized Additive Schwarz Method (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=cggasmoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

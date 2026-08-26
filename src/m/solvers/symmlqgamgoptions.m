@@ -1,4 +1,8 @@
 function solverOptions=symmlqgamgoptions(varargin)
+%SYMMLQGAMGOPTIONS - return PETSc options for the SYMMLQ solver with a GAMG (Geometric Algebraic Multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

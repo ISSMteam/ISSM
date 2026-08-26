@@ -1,4 +1,8 @@
 function solverOptions=bcgsbjacobioptions(varargin)
+%BCGSBJACOBIOPTIONS - return BiCGStab PETSc options with a block Jacobi preconditioner
+%
+%   Usage:
+%      options=bcgsbjacobioptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

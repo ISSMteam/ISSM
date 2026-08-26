@@ -1,9 +1,10 @@
 function plot_transient_movie(md,options,width,i)
 %PLOT_TRANSIENT_MOVIE - plot a transient result as a movie
+%
 %   Usage:
 %      plot_transient_movie(md,options,width,i);
 %
-%   See also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
+%   See Also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
 
 	%prepare subplot
 	subplot(width,width,i);

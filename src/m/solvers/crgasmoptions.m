@@ -1,5 +1,10 @@
 function solverOptions=crgasmoptions(varargin)
 
+%CRGASMOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Generalized Additive Schwarz Method (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=crgasmoptions(varargin);
+
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
 solverOptions=struct();

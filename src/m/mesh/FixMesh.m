@@ -1,12 +1,11 @@
 function  [index2 x2 y2 value2 newpos]=FixMesh(index,x,y,value)
-% FIXMESH - FixMesh fix mesh with broken triangles, orphan vertices, etc ...
+%FIXMESH - fix mesh with broken triangles, orphan vertices, etc ...
 %
-%   Usage: 
-%      [index2 x2 y2 value2]=FixMesh(index,x,y,value)
-%      where index,x,y is a delaunay triangulation, 
+%   Usage:
+%      [index2 x2 y2 value2 newpos]=FixMesh(index,x,y,value)
+%      where index,x,y is a delaunay triangulation,
 %      value is a field on the input triangulation, with values at the vertices
 %      index2,x2,y2,value2 is the repaired triangulation, with new values on new vertices
-%
 %
 
 %duplicate inputs

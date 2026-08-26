@@ -1,4 +1,4 @@
-%TERALITH cluster class definition
+%TETRALITH cluster class definition
 %
 %   Usage:
 %      cluster=tetralith();

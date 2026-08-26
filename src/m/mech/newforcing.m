@@ -1,16 +1,18 @@
 function forcing=newforcing(t0,t1,deltaT,f0,f1,nodes)
-%NEWFORCING - Build forcing that extends temporally from t0 to t1, and in 
-%magnitude from f0 to f1. Equal time and magnitude spacing. 
+%NEWFORCING - build forcing that extends temporally from t0 to t1, and in magnitude from f0 to f1
 %
-%   Usage: forcing=newforcing(t0,t1,deltaT,f0,f1,nodes);  
-%   
-%   Where: 
-%      t0:t1: time interval. 
+%   Equal time and magnitude spacing.
+%
+%   Where:
+%      t0:t1: time interval.
 %      deltaT: time step
 %      f0:f1: magnitude interval.
 %      nodes: number of vertices where we have a temporal forcing
 %
-%   Example: 
+%   Usage:
+%      forcing=newforcing(t0,t1,deltaT,f0,f1,nodes);
+%
+%   Example:
 %      md.smb.mass_balance=newforcing(md.timestepping.start_time,md.timestepping.final_time,md.timestepping.time_step,-1,+2,md.mesh.numberofvertices);
 %
 

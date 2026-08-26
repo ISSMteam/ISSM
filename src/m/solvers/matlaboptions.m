@@ -1,8 +1,8 @@
 function maltab=matlaboptions(varargin)
-%MATLABOPTIONS - return Matlab petsc options
+%MATLABOPTIONS - return PETSc options for the MATLAB built-in (backslash) direct solver
 %
 %   Usage:
-%      options=matlaboptions;
+%      maltab=matlaboptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});
