@@ -1,5 +1,4 @@
 function solverOptions=bcgsmgoptions(varargin)
-
 %BCGSNONEOPTIONS - define PETSc solver options for the BiCGSTAB (stabilized BiConjugate Gradient) Krylov method with no preconditioning
 %
 %   Usage:

@@ -1,5 +1,4 @@
 function solverOptions=cgnehypreoptions(varargin)
-
 %CGNEHYPREOPTIONS - define PETSc solver options for the Conjugate Gradient on the Normal Equations (CGNE) Krylov method with Hypre (BoomerAMG) preconditioning
 %
 %   Usage:

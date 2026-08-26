@@ -1,5 +1,4 @@
 function solverOptions=crsoroptions(varargin)
-
 %CRSOROPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Successive Over-Relaxation (SOR) preconditioning
 %
 %   Usage:

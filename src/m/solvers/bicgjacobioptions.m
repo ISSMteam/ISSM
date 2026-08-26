@@ -1,5 +1,4 @@
 function solverOptions=bicgjacobioptions(varargin)
-
 %BICGJACOBIOPTIONS - define PETSc solver options for the BiConjugate Gradient (BiCG) Krylov method with Jacobi preconditioning
 %
 %   Usage:

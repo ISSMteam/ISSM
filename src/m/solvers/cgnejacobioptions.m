@@ -1,5 +1,4 @@
 function solverOptions=cgnejacobioptions(varargin)
-
 %CGNEJACOBIOPTIONS - define PETSc solver options for the Conjugate Gradient on the Normal Equations (CGNE) Krylov method with Jacobi preconditioning
 %
 %   Usage:

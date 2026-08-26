@@ -1,5 +1,4 @@
 function solverOptions=cgsmgoptions(varargin)
-
 %CGSNONEOPTIONS - define PETSc solver options for the Conjugate Gradient Squared (CGS) Krylov method with no preconditioning
 %
 %   Usage:

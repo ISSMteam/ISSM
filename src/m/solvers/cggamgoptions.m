@@ -1,5 +1,4 @@
 function solverOptions=cggamgoptions(varargin)
-
 %CGGAMGOPTIONS - define PETSc solver options for the Conjugate Gradient (CG) Krylov method with Geometric-Algebraic Multigrid (GAMG) preconditioning
 %
 %   Usage:

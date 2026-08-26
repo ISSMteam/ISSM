@@ -1,5 +1,4 @@
 function solverOptions=crmgoptions(varargin)
-
 %CRNONEOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with no preconditioning
 %
 %   Usage:

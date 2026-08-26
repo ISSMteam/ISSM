@@ -1,5 +1,4 @@
 function solverOptions=cgnemgoptions(varargin)
-
 %CGNENONEOPTIONS - define PETSc solver options for the Conjugate Gradient on the Normal Equations (CGNE) Krylov method with no preconditioning
 %
 %   Usage:

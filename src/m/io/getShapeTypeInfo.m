@@ -1,5 +1,4 @@
 function result = getShapeTypeInfo(shapeTypeCode,requestOrQuery)
-
 % CAUTION:  This file contains experimental code that has had only
 %           minimal, informal testing.
 %

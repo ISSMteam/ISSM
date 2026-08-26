@@ -1,5 +1,4 @@
 function solverOptions=cgjacobioptions(varargin)
-
 %CGJACOBIOPTIONS - define PETSc solver options for the Conjugate Gradient (CG) Krylov method with Jacobi preconditioning
 %
 %   Usage:
