@@ -14,7 +14,6 @@ ISSM_CONFIG='\
 	--enable-standalone-executables \
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
-	--enable-debugging \
 	--disable-dependency-tracking \
 	--with-pic \
 	--with-python="${HOME}/.venv/issm/bin/python" \
