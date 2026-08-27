@@ -18,7 +18,6 @@ ISSM_CONFIG='\
 	--enable-standalone-executables \
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
-	--enable-debugging \
 	--disable-dependency-tracking \
 	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="${LIBGFORTRAN_PATH}/libgfortran.a ${LIBGFORTRAN_PATH}/libquadmath.a ${LIBGCC_PATH}/libgcc.a" \
