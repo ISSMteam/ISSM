@@ -156,7 +156,7 @@ classdef model
 			%2019 Jan..
 			if isa(md.frontalforcings,'double');
 				if(isprop('meltingrate',md.calving) & ~isnan(md.calving.meltingrate))
-		gia			disp('Warning: md.calving.meltingrate is now in md.frontalforcings');
+					disp('Warning: md.calving.meltingrate is now in md.frontalforcings');
 				end
 				md.frontalforcings=frontalforcings(md.calving); 
 			end
@@ -193,11 +193,11 @@ classdef model
 			end
 			%2021 February 17
 			if isa(md.sampling,'double'); md.sampling=sampling(); end
-			%VV
+			%2021
 			if ~isa(md.stochasticforcing,'stochasticforcing'); md.stochasticforcing=stochasticforcing(); end
 			%2022 Oct 28
 			if ~isa(md.debris,'debris'); md.debris=debris(); end
-			%Mmetransport: Jun 2022:
+			%2022 Jun 2022
 			if ~isa(md.mmemasstransport,'mmemasstransport'); md.mmemasstransport=mmemasstransport(); end
 			% 2026 February 18
 			if isa(md.friction, 'frictionjosh') && md.friction.coefficient_max==0; md.friction.coefficient_max=300; end
