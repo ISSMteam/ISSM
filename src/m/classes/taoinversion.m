@@ -111,7 +111,7 @@ classdef taoinversion
 				md = checkfield(md,'fieldname','inversion.algorithm','values',{'tao_blmvm','tao_cg','tao_lmvm'});
 			end
 
-			md = checkfield(md,'fieldname','inversion.cost_functions','size',[1 num_costfunc],'values',supportedcostfunctions());
+			md = checkfield(md,'fieldname','inversion.cost_functions','numel',[num_costfunc],'values',supportedcostfunctions());
 			md = checkfield(md,'fieldname','inversion.cost_functions_coefficients','size',[md.mesh.numberofvertices num_costfunc],'>=',0);
 			md = checkfield(md,'fieldname','inversion.min_parameters','size',[NaN num_controls]);
 			md = checkfield(md,'fieldname','inversion.max_parameters','size',[NaN num_controls]);

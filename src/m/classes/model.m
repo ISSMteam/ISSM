@@ -1792,38 +1792,6 @@ classdef model
 			disp(sprintf('%19s: %g Mb','Total',mem));
 		end
 		% }}}
-		function netcdf(self,filename) % {{{
-			%NETCDF - save model as netcdf
-			%
-			%   Usage:
-			%      netcdf(md,filename)
-			%
-			%   Example:
-			%      netcdf(md,'model.nc');
-
-			disp('Saving model as NetCDF');
-			%1. Create NetCDF file
-			ncid=netcdf.create(filename,'CLOBBER');
-			netcdf.putAtt(ncid,netcdf.getConstant('NC_GLOBAL'),'Conventions','CF-1.4');
-			netcdf.putAtt(ncid,netcdf.getConstant('NC_GLOBAL'),'Title',['ISSM model (' self.miscellaneous.name ')']);
-			netcdf.putAtt(ncid,netcdf.getConstant('NC_GLOBAL'),'Author',getenv('USER'));
-			netcdf.putAtt(ncid,netcdf.getConstant('NC_GLOBAL'),'Date',datestr(now));
-
-			%Preallocate variable id, needed to write variables in netcdf file
-			var_id=zeros(1000,1);%preallocate
-
-			for step=1:2
-				counter=0;
-				[var_id,counter]=structtonc(ncid,'md',self,0,var_id,counter,step);
-				if step==1, netcdf.endDef(ncid); end
-			end
-
-			if counter>1000
-				warning(['preallocation of var_id need to be updated from ' num2str(1000) ' to ' num2str(counter)]);
-			end
-
-			netcdf.close(ncid)
-		end % }}}
 		function xylim(self) % {{{
 
 			xlim([min(self.mesh.x) max(self.mesh.x)]);

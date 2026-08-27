@@ -13,6 +13,7 @@ no module-level global state).
 """
 
 import sys
+import warnings
 from collections import OrderedDict
 import numpy as np
 from netCDF4 import Dataset
@@ -20,10 +21,6 @@ from model import model
 from results import results, solution, solutionstep
 from toolkits import toolkits
 
-
-# ---------------------------------------------------------------------------
-# Public entry point
-# ---------------------------------------------------------------------------
 
 def read_netCDF(filename: str, verbose: bool = False):
     """Read *filename* and return a populated ISSM model object."""
@@ -48,11 +45,10 @@ def read_netCDF(filename: str, verbose: bool = False):
     return md
 
 
-# ---------------------------------------------------------------------------
-# Top-level group walk
-# ---------------------------------------------------------------------------
-
-def _read_all_groups(nc, md, verbose: bool):
+def _read_all_groups(nc, md, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_all_groups  –  iterate over every top-level group
+    # =====================================================================
     for gname, grp in nc.groups.items():
         if verbose:
             print(f'  Reading group: {gname}')
@@ -84,15 +80,13 @@ def _read_all_groups(nc, md, verbose: bool):
         setattr(md, gname, target)
 
     return md
-
-
-# ---------------------------------------------------------------------------
-# Results group reader  –  builds results() / solution() / solutionstep()
-# ---------------------------------------------------------------------------
-
-def _read_results_group(grp, verbose: bool):
-    """Reconstruct md.results as a proper results()/solution()/solutionstep()
-    hierarchy, matching what loadresultsfromdisk produces."""
+# }}}
+def _read_results_group(grp, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_results_group  –  builds results() / solution() / solutionstep()
+    # =====================================================================
+    # Reconstruct md.results as a proper results()/solution()/solutionstep()
+    # hierarchy, matching what loadresultsfromdisk produces.
     res = results()
 
     for sol_name, sol_grp in grp.groups.items():
@@ -133,15 +127,13 @@ def _read_results_group(grp, verbose: bool):
             setattr(res, sol_name, _read_group_into_obj(sol_grp, {}, verbose))
 
     return res
-
-
-# ---------------------------------------------------------------------------
-# Toolkits group reader  –  rebuilds toolkits() with OrderedDict per analysis
-# ---------------------------------------------------------------------------
-
-def _read_toolkits_group(grp, verbose: bool):
-    """Reconstruct md.toolkits as a toolkits() instance whose analysis
-    attributes are OrderedDicts of solver options (matching mumpsoptions() etc.)"""
+# }}}
+def _read_toolkits_group(grp, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_toolkits_group  –  rebuilds toolkits() with OrderedDict per analysis
+    # =====================================================================
+    # Reconstruct md.toolkits as a toolkits() instance whose analysis
+    # attributes are OrderedDicts of solver options (matching mumpsoptions() etc.)
     tk = toolkits.__new__(toolkits)   # bypass __init__ / setdefaultparameters
     tk.DefaultAnalysis  = None
     tk.RecoveryAnalysis = None
@@ -165,15 +157,11 @@ def _read_toolkits_group(grp, verbose: bool):
             print(f'    [toolkits] {aname}: {list(opts.keys())}')
 
     return tk
-
-
-# ---------------------------------------------------------------------------
-# Generic recursive group reader
-# ---------------------------------------------------------------------------
-
-def _read_group_into_obj(grp, obj, verbose: bool):
-    """Populate *obj* from the variables and sub-groups in *grp*."""
-
+# }}}
+def _read_group_into_obj(grp, obj, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_group_into_obj  –  populate obj from a NetCDF group, recursively
+    # =====================================================================
     # Read variables at this level
     for vname, var in grp.variables.items():
         data = _read_variable(grp, vname, var, verbose)
@@ -210,14 +198,11 @@ def _read_group_into_obj(grp, obj, verbose: bool):
         obj = _set_attr(obj, sg_name, data, verbose)
 
     return obj
-
-
-# ---------------------------------------------------------------------------
-# Struct-array reader  (results.TransientSolution etc.)
-# ---------------------------------------------------------------------------
-
-def _read_struct_array(grp, nsteps: int, verbose: bool):
-    """Return a list of dicts (one per step_k sub-group)."""
+# }}}
+def _read_struct_array(grp, nsteps: int, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_struct_array  –  reconstruct a list of dicts from step_k groups
+    # =====================================================================
     steps = []
     for sg_name in sorted(grp.groups.keys(),
                           key=lambda n: int(n.split('_')[-1]) if n.startswith('step_') else 0):
@@ -233,13 +218,11 @@ def _read_struct_array(grp, nsteps: int, verbose: bool):
     if verbose:
         print(f'    [struct] loaded {len(steps)}-step struct array')
     return steps
-
-
-# ---------------------------------------------------------------------------
-# Cell-of-objects reader
-# ---------------------------------------------------------------------------
-
-def _read_cell_of_objects(grp, verbose: bool):
+# }}}
+def _read_cell_of_objects(grp, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_cell_of_objects  –  reconstruct a nested list of ISSM objects
+    # =====================================================================
     nrows = int(getattr(grp, 'nrows', 1))
     ncols = int(getattr(grp, 'ncols', len(grp.groups)))
     result = [[None] * ncols for _ in range(nrows)]
@@ -261,31 +244,23 @@ def _read_cell_of_objects(grp, verbose: bool):
     if verbose:
         print(f'    [cell]  loaded {nrows}x{ncols} cell of objects')
     return result
-
-
-# ---------------------------------------------------------------------------
-# Dict reader
-# ---------------------------------------------------------------------------
-
-def _read_dict(grp, verbose: bool) -> dict:
+# }}}
+def _read_dict(grp, verbose: bool) -> dict:  # {{{
     d = {}
     for vname, var in grp.variables.items():
         d[vname] = _read_variable(grp, vname, var, verbose)
     for sg_name, sg in grp.groups.items():
         d[sg_name] = _read_group_into_obj(sg, {}, verbose)
     return d
-
-
-# ---------------------------------------------------------------------------
-# Variable reader
-# ---------------------------------------------------------------------------
-
-def _read_variable(grp, vname: str, var, verbose: bool):
-    """Read one NetCDF variable and convert to the appropriate Python type."""
+# }}}
+def _read_variable(grp, vname: str, var, verbose: bool):  # {{{
+    # =====================================================================
+    #  _read_variable  –  read one NetCDF variable and convert to a Python type
+    # =====================================================================
     type_is = getattr(var, 'type_is', '')
 
-    # Empty sentinel
-    if type_is == 'empty':
+    # Empty sentinel (numeric empty or empty cell/list – both come back as [])
+    if type_is in ('empty', 'cell_empty'):
         return []
 
     raw = var[:]
@@ -317,9 +292,8 @@ def _read_variable(grp, vname: str, var, verbose: bool):
         return v
 
     return data
-
-
-def _decode_string(raw) -> str:
+# }}}
+def _decode_string(raw) -> str:  # {{{
     """Convert raw NetCDF char data to a Python str."""
     try:
         return raw.tobytes().decode('utf-8').strip('\x00').strip()
@@ -329,9 +303,8 @@ def _decode_string(raw) -> str:
                            for c in np.ndarray.flatten(raw))
         except Exception:
             return str(raw)
-
-
-def _decode_cell_strings(raw) -> list:
+# }}}
+def _decode_cell_strings(raw) -> list:  # {{{
     """Convert a 2-D char array to a list of strings."""
     if raw.ndim == 1:
         return [_decode_string(raw)]
@@ -340,50 +313,110 @@ def _decode_cell_strings(raw) -> list:
         s = _decode_string(row)
         result.append(s)
     return result
-
-
-# ---------------------------------------------------------------------------
-# Subclass instantiation
-# ---------------------------------------------------------------------------
-
-def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):
-    """For polymorphic model fields, swap in the right class instance."""
+# }}}
+def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
+    # =====================================================================
+    #  _instantiate_subclass  –  create the right class for polymorphic fields
+    # =====================================================================
     if not ct:
         return md
 
-    try:
-        if gname == 'inversion':
-            if ct == 'm1qn3inversion':
-                from m1qn3inversion import m1qn3inversion
-                md.inversion = m1qn3inversion()
-            elif ct == 'taoinversion':
-                from taoinversion import taoinversion
-                md.inversion = taoinversion()
+    # Only act for fields whose type can vary
+    if gname == 'inversion':
+        if ct == 'm1qn3inversion':
+            from m1qn3inversion import m1qn3inversion
+            md.inversion = m1qn3inversion()
+        elif ct == 'taoinversion':
+            from taoinversion import taoinversion
+            md.inversion = taoinversion()
+        elif ct == 'inversion':
+            from inversion import inversion
+            md.inversion = inversion()
+        else:
+            warnings.warn(f"inversion class '{ct}' not supported yet")
 
-        elif gname == 'smb':
-            md = _instantiate_smb(md, ct, verbose)
+    elif gname == 'smb':
+        if ct == 'SMBforcing':
+            from SMBforcing import SMBforcing
+            md.smb = SMBforcing()
+        elif ct == 'SMBpdd':
+            from SMBpdd import SMBpdd
+            md.smb = SMBpdd()
+        elif ct == 'SMBd18opdd':
+            from SMBd18opdd import SMBd18opdd
+            md.smb = SMBd18opdd()
+        elif ct == 'SMBgradients':
+            from SMBgradients import SMBgradients
+            md.smb = SMBgradients()
+        elif ct == 'SMBcomponents':
+            from SMBcomponents import SMBcomponents
+            md.smb = SMBcomponents()
+        elif ct == 'SMBmeltcomponents':
+            from SMBmeltcomponents import SMBmeltcomponents
+            md.smb = SMBmeltcomponents()
+        elif ct == 'SMBgradientscomponents':
+            from SMBgradientscomponents import SMBgradientscomponents
+            md.smb = SMBgradientscomponents()
+        elif ct == 'SMBgradientsela':
+            from SMBgradientsela import SMBgradientsela
+            md.smb = SMBgradientsela()
+        elif ct == 'SMBhenning':
+            from SMBhenning import SMBhenning
+            md.smb = SMBhenning()
+        elif ct == 'SMBgemb':
+            from SMBgemb import SMBgemb
+            md.smb = SMBgemb()
+        elif ct == 'SMBpddSicopolis':
+            from SMBpddSicopolis import SMBpddSicopolis
+            md.smb = SMBpddSicopolis()
+        elif ct == 'SMBsemic':
+            from SMBsemic import SMBsemic
+            md.smb = SMBsemic()
+        elif ct == 'SMBdebrisEvatt':
+            from SMBdebrisEvatt import SMBdebrisEvatt
+            md.smb = SMBdebrisEvatt()
+        else:
+            warnings.warn(f"SMB class '{ct}' not supported yet")
 
-        elif gname == 'friction':
-            md = _instantiate_friction(md, ct, verbose)
+    elif gname == 'friction':
+        known = [
+            'friction', 'frictioncoulomb', 'frictioncoulomb2',
+            'frictionhydro', 'frictionjosh', 'frictionpism',
+            'frictionregcoulomb', 'frictionregcoulomb2', 'frictionschoof',
+            'frictionshakti', 'frictiontsai', 'frictionwaterlayer',
+            'frictionweertman', 'frictionweertmantemp',
+        ]
+        if ct in known:
+            mod = __import__(ct, fromlist=[ct])
+            md.friction = getattr(mod, ct)()
+        else:
+            warnings.warn(f"friction class '{ct}' not supported yet")
 
-        elif gname == 'hydrology':
-            md = _instantiate_hydrology(md, ct, verbose)
+    elif gname == 'hydrology':
+        known = [
+            'hydrologyshreve', 'hydrologydc', 'hydrologyglads',
+            'hydrologypism', 'hydrologyshakti', 'hydrologytws', 'hydrologyarmapw',
+        ]
+        if ct in known:
+            mod = __import__(ct, fromlist=[ct])
+            md.hydrology = getattr(mod, ct)()
+        else:
+            warnings.warn(f"hydrology class '{ct}' not supported yet")
 
-        elif gname == 'mesh':
-            if ct == 'mesh3dprisms':
-                from mesh3dprisms import mesh3dprisms
-                md.mesh = mesh3dprisms()
+    elif gname == 'mesh':
+        if ct == 'mesh3dprisms':
+            from mesh3dprisms import mesh3dprisms
+            md.mesh = mesh3dprisms()
+        elif ct == 'mesh2d':
+            from mesh2d import mesh2d
+            md.mesh = mesh2d()
+        else:
+            warnings.warn(f"mesh class '{ct}' not supported yet")
 
-        # All other groups: keep default instance, just overwrite fields below
-
-    except Exception as e:
-        if verbose:
-            print(f'    [WARN] could not instantiate {ct} for {gname}: {e}')
-
+    # All other groups keep their default instance; we just overwrite fields
     return md
-
-
-def _instantiate_class(ct: str, fallback, verbose: bool):
+# }}}
+def _instantiate_class(ct: str, fallback, verbose: bool):  # {{{
     """Try to instantiate *ct* by importing it; return *fallback* on failure."""
     if not ct or ct in ('struct', 'cell_of_objects', 'dict', ''):
         return fallback
@@ -405,83 +438,11 @@ def _instantiate_class(ct: str, fallback, verbose: bool):
     if verbose:
         print(f'    [WARN] could not instantiate class {ct}, using fallback')
     return fallback
-
-
-def _instantiate_smb(md, ct: str, verbose: bool):
-    mapping = {
-        'SMBforcing':            ('SMBforcing',            'SMBforcing'),
-        'SMBpdd':                ('SMBpdd',                'SMBpdd'),
-        'SMBd18opdd':            ('SMBd18opdd',            'SMBd18opdd'),
-        'SMBgradients':          ('SMBgradients',          'SMBgradients'),
-        'SMBcomponents':         ('SMBcomponents',         'SMBcomponents'),
-        'SMBmeltcomponents':     ('SMBmeltcomponents',     'SMBmeltcomponents'),
-        'SMBgradientscomponents':('SMBgradientscomponents','SMBgradientscomponents'),
-        'SMBgradientsela':       ('SMBgradientsela',       'SMBgradientsela'),
-        'SMBhenning':            ('SMBhenning',            'SMBhenning'),
-        'SMBgemb':               ('SMBgemb',               'SMBgemb'),
-        'SMBpddSicopolis':       ('SMBpddSicopolis',       'SMBpddSicopolis'),
-        'SMBsemic':              ('SMBsemic',               'SMBsemic'),
-        'SMBdebrisEvatt':        ('SMBdebrisEvatt',        'SMBdebrisEvatt'),
-    }
-    if ct in mapping:
-        mod_name, cls_name = mapping[ct]
-        try:
-            mod = __import__(mod_name, fromlist=[cls_name])
-            md.smb = getattr(mod, cls_name)()
-        except Exception as e:
-            if verbose:
-                print(f'    [WARN] could not load SMB class {ct}: {e}')
-    else:
-        if verbose:
-            print(f'    [WARN] unknown SMB class: {ct}')
-    return md
-
-
-def _instantiate_friction(md, ct: str, verbose: bool):
-    known = [
-        'friction', 'frictioncoulomb', 'frictioncoulomb2',
-        'frictionhydro', 'frictionjosh', 'frictionpism',
-        'frictionregcoulomb', 'frictionregcoulomb2', 'frictionschoof',
-        'frictionshakti', 'frictiontsai', 'frictionwaterlayer',
-        'frictionweertman', 'frictionweertmantemp',
-    ]
-    if ct in known:
-        try:
-            mod = __import__(ct, fromlist=[ct])
-            md.friction = getattr(mod, ct)()
-        except Exception as e:
-            if verbose:
-                print(f'    [WARN] could not load friction class {ct}: {e}')
-    else:
-        if verbose:
-            print(f'    [WARN] unknown friction class: {ct}')
-    return md
-
-
-def _instantiate_hydrology(md, ct: str, verbose: bool):
-    known = [
-        'hydrologyshreve', 'hydrologydc', 'hydrologyglads',
-        'hydrologypism', 'hydrologyshakti', 'hydrologytws', 'hydrologyarmapw',
-    ]
-    if ct in known:
-        try:
-            mod = __import__(ct, fromlist=[ct])
-            md.hydrology = getattr(mod, ct)()
-        except Exception as e:
-            if verbose:
-                print(f'    [WARN] could not load hydrology class {ct}: {e}')
-    else:
-        if verbose:
-            print(f'    [WARN] unknown hydrology class: {ct}')
-    return md
-
-
-# ---------------------------------------------------------------------------
-# Attribute setter
-# ---------------------------------------------------------------------------
-
-def _set_attr(obj, name: str, value, verbose: bool):
-    """Set attribute *name* on *obj* (works for class instances and dicts)."""
+# }}}
+def _set_attr(obj, name: str, value, verbose: bool):  # {{{
+    # =====================================================================
+    #  _set_attr  –  safely set an attribute on either a class or dict
+    # =====================================================================
     try:
         if isinstance(obj, dict):
             obj[name] = value
@@ -491,11 +452,7 @@ def _set_attr(obj, name: str, value, verbose: bool):
         if verbose:
             print(f'    [WARN] could not set {name}: {e}')
     return obj
-
-
-# ---------------------------------------------------------------------------
-# Utility
-# ---------------------------------------------------------------------------
-
-def _get_classtype(grp) -> str:
+# }}}
+def _get_classtype(grp) -> str:  # {{{
     return getattr(grp, 'classtype', '')
+# }}}
