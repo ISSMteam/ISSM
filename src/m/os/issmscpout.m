@@ -45,7 +45,6 @@ else
 end
 
 if port
-	disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])
 	[status]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
 	if status~=0
 		%List expansion is a bashism. Try again with '-OT'.
