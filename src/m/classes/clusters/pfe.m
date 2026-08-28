@@ -11,11 +11,11 @@ classdef pfe
 		name           = 'pfe'
 		login          = '';
 		modules        = {'comp-intel/2018.3.222' '/nasa/intel/impi/2021.3/modulefiles/mpi/2021.3.0' 'scicon/app-tools'};
-		numnodes       = 20;
-		cpuspernode    = 8;
+		numnodes       = 1;
+		cpuspernode    = 40;
 		port           = 1025;
-		queue          = 'long';
-		time           = 12*60;
+		queue          = 'devel';
+		time           = 2*60;
 		processor      = 'cas_ait';
 		srcpath        = '';
 		extpkgpath     = '';

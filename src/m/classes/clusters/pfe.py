@@ -30,11 +30,11 @@ class pfe(object):
         self.name = ''
         self.login = ''
         self.modules = ['comp-intel/2018.3.222', 'mpi-intel/2018.3.222', 'scicon/app-tools']
-        self.numnodes = 20
-        self.cpuspernode = 8
+        self.numnodes = 1 
+        self.cpuspernode = 40
         self.port = 1025
-        self.queue = 'long'
-        self.time = 12 * 60
+        self.queue = 'devel'
+        self.time = 2 * 60
         self.processor = 'cas_ait'
         self.srcpath = ''
         self.extpkgpath = ''
