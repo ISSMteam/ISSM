@@ -716,6 +716,7 @@
 	StressbalanceRestolEnum
 	StressbalanceRiftPenaltyThresholdEnum
 	StressbalanceShelfDampeningEnum
+	StressbalanceThetaEnum
 	ThermalForcingMonthlyEffectsEnum
 	ThermalIsdrainicecolumnEnum
 	ThermalIsdynamicbasalspcEnum
@@ -4578,6 +4579,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==StressbalanceRestolEnum) return "StressbalanceRestol" end
 	if(enum==StressbalanceRiftPenaltyThresholdEnum) return "StressbalanceRiftPenaltyThreshold" end
 	if(enum==StressbalanceShelfDampeningEnum) return "StressbalanceShelfDampening" end
+	if(enum==StressbalanceThetaEnum) return "StressbalanceTheta" end
 	if(enum==ThermalForcingMonthlyEffectsEnum) return "ThermalForcingMonthlyEffects" end
 	if(enum==ThermalIsdrainicecolumnEnum) return "ThermalIsdrainicecolumn" end
 	if(enum==ThermalIsdynamicbasalspcEnum) return "ThermalIsdynamicbasalspc" end
@@ -7723,7 +7725,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SubelementMigration4Enum) return "SubelementMigration4" end
 	if(enum==TimesteppingTimeAdaptEnum) return "TimesteppingTimeAdapt" end
 	if(enum==TriangleInterpEnum) return "TriangleInterp" end
-	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitionsE" end
+	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitions" end
 end
 
 function StringToEnum(name::String)
@@ -8440,6 +8442,7 @@ function StringToEnum(name::String)
 	if(name=="StressbalanceRestol") return StressbalanceRestolEnum  end
 	if(name=="StressbalanceRiftPenaltyThreshold") return StressbalanceRiftPenaltyThresholdEnum  end
 	if(name=="StressbalanceShelfDampening") return StressbalanceShelfDampeningEnum  end
+	if(name=="StressbalanceTheta") return StressbalanceThetaEnum  end
 	if(name=="ThermalForcingMonthlyEffects") return ThermalForcingMonthlyEffectsEnum  end
 	if(name=="ThermalIsdrainicecolumn") return ThermalIsdrainicecolumnEnum  end
 	if(name=="ThermalIsdynamicbasalspc") return ThermalIsdynamicbasalspcEnum  end
@@ -11585,6 +11588,6 @@ function StringToEnum(name::String)
 	if(name=="SubelementMigration4") return SubelementMigration4Enum  end
 	if(name=="TimesteppingTimeAdapt") return TimesteppingTimeAdaptEnum  end
 	if(name=="TriangleInterp") return TriangleInterpEnum  end
-	if(name=="MaximumNumberOfDefinitionsE") return MaximumNumberOfDefinitionsEnum  end
+	if(name=="MaximumNumberOfDefinitions") return MaximumNumberOfDefinitionsEnum  end
 	error("Enum ", name, " not found");
 end

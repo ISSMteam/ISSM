@@ -721,6 +721,7 @@ enum definitions{
 	StressbalanceRestolEnum,
 	StressbalanceRiftPenaltyThresholdEnum,
 	StressbalanceShelfDampeningEnum,
+	StressbalanceThetaEnum,
    ThermalForcingMonthlyEffectsEnum,
 	ThermalIsdrainicecolumnEnum,
 	ThermalIsdynamicbasalspcEnum,

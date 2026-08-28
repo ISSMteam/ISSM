@@ -729,6 +729,7 @@ const char* EnumToStringx(int en){
 		case StressbalanceRestolEnum : return "StressbalanceRestol";
 		case StressbalanceRiftPenaltyThresholdEnum : return "StressbalanceRiftPenaltyThreshold";
 		case StressbalanceShelfDampeningEnum : return "StressbalanceShelfDampening";
+		case StressbalanceThetaEnum : return "StressbalanceTheta";
 		case ThermalForcingMonthlyEffectsEnum : return "ThermalForcingMonthlyEffects";
 		case ThermalIsdrainicecolumnEnum : return "ThermalIsdrainicecolumn";
 		case ThermalIsdynamicbasalspcEnum : return "ThermalIsdynamicbasalspc";
@@ -3874,7 +3875,7 @@ const char* EnumToStringx(int en){
 		case SubelementMigration4Enum : return "SubelementMigration4";
 		case TimesteppingTimeAdaptEnum : return "TimesteppingTimeAdapt";
 		case TriangleInterpEnum : return "TriangleInterp";
-		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitionsE";
+		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitions";
 		default : return "unknown";
 
 	}

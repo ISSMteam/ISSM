@@ -727,6 +727,7 @@ syn keyword cConstant StressbalanceRequestedOutputsEnum
 syn keyword cConstant StressbalanceRestolEnum
 syn keyword cConstant StressbalanceRiftPenaltyThresholdEnum
 syn keyword cConstant StressbalanceShelfDampeningEnum
+syn keyword cConstant StressbalanceThetaEnum
 syn keyword cConstant ThermalForcingMonthlyEffectsEnum
 syn keyword cConstant ThermalIsdrainicecolumnEnum
 syn keyword cConstant ThermalIsdynamicbasalspcEnum
@@ -3969,7 +3970,6 @@ syn keyword cType Observation
 syn keyword cType Observations
 syn keyword cType Option
 syn keyword cType Options
-syn keyword cType OptionUtilities
 syn keyword cType Param
 syn keyword cType Parameters
 syn keyword cType Pengrid
