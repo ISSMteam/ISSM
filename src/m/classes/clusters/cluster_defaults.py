@@ -48,7 +48,16 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
     from MatlabFuncs import oshostname
 
     # Defaults
-    sourceetc_str = 'source {}/environment.sh '.format(cluster.etcpath)
+    # Not all cluster classes carry an etcpath attribute (only generic/local/localpfe do):
+    # fall back to srcpath (e.g. gadi), then to codepath/.. (the convention used by most
+    # remote clusters) to locate ISSM_DIR/etc.
+    if hasattr(cluster, 'etcpath'):
+        etcpath = cluster.etcpath
+    elif hasattr(cluster, 'srcpath'):
+        etcpath = '{}/etc'.format(cluster.srcpath)
+    else:
+        etcpath = '{}/../etc'.format(cluster.codepath)
+    sourceetc_str = 'source {}/environment.sh '.format(etcpath)
     untar_str     = (' && cd {} && rm -rf ./{} && mkdir {} && cd {} && mv ../{}.tar.gz ./ && tar -zxf {}.tar.gz'
                      .format(cluster.executionpath, dirname, dirname, dirname, dirname, dirname))
 
