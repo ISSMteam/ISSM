@@ -175,7 +175,7 @@ classdef pfe
 			if cluster.extpkgpath
 				fprintf(fid,'export ISSM_EXT_DIR="%s"\n',cluster.extpkgpath); 
 			end
-			fprintf(fid,'source $ISSM_DIR/../etc/environment.sh\n');       %FIXME
+			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');
 			fprintf(fid,'cd %s/%s/\n\n',cluster.executionpath,dirname);
 			if ~isvalgrind
 				%fprintf(fid,'/u/scicon/tools/bin/several_tries mpiexec -np %i mbind.x -cs -n%i %s/%s %s %s/%s %s\n',cluster.nprocs(),cluster.cpuspernode,cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname);
