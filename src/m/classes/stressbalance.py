@@ -112,7 +112,7 @@ class stressbalance(object):
         self.shelf_dampening = 0
 
         # SSA thickness/velocity stabilization parameter (0: off, 1: full scheme)
-        self.theta = 1.0
+        self.theta = 0.0
 
         # Penalty factor applied kappa = max(stiffness matrix) * 1.0^penalty_factor
         self.penalty_factor = 3
