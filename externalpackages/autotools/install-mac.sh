@@ -6,7 +6,7 @@ set -eu
 #
 AUTOCONF_VER="2.73"
 AUTOMAKE_VER="1.18.1"
-LIBTOOL_VER="2.5.4"
+LIBTOOL_VER="2.6.2"
 M4_VER="1.4.21"
 
 PREFIX="${ISSM_DIR}/externalpackages/autotools/install" # Set to location where external package should be installed
