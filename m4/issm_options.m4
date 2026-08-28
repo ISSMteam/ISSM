@@ -564,8 +564,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
 						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
-						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
-						DAKOTALIB+=" ${BLASLAPACKLIB}"
+						DAKOTALIB="${DAKOTALIB} -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
+						DAKOTALIB="${DAKOTALIB} ${BLASLAPACKLIB}"
 					fi
 					AC_DEFINE([DISABLE_DAKOTA_CONFIG_H], [1], [enabling DAKOTA_CONFIG_H])
 					AC_DEFINE([DAKOTA_HAVE_MPI], [1], [enabling Dakota with MPI])
@@ -597,8 +597,8 @@ AC_DEFUN([ISSM_OPTIONS],[
 					if test "${BOOST_VERSION_MAJOR}" == "1"; then
 						DAKOTAFLAGS="-DHAVE_CONFIG_H -DDISABLE_DAKOTA_CONFIG_H -DBOOST_DISABLE_ASSERTS -DHAVE_UNISTD_H -DHAVE_SYSTEM -DHAVE_WORKING_FORK -DHAVE_WORKING_VFORK -DHAVE_SYS_WAIT_H -DHAVE_USLEEP -DDAKOTA_F90 -DDAKOTA_HAVE_MPI -DHAVE_PECOS -DHAVE_SURFPACK -DHAVE_ADAPTIVE_SAMPLING -DHAVE_ESM -DHAVE_QUESO -DHAVE_QUESO_GPMSA -DHAVE_CONMIN -DHAVE_DDACE -DHAVE_DREAM -DHAVE_FSUDACE -DDAKOTA_HOPS -DHAVE_NCSU -DHAVE_NL2SOL -DHAVE_NOMAD -DHAVE_OPTPP -DDAKOTA_OPTPP -DHAVE_PSUADE -DHAVE_AMPL"
 						DAKOTALIB="-L${DAKOTA_ROOT}/lib -ldakota_src -ldakota_src_fortran -lnidr -lteuchos -lpecos -lpecos_src -llhs -llhs_mods -llhs_mod -ldfftpack -lsparsegrid -lsurfpack -lsurfpack -lsurfpack_fortran -lconmin -lddace -ldream -lfsudace -lhopspack -lncsuopt -lcport -lnomad -loptpp -lpsuade -lamplsolver"
-						DAKOTALIB+=" -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
-						DAKOTALIB+=" ${BLASLAPACKLIB}"
+						DAKOTALIB="${DAKOTALIB} -L${BOOST_ROOT}/lib -lboost_filesystem -lboost_program_options -lboost_regex -lboost_serialization -lboost_system"
+						DAKOTALIB="${DAKOTALIB} ${BLASLAPACKLIB}"
 					fi
 					AC_DEFINE([DISABLE_DAKOTA_CONFIG_H], [1], [enabling DAKOTA_CONFIG_H])
 					AC_DEFINE([DAKOTA_HAVE_MPI], [1], [enabling Dakota with MPI])
@@ -1320,10 +1320,10 @@ AC_DEFUN([ISSM_OPTIONS],[
 		PETSCINCL=" -I${PETSC_ROOT}/include"
 		dnl Add other location (not needed anymore since at least PETSc 3.0)
 		if test -n "${PETSC_ARCH}" && test -d "${PETSC_ROOT}/${PETSC_ARCH}/include"; then
-			PETSCINCL+=" ${PETSC_ROOT}/${PETSC_ARCH}/include"
+			PETSCINCL="${PETSCINCL} ${PETSC_ROOT}/${PETSC_ARCH}/include"
 		fi
 		if test -n "${PETSC_ARCH}" && test -d "${PETSC_ROOT}/include/${PETSC_ARCH}"; then
-			PETSCINCL+=" ${PETSC_ROOT}/include/${PETSC_ARCH}"
+			PETSCINCL="${PETSCINCL} ${PETSC_ROOT}/include/${PETSC_ARCH}"
 		fi
 
 		case "${host_os}" in
@@ -1701,38 +1701,38 @@ AC_DEFUN([ISSM_OPTIONS],[
 				*darwin*)
 					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
 					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lopenblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lopenblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lf2clapack -lf2cblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lflapack -lfblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lflapack -lfblas"
 					else
-						BLASLAPACKLIB+=" -llapack -lblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -llapack -lblas"
 					fi
 				;;
 				*linux*)
 					BLASLAPACKLIB="-L${BLASLAPACK_ROOT}/lib"
 					if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lopenblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lopenblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lf2clapack -lf2cblas"
 					elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
-						BLASLAPACKLIB+=" -lflapack -lfblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -lflapack -lfblas"
 					else
-						BLASLAPACKLIB+=" -llapack -lblas"
+						BLASLAPACKLIB="${BLASLAPACKLIB} -llapack -lblas"
 					fi
 				;;
 				*mingw*)
 					if test -d "${BLASLAPACK_ROOT}"; then
 						BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib"
 						if ls ${BLASLAPACK_ROOT}/lib/libopenblas.* 1> /dev/null 2>&1; then
-							BLASLAPACKLIB+=" -lopenblas"
+							BLASLAPACKLIB="${BLASLAPACKLIB} -lopenblas"
 						elif ls ${BLASLAPACK_ROOT}/lib/libf2clapack.* 1> /dev/null 2>&1; then
-							BLASLAPACKLIB+=" -lf2clapack -lf2cblas"
+							BLASLAPACKLIB="${BLASLAPACKLIB} -lf2clapack -lf2cblas"
 						elif ls ${BLASLAPACK_ROOT}/lib/libflapack.* 1> /dev/null 2>&1; then
 							BLASLAPACKLIB="-Wl,-L${BLASLAPACK_ROOT}/lib -Wl,-lflapack -Wl,-lfblas"
 						else
-							BLASLAPACKLIB+=" -Wl,-llapack -Wl,-lblas"
+							BLASLAPACKLIB="${BLASLAPACKLIB} -Wl,-llapack -Wl,-lblas"
 						fi
 					else
 						BLASLAPACKLIB="${LAPACK_ROOT}/lib/liblapack.a ${BLAS_ROOT}/lib/libblas.a"
@@ -2225,28 +2225,28 @@ AC_DEFUN([ISSM_OPTIONS],[
 	if test "x${HAVE_NEOPZ}" == "xyes"; then
 		NEOPZLIB="${NEOPZ_ROOT}/lib/libpz.a"
 		NEOPZINCL="-I${NEOPZ_ROOT}/include"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Analysis"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Common"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/External"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Frontal"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Geom"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Integral"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/LinearSolvers"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Material"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Matrix"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Mesh"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Multigrid"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/PerfUtil"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Post"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Pre"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Refine"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Save"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Shape"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/SpecialMaps"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/StrMatrix"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/SubStruct"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Topology"
-		NEOPZINCL+=" -I${NEOPZ_ROOT}/include/Util"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Analysis"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Common"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/External"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Frontal"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Geom"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Integral"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/LinearSolvers"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Material"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Matrix"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Mesh"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Multigrid"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/PerfUtil"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Post"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Pre"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Refine"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Save"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Shape"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/SpecialMaps"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/StrMatrix"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/SubStruct"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Topology"
+		NEOPZINCL="${NEOPZINCL} -I${NEOPZ_ROOT}/include/Util"
 		AC_DEFINE([_HAVE_NEOPZ_], [1], [with NeoPZ in ISSM src])
 		AC_SUBST([NEOPZINCL])
 		AC_SUBST([NEOPZLIB])
@@ -2499,44 +2499,4 @@ AC_DEFUN([ISSM_OPTIONS],[
 	AC_SUBST([CFLAGS])
 	AC_SUBST([CXXFLAGS])
 	AC_SUBST([OSLIBS])
-])
-
-dnl =====================================================================
-dnl  ISSM_ENABLE_AD – Automatic-Differentiation (CoDiPack + MediPack)
-dnl =====================================================================
-AC_DEFUN([ISSM_ENABLE_AD], [
-  # --- command-line switches ------------------------------------------
-  dnl NOTE: --with-codipack-dir and --with-medipack-dir are already declared
-  dnl in ISSM_OPTIONS above; do not re-declare them here to avoid duplicate
-  dnl AC_ARG_WITH warnings from autoconf.
-  AC_ARG_ENABLE([ad],
-    AS_HELP_STRING([--enable-ad],
-      [Build ISSM with CoDiPack+MediPack automatic differentiation (disables PETSc)]),
-    [enable_ad=$enableval],
-    [enable_ad=no])
-
-  # --- validation & flag injection ------------------------------------
-  if test "x$enable_ad" = "xyes"; then
-    if test -z "$CODIPACK_ROOT" || test -z "$MEDIPACK_ROOT"; then
-      AC_MSG_ERROR([--enable-ad needs BOTH --with-codipack-dir and --with-medipack-dir])
-    fi
-
-    AC_DEFINE([ISSM_USE_AD], [1],
-              [Define to 1 if building with automatic differentiation])
-
-    ENABLE_PETSC=no
-    AM_CONDITIONAL([USE_AD], [true])
-
-    AM_CPPFLAGS="$AM_CPPFLAGS -I$CODIPACK_ROOT/include -I$MEDIPACK_ROOT/include -DCODI_ForcedInlines"
-    AM_LDFLAGS="$AM_LDFLAGS -L$CODIPACK_ROOT/lib -L$MEDIPACK_ROOT/lib"
-    LIBS="$LIBS -lcodi -lmedi"
-  else
-    ENABLE_PETSC=yes
-    AM_CONDITIONAL([USE_AD], [false])
-  fi
-
-  dnl Export augmented vars once
-  AC_SUBST([AM_CPPFLAGS])
-  AC_SUBST([AM_LDFLAGS])
-  AC_SUBST([LIBS])
 ])
