@@ -1831,7 +1831,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSADrivingStress(Element* ele
 
 			grounded = gllevelset>0. ? 1. : 0.;
 			hydrostatic_factor = 1. - (1.-grounded)*rho_ice/rho_ocean;
-			mb = grounded ? gmb : fmb;
+			mb = grounded>0. ? gmb : fmb;
 			IssmDouble accumulation = ms-mb;
 			IssmDouble rhs_bed = -rhog*grounded*(thickness + theta*dt*accumulation);
 			IssmDouble rhs_div =  rhog*hydrostatic_factor*(0.5*thickness*thickness + theta*dt*thickness*accumulation);
