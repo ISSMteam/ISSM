@@ -97,27 +97,20 @@ class pfe(object):
         QueueRequirements(queuedict, self.queue, self.nprocs(), self.time)
 
         # Now, check cluster.cpuspernode according to processor type
-        if self.processor == 'bro':
+        if self.processor == 'bro_ele':
             if self.hyperthreading:
                 if self.cpuspernode > 56 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 56 for \'bro\' processors in hyperthreading mode')
+                    md = md.checkmessage('cpuspernode should be between 1 and 56 for \'bro_ele\' processors in hyperthreading mode')
             else:
                 if self.cpuspernode > 28 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 28 for \'bro\' processors')
-        elif self.processor == 'has':
+                    md = md.checkmessage('cpuspernode should be between 1 and 28 for \'bro_ele\' processors')
+        elif self.processor == 'sky_ele':
             if self.hyperthreading:
-                if self.cpuspernode > 48 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 48 for \'has\' processors in hyperthreading mode')
+                if self.cpuspernode > 80 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 80 for \'sky_ele\' processors in hyperthreading mode')
             else:
-                if self.cpuspernode > 24 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 24 for \'has\' processors')
-        elif self.processor == 'san':
-            if self.hyperthreading:
-                if self.cpuspernode > 32 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 32 for \'san\' processors in hyperthreading mode')
-            else:
-                if self.cpuspernode > 16 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 16 for \'san\' processors')
+                if self.cpuspernode > 40 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 40 for \'sky_ele\' processors')
         elif self.processor == 'cas_ait':
             if self.hyperthreading:
                 if self.cpuspernode > 80 or self.cpuspernode < 1:
@@ -125,8 +118,22 @@ class pfe(object):
             else:
                 if self.cpuspernode > 40 or self.cpuspernode < 1:
                     md = md.checkmessage('cpuspernode should be between 1 and 40 for \'cas_ait\' processors')
+        elif self.processor == 'rom_ait':
+            if self.hyperthreading:
+                if self.cpuspernode > 256 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 256 for \'rom_ait\' processors in hyperthreading mode')
+            else:
+                if self.cpuspernode > 128 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 128 for \'rom_ait\' processors')
+        elif self.processor == 'mil_ait':
+            if self.hyperthreading:
+                if self.cpuspernode > 256 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 256 for \'mil_ait\' processors in hyperthreading mode')
+            else:
+                if self.cpuspernode > 128 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 128 for \'mil_ait\' processors')
         else:
-            md = md.checkmessage('unknown processor type, should be \'bro\', \'has\', \'san\', or \'cas_ait\'')
+            md = md.checkmessage('unknown processor type, should be \'bro_ele\', \'sky_ele\', \'mil_ait\', \'rom_ait\', or \'cas_ait\'')
 
         # Miscellaneous
         if not self.login:

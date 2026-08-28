@@ -76,35 +76,35 @@ classdef pfe
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.nprocs(),cluster.time)
 
 			%now, check cluster.cpuspernode according to processor type
-			if strcmpi(cluster.processor,'bro')
+			if strcmpi(cluster.processor,'bro_ele')
 				if cluster.hyperthreading
 					if ((cluster.cpuspernode>56 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 56 for ''bro'' processors in hyperthreading mode');
+						md = checkmessage(md,'cpuspernode should be between 1 and 56 for ''bro_ele'' processors in hyperthreading mode');
 					end
 				else
 					if ((cluster.cpuspernode>28 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 28 for ''bro'' processors');
+						md = checkmessage(md,'cpuspernode should be between 1 and 28 for ''bro_ele'' processors');
 					end
 				end
-			elseif strcmpi(cluster.processor,'has')
+			elseif strcmpi(cluster.processor,'sky_ele')
 				if cluster.hyperthreading
-					if ((cluster.cpuspernode>48 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 48 for ''has'' processors in hyperthreading mode');
+					if ((cluster.cpuspernode>80 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 80 for ''sky_ele'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>24 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 24 for ''has'' processors');
+					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 40 for ''sky_ele'' processors');
 					end
 				end
 			
-			elseif strcmpi(cluster.processor,'san')
+			elseif strcmpi(cluster.processor,'mil_ait')
 				if cluster.hyperthreading
-					if ((cluster.cpuspernode>32 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 32 for ''san'' processors in hyperthreading mode');
+					if ((cluster.cpuspernode>256 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 256 for ''mil_ait'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>16 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 16 for ''san'' processors');
+					if ((cluster.cpuspernode>128 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 128 for ''mil_ait'' processors');
 					end
 				end
 
@@ -131,7 +131,7 @@ classdef pfe
 				end
 			
 			else
-				md = checkmessage(md,'unknown processor type, should be ''bro'', ''has'', ''san'', ''cas_ait'', or ''rom_ait''');
+				md = checkmessage(md,'unknown processor type, should be ''bro_ele'', ''sky_ele'', ''mil_ait'', ''cas_ait'', or ''rom_ait''');
 			end
 
 			%Miscellaneous
