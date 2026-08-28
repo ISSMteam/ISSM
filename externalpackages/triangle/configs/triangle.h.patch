@@ -51,17 +51,16 @@
  /*                                                                           */
  /*                                                                           */
  /*  Any input fields that Triangle will examine must be initialized.         */
-@@ -247,17 +247,23 @@
- /*  not used, `numberofsegments' will indicate the number of boundary edges. */
+@@ -248,16 +248,22 @@
  /*                                                                           */
  /*****************************************************************************/
-+
+ 
 +#ifdef SINGLE
 +#define TRI_REAL float
 +#else /* not SINGLE */
 +#define TRI_REAL double
 +#endif /* not SINGLE */
- 
++
  struct triangulateio {
 -  REAL *pointlist;                                               /* In / out */
 -  REAL *pointattributelist;                                      /* In / out */
@@ -75,11 +74,11 @@
 -  REAL *triangleattributelist;                                   /* In / out */
 -  REAL *trianglearealist;                                         /* In only */
 +  TRI_REAL *triangleattributelist;                               /* In / out */
-+  TRI_REAL *trianglearealist;                                     /* In only */
++  TRI_REAL *trianglearealist;                                    /* In only */
    int *neighborlist;                                             /* Out only */
    int numberoftriangles;                                         /* In / out */
    int numberofcorners;                                           /* In / out */
-@@ -267,22 +273,22 @@
+@@ -267,23 +273,26 @@
    int *segmentmarkerlist;                                        /* In / out */
    int numberofsegments;                                          /* In / out */
  
@@ -98,12 +97,22 @@
    int numberofedges;                                             /* Out only */
  };
  
- #ifdef ANSI_DECLARATORS
+-#ifdef ANSI_DECLARATORS
 -void triangulate(char *, struct triangulateio *, struct triangulateio *,
-+extern "C" void triangulate(char *, struct triangulateio *, struct triangulateio *,
-                  struct triangulateio *);
+-                 struct triangulateio *);
 -void trifree(VOID *memptr);
-+void trifree(int *memptr);
- #else /* not ANSI_DECLARATORS */
- void triangulate();
- void trifree();
+-#else /* not ANSI_DECLARATORS */
+-void triangulate();
+-void trifree();
+-#endif /* not ANSI_DECLARATORS */
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++void triangulate(char *triswitches, struct triangulateio *in,
++                 struct triangulateio *out, struct triangulateio *vorout);
++void trifree(void *memptr);
++
++#ifdef __cplusplus
++}
++#endif
