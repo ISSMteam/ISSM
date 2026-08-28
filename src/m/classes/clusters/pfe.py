@@ -35,7 +35,7 @@ class pfe(object):
         self.port = 1025
         self.queue = 'long'
         self.time = 12 * 60
-        self.processor = 'ivy'
+        self.processor = 'cas_ait'
         self.srcpath = ''
         self.extpkgpath = ''
         self.codepath = ''
@@ -97,14 +97,7 @@ class pfe(object):
         QueueRequirements(queuedict, self.queue, self.nprocs(), self.time)
 
         # Now, check cluster.cpuspernode according to processor type
-        if self.processor == 'ivy':
-            if self.hyperthreading:
-                if self.cpuspernode > 40 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 40 for \'ivy\' processors in hyperthreading mode')
-            else:
-                if self.cpuspernode > 20 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 20 for \'ivy\' processors')
-        elif self.processor == 'bro':
+        if self.processor == 'bro':
             if self.hyperthreading:
                 if self.cpuspernode > 56 or self.cpuspernode < 1:
                     md = md.checkmessage('cpuspernode should be between 1 and 56 for \'bro\' processors in hyperthreading mode')
@@ -133,7 +126,7 @@ class pfe(object):
                 if self.cpuspernode > 40 or self.cpuspernode < 1:
                     md = md.checkmessage('cpuspernode should be between 1 and 40 for \'cas_ait\' processors')
         else:
-            md = md.checkmessage('unknown processor type, should be \'bro\', \'has\', \'ivy\', \'san\', or \'cas_ait\'')
+            md = md.checkmessage('unknown processor type, should be \'bro\', \'has\', \'san\', or \'cas_ait\'')
 
         # Miscellaneous
         if not self.login:
