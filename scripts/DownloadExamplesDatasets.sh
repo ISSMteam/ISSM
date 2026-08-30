@@ -13,7 +13,7 @@
 
 ## Constants
 #
-DATASETS_URL="https://issm.jpl.nasa.gov/documentation/tutorials/datasets"
+DATASETS_URL="https://issmteam.github.io/ISSM-Documentation/using-issm/tutorials/datasets"
 DIRECTORY_PREFIX=$(cd $(dirname "$0"); pwd)"/../examples/Data" # Default behavior is to download datasets to examples/Data directory relative to this script
 
 if [ $# -gt 0 ]; then
@@ -31,17 +31,25 @@ fi
 #		and $ISSM_DIR/etc/environment.sh has been sourced as there may be a
 #		conflict between versions of cURL executable and libcurl
 #
-dataset_urls=$(\
-	DYLD_LIBRARY_PATH=""; \
-	/usr/bin/curl -Lks ${DATASETS_URL} |\
-	sed '/<!--DATASETS LIST START-->/,/<!--DATASETS LIST END-->/ !d' |\
-	sed -n 's/.*<li><a href="\([^"]*\)">.*/\1/p'
+dataset_urls=()
+while IFS= read -r url; do
+	dataset_urls+=("${url}")
+done < <(
+	curl -Lks "$DATASETS_URL" |
+	perl -0777 -ne '
+	if (/<div data-marker="datasets-list-start"><\/div>(.*?)<div data-marker="datasets-list-end"><\/div>/s) {
+	print $1;
+	}
+	' |
+	grep -Eo 'href="[^"]*"' |
+	sed 's/^href="//; s/"$//'
 )
 
 # Get datasets
 #
 echo "Downloading examples datasets..."
-wget --quiet --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i - <<< "${dataset_urls}"
+printf '%s\n' "${dataset_urls[@]}" |
+wget --quiet --no-clobber --directory-prefix="${DIRECTORY_PREFIX}" -i -
 
 # Expand zip files
 unzip -n -d "${DIRECTORY_PREFIX}" "${DIRECTORY_PREFIX}/*.zip"
