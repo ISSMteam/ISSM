@@ -749,6 +749,10 @@ endif
 
 AM_LDFLAGS =
 
+if MSYS2
+AM_LDFLAGS += -no-undefined -Wl,--allow-multiple-definition
+endif
+
 if !VERSION
 AM_LDFLAGS += -avoid-version
 endif

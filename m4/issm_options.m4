@@ -1351,7 +1351,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				fi
 			;;
 			*mingw*)
-				PETSCLIB="-Wl,-L${PETSC_ROOT}/lib -Wl,-lpetsc"
+				PETSCLIB="-Wl,--start-group -Wl,-L${PETSC_ROOT}/lib -Wl,-lpetsc -Wl,-ldmumps -Wl,-lsmumps -Wl,-lcmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord -Wl,-lscalapack -Wl,-lparmetis -Wl,-lmetis -Wl,--end-group -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32"
 			;;
 		esac
 		AC_MSG_RESULT([done])
