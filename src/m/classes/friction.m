@@ -53,6 +53,11 @@ classdef friction
 			md = checkfield(md,'fieldname','friction.effective_pressure_limit','numel',[1],'>=',0);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
+			elseif self.coupling==4
+				% check turn-on md.transient.ishydrology=1 
+				if ~md.transient.ishydrology
+					error('Error: To compute effective pressure from hydrology model, you need to turn on "md.transient.ishydrology".');
+				end
 			end
 		end % }}}
 		function disp(self) % {{{
