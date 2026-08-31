@@ -5,24 +5,24 @@
 
 classdef transient
 	properties (SetAccess=public) 
-		isage             = 0;
-		issmb             = 0;
-		ismasstransport   = 0;
-		ismmemasstransport   = 0;
-		isoceantransport  = 0;
-		isstressbalance   = 0;
-		isthermal         = 0;
-		isgroundingline   = 0;
-		isesa             = 0;
-		isdamageevolution = 0;
-		ismovingfront     = 0;
-		ishydrology       = 0;
-		isdebris          = 0;
-		issampling        = 0;
-		isslc             = 0;
-		amr_frequency     = 0;
-		isoceancoupling   = 0;
-		requested_outputs = {};
+		isage              = 0;
+		issmb              = 0;
+		ismasstransport    = 0;
+		ismmemasstransport = 0;
+		isoceantransport   = 0;
+		isstressbalance    = 0;
+		isthermal          = 0;
+		isgroundingline    = 0;
+		isesa              = 0;
+		isdamageevolution  = 0;
+		ismovingfront      = 0;
+		ishydrology        = 0;
+		isdebris           = 0;
+		issampling         = 0;
+		isslc              = 0;
+		amr_frequency      = 0;
+		isoceancoupling    = 0;
+		requested_outputs  = {};
 	end
 	methods
 		function self = transient(varargin) % {{{

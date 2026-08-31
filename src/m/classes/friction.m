@@ -56,7 +56,7 @@ classdef friction
 			elseif self.coupling==4
 				% check turn-on md.transient.ishydrology=1 
 				if ~md.transient.ishydrology
-					error('Error: To compute effective pressure from hydrology model, you need to turn on "md.transient.ishydrology".');
+					md = checkmessage(md, 'md.friction.coupling = 4 but md.transient.ishydrology = 0!');
 				end
 			end
 		end % }}}
