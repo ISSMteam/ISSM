@@ -70,11 +70,11 @@ def AnalysisConfiguration(solutiontype):  #{{{
     elif solutiontype == 'EsaSolution':
         analyses = ['EsaAnalysis']
     elif solutiontype == 'TransientSolution':
-        analyses = ['StressbalanceAnalysis', 'StressbalanceVerticalAnalysis', 'StressbalanceSIAAnalysis', 'L2ProjectionBaseAnalysis', 'ThermalAnalysis', 'MeltingAnalysis', 'EnthalpyAnalysis', 'MasstransportAnalysis', 'OceantransportAnalysis', 'HydrologyShaktiAnalysis', 'HydrologyGladsAnalysis', 'HydrologyShreveAnalysis', 'HydrologyTwsAnalysis', 'HydrologyDCInefficientAnalysis', 'HydrologyDCEfficientAnalysis', 'SealevelchangeAnalysis', 'AgeAnalysis', 'HydrologyArmapwAnalysis', 'DebrisAnalysis', 'AgeAnalysis']
+        analyses = ['StressbalanceAnalysis', 'StressbalanceVerticalAnalysis', 'StressbalanceSIAAnalysis', 'L2ProjectionBaseAnalysis', 'ThermalAnalysis', 'MeltingAnalysis', 'EnthalpyAnalysis', 'MasstransportAnalysis', 'OceantransportAnalysis', 'HydrologyShaktiAnalysis', 'HydrologyGladsAnalysis', 'HydrologyShreveAnalysis', 'HydrologyTwsAnalysis', 'HydrologyDCInefficientAnalysis', 'HydrologyDCEfficientAnalysis', 'HydrologyPrescribeAnalysis', 'SealevelchangeAnalysis', 'AgeAnalysis', 'HydrologyArmapwAnalysis', 'DebrisAnalysis', 'AgeAnalysis']
     elif solutiontype == 'SealevelchangeSolution':
         analyses = ['SealevelchangeAnalysis']
     elif solutiontype == 'HydrologySolution':
-        analyses = ['L2ProjectionBaseAnalysis', 'HydrologyShreveAnalysis', 'HydrologyDCInefficientAnalysis', 'HydrologyDCEfficientAnalysis', 'HydrologyGladsAnalysis', 'HydrologyShaktiAnalysis', 'HydrologyTwsAnalysis', 'HydrologyArmapwAnalysis']
+        analyses = ['L2ProjectionBaseAnalysis', 'HydrologyShreveAnalysis', 'HydrologyDCInefficientAnalysis', 'HydrologyDCEfficientAnalysis', 'HydrologyGladsAnalysis', 'HydrologyShaktiAnalysis', 'HydrologyTwsAnalysis', 'HydrologyArmapwAnalysis', 'HydrologyPrescribeAnalysis']
     elif 'DamageEvolutionSolution':
         analyses = ['DamageEvolutionAnalysis']
     elif 'SamplingSolution':
