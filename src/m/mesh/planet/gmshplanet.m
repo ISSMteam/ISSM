@@ -52,7 +52,7 @@ function mesh=gmshplanet(varargin)
 	end
 
 	gmshmajorversion=str2num(r);
-	if ~ismember([3,4],gmshmajorversion)
+	if ~ismember([3,4,5],gmshmajorversion)
 		error(['gmshplanet: Gmsh major version ' gmshmajorversion ' not supported!']);
 	end
 
@@ -112,7 +112,7 @@ function mesh=gmshplanet(varargin)
 
 	if gmshmajorversion == 3
 		curvename='Line Loop';
-	elseif gmshmajorversion == 4
+	elseif gmshmajorversion == 4 || gmshmajorversion == 5
 		curvename='Curve Loop';
 	end
 
