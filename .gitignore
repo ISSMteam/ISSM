@@ -97,5 +97,8 @@ examples/Data/*.txt
 examples/Data/*.zip
 examples/Data/Jakobshavn_2008_2011_Composite
 examples/Helheim/Models
+examples/AMR/*.mat
+examples/AMR/VTK
+examples/Greenland/*.mat
 examples/Inversion/*.mat
 examples/Inversion/*.tar.gz
