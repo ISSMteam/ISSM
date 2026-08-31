@@ -53,7 +53,7 @@ classdef frictionschoof
 			md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
-			else
+			elseif self.coupling==4
 				% check turn-on md.transient.ishydrology=1 
 				if ~md.transient.ishydrology
 					md = checkmessage(md, 'md.friction.coupling = 4 but md.transient.ishydrology = 0!');
