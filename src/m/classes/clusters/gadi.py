@@ -191,6 +191,8 @@ class gadi(object):
                 'mpiexec -n {} valgrind --leak-check=full{} {}/{} {} {}/{} {}\n'.format(
                     self.nprocs(), supstring, self.codepath, executable,
                     solution, self.executionpath, dirname, modelname))
+        # Make *.lock after model done.
+        fid.write('\ntouch %s.lock\n',modelname)
 
         if not io_gather:
             # Merge partial outbin files if your code writes multiple .outbin.#
