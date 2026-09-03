@@ -208,6 +208,8 @@ classdef gadi
 
 				fprintf(fid,'mpiexec -np %i --leak-check=full%s %s/%s %s %s %s\n',cluster.nprocs(),supstring,cluster.codepath,executable,solution,[cluster.executionpath '/' dirname],modelname);
 			end
+            % Make *.lock after model done.
+			fprintf(fid,'\ntouch %s.lock\n',modelname);
 
 			if ~io_gather, %concatenate the output files:
 				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
