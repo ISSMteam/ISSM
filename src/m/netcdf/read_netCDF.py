@@ -47,6 +47,9 @@ def read_netCDF(filename: str, verbose: bool = False):
     finally:
         nc.close()
 
+    # Coerce elements
+    md.mesh.elements=np.array(md.mesh.elements,dtype=int)
+
     if verbose:
         print('Model successfully loaded from NetCDF4.')
     return md

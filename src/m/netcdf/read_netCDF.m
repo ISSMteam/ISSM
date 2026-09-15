@@ -60,6 +60,9 @@ catch me
 end
 netcdf.close(ncid);
 
+% Coerce elements
+md.mesh.elements=int32(md.mesh.elements);
+
 if verbose; disp('Model successfully loaded from NetCDF4.'); end
 end
 
