@@ -306,7 +306,8 @@ int IoCodeToEnumCalving(int enum_in){/*{{{*/
 		case 9:  return CalvingParameterizationEnum;
 		case 10: return CalvingPollardEnum;
 		case 11: return CalvingVonmisesADEnum;
-		case 12:  return CalvingCalvingMIPEnum;
+		case 12: return CalvingCalvingMIPEnum;
+		case 13: return CalvingStochasticEnum;
 		default: _error_("Marshalled Calving law code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/

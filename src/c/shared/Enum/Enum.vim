@@ -141,6 +141,9 @@ syn keyword cConstant CalvingVelThresholdEnum
 syn keyword cConstant CalvingVelUpperboundEnum
 syn keyword cConstant CalvingRcEnum
 syn keyword cConstant CalvingNumberofBasinsEnum
+syn keyword cConstant CalvingFEnum
+syn keyword cConstant CalvingDMaxEnum
+syn keyword cConstant CalvingKEnum
 syn keyword cConstant ConfigurationTypeEnum
 syn keyword cConstant ConstantsGEnum
 syn keyword cConstant ConstantsNewtonGravityEnum
@@ -3488,6 +3491,7 @@ syn keyword cConstant CalvingCalvingMIPEnum
 syn keyword cConstant CalvingVonmisesEnum
 syn keyword cConstant CalvingVonmisesADEnum
 syn keyword cConstant CalvingPollardEnum
+syn keyword cConstant CalvingStochasticEnum
 syn keyword cConstant CfdragcoeffabsgradEnum
 syn keyword cConstant CfdragcoeffabsgradtransientEnum
 syn keyword cConstant CfrheologybbarabsgradEnum
