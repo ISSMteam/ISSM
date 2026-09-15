@@ -61,7 +61,7 @@ classdef friction
 			end
 		end % }}}
 		function disp(self) % {{{
-			disp(sprintf('Basal shear stress parameters: Sigma_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)'));
+			disp('Basal shear stress parameters: Sigma_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)');
 			fielddisplay(self,'coefficient','friction coefficient [SI]');
 			fielddisplay(self,'p','p exponent');
 			fielddisplay(self,'q','q exponent');
