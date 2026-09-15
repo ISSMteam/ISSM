@@ -26,6 +26,12 @@ else
 	verbose = false;
 end
 
+% Check file format with ".nc"
+if ~endsWith(filename,'.nc')
+	warning('Warning: The given file name does not end with ".nc". Appending the extension automatically.');
+	filename = [filename '.nc'];
+end
+
 % Check that file exists
 if ~exist(filename, 'file')
 	error(['file ''' filename ''' not found']);

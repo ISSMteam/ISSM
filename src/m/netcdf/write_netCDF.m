@@ -45,6 +45,12 @@ function write_netCDF(md, filename, varargin)
 		verbose = p.Results.verbose;
 	end
 
+	% check file format
+	if ~endsWith(filename,'.nc')
+		warning('Warning: The given file name does not end with ".nc". Appending the extension automatically.');
+		filename = [filename '.nc'];
+	end
+
 	% create / overwrite file
 	if exist(filename, 'file') == 2
 		delete(filename);

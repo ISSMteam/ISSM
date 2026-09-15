@@ -28,6 +28,13 @@ def read_netCDF(filename: str, verbose: bool = False):
         print('read_netCDF v2.0  (Python)')
 
     from os.path import exists
+
+    # Check file format with ".nc"
+    if filename.endswith('.nc'):
+        warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
+        filename = filename + '.nc'
+
+    # Check that file exists 
     if not exists(filename):
         raise FileNotFoundError(f'read_netCDF: file not found: {filename}')
 
