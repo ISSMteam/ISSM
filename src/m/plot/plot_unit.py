@@ -37,11 +37,17 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
     alpha = options.getfieldvalue('alpha', 1)
     # }}}
     # define wich colormap to use {{{
-    try:
-        defaultmap = plt.cm.get_cmap('viridis', colorlevels)
-    except AttributeError:
-        print("Viridis can't be found (probably too old Matplotlib) reverting to gnuplot colormap")
-        defaultmap = truncate_colormap('gnuplot2', 0.1, 0.9, colorlevels)
+    if mpl.__version__ < "3.11":
+        try:
+            defaultmap = plt.cm.get_cmap('viridis', colorlevels)
+        except AttributeError:
+            print("Viridis can't be found (probably too old Matplotlib) reverting to gnuplot colormap")
+            defaultmap = truncate_colormap('gnuplot2', 0.1, 0.9, colorlevels)
+    elif mpl.__version__ >= "3.11":
+        # NOTE: As of Matplotlib 3.11, "get_cmap" is no longer supported.
+        # Reference: https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.11.0.html#matplotlib-cm-get-cmap
+        defaultmap = mpl.colormaps['viridis'].resampled(colorlevels)
+
     if not options.exist('colormap'):
         cmap = defaultmap
     else:
