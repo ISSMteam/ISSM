@@ -302,24 +302,24 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	for (( i=1;i<=$NUMCPUS_RUN;i++ )); do
 		# Launch MATLAB and the nightly run script
 		cat > ${ISSM_DIR}/nightlylog/matlab_run$i.m << EOF
-		warning off %necessary to avoid a log of several Go for parallel runs
-		try,
-			$(if [ "${MATLAB_NROPTIONS}" = "" ]; then
-				echo "runme('output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
-			else
-				echo "runme(${MATLAB_NROPTIONS},'output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
-			fi)
-		catch me,
-			%An error occured, get report and exit
-			message=getReport(me)
-			directory=strsplit(pwd,'/');
-			fid=fopen([issmdir '/nightlylog/matlaberror.log'], 'at');
-			fprintf(fid,'\nMatlab error occured in: %s\n\n',directory{end});
-			fprintf(fid,'%s',message);
-			fclose(fid);
-		end
-		disp('MATLABEXITEDCORRECTLY');
-		exit
+warning off %necessary to avoid a log of several Go for parallel runs
+try,
+	$(if [ "${MATLAB_NROPTIONS}" = "" ]; then
+		echo "runme('output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
+	else
+		echo "runme(${MATLAB_NROPTIONS},'output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
+	fi)
+catch me,
+	%An error occured, get report and exit
+	message=getReport(me)
+	directory=strsplit(pwd,'/');
+	fid=fopen([issmdir '/nightlylog/matlaberror.log'], 'at');
+	fprintf(fid,'\nMatlab error occured in: %s\n\n',directory{end});
+	fprintf(fid,'%s',message);
+	fclose(fid);
+end
+disp('MATLABEXITEDCORRECTLY');
+exit
 EOF
 		cd $ISSM_DIR/test/NightlyRun
 
