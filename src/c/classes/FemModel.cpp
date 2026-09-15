@@ -2459,6 +2459,11 @@ void FemModel::RequestedOutputsx(Results **presults,char** requested_outputs, in
 					case ChannelAreaEnum:
 					case ChannelDischargeEnum:{
 
+							if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
+								_printf0_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
+								continue;
+							}
+
 							/*Get Number of Channels*/
 							int numchannels_local=0,numchannels;
 							for(int j=0;j<this->loads->Size();j++){
@@ -2490,7 +2495,9 @@ void FemModel::RequestedOutputsx(Results **presults,char** requested_outputs, in
 							ISSM_MPI_Allreduce((void*)values,(void*)allvalues,numchannels,ISSM_MPI_PDOUBLE,ISSM_MPI_SUM,IssmComm::GetComm());
 							xDelete<IssmPDouble>(values);
 
-							if(save_results)results->AddResult(new GenericExternalResult<IssmPDouble*>(results->Size()+1,output_enum,allvalues,numchannels,1,step,time));
+							if(save_results){
+								results->AddResult(new GenericExternalResult<IssmPDouble*>(results->Size()+1,output_enum,allvalues,numchannels,1,step,time));
+							}
 							xDelete<IssmPDouble>(allvalues);
 
 							isvec = true;
