@@ -30,7 +30,7 @@ def read_netCDF(filename: str, verbose: bool = False):
     from os.path import exists
 
     # Check file format with ".nc"
-    if filename.endswith('.nc'):
+    if not filename.endswith('.nc'):
         warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
         filename = filename + '.nc'
 
