@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eu
 
+
 ## Constants
 #
 VER="3.25.4"
@@ -23,15 +24,26 @@ mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
 # Configure
+#
+# NOTE:
+# - Cannot use --with-fpic option when compiling static libs,
+#
+#		Cannot determine compiler PIC flags if shared libraries is turned off
+#		Either run using --with-shared-libraries or --with-pic=0 and supply the
+#		compiler PIC flag via CFLAGS, CXXXFLAGS, and FCFLAGS
+#
 cd ${PETSC_DIR}
 ./configure \
 	--prefix="${PREFIX}" \
 	--PETSC_DIR="${PETSC_DIR}" \
-	--with-debugging=1 \
+	--with-shared-libraries=0 \
+	--CFLAGS="-fPIC" \
+	--CXXFLAGS="-fPIC" \
+	--FFLAGS="-fPIC" \
+	--with-debugging=0 \
 	--with-valgrind=0 \
 	--with-x=0 \
 	--with-ssl=0 \
-	--with-pic=1 \
 	--download-metis=1 \
 	--download-mpich=1 \
 	--download-mumps=1 \
@@ -42,3 +54,8 @@ cd ${PETSC_DIR}
 # Compile and install
 make
 make install
+
+# Need to make symlinks from libmpich* to libmpi*
+ln -s ${PREFIX}/lib/libmpi.a ${PREFIX}/lib/libmpich.a
+ln -s ${PREFIX}/lib/libmpicxx.a ${PREFIX}/lib/libmpichcxx.a
+ln -s ${PREFIX}/lib/libmpifort.a ${PREFIX}/lib/libmpichf90.a

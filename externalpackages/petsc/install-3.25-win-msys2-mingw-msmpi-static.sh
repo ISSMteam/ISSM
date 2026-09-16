@@ -17,7 +17,7 @@ set -u # NOTE: Do not set -e as it will cause this script to fail when there are
 
 ## Constants
 #
-VER="3.25.3"
+VER="3.25.4"
 
 PETSC_ARCH="arch-mswin-c-opt"
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS

@@ -28,7 +28,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-mac.sh
 	cmake		install.sh
-	petsc		install-3.23-mac.sh
+	petsc		install-3.25-mac.sh
 	triangle	install-mac.sh
 	shell2junit	install.sh
 "
