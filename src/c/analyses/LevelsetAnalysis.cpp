@@ -1095,7 +1095,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 				Input *thickness_input        = element->GetInput(ThicknessEnum);              _assert_(thickness_input);
 				Input *surface_input          = element->GetInput(SurfaceEnum);                _assert_(surface_input);
 
-				/*Is this element connected to a node that should be calved*/
+				/*Is this element connected to a node that should be calved?*/
 				bool isconnected = false;
 				for(int in=0;in<numnodes;in++){
 					Node* node=element->GetNode(in);
@@ -1118,8 +1118,10 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 						thickness_input->GetInputValue(&thickness,gauss);
 						surface_input->GetInputValue(&surface,gauss);
 
+						chi = (crevassedepth/thickness);
+
 						/*FIXME: not sure about levelset<0. && fabs(levelset)>-mig_max*dt! SHould maybe be distance<mig_max*dt*/
-						if((surface_crevasse>surface || crevassedepth>(chi_crit*thickness-1e-10)) && bed<0. && levelset<0. && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
+						if(chi>chi_crit && bed<sealevel && levelset<0 && levelset>-mig_max*dt && constraint_nodes[node->Lid()]==0.){
 							local_nflipped++;
 							vec_constraint_nodes->SetValue(node->Pid(),1.0,INS_VAL);
 						}
@@ -1130,7 +1132,12 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 
 			/*Count how many new nodes were found*/
 			ISSM_MPI_Allreduce(&local_nflipped,&nflipped,1,ISSM_MPI_INT,ISSM_MPI_SUM,IssmComm::GetComm());
-			_printf0_("Found "<<nflipped<<" to flip\n");
+			if(nflipped){
+				_printf0_("   -- Propagated over "<<nflipped<<" more nodes\n");
+			}
+			else{
+				_printf0_("   -- Propagation finalized\n");
+			}
 
 			/*Assemble and serialize flag vector*/
 			vec_constraint_nodes->Assemble();
@@ -1156,7 +1163,7 @@ void           LevelsetAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 					node->ApplyConstraint(0,+1.);
 				}
 				else {
-					/* no ice, set no spc */
+					/* active ice, set no spc */
 					node->DofInFSet(0);
 				}
 			}
