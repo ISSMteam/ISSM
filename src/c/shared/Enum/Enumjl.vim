@@ -117,6 +117,7 @@ syn keyword juliaConstC BasalforcingsUpperwaterMeltingRateEnum
 syn keyword juliaConstC CalvingADStressThresholdFloatingiceEnum
 syn keyword juliaConstC CalvingADStressThresholdGroundediceEnum
 syn keyword juliaConstC CalvingCrevasseDepthEnum
+syn keyword juliaConstC CalvingCrevasseDepthTypeEnum
 syn keyword juliaConstC CalvingCrevasseThresholdEnum
 syn keyword juliaConstC CalvingHeightAboveFloatationEnum
 syn keyword juliaConstC CalvingLawEnum
@@ -135,7 +136,8 @@ syn keyword juliaConstC CalvingVelUpperboundEnum
 syn keyword juliaConstC CalvingRcEnum
 syn keyword juliaConstC CalvingNumberofBasinsEnum
 syn keyword juliaConstC CalvingFEnum
-syn keyword juliaConstC CalvingDMaxEnum
+syn keyword juliaConstC CalvingChiCritEnum
+syn keyword juliaConstC CalvingChiMaxEnum
 syn keyword juliaConstC CalvingKEnum
 syn keyword juliaConstC ConfigurationTypeEnum
 syn keyword juliaConstC ConstantsGEnum

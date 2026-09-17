@@ -5,6 +5,7 @@
 #include "./Calvingx.h"
 #include "../../shared/shared.h"
 #include "../../toolkits/toolkits.h"
+#include <random>
 
 void Calvingx(FemModel* femmodel){
 
@@ -53,6 +54,9 @@ void Calvingx(FemModel* femmodel){
 		case CalvingCalvingMIPEnum:
 			femmodel->ElementOperationx(&Element::CalvingRateCalvingMIP);
 			break;
+		case CalvingStochasticEnum:
+			CalvingStochasticx(femmodel);
+			break;
 		default:
 			_error_("Caving law "<<EnumToStringx(calvinglaw)<<" not supported yet");
 	}
@@ -60,4 +64,37 @@ void Calvingx(FemModel* femmodel){
 
 void MovingFrontalVelx(FemModel* femmodel){
 	femmodel->ElementOperationx(&Element::MovingFrontalVelocity);
+}
+void CalvingStochasticx(FemModel* femmodel){
+
+	/*Intermediaries*/
+	IssmPDouble r;
+	IssmDouble  delta_t,f,dmax,k;
+
+	/*1. generate random number*/
+	static std::mt19937 gen(std::random_device{}());          // or gen(1234) for reproducibility
+	static std::uniform_real_distribution<double> dis(0.0,1.0); // [0,1)
+	r = dis(gen);
+
+	/*2. Calculate random probability*/
+	femmodel->parameters->FindParam(&delta_t, TimesteppingTimeStepEnum);
+	femmodel->parameters->FindParam(&f, CalvingFEnum);
+	femmodel->parameters->FindParam(&k, CalvingKEnum);
+	femmodel->parameters->FindParam(&dmax, CalvingChiMaxEnum);
+	IssmDouble Pmax = 1. - exp(-f*delta_t);
+
+	/*3. cap random probability*/
+	IssmDouble P = min(r, Pmax);
+
+	/*4. Stochastic waitime (charactiristic time)*/
+	IssmDouble tau = -(f*delta_t)/log(1. - P);
+
+	/*5. Define delta critical */
+	IssmDouble dcrit = dmax - log(tau)/k;
+	femmodel->parameters->SetParam(dcrit, CalvingChiCritEnum);
+
+	/*Loop over elements and compute crevasse depth*/
+	femmodel->DeviatoricStressx();
+	femmodel->ElementOperationx(&Element::CalvingCrevasseDepth);
+
 }

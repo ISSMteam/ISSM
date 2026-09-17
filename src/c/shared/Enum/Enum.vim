@@ -124,6 +124,7 @@ syn keyword cConstant BasalforcingsUpperwaterMeltingRateEnum
 syn keyword cConstant CalvingADStressThresholdFloatingiceEnum
 syn keyword cConstant CalvingADStressThresholdGroundediceEnum
 syn keyword cConstant CalvingCrevasseDepthEnum
+syn keyword cConstant CalvingCrevasseDepthTypeEnum
 syn keyword cConstant CalvingCrevasseThresholdEnum
 syn keyword cConstant CalvingHeightAboveFloatationEnum
 syn keyword cConstant CalvingLawEnum
@@ -142,7 +143,8 @@ syn keyword cConstant CalvingVelUpperboundEnum
 syn keyword cConstant CalvingRcEnum
 syn keyword cConstant CalvingNumberofBasinsEnum
 syn keyword cConstant CalvingFEnum
-syn keyword cConstant CalvingDMaxEnum
+syn keyword cConstant CalvingChiCritEnum
+syn keyword cConstant CalvingChiMaxEnum
 syn keyword cConstant CalvingKEnum
 syn keyword cConstant ConfigurationTypeEnum
 syn keyword cConstant ConstantsGEnum

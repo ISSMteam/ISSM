@@ -5,9 +5,9 @@
 
 classdef calvingstochastic
 	properties (SetAccess=public) 
-		k     = 0.0;
-		d_max = 0.00
-		f     = 0.0;
+		k       = 0.0;
+		chi_max = 0.0;
+		f       = 0.0;
 	end
 	methods
 		function self = calvingstochastic(varargin) % {{{
@@ -33,8 +33,8 @@ classdef calvingstochastic
 		function self = setdefaultparameters(self) % {{{
 			
 			self.k     = 22.0;
-			self.d_max = 1;
-         self.f     = 1e-5;
+			self.chi_max = 1;
+         self.f     = 1;
 
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -42,24 +42,24 @@ classdef calvingstochastic
 			if (~strcmp(solution,'TransientSolution') | md.transient.ismovingfront==0), return; end
 
 			md = checkfield(md,'fieldname','calving.k','numel',[1],'>',0., 'NaN', 1);
-         md = checkfield(md,'fieldname','calving.d_max','numel',[1],'>',0,'<=',1,'NaN',1);
+         md = checkfield(md,'fieldname','calving.chi_max','numel',[1],'>',0,'<=',1,'NaN',1);
 			md = checkfield(md,'fieldname','calving.f','NaN',1,'Inf',1,'>',0);
 		end % }}}
 		function disp(self) % {{{
 			disp('   Calving Stochastic parameters:');
 			disp('      T      = T0 * exp(k*(1-d))');
 			disp('      max(P) = 1  - exp(1-∆t*f)');
-			fielddisplay(self,'k'    ,'sensitivity of the waiting time [1/m]');
-			fielddisplay(self,'d_max','max penetration threshold (between 0 and 1 for full thickness)');
-			fielddisplay(self,'f',    'controls calving frequency rate [1/s]');
+			fielddisplay(self,'k'      ,'sensitivity of the waiting time (typically between 20 and 24) [dimensionless]');
+			fielddisplay(self,'chi_max','max penetration threshold (between 0 and 1 for full thickness)');
+			fielddisplay(self,'f',      'controls calving frequency rate [1/day]');
 
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			yts=md.constants.yts;
 			WriteData(fid,prefix,'name','md.calving.law','data',13,'format','Integer');
 			WriteData(fid,prefix,'object',self,'fieldname','k','format','Double');
-         WriteData(fid,prefix,'object',self,'fieldname','d_max','format','Double');
-			WriteData(fid,prefix,'object',self,'fieldname','f','format','Double');
+         WriteData(fid,prefix,'object',self,'fieldname','chi_max','format','Double');
+			WriteData(fid,prefix,'object',self,'fieldname','f','format','Double','scale',1./(yts/3600/24));
 		end % }}}
 	end
 end

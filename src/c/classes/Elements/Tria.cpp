@@ -631,7 +631,7 @@ void       Tria::CalvingRateTest(){/*{{{*/
 void       Tria::CalvingCrevasseDepth(){/*{{{*/
 
 	IssmDouble  vx,vy;
-	IssmDouble  water_height, bed,Hab,thickness,surface;
+	IssmDouble  water_height, bed,Hab,thickness,surface,sealevel;
 	IssmDouble  surface_crevasse[NUMVERTICES], basal_crevasse[NUMVERTICES], crevasse_depth[NUMVERTICES];
 	IssmDouble  strainparallel, straineffective,B,n;
 	IssmDouble  s_xx,s_xy,s_yy,s1,s2,vH,Kmax;
@@ -651,26 +651,33 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 	}
 
 	/*retrieve the type of crevasse_opening_stress*/
-	this->parameters->FindParam(&crevasse_opening_stress,CalvingCrevasseDepthEnum);
+	this->parameters->FindParam(&crevasse_opening_stress,CalvingCrevasseDepthTypeEnum);
 
 	IssmDouble rho_ice        = this->FindParam(MaterialsRhoIceEnum);
 	IssmDouble rho_seawater   = this->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble rho_freshwater = this->FindParam(MaterialsRhoFreshwaterEnum);
 	IssmDouble constant_g     = this->FindParam(ConstantsGEnum);
 
-	Input*   H_input                 = this->GetInput(ThicknessEnum); _assert_(H_input);
-	Input*   bed_input               = this->GetInput(BedEnum); _assert_(bed_input);
-	Input*   surface_input           = this->GetInput(SurfaceEnum); _assert_(surface_input);
-	Input*	strainrateparallel_input  = this->GetInput(StrainRateparallelEnum);  _assert_(strainrateparallel_input);
-	Input*	strainrateeffective_input = this->GetInput(StrainRateeffectiveEnum); _assert_(strainrateeffective_input);
-	Input*	vx_input                  = this->GetInput(VxEnum); _assert_(vx_input);
-	Input*	vy_input                  = this->GetInput(VxEnum); _assert_(vy_input);
-	Input*   waterheight_input       = this->GetInput(WaterheightEnum); _assert_(waterheight_input);
-	Input*   s_xx_input              = this->GetInput(DeviatoricStressxxEnum);     _assert_(s_xx_input);
-	Input*   s_xy_input              = this->GetInput(DeviatoricStressxyEnum);     _assert_(s_xy_input);
-	Input*   s_yy_input              = this->GetInput(DeviatoricStressyyEnum);     _assert_(s_yy_input);
-	Input*	B_input  = this->GetInput(MaterialsRheologyBbarEnum);   _assert_(B_input);
-	Input*	n_input  = this->GetInput(MaterialsRheologyNEnum);   _assert_(n_input);
+	Input* H_input           = this->GetInput(ThicknessEnum); _assert_(H_input);
+	Input* bed_input         = this->GetInput(BedEnum); _assert_(bed_input);
+	Input* surface_input     = this->GetInput(SurfaceEnum); _assert_(surface_input);
+   Input* sealevel_input    = this->GetInput(SealevelEnum); _assert_(sealevel_input);
+	Input* vx_input          = this->GetInput(VxEnum); _assert_(vx_input);
+	Input* vy_input          = this->GetInput(VxEnum); _assert_(vy_input);
+	Input* waterheight_input = this->GetInput(WaterheightEnum); _assert_(waterheight_input);
+	Input* s_xx_input        = this->GetInput(DeviatoricStressxxEnum);     _assert_(s_xx_input);
+	Input* s_xy_input        = this->GetInput(DeviatoricStressxyEnum);     _assert_(s_xy_input);
+	Input* s_yy_input        = this->GetInput(DeviatoricStressyyEnum);     _assert_(s_yy_input);
+	Input* B_input           = this->GetInput(MaterialsRheologyBbarEnum);   _assert_(B_input);
+	Input* n_input           = this->GetInput(MaterialsRheologyNEnum);   _assert_(n_input);
+
+   /*Crevasse depth input specific to some*/
+   Input* strainrateparallel_input  = NULL;
+   Input* strainrateeffective_input = NULL;
+   if(crevasse_opening_stress==0){
+      strainrateparallel_input  = this->GetInput(StrainRateparallelEnum);  _assert_(strainrateparallel_input);
+      strainrateeffective_input = this->GetInput(StrainRateeffectiveEnum); _assert_(strainrateeffective_input);
+   }
 
 	/*Loop over all elements of this partition*/
 	GaussTria gauss;
@@ -680,6 +687,7 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 		H_input->GetInputValue(&thickness,&gauss);
 		bed_input->GetInputValue(&bed,&gauss);
 		surface_input->GetInputValue(&surface,&gauss);
+      sealevel_input->GetInputValue(&sealevel,&gauss);
 
 		vx_input->GetInputValue(&vx,&gauss);
 		vy_input->GetInputValue(&vy,&gauss);
@@ -717,6 +725,10 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 			Kmax = 1.0 - 4.0*vH*(s1+s2+min(s1,s2))/(rho_ice*constant_g*(rho_seawater-rho_ice)/rho_seawater);
 			if(Kmax<0.) Kmax = 0.0;
 		}
+      else if(crevasse_opening_stress==3){
+         /*Benn et al. pers comm for CALIX, sum of s1 and s2*/
+         Matrix2x2Eigen(&s1,&s2,NULL,NULL,s_xx,s_xy,s_yy);
+      }
 		else{
 			_error_("not supported");
 		}
@@ -725,18 +737,28 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 			/*Coffey 2024, Buttressing based */
 			surface_crevasse[iv] = thickness*(1.0-rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
 			basal_crevasse[iv]   = thickness*(rho_ice/rho_seawater)*(1.0 - sqrt(Kmax));
-			//_printf0_(Kmax<<", "<<basal_crevasse[iv]<<", "<<surface_crevasse[iv]<<endl);
 		}
+      else if(crevasse_opening_stress==3){
+         surface_crevasse[iv] = (s1+s2)/(rho_ice*constant_g);
+         if(bed>sealevel){
+            basal_crevasse[iv] = 0.;
+         }
+         else{
+            Hab = thickness - (rho_seawater/rho_ice) * (sealevel-bed);
+            if(Hab<0.)  Hab=0.;
+            basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* ((s1+s2)/ (rho_ice*constant_g)-Hab);
+         }
+      }
 		else {
 			/*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
 			surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
 
 			/*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
-			if(bed>0.){
+			if(sealevel - bed>0.){
 				basal_crevasse[iv] = 0.;
 			}
 			else{
-				Hab = thickness - (rho_seawater/rho_ice) * (-bed);
+				Hab = thickness - (rho_seawater/rho_ice) * (sealevel-bed);
 				if(Hab<0.)  Hab=0.;
 				basal_crevasse[iv] = (rho_ice/(rho_seawater-rho_ice))* (2*s1/ (rho_ice*constant_g)-Hab);
 			}
@@ -4645,6 +4667,7 @@ void	      Tria::MovingFrontalVelocity(void){/*{{{*/
 		case CalvingMinthicknessEnum:
 		case CalvingHabEnum:
 		case CalvingCrevasseDepthEnum:
+		case CalvingStochasticEnum:
 			meltingrate_input = this->GetInput(CalvingMeltingrateEnum);     _assert_(meltingrate_input);
 			break;
 		case CalvingDev2Enum:
@@ -4702,6 +4725,7 @@ void	      Tria::MovingFrontalVelocity(void){/*{{{*/
 			case CalvingMinthicknessEnum:
 			case CalvingHabEnum:
 			case CalvingCrevasseDepthEnum:
+			case CalvingStochasticEnum:
 				meltingrate_input->GetInputValue(&meltingrate,&gauss);
 
 				if(norm_dlsf>1.e-10)

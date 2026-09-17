@@ -126,6 +126,7 @@ const char* EnumToStringx(int en){
 		case CalvingADStressThresholdFloatingiceEnum : return "CalvingADStressThresholdFloatingice";
 		case CalvingADStressThresholdGroundediceEnum : return "CalvingADStressThresholdGroundedice";
 		case CalvingCrevasseDepthEnum : return "CalvingCrevasseDepth";
+		case CalvingCrevasseDepthTypeEnum : return "CalvingCrevasseDepthType";
 		case CalvingCrevasseThresholdEnum : return "CalvingCrevasseThreshold";
 		case CalvingHeightAboveFloatationEnum : return "CalvingHeightAboveFloatation";
 		case CalvingLawEnum : return "CalvingLaw";
@@ -144,7 +145,8 @@ const char* EnumToStringx(int en){
 		case CalvingRcEnum : return "CalvingRc";
 		case CalvingNumberofBasinsEnum : return "CalvingNumberofBasins";
 		case CalvingFEnum : return "CalvingF";
-		case CalvingDMaxEnum : return "CalvingDMax";
+		case CalvingChiCritEnum : return "CalvingChiCrit";
+		case CalvingChiMaxEnum : return "CalvingChiMax";
 		case CalvingKEnum : return "CalvingK";
 		case ConfigurationTypeEnum : return "ConfigurationType";
 		case ConstantsGEnum : return "ConstantsG";
