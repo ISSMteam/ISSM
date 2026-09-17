@@ -69,7 +69,7 @@ void CalvingStochasticx(FemModel* femmodel){
 
 	/*Intermediaries*/
 	IssmPDouble r;
-	IssmDouble  delta_t,f,dmax,k;
+	IssmDouble  delta_t,f,chi_max,k;
 
 	/*1. generate random number*/
 	static std::mt19937 gen(std::random_device{}());          // or gen(1234) for reproducibility
@@ -80,7 +80,7 @@ void CalvingStochasticx(FemModel* femmodel){
 	femmodel->parameters->FindParam(&delta_t, TimesteppingTimeStepEnum);
 	femmodel->parameters->FindParam(&f, CalvingFEnum);
 	femmodel->parameters->FindParam(&k, CalvingKEnum);
-	femmodel->parameters->FindParam(&dmax, CalvingChiMaxEnum);
+	femmodel->parameters->FindParam(&chi_max, CalvingChiMaxEnum);
 	IssmDouble Pmax = 1. - exp(-f*delta_t);
 
 	/*3. cap random probability*/
@@ -90,11 +90,10 @@ void CalvingStochasticx(FemModel* femmodel){
 	IssmDouble tau = -(f*delta_t)/log(1. - P);
 
 	/*5. Define delta critical */
-	IssmDouble dcrit = dmax - log(tau)/k;
-	femmodel->parameters->SetParam(dcrit, CalvingChiCritEnum);
+	IssmDouble chi_crit = chi_max - log(tau)/k;
+	femmodel->parameters->SetParam(chi_crit, CalvingChiCritEnum);
 
 	/*Loop over elements and compute crevasse depth*/
 	femmodel->DeviatoricStressx();
 	femmodel->ElementOperationx(&Element::CalvingCrevasseDepth);
-
 }
