@@ -674,7 +674,7 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
    /*Crevasse depth input specific to some*/
    Input* strainrateparallel_input  = NULL;
    Input* strainrateeffective_input = NULL;
-   if(crevasse_opening_stress==0){
+   if(crevasse_opening_stress==0 || crevasse_opening_stress==2){
       strainrateparallel_input  = this->GetInput(StrainRateparallelEnum);  _assert_(strainrateparallel_input);
       strainrateeffective_input = this->GetInput(StrainRateeffectiveEnum); _assert_(strainrateeffective_input);
    }
