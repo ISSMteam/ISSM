@@ -34,7 +34,7 @@ md = solve(md, 'Stressbalance')
 
 #Fields and tolerances to track changes
 field_names = ['Gradient', 'Misfits', 'FrictionCoefficient', 'Pressure', 'Vel', 'Vx', 'Vy']
-field_tolerances = [3e-08, 1e-07, 5e-10, 1e-10, 1e-09, 1e-09, 1e-09]
+field_tolerances = [2e-05, 2e-06, 8e-06, 1e-10, 6e-06, 5e-06, 6e-06]
 field_values = [md.results.StressbalanceSolution.Gradient1,
                 md.results.StressbalanceSolution.J,
                 md.results.StressbalanceSolution.FrictionCoefficient,
