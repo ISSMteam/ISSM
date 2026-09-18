@@ -39,7 +39,7 @@ cd ${PETSC_DIR}
 	--with-shared-libraries=0 \
 	--CFLAGS="-fPIC" \
 	--CXXFLAGS="-fPIC" \
-	--FFLAGS="-fPIC" \
+	--FFLAGS="-fPIC -ffree-line-length-none" \
 	--with-debugging=0 \
 	--with-valgrind=0 \
 	--with-x=0 \
