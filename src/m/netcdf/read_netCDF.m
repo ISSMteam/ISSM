@@ -61,7 +61,10 @@ end
 netcdf.close(ncid);
 
 % Coerce elements
-md.mesh.elements=int32(md.mesh.elements);
+md.mesh.elements=int64(md.mesh.elements);
+if md.mesh.dimension() == 3
+	md.mesh.elements2d=int64(md.mesh.elements2d);
+end
 
 if verbose; disp('Model successfully loaded from NetCDF4.'); end
 end
