@@ -15,27 +15,27 @@ LIBGCC_PATH="${LIBGFORTRAN_PATH}/gcc/x86_64-apple-darwin21/12.1.0"
 #
 
 ISSM_CONFIG='\
-	--prefix=${ISSM_DIR} \
+	--prefix="${ISSM_DIR}" \
 	--enable-standalone-executables \
 	--enable-standalone-modules \
 	--enable-standalone-libraries \
 	--disable-dependency-tracking \
 	--with-python="${HOME}/.venv/issm/bin/python" \
 	--with-fortran-lib="${LIBGFORTRAN_PATH}/libgfortran.a ${LIBGFORTRAN_PATH}/libquadmath.a ${LIBGCC_PATH}/libgcc.a" \
-	--with-mpi-include=${ISSM_DIR}/externalpackages/petsc/install/include \
+	--with-mpi-include="${ISSM_DIR}/externalpackages/petsc/install/include" \
 	--with-mpi-libflags="-L${ISSM_DIR}/externalpackages/petsc/install/lib -lmpi -lmpicxx -lmpifort" \
-	--with-blas-lapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-metis-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-parmetis-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-scalapack-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-mumps-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-hdf5-dir=${ISSM_DIR}/externalpackages/hdf5/install \
-	--with-petsc-dir=${ISSM_DIR}/externalpackages/petsc/install \
-	--with-boost-dir=${ISSM_DIR}/externalpackages/boost/install \
-	--with-dakota-dir=${ISSM_DIR}/externalpackages/dakota/install \
-	--with-chaco-dir=${ISSM_DIR}/externalpackages/chaco/install \
-	--with-proj-dir=${ISSM_DIR}/externalpackages/proj/install \
-	--with-triangle-dir=${ISSM_DIR}/externalpackages/triangle/install \
+	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-hdf5-dir="${ISSM_DIR}/externalpackages/hdf5/install" \
+	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-boost-dir="${ISSM_DIR}/externalpackages/boost/install" \
+	--with-dakota-dir="${ISSM_DIR}/externalpackages/dakota/install" \
+	--with-chaco-dir="${ISSM_DIR}/externalpackages/chaco/install" \
+	--with-proj-dir="${ISSM_DIR}/externalpackages/proj/install" \
+	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 '
 
 #-------------------#

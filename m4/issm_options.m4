@@ -1850,7 +1850,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			if test "x${IS_MSYS2}" == "xyes"; then
 				MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lcmumps -Wl,-ldmumps -Wl,-lsmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
 			else
-				MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lcmumps -lmumps_common -lpord -lzmumps"
+				MUMPSLIB="-L${MUMPS_ROOT}/lib -lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lpord"
 			fi
 		else
 			MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lmumps_common -lpord"
