@@ -102,3 +102,7 @@ examples/AMR/VTK
 examples/Greenland/*.mat
 examples/Inversion/*.mat
 examples/Inversion/*.tar.gz
+
+# User-specific files#
+src/m/*_settings.m
+#===========
