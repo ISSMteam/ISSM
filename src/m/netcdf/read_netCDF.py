@@ -49,9 +49,6 @@ def read_netCDF(filename: str, verbose: bool = False):
 
     # Coerce elements
     md.mesh.elements=np.array(md.mesh.elements,dtype=np.int64)
-    md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
-    md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
-    md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
     try:
         md.mesh.vertexconnectivity=np.array(md.mesh.vertexconnectivity,dtype=np.int64)
     except:
@@ -77,6 +74,10 @@ def read_netCDF(filename: str, verbose: bool = False):
         md.mesh.elements2d=np.array(md.mesh.elements2d,dtype=np.int64)
         md.mesh.numberofvertices2d=int(md.mesh.numberofvertices2d)
         md.mesh.numberofelements2d=int(md.mesh.numberofelements2d)
+    elif md.mesh.dimension() == 2:
+        md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
+        md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
+        md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
 
     if verbose:
         print('Model successfully loaded from NetCDF4.')
