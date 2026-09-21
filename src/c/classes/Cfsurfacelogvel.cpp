@@ -172,10 +172,19 @@ IssmDouble Cfsurfacelogvel::Cfsurfacelogvel_Calculation(Element* element, int de
 	topelement->GetVerticesCoordinates(&xyz_list);
 
 	/*Get model values*/
-	Input *vx_input = topelement->GetInput(VxEnum); _assert_(vx_input);
+	int approximation;
+	element->GetInputValue(&approximation,ApproximationEnum);
+	Input *vx_input = NULL;
 	Input *vy_input = NULL;
-	if(numcomponents==2){
-		vy_input = topelement->GetInput(VyEnum); _assert_(vy_input);
+	if(approximation==MOLHOApproximationEnum){
+		vx_input = topelement->GetInput(VxSurfaceEnum); _assert_(vx_input);
+		vy_input = topelement->GetInput(VySurfaceEnum); _assert_(vy_input);
+	}
+	else{
+		vx_input = topelement->GetInput(VxEnum); _assert_(vx_input);
+		if(numcomponents==2){
+			vy_input = topelement->GetInput(VyEnum); _assert_(vy_input);
+		}
 	}
 
 	/*Retrieve all inputs we will be needing: */
