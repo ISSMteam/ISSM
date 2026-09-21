@@ -62,8 +62,34 @@ netcdf.close(ncid);
 
 % Coerce elements
 md.mesh.elements=int64(md.mesh.elements);
+md.mesh.edges=int64(md.mesh.edges);
+md.mesh.segments=int64(md.mesh.segments);
+md.mesh.segmentmarkers=int64(md.mesh.segmentmarkers);
+try
+	md.mesh.vertexconnectivity=int64(md.mesh.vertexconnectivity);
+catch
+end
+try
+	md.mesh.elementconnectivity=int64(md.mesh.elementconnectivity);
+catch
+end
+
+md.mesh.numberofvertices=int64(md.mesh.numberofvertices);
+md.mesh.numberofelements=int64(md.mesh.numberofelements);
+
+try
+	md.mesh.extractedvertices=int64(md.mesh.extractedvertices);
+catch
+end
+try
+	md.mesh.extractedelements=int64(md.mesh.extractedelements);
+catch
+end
+
 if md.mesh.dimension() == 3
 	md.mesh.elements2d=int64(md.mesh.elements2d);
+	md.mesh.numberofvertices2d=int64(md.mesh.numberofvertices2d);
+	md.mesh.numberofelements2d=int64(md.mesh.numberofelements2d);
 end
 
 if verbose; disp('Model successfully loaded from NetCDF4.'); end
