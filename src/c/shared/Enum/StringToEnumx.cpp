@@ -3673,6 +3673,7 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"GenericOption")==0) return GenericOptionEnum;
 	      else if (strcmp(name,"GenericParam")==0) return GenericParamEnum;
 	      else if (strcmp(name,"GenericExternalResult")==0) return GenericExternalResultEnum;
+	      else if (strcmp(name,"GPUHOParam")==0) return GPUHOParamEnum;
 	      else if (strcmp(name,"Gradient1")==0) return Gradient1Enum;
 	      else if (strcmp(name,"Gradient2")==0) return Gradient2Enum;
 	      else if (strcmp(name,"Gradient3")==0) return Gradient3Enum;
@@ -3702,11 +3703,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Hydrologydc")==0) return HydrologydcEnum;
 	      else if (strcmp(name,"Hydrologypism")==0) return HydrologypismEnum;
 	      else if (strcmp(name,"Hydrologyshakti")==0) return HydrologyshaktiEnum;
-	      else if (strcmp(name,"Hydrologyshreve")==0) return HydrologyshreveEnum;
          else stage=31;
    }
    if(stage==31){
-	      if (strcmp(name,"Hydrologyprescribe")==0) return HydrologyprescribeEnum;
+	      if (strcmp(name,"Hydrologyshreve")==0) return HydrologyshreveEnum;
+	      else if (strcmp(name,"Hydrologyprescribe")==0) return HydrologyprescribeEnum;
 	      else if (strcmp(name,"IceMass")==0) return IceMassEnum;
 	      else if (strcmp(name,"IceMassScaled")==0) return IceMassScaledEnum;
 	      else if (strcmp(name,"IceVolumeAboveFloatation")==0) return IceVolumeAboveFloatationEnum;
@@ -3825,11 +3826,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"P0Array")==0) return P0ArrayEnum;
 	      else if (strcmp(name,"P0DG")==0) return P0DGEnum;
 	      else if (strcmp(name,"P1DG")==0) return P1DGEnum;
-	      else if (strcmp(name,"P1P1")==0) return P1P1Enum;
          else stage=32;
    }
    if(stage==32){
-	      if (strcmp(name,"P1P1GLS")==0) return P1P1GLSEnum;
+	      if (strcmp(name,"P1P1")==0) return P1P1Enum;
+	      else if (strcmp(name,"P1P1GLS")==0) return P1P1GLSEnum;
 	      else if (strcmp(name,"P1bubble")==0) return P1bubbleEnum;
 	      else if (strcmp(name,"P1bubblecondensed")==0) return P1bubblecondensedEnum;
 	      else if (strcmp(name,"P1xP2")==0) return P1xP2Enum;
@@ -3948,11 +3949,11 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"UzawaPressureAnalysis")==0) return UzawaPressureAnalysisEnum;
 	      else if (strcmp(name,"VectorParam")==0) return VectorParamEnum;
 	      else if (strcmp(name,"Vertex")==0) return VertexEnum;
-	      else if (strcmp(name,"VertexLId")==0) return VertexLIdEnum;
          else stage=33;
    }
    if(stage==33){
-	      if (strcmp(name,"VertexPId")==0) return VertexPIdEnum;
+	      if (strcmp(name,"VertexLId")==0) return VertexLIdEnum;
+	      else if (strcmp(name,"VertexPId")==0) return VertexPIdEnum;
 	      else if (strcmp(name,"VertexSId")==0) return VertexSIdEnum;
 	      else if (strcmp(name,"Vertices")==0) return VerticesEnum;
 	      else if (strcmp(name,"ViscousHeating")==0) return ViscousHeatingEnum;

@@ -3573,6 +3573,7 @@
 	GenericOptionEnum
 	GenericParamEnum
 	GenericExternalResultEnum
+	GPUHOParamEnum
 	Gradient1Enum
 	Gradient2Enum
 	Gradient3Enum
@@ -7442,6 +7443,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==GenericOptionEnum) return "GenericOption" end
 	if(enum==GenericParamEnum) return "GenericParam" end
 	if(enum==GenericExternalResultEnum) return "GenericExternalResult" end
+	if(enum==GPUHOParamEnum) return "GPUHOParam" end
 	if(enum==Gradient1Enum) return "Gradient1" end
 	if(enum==Gradient2Enum) return "Gradient2" end
 	if(enum==Gradient3Enum) return "Gradient3" end
@@ -11311,6 +11313,7 @@ function StringToEnum(name::String)
 	if(name=="GenericOption") return GenericOptionEnum  end
 	if(name=="GenericParam") return GenericParamEnum  end
 	if(name=="GenericExternalResult") return GenericExternalResultEnum  end
+	if(name=="GPUHOParam") return GPUHOParamEnum  end
 	if(name=="Gradient1") return Gradient1Enum  end
 	if(name=="Gradient2") return Gradient2Enum  end
 	if(name=="Gradient3") return Gradient3Enum  end

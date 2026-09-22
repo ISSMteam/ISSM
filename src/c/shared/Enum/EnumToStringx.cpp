@@ -3586,6 +3586,7 @@ const char* EnumToStringx(int en){
 		case GenericOptionEnum : return "GenericOption";
 		case GenericParamEnum : return "GenericParam";
 		case GenericExternalResultEnum : return "GenericExternalResult";
+		case GPUHOParamEnum : return "GPUHOParam";
 		case Gradient1Enum : return "Gradient1";
 		case Gradient2Enum : return "Gradient2";
 		case Gradient3Enum : return "Gradient3";

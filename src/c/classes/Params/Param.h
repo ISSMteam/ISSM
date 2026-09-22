@@ -14,6 +14,7 @@
 
 #include "../../datastructures/datastructures.h"
 #include "../Node.h"
+class GPUHOParam;
 
 class Param: public Object{
 
@@ -54,6 +55,9 @@ class Param: public Object{
 		virtual void  GetParameterValue(Vector<IssmDouble>** pvec){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a Vec");}
 		virtual void  GetParameterValue(Matrix<IssmDouble>** pmat){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a Mat");}
 		virtual void  GetParameterValue(FILE** pfid){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a FILE");}
+		#ifdef _HAVE_GPU_HO_
+		virtual void  GetParameterValue(GPUHOParam** p_metadata){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a GPUHOParam");}
+		#endif
 		virtual void  GetParameterValue(DataSet** pdataset){_error_("Param "<< EnumToStringx(this->enum_type) << " cannot return a DataSet");}
 		virtual void  Marshall(MarshallHandle* marshallhandle)=0;
 		virtual int   ObjectEnum()=0;

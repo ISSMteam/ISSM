@@ -237,6 +237,9 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		void       SealevelchangeDeformationConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads,  IssmDouble* rotationvector,SealevelGeometry* slgeom){_error_("not implemented yet");};
 		void       SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newindex, int offset){_error_("not implemented yet");};
 		#endif
+		#ifdef _HAVE_GPU_HO_
+		void GetHOMetadataArraySizes(void);
+		#endif
 
 		/*}}}*/
 };

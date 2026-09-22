@@ -593,6 +593,11 @@ issm_sources += ./classes/Params/EmulatorParam.cpp
 issm_sources += ./modules/StressBalanceEmulatorx/StressBalanceEmulatorx.cpp
 endif
 #}}}
+# GPU_HO{{{
+if GPU_HO
+issm_sources += ./classes/Params/GPUHOParam.cpp
+endif
+#}}}
 # Sampling sources {{{
 if SAMPLING
 issm_sources += \

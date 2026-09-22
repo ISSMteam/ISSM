@@ -954,6 +954,26 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([ESMF], [test "x${HAVE_ESMF}" == "xyes"])
 	dnl }}}
+	dnl GPU_HO{{{
+	AC_ARG_ENABLE(
+				[gpu_ho],													dnl feature
+				AS_HELP_STRING([--enable-gpu_ho], [turn on GPU accelerated HO solver]),	dnl help string
+				[enable_gpu_ho=${enableval}],								dnl action if given
+				[enable_gpu_ho=no]											dnl action if not given
+				)
+	AC_MSG_CHECKING(for gpu_ho support)
+	HAVE_GPU_HO=no
+	if test "x${enable_gpu_ho}" == "xyes"; then
+		HAVE_GPU_HO=yes
+	fi
+	AC_MSG_RESULT([${HAVE_GPU_HO}])
+
+	dnl GPU_HO libraries and header files
+	if test "x${HAVE_GPU_HO}" == "xyes"; then
+	   AC_DEFINE([_HAVE_GPU_HO_], [1], [with GPU_HO in ISSM src])
+	fi
+	AM_CONDITIONAL([GPU_HO], [test "x${HAVE_GPU_HO}" == "xyes"])
+	dnl }}}
 	dnl CoDiPack{{{
 	AC_MSG_CHECKING([for CoDiPack])
 	AC_ARG_WITH(

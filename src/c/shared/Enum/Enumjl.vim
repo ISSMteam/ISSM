@@ -3577,6 +3577,7 @@ syn keyword juliaConstC GaussTriaEnum
 syn keyword juliaConstC GenericOptionEnum
 syn keyword juliaConstC GenericParamEnum
 syn keyword juliaConstC GenericExternalResultEnum
+syn keyword juliaConstC GPUHOParamEnum
 syn keyword juliaConstC Gradient1Enum
 syn keyword juliaConstC Gradient2Enum
 syn keyword juliaConstC Gradient3Enum

@@ -3584,6 +3584,7 @@ syn keyword cConstant GaussTriaEnum
 syn keyword cConstant GenericOptionEnum
 syn keyword cConstant GenericParamEnum
 syn keyword cConstant GenericExternalResultEnum
+syn keyword cConstant GPUHOParamEnum
 syn keyword cConstant Gradient1Enum
 syn keyword cConstant Gradient2Enum
 syn keyword cConstant Gradient3Enum
@@ -3939,6 +3940,7 @@ syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
 syn keyword cType GiaDeflectionCoreArgs
+syn keyword cType GPUHOParam
 syn keyword cType GrdLoads
 syn keyword cType Hook
 syn keyword cType Input

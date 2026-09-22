@@ -3583,6 +3583,7 @@ enum definitions{
 	GenericOptionEnum,
 	GenericParamEnum,
 	GenericExternalResultEnum,
+	GPUHOParamEnum,
 	Gradient1Enum,
 	Gradient2Enum,
 	Gradient3Enum,
