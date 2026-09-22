@@ -59,7 +59,8 @@ if ismember(string, {'dhdt_smith', 'geothermal_heat_flux1', 'geothermal_heat_flu
 %Non timeseries, high-resolution (x, y)
 elseif ismember(string, {...
 		'mouginot_basins', 'mask', 'icemask_promice', ...
-		'surface_gimp', 'surface_grimp', 'thickness', 'bed', 'geoid'})
+		'surface_gimp', 'surface_grimp', 'thickness', 'bed', 'geoid',...
+		'vx_mosaic', 'vy_mosaic'})
 	xdata = double(ncread(mipkitnc,'x'));
 	ydata = double(ncread(mipkitnc,'y'));
 	istimeseries = false;
