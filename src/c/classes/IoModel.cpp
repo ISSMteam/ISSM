@@ -2154,6 +2154,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	IssmDouble  scalar;
 	IssmDouble *doublearray = NULL;
 	int         M,N;
+	bool testnewapproach = false;
 
 	/*First of, find the record for the name, and get code  of data type: */
 	this->SetFilePointerToData(&code, &vector_layout,vector_name);
@@ -2333,11 +2334,21 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 				break;
 		case 7: //IssmDouble vector
 		case 10:
-				this->FetchData(&doublearray,&M,&N,vector_name);
+				if(testnewapproach){
+					this->FetchDataLocal(&doublearray,&M,&N,vector_name);
+				}
+				else{
+					this->FetchData(&doublearray,&M,&N,vector_name);
+				}
 				if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
 				for(Object* & object : elements->objects){
 					Element* element=xDynamicCast<Element*>(object);
-					element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
+					if(testnewapproach){
+						element->InputCreateLocal(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+					}
+					else{
+						element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+					} 
 				}
 				break;
 		default:
