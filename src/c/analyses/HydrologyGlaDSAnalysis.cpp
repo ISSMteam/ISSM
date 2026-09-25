@@ -349,7 +349,7 @@ ElementVector* HydrologyGlaDSAnalysis::CreatePVector(Element* element){/*{{{*/
 	/*Intermediaries */
 	int         meltflag;
 	IssmDouble  Jdet,w,v2,vx,vy,ub,h,h_r;
-	IssmDouble  G,m,melt,RO,frictionheat,alpha2;
+	IssmDouble  G,m,melt,frictionheat,alpha2;
 	IssmDouble  A,B,n,phi_old,phi,phi_0;
 	IssmDouble  H,b;
 	IssmDouble* xyz_list = NULL;
@@ -429,7 +429,7 @@ ElementVector* HydrologyGlaDSAnalysis::CreatePVector(Element* element){/*{{{*/
 		else{
 			Input* RO_input = element->GetInput(SmbRunoffEnum);_assert_(RO_input);
 			RO_input->GetInputValue(&melt,gauss);
-			m = melt + RO;
+			m = melt;
 		}
 
 		/*Compute closing rate*/
