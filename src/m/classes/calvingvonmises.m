@@ -56,9 +56,16 @@ classdef calvingvonmises
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 			yts=md.constants.yts;
+
+			if(size(self.stress_threshold_groundedice,1)==md.mesh.numberofvertices | size(self.stress_threshold_groundedice,1)==md.mesh.numberofvertices+1)
+				mattype=1; tsl = md.mesh.numberofvertices;
+			else
+				mattype=2; tsl = md.mesh.numberofelements;
+			end
+
 			WriteData(fid,prefix,'name','md.calving.law','data',2,'format','Integer');
-			WriteData(fid,prefix,'object',self,'fieldname','stress_threshold_groundedice','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'fieldname','stress_threshold_floatingice','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','stress_threshold_groundedice','format','DoubleMat','mattype',mattype,'timeserieslength',tsl+1,'yts',md.constants.yts);
+			WriteData(fid,prefix,'object',self,'fieldname','stress_threshold_floatingice','format','DoubleMat','mattype',mattype,'timeserieslength',tsl+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'fieldname','min_thickness','format','Double');
 		end % }}}
 	end
