@@ -1483,7 +1483,12 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 			}
 		}
 		else if(layout==2){
-			_error_("not supported yet");
+			if(M==this->numberofelements){
+				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = this->numelements_per_proc[rank];
+			}
+			else{
+				_error_("not supported yet");
+			}
 		}
 		else{
 			_error_("layout "<<layout<<" not support yet (while fetching "<<data_name<<")");
@@ -1509,17 +1514,28 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 
 			/*Construct matrix relevant to this rank*/
 			all_matrices[rank] = xNew<IssmPDouble>(M_local_list[rank]*N);
-			for(int i=0; i<this->numvertices_per_proc[rank]; i++){
-				for(int j=0; j<N; j++){
-					all_matrices[rank][i*N+j] = fullmatrix[this->rank0_vert_send_ids[rank][i]*N+j];
+			if(layout==1){
+				for(int i=0; i<this->numvertices_per_proc[rank]; i++){
+					for(int j=0; j<N; j++){ all_matrices[rank][i*N+j] = fullmatrix[this->rank0_vert_send_ids[rank][i]*N+j]; }
 				}
+			}
+			else if(layout==2){
+				int counter = 0;
+				for(int i=0; i<this->numberofelements; i++){
+					if(this->epart[i]==rank){
+						for(int j=0; j<N; j++){ all_matrices[rank][counter*N+j] = fullmatrix[i*N+j]; }
+						counter++;
+					}
+				}
+				_assert_(counter==this->numelements_per_proc[rank]);
+			}
+			else{
+				_error_("layout "<<layout<<" not support yet (while fetching "<<data_name<<")");
 			}
 
 			/*Add time for time series*/
 			if(istimeseries){
-				for(int j=0; j<N; j++){
-					all_matrices[rank][this->numvertices_per_proc[rank]*N+j] = fullmatrix[(M-1)*N+j];
-				}
+				for(int j=0; j<N; j++){ all_matrices[rank][(M_local_list[rank]-1)*N+j] = fullmatrix[(M-1)*N+j]; }
 			}
 			ISSM_MPI_Isend(all_matrices[rank], M_local_list[rank]*N, ISSM_MPI_PDOUBLE, rank, 0, IssmComm::GetComm(), &send_requests[rank]);
 		}
@@ -2103,7 +2119,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	/*Defaulting only supported for double arrays*/
 	if(code!=7 && code!=10) _error_(vector_name<<" is not a double array");
 
-	bool testnewapproach = false;
+	bool testnewapproach = true;
 	if(testnewapproach){
 		this->FetchDataLocal(&doublearray,&M,&N,vector_name);
 	}
