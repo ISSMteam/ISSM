@@ -99,6 +99,9 @@ void FetchData(int** pmatrix,int* pM,int *pN,const mxArray* dataref){/*{{{*/
 	*pmatrix=outmatrix;
 	if (pM)*pM=outmatrix_rows;
 	if (pN)*pN=outmatrix_cols;
+
+	/*Clear memory:*/
+	xDelete<double>(doublematrix);
 }
 /*}}}*/
 void FetchData(bool** pmatrix,int* pM,int *pN,const mxArray* dataref){/*{{{*/
@@ -140,6 +143,9 @@ void FetchData(bool** pmatrix,int* pM,int *pN,const mxArray* dataref){/*{{{*/
 	*pmatrix=outmatrix;
 	if (pM)*pM=outmatrix_rows;
 	if (pN)*pN=outmatrix_cols;
+
+	/*Clear memory:*/
+	xDelete<double>(doublematrix);
 }
 /*}}}*/
 void FetchData(double** pvector,int* pM,const mxArray* dataref){/*{{{*/
@@ -192,6 +198,9 @@ void FetchData(int** pvector,int* pM,const mxArray* dataref){/*{{{*/
 	/*Assign output pointers:*/
 	*pvector=outvector;
 	if (pM)*pM=outvector_rows;
+	
+	/*Clear memory:*/
+	xDelete<double>(doublevector);
 }
 /*}}}*/
 void FetchData(bool** pvector,int* pM,const mxArray* dataref){/*{{{*/
@@ -223,6 +232,9 @@ void FetchData(bool** pvector,int* pM,const mxArray* dataref){/*{{{*/
 	/*Assign output pointers:*/
 	*pvector=outvector;
 	if (pM)*pM=outvector_rows;
+
+	/*Clear memory:*/
+	xDelete<double>(doublevector);
 }
 /*}}}*/
 void FetchData(float** pvector,int* pM,const mxArray* dataref){/*{{{*/
@@ -254,6 +266,9 @@ void FetchData(float** pvector,int* pM,const mxArray* dataref){/*{{{*/
 	/*Assign output pointers:*/
 	*pvector=outvector;
 	if (pM)*pM=outvector_rows;
+
+	/*Clear memory:*/
+	xDelete<double>(doublevector);
 }
 /*}}}*/
 void FetchData(char** pstring,const mxArray* dataref){/*{{{*/
