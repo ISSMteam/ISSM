@@ -1,5 +1,7 @@
+%RLEV_WRITE - write response levels to a Dakota input file
 %
-%  function to write response levels
+%   Usage:
+%      []=rlev_write(fidi,dresp,params)
 %
 function []=rlev_write(fidi,dresp,params)
 

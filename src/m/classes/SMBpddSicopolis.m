@@ -1,4 +1,4 @@
-%SMBpddSicopolis Class definition
+%SMBPDDSICOPOLIS class definition
 %
 %   Usage:
 %      SMBpddSicopolis=SMBpddSicopolis();

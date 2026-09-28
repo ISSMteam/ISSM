@@ -1,4 +1,8 @@
 function results=parseresultsfromdisk(md,filename,iosplit) % {{{
+%PARSERESULTSFROMDISK - parse results of solution sequence from disk file "filename"
+%
+%   Usage:
+%      results=parseresultsfromdisk(md,filename,iosplit)
 
 if iosplit
 	results=parseresultsfromdiskiosplit(md,filename);

@@ -2,7 +2,7 @@ function stokes=stokesoptions(varargin)
 %STOKESOPTIONS - return STOKES multi-physics solver petsc options
 %
 %   Usage:
-%      options=stokesoptions;
+%      stokes=stokesoptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

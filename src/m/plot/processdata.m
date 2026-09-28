@@ -9,7 +9,7 @@ function [data datatype]=processdata(md,data,options)
 %   Usage:
 %      [data datatype]=processdata(md,data,options);
 %
-%   See also: PLOTMODEL, PROCESSMESH
+%   See Also: PLOTMODEL, PROCESSMESH
 
 %check format
 if (iscell(data) | isempty(data) | length(data)==0 | (length(data)==1 & ~isstruct(data) & isnan(data)))

@@ -63,7 +63,7 @@ def gmshplanet(*args):
             raise Exception('gmshplanet: call to gmsh failed: {}'.format(errs))
 
     gmshmajorversion = int(outs)
-    if gmshmajorversion not in [3, 4]:
+    if gmshmajorversion not in [3, 4, 5]:
         raise RuntimeError('gmshplanet: Gmsh major version {} not supported!'.format(gmshmajorversion))
 
     # Process options
@@ -121,7 +121,7 @@ def gmshplanet(*args):
 
     if gmshmajorversion == 3:
         curvename = 'Line Loop'
-    elif gmshmajorversion == 4:
+    elif gmshmajorversion == 4 or gmshmajorversion == 5:
         curvename = 'Curve Loop'
 
     fid.write('%s(13) = {2,8,-10};\n' % curvename)

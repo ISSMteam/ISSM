@@ -95,7 +95,7 @@ classdef inversion
 			md = checkfield(md,'fieldname','inversion.nsteps','numel',1,'>=',0);
 			md = checkfield(md,'fieldname','inversion.maxiter_per_step','size',[md.inversion.nsteps 1],'>=',0);
 			md = checkfield(md,'fieldname','inversion.step_threshold','size',[md.inversion.nsteps 1]);
-			md = checkfield(md,'fieldname','inversion.cost_functions','size',[1 num_costfunc],'values',supportedcostfunctions());
+			md = checkfield(md,'fieldname','inversion.cost_functions','numel',num_costfunc,'values',supportedcostfunctions());
 			md = checkfield(md,'fieldname','inversion.cost_functions_coefficients','size',[md.mesh.numberofvertices num_costfunc],'>=',0);
 			md = checkfield(md,'fieldname','inversion.gradient_scaling','size',[md.inversion.nsteps num_controls]);
 			md = checkfield(md,'fieldname','inversion.min_parameters','size',[NaN num_controls]);

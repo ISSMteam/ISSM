@@ -1,7 +1,9 @@
 function [predictions errors]= Kriging(x,y,observations,x_interp,y_interp,varargin);
-%KRIGING - Linear predictor
-%   Usage: predictions = Kriging(x,y,observations,x_interp,y_interp,'options');
-%   
+%KRIGING - Linear prediction of scattered data using kriging interpolation
+%
+%   Usage:
+%      [predictions,errors] = Kriging(x,y,observations,x_interp,y_interp,'options');
+%
 %   available options:
 %	   -'model': Available variogram models 'gaussian' (default),'spherical','power','exponential'
 %	      -'nugget': nugget effect (default 0.2)

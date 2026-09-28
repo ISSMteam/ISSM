@@ -1,11 +1,11 @@
 function factors=importancefactors(md,variablename,responsename,partition)
-%IMPORTANCEFACTORS - compute importance factors for a certain variable and response.
+%IMPORTANCEFACTORS - compute importance factors for a certain variable and response
 %
 %   Usage:
-%      factors=importancefactors(md,variablename,responsename)
+%      factors=importancefactors(md,variablename,responsename,partition)
 %
-%
-%   Example: factors=importancefactors(md,'drag','max_vel');
+%   Example:
+%      factors=importancefactors(md,'drag','max_vel',partition);
 %
 
 variablenamelength=length(variablename);

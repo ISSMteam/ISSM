@@ -1,5 +1,5 @@
 function backstress=calcbackstress(md,varargin)
-%BACKSTRESSFROMINVERSION - compute ice shelf backstress  
+%CALCBACKSTRESS - compute ice shelf backstress, accounting for damage
 %
 %	 This routine computes backstress based on the analytical formalism of
 %	 Thomas (1973) and Borstad et al. (2013) based on the ice rigidity,
@@ -26,7 +26,7 @@ function backstress=calcbackstress(md,varargin)
 %      backstress=calcbackstress(md,options)
 %
 %   Example:
-%      backstress=backstressfrominversion(md,'smoothing',2,'coordsys','longitudinal');
+%      backstress=calcbackstress(md,'smoothing',2,'coordsys','longitudinal');
 
 % check inputs
 if (nargin<1)

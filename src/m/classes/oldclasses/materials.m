@@ -1,4 +1,7 @@
-%OLD materials class definition
+%MATERIALS class definition
+%
+%   Usage:
+%      materials=materials();
 
 classdef materials
 	properties (SetAccess=public) 

@@ -33,6 +33,7 @@ class stressbalance(object):
         #self.icefront = np.nan -- no longer in use
         self.maxiter = 0
         self.shelf_dampening = 0
+        self.theta = 0
         self.vertex_pairing = np.nan
         self.penalty_factor = np.nan
         self.rift_penalty_lock = np.nan
@@ -74,6 +75,7 @@ class stressbalance(object):
         s += '{}\n'.format(fielddisplay(self, 'ishydrologylayer', '(SSA only) 0: no subglacial hydrology layer in driving stress, 1: hydrology layer in driving stress'));
         s += '      Other:\n'
         s += '{}\n'.format(fielddisplay(self, 'shelf_dampening', 'use dampening for floating ice ? Only for FS model'))
+        s += '{}\n'.format(fielddisplay(self, 'theta', 'SSA thickness/velocity stabilization parameter: 0 no stabilization, 1 full stabilization'))
         s += '{}\n'.format(fielddisplay(self, 'FSreconditioning', 'multiplier for incompressibility equation. Only for FS model'))
         s += '{}\n'.format(fielddisplay(self, 'referential', 'local referential'))
         s += '{}\n'.format(fielddisplay(self, 'loadingforce', 'loading force applied on each point [N/m^3]'))
@@ -108,6 +110,9 @@ class stressbalance(object):
 
         self.FSreconditioning = pow(10, 13)
         self.shelf_dampening = 0
+
+        # SSA thickness/velocity stabilization parameter (0: off, 1: full scheme)
+        self.theta = 0.0
 
         # Penalty factor applied kappa = max(stiffness matrix) * 1.0^penalty_factor
         self.penalty_factor = 3
@@ -151,6 +156,7 @@ class stressbalance(object):
         md = checkfield(md, 'fieldname', 'stressbalance.isnewton', 'numel', [1], 'values', [0, 1, 2])
         md = checkfield(md, 'fieldname', 'stressbalance.FSreconditioning', 'size', [1], 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'stressbalance.maxiter', 'size', [1], '>=', 1)
+        md = checkfield(md, 'fieldname', 'stressbalance.theta', 'numel', [1], '>=', 0, '<=', 1)
         md = checkfield(md, 'fieldname', 'stressbalance.referential', 'size', [md.mesh.numberofvertices, 6])
         md = checkfield(md, 'fieldname', 'stressbalance.loadingforce', 'size', [md.mesh.numberofvertices, 3])
         md = checkfield(md, 'fieldname', 'stressbalance.requested_outputs', 'stringrow', 1)
@@ -198,6 +204,7 @@ class stressbalance(object):
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'FSreconditioning', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'maxiter', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'shelf_dampening', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'theta', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'penalty_factor', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'rift_penalty_lock', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'rift_penalty_threshold', 'format', 'Integer')

@@ -1,5 +1,7 @@
+%RLIST_WRITE - write a response list to a Dakota input file
 %
-%  function to write response list
+%   Usage:
+%      [rdesc]=rlist_write(fidi,cstring,cstring2,dresp,rdesc)
 %
 function [rdesc]=rlist_write(fidi,cstring,cstring2,dresp,rdesc)
 

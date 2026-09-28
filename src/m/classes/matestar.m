@@ -1,4 +1,4 @@
-%MATICE class definition
+%MATESTAR class definition
 %
 %   Usage:
 %      matestar=matestar();

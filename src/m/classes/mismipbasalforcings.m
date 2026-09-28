@@ -1,4 +1,4 @@
-%MISMIP BASAL FORCINGS class definition
+%MISMIPBASALFORCINGS class definition
 %
 %   Usage:
 %      mismipbasalforcings=mismipbasalforcings();

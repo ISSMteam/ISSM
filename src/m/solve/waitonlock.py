@@ -5,6 +5,7 @@ from generic import *
 # from localpfe import *
 from MatlabFuncs import *
 from pfe import *
+from cloud import *
 
 def waitonlock(md):
     """waitonlock - wait for a file
@@ -28,7 +29,7 @@ def waitonlock(md):
     timelimit = md.settings.waitonlock
     cluster = md.cluster
 
-    if isa(cluster, pfe) and cluster.interactive > 1:
+    if isa(cluster, pfe) and cluster.interactive > 0:
         lockfilename = '{}/Interactive{}/{}.lock'.format(executionpath, cluster.interactive, md.miscellaneous.name)
         logfilename = '{}/Interactive{}/{}.outlog'.format(executionpath, cluster.interactive, md.miscellaneous.name)
     # elif isa(cluster, localpfe):
@@ -51,7 +52,7 @@ def waitonlock(md):
 
     # Prepare command if the job is not running on the local machine
     if not strcmpi(oshostname(), cluster.name):
-        if cluster.name == 'cloud':
+        if isa(cluster, cloud):
             command = '[ -f {} ] && [ -f {} ] 2>/dev/null'.format(lockfilename, logfilename)
             command = '{} sshmaster {} --user {} \'{}\''.format(starcluster(), cluster.name, cluster.login, command)
         else:

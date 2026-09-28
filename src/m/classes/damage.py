@@ -69,10 +69,9 @@ class damage(object):
     # }}}
 
     def extrude(self, md):  # {{{
-        if self.isdamage:
-            self.D = project3d(md, 'vector', self.D, 'type', 'node')
-            self.spcdamage = project3d(md, 'vector', self.spcdamage, 'type', 'node')
-            return self
+        self.D = project3d(md, 'vector', self.D, 'type', 'node')
+        self.spcdamage = project3d(md, 'vector', self.spcdamage, 'type', 'node')
+        return self
     # }}}
 
     def setdefaultparameters(self):  # {{{

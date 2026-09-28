@@ -1,4 +1,8 @@
 function solverOptions=cgnegasmoptions(varargin)
+%CGNEGASMOPTIONS - define PETSc solver options for the Conjugate Gradient on the Normal Equations (CGNE) Krylov method with Generalized Additive Schwarz Method (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=cgnegasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

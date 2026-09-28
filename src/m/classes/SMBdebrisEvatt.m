@@ -1,4 +1,4 @@
-%SMBdebrisEvatt Class definition
+%SMBdebrisEvatt class definition
 %
 %   Usage:
 %      SMBdebrisEvatt=SMBdebrisEvatt();

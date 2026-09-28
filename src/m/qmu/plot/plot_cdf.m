@@ -1,65 +1,65 @@
+%PLOT_CDF - plot the CDF of the responses
 %
-%  plot the CDF of the responses.
+%   Usage:
+%      []=plot_cdf(dresp      ,params)
+%      []=plot_cdf(dresp,descr,params)
 %
-%  []=plot_cdf(dresp      ,params)
-%  []=plot_cdf(dresp,descr,params)
+%   where the required input is:
+%     dresp         (structure array, responses)
+%       or
+%     dresp         (structure array, responses)
+%     descr         (cell array, list of response descriptions desired)
 %
-%  where the required input is:
-%    dresp         (structure array, responses)
-%      or
-%    dresp         (structure array, responses)
-%    descr         (cell array, list of response descriptions desired)
+%   the required fields of dresp are:
+%     descriptor    (char, description)
+%     cdf(:,4)      (double matrix, CDF table)
 %
-%  the required fields of dresp are:
-%    descriptor    (char, description)
-%    cdf(:,4)      (double matrix, CDF table)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   where the optional parameters are:
+%     cplot         (char, 'p'/'r'/'g' to plot prob/reli/genrel)
+%     xmin          (numeric, minimum of x-axis)
+%     xmax          (numeric, maximum of x-axis)
+%     xgrid         (char, 'on' to turn on x-grid lines)
+%     ymin1         (numeric, minimum of y-axis)
+%     ymax1         (numeric, maximum of y-axis)
+%     ygrid1        (char, 'on' to turn on y-grid lines)
+%     ynorm         (char, 'yes' to use normal probability y-axis)
+%     yprob         (double vector, list of probabilities for y-axis)
+%     cline1        (char, 'off'/'no'/'-'/'--'/':'/etc. to change lines)
+%     lwidth1       (numeric, line width in points, default 0.5)
+%     cmark1        (char, 'on'/'yes'/'+'/'o'/'*'/etc. to change markers)
+%     msize1        (numeric, marker size in points, default 6)
+%     ymin2         (numeric, minimum of y-axis)
+%     ymax2         (numeric, maximum of y-axis)
+%     ygrid2        (char, 'on' to turn on y-grid lines)
+%     cline2        (char, 'off'/'no'/'-'/'--'/':'/etc. to change lines)
+%     lwidth2       (numeric, line width in points, default 0.5)
+%     cmark2        (char, 'on'/'yes'/'+'/'o'/'*'/etc. to change markers)
+%     msize2        (numeric, marker size in points, default 6)
+%     pdfplt        (char, 'bar'/'line'/'off' for pdf plots)
+%     pdfleg        (char, 'off' to turn off pdf legends)
+%     cmap          (char or numeric, colormap definition)
 %
-%  where the optional parameters are:
-%    cplot         (char, 'p'/'r'/'g' to plot prob/reli/genrel)
-%    xmin          (numeric, minimum of x-axis)
-%    xmax          (numeric, maximum of x-axis)
-%    xgrid         (char, 'on' to turn on x-grid lines)
-%    ymin1         (numeric, minimum of y-axis)
-%    ymax1         (numeric, maximum of y-axis)
-%    ygrid1        (char, 'on' to turn on y-grid lines)
-%    ynorm         (char, 'yes' to use normal probability y-axis)
-%    yprob         (double vector, list of probabilities for y-axis)
-%    cline1        (char, 'off'/'no'/'-'/'--'/':'/etc. to change lines)
-%    lwidth1       (numeric, line width in points, default 0.5)
-%    cmark1        (char, 'on'/'yes'/'+'/'o'/'*'/etc. to change markers)
-%    msize1        (numeric, marker size in points, default 6)
-%    ymin2         (numeric, minimum of y-axis)
-%    ymax2         (numeric, maximum of y-axis)
-%    ygrid2        (char, 'on' to turn on y-grid lines)
-%    cline2        (char, 'off'/'no'/'-'/'--'/':'/etc. to change lines)
-%    lwidth2       (numeric, line width in points, default 0.5)
-%    cmark2        (char, 'on'/'yes'/'+'/'o'/'*'/etc. to change markers)
-%    msize2        (numeric, marker size in points, default 6)
-%    pdfplt        (char, 'bar'/'line'/'off' for pdf plots)
-%    pdfleg        (char, 'off' to turn off pdf legends)
-%    cmap          (char or numeric, colormap definition)
+%   for each response in the input array, this function plots
+%   a line plot of the CDF and annotates it with the description.
 %
-%  for each response in the input array, this function plots
-%  a line plot of the CDF and annotates it with the description.
+%   this data would typically be contained in the dakota output
+%   file and read by dakota_out_parse.
 %
-%  this data would typically be contained in the dakota output
-%  file and read by dakota_out_parse.
+%   "Copyright 2010, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2010, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_cdf(varargin)
 

@@ -1,7 +1,7 @@
+%OBJECTIVE_FUNCTION class definition
 %
-%  definition for the objective_function class.
-%
-%  [of]=objective_function(varargin)
+%   Usage:
+%      of=objective_function(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

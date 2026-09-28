@@ -4,7 +4,8 @@ function applyoptions(md,data,options)
 %   Usage:
 %      applyoptions(md,data,options)
 %
-%   See also: PLOTMODEL, PARSE_OPTIONS
+%   See Also:
+%      PLOTMODEL, PARSE_OPTIONS
 
 %fontsize
 fontsize=getfieldvalue(options,'fontsize',14);

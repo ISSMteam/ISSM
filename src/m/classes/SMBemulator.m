@@ -1,4 +1,4 @@
-%SMBemulator Class definition
+%SMBemulator class definition
 %
 %   Usage:
 %      SMBemulator=SMBemulator();

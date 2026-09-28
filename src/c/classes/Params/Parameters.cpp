@@ -420,6 +420,15 @@ void Parameters::FindParam(FILE** pfid,int param_enum){ _assert_(this);/*{{{*/
 	this->params[index]->GetParameterValue(pfid);
 }
 /*}}}*/
+#ifdef _HAVE_HPU_HO_
+void Parameters::FindParam(GPUHOParam** p_metada,int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(p_metada);
+}
+/*}}}*/
+#endif
 void Parameters::FindParam(DataSet** pdataset,int param_enum){ /*{{{*/
 	_assert_(this);
 

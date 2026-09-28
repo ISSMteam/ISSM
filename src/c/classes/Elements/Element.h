@@ -438,5 +438,9 @@ class Element: public Object{
 		virtual void       SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newindex, int offset)=0;
 		#endif
 
+		#ifdef _HAVE_GPU_HO_
+		virtual void GetHOMetadataArraySizes(void){_error_("not implemented yet");};
+		#endif
+
 };
 #endif

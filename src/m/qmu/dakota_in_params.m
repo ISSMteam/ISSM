@@ -1,7 +1,9 @@
+%DAKOTA_IN_PARAMS - populate a Dakota parameter structure
 %
 %  populate a Dakota parameter structure.
 %
-%  [params]=dakota_in_params(params)
+%   Usage:
+%      [params]=dakota_in_params(params);
 %
 %  where the optional input is:
 %    params        (structure array, method-independent parameters)

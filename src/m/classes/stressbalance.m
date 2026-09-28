@@ -24,6 +24,7 @@ classdef stressbalance
 		FSreconditioning       = 0;
 		maxiter                = 0;
 		shelf_dampening        = 0;
+		theta                  = 0;
 		vertex_pairing         = NaN;
 		penalty_factor         = NaN;
 		rift_penalty_lock      = NaN;
@@ -79,6 +80,9 @@ classdef stressbalance
 			self.FSreconditioning=10^13;
 			self.shelf_dampening=0;
 
+			%SSA thickness/velocity stabilization parameter (0: off, 1: full scheme)
+			self.theta=0.;
+
 			%Penalty factor applied kappa=max(stiffness matrix)*10^penalty_factor
 			self.penalty_factor=3;
 
@@ -118,6 +122,7 @@ classdef stressbalance
 			md = checkfield(md,'fieldname','stressbalance.isnewton','numel',[1],'values',[0 1 2]);
 			md = checkfield(md,'fieldname','stressbalance.FSreconditioning','size',[1 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','stressbalance.maxiter','size',[1 1],'>=',1);
+			md = checkfield(md,'fieldname','stressbalance.theta','numel',[1],'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','stressbalance.referential','size',[md.mesh.numberofvertices 6]);
 			md = checkfield(md,'fieldname','stressbalance.loadingforce','size',[md.mesh.numberofvertices 3]);
 			md = checkfield(md,'fieldname','stressbalance.requested_outputs','stringrow',1);
@@ -208,6 +213,7 @@ classdef stressbalance
 
 			disp(sprintf('\n      %s','Other:'));
 			fielddisplay(self,'shelf_dampening','use dampening for floating ice ? Only for FS model');
+			fielddisplay(self,'theta','SSA thickness/velocity stabilization parameter: 0 no stabilization, 1 full stabilization');
 			fielddisplay(self,'FSreconditioning','multiplier for incompressibility equation. Only for FS model');
 			fielddisplay(self,'referential','local referential');
 			fielddisplay(self,'loadingforce','loading force applied on each point [N/m^3]');
@@ -237,6 +243,7 @@ classdef stressbalance
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','FSreconditioning','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','maxiter','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','shelf_dampening','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','theta','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','penalty_factor','format','Double');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','rift_penalty_lock','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','rift_penalty_threshold','format','Integer');
@@ -276,6 +283,7 @@ classdef stressbalance
 			writejsdouble(fid,[modelname '.stressbalance.FSreconditioning'],self.FSreconditioning);
 			writejsdouble(fid,[modelname '.stressbalance.maxiter'],self.maxiter);
 			writejsdouble(fid,[modelname '.stressbalance.shelf_dampening'],self.shelf_dampening);
+			writejsdouble(fid,[modelname '.stressbalance.theta'],self.theta);
 			writejs1Darray(fid,[modelname '.stressbalance.vertex_pairing'],self.vertex_pairing);
 			writejsdouble(fid,[modelname '.stressbalance.penalty_factor'],self.penalty_factor);
 			writejsdouble(fid,[modelname '.stressbalance.rift_penalty_lock'],self.rift_penalty_lock);

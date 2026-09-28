@@ -124,6 +124,7 @@ syn keyword cConstant BasalforcingsUpperwaterMeltingRateEnum
 syn keyword cConstant CalvingADStressThresholdFloatingiceEnum
 syn keyword cConstant CalvingADStressThresholdGroundediceEnum
 syn keyword cConstant CalvingCrevasseDepthEnum
+syn keyword cConstant CalvingCrevasseDepthTypeEnum
 syn keyword cConstant CalvingCrevasseThresholdEnum
 syn keyword cConstant CalvingHeightAboveFloatationEnum
 syn keyword cConstant CalvingLawEnum
@@ -141,6 +142,10 @@ syn keyword cConstant CalvingVelThresholdEnum
 syn keyword cConstant CalvingVelUpperboundEnum
 syn keyword cConstant CalvingRcEnum
 syn keyword cConstant CalvingNumberofBasinsEnum
+syn keyword cConstant CalvingFEnum
+syn keyword cConstant CalvingChiCritEnum
+syn keyword cConstant CalvingChiMaxEnum
+syn keyword cConstant CalvingKEnum
 syn keyword cConstant ConfigurationTypeEnum
 syn keyword cConstant ConstantsGEnum
 syn keyword cConstant ConstantsNewtonGravityEnum
@@ -727,6 +732,7 @@ syn keyword cConstant StressbalanceRequestedOutputsEnum
 syn keyword cConstant StressbalanceRestolEnum
 syn keyword cConstant StressbalanceRiftPenaltyThresholdEnum
 syn keyword cConstant StressbalanceShelfDampeningEnum
+syn keyword cConstant StressbalanceThetaEnum
 syn keyword cConstant ThermalForcingMonthlyEffectsEnum
 syn keyword cConstant ThermalIsdrainicecolumnEnum
 syn keyword cConstant ThermalIsdynamicbasalspcEnum
@@ -3487,6 +3493,7 @@ syn keyword cConstant CalvingCalvingMIPEnum
 syn keyword cConstant CalvingVonmisesEnum
 syn keyword cConstant CalvingVonmisesADEnum
 syn keyword cConstant CalvingPollardEnum
+syn keyword cConstant CalvingStochasticEnum
 syn keyword cConstant CfdragcoeffabsgradEnum
 syn keyword cConstant CfdragcoeffabsgradtransientEnum
 syn keyword cConstant CfrheologybbarabsgradEnum
@@ -3577,6 +3584,7 @@ syn keyword cConstant GaussTriaEnum
 syn keyword cConstant GenericOptionEnum
 syn keyword cConstant GenericParamEnum
 syn keyword cConstant GenericExternalResultEnum
+syn keyword cConstant GPUHOParamEnum
 syn keyword cConstant Gradient1Enum
 syn keyword cConstant Gradient2Enum
 syn keyword cConstant Gradient3Enum
@@ -3932,6 +3940,7 @@ syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
 syn keyword cType GiaDeflectionCoreArgs
+syn keyword cType GPUHOParam
 syn keyword cType GrdLoads
 syn keyword cType Hook
 syn keyword cType Input
@@ -3969,7 +3978,6 @@ syn keyword cType Observation
 syn keyword cType Observations
 syn keyword cType Option
 syn keyword cType Options
-syn keyword cType OptionUtilities
 syn keyword cType Param
 syn keyword cType Parameters
 syn keyword cType Pengrid

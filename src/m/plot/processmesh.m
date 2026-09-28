@@ -4,7 +4,7 @@ function [x y z elements is2d isplanet]=processmesh(md,data,options)
 %   Usage:
 %      [x y z elements is2d]=processmesh(md,data,options)
 %
-%   See also: PLOTMODEL, PROCESSDATA
+%   See Also: PLOTMODEL, PROCESSDATA
 
 %some checks
 if md.mesh.numberofvertices==0

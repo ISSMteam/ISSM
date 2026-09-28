@@ -4,7 +4,7 @@ function md=bamgflowband(md,x,surf,base,varargin);
 %   Usage:
 %      md=bamgflowband(md,x,surf,base,OPTIONS)
 %
-%      surf and bed are the surface elevation and base for each x provided
+%      surf and base are the surface and base elevations for each x provided
 %      x must be increasing
 %      OPTIONS are bamg options
 %

@@ -1,8 +1,8 @@
 function issmscpin(host, login, port, path, filelist, bracketstyle)
-%ISSMSCPIN get filelist from host
+%ISSMSCPIN - Get filelist from host
 %
-%   usage:
-%      issmscpin(host,filelist,path,bracketstyle)
+%   Usage:
+%      issmscpin(host,login,port,path,filelist,bracketstyle)
 %
 %      bracketstyle:  1 - \{\}    (escaped; default)
 %                     2 - {}      (not escaped)

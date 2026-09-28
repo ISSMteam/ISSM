@@ -1,7 +1,7 @@
+%CONTINUOUS_STATE class definition
 %
-%  definition for the continuous_state class.
-%
-%  [csv]=continuous_state(varargin)
+%   Usage:
+%      csv=continuous_state(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

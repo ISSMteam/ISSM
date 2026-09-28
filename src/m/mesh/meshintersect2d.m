@@ -1,6 +1,10 @@
 function indices=meshintersect2d(x,y,xs,ys,varargin)
-%MESHINTERSECT - return indices (into x,y) of common values between (x,y) and (xs,ys). 
-%  i.e: x(index)=xs; y(index)=ys;
+%MESHINTERSECT2D - return indices (into x,y) of common values between (x,y) and (xs,ys).
+%
+%   i.e: x(index)=xs; y(index)=ys;
+%
+%   Usage:
+%      indices=meshintersect2d(x,y,xs,ys);
 %
 
 

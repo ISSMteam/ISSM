@@ -12,10 +12,10 @@ ifeq "$(origin RANLIB)" "undefined"
 	RANLIB = ranlib
 endif
 
-CSWITCHES=$(CFLAGS) -DNO_TIMER -fpic
+CSWITCHES=$(CSWITCHES_PLATFORM)
 OBJECTS=triangle.o
 SOURCES=triangle.c triangle.h
-TRILIBDEFS=-DTRILIBRARY
+TRILIBDEFS=$(TRILIBDEFS_PLATFORM)
 
 all: libtriangle.$(STATIC_LIB_EXT) libtriangle.$(SHARED_LIB_EXT)
 

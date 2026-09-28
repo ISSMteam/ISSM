@@ -1,4 +1,8 @@
 function [bedout sourceout] = interpJakobsson2020(X,Y,string),
+%INTERPJAKOBSSON2020 - interpolate Jakobsson 2020 (IBCAO v4) bathymetry and source data onto X and Y
+%
+%   Usage:
+%      [bedout,sourceout] = interpJakobsson2020(X,Y,string)
 
 switch oshostname(),
 	case {'ronne'}

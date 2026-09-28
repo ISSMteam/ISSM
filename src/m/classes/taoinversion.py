@@ -111,13 +111,13 @@ class taoinversion(object):  # {{{
         self.vel_obs = project3d(md, 'vector', self.vel_obs, 'type', 'node')
         self.thickness_obs = project3d(md, 'vector', self.thickness_obs, 'type', 'node')
 
-        if numel(self.cost_functions_coefficients) > 1:
+        if np.size(self.cost_functions_coefficients) > 1:
             self.cost_functions_coefficients = project3d(md, 'vector', self.cost_functions_coefficients, 'type', 'node')
 
-        if numel(self.min_parameters) > 1:
+        if np.size(self.min_parameters) > 1:
             self.min_parameters = project3d(md, 'vector', self.min_parameters, 'type', 'node')
 
-        if numel(self.max_parameters) > 1:
+        if np.size(self.max_parameters) > 1:
             self.max_parameters = project3d(md, 'vector', self.max_parameters, 'type', 'node')
 
         return self

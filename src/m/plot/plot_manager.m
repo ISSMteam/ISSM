@@ -1,8 +1,8 @@
 function plot_manager(md,options,subplotwidth,nlines,ncols,i)
-%PLOT__MANAGER - distribute the plots, called by plotmodel
+%PLOT_MANAGER - distribute the plots, called by plotmodel
 %
 %   Usage:
-%      plot_manager(md,options,subplotwidth,i);
+%      plot_manager(md,options,subplotwidth,nlines,ncols,i);
 %
 %   See also: PLOTMODEL, PLOT_UNIT
 

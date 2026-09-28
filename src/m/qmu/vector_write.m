@@ -1,5 +1,7 @@
+%VECTOR_WRITE - write a vector on multiple lines
 %
-%  function to write a vector on multiple lines
+%   Usage:
+%      vector_write(fidi,sbeg,vec,nmax,cmax)
 %
 function []=vector_write(fidi,sbeg,vec,nmax,cmax)
 

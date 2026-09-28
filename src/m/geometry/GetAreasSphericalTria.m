@@ -1,7 +1,7 @@
 function areas=GetAreasSphericalTria(index,x,y,rad_e,varargin)
 %GETAREASSPHERICALTRIA - compute areas of spherical triangles 
 %
-%   compute areas of spherical trianguls 
+%   compute areas of spherical triangles
 %
 %   Usage:
 %      areas  =GetAreasSphericalTria(index,x,y,r);

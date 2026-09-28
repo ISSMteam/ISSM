@@ -4,7 +4,7 @@ function [data_interp]=PointValues(md,data,xpoint,ypoint)
 %   This routine gets the value of a given field of the model on points
 %
 %   Usage:
-%      [z,data]=PointValues(md,data,X,Y,Z)
+%      data_interp=PointValues(md,data,xpoint,ypoint)
 
 %Get bed and surface for each 2d point, offset to make sure that it is inside the glacier system
 %offset=10^-3;

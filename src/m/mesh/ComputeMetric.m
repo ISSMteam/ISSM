@@ -1,5 +1,5 @@
 function metric=ComputeMetric(hessian,scale,epsilon,hmin,hmax,pos)
-%COMPUTEMETRIC - compute metric from an Hessian
+%COMPUTEMETRIC - compute metric from a Hessian
 %
 %   Usage:
 %      metric=ComputeMetric(hessian,scale,epsilon,hmin,hmax,pos)

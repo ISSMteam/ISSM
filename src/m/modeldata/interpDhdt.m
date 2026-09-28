@@ -1,4 +1,8 @@
 function out = interpDhdt(X,Y),
+%INTERPDHDT - interpolate Greenland surface elevation change (dh/dt) data onto X and Y
+%
+%   Usage:
+%      out = interpDhdt(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

@@ -169,7 +169,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble **cfsurfacesquare_weights_s            = NULL;
 				int         *cfsurfacesquare_weights_M_s          = NULL;
 				int         *cfsurfacesquare_weights_N_s          = NULL;
-				char       **cfsurfacesquare_weights_string_s     = NULL;
 				IssmDouble  *cfsurfacesquare_datatime_s           = NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cfsurfacesquare.m): */
@@ -180,7 +179,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				iomodel->FetchMultipleData(&cfsurfacesquare_observation_s,&cfsurfacesquare_observation_M_s,&cfsurfacesquare_observation_N_s,&num_cfsurfacesquares, "md.cfsurfacesquare.observation");
 				iomodel->FetchMultipleData(&cfsurfacesquare_observation_string_s,&num_cfsurfacesquares,"md.cfsurfacesquare.observation_string");
 				iomodel->FetchMultipleData(&cfsurfacesquare_weights_s,&cfsurfacesquare_weights_M_s,&cfsurfacesquare_weights_N_s,&num_cfsurfacesquares,"md.cfsurfacesquare.weights");
-				iomodel->FetchMultipleData(&cfsurfacesquare_weights_string_s,&num_cfsurfacesquares,    "md.cfsurfacesquare.weights_string");
 				iomodel->FetchMultipleData(&cfsurfacesquare_datatime_s,&num_cfsurfacesquares,				"md.cfsurfacesquare.datatime");
 
 				for(j=0;j<num_cfsurfacesquares;j++){
@@ -212,7 +210,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					for(Object* & object : elements->objects){
 						Element* element=xDynamicCast<Element*>(object);
 						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_observation_s[j],inputs,iomodel,cfsurfacesquare_observation_M_s[j],cfsurfacesquare_observation_N_s[j],obs_vector_type,StringToEnumx(cfsurfacesquare_observation_string_s[j]),SurfaceObservationEnum);
-						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_weights_s[j],inputs,iomodel,cfsurfacesquare_weights_M_s[j],cfsurfacesquare_weights_N_s[j],weight_vector_type,StringToEnumx(cfsurfacesquare_weights_string_s[j]),WeightsSurfaceObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_weights_s[j],inputs,iomodel,cfsurfacesquare_weights_M_s[j],cfsurfacesquare_weights_N_s[j],weight_vector_type, WeightsSurfaceObservationEnum, WeightsSurfaceObservationEnum);
 
 					}
 
@@ -226,7 +224,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					string = cfsurfacesquare_definitionstring_s[j];		xDelete<char>(string);
 					string = cfsurfacesquare_observation_string_s[j];	xDelete<char>(string);
 					string = cfsurfacesquare_model_string_s[j];			xDelete<char>(string);
-					string = cfsurfacesquare_weights_string_s[j];		xDelete<char>(string);
 					string = cfsurfacesquare_name_s[j];    xDelete<char>(string);
 					matrix = cfsurfacesquare_observation_s[j]; xDelete<IssmDouble>(matrix);
 					matrix = cfsurfacesquare_weights_s[j]; xDelete<IssmDouble>(matrix);
@@ -242,7 +239,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				xDelete<IssmDouble*>(cfsurfacesquare_weights_s);
 				xDelete<int>(cfsurfacesquare_weights_M_s);
 				xDelete<int>(cfsurfacesquare_weights_N_s);
-				xDelete<char*>(cfsurfacesquare_weights_string_s);
 				xDelete<IssmDouble>(cfsurfacesquare_datatime_s);
 				/*}}}*/
 			}
@@ -323,13 +319,11 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble** cfdragcoeffabsgrad_weights_s					= NULL;
 				int*         cfdragcoeffabsgrad_weights_M_s				= NULL;
 				int*         cfdragcoeffabsgrad_weights_N_s				= NULL;
-				char**       cfdragcoeffabsgrad_weights_string_s		= NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cfdragcoeffabsgrad.m): */
 				iomodel->FetchMultipleData(&cfdragcoeffabsgrad_name_s,&num_cfdragcoeffabsgrads,                                                        "md.cfdragcoeffabsgrad.name");
 				iomodel->FetchMultipleData(&cfdragcoeffabsgrad_definitionstring_s,&num_cfdragcoeffabsgrads,                                            "md.cfdragcoeffabsgrad.definitionstring");
 				iomodel->FetchMultipleData(&cfdragcoeffabsgrad_weights_s,&cfdragcoeffabsgrad_weights_M_s,&cfdragcoeffabsgrad_weights_N_s,&num_cfdragcoeffabsgrads,             "md.cfdragcoeffabsgrad.weights");
-				iomodel->FetchMultipleData(&cfdragcoeffabsgrad_weights_string_s,&num_cfdragcoeffabsgrads,                                              "md.cfdragcoeffabsgrad.weights_string");
 
 				for(j=0;j<num_cfdragcoeffabsgrads;j++){
 
@@ -351,7 +345,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 						Element* element=xDynamicCast<Element*>(object);
 
-						element->DatasetInputAdd(StringToEnumx(cfdragcoeffabsgrad_definitionstring_s[j]),cfdragcoeffabsgrad_weights_s[j],inputs,iomodel,cfdragcoeffabsgrad_weights_M_s[j],cfdragcoeffabsgrad_weights_N_s[j],weight_vector_type,StringToEnumx(cfdragcoeffabsgrad_weights_string_s[j]),WeightsSurfaceObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cfdragcoeffabsgrad_definitionstring_s[j]),cfdragcoeffabsgrad_weights_s[j],inputs,iomodel,cfdragcoeffabsgrad_weights_M_s[j],cfdragcoeffabsgrad_weights_N_s[j],weight_vector_type,WeightsSurfaceObservationEnum,WeightsSurfaceObservationEnum);
 
 					}
 
@@ -363,7 +357,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					IssmDouble* matrix = NULL;
 
 					string = cfdragcoeffabsgrad_definitionstring_s[j];		xDelete<char>(string);
-					string = cfdragcoeffabsgrad_weights_string_s[j];		xDelete<char>(string);
 					string = cfdragcoeffabsgrad_name_s[j];    xDelete<char>(string);
 					matrix = cfdragcoeffabsgrad_weights_s[j]; xDelete<IssmDouble>(matrix);
 				}
@@ -372,7 +365,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				xDelete<IssmDouble*>(cfdragcoeffabsgrad_weights_s);
 				xDelete<int>(cfdragcoeffabsgrad_weights_M_s);
 				xDelete<int>(cfdragcoeffabsgrad_weights_N_s);
-				xDelete<char*>(cfdragcoeffabsgrad_weights_string_s);
 				/*}}}*/
 			}
 			else if (output_definition_enums[i]==CfdragcoeffabsgradtransientEnum){
@@ -439,13 +431,11 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble** cfrheologybbarabsgrad_weights_s             = NULL;
 				int*         cfrheologybbarabsgrad_weights_M_s           = NULL;
 				int*         cfrheologybbarabsgrad_weights_N_s           = NULL;
-				char**       cfrheologybbarabsgrad_weights_string_s      = NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cfrheologybbarabsgrad.m): */
 				iomodel->FetchMultipleData(&cfrheologybbarabsgrad_name_s,&num_cfrheologybbarabsgrads,                                                        "md.cfrheologybbarabsgrad.name");
 				iomodel->FetchMultipleData(&cfrheologybbarabsgrad_definitionstring_s,&num_cfrheologybbarabsgrads,                                            "md.cfrheologybbarabsgrad.definitionstring");
 				iomodel->FetchMultipleData(&cfrheologybbarabsgrad_weights_s,&cfrheologybbarabsgrad_weights_M_s,&cfrheologybbarabsgrad_weights_N_s,&num_cfrheologybbarabsgrads,             "md.cfrheologybbarabsgrad.weights");
-				iomodel->FetchMultipleData(&cfrheologybbarabsgrad_weights_string_s,&num_cfrheologybbarabsgrads,                                              "md.cfrheologybbarabsgrad.weights_string");
 
 				for(j=0;j<num_cfrheologybbarabsgrads;j++){
 
@@ -460,14 +450,14 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					 _error_("cfrheologybbarabsgrad weight size not supported yet");
 
 					/*First create a cfrheologybbarabsgrad object for that specific string (cfrheologybbarabsgrad_model_string_s[j]):*/
-					output_definitions->AddObject(new Cfrheologybbarabsgrad(cfrheologybbarabsgrad_name_s[j],StringToEnumx(cfrheologybbarabsgrad_definitionstring_s[j]),StringToEnumx(cfrheologybbarabsgrad_weights_string_s[j])));
+					output_definitions->AddObject(new Cfrheologybbarabsgrad(cfrheologybbarabsgrad_name_s[j],StringToEnumx(cfrheologybbarabsgrad_definitionstring_s[j])));
 
 					/*Now, for this particular cfrheologybbarabsgrad object, make sure we plug into the elements: the observation, and the weights.*/
 					for(Object* & object : elements->objects){
 
 						Element* element=xDynamicCast<Element*>(object);
 
-						element->DatasetInputAdd(StringToEnumx(cfrheologybbarabsgrad_definitionstring_s[j]),cfrheologybbarabsgrad_weights_s[j],inputs,iomodel,cfrheologybbarabsgrad_weights_M_s[j],cfrheologybbarabsgrad_weights_N_s[j],weight_vector_type,StringToEnumx(cfrheologybbarabsgrad_weights_string_s[j]),WeightsSurfaceObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cfrheologybbarabsgrad_definitionstring_s[j]),cfrheologybbarabsgrad_weights_s[j],inputs,iomodel,cfrheologybbarabsgrad_weights_M_s[j],cfrheologybbarabsgrad_weights_N_s[j],weight_vector_type,WeightsSurfaceObservationEnum,WeightsSurfaceObservationEnum);
 
 					}
 
@@ -478,7 +468,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
                IssmDouble* matrix = NULL;
 
                string = cfrheologybbarabsgrad_definitionstring_s[j];    xDelete<char>(string);
-               string = cfrheologybbarabsgrad_weights_string_s[j];      xDelete<char>(string);
                string = cfrheologybbarabsgrad_name_s[j];    xDelete<char>(string);
                matrix = cfrheologybbarabsgrad_weights_s[j]; xDelete<IssmDouble>(matrix);
             }
@@ -487,7 +476,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
             xDelete<IssmDouble*>(cfrheologybbarabsgrad_weights_s);
             xDelete<int>(cfrheologybbarabsgrad_weights_M_s);
             xDelete<int>(cfrheologybbarabsgrad_weights_N_s);
-            xDelete<char*>(cfrheologybbarabsgrad_weights_string_s);
             /*}}}*/
          }
 			else if (output_definition_enums[i]==CfrheologybbarabsgradtransientEnum){
@@ -559,7 +547,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble **cfsurfacelogvel_weights          = NULL;
 				int         *cfsurfacelogvel_weights_M        = NULL;
 				int         *cfsurfacelogvel_weights_N        = NULL;
-				char       **cfsurfacelogvel_weightstring     = NULL;
 				IssmDouble  *cfsurfacelogvel_datatime         = NULL;
 
             /*Fetch name, modeltring, observation, observationtring, etc ... (see src/m/classes/cfsurfacelogvel.m): */
@@ -570,7 +557,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
             iomodel->FetchMultipleData(&cfsurfacelogvel_vyobs,NULL,NULL,&num_cfsurfacelogvels,"md.cfsurfacelogvel.vyobs");
             iomodel->FetchMultipleData(&cfsurfacelogvel_vyobs_string,&num_cfsurfacelogvels,"md.cfsurfacelogvel.vyobs_string");
             iomodel->FetchMultipleData(&cfsurfacelogvel_weights,&cfsurfacelogvel_weights_M,&cfsurfacelogvel_weights_N,&num_cfsurfacelogvels,"md.cfsurfacelogvel.weights");
-            iomodel->FetchMultipleData(&cfsurfacelogvel_weightstring,&num_cfsurfacelogvels,"md.cfsurfacelogvel.weights_string");
             iomodel->FetchMultipleData(&cfsurfacelogvel_datatime,&num_cfsurfacelogvels,"md.cfsurfacelogvel.datatime");
 
 				for(j=0;j<num_cfsurfacelogvels;j++){
@@ -605,7 +591,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 
 						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vxobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vxobs_string[j]),InversionVxObsEnum);
 							element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_vyobs[j],inputs,iomodel,cfsurfacelogvel_observation_M[j],cfsurfacelogvel_observation_N[j],obs_vector_type,StringToEnumx(cfsurfacelogvel_vyobs_string[j]),InversionVyObsEnum);
-						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_weights[j],inputs,iomodel,cfsurfacelogvel_weights_M[j],cfsurfacelogvel_weights_N[j],weight_vector_type,StringToEnumx(cfsurfacelogvel_weightstring[j]),WeightsSurfaceObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cfsurfacelogvel_definitionstring[j]),cfsurfacelogvel_weights[j],inputs,iomodel,cfsurfacelogvel_weights_M[j],cfsurfacelogvel_weights_N[j],weight_vector_type,WeightsSurfaceObservationEnum,WeightsSurfaceObservationEnum);
 
 					}
 
@@ -619,7 +605,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					string = cfsurfacelogvel_definitionstring[j];		xDelete<char>(string);
 					string = cfsurfacelogvel_vxobs_string[j];	xDelete<char>(string);
 					string = cfsurfacelogvel_vyobs_string[j];	xDelete<char>(string);
-					string = cfsurfacelogvel_weightstring[j];		xDelete<char>(string);
 					string = cfsurfacelogvel_name[j];    xDelete<char>(string);
 					matrix = cfsurfacelogvel_weights[j]; xDelete<IssmDouble>(matrix);
 					matrix = cfsurfacelogvel_vxobs[j]; xDelete<IssmDouble>(matrix);
@@ -636,7 +621,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				xDelete<IssmDouble*>(cfsurfacelogvel_weights);
 				xDelete<int>(cfsurfacelogvel_weights_M);
 				xDelete<int>(cfsurfacelogvel_weights_N);
-				xDelete<char*>(cfsurfacelogvel_weightstring);
 				xDelete<IssmDouble>(cfsurfacelogvel_datatime);
 				/*}}}*/
 			}
@@ -655,7 +639,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				IssmDouble** cflevelsetmisfit_weights_s					= NULL;
 				int*         cflevelsetmisfit_weights_M_s				= NULL;
 				int*         cflevelsetmisfit_weights_N_s				= NULL;
-				char**       cflevelsetmisfit_weights_string_s		= NULL;
 				IssmDouble*	 cflevelsetmisfit_datatime_s				= NULL;
 
 				/*Fetch name, model_string, observation, observation_string, etc ... (see src/m/classes/cflevelsetmisfit.m): */
@@ -665,7 +648,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				iomodel->FetchMultipleData(&cflevelsetmisfit_observation_s,&cflevelsetmisfit_observation_M_s,&cflevelsetmisfit_observation_N_s,&num_cflevelsetmisfits, "md.cflevelsetmisfit.observation");
 				iomodel->FetchMultipleData(&cflevelsetmisfit_observation_string_s,&num_cflevelsetmisfits,                                          "md.cflevelsetmisfit.observation_string");
 				iomodel->FetchMultipleData(&cflevelsetmisfit_weights_s,&cflevelsetmisfit_weights_M_s,&cflevelsetmisfit_weights_N_s,&num_cflevelsetmisfits,             "md.cflevelsetmisfit.weights");
-				iomodel->FetchMultipleData(&cflevelsetmisfit_weights_string_s,&num_cflevelsetmisfits,                                              "md.cflevelsetmisfit.weights_string");
 				iomodel->FetchMultipleData(&cflevelsetmisfit_datatime_s,&num_cflevelsetmisfits,																	 "md.cflevelsetmisfit.datatime");
 
 				for(j=0;j<num_cflevelsetmisfits;j++){
@@ -696,7 +678,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					for(Object* & object : elements->objects){
 						Element* element=xDynamicCast<Element*>(object);
 						element->DatasetInputAdd(StringToEnumx(cflevelsetmisfit_definitionstring_s[j]),cflevelsetmisfit_observation_s[j],inputs,iomodel,cflevelsetmisfit_observation_M_s[j],cflevelsetmisfit_observation_N_s[j],obs_vector_type,StringToEnumx(cflevelsetmisfit_observation_string_s[j]),LevelsetObservationEnum);
-						element->DatasetInputAdd(StringToEnumx(cflevelsetmisfit_definitionstring_s[j]),cflevelsetmisfit_weights_s[j],inputs,iomodel,cflevelsetmisfit_weights_M_s[j],cflevelsetmisfit_weights_N_s[j],weight_vector_type,StringToEnumx(cflevelsetmisfit_weights_string_s[j]),WeightsLevelsetObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cflevelsetmisfit_definitionstring_s[j]),cflevelsetmisfit_weights_s[j],inputs,iomodel,cflevelsetmisfit_weights_M_s[j],cflevelsetmisfit_weights_N_s[j],weight_vector_type,WeightsLevelsetObservationEnum,WeightsLevelsetObservationEnum);
 					}
 				}
 
@@ -708,7 +690,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					string = cflevelsetmisfit_definitionstring_s[j];		xDelete<char>(string);
 					string = cflevelsetmisfit_observation_string_s[j];	xDelete<char>(string);
 					string = cflevelsetmisfit_model_string_s[j];			xDelete<char>(string);
-					string = cflevelsetmisfit_weights_string_s[j];		xDelete<char>(string);
 					string = cflevelsetmisfit_name_s[j];    xDelete<char>(string);
 					matrix = cflevelsetmisfit_observation_s[j]; xDelete<IssmDouble>(matrix);
 					matrix = cflevelsetmisfit_weights_s[j]; xDelete<IssmDouble>(matrix);
@@ -723,7 +704,6 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 				xDelete<IssmDouble*>(cflevelsetmisfit_weights_s);
 				xDelete<int>(cflevelsetmisfit_weights_M_s);
 				xDelete<int>(cflevelsetmisfit_weights_N_s);
-				xDelete<char*>(cflevelsetmisfit_weights_string_s);
 				xDelete<IssmDouble>(cflevelsetmisfit_datatime_s);
 				/*}}}*/
 			}

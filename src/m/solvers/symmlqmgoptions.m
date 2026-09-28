@@ -1,4 +1,8 @@
 function solverOptions=symmlqmgoptions(varargin)
+%SYMMLQMGOPTIONS - return PETSc options for the SYMMLQ solver with a Multigrid preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqmgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

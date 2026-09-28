@@ -1,4 +1,8 @@
 function sout = interpGimpdem(X,Y),
+%INTERPGIMPDEM - interpolate GIMP (Howat) Greenland surface DEM onto X and Y
+%
+%   Usage:
+%      sout = interpGimpdem(X,Y)
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid'}

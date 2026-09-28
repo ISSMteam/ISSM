@@ -65,6 +65,8 @@ class frictionschoof(object):
         # Early return
         if 'StressbalanceAnalysis' not in analyses and 'ThermalAnalysis' not in analyses:
             return md
+        if solution == 'TransientSolution' and not md.transient.isstressbalance and not md.transient.isthermal:
+            return md
         md = checkfield(md, 'fieldname', 'friction.C', 'timeseries', 1, 'NaN', 1, 'Inf', 1, '>',0.)
         md = checkfield(md, 'fieldname', 'friction.Cmax', 'timeseries', 1, 'NaN', 1, 'Inf', 1, '>', 0.)
         md = checkfield(md, 'fieldname', 'friction.m', 'NaN', 1, 'Inf', 1, '>', 0., 'size', [md.mesh.numberofelements, 1])
@@ -73,6 +75,10 @@ class frictionschoof(object):
         md = checkfield(md, 'fieldname', 'friction.coupling', 'numel', [1], 'values', [0, 1, 2, 3, 4])
         if self.coupling == 3:
             md = checkfield(md, 'fieldname', 'friction.effective_pressure', 'NaN', 1, 'Inf', 1, 'timeseries', 1)
+        elif self.coupling ==4:
+            # check turn-on md.transient.ishydrology=1 
+            if not md.transient.ishydrology:
+                md.checkmessage("md.friction.coupling = 4 but md.transient.ishydrology = 0!");
         return md
     # }}}
     def marshall(self, prefix, md, fid):  # {{{

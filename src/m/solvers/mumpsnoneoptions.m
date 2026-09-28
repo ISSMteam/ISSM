@@ -1,8 +1,8 @@
 function mumps=mumpsoptions(varargin)
-%MUMPSOPTIONS - return MUMPS direct solver  petsc options
+%MUMPSNONEOPTIONS - return PETSc options for the MUMPS direct (LU) solver
 %
 %   Usage:
-%      options=mumpsoptions;
+%      mumps=mumpsnoneoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

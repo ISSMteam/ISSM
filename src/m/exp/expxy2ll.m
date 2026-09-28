@@ -1,9 +1,11 @@
 function expxy2ll(filename,sgn,central_meridian,standard_parallel)  
-%EXPLL2XY: switch exp argus file from lat,long to x,y
+%EXPXY2LL - switch an exp Argus file from x,y to lat,long
+%
+%   sgn is the sign of latitude: +1 for north latitude (default is meridian=45, lat=70)
+%                                -1 for south latitude (default is meridian=0, lat=71)
+%
 %   Usage:
 %      expxy2ll(filename,sgn,central_meridian,standard_parallel)
-%      - sgn = Sign of latitude +1 : north latitude (default is mer=45 lat=70)
-%                               -1 : south latitude (default is mer=0  lat=71)
 
 %Get central_meridian and standard_parallel depending on hemisphere
 if nargin==4

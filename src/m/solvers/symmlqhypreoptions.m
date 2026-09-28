@@ -1,4 +1,8 @@
 function solverOptions=symmlqhypreoptions(varargin)
+%SYMMLQHYPREOPTIONS - return PETSc options for the SYMMLQ solver with a Hypre preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqhypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

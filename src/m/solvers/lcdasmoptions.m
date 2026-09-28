@@ -1,4 +1,8 @@
 function solverOptions=lcdasmoptions(varargin)
+%LCDASMOPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with an ASM (Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=lcdasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

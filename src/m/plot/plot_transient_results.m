@@ -4,7 +4,7 @@ function plot_transient_results(md,options,width,i)
 %   Usage:
 %      plot_transient_results(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 fontsize=getfieldvalue(options,'fontsize',14);
 fontweight=getfieldvalue(options,'fontweight','n');

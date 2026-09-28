@@ -1,7 +1,7 @@
+%PLOT_QMUNORMPLOT - plot a normal probability plot of the response functions
 %
-%  plot a normal probability plot of the response functions.
-%
-%  []=plot_normplot(rfunc)
+%   Usage:
+%      plot_qmunormplot(rfunc,width,ii);
 %
 function []=plot_qmunormplot(rfunc,width,ii)
 

@@ -1,4 +1,8 @@
 function solverOptions=gltrsoroptions(varargin)
+%GLTRSOROPTIONS - PETSc solver options using the generalized Lanczos trust-region (gltr) Krylov method with successive over-relaxation (SOR) preconditioning
+%
+%   Usage:
+%      solverOptions=gltrsoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

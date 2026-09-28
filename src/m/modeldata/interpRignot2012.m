@@ -1,4 +1,8 @@
 function [vxout vyout]= interpRignot2012(X,Y),
+%INTERPRIGNOT2012 - interpolate Rignot 2012 Greenland ice velocity mosaic onto X and Y
+%
+%   Usage:
+%      [vxout,vyout] = interpRignot2012(X,Y)
 
 filename = '/totten_1/ModelData/Greenland/VelMouginot/RignotGreenland2012Vel.mat';
 

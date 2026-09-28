@@ -1,20 +1,22 @@
 function H = HeightAboveFloatation(md,step)
-%HEIGHTABOVEFLOATATION - returns height above hydrostatic floatation per element within the ice levelset.
-% H<0 will be returned for elements which are floating. 
+%HEIGHTABOVEFLOATATION - returns height above hydrostatic floatation per element within the ice levelset
 %
-% USAGE:
-%      H = HeightAboveFloatation(md)          % calculate HAF from md.geometry
-%      H = HeightAboveFloatation(md,[])       % calculate HAF from md.geometry
-%      H = HeightAboveFloatation(md,10)       % calculate HAF from md.results.TransientSolution(10) -- step 10 of transient solution
+%   H<0 is returned for elements which are floating
 %
-% INPUT:
-%      md		% ISSM model containing the geometry
-%		 step		% index of md.results.TransientSolution(step) from which to pull the geometry
+%   Usage:
+%      H = HeightAboveFloatation(md)     % calculate HAF from md.geometry
+%      H = HeightAboveFloatation(md,[])  % calculate HAF from md.geometry
+%      H = HeightAboveFloatation(md,10)  % calculate HAF from md.results.TransientSolution(10) -- step 10 of transient solution
 %
-% OUTPUT:
-%      H       % height above floatation over each element
+%   Input:
+%      md   - ISSM model containing the geometry
+%      step - index of md.results.TransientSolution(step) from which to pull the geometry
 %
-% SEE ALSO: VolumeAboveFloatation
+%   Output:
+%      H - height above floatation over each element
+%
+%   See Also:
+%      VolumeAboveFloatation
 
 % process inputs
 if (nargin<2 | isempty(step))

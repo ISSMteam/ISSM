@@ -1,4 +1,8 @@
 function [bedout thicknessout] = interpBamber2001(X,Y),
+%INTERPBAMBER2001 - interpolate Bamber 2001 bedrock and ice thickness data onto X and Y
+%
+%   Usage:
+%      [bedout,thicknessout] = interpBamber2001(X,Y)
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid','wilkins.jpl.nasa.gov'}

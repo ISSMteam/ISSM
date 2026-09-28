@@ -1,62 +1,61 @@
+%PLOT_RLEV_BARS_CI - plot a stacked bar chart of the response levels in the cdf for the sample and confidence intervals
 %
-%  plot a stacked bar chart of the response levels in the cdf
-%  for the sample and confidence intervals.
+%   Usage:
+%      []=plot_rlev_bars_ci(dresp      ,params)
+%      []=plot_rlev_bars_ci(dresp,descr,params)
+%      []=plot_rlev_bars_ci(sampr,descr,params)
 %
-%  []=plot_rlev_bars_ci(dresp      ,params)
-%  []=plot_rlev_bars_ci(dresp,descr,params)
-%  []=plot_rlev_bars_ci(sampr,descr,params)
+%   where the required input is:
+%     dresp         (structure array, responses)
+%       or
+%     dresp         (structure array, responses)
+%     descr         (cell array, list of response descriptions desired)
+%       or
+%     sampr         (double array, lists of response samples)
+%     descr         (cell array, list of response descriptions)
 %
-%  where the required input is:
-%    dresp         (structure array, responses)
-%      or
-%    dresp         (structure array, responses)
-%    descr         (cell array, list of response descriptions desired)
-%      or
-%    sampr         (double array, lists of response samples)
-%    descr         (cell array, list of response descriptions)
+%   the required fields of dresp are:
+%     descriptor    (char, description)
+%     cdf(:,4)      (double matrix, CDF table)
 %
-%  the required fields of dresp are:
-%    descriptor    (char, description)
-%    cdf(:,4)      (double matrix, CDF table)
+%   and the optional fields of dresp are:
+%     mean          (double, mean of sample)
+%     stddev        (double, standard deviation of sample)
+%     meanci(2)     (double, confidence interval of mean)
+%     stddevci(2)   (double, confidence interval of standard deviation)
 %
-%  and the optional fields of dresp are:
-%    mean          (double, mean of sample)
-%    stddev        (double, standard deviation of sample)
-%    meanci(2)     (double, confidence interval of mean)
-%    stddevci(2)   (double, confidence interval of standard deviation)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   where the optional parameters are:
+%     ymin          (numeric, minimum of y-axis)
+%     ymax          (numeric, maximum of y-axis)
+%     xtlrot        (numeric, rotation in degrees of x-tick labels)
+%     lstr          (cell array, legend labels)
 %
-%  where the optional parameters are:
-%    ymin          (numeric, minimum of y-axis)
-%    ymax          (numeric, maximum of y-axis)
-%    xtlrot        (numeric, rotation in degrees of x-tick labels)
-%    lstr          (cell array, legend labels)
+%   for each response in the input array, this function plots
+%   a stacked bar plot of the responses, where the bars are
+%   stacked by the response levels corresponding to the given
+%   probabilities in the CDF, and annotates it with the
+%   description.  the response levels for the normal distribution
+%   and the confidence intervals are also plotted.  the legend
+%   labels can be given or constructed from the probabilities.
 %
-%  for each response in the input array, this function plots
-%  a stacked bar plot of the responses, where the bars are
-%  stacked by the response levels corresponding to the given
-%  probabilities in the CDF, and annotates it with the
-%  description.  the response levels for the normal distribution
-%  and the confidence intervals are also plotted.  the legend
-%  labels can be given or constructed from the probabilities.
+%   dresp data would typically be contained in the dakota tabular
+%   output file from a sampling analysis, read by dakota_out_parse.
 %
-%  dresp data would typically be contained in the dakota tabular
-%  output file from a sampling analysis, read by dakota_out_parse.
+%   "Copyright 2009, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2009, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_rlev_bars_ci(varargin)
 

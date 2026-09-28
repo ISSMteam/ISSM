@@ -1,5 +1,8 @@
 function root=qmuroot(string)
 %QMUROOT - return root of a distributed descriptor
+%
+%   Usage:
+%      root=qmuroot(string)
 
 root='';
 found=0;

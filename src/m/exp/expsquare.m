@@ -1,11 +1,11 @@
 function expsquare(filename)
-%EXPBOX - Create a ARGUS file using to clicks
+%EXPSQUARE - create an ARGUS file using two clicks
 %
 %   Two clicks on a plot are used to generate a square box
 %   This box is written in EXP format on filename
 %
 %   Usage:
-%      expbox(filename)
+%      expsquare(filename)
 
 %check
 if exist(filename,'file')

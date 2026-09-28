@@ -1,4 +1,8 @@
 function output = interpGridsCReSIS(X,Y,filename),
+%INTERPGRIDSCRESIS - interpolate a CReSIS ESRI ASCII grid file onto X and Y
+%
+%   Usage:
+%      output = interpGridsCReSIS(X,Y,filename)
 
 %Convert to lat/lon
 disp('   -- Griggs2013: converting coordinates');

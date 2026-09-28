@@ -1,17 +1,16 @@
 function exportVTK(filename,model,varargin)
-%EXPORTVTK -  vtk export
+%EXPORTVTK - export a model's results (and optionally other fields) to VTK files for display in ParaView
 %
-%   function exportVTK(filename,model)
 %   creates a directory with the vtk files for displays in paraview
 %   (only work for triangle and wedges based on their number of nodes)
 %   By default only the results are exported, you can add whichever
 %   field you need as a string:
 %   add 'geometry' to export md.geometry
 %
-%   USAGE:
+%   Usage:
 %      exportVTK(filename,model,varargin)
 %
-%   EXAMPLE:
+%   Example:
 %      exportVTK('ResultSimulation1',md)
 
 [path,name,ext]=fileparts(filename);

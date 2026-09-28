@@ -1,4 +1,8 @@
 function mdt = interpDTU19MDT(X,Y, hemisphere);
+%INTERPDTU19MDT - interpolate DTU19 mean dynamic topography data onto X and Y
+%
+%   Usage:
+%      mdt = interpDTU19MDT(X,Y,hemisphere)
 
 switch oshostname(),
 	case {'ronne'}

@@ -1,19 +1,18 @@
 function md=strainratuncert(md,vx,vy,dvx,dvy)
-%STRAINRATEUNCERT - compute uncertainty in strain rate components
+%STRAINRATUNCERT - compute uncertainty in strain rate components
 %
-%   this routine computes the uncertainties in the strain rate tensor
-%	 components given the uncertainty in surface velocity data.
+%   This routine computes the uncertainties in the strain rate tensor
+%   components given the uncertainty in surface velocity data.
 %   The results are stored in md.results
 %
-%	 'dvx' and 'dvy' are velocity errors in x and y components in m/yr.  
+%   'dvx' and 'dvy' are velocity errors in x and y components in m/yr.
 %   These can either be scalars or arrays of length md.mesh.numberofvertices
 %
 %   Usage:
-%      md=strainrateuncert(md,vx,vy,dv)
+%      md=strainratuncert(md,vx,vy,dvx,dvy);
 %
 %   Example:
-%      md=mechanicalproperties(md,md.initialization.vx,md.initialization.vy,5);
-%      md=mechanicalproperties(md,md.inversion.vx_obs,md.inversion.vy_obs,dv);
+%      md=strainratuncert(md,md.initialization.vx,md.initialization.vy,5,5);
 
 %some checks
 if length(vx)~=md.mesh.numberofvertices | length(vy)~=md.mesh.numberofvertices

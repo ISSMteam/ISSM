@@ -28,7 +28,7 @@ ISSM_CONFIG='\
 EXTERNALPACKAGES="
 	autotools	install-linux.sh
 	cmake		install.sh
-	petsc		install-3.23-linux.sh
+	petsc		install-3.25-linux.sh
 	triangle	install-linux.sh
 	shell2junit	install.sh
 "

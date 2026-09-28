@@ -1,4 +1,8 @@
 function solverOptions=stcgsoroptions(varargin)
+%STCGSOROPTIONS - return PETSc options for the STCG solver with a SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=stcgsoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

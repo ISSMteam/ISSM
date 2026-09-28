@@ -1,5 +1,7 @@
+%VLIST_WRITE - write a variable list
 %
-%  function to write variable list
+%   Usage:
+%      vlist_write(fidi,cstring,cstring2,dvar)
 %
 function []=vlist_write(fidi,cstring,cstring2,dvar)
 

@@ -28,7 +28,7 @@ function [dataout] = interpSeaRISE(X,Y,string,varargin),
 %   Hemisphere: +1 Greenland, -1 Antarctica
 %
 %   Usage:
-%      [dataout] = /totten_1/dmangini/trunk-jpl/src/m/modeldata/interpSeaRISE.m(X,Y,string,hemisphere,ncfile)
+%      [dataout] = interpSeaRISE(X,Y,string,hemisphere,ncfile)
 %
 %   Examples:
 %      md.basalforcings.geothermalflux  = interpSeaRISE(md.mesh.x,md.mesh.y,'bheatflx_shapiro',-1); 

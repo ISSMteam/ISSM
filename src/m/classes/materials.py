@@ -323,7 +323,7 @@ class materials(object):
             if nat == 'ice':
                 self.rheology_B = project3d(md, 'vector', self.rheology_B, 'type', 'node')
                 self.rheology_n = project3d(md, 'vector', self.rheology_n, 'type', 'element')
-            return self
+        return self
     # }}}
 # }}}
 

@@ -16,7 +16,7 @@ function md=setflowequation(md,varargin)
 %      md=setflowequation(md,varargin)
 %
 %   Example:
-%      md=setflowequation(md,'HO','HO.exp',fill','SIA','coupling','tiling');
+%      md=setflowequation(md,'HO','HO.exp','fill','SIA','coupling','tiling');
 
 %some checks on list of arguments
 if ((nargin<2) | (nargout~=1))

@@ -1,4 +1,8 @@
 function solverOptions=tfqmrsoroptions(varargin)
+%TFQMRSOROPTIONS - return PETSc options for the TFQMR solver with a SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrsoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -64,7 +64,7 @@ class dslmme(object):
 
     def extrude(self, md):  #{{{
         for i in range(len(self.global_average_thermosteric_sea_level)):
-            self.sea_surface_height_above_geoid[i] = project3d(md, 'vector', self.self.sea_surface_height_above_geoid[i], 'type', 'node', 'layer', 1)
+            self.sea_surface_height_above_geoid[i] = project3d(md, 'vector', self.sea_surface_height_above_geoid[i], 'type', 'node', 'layer', 1)
             self.sea_water_pressure_at_sea_floor[i] = project3d(md, 'vector', self.sea_water_pressure_at_sea_floor[i], 'type', 'node', 'layer', 1)
 
         return self

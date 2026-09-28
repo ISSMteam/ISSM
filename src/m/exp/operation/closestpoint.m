@@ -6,7 +6,7 @@ function [profsel indsel]=closestpoint(A,numprofiles,xi,yi)
 %   the point
 %
 %   Usage:
-%     [profsel indsel]=closestpoint(A,numprofiles,xi,yi) 
+%      [profsel indsel]=closestpoint(A,numprofiles,xi,yi)
 
 	%loop over the points of each profile, find the closest to (xi,yi)
 	for i=1:numprofiles

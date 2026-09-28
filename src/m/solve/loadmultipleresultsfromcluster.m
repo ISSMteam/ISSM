@@ -2,7 +2,7 @@ function md_list=loadmultipleresultsfromcluster(md_list)
 %LOADMULTIPLERESULTSFROMCLUSTER - load multiple results of solution sequences from cluster
 %
 %   Usage:
-%      md_list=loadresultsfromcluster(md_list);
+%      md_list=loadmultipleresultsfromcluster(md_list);
 
 nummodels=length(md_list);
 

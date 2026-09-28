@@ -11,7 +11,8 @@ function md=plugvelocities(md,filename,default_value)
 %   Example:
 %      md=plugvelocities(md,'velocityfile.mat',0);
 %
-%   See also: INTERPFROMFILE, GRIDDATA
+%   See Also:
+%      INTERPFROMFILE, GRIDDATA
 
 disp('WARNING: deprecated functions (plugvelocities)');
 %some checks
@@ -55,7 +56,8 @@ function Names=VelFindVarNames(filename)
 %   Example:
 %      Names=VelFindVarNames('velocities.mat')
 %
-%   See also: INTERPFROMFILE, GRIDDATA
+%   See Also:
+%      INTERPFROMFILE, GRIDDATA
 
 %some checks
 if nargin~=1 | nargout~=1

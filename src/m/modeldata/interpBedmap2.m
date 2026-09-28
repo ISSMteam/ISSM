@@ -15,7 +15,7 @@ function [output] = interpBedmap2(X,Y,string),
 %                                      g104c geoidal heights (to convert back to WGS84, add this grid)
 %
 %   Usage:
-%      [dataout] = interpBedmap2(X,Y,string)
+%      [output] = interpBedmap2(X,Y,string)
 
 switch (oshostname()),
 	case {'ronne'}

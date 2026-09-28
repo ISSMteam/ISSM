@@ -26,7 +26,7 @@
 +        list (APPEND GLIB_LIBRARIES ${_found_lib_${_lib}})
 +    endforeach (_lib)
 +    # Retrieve static library names
-+    string(REGEX MATCHALL "[-_/\\.a-zA-Z0-9]+\\.a" _glib_static_lib "${GLIB_LIBRARY}")
++    string(REGEX MATCHALL "[^ \t;]+\\.a" _glib_static_lib "${GLIB_LIBRARY}")
 +    foreach (_lib ${_glib_static_lib})
 +        find_library (${_lib}
 +            NAMES ${_lib}

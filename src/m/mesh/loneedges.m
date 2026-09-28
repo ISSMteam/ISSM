@@ -1,4 +1,8 @@
 function edges=loneedges(md)
+%LONEEDGES - find edges that belong to only one element
+%
+%   Usage:
+%      edges=loneedges(md);
 
 	edges=[];
 

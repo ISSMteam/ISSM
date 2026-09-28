@@ -1,8 +1,8 @@
 function mh=mh3dsurfaceplug2d(mh,mh2,flags,segments,xsegs,ysegs,varargin)
-%MESH3DSURFACEPLUG2D - plug 2d mesh into a 3D surface mesh
+%MH3DSURFACEPLUG2D - plug 2d mesh into a 3D surface mesh
 %
 %   Usage:
-%      mh=mesh3dsurfaceplug2d(mh,mh2);
+%      mh=mh3dsurfaceplug2d(mh,mh2,flags,segments,xsegs,ysegs);
 %
 
 	%First process options

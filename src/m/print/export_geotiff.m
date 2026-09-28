@@ -1,8 +1,8 @@
 function export_geotiff(filename,ref)
-%EXPORT_GEOTIF - export geotiff 
+%EXPORT_GEOTIFF - export geotiff
 %
 %   Usage:
-%      export_geotif(filename,ref);
+%      export_geotiff(filename,ref);
 %
 %      This function must be called after plotmodel
 %      filname: no extension

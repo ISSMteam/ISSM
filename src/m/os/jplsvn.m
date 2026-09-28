@@ -1,5 +1,5 @@
 function JPL_SVN=jplsvn()
-%ISSMDIR - Get JPL_SVN environment variable
+%JPLSVN - Get JPL_SVN environment variable
 %
 %   Usage:
 %      JPL_SVN=jplsvn()

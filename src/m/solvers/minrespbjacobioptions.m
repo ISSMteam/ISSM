@@ -1,4 +1,8 @@
 function solverOptions=minrespbjacobioptions(varargin)
+%MINRESPBJACOBIOPTIONS - return PETSc options for the MINRES (minimum residual) Krylov solver with a point-block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=minrespbjacobioptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

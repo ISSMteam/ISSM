@@ -302,24 +302,24 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	for (( i=1;i<=$NUMCPUS_RUN;i++ )); do
 		# Launch MATLAB and the nightly run script
 		cat > ${ISSM_DIR}/nightlylog/matlab_run$i.m << EOF
-		warning off %necessary to avoid a log of several Go for parallel runs
-		try,
-			$(if [ "${MATLAB_NROPTIONS}" = "" ]; then
-				echo "runme('output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
-			else
-				echo "runme(${MATLAB_NROPTIONS},'output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
-			fi)
-		catch me,
-			%An error occured, get report and exit
-			message=getReport(me)
-			directory=strsplit(pwd,'/');
-			fid=fopen([issmdir '/nightlylog/matlaberror.log'], 'at');
-			fprintf(fid,'\nMatlab error occured in: %s\n\n',directory{end});
-			fprintf(fid,'%s',message);
-			fclose(fid);
-		end
-		disp('MATLABEXITEDCORRECTLY');
-		exit
+warning off %necessary to avoid a log of several Go for parallel runs
+try,
+	$(if [ "${MATLAB_NROPTIONS}" = "" ]; then
+		echo "runme('output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
+	else
+		echo "runme(${MATLAB_NROPTIONS},'output','nightly','rank',${i},'numprocs',${NUMCPUS_RUN});"
+	fi)
+catch me,
+	%An error occured, get report and exit
+	message=getReport(me)
+	directory=strsplit(pwd,'/');
+	fid=fopen([issmdir '/nightlylog/matlaberror.log'], 'at');
+	fprintf(fid,'\nMatlab error occured in: %s\n\n',directory{end});
+	fprintf(fid,'%s',message);
+	fclose(fid);
+end
+disp('MATLABEXITEDCORRECTLY');
+exit
 EOF
 		cd $ISSM_DIR/test/NightlyRun
 
@@ -449,12 +449,8 @@ source $ISSM_EXT_DIR/shell2junit/install/bin/sh2ju.sh
 juLogClean
 
 if [ $MATLAB_TEST -eq 1 ]; then
-	# Strip special characters
-	sed -i \
-		-e 's|\[92m||g' \
-		-e 's|\[m||g' \
-		-e 's|\x1B||g' \
-		matlab_log.log
+	# Strip ANSI color codes
+	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' matlab_log.log
 
 	# Number tests
 	numtests=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
@@ -482,12 +478,8 @@ if [ $MATLAB_TEST -eq 1 ]; then
 fi
 
 if [ $PYTHON_TEST -eq 1 ]; then
-	# Strip special characters
-	sed -i \
-		-e 's|\[92m||g' \
-		-e 's|\[m||g' \
-		-e 's|\x1B||g' \
-		python_log.log
+	# Strip ANSI color codes
+	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' python_log.log
 
 	# Number tests
 	numtests=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | wc -l`
@@ -515,12 +507,8 @@ if [ $PYTHON_TEST -eq 1 ]; then
 fi
 
 if [ $EXAMPLES_TEST -eq 1 ]; then
-	# Strip special characters
-	sed -i \
-		-e 's|\[92m||g' \
-		-e 's|\[m||g' \
-		-e 's|\x1B||g' \
-		matlab_log_examples.log
+	# Strip ANSI color codes
+	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' matlab_log_examples.log
 
 	# Inexplicably, there are backspace characters in the error output; remove them
 	sed -i -e 's|\x08||g' matlab_log_examples.log

@@ -1,5 +1,7 @@
+%LCLIST_WRITE - write a linear constraint list to a Dakota input file
 %
-%  function to write linear constraint list
+%   Usage:
+%      []=lclist_write(fidi,cstring,cstring2,dvar)
 %
 function []=lclist_write(fidi,cstring,cstring2,dvar)
 

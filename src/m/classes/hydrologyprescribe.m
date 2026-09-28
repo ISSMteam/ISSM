@@ -1,7 +1,7 @@
 %HYDROLOGYPRESCRIBE class definition
 %
 %   Usage:
-%      hydrologyprescribe();
+%      hydrologyprescribe=hydrologyprescribe();
 
 classdef hydrologyprescribe
 	properties (SetAccess=public)

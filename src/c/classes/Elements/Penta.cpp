@@ -5092,3 +5092,49 @@ void       Penta::InputUpdateFromVectorDakota(IssmDouble* vector, int name, int 
 }
 /*}}}*/
 #endif
+
+#ifdef _HAVE_GPU_HO_
+void       Penta::GetHOMetadataArraySizes(void){/*{{{*/
+
+   /*Intermediaries*/
+	int approximation,dim;
+
+	/*Fetch Param that holds Meta Data information for GPU HO*/
+	GPUHOParam* gpu_metadata = NULL;
+	this->parameters->FindParam(&gpu_metadata, GPUHOParamEnum);
+	this->Element::FindParam(&dim, DomainDimensionEnum);
+
+   /*Get necessary inputs*/
+	this->Element::GetInputValue(&approximation,ApproximationEnum);
+	_assert_(approximation==HOApproximationEnum);
+
+   /*Compute array sizes*/
+	const int numnodes = this->GetNumberOfNodes();
+	int fdofsize = GetNumberOfDofs(this->nodes, this->GetNumberOfNodes(), FsetEnum, approximation);
+	int sdofsize = GetNumberOfDofs(this->nodes, this->GetNumberOfNodes(), SsetEnum, approximation);
+	int nrows    = GetNumberOfDofs(this->nodes, this->GetNumberOfNodes(), GsetEnum, approximation);
+	int nvalues  = nrows * nrows;
+
+	if(fdofsize > 0){
+
+		/* Global array size estimates. */
+		gpu_metadata->Kff_dofarraysize += nrows;
+		gpu_metadata->Pf_valuesarraysize += nrows;
+		gpu_metadata->Kff_valuesarraysize += nvalues;
+		gpu_metadata->PDStressHO_valuesarraysize += nrows;
+
+      /*Sizes related to HO Driving stress*/
+      int numgausspoints = 0;
+      Gauss* gauss = this->NewGauss(3);
+      while (gauss->next()) { ++numgausspoints; }
+      gpu_metadata->PDStressHO_basisarraysize  += numnodes * numgausspoints;
+      gpu_metadata->PDStressHO_factorarraysize += numgausspoints;
+
+    delete gauss;
+
+	}
+
+
+}
+/*}}}*/
+#endif

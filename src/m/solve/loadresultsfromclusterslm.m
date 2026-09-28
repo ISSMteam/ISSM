@@ -1,5 +1,5 @@
 function slm=loadresultsfromclusterslm(slm)
-%LOADRESULTSFROMCLUSTERSLM: download results.
+%LOADRESULTSFROMCLUSTERSLM - download results.
 %
 %   Usage:
 %      slm=loadresultsfromclusterslm(slm)

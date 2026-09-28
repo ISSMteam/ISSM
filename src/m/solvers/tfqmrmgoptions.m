@@ -1,4 +1,8 @@
 function solverOptions=tfqmrmgoptions(varargin)
+%TFQMRMGOPTIONS - return PETSc options for the TFQMR solver with a Multigrid preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrmgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

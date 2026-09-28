@@ -113,6 +113,7 @@
 	CalvingADStressThresholdFloatingiceEnum
 	CalvingADStressThresholdGroundediceEnum
 	CalvingCrevasseDepthEnum
+	CalvingCrevasseDepthTypeEnum
 	CalvingCrevasseThresholdEnum
 	CalvingHeightAboveFloatationEnum
 	CalvingLawEnum
@@ -130,6 +131,10 @@
 	CalvingVelUpperboundEnum
 	CalvingRcEnum
 	CalvingNumberofBasinsEnum
+	CalvingFEnum
+	CalvingChiCritEnum
+	CalvingChiMaxEnum
+	CalvingKEnum
 	ConfigurationTypeEnum
 	ConstantsGEnum
 	ConstantsNewtonGravityEnum
@@ -716,6 +721,7 @@
 	StressbalanceRestolEnum
 	StressbalanceRiftPenaltyThresholdEnum
 	StressbalanceShelfDampeningEnum
+	StressbalanceThetaEnum
 	ThermalForcingMonthlyEffectsEnum
 	ThermalIsdrainicecolumnEnum
 	ThermalIsdynamicbasalspcEnum
@@ -3476,6 +3482,7 @@
 	CalvingVonmisesEnum
 	CalvingVonmisesADEnum
 	CalvingPollardEnum
+	CalvingStochasticEnum
 	CfdragcoeffabsgradEnum
 	CfdragcoeffabsgradtransientEnum
 	CfrheologybbarabsgradEnum
@@ -3566,6 +3573,7 @@
 	GenericOptionEnum
 	GenericParamEnum
 	GenericExternalResultEnum
+	GPUHOParamEnum
 	Gradient1Enum
 	Gradient2Enum
 	Gradient3Enum
@@ -3975,6 +3983,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==CalvingADStressThresholdFloatingiceEnum) return "CalvingADStressThresholdFloatingice" end
 	if(enum==CalvingADStressThresholdGroundediceEnum) return "CalvingADStressThresholdGroundedice" end
 	if(enum==CalvingCrevasseDepthEnum) return "CalvingCrevasseDepth" end
+	if(enum==CalvingCrevasseDepthTypeEnum) return "CalvingCrevasseDepthType" end
 	if(enum==CalvingCrevasseThresholdEnum) return "CalvingCrevasseThreshold" end
 	if(enum==CalvingHeightAboveFloatationEnum) return "CalvingHeightAboveFloatation" end
 	if(enum==CalvingLawEnum) return "CalvingLaw" end
@@ -3992,6 +4001,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==CalvingVelUpperboundEnum) return "CalvingVelUpperbound" end
 	if(enum==CalvingRcEnum) return "CalvingRc" end
 	if(enum==CalvingNumberofBasinsEnum) return "CalvingNumberofBasins" end
+	if(enum==CalvingFEnum) return "CalvingF" end
+	if(enum==CalvingChiCritEnum) return "CalvingChiCrit" end
+	if(enum==CalvingChiMaxEnum) return "CalvingChiMax" end
+	if(enum==CalvingKEnum) return "CalvingK" end
 	if(enum==ConfigurationTypeEnum) return "ConfigurationType" end
 	if(enum==ConstantsGEnum) return "ConstantsG" end
 	if(enum==ConstantsNewtonGravityEnum) return "ConstantsNewtonGravity" end
@@ -4578,6 +4591,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==StressbalanceRestolEnum) return "StressbalanceRestol" end
 	if(enum==StressbalanceRiftPenaltyThresholdEnum) return "StressbalanceRiftPenaltyThreshold" end
 	if(enum==StressbalanceShelfDampeningEnum) return "StressbalanceShelfDampening" end
+	if(enum==StressbalanceThetaEnum) return "StressbalanceTheta" end
 	if(enum==ThermalForcingMonthlyEffectsEnum) return "ThermalForcingMonthlyEffects" end
 	if(enum==ThermalIsdrainicecolumnEnum) return "ThermalIsdrainicecolumn" end
 	if(enum==ThermalIsdynamicbasalspcEnum) return "ThermalIsdynamicbasalspc" end
@@ -7338,6 +7352,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==CalvingVonmisesEnum) return "CalvingVonmises" end
 	if(enum==CalvingVonmisesADEnum) return "CalvingVonmisesAD" end
 	if(enum==CalvingPollardEnum) return "CalvingPollard" end
+	if(enum==CalvingStochasticEnum) return "CalvingStochastic" end
 	if(enum==CfdragcoeffabsgradEnum) return "Cfdragcoeffabsgrad" end
 	if(enum==CfdragcoeffabsgradtransientEnum) return "Cfdragcoeffabsgradtransient" end
 	if(enum==CfrheologybbarabsgradEnum) return "Cfrheologybbarabsgrad" end
@@ -7428,6 +7443,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==GenericOptionEnum) return "GenericOption" end
 	if(enum==GenericParamEnum) return "GenericParam" end
 	if(enum==GenericExternalResultEnum) return "GenericExternalResult" end
+	if(enum==GPUHOParamEnum) return "GPUHOParam" end
 	if(enum==Gradient1Enum) return "Gradient1" end
 	if(enum==Gradient2Enum) return "Gradient2" end
 	if(enum==Gradient3Enum) return "Gradient3" end
@@ -7723,7 +7739,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SubelementMigration4Enum) return "SubelementMigration4" end
 	if(enum==TimesteppingTimeAdaptEnum) return "TimesteppingTimeAdapt" end
 	if(enum==TriangleInterpEnum) return "TriangleInterp" end
-	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitionsE" end
+	if(enum==MaximumNumberOfDefinitionsEnum) return "MaximumNumberOfDefinitions" end
 end
 
 function StringToEnum(name::String)
@@ -7837,6 +7853,7 @@ function StringToEnum(name::String)
 	if(name=="CalvingADStressThresholdFloatingice") return CalvingADStressThresholdFloatingiceEnum  end
 	if(name=="CalvingADStressThresholdGroundedice") return CalvingADStressThresholdGroundediceEnum  end
 	if(name=="CalvingCrevasseDepth") return CalvingCrevasseDepthEnum  end
+	if(name=="CalvingCrevasseDepthType") return CalvingCrevasseDepthTypeEnum  end
 	if(name=="CalvingCrevasseThreshold") return CalvingCrevasseThresholdEnum  end
 	if(name=="CalvingHeightAboveFloatation") return CalvingHeightAboveFloatationEnum  end
 	if(name=="CalvingLaw") return CalvingLawEnum  end
@@ -7854,6 +7871,10 @@ function StringToEnum(name::String)
 	if(name=="CalvingVelUpperbound") return CalvingVelUpperboundEnum  end
 	if(name=="CalvingRc") return CalvingRcEnum  end
 	if(name=="CalvingNumberofBasins") return CalvingNumberofBasinsEnum  end
+	if(name=="CalvingF") return CalvingFEnum  end
+	if(name=="CalvingChiCrit") return CalvingChiCritEnum  end
+	if(name=="CalvingChiMax") return CalvingChiMaxEnum  end
+	if(name=="CalvingK") return CalvingKEnum  end
 	if(name=="ConfigurationType") return ConfigurationTypeEnum  end
 	if(name=="ConstantsG") return ConstantsGEnum  end
 	if(name=="ConstantsNewtonGravity") return ConstantsNewtonGravityEnum  end
@@ -8440,6 +8461,7 @@ function StringToEnum(name::String)
 	if(name=="StressbalanceRestol") return StressbalanceRestolEnum  end
 	if(name=="StressbalanceRiftPenaltyThreshold") return StressbalanceRiftPenaltyThresholdEnum  end
 	if(name=="StressbalanceShelfDampening") return StressbalanceShelfDampeningEnum  end
+	if(name=="StressbalanceTheta") return StressbalanceThetaEnum  end
 	if(name=="ThermalForcingMonthlyEffects") return ThermalForcingMonthlyEffectsEnum  end
 	if(name=="ThermalIsdrainicecolumn") return ThermalIsdrainicecolumnEnum  end
 	if(name=="ThermalIsdynamicbasalspc") return ThermalIsdynamicbasalspcEnum  end
@@ -11200,6 +11222,7 @@ function StringToEnum(name::String)
 	if(name=="CalvingVonmises") return CalvingVonmisesEnum  end
 	if(name=="CalvingVonmisesAD") return CalvingVonmisesADEnum  end
 	if(name=="CalvingPollard") return CalvingPollardEnum  end
+	if(name=="CalvingStochastic") return CalvingStochasticEnum  end
 	if(name=="Cfdragcoeffabsgrad") return CfdragcoeffabsgradEnum  end
 	if(name=="Cfdragcoeffabsgradtransient") return CfdragcoeffabsgradtransientEnum  end
 	if(name=="Cfrheologybbarabsgrad") return CfrheologybbarabsgradEnum  end
@@ -11290,6 +11313,7 @@ function StringToEnum(name::String)
 	if(name=="GenericOption") return GenericOptionEnum  end
 	if(name=="GenericParam") return GenericParamEnum  end
 	if(name=="GenericExternalResult") return GenericExternalResultEnum  end
+	if(name=="GPUHOParam") return GPUHOParamEnum  end
 	if(name=="Gradient1") return Gradient1Enum  end
 	if(name=="Gradient2") return Gradient2Enum  end
 	if(name=="Gradient3") return Gradient3Enum  end
@@ -11585,6 +11609,6 @@ function StringToEnum(name::String)
 	if(name=="SubelementMigration4") return SubelementMigration4Enum  end
 	if(name=="TimesteppingTimeAdapt") return TimesteppingTimeAdaptEnum  end
 	if(name=="TriangleInterp") return TriangleInterpEnum  end
-	if(name=="MaximumNumberOfDefinitionsE") return MaximumNumberOfDefinitionsEnum  end
+	if(name=="MaximumNumberOfDefinitions") return MaximumNumberOfDefinitionsEnum  end
 	error("Enum ", name, " not found");
 end

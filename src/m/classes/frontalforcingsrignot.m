@@ -1,4 +1,4 @@
-%FRONTAL FORCINGS rignot class definition
+%FRONTALFORCINGSRIGNOT class definition
 %
 %   Usage:
 %      frontalforcingsrignot=frontalforcingsrignot();

@@ -1,7 +1,8 @@
-%
-%  wrapper for prctile to avoid using the matlab statistics toolbox.
-%
 function [y]=prctile_issm(x,p,dim)
+%PRCTILE_ISSM - wrapper for prctile to avoid using the MATLAB statistics toolbox
+%
+%   Usage:
+%      y=prctile_issm(x,p,dim);
 
 	try
 		y=prctile(argin{:});

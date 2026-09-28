@@ -5,7 +5,7 @@ function [archive_data]=archread(filename,varargin) % {{{
 %   find and return the data associated with those variable names
 %
 %   Usage:
-%      archive_data = archread('../Archives/Archive101.arch','Archive101_field1');
+%      archive_data=archread('../Archives/Archive101.arch','Archive101_field1');
 
 	nvarargs=length(varargin);
 

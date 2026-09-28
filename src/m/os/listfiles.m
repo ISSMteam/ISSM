@@ -1,11 +1,12 @@
 function list=listfiles()
-%LISTFILES list files inside a directory
+%LISTFILES - list files inside a directory
 %        this is very OS dependent.
 %
-%   usage: list=listfiles;
+%   Usage:
+%      list=listfiles;
 %
-%
-%   see also LS DIR
+%   See Also:
+%      LS, DIR
 
 %use dir, as it seems to act OS independent
 

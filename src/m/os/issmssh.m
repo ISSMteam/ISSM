@@ -1,8 +1,8 @@
 function issmssh(host,login,port,command)
 %ISSMSSH - wrapper for OS independent ssh command.
 %
-%   usage: 
-%      issmssh(host,command)
+%   Usage:
+%      issmssh(host,login,port,command)
 
 %first get hostname 
 hostname=oshostname();

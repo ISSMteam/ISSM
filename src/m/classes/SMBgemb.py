@@ -320,46 +320,48 @@ class SMBgemb(object):
             self.P = project3d(md, 'vector', self.P, 'type', 'element')
             self.eAir = project3d(md, 'vector', self.eAir, 'type', 'element')
             self.pAir = project3d(md, 'vector', self.pAir, 'type', 'element')
+            self.C = project3d(md, 'vector', self.C, 'type', 'element')
+            self.Tmean = project3d(md, 'vector', self.Tmean, 'type', 'element')
 
-        if not np.isnan(self.Dzini):
-            self.self.Dzini=project3d(md,'vector',self.self.Dzini,'type','element');
-        if not np.isnan(self.Dini):
-            self.self.Dini=project3d(md,'vector',self.Dini,'type','element');
-        if not np.isnan(self.Reini):
-            self.self.Reini=project3d(md,'vector',self.Reini,'type','element');
-        if not np.isnan(self.Gdnini):
+        if not np.any(np.isnan(self.Dzini)):
+            self.Dzini=project3d(md,'vector',self.Dzini,'type','element');
+        if not np.any(np.isnan(self.Dini)):
+            self.Dini=project3d(md,'vector',self.Dini,'type','element');
+        if not np.any(np.isnan(self.Reini)):
+            self.Reini=project3d(md,'vector',self.Reini,'type','element');
+        if not np.any(np.isnan(self.Gdnini)):
             self.Gdnini=project3d(md,'vector',self.Gdnini,'type','element');
-        if not np.isnan(self.Gspini):
+        if not np.any(np.isnan(self.Gspini)):
             self.Gspini=project3d(md,'vector',self.Gspini,'type','element');
-        if not np.isnan(self.ECini):
+        if not np.any(np.isnan(self.ECini)):
             self.ECini=project3d(md,'vector',self.ECini,'type','element');
-        if not np.isnan(self.Wini):
+        if not np.any(np.isnan(self.Wini)):
             self.Wini=project3d(md,'vector',self.Wini,'type','element');
-        if not np.isnan(self.Aini):
+        if not np.any(np.isnan(self.Aini)):
             self.Aini=project3d(md,'vector',self.Aini,'type','element');
-        if not np.isnan(self.Adiffini):
+        if not np.any(np.isnan(self.Adiffini)):
             self.Adiffini=project3d(md,'vector',self.Adiffini,'type','element');
-        if not np.isnan(self.Tini):
+        if not np.any(np.isnan(self.Tini)):
             self.Tini=project3d(md,'vector',self.Tini,'type','element');
 
-        if not np.isnan(self.dswdiffrf):
+        if not np.any(np.isnan(self.dswdiffrf)):
             self.dswdiffrf=project3d(md,'vector',self.dswdiffrf,'type','element');
-        if not np.isnan(self.szaValue):
+        if not np.any(np.isnan(self.szaValue)):
             self.szaValue=project3d(md,'vector',self.szaValue,'type','element');
-        if not np.isnan(self.cotValue):
+        if not np.any(np.isnan(self.cotValue)):
             self.cotValue=project3d(md,'vector',self.cotValue,'type','element');
-        if not np.isnan(self.ccsnowValue):
+        if not np.any(np.isnan(self.ccsnowValue)):
             self.ccsnowValue=project3d(md,'vector',self.ccsnowValue,'type','element');
-        if not np.isnan(self.cciceValue):
+        if not np.any(np.isnan(self.cciceValue)):
             self.cciceValue=project3d(md,'vector',self.cciceValue,'type','element');
 
-        if not np.isnan(self.aValue):
+        if not np.any(np.isnan(self.aValue)):
             self.aValue = project3d(md, 'vector', self.aValue, 'type', 'element')
-        if not np.isnan(self.teValue):
+        if not np.any(np.isnan(self.teValue)):
             self.teValue = project3d(md, 'vector', self.teValue, 'type', 'element')
-        if not np.isnan(self.mappedforcingpoint):
+        if not np.any(np.isnan(self.mappedforcingpoint)):
             self.mappedforcingpoint = project3d(md, 'vector', self.mappedforcingpoint, 'type', 'element')
-        if not np.isnan(self.mappedforcingprecipscaling):
+        if not np.any(np.isnan(self.mappedforcingprecipscaling)):
             self.mappedforcingprecipscaling = project3d(md, 'vector', self.mappedforcingprecipscaling, 'type', 'element')
 
         return self

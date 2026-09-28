@@ -2,7 +2,7 @@ function [output] = interpRTopo2(X,Y,varargin),
 %INTERPRTOPO2 - interp from RTOPO-2 onto X and Y
 %
 %   Usage:
-%      bed = interpRTopo2(X,Y,varargin),
+%      bed = interpRTopo2(X,Y,varargin)
 %
 %   varargin = 1 (Greenland), default
 %             -1 (Antarctica)

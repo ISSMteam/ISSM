@@ -1,7 +1,8 @@
 function  undoplots(prevplot)
 %UNDOPLOTS - undo plots
 %
-%   Usage:undoplots(prevplot)
+%   Usage:
+%      undoplots(prevplot)
 
 	%erase all previous plots
 	g=get(gca,'children');

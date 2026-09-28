@@ -1,4 +1,4 @@
-%SMBd18opdd Class definition
+%SMBd18opdd class definition
 %
 %   Usage:
 %      SMBd18opdd=SMBd18opdd();

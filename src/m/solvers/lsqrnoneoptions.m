@@ -1,4 +1,8 @@
 function solverOptions=lsqrmgoptions(varargin)
+%LSQRNONEOPTIONS - return PETSc options for the LSQR Krylov solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrnoneoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

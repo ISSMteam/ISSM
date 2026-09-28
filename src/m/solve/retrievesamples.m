@@ -1,4 +1,8 @@
 function varargout=retrievesamples(varargin)
+%RETRIEVESAMPLES - retrieve requested fields' sampled values from a set of outbin files on disk
+%
+%   Usage:
+%      varargout=retrievesamples('directory',directory,'name',name,'nsamples',nsamples,'step',step,'fields',fields)
 
 	options=pairoptions(varargin{:});
 

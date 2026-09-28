@@ -1,4 +1,4 @@
-%INVERSIONVALIDATION class definition
+%INVERSIONNUDGING class definition
 %
 %   Usage:
 %      inversionnudging=inversionnudging();

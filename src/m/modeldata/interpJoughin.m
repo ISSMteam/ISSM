@@ -1,6 +1,11 @@
 function [vxout vyout] = interpJoughin(X,Y,Date),
-	%Available dates:
-	% 2000 2005 2006 2007 2008
+%INTERPJOUGHIN - interpolate Joughin Greenland velocity mosaic for a given year
+%
+%   Available dates:
+%      2000 2005 2006 2007 2008
+%
+%   Usage:
+%      [vxout,vyout] = interpJoughin(X,Y,Date)
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid'}

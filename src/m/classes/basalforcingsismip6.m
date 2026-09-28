@@ -1,4 +1,4 @@
-%ISMIP6 BASAL FORCINGS class definition
+%BASALFORCINGSISMIP6 class definition
 %
 %   Usage:
 %      basalforcingsismip6=basalforcingsismip6();

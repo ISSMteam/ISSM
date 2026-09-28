@@ -1,4 +1,8 @@
 function solverOptions=fgmresgamgoptions(varargin)
+%FGMRESGAMGOPTIONS - PETSc solver options using the flexible GMRES (fgmres) Krylov method with geometric algebraic multigrid (GAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=fgmresgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

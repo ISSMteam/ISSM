@@ -1,4 +1,8 @@
 function vp = p_polynomial_prime ( m, n, x )
+%P_POLYNOMIAL_PRIME - evaluate the derivative of Legendre polynomials P(n,x)
+%
+%   Usage:
+%      vp = p_polynomial_prime(m,n,x);
 
 %*****************************************************************************80
 %

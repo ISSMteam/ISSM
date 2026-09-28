@@ -2,8 +2,8 @@ function []=dakota_in_write(method,dvar,dresp,params,filei,corrin,varargin)
 %DAKOTA_IN_WRITE - Write a Dakota .in input file.
 %
 %   Usage:
-%      []=dakota_in_write(method,dvar,dresp,params,filei,varargin)
-%      []=dakota_in_write(dmeth ,dvar,dresp,params,filei,varargin)
+%      []=dakota_in_write(method,dvar,dresp,params,filei,corrin,varargin)
+%      []=dakota_in_write(dmeth ,dvar,dresp,params,filei,corrin,varargin)
 %
 %   where the required input is,
 %      method        (character, dakota method name)
@@ -12,6 +12,7 @@ function []=dakota_in_write(method,dvar,dresp,params,filei,corrin,varargin)
 %      dresp         (structure array, response class objects)
 %      params        (structure array, method-independent parameters)
 %      filei         (character, name of .in file)
+%      corrin        (double array, correlation matrix for uncertain variables, or empty)
 %
 %   The method and filei will be prompted for if empty. params may be empty, in 
 %   which case defaults will be used.

@@ -1,4 +1,4 @@
-%LOVENUMBERS numbers class definition
+%LOVENUMBERS class definition
 %
 %   Usage:
 %      lovenumbers=lovenumbers() 

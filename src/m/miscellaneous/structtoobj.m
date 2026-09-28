@@ -1,5 +1,8 @@
 function obj=structtoobj(obj,S),
-%Convert struct to object
+%STRUCTTOOBJ - convert a struct to an object, copying over matching fields
+%
+%   Usage:
+%      obj=structtoobj(obj,S);
 
 	%Get object and structure fields
 	structfields=fieldnames(S);

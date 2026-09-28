@@ -7,7 +7,11 @@
 #include "../../toolkits/toolkits.h"
 #include "../AllocateSystemMatricesx/AllocateSystemMatricesx.h"
 
-void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vector<IssmDouble>** ppf, Vector<IssmDouble>** pdf, IssmDouble* pkmax,FemModel* femmodel, bool isAllocated){
+#ifdef _HAVE_GPU_HO_
+/*Add GPU header files here*/
+#endif
+
+void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vector<IssmDouble>** ppf, Vector<IssmDouble>** pdf, IssmDouble* pkmax,FemModel* femmodel, bool isAllocated, bool isGPU){
 
 	/*intermediary: */
 	int      M,N;
@@ -80,6 +84,24 @@ void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vecto
 	}
 
 	if(VerboseModule()) _printf0_("   Assembling matrices\n");
+
+	if(isGPU){
+		#ifdef _HAVE_GPU_HO_
+		/*Create Metadata structure and add as parameter*/
+		GPUHOParam* gpuho_param = new GPUHOParam();
+		femmodel->parameters->SetParam(gpuho_param, GPUHOParamEnum);
+
+		/*Determine real-element metadata array/vector sizes first*/
+		for(Object* & object : femmodel->elements->objects){
+			element = xDynamicCast<Element*>(object);
+			if(!element->IsIceInElement() || !element->AnyFSet()) continue;
+			element->GetHOMetadataArraySizes();
+		}
+
+		#else
+		_error_("cannot run GPU code, GPU_HO not enabled");
+		#endif
+	}
 
 	/*Fill stiffness matrix and load vector from elements*/
 	for(Object* & object : femmodel->elements->objects){

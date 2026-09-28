@@ -1,7 +1,8 @@
 function newsegments=alignsegments(segments)
-%ALIGNSEGMENTS: 
-% 
+%ALIGNSEGMENTS - reorder a list of segments so they form a continuous chain
 %
+%   Usage:
+%      newsegments=alignsegments(segments);
 
 	nt=length(segments);
 	newsegments=zeros(nt,3);

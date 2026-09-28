@@ -6,8 +6,8 @@ function createMCC(filename)
 %   and are saved into a directory './mccfiles' which is cleared if it already exists and is
 %   created if it does not.
 %
-%   USAGE:
-%      $ matlab 
+%   Usage:
+%      $ matlab
 %      >> createMCC(filename);
 %      >> exit
 %      $ ./mccfiles/run_MCCexecutable.sh /nasa/matlab/2022b/

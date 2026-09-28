@@ -73,7 +73,7 @@
 +		list (APPEND GDAL_LIBRARY ${_found_lib_${_extralib}})
 +	endforeach (_extralib)
 +	# Retrieve static library names
-+	string(REGEX MATCHALL "[-_/a-zA-Z0-9]+\\.a" _gdal_extra_static_lib "${GDAL_EXTRA_LIBS}")
++	string(REGEX MATCHALL "[^ \t;]+\\.a" _gdal_extra_static_lib "${GDAL_EXTRA_LIBS}")
 +	foreach (_extralib ${_gdal_extra_static_lib})
 +		find_library (${_extralib}
 +			NAMES ${_extralib}

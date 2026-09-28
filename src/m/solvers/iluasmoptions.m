@@ -1,8 +1,8 @@
 function iluasm=iluasmoptions(varargin)
-%ILUASMOPTIONS - 
+%ILUASMOPTIONS - return PETSc options for the GMRES Krylov solver with an ASM (Additive Schwarz Method) preconditioner using ILU sub-block factorization
 %
 %   Usage:
-%      options=iluasmoptions;
+%      iluasm=iluasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -2,8 +2,8 @@ function arrow(x0,y0,x1,y1,varargin)
 %ARROW - plot arrow, using (x0,y0) and (x1,y1) as initial and end points. options can be specified.
 %
 %   Usage:
-%      arrow(x1,y1,x2,y2,options)
-%      where options is a lit of paired arguments of string OR enums
+%      arrow(x0,y0,x1,y1,options)
+%      where options is a list of paired arguments of string OR enums
 %      options can be: 
 %            'ratio': default .5 (ratio headarrow/length)
 %            'widthratio': default is 1/10 of length

@@ -37,7 +37,17 @@ classdef cluster_defaults
 			% format 3: PBS, use qsub
 
 			%defaults
-			sourceetc_str = ['source ' cluster.etcpath '/environment.sh '];
+			%Not all cluster classes carry an etcpath property (only generic/local/localpfe do):
+			%fall back to srcpath (e.g. pfe), then to codepath/.. (the convention used by most
+			%remote clusters) to locate ISSM_DIR/etc.
+			if isprop(cluster,'etcpath')
+				etcpath = cluster.etcpath;
+			elseif isprop(cluster,'srcpath')
+				etcpath = [cluster.srcpath '/etc'];
+			else
+				etcpath = [cluster.codepath '/../etc'];
+			end
+			sourceetc_str = ['source ' etcpath '/environment.sh '];
 			untar_str     = [' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
 
 			if ~batch

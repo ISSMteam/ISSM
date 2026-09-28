@@ -2,7 +2,7 @@ function ha=subplotmodel(nlines,ncols,num,options)
 %SUBPLOTMODEL -  tight subplot that includes margins
 %
 %   Usage:
-%      h=subplotmodel(nlines,ncols,i,options)
+%      ha=subplotmodel(nlines,ncols,num,options)
 
 box=getfieldvalue(options,'box','off');
 if strcmpi(box,'on')

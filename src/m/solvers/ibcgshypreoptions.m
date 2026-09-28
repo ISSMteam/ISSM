@@ -1,4 +1,8 @@
 function solverOptions=ibcgshypreoptions(varargin)
+%IBCGSHYPREOPTIONS - PETSc solver options using the improved stabilized biconjugate gradient squared (ibcgs) Krylov method with Hypre preconditioning
+%
+%   Usage:
+%      solverOptions=ibcgshypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

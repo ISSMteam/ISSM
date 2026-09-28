@@ -20,7 +20,8 @@ function data_out=InterpFromFile(x,y,filename,default_value)
 %   Example:
 %      md.geometry.surface=InterpFromFile(md.mesh.x,md.mesh.y,'surfacefile.mat',0);
 %
-%   See also: PLUGVELOCITIES, INTERPFROMGRID, INTERPFROMMESH2D, INTERPFROMMESH3D
+%   See Also:
+%      PLUGVELOCITIES, INTERPFROMGRID, INTERPFROMMESH2D, INTERPFROMMESH3D
 
 %some checks
 if nargin~=4 | nargout~=1
@@ -60,7 +61,8 @@ function Names=FieldFindVarNames(filename)
 %   Example:
 %      Names=FieldFindVarNames('thickness.mat')
 %
-%   See also: INTERPFROMFILE, GRIDDATA
+%   See Also:
+%      INTERPFROMFILE, GRIDDATA
 
 %some checks
 if nargin~=1 | nargout~=1

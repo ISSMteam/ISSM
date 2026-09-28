@@ -1,5 +1,5 @@
 function value = IssmConfig(string);
-%ISSMCONFIG
+%ISSMCONFIG - return the value of an ISSM compile-time configuration option
 %
 %   Usage:
 %      value = IssmConfig('string');

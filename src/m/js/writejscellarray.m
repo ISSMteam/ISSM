@@ -1,5 +1,8 @@
 function writejscellarray(fid,prefix,cell)
-
+%WRITEJSCELLARRAY - write a cell array of numeric arrays to a JavaScript file as a nested array assignment
+%
+%   Usage:
+%      writejscellarray(fid,prefix,cell)
 
 	if ~iscell(cell)
 		fprintf(fid,'%s=%g;\n',prefix,cell);

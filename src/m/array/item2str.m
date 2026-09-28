@@ -1,9 +1,8 @@
-%
-%  function to convert an item to a string
-%
-%  function [svec]=item2str(a)
-%
 function [svec]=item2str(a)
+%ITEM2STR - convert an item to a string
+%
+%   Usage:
+%      svec=item2str(a);
 
 if     islogical(a)
     if a

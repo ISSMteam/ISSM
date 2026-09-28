@@ -1,5 +1,8 @@
 function [vxout vyout]= interpMouginotAnt2019(X,Y,ncfile),
-%INTERPMEASURESVELOCITYANTARCTICA - interpolate Antarctic velocity data onto X and Y
+%INTERPMOUGINOTANT2019 - interpolate Mouginot 2019 Antarctic ice velocity mosaic onto X and Y
+%
+%   Usage:
+%      [vxout,vyout] = interpMouginotAnt2019(X,Y,ncfile)
 %
 %   Examples:
 %      [vx vy] = interpMouginotAnt2019(X,Y);

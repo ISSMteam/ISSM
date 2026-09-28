@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=addinsideprofile(A,numprofiles,numpoints,closed,prevplot,root,options)
-%ADDINSIDEPROFILE - add apoint inside a profile
+%ADDINSIDEPROFILE - add a point inside a profile
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

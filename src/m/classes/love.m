@@ -1,4 +1,4 @@
-%love class definition
+%LOVE class definition
 %
 %   Usage:
 %      md.love=love();

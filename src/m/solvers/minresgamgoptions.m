@@ -1,4 +1,8 @@
 function solverOptions=minresgamgoptions(varargin)
+%MINRESGAMGOPTIONS - return PETSc options for the MINRES (minimum residual) Krylov solver with a GAMG (geometric-algebraic multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=minresgamgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

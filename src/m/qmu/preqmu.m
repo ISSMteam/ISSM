@@ -1,15 +1,18 @@
 function md=preqmu(md,options)
-%QMU - apply Quantification of Margins and Uncertainties techniques
-%      to a solution sequence (like stressbalance.m, progonstic.m, etc ...),
-%      using the Dakota software from Sandia.
+%PREQMU - apply Quantification of Margins and Uncertainties techniques
+%   to a solution sequence (like stressbalance.m, prognostic.m, etc ...),
+%   using the Dakota software from Sandia
+%
+%   Usage:
+%      md=preqmu(md,options)
 %
 %   options come from the solve.m routine. They can include Dakota options:
 %
-%       qmufile: input file for Dakota
-%       ivar: selection number for variables input (if several are specified in variables)
-%       iresp: same thing for response functions
-%       imethod: same thing for methods
-%       iparams: same thing for params
+%      qmufile: input file for Dakota
+%      ivar: selection number for variables input (if several are specified in variables)
+%      iresp: same thing for response functions
+%      imethod: same thing for methods
+%      iparams: same thing for params
 
 disp('preprocessing dakota inputs');
 qmufile   = getfieldvalue(options,'qmufile','qmu');

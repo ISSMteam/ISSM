@@ -1,4 +1,8 @@
 function solverOptions=richardsonmgoptions(varargin)
+%RICHARDSONMGOPTIONS - return PETSc options for the Richardson iteration Krylov solver with a multigrid preconditioner
+%
+%   Usage:
+%      solverOptions=richardsonmgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

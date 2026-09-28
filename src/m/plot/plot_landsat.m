@@ -1,10 +1,8 @@
 function plot_landsat(md,data,options,plotlines,plotcols,i),
-	% Explain
-	%  This funtion loads Landsat Image Mosaic Antarctica (LIMA) for background image.
+	%PLOT_LANDSAT - superimpose a Landsat Image Mosaic of Antarctica (LIMA) background image
 	%
-	% Usage
-	%  plot_landsat(md,data,options,plotlines,plotcols,i),
-	%
+	%   Usage:
+	%      plot_landsat(md,data,options,plotlines,plotcols,i)
 
 	%process mesh and data
 	[x2d y2d z2d elements2d is2d isplanet]=processmesh(md,[],options);

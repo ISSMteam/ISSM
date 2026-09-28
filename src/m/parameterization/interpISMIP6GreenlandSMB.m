@@ -1,5 +1,9 @@
 function smb = interpISMIP6GreenlandSMB(md,model_name,scenario,surface_ref,path)
-%interpISMIP6GreenlandSMB - interpolate chosen ISMIP6 atmospheric forcing to model
+%INTERPISMIP6GREENLANDSMB - interpolate chosen ISMIP6 atmospheric forcing to model
+%
+%   Usage:
+%      smb = interpISMIP6GreenlandSMB(md,model_name,scenario)
+%      smb = interpISMIP6GreenlandSMB(md,model_name,scenario,surface_ref,path)
 %
 %   Input:
 %     - md (model object)

@@ -1,4 +1,8 @@
 function solverOptions=lcdbjacobioptions(varargin)
+%LCDBJACOBIOPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with a block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=lcdbjacobioptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

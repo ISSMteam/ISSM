@@ -1,4 +1,8 @@
 function [geoid] = interpGeoid(X,Y,varargin),
+%INTERPGEOID - interpolate eigen-6c4 geoid data onto X and Y
+%
+%   Usage:
+%      geoid = interpGeoid(X,Y,hemisphere)
 
 switch oshostname(),
 	case {'ronne'}

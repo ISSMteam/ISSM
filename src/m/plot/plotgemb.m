@@ -1,4 +1,8 @@
 function plotgemb(results,fieldname,varargin);
+%PLOTGEMB - plot the time evolution of a GEMB column field along the vertical profile
+%
+%   Usage:
+%      plotgemb(results,fieldname,options);
 
 	options=pairoptions(varargin{:});
 

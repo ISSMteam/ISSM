@@ -8,7 +8,7 @@ function ispresent=waitonlock(md)
 %   If the time limit given in input is exceeded, return 0
 %
 %   Usage:
-%      flag=waitonlock(md)
+%      ispresent=waitonlock(md)
 
 %Return if waitonlock < 0 (no need to wait)
 

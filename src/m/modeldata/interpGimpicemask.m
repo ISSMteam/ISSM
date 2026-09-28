@@ -1,4 +1,8 @@
 function sout = interpGimpicemask(X,Y),
+%INTERPGIMPICEMASK - interpolate GIMP Greenland ice mask onto X and Y
+%
+%   Usage:
+%      sout = interpGimpicemask(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

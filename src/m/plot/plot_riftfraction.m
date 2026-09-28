@@ -4,7 +4,7 @@ function plot_riftfraction(md,options,nlines,ncols,index)
 %   Usage:
 %      plot_riftfraction(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %check that there is something in riftproperties
 if isnan(md.rifts.riftstruct.riftproperties)

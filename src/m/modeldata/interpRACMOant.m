@@ -1,4 +1,8 @@
 function smb = interpRACMOant(x,y,ncdata);
+%INTERPRACMOANT - interpolate RACMO2.3 Antarctic SMB data onto x and y
+%
+%   Usage:
+%      smb = interpRACMOant(x,y,ncdata)
 
 if nargin < 3
 	switch oshostname(),

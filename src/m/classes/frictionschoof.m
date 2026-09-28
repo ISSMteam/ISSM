@@ -43,6 +43,8 @@ classdef frictionschoof
 
 			%Early return
 			if ~ismember('StressbalanceAnalysis',analyses) & ~ismember('ThermalAnalysis',analyses), return; end
+			if (strcmp(solution,'TransientSolution') &  md.transient.isstressbalance ==0 & md.transient.isthermal == 0), return; end
+
 			md = checkfield(md,'fieldname','friction.C','timeseries',1,'NaN',1,'Inf',1,'>=',0.);
 			md = checkfield(md,'fieldname','friction.Cmax','timeseries',1,'NaN',1,'Inf',1,'>',0.);
 			md = checkfield(md,'fieldname','friction.m','NaN',1,'Inf',1,'>',0.,'size',[md.mesh.numberofelements,1]);
@@ -51,6 +53,11 @@ classdef frictionschoof
 			md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
+			elseif self.coupling==4
+				% check turn-on md.transient.ishydrology=1 
+				if ~md.transient.ishydrology
+					md = checkmessage(md, 'md.friction.coupling = 4 but md.transient.ishydrology = 0!');
+				end
          end
 		end % }}}
 		function disp(self) % {{{

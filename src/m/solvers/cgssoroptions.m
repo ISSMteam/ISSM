@@ -1,4 +1,8 @@
 function solverOptions=cgssoroptions(varargin)
+%CGSSOROPTIONS - define PETSc solver options for the Conjugate Gradient Squared (CGS) Krylov method with Successive Over-Relaxation (SOR) preconditioning
+%
+%   Usage:
+%      solverOptions=cgssoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

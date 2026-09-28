@@ -1,4 +1,4 @@
-%SMBsemic Class definition
+%SMBSEMIC class definition
 %
 %   Usage:
 %      SMBsemic=SMBsemic();

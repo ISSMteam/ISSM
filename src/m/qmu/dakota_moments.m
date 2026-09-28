@@ -1,45 +1,44 @@
+%DAKOTA_MOMENTS - calculate the same moments and confidence intervals that dakota calculates for a sample
 %
-%  calculate the same moments and confidence intervals that dakota
-%  calculates for a sample.
+%   the required input is:
+%      dresp         (structure array, responses)
+%        or
+%      samp          (double array, lists of samples)
 %
-%  [dresp                      ]=dakota_moments(dresp,alpha)
-%  [mean,stddev,meanci,stddevci]=dakota_moments(samp ,alpha)
+%   and the optional input is:
+%      alpha         (numeric, confidence interval of 100(1-alpha)%)
 %
-%  the required input is:
-%    dresp         (structure array, responses)
-%      or
-%    samp          (double array, lists of samples)
+%   the required field of dresp is:
+%      sample        (double vector, list of samples)
 %
-%  and the optional input is:
-%    alpha         (numeric, confidence interval of 100(1-alpha)%)
+%   the required output is:
+%      dresp         (structure array, responses)
+%        or
+%      mean          (double, mean of sample)
+%      stddev        (double, standard deviation of sample)
+%      meanci(2)     (double, confidence interval of mean)
+%      stddevci(2)   (double, confidence interval of standard deviation)
 %
-%  the required field of dresp is:
-%    sample        (double vector, list of samples)
+%   and the output fields of dresp are:
+%      mean          (double, mean of sample)
+%      stddev        (double, standard deviation of sample)
+%      meanci(2)     (double, confidence interval of mean)
+%      stddevci(2)   (double, confidence interval of standard deviation)
 %
-%  the required output is:
-%    dresp         (structure array, responses)
-%      or
-%    mean          (double, mean of sample)
-%    stddev        (double, standard deviation of sample)
-%    meanci(2)     (double, confidence interval of mean)
-%    stddevci(2)   (double, confidence interval of standard deviation)
+%   for each response (or column of data) in the input array, this
+%   function calculates the mean, standard deviation, and their
+%   confidence intervals for a normal distribution, the same way as
+%   dakota would.  if the input is a structure, the output is fields
+%   in the structure; if the input is an array, the output is arrays.
 %
-%  and the output fields of dresp are:
-%    mean          (double, mean of sample)
-%    stddev        (double, standard deviation of sample)
-%    meanci(2)     (double, confidence interval of mean)
-%    stddevci(2)   (double, confidence interval of standard deviation)
+%   dresp data would typically be contained in the dakota tabular
+%   output file from a sampling analysis, read by dakota_out_parse.
 %
-%  for each response (or column of data) in the input array, this
-%  function calculates the mean, standard deviation, and their
-%  confidence intervals for a normal distribution, the same way as
-%  dakota would.  if the input is a structure, the output is fields
-%  in the structure; if the input is an array, the output is arrays.
+%   Usage:
+%      [dresp                      ]=dakota_moments(dresp,alpha)
+%      [mean,stddev,meanci,stddevci]=dakota_moments(samp ,alpha)
 %
-%  dresp data would typically be contained in the dakota tabular
-%  output file from a sampling analysis, read by dakota_out_parse.
-%
-%  "Copyright 2009, by the California Institute of Technology.
+%   "Copyright 2009, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship
 %  acknowledged. Any commercial use must be negotiated with
 %  the Office of Technology Transfer at the California Institute

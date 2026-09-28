@@ -1,4 +1,8 @@
 function solverOptions=bcgssoroptions(varargin)
+%BCGSSOROPTIONS - define PETSc solver options for the BiCGSTAB (stabilized BiConjugate Gradient) Krylov method with Successive Over-Relaxation (SOR) preconditioning
+%
+%   Usage:
+%      solverOptions=bcgssoroptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

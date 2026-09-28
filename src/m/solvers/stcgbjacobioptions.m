@@ -1,4 +1,8 @@
 function solverOptions=stcgbjacobioptions(varargin)
+%STCGBJACOBIOPTIONS - return PETSc options for the STCG solver with a Block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=stcgbjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

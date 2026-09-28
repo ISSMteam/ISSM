@@ -1,5 +1,6 @@
 %CALVINGCALVINGMIP class definition
 %   For calvingMIP laws and coefficients
+%
 %   Usage:
 %      calvingcalvingmip=calvingcalvingmip();
 

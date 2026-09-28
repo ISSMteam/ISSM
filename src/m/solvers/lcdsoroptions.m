@@ -1,4 +1,8 @@
 function solverOptions=lcdsoroptions(varargin)
+%LCDSOROPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=lcdsoroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

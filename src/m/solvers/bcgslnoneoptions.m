@@ -1,4 +1,8 @@
 function solverOptions=bcgslmgoptions(varargin)
+%BCGSLNONEOPTIONS - return BiCGStab(L) PETSc options with no preconditioner
+%
+%   Usage:
+%      options=bcgslnoneoptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

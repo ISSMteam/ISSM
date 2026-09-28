@@ -1,10 +1,10 @@
 function plot_tensor_principalaxis(md,options,width,i,tensor,type,plot_options)
-%PLOT_TENSOR_PRINCIPALAXIS - plot ytensor principal axis
+%PLOT_TENSOR_PRINCIPALAXIS - plot tensor principal axis
 %
 %   Usage:
 %      plot_tensor_principalaxis(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %prepare subplot
 subplot(width,width,i); 

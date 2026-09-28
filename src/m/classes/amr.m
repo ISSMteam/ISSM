@@ -1,4 +1,4 @@
-%AMR Class definition
+%AMR class definition
 %
 %   Usage:
 %      md.amr=amr();

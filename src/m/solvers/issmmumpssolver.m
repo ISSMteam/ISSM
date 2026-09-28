@@ -1,8 +1,8 @@
 function issmoptions=issmmumpssolver(varargin)
-%ISSMSOLVER - 
+%ISSMMUMPSSOLVER - return ISSM options for the MUMPS direct solver
 %
 %   Usage:
-%      options=issmsolver;
+%      issmoptions=issmmumpssolver();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

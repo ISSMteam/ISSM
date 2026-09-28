@@ -1,9 +1,10 @@
 #ifndef _CONTAINER_PARAMETERS_H_
-#define  _CONTAINER_PARAMETERS_H_
+#define _CONTAINER_PARAMETERS_H_
 #include <stdio.h>
 
 /*forward declarations */
 class Param;
+class GPUHOParam;
 class DataSet;
 class MarshallHandle;
 template <class doublematrix> class Matrix;
@@ -59,6 +60,9 @@ class Parameters{
 		void  FindParam(Matrix<IssmDouble>** pmat,int enum_type);
 		void  FindParam(FILE** pfid,int enum_type);
 		void  FindParam(DataSet** pdataset, int enum_type);
+		#ifdef _HAVE_GPU_HO_
+		void  FindParam(GPUHOParam** p_metadata, int enum_type);
+		#endif
 		void  FindParamAndMakePassive(IssmPDouble* pscalar, int enum_type);
 		void  FindParamAndMakePassive(IssmPDouble** pvec,int* pM,int enum_type);
 		void  FindControlParam(IssmDouble** pvec,int* pM, int param_enum, const char* data);

@@ -1,6 +1,11 @@
 function [elements,x,y,z,numberofelements,numberofnodes,elconv,nodeconv,elconv2,nodeconv2]=meshplug(elements,x,y,z,elements2,x2,y2,z2,extractednodes,extractedelements,domain)
-%MESHPLUG - embed mesh into another one
-%     See also meshaddrifts
+%MESHPLUG - embed a mesh into another one
+%
+%   Usage:
+%      [elements,x,y,z,numberofelements,numberofnodes,elconv,nodeconv,elconv2,nodeconv2]=meshplug(elements,x,y,z,elements2,x2,y2,z2,extractednodes,extractedelements,domain);
+%
+%   See Also:
+%      meshaddrifts
 
 %initialize elconv,nodeconv conversion tables from md mesh to new md mesh
 elconv=1:size(elements,1); elconv=elconv';

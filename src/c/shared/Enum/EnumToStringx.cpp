@@ -126,6 +126,7 @@ const char* EnumToStringx(int en){
 		case CalvingADStressThresholdFloatingiceEnum : return "CalvingADStressThresholdFloatingice";
 		case CalvingADStressThresholdGroundediceEnum : return "CalvingADStressThresholdGroundedice";
 		case CalvingCrevasseDepthEnum : return "CalvingCrevasseDepth";
+		case CalvingCrevasseDepthTypeEnum : return "CalvingCrevasseDepthType";
 		case CalvingCrevasseThresholdEnum : return "CalvingCrevasseThreshold";
 		case CalvingHeightAboveFloatationEnum : return "CalvingHeightAboveFloatation";
 		case CalvingLawEnum : return "CalvingLaw";
@@ -143,6 +144,10 @@ const char* EnumToStringx(int en){
 		case CalvingVelUpperboundEnum : return "CalvingVelUpperbound";
 		case CalvingRcEnum : return "CalvingRc";
 		case CalvingNumberofBasinsEnum : return "CalvingNumberofBasins";
+		case CalvingFEnum : return "CalvingF";
+		case CalvingChiCritEnum : return "CalvingChiCrit";
+		case CalvingChiMaxEnum : return "CalvingChiMax";
+		case CalvingKEnum : return "CalvingK";
 		case ConfigurationTypeEnum : return "ConfigurationType";
 		case ConstantsGEnum : return "ConstantsG";
 		case ConstantsNewtonGravityEnum : return "ConstantsNewtonGravity";
@@ -729,6 +734,7 @@ const char* EnumToStringx(int en){
 		case StressbalanceRestolEnum : return "StressbalanceRestol";
 		case StressbalanceRiftPenaltyThresholdEnum : return "StressbalanceRiftPenaltyThreshold";
 		case StressbalanceShelfDampeningEnum : return "StressbalanceShelfDampening";
+		case StressbalanceThetaEnum : return "StressbalanceTheta";
 		case ThermalForcingMonthlyEffectsEnum : return "ThermalForcingMonthlyEffects";
 		case ThermalIsdrainicecolumnEnum : return "ThermalIsdrainicecolumn";
 		case ThermalIsdynamicbasalspcEnum : return "ThermalIsdynamicbasalspc";
@@ -3489,6 +3495,7 @@ const char* EnumToStringx(int en){
 		case CalvingVonmisesEnum : return "CalvingVonmises";
 		case CalvingVonmisesADEnum : return "CalvingVonmisesAD";
 		case CalvingPollardEnum : return "CalvingPollard";
+		case CalvingStochasticEnum : return "CalvingStochastic";
 		case CfdragcoeffabsgradEnum : return "Cfdragcoeffabsgrad";
 		case CfdragcoeffabsgradtransientEnum : return "Cfdragcoeffabsgradtransient";
 		case CfrheologybbarabsgradEnum : return "Cfrheologybbarabsgrad";
@@ -3579,6 +3586,7 @@ const char* EnumToStringx(int en){
 		case GenericOptionEnum : return "GenericOption";
 		case GenericParamEnum : return "GenericParam";
 		case GenericExternalResultEnum : return "GenericExternalResult";
+		case GPUHOParamEnum : return "GPUHOParam";
 		case Gradient1Enum : return "Gradient1";
 		case Gradient2Enum : return "Gradient2";
 		case Gradient3Enum : return "Gradient3";
@@ -3874,7 +3882,7 @@ const char* EnumToStringx(int en){
 		case SubelementMigration4Enum : return "SubelementMigration4";
 		case TimesteppingTimeAdaptEnum : return "TimesteppingTimeAdapt";
 		case TriangleInterpEnum : return "TriangleInterp";
-		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitionsE";
+		case MaximumNumberOfDefinitionsEnum : return "MaximumNumberOfDefinitions";
 		default : return "unknown";
 
 	}

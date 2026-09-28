@@ -1,4 +1,8 @@
 function output = interpGriggs2013(X,Y,string),
+%INTERPGRIGGS2013 - deprecated, use interpBamber2013 instead
+%
+%   Usage:
+%      output = interpGriggs2013(X,Y,string)
 
 disp('============================================');
 disp(' ');

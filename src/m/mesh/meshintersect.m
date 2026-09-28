@@ -1,6 +1,7 @@
 function indices=meshintersect(lat,long,lats,longs,varargin)
-%MESHINTERSECT - return indices (into lat and long) of common values between (lat,long) and (lats,longs). 
-%  i.e: lat(index)=lats; long(index)=longs;
+%MESHINTERSECT - return indices (into lat and long) of common values between (lat,long) and (lats,longs).
+%
+%   i.e: lat(index)=lats; long(index)=longs;
 %
 %   Usage:
 %      index=meshintersect(md.mesh.lat,md.mesh.long,mdsmaller.mesh.lat,mdsmaller.mesh.long);

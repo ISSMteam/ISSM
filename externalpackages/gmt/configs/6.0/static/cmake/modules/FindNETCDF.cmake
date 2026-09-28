@@ -145,7 +145,7 @@ if (NETCDF_EXTRA_LIBS)
 		list (APPEND NETCDF_LIBRARY ${_found_lib_${_extralib}})
 	endforeach (_extralib)
 	# Retrieve static library names
-	string(REGEX MATCHALL "[a-zA-Z0-9]+\\.a" _netcdf_extra_static_lib "${NETCDF_EXTRA_LIBS}")
+	string(REGEX MATCHALL "[^ \t;]+\\.a" _netcdf_extra_static_lib "${NETCDF_EXTRA_LIBS}")
 	foreach (_extralib ${_netcdf_extra_static_lib})
 		find_library (_found_lib_${_extralib}
 			NAMES ${_extralib}

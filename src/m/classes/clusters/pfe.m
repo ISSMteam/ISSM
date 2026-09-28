@@ -11,12 +11,12 @@ classdef pfe
 		name           = 'pfe'
 		login          = '';
 		modules        = {'comp-intel/2018.3.222' '/nasa/intel/impi/2021.3/modulefiles/mpi/2021.3.0' 'scicon/app-tools'};
-		numnodes       = 20;
-		cpuspernode    = 8;
+		numnodes       = 1;
+		cpuspernode    = 40;
 		port           = 1025;
-		queue          = 'long';
-		time           = 12*60;
-		processor      = 'ivy';
+		queue          = 'devel';
+		time           = 2*60;
+		processor      = 'cas_ait';
 		srcpath        = '';
 		extpkgpath     = '';
 		codepath       = '';
@@ -76,45 +76,35 @@ classdef pfe
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.nprocs(),cluster.time)
 
 			%now, check cluster.cpuspernode according to processor type
-			if strcmpi(cluster.processor,'ivy')
-				if cluster.hyperthreading
-					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 40 for ''ivy'' processors in hyperthreading mode');
-					end
-				else
-					if ((cluster.cpuspernode>20 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 20 for ''ivy'' processors');
-					end
-				end
-			elseif strcmpi(cluster.processor,'bro')
+			if strcmpi(cluster.processor,'bro_ele')
 				if cluster.hyperthreading
 					if ((cluster.cpuspernode>56 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 56 for ''bro'' processors in hyperthreading mode');
+						md = checkmessage(md,'cpuspernode should be between 1 and 56 for ''bro_ele'' processors in hyperthreading mode');
 					end
 				else
 					if ((cluster.cpuspernode>28 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 28 for ''bro'' processors');
+						md = checkmessage(md,'cpuspernode should be between 1 and 28 for ''bro_ele'' processors');
 					end
 				end
-			elseif strcmpi(cluster.processor,'has')
+			elseif strcmpi(cluster.processor,'sky_ele')
 				if cluster.hyperthreading
-					if ((cluster.cpuspernode>48 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 48 for ''has'' processors in hyperthreading mode');
+					if ((cluster.cpuspernode>80 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 80 for ''sky_ele'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>24 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 24 for ''has'' processors');
+					if ((cluster.cpuspernode>40 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 40 for ''sky_ele'' processors');
 					end
 				end
 			
-			elseif strcmpi(cluster.processor,'san')
+			elseif strcmpi(cluster.processor,'mil_ait')
 				if cluster.hyperthreading
-					if ((cluster.cpuspernode>32 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 32 for ''san'' processors in hyperthreading mode');
+					if ((cluster.cpuspernode>256 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 256 for ''mil_ait'' processors in hyperthreading mode');
 					end
 				else
-					if ((cluster.cpuspernode>16 ) | (cluster.cpuspernode<1))
-						md = checkmessage(md,'cpuspernode should be between 1 and 16 for ''san'' processors');
+					if ((cluster.cpuspernode>128 ) | (cluster.cpuspernode<1))
+						md = checkmessage(md,'cpuspernode should be between 1 and 128 for ''mil_ait'' processors');
 					end
 				end
 
@@ -141,7 +131,7 @@ classdef pfe
 				end
 			
 			else
-				md = checkmessage(md,'unknown processor type, should be ''bro'', ''has'', ''ivy'', ''san'', ''cas_ait'', or ''rom_ait''');
+				md = checkmessage(md,'unknown processor type, should be ''bro_ele'', ''sky_ele'', ''mil_ait'', ''cas_ait'', or ''rom_ait''');
 			end
 
 			%Miscellaneous
@@ -185,7 +175,7 @@ classdef pfe
 			if cluster.extpkgpath
 				fprintf(fid,'export ISSM_EXT_DIR="%s"\n',cluster.extpkgpath); 
 			end
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
+			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');
 			fprintf(fid,'cd %s/%s/\n\n',cluster.executionpath,dirname);
 			if ~isvalgrind
 				%fprintf(fid,'/u/scicon/tools/bin/several_tries mpiexec -np %i mbind.x -cs -n%i %s/%s %s %s/%s %s\n',cluster.nprocs(),cluster.cpuspernode,cluster.codepath,executable,solution,cluster.executionpath,dirname,modelname);
@@ -308,60 +298,6 @@ classdef pfe
 			end
 		end
 		%}}}
-		function BuildQueueScript(cluster, md, filename, executable) % {{{
-
-			%Get variables from md
-			dirname    = md.private.runtimename;
-			modelname  = md.miscellaneous.name;
-			solution   = md.private.solution;
-			io_gather  = md.settings.io_gather;
-			isvalgrind = md.debug.valgrind;
-
-			%checks
-			if(md.debug.gprof) disp('gprof not supported by cluster, ignoring...'); end
-
-			%write queuing script
-			fid=fopen(filename, 'w');
-			fprintf(fid,'#PBS -S /bin/bash\n');
-			%			fprintf(fid,'#PBS -N %s\n',modelname);
-			fprintf(fid,'#PBS -l select=%i:ncpus=%i:model=%s\n',cluster.numnodes,cluster.cpuspernode,cluster.processor);
-			fprintf(fid,'#PBS -l walltime=%i\n',cluster.time*60); %walltime is in seconds.
-			fprintf(fid,'#PBS -q %s \n',cluster.queue);
-			fprintf(fid,'#PBS -W group_list=%s\n',cluster.grouplist);
-			fprintf(fid,'#PBS -m e\n');
-			fprintf(fid,'#PBS -o %s.outlog \n',modelname);
-			fprintf(fid,'#PBS -e %s.errlog \n\n',modelname);
-			fprintf(fid,'. /usr/share/modules/init/bash\n\n');
-			for i=1:numel(cluster.modules), fprintf(fid,['module load ' cluster.modules{i} '\n']); end
-			fprintf(fid,'export PATH="$PATH:."\n');
-			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
-			fprintf(fid,'export MPI_GROUP_MAX=64\n\n');
-			fprintf(fid,'cd %s/%s/\n\n',cluster.executionpath,modelname);
-			fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname); %FIXME
-			if ~io_gather, %concatenate the output files:
-				fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-			end
-			fclose(fid);
-
-			%in interactive mode, create a run file, and errlog and outlog file
-			if cluster.interactive
-				fid=fopen([modelname '.run'],'w');
-				if ~isvalgrind
-					fprintf(fid,'mpiexec -np %i %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname);
-				else
-					fprintf(fid,'mpiexec -np %i valgrind --leak-check=full %s/kriging.exe %s %s\n',cluster.nprocs(),cluster.codepath,[cluster.executionpath '/' modelname],modelname);
-				end
-				if ~io_gather, %concatenate the output files:
-					fprintf(fid,'cat %s.outbin.* > %s.outbin',modelname,modelname);
-				end
-				fclose(fid);
-				fid=fopen([modelname '.errlog'],'w');
-				fclose(fid);
-				fid=fopen([modelname '.outlog'],'w');
-				fclose(fid);
-			end
-		end %}}}
 		function BuildOceanQueueScript(cluster, md, filename) % {{{
 
          %Get variables from md

@@ -21,11 +21,10 @@ def project2d(md3d, value, layer):
         raise Exception("model passed to project2d function should be 3D")
 
     if layer < 1 or layer > md3d.mesh.numberoflayers:
-        raise ValueError("layer must be between 0 and {}".format(md3d.mesh.numberoflayers))
+        raise ValueError("layer must be between 1 and {}".format(md3d.mesh.numberoflayers))
 
     # coerce to array in case float is passed
     if type(value) not in [np.ndarray, np.ma.core.MaskedArray]:
-        print('coercing array')
         value = np.array(value)
 
     vec2d = False
@@ -34,17 +33,19 @@ def project2d(md3d, value, layer):
         vec2d = True
 
     if value.size == 1:
-        projection_value = value[(layer - 1) * md3d.mesh.numberofelements2d:layer * md3d.mesh.numberofelements2d]
+        # single value: it applies to all layers, return as-is
+        projection_value = value
     elif value.shape[0] == md3d.mesh.numberofvertices:
-        #print 'indices: ', (layer - 1) * md3d.mesh.numberofvertices2d, layer * md3d.mesh.numberofvertices2d
         projection_value = value[(layer - 1) * md3d.mesh.numberofvertices2d:layer * md3d.mesh.numberofvertices2d]
     elif value.shape[0] == md3d.mesh.numberofvertices + 1:
         if np.ndim(value) == 1:
             projection_value = np.hstack((value[(layer - 1) * md3d.mesh.numberofvertices2d:layer * md3d.mesh.numberofvertices2d], value[-1]))
         else:
             projection_value = np.vstack((value[(layer - 1) * md3d.mesh.numberofvertices2d:layer * md3d.mesh.numberofvertices2d], value[-1]))
-    else:
+    elif value.shape[0] == md3d.mesh.numberofelements:
         projection_value = value[(layer - 1) * md3d.mesh.numberofelements2d:layer * md3d.mesh.numberofelements2d]
+    else:
+        raise Exception('Dimensions not supported yet')
 
     if vec2d:
         projection_value = projection_value.reshape(-1, )

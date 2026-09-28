@@ -1,4 +1,8 @@
 function solverOptions=lsqrasmoptions(varargin)
+%LSQRASMOPTIONS - return PETSc options for the LSQR Krylov solver with an ASM (Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

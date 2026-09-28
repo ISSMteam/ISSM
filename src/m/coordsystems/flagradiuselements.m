@@ -1,4 +1,9 @@
 function outelements=flagradiuselements(elements,x,y,z,lat0,long0,radius)
+%FLAGRADIUSELEMENTS - given a vector of x,y,z, and a sphere of radius (km) around lat0,long0,
+%                    return the elements that own vertices within this sphere.
+%
+%   Usage:
+%      outelements=flagradiuselements(elements,x,y,z,lat0,long0,radius);
 
 	%get x0,y0,z0: 
 	R=planetradius('earth');

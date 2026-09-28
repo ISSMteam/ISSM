@@ -1,7 +1,7 @@
 function issmscpout(host, path, login, port, packages, bracketstyle)
-%ISSMSCPOUT send files to host
+%ISSMSCPOUT - Send files to host
 %
-%   usage:
+%   Usage:
 %      issmscpout(host,path,login,port,packages,bracketstyle)
 %
 %      bracketstyle:  1 - \{\}    (escaped; default)
@@ -45,7 +45,6 @@ else
 end
 
 if port
-	disp(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path])
 	[status]=system(['scp -P ' num2str(port) ' ' fileliststr ' ' login '@localhost:' path]);
 	if status~=0
 		%List expansion is a bashism. Try again with '-OT'.

@@ -1,4 +1,8 @@
 function solverOptions=lcdmgoptions(varargin)
+%LCDNONEOPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=lcdnoneoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

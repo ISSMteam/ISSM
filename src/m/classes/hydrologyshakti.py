@@ -2,6 +2,7 @@ import numpy as np
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 from WriteData import WriteData
+from project3d import project3d
 
 
 class hydrologyshakti(object):
@@ -54,6 +55,15 @@ class hydrologyshakti(object):
     # }}}
 
     def extrude(self, md):  # {{{
+        self.head = project3d(md, 'vector', self.head, 'type', 'node')
+        self.gap_height = project3d(md, 'vector', self.gap_height, 'type', 'element')
+        self.bump_spacing = project3d(md, 'vector', self.bump_spacing, 'type', 'element')
+        self.bump_height = project3d(md, 'vector', self.bump_height, 'type', 'element')
+        self.englacial_input = project3d(md, 'vector', self.englacial_input, 'type', 'node')
+        self.moulin_input = project3d(md, 'vector', self.moulin_input, 'type', 'node')
+        self.reynolds = project3d(md, 'vector', self.reynolds, 'type', 'element')
+        self.neumannflux = project3d(md, 'vector', self.neumannflux, 'type', 'element')
+        self.spchead = project3d(md, 'vector', self.spchead, 'type', 'node')
         return self
     # }}}
 

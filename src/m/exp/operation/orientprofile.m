@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=orientprofile(A,numprofiles,numpoints,closed,prevplot,root,options)
-%ORIENTPROFILE - cahnge profile orientation
+%ORIENTPROFILE - change profile orientation
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

@@ -1,4 +1,8 @@
 function slm=loadresultslm(slm)
+%LOADRESULTSLM - load results of solution sequence for a sea-level model from cluster
+%
+%   Usage:
+%      slm=loadresultslm(slm)
 
 	for i=1:length(slm.icecaps), slm.icecaps{i}=loadresultsfromcluster(slm.icecaps{i});end;
 	slm.earth=loadresultsfromcluster(slm.earth);

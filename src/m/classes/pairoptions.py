@@ -102,8 +102,9 @@ class pairoptions(object):
         """
 
         #track occurrence of field
+        keys=[k.lower() for k in self.list.keys()]
         try:
-            lines=list(self.list.keys()).index(field)
+            lines=list(keys.index(field.lower()))
         except:
             lines=[] # tricky part: if we cannot find field in list, return empty array. Looks like matlab.
 
@@ -140,7 +141,8 @@ class pairoptions(object):
             raise TypeError("exist error message: field '%s' should be a string." % str(field))
 
         #Recover option
-        if field in self.list:
+        keys=[k.lower() for k in self.list.keys()]
+        if field.lower() in keys:
             return True
         else:
             return False
@@ -167,12 +169,12 @@ class pairoptions(object):
             raise TypeError("getfieldvalue error message: field '%s' should be a string." % str(field))
 
         #Recover option
-        keys=list(self.list.keys())
-        if field in self.list:
-            value = self.list[field]
-
+        keys=[k.lower() for k in self.list.keys()]
+        if field.lower() in keys:
             # Find field
-            pos = keys.index(field)
+            pos = keys.index(field.lower())
+            value = self.list[list(self.list.keys())[pos]]
+
             self.used[pos] = True # option used
         else:
             if default is not None:
@@ -194,9 +196,10 @@ class pairoptions(object):
         """
 
         #check if field exist
-        if field in self.list:
+        keys=[k.lower() for k in self.list.keys()]
+        if self.exist(field):
             pos = np.ones((len(self.list),),dtype=bool)
-            pos[list(self.list.keys()).index(field)] = False
+            pos[keys.index(field.lower())] = False
 
             #remove duplicates from the options list
             del self.list[field]

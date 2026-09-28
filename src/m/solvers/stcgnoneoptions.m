@@ -1,4 +1,8 @@
 function solverOptions=stcgmgoptions(varargin)
+%STCGNONEOPTIONS - return PETSc options for the STCG solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=stcgnoneoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

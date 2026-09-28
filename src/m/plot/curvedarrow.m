@@ -1,11 +1,11 @@
 function curvedarrow(centerx,centery,distance,angle,secondangle,varargin)
-%CURVEDARROW - plot curved arrow, where curvature center is on (centerx,centery), radius is 'distance', 
-%   and angle determines arc length (angle in degrees). secondangle determines by how much the arc 
-%   generated is rotated along the [0,0,1] z axis.30,
+%CURVEDARROW - plot curved arrow, where curvature center is on (centerx,centery), radius is 'distance',
+%   and angle determines arc length (angle in degrees). secondangle determines by how much the arc
+%   generated is rotated along the [0,0,1] z axis.
 %
 %   Usage:
-%      curevedarrow(x1,y1,r,30,30,options)
-%      where options is a lit of paired arguments of string OR enums
+%      curvedarrow(centerx,centery,distance,angle,secondangle,varargin)
+%      where options is a list of paired arguments of string OR enums
 %      options can be: 
 %            'ratio': default .5 (ratio headarrow/length)
 %            'widthratio': default is 1/10 of length

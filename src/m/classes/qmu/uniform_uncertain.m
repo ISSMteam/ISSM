@@ -1,11 +1,11 @@
-%UNIFORM_UNCERTAIN Class definition
+%UNIFORM_UNCERTAIN class definition
 %
-%%   Usage:
+%   Usage:
 %      nuv=uniform_uncertain('descriptor',descriptor,'lower',lower,'upper',upper,'partition',partition);
-%      where nuv is the uniform_uncertain object returned by the constructor, lower and upper are the 
-%      pdf distribution bounds, and partition is the partition vector for distributed variables. 
-%      Can be a partition %      vector over elements or vertices.
-% 
+%      where nuv is the uniform_uncertain object returned by the constructor, lower and upper are the
+%      pdf distribution bounds, and partition is the partition vector for distributed variables.
+%      Can be a partition vector over elements or vertices.
+%
 %   Example:
 %      md.qmu.variables.rheology=uniform_uncertain('descriptor','RheologyBBar','lower',1e8,'upper',1e9);
 %      md.qmu.variables.rheology=uniform_uncertain('descriptor','RheologyBBar','lower',1e8,'upper',1e9,'partition',vpartition);

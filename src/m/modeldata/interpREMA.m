@@ -1,4 +1,8 @@
 function sout = interpREMA(X,Y),
+%INTERPREMA - interpolate REMA Antarctic surface DEM onto X and Y
+%
+%   Usage:
+%      sout = interpREMA(X,Y)
 
 switch oshostname(),
 	case {'ronne'}

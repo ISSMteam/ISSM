@@ -1,4 +1,8 @@
 function output = interpChuter2015(X,Y),
+%INTERPCHUTER2015 - interpolate Chuter and Bamber (2015) ice shelf thickness data onto X and Y
+%
+%   Usage:
+%      output = interpChuter2015(X,Y)
 
 ncfile='/home/ModelData/Antarctica/ChuterBamberIceShelfH/ChuterBamber_2015_CS2_ice_equivalent_ice_shelf_thickness_Rignot_gl.nc';
 verbose = 0;

@@ -1,20 +1,22 @@
 function S = readnetcdf(File,varargin)
-% Function to read NetCDF files
-%   S = netcdf(File)
-% Input Arguments
-%   File = NetCDF file to read
-% Optional Input Arguments:
-%   'Var',Var - Read data for VarArray(Var), default [1:length(S.VarArray)]
-%   'Rec',Rec - Read data for Record(Rec), default [1:S.NumRecs]
-% Output Arguments:
-%   S    = Structure of NetCDF data organised as per NetCDF definition
-% Notes:
-%   Only version 1, classic 32bit, NetCDF files are supported. By default
-% data are extracted into the S.VarArray().Data field for all variables.
-% To read the header only call S = netcdf(File,'Var',[]);
+%READNETCDF - read a NetCDF file into a MATLAB structure
 %
-% SEE ALSO
-% ---------------------------------------------------------------------------
+%   Usage:
+%      S = readnetcdf(File);
+%      S = readnetcdf(File,'Var',Var,'Rec',Rec);
+%
+%   Input Arguments
+%      File = NetCDF file to read
+%   Optional Input Arguments:
+%      'Var',Var - Read data for VarArray(Var), default [1:length(S.VarArray)]
+%      'Rec',Rec - Read data for Record(Rec), default [1:S.NumRecs]
+%   Output Arguments:
+%      S    = Structure of NetCDF data organised as per NetCDF definition
+%   Notes:
+%      Only version 1, classic 32bit, NetCDF files are supported. By default
+%      data are extracted into the S.VarArray().Data field for all variables.
+%      To read the header only call S = readnetcdf(File,'Var',[]);
+%
 S = [];
 
 try

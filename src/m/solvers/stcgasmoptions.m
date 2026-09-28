@@ -1,4 +1,8 @@
 function solverOptions=stcgasmoptions(varargin)
+%STCGASMOPTIONS - return PETSc options for the STCG (Steihaug-Toint conjugate gradient) Krylov solver with an ASM (Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=stcgasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

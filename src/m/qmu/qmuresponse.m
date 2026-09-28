@@ -1,5 +1,8 @@
 function response=qmuresponse(models,results,processedresults,descriptor)
-%QMURESPONSE - compute response function from model results.
+%QMURESPONSE - compute response function from model results
+%
+%   Usage:
+%      response=qmuresponse(models,results,processedresults,descriptor)
 
 if strcmpi(descriptor,'max_vel')
 	response=max(processedresults.vel);

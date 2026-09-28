@@ -1,5 +1,9 @@
 function writejsstruct(fid,prefix,structure)
-	
+%WRITEJSSTRUCT - write a structure's scalar and string fields to a JavaScript file as object property assignments
+%
+%   Usage:
+%      writejsstruct(fid,prefix,structure)
+
 	fprintf(fid,'%s={};\n',prefix);
 
 	fields=fieldnames(structure);

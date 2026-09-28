@@ -1,4 +1,8 @@
 function solverOptions=bcgsgamgoptions(varargin)
+%BCGSGAMGOPTIONS - return BiCGStab PETSc options with a geometric algebraic multigrid (GAMG) preconditioner
+%
+%   Usage:
+%      options=bcgsgamgoptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

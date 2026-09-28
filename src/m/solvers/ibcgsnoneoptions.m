@@ -1,4 +1,8 @@
 function solverOptions=ibcgsmgoptions(varargin)
+%IBCGSNONEOPTIONS - return PETSc options for the IBCGS (improved stabilized biconjugate gradient squared) Krylov solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=ibcgsnoneoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

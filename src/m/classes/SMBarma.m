@@ -1,4 +1,4 @@
-%SMBarma Class definition
+%SMBarma class definition
 %
 %   Usage:
 %      SMBarma=SMBarma();

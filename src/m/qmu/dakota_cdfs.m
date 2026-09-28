@@ -1,11 +1,13 @@
+%DAKOTA_CDFS - calculate cumulative distribution functions the same way as dakota
 %
 %  calculate the same cumulative distribution functions that dakota
 %  calculates for given responses, probabilities, reliabilities, and/or
 %  general reliabilities.
 %
-%  [dresp]=dakota_cdfs(method,dresp      ,resp,prob,rel,grel)
-%  [cdf  ]=dakota_cdfs(method,samp       ,resp,prob,rel,grel)
-%  [cdf  ]=dakota_cdfs(method,mean,stddev,resp,prob,rel,grel)
+%   Usage:
+%      [dresp]=dakota_cdfs(method,dresp      ,resp,prob,rel,grel);
+%      [cdf  ]=dakota_cdfs(method,samp       ,resp,prob,rel,grel);
+%      [cdf  ]=dakota_cdfs(method,mean,stddev,resp,prob,rel,grel);
 %
 %  the required input is:
 %    method        (char, 'nond_sampling' or 'nond_local_reliability')

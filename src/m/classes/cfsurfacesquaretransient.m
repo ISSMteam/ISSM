@@ -1,4 +1,4 @@
-%MISFIT class definition
+%CFSURFACESQUARETRANSIENT class definition
 %
 %   Usage:
 %      cfsurfacesquaretransient=cfsurfacesquaretransient();

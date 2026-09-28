@@ -1,10 +1,8 @@
-%
-%  function to find and read the first or last positive integer
-%  in a character string.
-%
-%  function [aint]=str2int(astr,cfl)
-%
 function [aint]=str2int(astr,cfl)
+%STR2INT - find and read the first or last positive integer in a character string
+%
+%   Usage:
+%      aint=str2int(astr,cfl);
 
 aint=[];
 

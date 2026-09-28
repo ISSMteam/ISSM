@@ -1,8 +1,8 @@
 function jacobicg=jacobiacgoptions(varargin)
-%ASMOPTIONS - return Additive Shwartz Method with Jacobi preconditioner petsc options
+%JACOBICGOPTIONS - return PETSc options for the CG (Conjugate Gradient) Krylov solver with the default preconditioner
 %
 %   Usage:
-%      options=jacobiasmoptions;
+%      jacobicg=jacobicgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

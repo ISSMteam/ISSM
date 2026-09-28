@@ -1,5 +1,5 @@
 function [vxout vyout] = interpJoughinCompositeGreenland(X,Y,path)
-% INTERPJOUGHINCOMPOSITEGREENLAND - interpolate Joughin's mosaic nsidc-0670
+%INTERPJOUGHINCOMPOSITEGREENLAND - interpolate Joughin's mosaic nsidc-0670
 %
 %   Usage:
 %      [vx vy] = interpJoughinCompositeGreenland(X,Y)

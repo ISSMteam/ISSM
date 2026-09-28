@@ -1,9 +1,8 @@
-%
-%  function to find the structures with the specified descriptors
-%  
-%  [sarrayo]=struc_desc(sarray,varargin)
-%
 function [sarrayo]=struc_desc(sarray,varargin)
+%STRUC_DESC - find the structures with the specified descriptors
+%
+%   Usage:
+%      sarrayo=struc_desc(sarray,varargin);
 
 if ~isfield(sarray,'descriptor')
     if ~isempty(inputname(1))

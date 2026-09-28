@@ -1,5 +1,8 @@
 function y = landcolor(n)
-%LANDCOLOR Land colormap
+%LANDCOLOR - Land colormap
+%
+%   Usage:
+%      y = landcolor(n)
 %
 %	Author: Francois Beauducel <beauducel@ipgp.fr>
 %	$Revision: 1.0.0 $   $Date: 2012/05/17 11:22:44 $

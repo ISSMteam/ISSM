@@ -1,5 +1,5 @@
 function shpconcat(domain,holes,filename)
-%SHPWRITE - concat a shape file from a domain and holes
+%SHPCONCAT - concat a shape file from a domain and holes
 %
 %   Usage:
 %      shpconcat(domain,holes,filename)

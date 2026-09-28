@@ -115,7 +115,9 @@ void MapOceanConnectivityx(FemModel* femmodel){
 		IssmDouble* values = xNew<IssmDouble>(numvertices);
 		for(int j=0;j<numvertices;j++){
 			lid = element->vertices[j]->Lid();
-			values[j] = local_mask[lid]; /*value of the mask for the corresponding vertex */
+			/*Change value of the mask for the corresponding vertex */
+			if (local_mask[lid] > 0.9) values[j] = 1.; /*in case values are added and > 1, also local_mask is a double*/
+			else values[j] = 0.;
 		}
 		element->AddInput(ConnectedToOceanEnum,values,P1Enum);
 		xDelete<IssmDouble>(values);

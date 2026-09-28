@@ -117,6 +117,7 @@ syn keyword juliaConstC BasalforcingsUpperwaterMeltingRateEnum
 syn keyword juliaConstC CalvingADStressThresholdFloatingiceEnum
 syn keyword juliaConstC CalvingADStressThresholdGroundediceEnum
 syn keyword juliaConstC CalvingCrevasseDepthEnum
+syn keyword juliaConstC CalvingCrevasseDepthTypeEnum
 syn keyword juliaConstC CalvingCrevasseThresholdEnum
 syn keyword juliaConstC CalvingHeightAboveFloatationEnum
 syn keyword juliaConstC CalvingLawEnum
@@ -134,6 +135,10 @@ syn keyword juliaConstC CalvingVelThresholdEnum
 syn keyword juliaConstC CalvingVelUpperboundEnum
 syn keyword juliaConstC CalvingRcEnum
 syn keyword juliaConstC CalvingNumberofBasinsEnum
+syn keyword juliaConstC CalvingFEnum
+syn keyword juliaConstC CalvingChiCritEnum
+syn keyword juliaConstC CalvingChiMaxEnum
+syn keyword juliaConstC CalvingKEnum
 syn keyword juliaConstC ConfigurationTypeEnum
 syn keyword juliaConstC ConstantsGEnum
 syn keyword juliaConstC ConstantsNewtonGravityEnum
@@ -720,6 +725,7 @@ syn keyword juliaConstC StressbalanceRequestedOutputsEnum
 syn keyword juliaConstC StressbalanceRestolEnum
 syn keyword juliaConstC StressbalanceRiftPenaltyThresholdEnum
 syn keyword juliaConstC StressbalanceShelfDampeningEnum
+syn keyword juliaConstC StressbalanceThetaEnum
 syn keyword juliaConstC ThermalForcingMonthlyEffectsEnum
 syn keyword juliaConstC ThermalIsdrainicecolumnEnum
 syn keyword juliaConstC ThermalIsdynamicbasalspcEnum
@@ -3480,6 +3486,7 @@ syn keyword juliaConstC CalvingCalvingMIPEnum
 syn keyword juliaConstC CalvingVonmisesEnum
 syn keyword juliaConstC CalvingVonmisesADEnum
 syn keyword juliaConstC CalvingPollardEnum
+syn keyword juliaConstC CalvingStochasticEnum
 syn keyword juliaConstC CfdragcoeffabsgradEnum
 syn keyword juliaConstC CfdragcoeffabsgradtransientEnum
 syn keyword juliaConstC CfrheologybbarabsgradEnum
@@ -3570,6 +3577,7 @@ syn keyword juliaConstC GaussTriaEnum
 syn keyword juliaConstC GenericOptionEnum
 syn keyword juliaConstC GenericParamEnum
 syn keyword juliaConstC GenericExternalResultEnum
+syn keyword juliaConstC GPUHOParamEnum
 syn keyword juliaConstC Gradient1Enum
 syn keyword juliaConstC Gradient2Enum
 syn keyword juliaConstC Gradient3Enum

@@ -1,4 +1,8 @@
 function solverOptions=fgmresjacobioptions(varargin)
+%FGMRESJACOBIOPTIONS - PETSc solver options using the flexible GMRES (fgmres) Krylov method with Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=fgmresjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

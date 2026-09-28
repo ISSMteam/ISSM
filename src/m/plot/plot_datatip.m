@@ -1,4 +1,9 @@
 function output_txt = plot_datatip(~, event_obj, datatip)
+%PLOT_DATATIP - data cursor callback that displays vertex position and field/value at the picked point
+%
+%   Usage:
+%      output_txt = plot_datatip(obj,event_obj,datatip)
+
     p = event_obj.Target;
     field = p.FaceVertexCData;
     x = p.Vertices(:,1);

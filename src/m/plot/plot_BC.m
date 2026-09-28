@@ -1,4 +1,10 @@
 function plot_BC(md,options,width,i,data)
+%PLOT_BC - plot Neumann ice front and Dirichlet stressbalance boundary conditions
+%
+%   Usage:
+%      plot_BC(md,options,width,i,data)
+%
+%   See also: PLOTMODEL
 
 %plot neuman
 h0 = plot_icefront(md,options,width,i,data);

@@ -1,4 +1,8 @@
 function str = convert2str(field)
+%CONVERT2STR - convert a model field's value into a short display string
+%
+%   Usage:
+%      str = convert2str(field)
 
 	str = parsedisplay(field);
 

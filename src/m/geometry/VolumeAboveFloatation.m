@@ -1,22 +1,24 @@
 function V = VolumeAboveFloatation(md,step,flags)
 %VOLUMEABOVEFLOATATION - returns volume above floatation
-% Sums per-element volume above floatation over grounded ice, considering only positive height above floatation.
 %
-% USAGE:
+%   Sums per-element volume above floatation over grounded ice, considering only positive height above floatation.
+%
+%   Usage:
 %      V = VolumeAboveFloatation(md)          % calculate VAF from md.geometry
-%      V = VolumeAboveFloatation(md,10)       % calculate VAF from md.results.TransientSolution(10) -- step 10 of transient solution 
+%      V = VolumeAboveFloatation(md,10)       % calculate VAF from md.results.TransientSolution(10) -- step 10 of transient solution
 %      V = VolumeAboveFloatation(md,10,flags) % calculate VAF from md.results.TransientSolution(10), only flagged elements
 %      V = VolumeAboveFloatation(md,[],flags) % calculate VAF from md.geometry, only flagged elements
 %
-% INPUT:
-%      md      % ISSM model containing the geometry
-%      step    % index of md.results.TransientSolution(step) from which to pull the geometry
-%      flags   % boolean vector of length md.mesh.numberofelements flagging which elements to integrate over
+%   Input:
+%      md      ISSM model containing the geometry
+%      step    index of md.results.TransientSolution(step) from which to pull the geometry
+%      flags   boolean vector of length md.mesh.numberofelements flagging which elements to integrate over
 %
-% OUTPUT:
-%      V       % volume above floatation over each element
+%   Output:
+%      V       volume above floatation over each element
 %
-% SEE ALSO: HeightAboveFloatation, GetAreas
+%   See Also:
+%      HeightAboveFloatation, GetAreas
 
 % process inputs
 if nargin<2

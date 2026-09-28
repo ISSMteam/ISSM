@@ -1,4 +1,8 @@
 function solverOptions=tfqmrpbjacobioptions(varargin)
+%TFQMRPBJACOBIOPTIONS - return PETSc options for the TFQMR solver with a point-block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrpbjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

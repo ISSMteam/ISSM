@@ -1,9 +1,13 @@
 function excludeoutliers(newcontourname,contourname,domainname)
-%EXCLUDEOUTLIERS - exclude points of contour that are not within the domain
-%contour. return new contours in a different file.
+%EXCLUDEOUTLIERS - exclude points of a contour that are not within a domain contour
 %
-%        Usage: excludeoutliers('NewContour.exp','Contour.exp','DomainOutline.exp');
+%   Returns the new contours in a different file
 %
+%   Usage:
+%      excludeoutliers(newcontourname,contourname,domainname)
+%
+%   Example:
+%      excludeoutliers('NewContour.exp','Contour.exp','DomainOutline.exp')
 %
 %   See also EXPMASTER, EXPDOC
 

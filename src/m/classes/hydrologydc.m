@@ -1,5 +1,4 @@
-
-%Hydrologydc class definition
+%HYDROLOGYDC class definition
 %
 %   Usage:
 %      hydrologydc=hydrologydc();

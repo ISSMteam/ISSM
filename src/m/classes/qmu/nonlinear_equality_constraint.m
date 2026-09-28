@@ -1,7 +1,7 @@
+%NONLINEAR_EQUALITY_CONSTRAINT class definition
 %
-%  constructor for the nonlinear_equality_constraint class.
-%
-%  [nec]=nonlinear_equality_constraint(varargin)
+%   Usage:
+%      nec=nonlinear_equality_constraint(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

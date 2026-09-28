@@ -1,14 +1,15 @@
 function [lat,lon] = laea_inv(x,y,lat1,lon0,falseeasting,falsenorthing)
+%LAEA_INV - inverse Lambert Azimuthal Equal Area projection for a simple spherical Earth
+%
+%   Usage:
+%      [lat,lon] = laea_inv(x,y,lat1,lon0)
+%      [lat,lon] = laea_inv(x,y,lat1,lon0,falseeasting,falsenorthing)
+%
 % laea_inv performs an inverse Lambert Azimuthal Equal Area projection
-% for a simple spherical Earth of radius 6371000 meters. 
-% 
-%% Syntax 
-% 
-%  [lat,lon] = laea_inv(x,y,lat1,lon0)
-%  [lat,lon] = laea_inv(x,y,lat1,lon0,falseeasting,falsenorthing)
-% 
-%% Description 
-% 
+% for a simple spherical Earth of radius 6371000 meters.
+%
+%% Description
+%
 % [lat,lon] = laea_inv(x,y,lat1,lon0) transforms the coordinates x,y (in 
 % meters) into geographic coordinates lat,lon. Inputs lat1 and lon0 specify 
 % the origin.

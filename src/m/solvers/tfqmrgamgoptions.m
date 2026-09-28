@@ -1,4 +1,8 @@
 function solverOptions=tfqmrgamgoptions(varargin)
+%TFQMRGAMGOPTIONS - return PETSc options for the TFQMR solver with a GAMG (Geometric Algebraic Multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

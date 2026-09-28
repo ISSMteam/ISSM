@@ -1,4 +1,5 @@
-%SMBgemb Class definition.
+%SMBGEMB class definition
+%
 %   This is the class that hosts all the inputs for the Alberta Glacier Surface Mass Balance Model
 %   Alex Gardner, University of Alberta.
 %

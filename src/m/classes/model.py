@@ -988,6 +988,7 @@ class model(object):
             md.friction.coefficient = project2d(md, md.friction.coefficient, 1)
             md.friction.p = project2d(md, md.friction.p, 1)
             md.friction.q = project2d(md, md.friction.q, 1)
+            md.friction.effective_pressure = project2d(md, md.friction.effective_pressure, 1)
         elif md.friction.__class__.__name__ == 'frictioncoulomb':
             md.friction.coefficient = project2d(md, md.friction.coefficient, 1)
             md.friction.coefficientcoulomb = project2d(md, md.friction.coefficientcoulomb, 1)
@@ -1009,6 +1010,11 @@ class model(object):
         elif md.friction.__class__.__name__ == 'frictionweertmantemp':
             md.friction.C = project2d(md, md.friction.C, 1)
             md.friction.m = project2d(md, md.friction.m, 1)
+        elif md.friction.__class__.__name__ == 'frictionschoof':
+            md.friction.C = project2d(md, md.friction.C, 1)
+            md.friction.Cmax = project2d(md, md.friction.Cmax, 1)
+            md.friction.m = project2d(md, md.friction.m, 1)
+            md.friction.effective_pressure = project2d(md, md.friction.effective_pressure, 1)
         else:
             print('friction type not supported')
 

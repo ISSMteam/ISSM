@@ -40,19 +40,14 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} src
 
 # Download source
-#$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gmsh.info/src/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
-# Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gitlab.onelab.info/gmsh/gmsh/-/archive/master/gmsh-master.tar.gz" "gmsh-master.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://gmsh.info/src/gmsh-${VER}-source.tgz" "gmsh-${VER}-source.tgz"
 
 # Unpack source
-#tar -xvzf gmsh-${VER}-source.tgz
-tar -xvzf gmsh-master.tar.gz
+tar -xvzf gmsh-${VER}-source.tgz
 
 # Move source to 'src' directory
-#mv gmsh-${VER}-source/* src
-#rm -rf gmsh-${VER}-source
-mv gmsh-master/* src
-rm -rf gmsh-master
+mv gmsh-${VER}-source/* src
+rm -rf gmsh-${VER}-source
 
 # Configure
 #

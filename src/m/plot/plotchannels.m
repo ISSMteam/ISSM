@@ -49,7 +49,6 @@ colorind(find(level>levels(end)))=numcolors;
 
 %Reconstruct edges
 % {{{
-tic
 %Maximum number of edges
 maxnbf = 3*md.mesh.numberofelements;
 %Initialize intermediaries
@@ -105,16 +104,17 @@ pos = find(exchange);
 v3 = edges(pos,1);
 edges(pos,1) = edges(pos,2);
 edges(pos,2) = v3;
-toc
 % }}}
 
 %Change edges formatting so that plot looks ok
-myedges = [edges(:,1:2) edges(:,1)]';
+n  = size(edges,1);
+xe = [md.mesh.x(edges(:,1)) md.mesh.x(edges(:,2)) NaN(n,1)]';
+ye = [md.mesh.y(edges(:,1)) md.mesh.y(edges(:,2)) NaN(n,1)]';
 
 %Loop over all levels and plot
 for i=1:numcolors
 	pos=find(colorind==i);
-	hprime=plot(md.mesh.x(myedges(:,pos)),md.mesh.y(myedges(:,pos)),'-','Color',palette(i,:),'LineWidth',linewidth);
+	hprime = plot(xe(:,pos), ye(:,pos), '-', 'Color', palette(i,:), 'LineWidth', linewidth);
 	if i==1; hold on; end
 
 	if isquiver

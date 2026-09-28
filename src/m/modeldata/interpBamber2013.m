@@ -15,6 +15,9 @@ function output = interpBamber2013(X,Y,string),
 %      BedrockElevation_unprocessed
 %      IceThickness_unprocessed
 %      BathymetryDataMask
+%
+%   Usage:
+%      output = interpBamber2013(X,Y,string)
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid'}

@@ -5,8 +5,8 @@ function [index,X,Y,Z,S,data_interp]=SectionValues(md,data,infile,resolution)
 %   given by filname (Argus type file)
 %
 %   Usage:
-%      [elements,x,y,z,s,data]=SectionValues(md,data,filename,resolution)
-%      [elements,x,y,z,s,data]=SectionValues(md,data,profile_structure,resolution)
+%      [index,X,Y,Z,S,data_interp]=SectionValues(md,data,filename,resolution)
+%      [index,X,Y,Z,S,data_interp]=SectionValues(md,data,profile_structure,resolution)
 
 %check what we have for profile as input
 if ischar(infile)
