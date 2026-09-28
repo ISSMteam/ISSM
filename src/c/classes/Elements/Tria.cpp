@@ -2854,37 +2854,38 @@ void       Tria::GetNodalWeightsAndAreaAndCentroidsFromLeveset(IssmDouble* loadw
 
 } /*}}}*/
 IssmDouble Tria::GetIcefrontArea(){/*{{{*/
-
-	IssmDouble  bed[NUMVERTICES];
-	IssmDouble	Haverage,frontarea;
-	IssmDouble  x1,y1,x2,y2,distance;
-	IssmDouble lsf[NUMVERTICES], Haux[NUMVERTICES], surfaces[NUMVERTICES], bases[NUMVERTICES];
-	int* indices=NULL;
+	/*returns the submerged calving-front area of one triangle: front width × mean water depth*/
 
 	/*Return if no ice front present*/
 	if(!IsZeroLevelset(MaskIceLevelsetEnum)) return 0;
-	//if(!this->IsIcefront()) return 0.;
 
-	/*Retrieve all inputs and parameters*/
+	/*Only continue if element is entirely below sea level*/
+	IssmDouble  bed[NUMVERTICES];
 	Element::GetInputListOnVertices(&bed[0],BedEnum);
+	for(int i=0;i<NUMVERTICES;i++) if(bed[i]>=0.) return 0.;
+
+	/*Intermediaries*/
+	IssmDouble  x1,y1,x2,y2,distance;
+	IssmDouble  lsf[NUMVERTICES], Haux[NUMVERTICES], surfaces[NUMVERTICES], bases[NUMVERTICES];
+
+	/*Fetch geometry inputs*/
 	Element::GetInputListOnVertices(&surfaces[0],SurfaceEnum);
 	Element::GetInputListOnVertices(&bases[0],BaseEnum);
 	Element::GetInputListOnVertices(&lsf[0],MaskIceLevelsetEnum);
 
-	/*Only continue if all 3 vertices are below sea level*/
-	for(int i=0;i<NUMVERTICES;i++) if(bed[i]>=0.) return 0.;
-
-	/*2. Find coordinates of where levelset crosses 0*/
+	/*2. Find coordinates of where levelset crosses 0:
+	 *   indices partitioned as [ice…, no-ice…]
+	 *   and s[0..1] are the parametric positions of the two edge crossings.*/
+	int*        indices=NULL;
 	int         numiceverts;
 	IssmDouble  s[2],x[2],y[2];
 	this->GetLevelsetIntersection(&indices, &numiceverts, &s[0],MaskIceLevelsetEnum,0.);
-	_assert_(numiceverts);
-	if(numiceverts>2){
-		Input* ls_input = this->GetInput(MaskIceLevelsetEnum);
-		ls_input->Echo();
-	}
+	_assert_(numiceverts>0);
+	_assert_(numiceverts<=NUMVERTICES);
 
-	/*3 Write coordinates*/
+	/*3 Write coordinates
+	 *  Build the two front endpoints: interpolate along the ice→no-ice edges,
+	 *  or (if all three count as "ice") take the vertices where lsf == 0.*/
 	IssmDouble  xyz_list[NUMVERTICES][3];
 	::GetVerticesCoordinates(&xyz_list[0][0],this->vertices,NUMVERTICES);
 	int counter = 0;
@@ -2921,31 +2922,36 @@ IssmDouble Tria::GetIcefrontArea(){/*{{{*/
 	distance=sqrt(pow((x1-x2),2)+pow((y1-y2),2));
 	if(distance<1e-3) return 0.;
 
-	IssmDouble H[4];
+	IssmDouble H1, H2;
+	IssmDouble Haverage = 0.;
 	for(int iv=0;iv<NUMVERTICES;iv++) Haux[iv]=-bed[indices[iv]]; //sort bed in ice/noice
 
 	switch(numiceverts){
-		case 1: // average over triangle
-			H[0]=Haux[0];
-			H[1]=Haux[0]+s[0]*(Haux[1]-Haux[0]);
-			H[2]=Haux[0]+s[1]*(Haux[2]-Haux[0]);
-			Haverage=(H[1]+H[2])/2;
+		case 1: /*only 1 vertex has ice (vertex #0)*/
+			H1 = Haux[0]+s[0]*(Haux[1]-Haux[0]); /*Intersection along [0 1]*/
+			H2 = Haux[0]+s[1]*(Haux[2]-Haux[0]); /*Intersection along [0 2]*/
+			Haverage=(H1+H2)/2;
 			break;
-		case 2: // average over quadrangle
-			H[0]=Haux[0];
-			H[1]=Haux[1];
-			H[2]=Haux[0]+s[0]*(Haux[2]-Haux[0]);
-			H[3]=Haux[1]+s[1]*(Haux[2]-Haux[1]);
-			Haverage=(H[2]+H[3])/2;
+		case 2: /*two vertices have ice (#0 and #1)*/
+			H1 = Haux[0]+s[0]*(Haux[2]-Haux[0]); /*Intersection along [0 2]*/
+			H2 = Haux[1]+s[1]*(Haux[2]-Haux[1]); /*Intersection along [1 2]*/
+			Haverage=(H1+H2)/2;
 			break;
-		case 3:
-			if(counter==1) distance = 0; //front has 0 width on this element because levelset is 0 at a single vertex
-			else if(counter==2){ //two vertices with levelset=0: averaging ice front depth over both
-				Haverage = 0;
+		case 3: /*ice front is along 1 entire edge (rare case!)*/
+			if(counter==1){
+				/* front has 0 width on this element because levelset is 0 at a single vertex*/
+				distance = 0; 
+			}
+			else if(counter==2){
+				/*two vertices with levelset=0: averaging ice front depth over both*/
+				int check = 0;
 				for(int i=0;i<NUMVERTICES;i++){
-					if(lsf[indices[i]]==0.) Haverage -= Haux[indices[i]]/2;
-					if(Haverage<Haux[indices[i]]/2-1e-3) break; //done with the two vertices
+					if(lsf[indices[i]]==0.){
+						Haverage += Haux[i]/2;
+						check++;
+					}
 				}
+				_assert_(check==2);
 			}
 			break;
 		default:
@@ -2953,7 +2959,7 @@ IssmDouble Tria::GetIcefrontArea(){/*{{{*/
 			break;
 	}
 
-	frontarea=distance*Haverage;
+	IssmDouble frontarea=distance*Haverage;
 	_assert_(frontarea>0);
 
 	/*Clean up and return*/
@@ -4001,7 +4007,7 @@ IssmDouble Tria::IceVolume(bool scaled){/*{{{*/
 	int domaintype;
 	parameters->FindParam(&domaintype,DomainTypeEnum);
 
-	/*Relict code
+	/*Relic code
 	if(false && IsIcefront()){
 		//Assumption: linear ice thickness profile on element.
 		//Hence ice thickness at intersection of levelset function with triangle edge is linear interpolation of ice thickness at vertices.
