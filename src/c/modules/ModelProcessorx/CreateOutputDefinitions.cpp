@@ -212,7 +212,7 @@ void CreateOutputDefinitions(Elements* elements,Parameters* parameters,Inputs* i
 					for(Object* & object : elements->objects){
 						Element* element=xDynamicCast<Element*>(object);
 						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_observation_s[j],inputs,iomodel,cfsurfacesquare_observation_M_s[j],cfsurfacesquare_observation_N_s[j],obs_vector_type,StringToEnumx(cfsurfacesquare_observation_string_s[j]),SurfaceObservationEnum);
-						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_weights_s[j],inputs,iomodel,cfsurfacesquare_weights_M_s[j],cfsurfacesquare_weights_N_s[j],weight_vector_type,StringToEnumx(cfsurfacesquare_weights_string_s[j]),WeightsSurfaceObservationEnum);
+						element->DatasetInputAdd(StringToEnumx(cfsurfacesquare_definitionstring_s[j]),cfsurfacesquare_weights_s[j],inputs,iomodel,cfsurfacesquare_weights_M_s[j],cfsurfacesquare_weights_N_s[j],weight_vector_type, WeightsSurfaceObservationEnum, WeightsSurfaceObservationEnum);
 
 					}
 
