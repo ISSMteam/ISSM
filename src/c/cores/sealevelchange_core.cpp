@@ -635,7 +635,9 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	if(VerboseSolution()) _printf0_("	  computing initial sea level geometrical kernels and weights.\n");
 
 	/*recover x,y,z and areas from elements: */
-	ElementCoordinatesx(&xxe,&yye,&zze,&areae,femmodel->elements);
+	/*Use spherical centroids for SLC geometry.  Tria keeps the existing
+	 *mesh3dsurface coordinates and constructs these from mesh2d lat/long.*/
+	ElementCoordinatesx(&xxe,&yye,&zze,&areae,femmodel->elements,true);
 
 	/*Compute element ids, used to speed up computations in convolution phase:{{{*/
 	lids=xNew<int>(femmodel->vertices->Size());

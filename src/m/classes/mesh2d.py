@@ -134,7 +134,7 @@ class mesh2d(object):
         WriteData(fid, prefix, 'object', self, 'class', 'mesh', 'fieldname', 'vertexonboundary', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'mesh', 'fieldname', 'segments', 'format', 'DoubleMat', 'mattype', 3)
         WriteData(fid, prefix, 'object', self, 'class', 'mesh', 'fieldname', 'scale_factor', 'format', 'DoubleMat', 'mattype', 1)
-        if md.transient.isoceancoupling:
+        if md.transient.isoceancoupling or (md.solidearth.settings.isgrd and md.solidearth.settings.grdmodel == 1):
             WriteData(fid, prefix, 'object', self, 'class', 'mesh', 'fieldname', 'lat', 'format', 'DoubleMat', 'mattype', 1)
             WriteData(fid, prefix, 'object', self, 'class', 'mesh', 'fieldname', 'long', 'format', 'DoubleMat', 'mattype', 1)
     # }}}

@@ -30,6 +30,23 @@
 #define NUMVERTICES1D 2
 //#define MICI          0 //1 = DeConto & Pollard, 2 = Anna Crawford DOMINOS
 
+/*Return Cartesian coordinates for the SLC geometry path.  mesh3dsurface
+ *keeps its existing x/y/z treatment; mesh2d uses its separately marshalled
+ *lat/long coordinates so projected x/y never enter spherical calculations.*/
+static void GetSLCVertexCoordinates(IssmDouble xyz_list[NUMVERTICES][3],Vertex** vertices,IssmDouble planetradius){
+	if(vertices[0]->domaintype!=Domain2DhorizontalEnum){
+		::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+		return;
+	}
+	for(int i=0;i<NUMVERTICES;i++){
+		IssmDouble lat=vertices[i]->GetLatitude()*M_PI/180.;
+		IssmDouble lon=vertices[i]->GetLongitude()*M_PI/180.;
+		xyz_list[i][0]=planetradius*cos(lat)*cos(lon);
+		xyz_list[i][1]=planetradius*cos(lat)*sin(lon);
+		xyz_list[i][2]=planetradius*sin(lat);
+	}
+}
+
 /*Constructors/destructor/copy*/
 Tria::Tria(int tria_id,int tria_sid,int tria_lid,IoModel* iomodel,int nummodels)/*{{{*/
 	:ElementHook(nummodels,tria_id,NUMVERTICES,iomodel){
@@ -1801,7 +1818,12 @@ void       Tria::ElementCoordinates(Vector<IssmDouble>* vxe,Vector<IssmDouble>* 
 
 	/*Look for x,y,z coordinates:*/
 	IssmDouble xyz_list[NUMVERTICES][3];
-	::GetVerticesCoordinates(&xyz_list[0][0],this->vertices,NUMVERTICES);
+	IssmDouble planetradius=0.;
+	if(spherical){
+		this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
+		GetSLCVertexCoordinates(xyz_list,this->vertices,planetradius);
+	}
+	else ::GetVerticesCoordinates(&xyz_list[0][0],this->vertices,NUMVERTICES);
 
 	/*Find centroid:*/
 	IssmDouble xe=(xyz_list[0][0]+xyz_list[1][0]+xyz_list[2][0])/3.0;
@@ -1819,7 +1841,16 @@ void       Tria::ElementCoordinates(Vector<IssmDouble>* vxe,Vector<IssmDouble>* 
 		/*in addition, put in in the inputs:*/
 		this->inputs->SetDoubleInput(AreaEnum,this->lid,area);
 	}
-	else _error_("spherical coordinates not supported yet!");
+	else{
+		IssmDouble radius=sqrt(xe*xe+ye*ye+ze*ze);
+		IssmDouble area=this->GetAreaSpherical();
+		vxe->SetValue(this->sid,xe,INS_VAL);
+		vye->SetValue(this->sid,ye,INS_VAL);
+		vze->SetValue(this->sid,ze,INS_VAL);
+		vareae->SetValue(this->sid,area,INS_VAL);
+		this->inputs->SetDoubleInput(AreaEnum, this->lid, area);
+		_assert_(radius>0.);
+	}
 	return;
 }
 /*}}}*/
@@ -2386,7 +2417,7 @@ void       Tria:: GetBarycenterFromLevelset(IssmDouble* platbar, IssmDouble* plo
 	IssmDouble barycenter[3]={0};
 	IssmDouble centroid[3]={0};
 
-	::GetVerticesCoordinates(&xyz0[0][0],vertices,NUMVERTICES); // initial triangle
+	GetSLCVertexCoordinates(xyz0,vertices,planetradius); // initial triangle
 
 	i0=point1;
 	i1=(point1+1)%3;
@@ -2563,7 +2594,7 @@ void       Tria::GetNodalWeightsAndAreaAndCentroidsFromLeveset(IssmDouble* loadw
 		return;
 	}
 
-	::GetVerticesCoordinates(&xyz0[0][0],vertices,NUMVERTICES); // initial triangle
+	GetSLCVertexCoordinates(xyz0,vertices,planetradius); // initial triangle
 
 	//Let our element be triangle ABC with:
 	i0=point1; //A
@@ -7064,7 +7095,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	}
 	/*}}}*/
 	/*Compute lat long of all vertices in the element:{{{*/
-	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	GetSLCVertexCoordinates(xyz_list,vertices,planetradius);
 	for(int i=0;i<NUMVERTICES;i++){
 		latitude[i]= asin(xyz_list[i][2]/planetradius);
 		if((xyz_list[i][2]/planetradius)==1.0)latitude[i]=M_PI/2;
@@ -7326,7 +7357,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 
 	/*}}}*/
 	/*Compute lat long of all vertices in the element:{{{*/
-	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	GetSLCVertexCoordinates(xyz_list,vertices,planetradius);
 	for(int i=0;i<NUMVERTICES;i++){
 		latitude[i]= asin(xyz_list[i][2]/planetradius);
 		longitude[i]= atan2(xyz_list[i][1],xyz_list[i][0]);
@@ -7468,7 +7499,7 @@ void       Tria::SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, I
 	this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
 
 	/*get vertex information:*/
-	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	GetSLCVertexCoordinates(xyz_list,vertices,planetradius);
 
 	/*answer mask questions:*/
 	isiceonly=this->IsIceOnlyInElement();
@@ -7900,12 +7931,14 @@ void       Tria::SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom,
 	IssmDouble loadareaocean;
 	IssmDouble loadweightsocean[3]; //to keep memory of these loads, no need to recompute for bottom pressure.
 	IssmDouble xyz_list[NUMVERTICES][3];
+	IssmDouble planetradius;
 	IssmDouble latbar=slgeom->late[this->lid];
 	IssmDouble longbar=slgeom->longe[this->lid];
 	IssmDouble constant;
 
 	/*get vertex and area information:*/
-	::GetVerticesCoordinates(&xyz_list[0][0],vertices,NUMVERTICES);
+	this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
+	GetSLCVertexCoordinates(xyz_list,vertices,planetradius);
 	area=areae[this->sid];
 
 	if(this->parameters->IsInRequestedOutput(SealevelchangeRequestedOutputsEnum,SealevelBarystaticIceLatbarEnum)) this->AddInput(SealevelBarystaticIceLatbarEnum,&latbar,P0Enum); 
