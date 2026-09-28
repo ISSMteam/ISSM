@@ -1,3 +1,5 @@
+import numpy as np
+
 from checkfield import checkfield
 from fielddisplay import fielddisplay
 from WriteData import WriteData
@@ -56,8 +58,16 @@ class calvingvonmises(object):
 
     def marshall(self, prefix, md, fid):  # {{{
         yts = md.constants.yts
+
+        if type(self.stress_threshold_groundedice) in [np.ndarray] and (self.stress_threshold_groundedice.shape[0] == md.mesh.numberofvertices or self.stress_threshold_groundedice.shape[0] == (md.mesh.numberofvertices + 1)):
+            mattype = 1
+            tsl = md.mesh.numberofvertices
+        else:
+            mattype = 2
+            tsl = md.mesh.numberofelements
+
         WriteData(fid, prefix, 'name', 'md.calving.law', 'data', 2, 'format', 'Integer')
-        WriteData(fid, prefix, 'object', self, 'fieldname', 'stress_threshold_groundedice', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts )
-        WriteData(fid, prefix, 'object', self, 'fieldname', 'stress_threshold_floatingice', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', yts)
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'stress_threshold_groundedice', 'format', 'DoubleMat', 'mattype', mattype, 'timeserieslength', tsl + 1, 'yts', yts)
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'stress_threshold_floatingice', 'format', 'DoubleMat', 'mattype', mattype, 'timeserieslength', tsl + 1, 'yts', yts)
         WriteData(fid, prefix, 'object', self, 'fieldname', 'min_thickness', 'format', 'Double')
     # }}}
