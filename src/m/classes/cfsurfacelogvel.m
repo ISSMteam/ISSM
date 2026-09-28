@@ -7,7 +7,6 @@
 %                    'observation_string','SurfaceObservations',...
 %                    'observation',md.geometry.surface,...
 %                    'weights',ones(md.mesh.numberofvertices,1),...
-%                    'weights_string','WeightsSurfaceObservations',...
 %							'datatime',time);
 %
 %
@@ -22,7 +21,6 @@ classdef cfsurfacelogvel
 		vyobs			       = NaN; %observed field that we compare the model against
 		vyobs_string		 = ''; %string for observed field.
 		weights            = NaN; %weight coefficients for every vertex
-		weights_string     = ''; %string to identify this particular set of weights
 		datatime				 = 0; %time in years from start that the data is from 
 	end
 	
@@ -50,7 +48,6 @@ classdef cfsurfacelogvel
 				self.vxobs_string=getfieldvalue(options,'vxobs_string');			
 				self.vyobs_string=getfieldvalue(options,'vyobs_string');
 				self.weights=getfieldvalue(options,'weights',NaN);
-				self.weights_string=getfieldvalue(options,'weights_string','');
 				self.datatime = getfieldvalue(options, 'datatime');
 
 			end
@@ -85,7 +82,6 @@ classdef cfsurfacelogvel
             fielddisplay(self,'vyobs','observed field that we compare the model against');
 			fielddisplay(self,'vyobs_string','observation string');
 			fielddisplay(self,'weights','weights (at vertices) to apply to the cfsurfacelogvel');
-			fielddisplay(self,'weights_string','string for weights for identification purposes');
 			fielddisplay(self,'datatime','time to compare data to model for misfit');
 
 		end % }}}
@@ -100,7 +96,6 @@ classdef cfsurfacelogvel
 		WriteData(fid,prefix,'data',self.vyobs,'name','md.cfsurfacelogvel.vyobs','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts,'scale',1./yts);
 		WriteData(fid,prefix,'data',self.vyobs_string,'name','md.cfsurfacelogvel.vyobs_string','format','String');
 		WriteData(fid,prefix,'data',self.weights,'name','md.cfsurfacelogvel.weights','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-		WriteData(fid,prefix,'data',self.weights_string,'name','md.cfsurfacelogvel.weights_string','format','String');
 		WriteData(fid,prefix,'data',round(self.datatime*md.constants.yts),'name','md.cfsurfacelogvel.datatime','format','Double');
 		end % }}}
 	end

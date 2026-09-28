@@ -8,7 +8,6 @@
 %                    'observation_string','SurfaceObservations',...
 %                    'observation',md.geometry.surface,...
 %                    'weights',ones(md.mesh.numberofvertices,1),...
-%                    'weights_string','WeightsSurfaceObservations',...
 %                    'surfaceid',1,...
 %							'datatime',time);
 %
@@ -23,7 +22,6 @@ classdef cfsurfacesquare
 		observation        = NaN; % observed field that we compare the model against
 		observation_string = '';  % string for observed field.
 		weights            = NaN; % weight coefficients for every vertex
-		weights_string     = '';  % string to identify this particular set of weights
 		datatime				 = 0;   % time in years from start that the data is from
 	end
 
@@ -51,7 +49,6 @@ classdef cfsurfacesquare
 				self.observation        = getfieldvalue(options,'observation',NaN);
 				self.observation_string = getfieldvalue(options,'observation_string');
 				self.weights            = getfieldvalue(options,'weights',NaN);
-				self.weights_string     = getfieldvalue(options,'weights_string','');
 				self.datatime           = getfieldvalue(options, 'datatime', 0.);
 
 			end
@@ -87,7 +84,6 @@ classdef cfsurfacesquare
 			fielddisplay(self,'observation','observed field that we compare the model against');
 			fielddisplay(self,'observation_string','observation string');
 			fielddisplay(self,'weights','weights (at vertices) to apply to the cfsurfacesquare');
-			fielddisplay(self,'weights_string','string for weights for identification purposes');
 			fielddisplay(self,'datatime','time to compare data to model for misfit');
 
 		end % }}}
@@ -100,7 +96,6 @@ classdef cfsurfacesquare
 			WriteData(fid,prefix,'data',self.observation,'name','md.cfsurfacesquare.observation','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'data',self.observation_string,'name','md.cfsurfacesquare.observation_string','format','String');
 			WriteData(fid,prefix,'data',self.weights,'name','md.cfsurfacesquare.weights','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'data',self.weights_string,'name','md.cfsurfacesquare.weights_string','format','String');
 			WriteData(fid,prefix,'data',round(self.datatime*md.constants.yts),'name','md.cfsurfacesquare.datatime','format','Double');
 		end % }}}
 	end
