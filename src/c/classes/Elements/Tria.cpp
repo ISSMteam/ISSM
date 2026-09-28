@@ -59,6 +59,7 @@ static void SetAzimuthIndexInput(Inputs* inputs,int enum_in,int lid,int* values,
 		inputs->SetIntArrayInput(enum_in,lid,values,n);
 	}
 }
+
 /*Constructors/destructor/copy*/
 Tria::Tria(int tria_id,int tria_sid,int tria_lid,IoModel* iomodel,int nummodels)/*{{{*/
 	:ElementHook(nummodels,tria_id,NUMVERTICES,iomodel){
