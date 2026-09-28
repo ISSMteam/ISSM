@@ -2923,7 +2923,6 @@ IssmDouble Tria::GetIcefrontArea(){/*{{{*/
 
 	IssmDouble H[4];
 	for(int iv=0;iv<NUMVERTICES;iv++) Haux[iv]=-bed[indices[iv]]; //sort bed in ice/noice
-	xDelete<int>(indices);
 
 	switch(numiceverts){
 		case 1: // average over triangle
@@ -2953,9 +2952,12 @@ IssmDouble Tria::GetIcefrontArea(){/*{{{*/
 			_error_("Number of ice covered vertices wrong in Tria::GetIceFrontArea(void)");
 			break;
 	}
-	frontarea=distance*Haverage;
 
+	frontarea=distance*Haverage;
 	_assert_(frontarea>0);
+
+	/*Clean up and return*/
+	xDelete<int>(indices);
 	return frontarea;
 }
 /*}}}*/
@@ -3426,7 +3428,7 @@ void       Tria::GetLevelsetIntersection(int** pindices, int* pnumiceverts, Issm
 				fraction[i]=1.;
 			break;
 		default:
-			_error_("Wrong number of ice vertices in Tria::GetLevelsetIntersection!");
+			_error_("Wrong number of ice vertices!");
 			break;
 	}
 
