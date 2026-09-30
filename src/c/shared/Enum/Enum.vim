@@ -294,6 +294,10 @@ syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
 syn keyword cConstant HydrologyCreepOpenFlagEnum
 syn keyword cConstant HydrologyIsTransitionEnum
 syn keyword cConstant HydrologyIsWaterPressureArmaEnum
+syn keyword cConstant HydrologyMaxiterEnum
+syn keyword cConstant HydrologyRestolEnum
+syn keyword cConstant HydrologyReltolEnum
+syn keyword cConstant HydrologyAbstolEnum
 syn keyword cConstant HydrologyMeltFlagEnum
 syn keyword cConstant HydrologyModelEnum
 syn keyword cConstant HydrologyNumBasinsEnum

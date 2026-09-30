@@ -283,6 +283,10 @@
 	HydrologyCreepOpenFlagEnum
 	HydrologyIsTransitionEnum
 	HydrologyIsWaterPressureArmaEnum
+	HydrologyMaxiterEnum
+	HydrologyRestolEnum
+	HydrologyReltolEnum
+	HydrologyAbstolEnum
 	HydrologyMeltFlagEnum
 	HydrologyModelEnum
 	HydrologyNumBasinsEnum
@@ -4153,6 +4157,10 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyCreepOpenFlagEnum) return "HydrologyCreepOpenFlag" end
 	if(enum==HydrologyIsTransitionEnum) return "HydrologyIsTransition" end
 	if(enum==HydrologyIsWaterPressureArmaEnum) return "HydrologyIsWaterPressureArma" end
+	if(enum==HydrologyMaxiterEnum) return "HydrologyMaxiter" end
+	if(enum==HydrologyRestolEnum) return "HydrologyRestol" end
+	if(enum==HydrologyReltolEnum) return "HydrologyReltol" end
+	if(enum==HydrologyAbstolEnum) return "HydrologyAbstol" end
 	if(enum==HydrologyMeltFlagEnum) return "HydrologyMeltFlag" end
 	if(enum==HydrologyModelEnum) return "HydrologyModel" end
 	if(enum==HydrologyNumBasinsEnum) return "HydrologyNumBasins" end
@@ -8023,6 +8031,10 @@ function StringToEnum(name::String)
 	if(name=="HydrologyCreepOpenFlag") return HydrologyCreepOpenFlagEnum  end
 	if(name=="HydrologyIsTransition") return HydrologyIsTransitionEnum  end
 	if(name=="HydrologyIsWaterPressureArma") return HydrologyIsWaterPressureArmaEnum  end
+	if(name=="HydrologyMaxiter") return HydrologyMaxiterEnum  end
+	if(name=="HydrologyRestol") return HydrologyRestolEnum  end
+	if(name=="HydrologyReltol") return HydrologyReltolEnum  end
+	if(name=="HydrologyAbstol") return HydrologyAbstolEnum  end
 	if(name=="HydrologyMeltFlag") return HydrologyMeltFlagEnum  end
 	if(name=="HydrologyModel") return HydrologyModelEnum  end
 	if(name=="HydrologyNumBasins") return HydrologyNumBasinsEnum  end

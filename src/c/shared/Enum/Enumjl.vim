@@ -287,6 +287,10 @@ syn keyword juliaConstC HydrologyIsIncludeSheetThicknessEnum
 syn keyword juliaConstC HydrologyCreepOpenFlagEnum
 syn keyword juliaConstC HydrologyIsTransitionEnum
 syn keyword juliaConstC HydrologyIsWaterPressureArmaEnum
+syn keyword juliaConstC HydrologyMaxiterEnum
+syn keyword juliaConstC HydrologyRestolEnum
+syn keyword juliaConstC HydrologyReltolEnum
+syn keyword juliaConstC HydrologyAbstolEnum
 syn keyword juliaConstC HydrologyMeltFlagEnum
 syn keyword juliaConstC HydrologyModelEnum
 syn keyword juliaConstC HydrologyNumBasinsEnum

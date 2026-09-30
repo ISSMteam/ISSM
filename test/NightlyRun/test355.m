@@ -9,7 +9,6 @@ md.miscellaneous.name='testChannels';
 %miscellaneous
 md=setmask(md,'',''); %everywhere grounded
 md=setflowequation(md,'SSA','all');
-md.stressbalance.maxiter=2; %Make sure it runs quickly...
 
 %Some constants
 md.constants.g=9.8;
@@ -51,6 +50,7 @@ md.timestepping.final_time=.4/365;
 
 %Change hydrology class to Glads model
 md.hydrology=hydrologyglads();
+md.hydrology.maxiter=2; %Make sure it runs quickly...
 md.hydrology.ischannels=1;
 md.hydrology.englacial_void_ratio=1e-5;
 md.hydrology.moulin_input=zeros(md.mesh.numberofvertices,1);

@@ -55,6 +55,11 @@ if 2 in steps:
     pos = np.where(np.logical_and(md.mesh.vertexonboundary, md.mesh.x == np.nanmin(md.mesh.x)))
     md.hydrology.spchead[pos] = md.geometry.base[pos]
 
+    # Convergence criteria of the SHAKTI nonlinear solver
+    md.hydrology.restol = 0.05
+    md.hydrology.reltol = 0.05
+    md.hydrology.abstol = np.nan
+
     export_netCDF(md, 'MoulinParam.nc')
 
 if 3 in steps:

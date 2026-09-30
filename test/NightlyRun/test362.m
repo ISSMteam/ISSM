@@ -55,6 +55,7 @@ md.timestepping.final_time=.4/365;
 
 %Change hydrology class to Glads model
 md.hydrology=hydrologyglads();
+md.hydrology.maxiter=10; %Make sure it runs quickly...
 md.hydrology.ischannels=1;
 md.hydrology.isincludesheetthickness = 1;
 md.hydrology.englacial_void_ratio=1e-5;
