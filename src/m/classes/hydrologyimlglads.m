@@ -96,7 +96,7 @@ classdef hydrologyimlglads
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
 			%Early return
-			if ~ismember('hydrologyimlgladsAnalysis',analyses)
+			if ~ismember('HydrologyIMLGladsAnalysis',analyses)
 				return;
 			end
 
