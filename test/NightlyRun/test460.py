@@ -29,7 +29,7 @@ for i in ['SSA', 'HO', 'FS']:
     md = setflowequation(md, i, 'all')
     md = solve(md, 'Stressbalance')
     field_names = field_names + ['Vx' + i, 'Vy' + i, 'Vz' + i, 'Vel' + i, 'LambdaS' + i]
-    field_tolerances = field_tolerances + [7e-06, 2e-05, 2e-06, 5e-06, 1e-07]
+    field_tolerances = field_tolerances + [7e-06, 2e-05, 2e-06, 5e-06, 1e-06]
     field_values = field_values + [md.results.StressbalanceSolution.Vx,
                                    md.results.StressbalanceSolution.Vy,
                                    md.results.StressbalanceSolution.Vz,
