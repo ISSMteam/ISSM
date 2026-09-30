@@ -1024,6 +1024,7 @@
 	InversionVelObsEnum
 	InversionVxObsEnum
 	InversionVyObsEnum
+	LambdaSEnum
 	LevelsetfunctionSlopeXEnum
 	LevelsetfunctionSlopeYEnum
 	LevelsetObservationEnum
@@ -3632,7 +3633,6 @@
 	L2ProjectionEPLAnalysisEnum
 	LACrouzeixRaviartEnum
 	LATaylorHoodEnum
-	LambdaSEnum
 	LevelsetAnalysisEnum
 	LevelsetfunctionPicardEnum
 	LinearFloatingMeltRateEnum
@@ -4894,6 +4894,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionVelObsEnum) return "InversionVelObs" end
 	if(enum==InversionVxObsEnum) return "InversionVxObs" end
 	if(enum==InversionVyObsEnum) return "InversionVyObs" end
+	if(enum==LambdaSEnum) return "LambdaS" end
 	if(enum==LevelsetfunctionSlopeXEnum) return "LevelsetfunctionSlopeX" end
 	if(enum==LevelsetfunctionSlopeYEnum) return "LevelsetfunctionSlopeY" end
 	if(enum==LevelsetObservationEnum) return "LevelsetObservation" end
@@ -7502,7 +7503,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==L2ProjectionEPLAnalysisEnum) return "L2ProjectionEPLAnalysis" end
 	if(enum==LACrouzeixRaviartEnum) return "LACrouzeixRaviart" end
 	if(enum==LATaylorHoodEnum) return "LATaylorHood" end
-	if(enum==LambdaSEnum) return "LambdaS" end
 	if(enum==LevelsetAnalysisEnum) return "LevelsetAnalysis" end
 	if(enum==LevelsetfunctionPicardEnum) return "LevelsetfunctionPicard" end
 	if(enum==LinearFloatingMeltRateEnum) return "LinearFloatingMeltRate" end
@@ -8764,6 +8764,7 @@ function StringToEnum(name::String)
 	if(name=="InversionVelObs") return InversionVelObsEnum  end
 	if(name=="InversionVxObs") return InversionVxObsEnum  end
 	if(name=="InversionVyObs") return InversionVyObsEnum  end
+	if(name=="LambdaS") return LambdaSEnum  end
 	if(name=="LevelsetfunctionSlopeX") return LevelsetfunctionSlopeXEnum  end
 	if(name=="LevelsetfunctionSlopeY") return LevelsetfunctionSlopeYEnum  end
 	if(name=="LevelsetObservation") return LevelsetObservationEnum  end
@@ -11372,7 +11373,6 @@ function StringToEnum(name::String)
 	if(name=="L2ProjectionEPLAnalysis") return L2ProjectionEPLAnalysisEnum  end
 	if(name=="LACrouzeixRaviart") return LACrouzeixRaviartEnum  end
 	if(name=="LATaylorHood") return LATaylorHoodEnum  end
-	if(name=="LambdaS") return LambdaSEnum  end
 	if(name=="LevelsetAnalysis") return LevelsetAnalysisEnum  end
 	if(name=="LevelsetfunctionPicard") return LevelsetfunctionPicardEnum  end
 	if(name=="LinearFloatingMeltRate") return LinearFloatingMeltRateEnum  end

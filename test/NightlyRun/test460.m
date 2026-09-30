@@ -7,6 +7,7 @@ md.materials = matestar(md.materials);
 md.materials.rheology_B = 3.15e8*ones(md.mesh.numberofvertices,1);
 md.materials.rheology_Ec=ones(md.mesh.numberofvertices,1);
 md.materials.rheology_Es=3*ones(md.mesh.numberofvertices,1);
+md.stressbalance.requested_outputs={'default','LambdaS'};
 md.cluster=generic('name',oshostname(),'np',3);
 
 %Go solve
@@ -19,13 +20,13 @@ for i={'SSA','HO','FS'},
 	disp(['====== Testing Estar with ' i{1} ' =====']);
 	md=setflowequation(md,i{1},'all');
 	md=solve(md,'Stressbalance');
-	field_names     ={field_names{:},['Vx' i{1}],['Vy' i{1}],['Vz' i{1}],['Vel' i{1}],['Pressure' i{1}]};
-	field_tolerances={field_tolerances{:},7e-06,2e-05,2e-06,5e-06,8e-07};
+	field_names     ={field_names{:},['Vx' i{1}],['Vy' i{1}],['Vz' i{1}],['Vel' i{1}],['LambdaS' i{1}]};
+	field_tolerances={field_tolerances{:},7e-06,2e-05,2e-06,5e-06,1e-07};
 	field_values={field_values{:},...
 		(md.results.StressbalanceSolution.Vx),...
 		(md.results.StressbalanceSolution.Vy),...
 		(md.results.StressbalanceSolution.Vz),...
 		(md.results.StressbalanceSolution.Vel),...
-		(md.results.StressbalanceSolution.Pressure),...
+		(md.results.StressbalanceSolution.LambdaS),...
 		};
 end

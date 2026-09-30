@@ -1035,6 +1035,7 @@ syn keyword cConstant InversionThicknessObsEnum
 syn keyword cConstant InversionVelObsEnum
 syn keyword cConstant InversionVxObsEnum
 syn keyword cConstant InversionVyObsEnum
+syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetfunctionSlopeXEnum
 syn keyword cConstant LevelsetfunctionSlopeYEnum
 syn keyword cConstant LevelsetObservationEnum
@@ -3643,7 +3644,6 @@ syn keyword cConstant L2ProjectionBaseAnalysisEnum
 syn keyword cConstant L2ProjectionEPLAnalysisEnum
 syn keyword cConstant LACrouzeixRaviartEnum
 syn keyword cConstant LATaylorHoodEnum
-syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetAnalysisEnum
 syn keyword cConstant LevelsetfunctionPicardEnum
 syn keyword cConstant LinearFloatingMeltRateEnum

@@ -1028,6 +1028,7 @@ syn keyword juliaConstC InversionThicknessObsEnum
 syn keyword juliaConstC InversionVelObsEnum
 syn keyword juliaConstC InversionVxObsEnum
 syn keyword juliaConstC InversionVyObsEnum
+syn keyword juliaConstC LambdaSEnum
 syn keyword juliaConstC LevelsetfunctionSlopeXEnum
 syn keyword juliaConstC LevelsetfunctionSlopeYEnum
 syn keyword juliaConstC LevelsetObservationEnum
@@ -3636,7 +3637,6 @@ syn keyword juliaConstC L2ProjectionBaseAnalysisEnum
 syn keyword juliaConstC L2ProjectionEPLAnalysisEnum
 syn keyword juliaConstC LACrouzeixRaviartEnum
 syn keyword juliaConstC LATaylorHoodEnum
-syn keyword juliaConstC LambdaSEnum
 syn keyword juliaConstC LevelsetAnalysisEnum
 syn keyword juliaConstC LevelsetfunctionPicardEnum
 syn keyword juliaConstC LinearFloatingMeltRateEnum

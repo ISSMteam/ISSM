@@ -252,6 +252,7 @@
 %InversionVelObs
 %InversionVxObs
 %InversionVyObs
+%LambdaS
 %LevelsetfunctionSlopeX
 %LevelsetfunctionSlopeY
 %LevelsetObservation

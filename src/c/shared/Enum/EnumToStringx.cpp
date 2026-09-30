@@ -1037,6 +1037,7 @@ const char* EnumToStringx(int en){
 		case InversionVelObsEnum : return "InversionVelObs";
 		case InversionVxObsEnum : return "InversionVxObs";
 		case InversionVyObsEnum : return "InversionVyObs";
+		case LambdaSEnum : return "LambdaS";
 		case LevelsetfunctionSlopeXEnum : return "LevelsetfunctionSlopeX";
 		case LevelsetfunctionSlopeYEnum : return "LevelsetfunctionSlopeY";
 		case LevelsetObservationEnum : return "LevelsetObservation";
@@ -3645,7 +3646,6 @@ const char* EnumToStringx(int en){
 		case L2ProjectionEPLAnalysisEnum : return "L2ProjectionEPLAnalysis";
 		case LACrouzeixRaviartEnum : return "LACrouzeixRaviart";
 		case LATaylorHoodEnum : return "LATaylorHood";
-		case LambdaSEnum : return "LambdaS";
 		case LevelsetAnalysisEnum : return "LevelsetAnalysis";
 		case LevelsetfunctionPicardEnum : return "LevelsetfunctionPicard";
 		case LinearFloatingMeltRateEnum : return "LinearFloatingMeltRate";
