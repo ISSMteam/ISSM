@@ -537,6 +537,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 	else if(hydrology_model==HydrologyGlaDSEnum){
 		/*Nothing to add*/
 	}
+	else if (hydrology_model==HydrologyIMLGlaDSEnum){
+		/*Nothing to add*/
+	}
 	else if(hydrology_model==HydrologyTwsEnum){
 		/*Nothing to add*/
 	}

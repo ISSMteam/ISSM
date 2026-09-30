@@ -190,6 +190,9 @@ void  Neumannflux::CreateKMatrix(Matrix<IssmDouble>* Kff, Matrix<IssmDouble>* Kf
 		case HydrologyGlaDSAnalysisEnum:
 			/*Nothing!*/
 			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
+			/*Nothing!*/
+			break;
 		default:
 			_error_("analysis " << analysis_type << " (" << EnumToStringx(analysis_type) << ") not supported yet");
 	}
@@ -214,6 +217,9 @@ void  Neumannflux::CreatePVector(Vector<IssmDouble>* pf){/*{{{*/
 			pe=CreatePVectorHydrologyShakti();
 			break;
 		case HydrologyGlaDSAnalysisEnum:
+			pe=CreatePVectorHydrologyGlaDS();
+			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
 			pe=CreatePVectorHydrologyGlaDS();
 			break;
 		default:

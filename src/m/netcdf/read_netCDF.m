@@ -156,6 +156,7 @@ function md  = instantiate_subclass(md, gname, gid, verbose) % {{{
 				case 'hydrologyshreve',   md.hydrology = hydrologyshreve();
 				case 'hydrologydc',       md.hydrology = hydrologydc();
 				case 'hydrologyglads',    md.hydrology = hydrologyglads();
+				case 'hydrologyimlglads',  md.hydrology = hydrologyimlglads();
 				case 'hydrologypism',     md.hydrology = hydrologypism();
 				case 'hydrologyshakti',   md.hydrology = hydrologyshakti();
 				case 'hydrologytws',      md.hydrology = hydrologytws();

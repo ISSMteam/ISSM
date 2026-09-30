@@ -280,12 +280,17 @@
 	HydrologyEnglacialVoidRatioEnum
 	HydrologyIschannelsEnum
 	HydrologyIsIncludeSheetThicknessEnum
+	HydrologyIsLakeScaledEnum
 	HydrologyCreepOpenFlagEnum
 	HydrologyIsTransitionEnum
 	HydrologyIsWaterPressureArmaEnum
+	HydrologyLakeFlagEnum
+	HydrologyLakeShapeCoefficientEnum
+	HydrologyLakeShapeExponentEnum
 	HydrologyMeltFlagEnum
 	HydrologyModelEnum
 	HydrologyNumBasinsEnum
+	HydrologyNumLakesEnum
 	HydrologyNumRequestedOutputsEnum
 	HydrologyOmegaEnum
 	HydrologyPressureMeltCoefficientEnum
@@ -295,6 +300,11 @@
 	HydrologySheetAlphaEnum
 	HydrologySheetBetaEnum
 	HydrologyStepsPerStepEnum
+	HydrologyIsIncludeElasticSheetEnum
+	HydrologyElasticSheetDepthScaleEnum
+	HydrologyElasticSheetExponentEnum
+	HydrologyUpliftRegRateEnum
+	HydrologyRegPressureForUpliftEnum
 	HydrologydcEplColapseThicknessEnum
 	HydrologydcEplConductivityEnum
 	HydrologydcEplInitialThicknessEnum
@@ -990,6 +1000,18 @@
 	HydrologyGapHeightYYEnum
 	HydrologyHeadEnum
 	HydrologyHeadOldEnum
+	HydrologyLakeChannelQrEnum
+	HydrologyLakeChannelQrOldEnum
+	HydrologyLakeOutletLengthEnum
+	HydrologyLakeHeightEnum
+	HydrologyLakeHeightOldEnum
+	HydrologyLakeMaskEnum
+	HydrologyLakeOutletQrEnum
+	HydrologyLakeOutletQrOldEnum
+	HydrologyLakeQinEnum
+	HydrologyLakeAreaEnum
+	HydrologyLakeAreaOldEnum
+	HydrologyMaxLakeAreaEnum
 	HydrologyMeltRateEnum
 	HydrologyMoulinInputEnum
 	HydrologyNeumannfluxEnum
@@ -3593,6 +3615,8 @@
 	HydrologyDCInefficientAnalysisEnum
 	HydrologyGlaDSAnalysisEnum
 	HydrologyGlaDSEnum
+	HydrologyIMLGlaDSAnalysisEnum
+	HydrologyIMLGlaDSEnum
 	HydrologyPismAnalysisEnum
 	HydrologyShaktiAnalysisEnum
 	HydrologyShreveAnalysisEnum
@@ -4150,12 +4174,17 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyEnglacialVoidRatioEnum) return "HydrologyEnglacialVoidRatio" end
 	if(enum==HydrologyIschannelsEnum) return "HydrologyIschannels" end
 	if(enum==HydrologyIsIncludeSheetThicknessEnum) return "HydrologyIsIncludeSheetThickness" end
+	if(enum==HydrologyIsLakeScaledEnum) return "HydrologyIsLakeScaled" end
 	if(enum==HydrologyCreepOpenFlagEnum) return "HydrologyCreepOpenFlag" end
 	if(enum==HydrologyIsTransitionEnum) return "HydrologyIsTransition" end
 	if(enum==HydrologyIsWaterPressureArmaEnum) return "HydrologyIsWaterPressureArma" end
+	if(enum==HydrologyLakeFlagEnum) return "HydrologyLakeFlag" end
+	if(enum==HydrologyLakeShapeCoefficientEnum) return "HydrologyLakeShapeCoefficient" end
+	if(enum==HydrologyLakeShapeExponentEnum) return "HydrologyLakeShapeExponent" end
 	if(enum==HydrologyMeltFlagEnum) return "HydrologyMeltFlag" end
 	if(enum==HydrologyModelEnum) return "HydrologyModel" end
 	if(enum==HydrologyNumBasinsEnum) return "HydrologyNumBasins" end
+	if(enum==HydrologyNumLakesEnum) return "HydrologyNumLakes" end
 	if(enum==HydrologyNumRequestedOutputsEnum) return "HydrologyNumRequestedOutputs" end
 	if(enum==HydrologyOmegaEnum) return "HydrologyOmega" end
 	if(enum==HydrologyPressureMeltCoefficientEnum) return "HydrologyPressureMeltCoefficient" end
@@ -4165,6 +4194,11 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologySheetAlphaEnum) return "HydrologySheetAlpha" end
 	if(enum==HydrologySheetBetaEnum) return "HydrologySheetBeta" end
 	if(enum==HydrologyStepsPerStepEnum) return "HydrologyStepsPerStep" end
+	if(enum==HydrologyIsIncludeElasticSheetEnum) return "HydrologyIsIncludeElasticSheet" end
+	if(enum==HydrologyElasticSheetDepthScaleEnum) return "HydrologyElasticSheetDepthScale" end
+	if(enum==HydrologyElasticSheetExponentEnum) return "HydrologyElasticSheetExponent" end
+	if(enum==HydrologyUpliftRegRateEnum) return "HydrologyUpliftRegRate" end
+	if(enum==HydrologyRegPressureForUpliftEnum) return "HydrologyRegPressureForUplift" end
 	if(enum==HydrologydcEplColapseThicknessEnum) return "HydrologydcEplColapseThickness" end
 	if(enum==HydrologydcEplConductivityEnum) return "HydrologydcEplConductivity" end
 	if(enum==HydrologydcEplInitialThicknessEnum) return "HydrologydcEplInitialThickness" end
@@ -4860,6 +4894,18 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyGapHeightYYEnum) return "HydrologyGapHeightYY" end
 	if(enum==HydrologyHeadEnum) return "HydrologyHead" end
 	if(enum==HydrologyHeadOldEnum) return "HydrologyHeadOld" end
+	if(enum==HydrologyLakeChannelQrEnum) return "HydrologyLakeChannelQr" end
+	if(enum==HydrologyLakeChannelQrOldEnum) return "HydrologyLakeChannelQrOld" end
+	if(enum==HydrologyLakeOutletLengthEnum) return "HydrologyLakeOutletLength" end
+	if(enum==HydrologyLakeHeightEnum) return "HydrologyLakeHeight" end
+	if(enum==HydrologyLakeHeightOldEnum) return "HydrologyLakeHeightOld" end
+	if(enum==HydrologyLakeMaskEnum) return "HydrologyLakeMask" end
+	if(enum==HydrologyLakeOutletQrEnum) return "HydrologyLakeOutletQr" end
+	if(enum==HydrologyLakeOutletQrOldEnum) return "HydrologyLakeOutletQrOld" end
+	if(enum==HydrologyLakeQinEnum) return "HydrologyLakeQin" end
+	if(enum==HydrologyLakeAreaEnum) return "HydrologyLakeArea" end
+	if(enum==HydrologyLakeAreaOldEnum) return "HydrologyLakeAreaOld" end
+	if(enum==HydrologyMaxLakeAreaEnum) return "HydrologyMaxLakeArea" end
 	if(enum==HydrologyMeltRateEnum) return "HydrologyMeltRate" end
 	if(enum==HydrologyMoulinInputEnum) return "HydrologyMoulinInput" end
 	if(enum==HydrologyNeumannfluxEnum) return "HydrologyNeumannflux" end
@@ -7463,6 +7509,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyDCInefficientAnalysisEnum) return "HydrologyDCInefficientAnalysis" end
 	if(enum==HydrologyGlaDSAnalysisEnum) return "HydrologyGlaDSAnalysis" end
 	if(enum==HydrologyGlaDSEnum) return "HydrologyGlaDS" end
+	if(enum==HydrologyIMLGlaDSAnalysisEnum) return "HydrologyIMLGlaDSAnalysis" end
+	if(enum==HydrologyIMLGlaDSEnum) return "HydrologyIMLGlaDS" end
 	if(enum==HydrologyPismAnalysisEnum) return "HydrologyPismAnalysis" end
 	if(enum==HydrologyShaktiAnalysisEnum) return "HydrologyShaktiAnalysis" end
 	if(enum==HydrologyShreveAnalysisEnum) return "HydrologyShreveAnalysis" end
@@ -8020,12 +8068,17 @@ function StringToEnum(name::String)
 	if(name=="HydrologyEnglacialVoidRatio") return HydrologyEnglacialVoidRatioEnum  end
 	if(name=="HydrologyIschannels") return HydrologyIschannelsEnum  end
 	if(name=="HydrologyIsIncludeSheetThickness") return HydrologyIsIncludeSheetThicknessEnum  end
+	if(name=="HydrologyIsLakeScaled") return HydrologyIsLakeScaledEnum  end
 	if(name=="HydrologyCreepOpenFlag") return HydrologyCreepOpenFlagEnum  end
 	if(name=="HydrologyIsTransition") return HydrologyIsTransitionEnum  end
 	if(name=="HydrologyIsWaterPressureArma") return HydrologyIsWaterPressureArmaEnum  end
+	if(name=="HydrologyLakeFlag") return HydrologyLakeFlagEnum  end
+	if(name=="HydrologyLakeShapeCoefficient") return HydrologyLakeShapeCoefficientEnum  end
+	if(name=="HydrologyLakeShapeExponent") return HydrologyLakeShapeExponentEnum  end
 	if(name=="HydrologyMeltFlag") return HydrologyMeltFlagEnum  end
 	if(name=="HydrologyModel") return HydrologyModelEnum  end
 	if(name=="HydrologyNumBasins") return HydrologyNumBasinsEnum  end
+	if(name=="HydrologyNumLakes") return HydrologyNumLakesEnum  end
 	if(name=="HydrologyNumRequestedOutputs") return HydrologyNumRequestedOutputsEnum  end
 	if(name=="HydrologyOmega") return HydrologyOmegaEnum  end
 	if(name=="HydrologyPressureMeltCoefficient") return HydrologyPressureMeltCoefficientEnum  end
@@ -8035,6 +8088,11 @@ function StringToEnum(name::String)
 	if(name=="HydrologySheetAlpha") return HydrologySheetAlphaEnum  end
 	if(name=="HydrologySheetBeta") return HydrologySheetBetaEnum  end
 	if(name=="HydrologyStepsPerStep") return HydrologyStepsPerStepEnum  end
+	if(name=="HydrologyIsIncludeElasticSheet") return HydrologyIsIncludeElasticSheetEnum  end
+	if(name=="HydrologyElasticSheetDepthScale") return HydrologyElasticSheetDepthScaleEnum  end
+	if(name=="HydrologyElasticSheetExponent") return HydrologyElasticSheetExponentEnum  end
+	if(name=="HydrologyUpliftRegRate") return HydrologyUpliftRegRateEnum  end
+	if(name=="HydrologyRegPressureForUplift") return HydrologyRegPressureForUpliftEnum  end
 	if(name=="HydrologydcEplColapseThickness") return HydrologydcEplColapseThicknessEnum  end
 	if(name=="HydrologydcEplConductivity") return HydrologydcEplConductivityEnum  end
 	if(name=="HydrologydcEplInitialThickness") return HydrologydcEplInitialThicknessEnum  end
@@ -8730,6 +8788,18 @@ function StringToEnum(name::String)
 	if(name=="HydrologyGapHeightYY") return HydrologyGapHeightYYEnum  end
 	if(name=="HydrologyHead") return HydrologyHeadEnum  end
 	if(name=="HydrologyHeadOld") return HydrologyHeadOldEnum  end
+	if(name=="HydrologyLakeChannelQr") return HydrologyLakeChannelQrEnum  end
+	if(name=="HydrologyLakeChannelQrOld") return HydrologyLakeChannelQrOldEnum  end
+	if(name=="HydrologyLakeOutletLength") return HydrologyLakeOutletLengthEnum  end
+	if(name=="HydrologyLakeHeight") return HydrologyLakeHeightEnum  end
+	if(name=="HydrologyLakeHeightOld") return HydrologyLakeHeightOldEnum  end
+	if(name=="HydrologyLakeMask") return HydrologyLakeMaskEnum  end
+	if(name=="HydrologyLakeOutletQr") return HydrologyLakeOutletQrEnum  end
+	if(name=="HydrologyLakeOutletQrOld") return HydrologyLakeOutletQrOldEnum  end
+	if(name=="HydrologyLakeQin") return HydrologyLakeQinEnum  end
+	if(name=="HydrologyLakeArea") return HydrologyLakeAreaEnum  end
+	if(name=="HydrologyLakeAreaOld") return HydrologyLakeAreaOldEnum  end
+	if(name=="HydrologyMaxLakeArea") return HydrologyMaxLakeAreaEnum  end
 	if(name=="HydrologyMeltRate") return HydrologyMeltRateEnum  end
 	if(name=="HydrologyMoulinInput") return HydrologyMoulinInputEnum  end
 	if(name=="HydrologyNeumannflux") return HydrologyNeumannfluxEnum  end
@@ -11333,6 +11403,8 @@ function StringToEnum(name::String)
 	if(name=="HydrologyDCInefficientAnalysis") return HydrologyDCInefficientAnalysisEnum  end
 	if(name=="HydrologyGlaDSAnalysis") return HydrologyGlaDSAnalysisEnum  end
 	if(name=="HydrologyGlaDS") return HydrologyGlaDSEnum  end
+	if(name=="HydrologyIMLGlaDSAnalysis") return HydrologyIMLGlaDSAnalysisEnum  end
+	if(name=="HydrologyIMLGlaDS") return HydrologyIMLGlaDSEnum  end
 	if(name=="HydrologyPismAnalysis") return HydrologyPismAnalysisEnum  end
 	if(name=="HydrologyShaktiAnalysis") return HydrologyShaktiAnalysisEnum  end
 	if(name=="HydrologyShreveAnalysis") return HydrologyShreveAnalysisEnum  end

@@ -23,6 +23,7 @@ class Channel: public Load {
 		bool       boundary;
 
 		/*output only*/
+		IssmDouble dischargeold;
 		IssmDouble discharge;
 
 	public: 
@@ -42,7 +43,7 @@ class Channel: public Load {
 
 		/*Channel constructors,destructors {{{*/
 		Channel();
-		Channel(int numericalflux_id,IssmDouble channelarea,int index,IoModel* iomodel);
+		Channel(int numericalflux_id,IssmDouble channelarea, IssmDouble channeldischarge, int index,IoModel* iomodel);
 		//Channel(int numericalflux_id,int i,int index,IoModel* iomodel);
 		~Channel();
 		/*}}}*/
@@ -85,6 +86,8 @@ class Channel: public Load {
 		ElementMatrix* CreateKMatrixHydrologyGlaDS(void);
 		void           WriteChannelCrossSection(IssmPDouble* values);
 		void           WriteChannelDischarge(IssmPDouble* values);
+		/*IML-GlaDS*/
+		void		   AddDischargeToVector(Vector<IssmDouble>* Qc_vec);
 		/*}}}*/
 
 };

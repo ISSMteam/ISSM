@@ -2554,6 +2554,16 @@ bool       Element::IsFloating(){/*{{{*/
 		return false;
 	}
 }/*}}}*/
+bool 	   Element::IsAnyLake(){/*{{{*/
+	/*At least ONE node is a lake (partially lake returns true)*/
+	Input* input=this->GetInput(MaskLakeOutLevelsetEnum); _assert_(input);
+	if(input->GetInputMax() >= 1.){
+		return true;
+	}
+	else{
+		return false;
+	}
+}/*}}}*/
 bool       Element::IsGrounded(){/*{{{*/
 	/*At least ONE node is grounded (partially grounded returns true)*/
 
