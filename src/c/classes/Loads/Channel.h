@@ -83,6 +83,7 @@ class Channel: public Load {
 		void           UpdateChannelCrossSection(void);
 		ElementVector* CreatePVectorHydrologyGlaDS(void);
 		ElementMatrix* CreateKMatrixHydrologyGlaDS(void);
+		IssmDouble     GroundinglineWaterFlux(void);
 		void           WriteChannelCrossSection(IssmPDouble* values);
 		void           WriteChannelDischarge(IssmPDouble* values);
 		/*}}}*/

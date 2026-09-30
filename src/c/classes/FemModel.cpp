@@ -3154,13 +3154,29 @@ void FemModel::TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled){/*{{{*/
 
 }/*}}}*/
 void FemModel::TotalHydrologyBasalFluxx(IssmDouble* pM, bool scaled){/*{{{*/
+
+	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
+		_error_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
+		*pM = 0;
+	}
+
 	IssmDouble local_basalflux= 0.0;
 	IssmDouble total_basalflux;
 
+	/*Get discharge from Sheet first*/
 	for(Object* & object : this->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);
 		local_basalflux+=element->TotalHydrologyBasalFlux(scaled);
 	}
+
+	/*Now get discharge from channels*/
+	for(Object* & object : this->loads->objects){
+		if(object->ObjectEnum()==ChannelEnum){
+			Channel* channel=(Channel*)object;
+			local_basalflux+=channel->GroundinglineWaterFlux();
+		}
+	}
+
 	ISSM_MPI_Reduce(&local_basalflux,&total_basalflux,1,ISSM_MPI_DOUBLE,ISSM_MPI_SUM,0,IssmComm::GetComm() );
 	ISSM_MPI_Bcast(&total_basalflux,1,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
 

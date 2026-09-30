@@ -649,6 +649,18 @@ ElementVector* Channel::CreatePVectorHydrologyGlaDS(void){/*{{{*/
 	return pe;
 }
 /*}}}*/
+IssmDouble     Channel::GroundinglineWaterFlux(void){/*{{{*/
+
+	/*return 0 if no grounding line here*/
+	Tria*  tria=(Tria*)element;
+	if(!tria->IsIceInElement()) return 0;
+	if(!tria->IsZeroLevelset(MaskOceanLevelsetEnum)) return 0;
+
+	/*Return discharge for this edge*/
+	return this->discharge;
+
+
+} /*}}}*/
 void           Channel::SetChannelCrossSectionOld(void){/*{{{*/
 
 	this->Sold = this->S;
@@ -656,7 +668,7 @@ void           Channel::SetChannelCrossSectionOld(void){/*{{{*/
 } /*}}}*/
 void           Channel::UpdateChannelCrossSection(void){/*{{{*/
 
-	/*Initialize Element matrix and return if necessary*/
+	/*S=0 if on boundary*/
 	Tria*  tria=(Tria*)element;
 	if(this->boundary || !tria->IsIceOnlyInElement()){
 		this->S = 0.;
