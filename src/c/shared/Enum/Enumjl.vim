@@ -3835,7 +3835,7 @@ syn keyword juliaConstC TotalFloatingBmbEnum
 syn keyword juliaConstC TotalFloatingBmbScaledEnum
 syn keyword juliaConstC TotalGroundedBmbEnum
 syn keyword juliaConstC TotalGroundedBmbScaledEnum
-syn keyword juliaConstC TotalHydrologyBasalFluxEnum
+syn keyword juliaConstC TotalHydrologyGroundinglineDischargeEnum
 syn keyword juliaConstC TotalSmbEnum
 syn keyword juliaConstC TotalSmbScaledEnum
 syn keyword juliaConstC TotalSmbRefreezeEnum

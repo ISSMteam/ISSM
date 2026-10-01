@@ -74,14 +74,14 @@ md.hydrology.spcphi = np.nan * np.ones((md.mesh.numberofvertices))
 md.hydrology.spcphi[pos] = md.materials.rho_ice * md.constants.g * md.geometry.thickness[pos]
 
 md.cluster = generic('np', 2)
-md.hydrology.requested_outputs = ['default', 'TotalHydrologyBasalFlux']
+md.hydrology.requested_outputs = ['default', 'TotalHydrologyGroundinglineDischarge']
 md = solve(md, 'Transient') # Or 'tr'
 
 # Fields and tolerances to track changes
-field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1', 'TotalHydrologyBasalFlux',
-               'HydrologySheetThickness2', 'HydraulicPotential2', 'ChannelArea2', 'TotalHydrologyBasalFlux',
-               'HydrologySheetThickness3', 'HydraulicPotential3', 'ChannelArea3', 'TotalHydrologyBasalFlux',
-               'HydrologySheetThickness4', 'HydraulicPotential4', 'ChannelArea4', 'TotalHydrologyBasalFlux']
+field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1', 'TotalHydrologyGroundinglineDischarge',
+               'HydrologySheetThickness2', 'HydraulicPotential2', 'ChannelArea2', 'TotalHydrologyGroundinglineDischarge',
+               'HydrologySheetThickness3', 'HydraulicPotential3', 'ChannelArea3', 'TotalHydrologyGroundinglineDischarge',
+               'HydrologySheetThickness4', 'HydraulicPotential4', 'ChannelArea4', 'TotalHydrologyGroundinglineDischarge']
 field_tolerances = [1e-14, 8e-14, 3e-12, 1e-13,
                     1e-14, 8e-14, 3e-12, 1e-13,
                     1e-14, 8e-14, 3e-12, 1e-13,
@@ -89,16 +89,16 @@ field_tolerances = [1e-14, 8e-14, 3e-12, 1e-13,
 field_values = [md.results.TransientSolution[0].HydrologySheetThickness,
                 md.results.TransientSolution[0].HydraulicPotential,
                 md.results.TransientSolution[0].ChannelArea,
-                md.results.TransientSolution[0].TotalHydrologyBasalFlux,
+                md.results.TransientSolution[0].TotalHydrologyGroundinglineDischarge,
                 md.results.TransientSolution[1].HydrologySheetThickness,
                 md.results.TransientSolution[1].HydraulicPotential,
                 md.results.TransientSolution[1].ChannelArea,
-                md.results.TransientSolution[1].TotalHydrologyBasalFlux,
+                md.results.TransientSolution[1].TotalHydrologyGroundinglineDischarge,
                 md.results.TransientSolution[2].HydrologySheetThickness,
                 md.results.TransientSolution[2].HydraulicPotential,
                 md.results.TransientSolution[2].ChannelArea,
-                md.results.TransientSolution[2].TotalHydrologyBasalFlux,
+                md.results.TransientSolution[2].TotalHydrologyGroundinglineDischarge,
                 md.results.TransientSolution[3].HydrologySheetThickness,
                 md.results.TransientSolution[3].HydraulicPotential,
                 md.results.TransientSolution[3].ChannelArea,
-                md.results.TransientSolution[3].TotalHydrologyBasalFlux]
+                md.results.TransientSolution[3].TotalHydrologyGroundinglineDischarge]

@@ -716,7 +716,7 @@
 %TotalFloatingBmbScaled
 %TotalGroundedBmb
 %TotalGroundedBmbScaled
-%TotalHydrologyBasalFlux
+%TotalHydrologyGroundinglineDischarge
 %TotalSmb
 %TotalSmbMelt
 %TotalSmbRefreeze

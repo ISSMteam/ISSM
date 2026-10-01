@@ -5956,7 +5956,7 @@ IssmDouble Tria::TotalGroundedBmb(bool scaled){/*{{{*/
 	return Total_Gbmb;
 }
 /*}}}*/
-IssmDouble Tria::TotalHydrologyBasalFlux(bool scaled){/*{{{*/
+IssmDouble Tria::TotalHydrologyGroundinglineDischarge(bool scaled){/*{{{*/
 
 	/*Make sure there is a grounding line here*/
 	if(!IsIceInElement()) return 0;

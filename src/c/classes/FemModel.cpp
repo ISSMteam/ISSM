@@ -2428,7 +2428,7 @@ void FemModel::RequestedOutputsx(Results **presults,char** requested_outputs, in
 					case TotalFloatingBmbScaledEnum:         this->TotalFloatingBmbx(&double_result,true);          break;
 					case TotalGroundedBmbEnum:               this->TotalGroundedBmbx(&double_result,false);         break;
 					case TotalGroundedBmbScaledEnum:         this->TotalGroundedBmbx(&double_result,true);          break;
-					case TotalHydrologyBasalFluxEnum:        this->TotalHydrologyBasalFluxx(&double_result,false); break;
+					case TotalHydrologyGroundinglineDischargeEnum:        this->TotalHydrologyGroundinglineDischargex(&double_result,false); break;
 					case TotalSmbEnum:                       this->TotalSmbx(&double_result,false);                 break;
 					case TotalSmbMeltEnum:                   this->TotalSmbMeltx(&double_result,false);             break;
 					case TotalSmbRefreezeEnum:               this->TotalSmbRefreezex(&double_result,false);         break;
@@ -2712,7 +2712,7 @@ void FemModel::Responsex(IssmDouble* responses,int response_descriptor_enum){/*{
 		case TotalFloatingBmbScaledEnum:			  this->TotalFloatingBmbx(responses, true); break;
 		case TotalGroundedBmbEnum:			        this->TotalGroundedBmbx(responses, false); break;
 		case TotalGroundedBmbScaledEnum:			  this->TotalGroundedBmbx(responses, true); break;
-		case TotalHydrologyBasalFluxEnum:        this->TotalHydrologyBasalFluxx(responses, false); break;
+		case TotalHydrologyGroundinglineDischargeEnum:        this->TotalHydrologyGroundinglineDischargex(responses, false); break;
 		case TotalSmbEnum:					        this->TotalSmbx(responses, false); break;
 		case TotalSmbMeltEnum:					     this->TotalSmbMeltx(responses, false); break;
 		case TotalSmbRefreezeEnum:					  this->TotalSmbRefreezex(responses, false); break;
@@ -3153,7 +3153,7 @@ void FemModel::TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled){/*{{{*/
 	*pGbmb=total_gbmb;
 
 }/*}}}*/
-void FemModel::TotalHydrologyBasalFluxx(IssmDouble* pM, bool scaled){/*{{{*/
+void FemModel::TotalHydrologyGroundinglineDischargex(IssmDouble* pM, bool scaled){/*{{{*/
 
 	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
 		_error_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
@@ -3166,7 +3166,7 @@ void FemModel::TotalHydrologyBasalFluxx(IssmDouble* pM, bool scaled){/*{{{*/
 	/*Get discharge from Sheet first*/
 	for(Object* & object : this->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);
-		local_basalflux+=element->TotalHydrologyBasalFlux(scaled);
+		local_basalflux+=element->TotalHydrologyGroundinglineDischarge(scaled);
 	}
 
 	/*Now get discharge from channels*/
