@@ -288,7 +288,6 @@ syn keyword cConstant HydrologyCavitySpacingEnum
 syn keyword cConstant HydrologyChannelSheetWidthEnum
 syn keyword cConstant HydrologyGapHeightMinEnum
 syn keyword cConstant HydrologyGapHeightMaxEnum
-syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyIschannelsEnum
 syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
 syn keyword cConstant HydrologyIsLakeScaledEnum
@@ -1005,6 +1004,7 @@ syn keyword cConstant HydrologydcSedimentTransmitivityEnum
 syn keyword cConstant HydrologyDissipationEnum
 syn keyword cConstant HydrologyDrainageRateEnum
 syn keyword cConstant HydrologyEnglacialInputEnum
+syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyFrictionHeatEnum
 syn keyword cConstant HydrologyGapHeightEnum
 syn keyword cConstant HydrologyGapHeightXEnum
