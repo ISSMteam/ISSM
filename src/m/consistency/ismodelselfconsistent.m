@@ -76,7 +76,7 @@ function [analyses]=AnalysisConfiguration(solutiontype), % {{{
 	elseif strcmp(solutiontype,'SealevelchangeSolution')
 		analyses={'SealevelchangeAnalysis'};
 	elseif strcmp(solutiontype,'HydrologySolution')
-		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis','HydrologyPrescribeAnalysis'};
+		analyses={'L2ProjectionBaseAnalysis','HydrologyShreveAnalysis','HydrologyDCInefficientAnalysis','HydrologyDCEfficientAnalysis','HydrologyGladsAnalysis','HydrologyIMLGlaDSAnalysis','HydrologyShaktiAnalysis','HydrologyTwsAnalysis','HydrologyArmapwAnalysis','HydrologyPrescribeAnalysis'};
 	elseif strcmp(solutiontype,'DamageEvolutionSolution')
 		analyses={'DamageEvolutionAnalysis'};
     elseif strcmp(solutiontype,'SamplingSolution')

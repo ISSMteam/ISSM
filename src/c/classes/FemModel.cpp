@@ -3159,7 +3159,7 @@ void FemModel::TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled){/*{{{*/
 }/*}}}*/
 void FemModel::TotalHydrologyGroundinglineDischargex(IssmDouble* pM, bool scaled){/*{{{*/
 
-	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
+	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum && this->analysis_type_list[this->analysis_counter] != HydrologyIMLGlaDSAnalysisEnum){
 		_error_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
 		*pM = 0;
 	}

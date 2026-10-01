@@ -319,6 +319,7 @@ issm_sources += \
 	./cores/hydrology_core.cpp \
 	./solutionsequences/solutionsequence_hydro_nonlinear.cpp \
 	./solutionsequences/solutionsequence_shakti_nonlinear.cpp \
+	./solutionsequences/solutionsequence_imlglads_nonlinear.cpp \
 	./solutionsequences/solutionsequence_glads_nonlinear.cpp \
 	./cores/stressbalance_core.cpp \
 	./solutionsequences/solutionsequence_stokescoupling_nonlinear.cpp \
@@ -484,6 +485,9 @@ issm_sources += ./analyses/HydrologyPismAnalysis.cpp
 endif
 if HYDROLOGYGLADS
 issm_sources += ./analyses/HydrologyGlaDSAnalysis.cpp
+endif
+if HYDROLOGYIMLGLADS
+issm_sources += ./analyses/HydrologyIMLGlaDSAnalysis.cpp
 endif
 if HYDROLOGYDCINEFFICIENT
 issm_sources += ./analyses/HydrologyDCInefficientAnalysis.cpp

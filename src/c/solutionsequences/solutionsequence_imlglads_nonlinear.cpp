@@ -1,7 +1,7 @@
 /*!\file: solutionsequence_nonlinear.cpp
  * \brief: core of a non-linear solution, using fixed-point method 
  */ 
-
+#include "../cores/cores.h"
 #include "./solutionsequences.h"
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
@@ -161,9 +161,11 @@ bool lakelhconvergence(Vector<IssmDouble>* lh_new, Vector<IssmDouble>* lh_old){/
 		converged = (rel < h_reltol);
 	}
 
-	_printf0_(setw(50) << left
+	if(VerboseConvergence()){
+		_printf0_(setw(50) << left
         << "              max abs lh diff: " << diff_inf << " m (tol: " << h_abstol << " m)"
         << "  rel lh diff: " << diff_inf / (nlh + DBL_EPSILON) * 100 << " % (tol: " << h_reltol * 100 << " %)\n");
+	}
 
     // Edge case: both essentially zero
     if(nlh < 1e-10 && lh_old->Norm(NORM_TWO) < 1e-10) converged = true;

@@ -187,6 +187,7 @@ void HydrologyIMLGlaDSAnalysis::UpdateElements(Elements* elements,Inputs* inputs
 	}
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ice_levelset",MaskIceLevelsetEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.mask.ocean_levelset",MaskOceanLevelsetEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.mesh.vertexonboundary",MeshVertexonboundaryEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.bump_height",HydrologyBumpHeightEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.sheet_conductivity",HydrologySheetConductivityEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.hydrology.channel_conductivity",HydrologyChannelConductivityEnum);
@@ -249,6 +250,7 @@ void HydrologyIMLGlaDSAnalysis::UpdateParameters(Parameters* parameters,IoModel*
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.isincludesheetthickness",HydrologyIsIncludeSheetThicknessEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.creep_open_flag",HydrologyCreepOpenFlagEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.islakes",HydrologyLakeFlagEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.num_lakes",HydrologyNumLakesEnum));
 	
 	/*Friction*/
 	FrictionUpdateParameters(parameters, iomodel);
@@ -548,7 +550,7 @@ void           HydrologyIMLGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* so
 	bool islakes;
 	element->FindParam(&islakes,HydrologyLakeFlagEnum);
 	/*update the element phi*/
-	element->GetSolutionFromInputsOneDof(solution,HydraulicPotentialEnum);
+	element->InputUpdateFromSolutionOneDof(solution,HydraulicPotentialEnum);
 	/*update the element phi at the lake outlet boundary*/
 	if(!islakes) return;
 	else {
@@ -728,9 +730,9 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeOutletPhi(Element* element){/*{{{*/
 		IssmDouble *phiLO = xNew<IssmDouble>(numvertices);
 
 		/*Retrieve all parameters*/
-		Issmdouble rho_ice = element->FindParam(MaterialsRhoIceEnum);
-		Issmdouble rho_water = element->FindParam(MaterialsRhoFreshwaterEnum);
-		Issmdouble g = element->FindParam(ConstantsGEnum);
+		IssmDouble rho_ice = element->FindParam(MaterialsRhoIceEnum);
+		IssmDouble rho_water = element->FindParam(MaterialsRhoFreshwaterEnum);
+		IssmDouble g = element->FindParam(ConstantsGEnum);
 		Input *zb_input = element->GetInput(BaseEnum); 					_assert_(zb_input);
 		Input *lh_input = element->GetInput(HydrologyLakeHeightEnum); 	_assert_(lh_input);
 		Input *phi_input = element->GetInput(HydraulicPotentialEnum); 	_assert_(phi_input);
@@ -748,14 +750,14 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeOutletPhi(Element* element){/*{{{*/
 			lakeID_input->GetInputValue(&lakeID, gauss);
 
 			/*Update the lake outlet phi*/
-			if (LakeID > 0.){
+			if (lakeID > 0.){
 				phiLO[in] = rho_water * g * zb + rho_water * g * lh;
 			}
 			else{
 				phiLO[in] = phi;
 			}
 		}
-		element->AddInput(HydraulicPotentialEnum, phiLO, p1Enum);
+		element->AddInput(HydraulicPotentialEnum, phiLO, P1Enum);
 		/*clean up*/
 		xDelete<IssmDouble>(phiLO);
 		delete gauss;
@@ -777,7 +779,7 @@ void HydrologyIMLGlaDSAnalysis::SetChannelCrossSectionOld(FemModel* femmodel){/*
 
 }/*}}}*/
 
-void HydrologyIMLGlaDSAnalysis::SetlakeOutletDischargeOld(FemModel* femmodel){/*{{{*/
+void HydrologyIMLGlaDSAnalysis::SetLakeOutletDischargeOld(FemModel* femmodel){/*{{{*/
 	bool ischannels;
 	femmodel->parameters->FindParam(&ischannels,HydrologyIschannelsEnum);
 	bool islakes;
@@ -813,7 +815,7 @@ void HydrologyIMLGlaDSAnalysis::SetlakeOutletDischargeOld(FemModel* femmodel){/*
 
 }/*}}}*/
 
-void HydrlogyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
+void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 
 	bool islakes;
 	femmodel->parameters->FindParam(&islakes,HydrologyLakeFlagEnum);
@@ -832,10 +834,10 @@ void HydrlogyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
     IssmDouble* lake_height     = xNewZeroInit<IssmDouble>(numlakes+1);
 
 	/* First, loop over all elements to gather data for each lake */
-	for (Object* & object : femodel->elements->objects){
+	for (Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
 
-		if(element->IsAllFloating() || !element->isIceInElement()){
+		if(element->IsAllFloating() || !element->IsIceInElement()){
 			continue;
 		}
 		
@@ -879,7 +881,7 @@ void HydrlogyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 				IssmDouble connectivity = (IssmDouble)element->VertexConnectivity(iv);
 				local_qr[lakeID] += qrc/connectivity;
 				if (qrc > 0.){
-					local_qr[lakeID] += qs(le-lc)/connectivity; /*Subtract lc to avoid double counting the sheet contribution to the channel*/
+					local_qr[lakeID] += qs*(le-lc)/connectivity; /*Subtract lc to avoid double counting the sheet contribution to the channel*/
 				}
 				else if (qrc < 0.){
 					local_qr[lakeID] += -qs*(le-lc)/connectivity;
@@ -895,7 +897,7 @@ void HydrlogyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 					int non_lake_count = 0;
 					Gauss* temp_gauss = element->NewGauss();
 					for(int jv = 0; jv < numvertices; jv++){
-						temp_guass->GaussVertex(jv);
+						temp_gauss->GaussVertex(jv);
 						IssmDouble temp_lake_id;
 						lakeID_input->GetInputValue(&temp_lake_id, temp_gauss);
 						if((int)temp_lake_id == 0){ //non-lake vertex
@@ -1001,7 +1003,7 @@ void HydrlogyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 		/*save results*/
 		element->AddInput(HydrologyLakeAreaEnum, la_new, P1Enum);
 		element->AddInput(HydrologyLakeHeightEnum, lh_new, P1Enum);
-		element->AddInput(HydrologyLakeChannelQrEnum, Qr_out, P1Enum);
+		element->AddInput(HydrologyLakeOutletQrEnum, Qr_out, P1Enum);
 
 		/* clean up */
 		xDelete<IssmDouble>(lh_new);

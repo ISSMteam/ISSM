@@ -267,7 +267,7 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
 		analysis->SetChannelCrossSectionOld(femmodel);
 		
 		/*Solve for new potential*/
-		solutionsequence_glads_nonlinear(femmodel);
+		solutionsequence_imlglads_nonlinear(femmodel);
 
 		if(VerboseSolution()) _printf0_("   updating effective pressure\n");
 		analysis->UpdateEffectivePressure(femmodel);

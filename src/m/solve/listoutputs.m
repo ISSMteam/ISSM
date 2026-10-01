@@ -210,6 +210,7 @@
 %HydrologyDissipation
 %HydrologyDrainageRate
 %HydrologyEnglacialInput
+%HydrologyEnglacialVoidRatio
 %HydrologyFrictionHeat
 %HydrologyGapHeight
 %HydrologyGapHeightX
