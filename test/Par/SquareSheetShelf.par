@@ -14,6 +14,11 @@ pos=find(md.mesh.y<=ymax/2.);
 md.geometry.base(pos)=bed_sheet;
 md.geometry.surface=md.geometry.base+md.geometry.thickness;
 
+%Set up bed
+md.geometry.bed=md.geometry.base;
+pos=find(md.mask.ocean_levelset<0);
+md.geometry.bed(pos)=md.geometry.base(pos)-10;
+
 %Initial velocity 
 x     = archread('../Data/SquareSheetShelf.arch','x');
 y     = archread('../Data/SquareSheetShelf.arch','y');

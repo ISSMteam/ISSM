@@ -285,12 +285,14 @@ syn keyword juliaConstC HydrologyEnglacialVoidRatioEnum
 syn keyword juliaConstC HydrologyIschannelsEnum
 syn keyword juliaConstC HydrologyIsIncludeSheetThicknessEnum
 syn keyword juliaConstC HydrologyIsLakeScaledEnum
+syn keyword juliaConstC HydrologyLakeFlagEnum
 syn keyword juliaConstC HydrologyCreepOpenFlagEnum
 syn keyword juliaConstC HydrologyIsTransitionEnum
 syn keyword juliaConstC HydrologyIsWaterPressureArmaEnum
-syn keyword juliaConstC HydrologyLakeFlagEnum
-syn keyword juliaConstC HydrologyLakeShapeCoefficientEnum
-syn keyword juliaConstC HydrologyLakeShapeExponentEnum
+syn keyword juliaConstC HydrologyMaxiterEnum
+syn keyword juliaConstC HydrologyRestolEnum
+syn keyword juliaConstC HydrologyReltolEnum
+syn keyword juliaConstC HydrologyAbstolEnum
 syn keyword juliaConstC HydrologyMeltFlagEnum
 syn keyword juliaConstC HydrologyModelEnum
 syn keyword juliaConstC HydrologyNumBasinsEnum
@@ -1050,6 +1052,7 @@ syn keyword juliaConstC InversionThicknessObsEnum
 syn keyword juliaConstC InversionVelObsEnum
 syn keyword juliaConstC InversionVxObsEnum
 syn keyword juliaConstC InversionVyObsEnum
+syn keyword juliaConstC LambdaSEnum
 syn keyword juliaConstC LevelsetfunctionSlopeXEnum
 syn keyword juliaConstC LevelsetfunctionSlopeYEnum
 syn keyword juliaConstC LevelsetObservationEnum
@@ -3660,7 +3663,6 @@ syn keyword juliaConstC L2ProjectionBaseAnalysisEnum
 syn keyword juliaConstC L2ProjectionEPLAnalysisEnum
 syn keyword juliaConstC LACrouzeixRaviartEnum
 syn keyword juliaConstC LATaylorHoodEnum
-syn keyword juliaConstC LambdaSEnum
 syn keyword juliaConstC LevelsetAnalysisEnum
 syn keyword juliaConstC LevelsetfunctionPicardEnum
 syn keyword juliaConstC LinearFloatingMeltRateEnum
@@ -3855,7 +3857,7 @@ syn keyword juliaConstC TotalFloatingBmbEnum
 syn keyword juliaConstC TotalFloatingBmbScaledEnum
 syn keyword juliaConstC TotalGroundedBmbEnum
 syn keyword juliaConstC TotalGroundedBmbScaledEnum
-syn keyword juliaConstC TotalHydrologyBasalFluxEnum
+syn keyword juliaConstC TotalHydrologyGroundinglineDischargeEnum
 syn keyword juliaConstC TotalSmbEnum
 syn keyword juliaConstC TotalSmbScaledEnum
 syn keyword juliaConstC TotalSmbRefreezeEnum

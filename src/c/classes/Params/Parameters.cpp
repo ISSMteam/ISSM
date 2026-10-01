@@ -420,7 +420,7 @@ void Parameters::FindParam(FILE** pfid,int param_enum){ _assert_(this);/*{{{*/
 	this->params[index]->GetParameterValue(pfid);
 }
 /*}}}*/
-#ifdef _HAVE_HPU_HO_
+#ifdef _HAVE_GPU_HO_
 void Parameters::FindParam(GPUHOParam** p_metada,int param_enum){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);

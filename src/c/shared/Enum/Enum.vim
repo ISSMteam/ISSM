@@ -292,12 +292,14 @@ syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyIschannelsEnum
 syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
 syn keyword cConstant HydrologyIsLakeScaledEnum
+syn keyword cConstant HydrologyLakeFlagEnum
 syn keyword cConstant HydrologyCreepOpenFlagEnum
 syn keyword cConstant HydrologyIsTransitionEnum
 syn keyword cConstant HydrologyIsWaterPressureArmaEnum
-syn keyword cConstant HydrologyLakeFlagEnum
-syn keyword cConstant HydrologyLakeShapeCoefficientEnum
-syn keyword cConstant HydrologyLakeShapeExponentEnum
+syn keyword cConstant HydrologyMaxiterEnum
+syn keyword cConstant HydrologyRestolEnum
+syn keyword cConstant HydrologyReltolEnum
+syn keyword cConstant HydrologyAbstolEnum
 syn keyword cConstant HydrologyMeltFlagEnum
 syn keyword cConstant HydrologyModelEnum
 syn keyword cConstant HydrologyNumBasinsEnum
@@ -1057,6 +1059,7 @@ syn keyword cConstant InversionThicknessObsEnum
 syn keyword cConstant InversionVelObsEnum
 syn keyword cConstant InversionVxObsEnum
 syn keyword cConstant InversionVyObsEnum
+syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetfunctionSlopeXEnum
 syn keyword cConstant LevelsetfunctionSlopeYEnum
 syn keyword cConstant LevelsetObservationEnum
@@ -3667,7 +3670,6 @@ syn keyword cConstant L2ProjectionBaseAnalysisEnum
 syn keyword cConstant L2ProjectionEPLAnalysisEnum
 syn keyword cConstant LACrouzeixRaviartEnum
 syn keyword cConstant LATaylorHoodEnum
-syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetAnalysisEnum
 syn keyword cConstant LevelsetfunctionPicardEnum
 syn keyword cConstant LinearFloatingMeltRateEnum
@@ -3862,7 +3864,7 @@ syn keyword cConstant TotalFloatingBmbEnum
 syn keyword cConstant TotalFloatingBmbScaledEnum
 syn keyword cConstant TotalGroundedBmbEnum
 syn keyword cConstant TotalGroundedBmbScaledEnum
-syn keyword cConstant TotalHydrologyBasalFluxEnum
+syn keyword cConstant TotalHydrologyGroundinglineDischargeEnum
 syn keyword cConstant TotalSmbEnum
 syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum

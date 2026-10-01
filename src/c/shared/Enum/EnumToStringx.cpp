@@ -294,12 +294,14 @@ const char* EnumToStringx(int en){
 		case HydrologyIschannelsEnum : return "HydrologyIschannels";
 		case HydrologyIsIncludeSheetThicknessEnum : return "HydrologyIsIncludeSheetThickness";
 		case HydrologyIsLakeScaledEnum : return "HydrologyIsLakeScaled";
+		case HydrologyLakeFlagEnum : return "HydrologyLakeFlag";
 		case HydrologyCreepOpenFlagEnum : return "HydrologyCreepOpenFlag";
 		case HydrologyIsTransitionEnum : return "HydrologyIsTransition";
 		case HydrologyIsWaterPressureArmaEnum : return "HydrologyIsWaterPressureArma";
-		case HydrologyLakeFlagEnum : return "HydrologyLakeFlag";
-		case HydrologyLakeShapeCoefficientEnum : return "HydrologyLakeShapeCoefficient";
-		case HydrologyLakeShapeExponentEnum : return "HydrologyLakeShapeExponent";
+		case HydrologyMaxiterEnum : return "HydrologyMaxiter";
+		case HydrologyRestolEnum : return "HydrologyRestol";
+		case HydrologyReltolEnum : return "HydrologyReltol";
+		case HydrologyAbstolEnum : return "HydrologyAbstol";
 		case HydrologyMeltFlagEnum : return "HydrologyMeltFlag";
 		case HydrologyModelEnum : return "HydrologyModel";
 		case HydrologyNumBasinsEnum : return "HydrologyNumBasins";
@@ -1059,6 +1061,7 @@ const char* EnumToStringx(int en){
 		case InversionVelObsEnum : return "InversionVelObs";
 		case InversionVxObsEnum : return "InversionVxObs";
 		case InversionVyObsEnum : return "InversionVyObs";
+		case LambdaSEnum : return "LambdaS";
 		case LevelsetfunctionSlopeXEnum : return "LevelsetfunctionSlopeX";
 		case LevelsetfunctionSlopeYEnum : return "LevelsetfunctionSlopeY";
 		case LevelsetObservationEnum : return "LevelsetObservation";
@@ -3669,7 +3672,6 @@ const char* EnumToStringx(int en){
 		case L2ProjectionEPLAnalysisEnum : return "L2ProjectionEPLAnalysis";
 		case LACrouzeixRaviartEnum : return "LACrouzeixRaviart";
 		case LATaylorHoodEnum : return "LATaylorHood";
-		case LambdaSEnum : return "LambdaS";
 		case LevelsetAnalysisEnum : return "LevelsetAnalysis";
 		case LevelsetfunctionPicardEnum : return "LevelsetfunctionPicard";
 		case LinearFloatingMeltRateEnum : return "LinearFloatingMeltRate";
@@ -3864,7 +3866,7 @@ const char* EnumToStringx(int en){
 		case TotalFloatingBmbScaledEnum : return "TotalFloatingBmbScaled";
 		case TotalGroundedBmbEnum : return "TotalGroundedBmb";
 		case TotalGroundedBmbScaledEnum : return "TotalGroundedBmbScaled";
-		case TotalHydrologyBasalFluxEnum : return "TotalHydrologyBasalFlux";
+		case TotalHydrologyGroundinglineDischargeEnum : return "TotalHydrologyGroundinglineDischarge";
 		case TotalSmbEnum : return "TotalSmb";
 		case TotalSmbScaledEnum : return "TotalSmbScaled";
 		case TotalSmbRefreezeEnum : return "TotalSmbRefreeze";

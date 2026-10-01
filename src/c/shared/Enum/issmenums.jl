@@ -281,12 +281,14 @@
 	HydrologyIschannelsEnum
 	HydrologyIsIncludeSheetThicknessEnum
 	HydrologyIsLakeScaledEnum
+	HydrologyLakeFlagEnum
 	HydrologyCreepOpenFlagEnum
 	HydrologyIsTransitionEnum
 	HydrologyIsWaterPressureArmaEnum
-	HydrologyLakeFlagEnum
-	HydrologyLakeShapeCoefficientEnum
-	HydrologyLakeShapeExponentEnum
+	HydrologyMaxiterEnum
+	HydrologyRestolEnum
+	HydrologyReltolEnum
+	HydrologyAbstolEnum
 	HydrologyMeltFlagEnum
 	HydrologyModelEnum
 	HydrologyNumBasinsEnum
@@ -1046,6 +1048,7 @@
 	InversionVelObsEnum
 	InversionVxObsEnum
 	InversionVyObsEnum
+	LambdaSEnum
 	LevelsetfunctionSlopeXEnum
 	LevelsetfunctionSlopeYEnum
 	LevelsetObservationEnum
@@ -3656,7 +3659,6 @@
 	L2ProjectionEPLAnalysisEnum
 	LACrouzeixRaviartEnum
 	LATaylorHoodEnum
-	LambdaSEnum
 	LevelsetAnalysisEnum
 	LevelsetfunctionPicardEnum
 	LinearFloatingMeltRateEnum
@@ -3851,7 +3853,7 @@
 	TotalFloatingBmbScaledEnum
 	TotalGroundedBmbEnum
 	TotalGroundedBmbScaledEnum
-	TotalHydrologyBasalFluxEnum
+	TotalHydrologyGroundinglineDischargeEnum
 	TotalSmbEnum
 	TotalSmbScaledEnum
 	TotalSmbRefreezeEnum
@@ -4175,12 +4177,14 @@ function EnumToString(enum::IssmEnum)
 	if(enum==HydrologyIschannelsEnum) return "HydrologyIschannels" end
 	if(enum==HydrologyIsIncludeSheetThicknessEnum) return "HydrologyIsIncludeSheetThickness" end
 	if(enum==HydrologyIsLakeScaledEnum) return "HydrologyIsLakeScaled" end
+	if(enum==HydrologyLakeFlagEnum) return "HydrologyLakeFlag" end
 	if(enum==HydrologyCreepOpenFlagEnum) return "HydrologyCreepOpenFlag" end
 	if(enum==HydrologyIsTransitionEnum) return "HydrologyIsTransition" end
 	if(enum==HydrologyIsWaterPressureArmaEnum) return "HydrologyIsWaterPressureArma" end
-	if(enum==HydrologyLakeFlagEnum) return "HydrologyLakeFlag" end
-	if(enum==HydrologyLakeShapeCoefficientEnum) return "HydrologyLakeShapeCoefficient" end
-	if(enum==HydrologyLakeShapeExponentEnum) return "HydrologyLakeShapeExponent" end
+	if(enum==HydrologyMaxiterEnum) return "HydrologyMaxiter" end
+	if(enum==HydrologyRestolEnum) return "HydrologyRestol" end
+	if(enum==HydrologyReltolEnum) return "HydrologyReltol" end
+	if(enum==HydrologyAbstolEnum) return "HydrologyAbstol" end
 	if(enum==HydrologyMeltFlagEnum) return "HydrologyMeltFlag" end
 	if(enum==HydrologyModelEnum) return "HydrologyModel" end
 	if(enum==HydrologyNumBasinsEnum) return "HydrologyNumBasins" end
@@ -4940,6 +4944,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionVelObsEnum) return "InversionVelObs" end
 	if(enum==InversionVxObsEnum) return "InversionVxObs" end
 	if(enum==InversionVyObsEnum) return "InversionVyObs" end
+	if(enum==LambdaSEnum) return "LambdaS" end
 	if(enum==LevelsetfunctionSlopeXEnum) return "LevelsetfunctionSlopeX" end
 	if(enum==LevelsetfunctionSlopeYEnum) return "LevelsetfunctionSlopeY" end
 	if(enum==LevelsetObservationEnum) return "LevelsetObservation" end
@@ -7550,7 +7555,6 @@ function EnumToString(enum::IssmEnum)
 	if(enum==L2ProjectionEPLAnalysisEnum) return "L2ProjectionEPLAnalysis" end
 	if(enum==LACrouzeixRaviartEnum) return "LACrouzeixRaviart" end
 	if(enum==LATaylorHoodEnum) return "LATaylorHood" end
-	if(enum==LambdaSEnum) return "LambdaS" end
 	if(enum==LevelsetAnalysisEnum) return "LevelsetAnalysis" end
 	if(enum==LevelsetfunctionPicardEnum) return "LevelsetfunctionPicard" end
 	if(enum==LinearFloatingMeltRateEnum) return "LinearFloatingMeltRate" end
@@ -7745,7 +7749,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==TotalFloatingBmbScaledEnum) return "TotalFloatingBmbScaled" end
 	if(enum==TotalGroundedBmbEnum) return "TotalGroundedBmb" end
 	if(enum==TotalGroundedBmbScaledEnum) return "TotalGroundedBmbScaled" end
-	if(enum==TotalHydrologyBasalFluxEnum) return "TotalHydrologyBasalFlux" end
+	if(enum==TotalHydrologyGroundinglineDischargeEnum) return "TotalHydrologyGroundinglineDischarge" end
 	if(enum==TotalSmbEnum) return "TotalSmb" end
 	if(enum==TotalSmbScaledEnum) return "TotalSmbScaled" end
 	if(enum==TotalSmbRefreezeEnum) return "TotalSmbRefreeze" end
@@ -8069,12 +8073,14 @@ function StringToEnum(name::String)
 	if(name=="HydrologyIschannels") return HydrologyIschannelsEnum  end
 	if(name=="HydrologyIsIncludeSheetThickness") return HydrologyIsIncludeSheetThicknessEnum  end
 	if(name=="HydrologyIsLakeScaled") return HydrologyIsLakeScaledEnum  end
+	if(name=="HydrologyLakeFlag") return HydrologyLakeFlagEnum  end
 	if(name=="HydrologyCreepOpenFlag") return HydrologyCreepOpenFlagEnum  end
 	if(name=="HydrologyIsTransition") return HydrologyIsTransitionEnum  end
 	if(name=="HydrologyIsWaterPressureArma") return HydrologyIsWaterPressureArmaEnum  end
-	if(name=="HydrologyLakeFlag") return HydrologyLakeFlagEnum  end
-	if(name=="HydrologyLakeShapeCoefficient") return HydrologyLakeShapeCoefficientEnum  end
-	if(name=="HydrologyLakeShapeExponent") return HydrologyLakeShapeExponentEnum  end
+	if(name=="HydrologyMaxiter") return HydrologyMaxiterEnum  end
+	if(name=="HydrologyRestol") return HydrologyRestolEnum  end
+	if(name=="HydrologyReltol") return HydrologyReltolEnum  end
+	if(name=="HydrologyAbstol") return HydrologyAbstolEnum  end
 	if(name=="HydrologyMeltFlag") return HydrologyMeltFlagEnum  end
 	if(name=="HydrologyModel") return HydrologyModelEnum  end
 	if(name=="HydrologyNumBasins") return HydrologyNumBasinsEnum  end
@@ -8834,6 +8840,7 @@ function StringToEnum(name::String)
 	if(name=="InversionVelObs") return InversionVelObsEnum  end
 	if(name=="InversionVxObs") return InversionVxObsEnum  end
 	if(name=="InversionVyObs") return InversionVyObsEnum  end
+	if(name=="LambdaS") return LambdaSEnum  end
 	if(name=="LevelsetfunctionSlopeX") return LevelsetfunctionSlopeXEnum  end
 	if(name=="LevelsetfunctionSlopeY") return LevelsetfunctionSlopeYEnum  end
 	if(name=="LevelsetObservation") return LevelsetObservationEnum  end
@@ -11444,7 +11451,6 @@ function StringToEnum(name::String)
 	if(name=="L2ProjectionEPLAnalysis") return L2ProjectionEPLAnalysisEnum  end
 	if(name=="LACrouzeixRaviart") return LACrouzeixRaviartEnum  end
 	if(name=="LATaylorHood") return LATaylorHoodEnum  end
-	if(name=="LambdaS") return LambdaSEnum  end
 	if(name=="LevelsetAnalysis") return LevelsetAnalysisEnum  end
 	if(name=="LevelsetfunctionPicard") return LevelsetfunctionPicardEnum  end
 	if(name=="LinearFloatingMeltRate") return LinearFloatingMeltRateEnum  end
@@ -11639,7 +11645,7 @@ function StringToEnum(name::String)
 	if(name=="TotalFloatingBmbScaled") return TotalFloatingBmbScaledEnum  end
 	if(name=="TotalGroundedBmb") return TotalGroundedBmbEnum  end
 	if(name=="TotalGroundedBmbScaled") return TotalGroundedBmbScaledEnum  end
-	if(name=="TotalHydrologyBasalFlux") return TotalHydrologyBasalFluxEnum  end
+	if(name=="TotalHydrologyGroundinglineDischarge") return TotalHydrologyGroundinglineDischargeEnum  end
 	if(name=="TotalSmb") return TotalSmbEnum  end
 	if(name=="TotalSmbScaled") return TotalSmbScaledEnum  end
 	if(name=="TotalSmbRefreeze") return TotalSmbRefreezeEnum  end

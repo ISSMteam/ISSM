@@ -6917,7 +6917,7 @@ IssmDouble Element::TotalGroundedBmb(IssmDouble* mask, bool scaled){/*{{{*/
 	return this->TotalGroundedBmb(scaled);
 }
 /*}}}*/
-IssmDouble Element::TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled){/*{{{*/
+IssmDouble Element::TotalHydrologyGroundinglineDischarge(IssmDouble* mask, bool scaled){/*{{{*/
 
 	/*Retrieve values of the mask defining the element: */
 	for(int i=0;i<this->GetNumberOfVertices();i++){
@@ -6927,7 +6927,7 @@ IssmDouble Element::TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled){/*{{{
 	}
 
 	/*Return: */
-	return this->TotalHydrologyBasalFlux(scaled);
+	return this->TotalHydrologyGroundinglineDischarge(scaled);
 }
 /*}}}*/
 IssmDouble Element::TotalSmb(IssmDouble* mask, bool scaled){/*{{{*/

@@ -264,6 +264,7 @@
 %InversionVelObs
 %InversionVxObs
 %InversionVyObs
+%LambdaS
 %LevelsetfunctionSlopeX
 %LevelsetfunctionSlopeY
 %LevelsetObservation
@@ -727,7 +728,7 @@
 %TotalFloatingBmbScaled
 %TotalGroundedBmb
 %TotalGroundedBmbScaled
-%TotalHydrologyBasalFlux
+%TotalHydrologyGroundinglineDischarge
 %TotalSmb
 %TotalSmbMelt
 %TotalSmbRefreeze
