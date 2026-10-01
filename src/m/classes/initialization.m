@@ -23,7 +23,7 @@ classdef initialization
 		channelarea         = NaN;
 		lake_outletQr       = NaN;
 		lake_channelQr		= NaN;
-		lake_depth		  	= NaN;
+		lake_height		  	= NaN;
 		sealevel            = NaN;
 		bottompressure      = NaN;
 		dsl                 = NaN;
@@ -122,7 +122,7 @@ classdef initialization
 					    md = checkfield(md,'fieldname','initialization.channel_discharge','NaN',1,'Inf',1,'size',[md.mesh.numberofedges 1]);
 						md = checkfield(md,'fieldname','initialization.lake_outletQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices]);
 					    md = checkfield(md,'fieldname','initialization.lake_channelQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices]);
-					    md = checkfield(md,'fieldname','initialization.lake_depth','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+					    md = checkfield(md,'fieldname','initialization.lake_height','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
                     end
                 end
 			end
@@ -176,7 +176,7 @@ classdef initialization
 			fielddisplay(self,'channel_discharge','subglacial water channel discharge (for GlaDS with ice-marginal lakes) [m3/s]');
 			fielddisplay(self,'lake_outletQr','sum outlet flux at lake outlet (for GlaDS with ice-marginal lakes) [m3/s]');
 			fielddisplay(self,'lake_channelQr','sum channel ONLY flux at lake outlet (for GlaDS with ice-marginal lakes) [m3/s]');
-			fielddisplay(self,'lake_depth','Lake depth (for GlaDS with ice-marginal lakes) [m]');
+			fielddisplay(self,'lake_height','Lake height (for GlaDS with ice-marginal lakes) [m]');
 			fielddisplay(self,'sample','Realization of a Gaussian random field');
 			fielddisplay(self,'bottompressure','Bottom pressures');
 			fielddisplay(self,'dsl','Dynamic sea level.');
@@ -208,7 +208,7 @@ classdef initialization
 			WriteData(fid,prefix,'object',self,'fieldname','channel_discharge','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','lake_channelQr','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','lake_outletQr','format','DoubleMat','mattype',1);
-			WriteData(fid,prefix,'object',self,'fieldname','lake_depth','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','lake_height','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','sample','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','debris','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','age','format','DoubleMat','mattype',1,'scale',yts);
@@ -267,7 +267,7 @@ classdef initialization
 			writejs1Darray(fid,[modelname '.initialization.channel_discharge'],self.channel_discharge);
 			writejs1Darray(fid,[modelname '.initialization.lake_outletQr'],self.lake_outletQr);
 			writejs1Darray(fid,[modelname '.initialization.lake_channelQr'],self.lake_channelQr);
-			writejs1Darray(fid,[modelname '.initialization.lake_depth'],self.lake_depth);
+			writejs1Darray(fid,[modelname '.initialization.lake_height'],self.lake_height);
 			writejs1Darray(fid,[modelname '.initialization.channel'],self.channelarea);
 			writejs1Darray(fid,[modelname '.initialization.sample'],self.sample);
 			writejs1Darray(fid,[modelname '.initialization.debris'],self.debris);

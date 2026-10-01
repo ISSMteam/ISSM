@@ -40,6 +40,10 @@ classdef hydrologyimlglads
 		requested_outputs    = {};
 		melt_flag            = 0;
 		istransition         = 0;
+		maxiter              = 0;
+		restol               = 0;
+		reltol               = 0;
+		abstol               = 0;
 
 		
 	end
@@ -92,6 +96,10 @@ classdef hydrologyimlglads
 			self.melt_flag=0;
 			self.istransition = 0; %by default use GlaDS default turbulent code
 			self.creep_open_flag = 1;
+			self.maxiter = 100;
+			self.restol  = 1.e-4;
+			self.reltol  = 0.01;
+			self.abstol  = NaN; %not applied by default
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -129,6 +137,10 @@ classdef hydrologyimlglads
 			md = checkfield(md,'fieldname','hydrology.lake_mask','size',[md.mesh.numberofvertices 1],'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.num_lakes','numel',[1],'>=',0,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.istransition','numel',[1],'values',[0 1]);
+			md = checkfield(md,'fieldname','hydrology.maxiter','numel',[1],'>=',1);
+			md = checkfield(md,'fieldname','hydrology.restol','numel',[1],'>',0,'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','hydrology.reltol','numel',[1]);
+			md = checkfield(md,'fieldname','hydrology.abstol','numel',[1]);
 			md = checkfield(md,'fieldname','hydrology.creep_open_flag','numel',[1],'values',[0 1]);
 			if self.melt_flag==1 || self.melt_flag==2
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
@@ -170,6 +182,10 @@ classdef hydrologyimlglads
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 			fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default), 1: use md.basalforcings.groundedice_melting_rate');
 			fielddisplay(self,'istransition','do we use standard [0, default] or transition model [1]');
+			fielddisplay(self,'maxiter','maximum number of nonlinear iterations');
+			fielddisplay(self,'restol','hydraulic potential equilibrium residual convergence criterion');
+			fielddisplay(self,'reltol','hydraulic potential relative convergence criterion, NaN: not applied');
+			fielddisplay(self,'abstol','hydraulic potential absolute convergence criterion [Pa], NaN: not applied');
 			fprintf('	ICE MARGINAL LAKES\n');
 			fielddisplay(self,'islakes','User specified lake? 0: no (default), 1: use md.hydrology.lake_mask to identify lake outlets');
 			fielddisplay(self,'lake_mask','lake mask (0: for no lake, 1,2,...n for n lakes)');
@@ -211,6 +227,10 @@ classdef hydrologyimlglads
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','englacial_void_ratio','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','melt_flag','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','istransition','format','Boolean');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','maxiter','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','restol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','reltol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','abstol','format','Double');
 
 			%Ice marginal lakes
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','islakes','format','Boolean');

@@ -40,6 +40,10 @@ class hydrologyimlglads(object):
         self.requested_outputs = []
         self.melt_flag = 0
         self.istransition = 0
+        self.maxiter = 0
+        self.restol = 0
+        self.reltol = 0
+        self.abstol = 0
 
         #Ice marginal lakes
         self.islakes = 0
@@ -88,6 +92,10 @@ class hydrologyimlglads(object):
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         s += '{}\n'.format(fielddisplay(self, 'melt_flag', 'User specified basal melt? 0: no (default), 1: use md.basalforcings.groundedice_melting_rate'))
         s += '{}\n'.format(fielddisplay(self, 'istransition', 'do we use standard [0, default] or transition model [1]')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'maxiter', 'maximum number of nonlinear iterations'))
+        s += '{}\n'.format(fielddisplay(self, 'restol', 'hydraulic potential equilibrium residual convergence criterion'))
+        s += '{}\n'.format(fielddisplay(self, 'reltol', 'hydraulic potential relative convergence criterion, NaN: not applied'))
+        s += '{}\n'.format(fielddisplay(self, 'abstol', 'hydraulic potential absolute convergence criterion [Pa], NaN: not applied'))
         s += '\t--LAKES\n'
         s += '{}\n'.format(fielddisplay(self, 'islakes', 'Do we allow for lakes? 1: yes, 0: no')) #AJH
         s += '{}\n'.format(fielddisplay(self, 'lake_mask', 'lake mask (0: for no lake, 1,2,...n for n lakes)')) #AJH
@@ -137,6 +145,10 @@ class hydrologyimlglads(object):
         self.requested_outputs = ['default']
         self.melt_flag = 0
         self.istransition = 0  #by default use turbulent physics
+        self.maxiter = 100
+        self.restol = 1.e-4
+        self.reltol = 0.01
+        self.abstol = np.nan  # not applied by default
 
         #Ice marginal lakes
         self.islakes = False
@@ -181,6 +193,10 @@ class hydrologyimlglads(object):
         md = checkfield(md, 'fieldname', 'hydrology.requested_outputs', 'stringrow', 1)
         md = checkfield(md, 'fieldname', 'hydrology.melt_flag', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'hydrology.istransition', 'numel', [1], 'values', [0, 1])
+        md = checkfield(md, 'fieldname', 'hydrology.maxiter', 'numel', [1], '>=', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.restol', 'numel', [1], '>', 0, 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.reltol', 'numel', [1])
+        md = checkfield(md, 'fieldname', 'hydrology.abstol', 'numel', [1])
         # Lakes
         if self.islakes == 1:
             md = checkfield(md,'fieldname','hydrology.lake_mask','Inf',1,'NaN',1,'timeseries',1)
@@ -225,6 +241,10 @@ class hydrologyimlglads(object):
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'englacial_void_ratio', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'melt_flag', 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'istransition', 'format', 'Boolean')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'maxiter', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'restol', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'reltol', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'abstol', 'format', 'Double')
         # Lakes
         WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','islakes','format','Boolean')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'lake_mask', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)

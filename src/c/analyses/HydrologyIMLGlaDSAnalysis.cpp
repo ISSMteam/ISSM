@@ -235,6 +235,10 @@ void HydrologyIMLGlaDSAnalysis::UpdateParameters(Parameters* parameters,IoModel*
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.cavity_spacing",HydrologyCavitySpacingEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.ischannels",HydrologyIschannelsEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.melt_flag",HydrologyMeltFlagEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.maxiter",HydrologyMaxiterEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.restol",HydrologyRestolEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.reltol",HydrologyReltolEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.abstol",HydrologyAbstolEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.channel_sheet_width",HydrologyChannelSheetWidthEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.channel_alpha",HydrologyChannelAlphaEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.hydrology.channel_beta",HydrologyChannelBetaEnum));

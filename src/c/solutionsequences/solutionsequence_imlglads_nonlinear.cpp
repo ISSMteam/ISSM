@@ -32,11 +32,11 @@ void solutionsequence_imlglads_nonlinear(FemModel* femmodel){/*{{{*/
 	bool islakes;
 	HydrologyIMLGlaDSAnalysis* analysis = new HydrologyIMLGlaDSAnalysis();
 
-	/*Recover parameters (FIXME: from Stress balance for now :( )*/
-	femmodel->parameters->FindParam(&max_nonlinear_iterations,StressbalanceMaxiterEnum);
-	femmodel->parameters->FindParam(&eps_res,StressbalanceRestolEnum);
-	femmodel->parameters->FindParam(&eps_rel,StressbalanceReltolEnum);
-	femmodel->parameters->FindParam(&eps_abs,StressbalanceAbstolEnum);
+	/*Recover parameters*/
+	femmodel->parameters->FindParam(&max_nonlinear_iterations,HydrologyMaxiterEnum);
+	femmodel->parameters->FindParam(&eps_res,HydrologyRestolEnum);
+	femmodel->parameters->FindParam(&eps_rel,HydrologyReltolEnum);
+	femmodel->parameters->FindParam(&eps_abs,HydrologyAbstolEnum);
 	femmodel->parameters->FindParam(&islakes,HydrologyLakeFlagEnum);
 	femmodel->UpdateConstraintsx();
 

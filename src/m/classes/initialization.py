@@ -32,7 +32,7 @@ class initialization(object):
         self.channel_discharge   = np.nan
         self.lake_channelQr      = np.nan
         self.lake_outletQr       = np.nan
-        self.lake_depth          = np.nan
+        self.lake_height          = np.nan
         self.sealevel            = np.nan
         self.bottompressure      = np.nan
         self.dsl                 = np.nan
@@ -64,7 +64,7 @@ class initialization(object):
         s += '{}\n'.format(fielddisplay(self, 'channel_discharge', 'subglacial water channel discharge (for GlaDS with lakes) [m3s-1]'))
         s += '{}\n'.format(fielddisplay(self, 'lake_channelQr', 'sum channel flux at lake outlet (for GlaDS with lakes) [m3/s]'))
         s += '{}\n'.format(fielddisplay(self, 'lake_outletQr', 'sum total flux at lake outlet (for GlaDS with lakes) [m3/s]'))
-        s += '{}\n'.format(fielddisplay(self, 'lake_depth', 'Lake depth (for GlaDS with lakes) [m]'))
+        s += '{}\n'.format(fielddisplay(self, 'lake_height', 'Lake height (for GlaDS with lakes) [m]'))
         s += '{}\n'.format(fielddisplay(self, 'sample', 'Realization of a Gaussian random field'))
         s += '{}\n'.format(fielddisplay(self, 'debris', 'Surface debris layer [m]'))
         s += '{}\n'.format(fielddisplay(self, 'age', 'Initial age [yr]'))
@@ -134,7 +134,7 @@ class initialization(object):
                     md = checkfield(md,'fieldname','initialization.sheet_discharge','NaN',1,'Inf',1,'>=',0,'size',[md.mesh.numberofvertices])
                     md = checkfield(md,'fieldname','initialization.lake_channelQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices])
                     md = checkfield(md,'fieldname','initialization.lake_outletQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices])
-                    md = checkfield(md,'fieldname','initialization.lake_depth','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices])
+                    md = checkfield(md,'fieldname','initialization.lake_height','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices])
         if 'HydrologyDCInefficientAnalysis' in analyses:
             if type(md.hydrology).__name__ == 'hydrologydc':
                 md = checkfield(md, 'fieldname', 'initialization.sediment_head', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices])
@@ -179,7 +179,7 @@ class initialization(object):
         WriteData(fid,prefix,'object',self,'fieldname','channel_discharge','format','DoubleMat','mattype',1)
         WriteData(fid,prefix,'object',self,'fieldname','lake_channelQr','format','DoubleMat','mattype',1)
         WriteData(fid,prefix,'object',self,'fieldname','lake_outletQr','format','DoubleMat','mattype',1)
-        WriteData(fid,prefix,'object',self,'fieldname','lake_depth','format','DoubleMat','mattype',1)
+        WriteData(fid,prefix,'object',self,'fieldname','lake_height','format','DoubleMat','mattype',1)
         WriteData(fid, prefix, 'object', self, 'fieldname', 'hydraulic_potential', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'fieldname', 'sample', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'fieldname', 'debris', 'format', 'DoubleMat', 'mattype', 1)
