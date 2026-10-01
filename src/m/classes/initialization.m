@@ -18,7 +18,12 @@ classdef initialization
 		epl_thickness       = NaN;
 		watercolumn         = NaN;
 		hydraulic_potential = NaN;
+		sheet_discharge     = NaN;
+		channel_discharge   = NaN;
 		channelarea         = NaN;
+		lake_outletQr       = NaN;
+		lake_channelQr		= NaN;
+		lake_depth		  	= NaN;
 		sealevel            = NaN;
 		bottompressure      = NaN;
 		dsl                 = NaN;
@@ -106,6 +111,21 @@ classdef initialization
 					md = checkfield(md,'fieldname','initialization.channelarea','NaN',1,'Inf',1,'>=',0,'size',[md.mesh.numberofedges 1]);
 				end
 			end
+			if ismember('HydrologyIMLGlaDSAnalysis',analyses),
+				if isa(md.hydrology,'hydrologyimlglads'),
+					md = checkfield(md,'fieldname','initialization.watercolumn','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+					md = checkfield(md,'fieldname','initialization.elastic_sheet','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+					md = checkfield(md,'fieldname','initialization.hydraulic_potential','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+					md = checkfield(md,'fieldname','initialization.channelarea','NaN',1,'Inf',1,'>=',0,'size',[md.mesh.numberofedges 1]);
+					if md.hydrology.islakes
+						md = checkfield(md,'filename','initialization.sheet_discharge','NaN',1,'Inf',1,'>=',0,'size',[md.mesh.numberofvertices 1]);
+					    md = checkfield(md,'fieldname','initialization.channel_discharge','NaN',1,'Inf',1,'size',[md.mesh.numberofedges 1]);
+						md = checkfield(md,'fieldname','initialization.lake_outletQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices]);
+					    md = checkfield(md,'fieldname','initialization.lake_channelQr','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices]);
+					    md = checkfield(md,'fieldname','initialization.lake_depth','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+                    end
+                end
+			end
 			if ismember('HydrologyDCInefficientAnalysis',analyses)
 				if isa(md.hydrology,'hydrologydc')
 					md = checkfield(md,'fieldname','initialization.sediment_head','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
@@ -152,6 +172,11 @@ classdef initialization
 			fielddisplay(self,'watercolumn','subglacial water sheet thickness (for Shreve and GlaDS) [m]');
 			fielddisplay(self,'hydraulic_potential','Hydraulic potential (for GlaDS) [Pa]');
 			fielddisplay(self,'channelarea','subglacial water channel area (for GlaDS) [m2]');
+			fielddisplay(self,'sheet_discharge','subglacial water sheet discharge (for GlaDS with ice-marginal lakes) [m2/s]');
+			fielddisplay(self,'channel_discharge','subglacial water channel discharge (for GlaDS with ice-marginal lakes) [m3/s]');
+			fielddisplay(self,'lake_outletQr','sum outlet flux at lake outlet (for GlaDS with ice-marginal lakes) [m3/s]');
+			fielddisplay(self,'lake_channelQr','sum channel ONLY flux at lake outlet (for GlaDS with ice-marginal lakes) [m3/s]');
+			fielddisplay(self,'lake_depth','Lake depth (for GlaDS with ice-marginal lakes) [m]');
 			fielddisplay(self,'sample','Realization of a Gaussian random field');
 			fielddisplay(self,'bottompressure','Bottom pressures');
 			fielddisplay(self,'dsl','Dynamic sea level.');
@@ -179,6 +204,11 @@ classdef initialization
 			WriteData(fid,prefix,'object',self,'fieldname','watercolumn','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','channelarea','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','hydraulic_potential','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','sheet_discharge','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','channel_discharge','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','lake_channelQr','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','lake_outletQr','format','DoubleMat','mattype',1);
+			WriteData(fid,prefix,'object',self,'fieldname','lake_depth','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','sample','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','debris','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'fieldname','age','format','DoubleMat','mattype',1,'scale',yts);
@@ -233,6 +263,11 @@ classdef initialization
 			writejs1Darray(fid,[modelname '.initialization.epl_thickness'],self.epl_thickness);
 			writejs1Darray(fid,[modelname '.initialization.watercolumn'],self.watercolumn);
 			writejs1Darray(fid,[modelname '.initialization.hydraulic_potential'],self.hydraulic_potential);
+			writejs1Darray(fid,[modelname '.initialization.sheet_discharge'],self.sheet_discharge);
+			writejs1Darray(fid,[modelname '.initialization.channel_discharge'],self.channel_discharge);
+			writejs1Darray(fid,[modelname '.initialization.lake_outletQr'],self.lake_outletQr);
+			writejs1Darray(fid,[modelname '.initialization.lake_channelQr'],self.lake_channelQr);
+			writejs1Darray(fid,[modelname '.initialization.lake_depth'],self.lake_depth);
 			writejs1Darray(fid,[modelname '.initialization.channel'],self.channelarea);
 			writejs1Darray(fid,[modelname '.initialization.sample'],self.sample);
 			writejs1Darray(fid,[modelname '.initialization.debris'],self.debris);
