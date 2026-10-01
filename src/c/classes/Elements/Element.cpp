@@ -2556,7 +2556,7 @@ bool       Element::IsFloating(){/*{{{*/
 }/*}}}*/
 bool 	   Element::IsAnyLake(){/*{{{*/
 	/*At least ONE node is a lake (partially lake returns true)*/
-	Input* input=this->GetInput(MaskLakeOutLevelsetEnum); _assert_(input);
+	Input* input=this->GetInput(HydrologyLakeMaskEnum); _assert_(input);
 	if(input->GetInputMax() >= 1.){
 		return true;
 	}

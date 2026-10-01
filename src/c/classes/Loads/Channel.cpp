@@ -32,6 +32,10 @@ Channel::Channel(){/*{{{*/
 	this->nodes      = NULL;
 }
 /*}}}*/
+Channel::Channel(int channel_id,IssmDouble channelarea, int index,IoModel* iomodel):Channel(channel_id,channelarea,0.,index,iomodel){/*{{{*/
+	/*Delegates to the full constructor for callers (e.g. GlaDS) that do not expect to initialise with channel discharge*/
+}
+/*}}}*/
 Channel::Channel(int channel_id,IssmDouble channelarea, IssmDouble channeldischarge, int index,IoModel* iomodel){/*{{{*/
 //Channel::Channel(int channel_id,int i,int index,IoModel* iomodel)
 
@@ -912,8 +916,8 @@ void 			Channel::AddDischargeToVector(Vector<IssmDouble>* Qr_vec){/*{{{*/
 	}
 
 	/*Set outlet discharge based on lake conditions*/
-	if(lakeLS1>0. || lakeLS2>0.){
-		if(lakeLS1>0.){
+	if(LakeLS1>0. || LakeLS2>0.){
+		if(LakeLS1>0.){
 			if(phi1>phi2){
 				qr[0] = abs(this->discharge);
 				qr[1] = 0.;
@@ -923,7 +927,7 @@ void 			Channel::AddDischargeToVector(Vector<IssmDouble>* Qr_vec){/*{{{*/
 				qr[1] = 0.;
 			}
 		}
-		else if(lakeLS2>0.){
+		else if(LakeLS2>0.){
 			if(phi1>phi2){
 				qr[0] = 0.;
 				qr[1] = -abs(this->discharge);

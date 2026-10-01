@@ -260,18 +260,12 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
 		/*Set fields as old*/
 		InputDuplicatex(femmodel,HydraulicPotentialEnum,HydraulicPotentialOldEnum);
 		InputDuplicatex(femmodel,HydrologySheetThicknessEnum,HydrologySheetThicknessOldEnum);
-		InputDuplicatex(femmodel,HydrologyElasticSheetThicknessEnum,HydrologyElasticSheetThicknessOldEnum);
 		if(islakes){
 			InputDuplicatex(femmodel,HydrologyLakeHeightEnum,HydrologyLakeHeightOldEnum);
 			InputDuplicatex(femmodel,HydrologyLakeChannelQrEnum,HydrologyLakeChannelQrOldEnum);
-			if(islakescaled){
-				InputDuplicatex(femmodel,HydrologyLakeAreaEnum,HydrologyLakeAreaOldEnum);
-			}
-			
 		}
 		analysis->SetChannelCrossSectionOld(femmodel);
 		
-
 		/*Solve for new potential*/
 		solutionsequence_glads_nonlinear(femmodel);
 
