@@ -474,7 +474,7 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 			This prevents corruption from casting pointer types.*/
 			IssmDouble lake_id_double;
 			lakeID_input->GetInputValue(&lake_id_double,gauss);
-			int lakeID = (int)lake_id_double;
+			int lakeID = reCast<int>(lake_id_double);
 
 			le_input->GetInputValue(&le,gauss);
 			qin_input->GetInputValue(&qin,gauss);
