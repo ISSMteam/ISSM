@@ -919,22 +919,22 @@ void 			Channel::AddDischargeToVector(Vector<IssmDouble>* Qr_vec){/*{{{*/
 	if(LakeLS1>0. || LakeLS2>0.){
 		if(LakeLS1>0.){
 			if(phi1>phi2){
-				qr[0] = abs(this->discharge);
+				qr[0] = fabs(this->discharge);
 				qr[1] = 0.;
 			}
 			if(phi1<phi2){
-				qr[0] = -abs(this->discharge);
+				qr[0] = -fabs(this->discharge);
 				qr[1] = 0.;
 			}
 		}
 		else if(LakeLS2>0.){
 			if(phi1>phi2){
 				qr[0] = 0.;
-				qr[1] = -abs(this->discharge);
+				qr[1] = -fabs(this->discharge);
 			}
 			if(phi1<phi2){
 				qr[0] = 0.;
-				qr[1] = abs(this->discharge);
+				qr[1] = fabs(this->discharge);
 			}
 		}
 	}

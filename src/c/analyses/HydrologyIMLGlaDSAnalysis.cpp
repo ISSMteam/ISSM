@@ -432,11 +432,15 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 	femmodel->parameters->FindParam(&numlakes,HydrologyNumLakesEnum);
 
 	/*Initialise arrays for alllakes, skip index 0 (no lake)*/
+	IssmDouble* local_dt       = xNewZeroInit<IssmDouble>(numlakes+1);
 	IssmDouble* dt             = xNewZeroInit<IssmDouble>(numlakes+1);
     IssmDouble* local_qr       = xNewZeroInit<IssmDouble>(numlakes+1);
     IssmDouble* total_qr       = xNewZeroInit<IssmDouble>(numlakes+1);
+    IssmDouble* local_Qin      = xNewZeroInit<IssmDouble>(numlakes+1);
     IssmDouble* lake_Qin       = xNewZeroInit<IssmDouble>(numlakes+1);
+	IssmDouble* local_area_old = xNewZeroInit<IssmDouble>(numlakes+1);
 	IssmDouble* lake_area_old  = xNewZeroInit<IssmDouble>(numlakes+1);
+    IssmDouble* local_height_old = xNewZeroInit<IssmDouble>(numlakes+1);
     IssmDouble* lake_height_old = xNewZeroInit<IssmDouble>(numlakes+1);
     IssmDouble* lake_height     = xNewZeroInit<IssmDouble>(numlakes+1);
 
@@ -534,10 +538,10 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 
 				}
 
-				lake_area_old[lakeID] = lamax;
-				lake_Qin[lakeID] = qin;
-				lake_height_old[lakeID] = lh_old;
-				dt[lakeID] = ele_dt;
+				local_area_old[lakeID] = lamax;
+				local_Qin[lakeID] = qin;
+				local_height_old[lakeID] = lh_old;
+				local_dt[lakeID] = ele_dt;
 			}
 		}
 		delete gauss;
@@ -546,11 +550,11 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 	/* Sum the local_qr contributions from all processors into total_qr*/
 	ISSM_MPI_Allreduce(local_qr, total_qr, 				numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_SUM, IssmComm::GetComm());
 
-	/*MPI_MAX ensures the non-zero valu from the processor that owns a lake element propogates to all others*/
-	ISSM_MPI_Allreduce(MPI_IN_PLACE, lake_area_old, 	numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());	
-	ISSM_MPI_Allreduce(MPI_IN_PLACE, lake_Qin, 			numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
-	ISSM_MPI_Allreduce(MPI_IN_PLACE, lake_height_old, 	numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
-	ISSM_MPI_Allreduce(MPI_IN_PLACE, dt, 				numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
+	/*MPI_MAX ensures the non-zero value from the processor that owns a lake element propogates to all others*/
+	ISSM_MPI_Allreduce(local_area_old,   lake_area_old,   numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
+	ISSM_MPI_Allreduce(local_Qin,        lake_Qin,        numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
+	ISSM_MPI_Allreduce(local_height_old, lake_height_old, numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
+	ISSM_MPI_Allreduce(local_dt,         dt,              numlakes+1, ISSM_MPI_DOUBLE, ISSM_MPI_MAX, IssmComm::GetComm());
 
 	/* Now claculate a new lake height for all lakes using the globally aggregated data*/
 	for (int lake = 1; lake<=numlakes; lake++){
@@ -620,11 +624,15 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 	}
 
 	/* clean up */
+	xDelete<IssmDouble>(local_dt);
 	xDelete<IssmDouble>(dt);
 	xDelete<IssmDouble>(local_qr);
 	xDelete<IssmDouble>(total_qr);
+	xDelete<IssmDouble>(local_Qin);
 	xDelete<IssmDouble>(lake_Qin);
+	xDelete<IssmDouble>(local_area_old);
 	xDelete<IssmDouble>(lake_area_old);
+	xDelete<IssmDouble>(local_height_old);
 	xDelete<IssmDouble>(lake_height_old);
 	xDelete<IssmDouble>(lake_height);
 
