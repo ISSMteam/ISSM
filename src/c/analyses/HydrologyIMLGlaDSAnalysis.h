@@ -6,9 +6,9 @@
 #define _HydrologyIMLGlaDSAnalysis_
 
 /*Headers*/
-#include "./Analysis.h"
+#include "./HydrologyGlaDSAnalysis.h"
 
-class HydrologyIMLGlaDSAnalysis: public Analysis{
+class HydrologyIMLGlaDSAnalysis: public HydrologyGlaDSAnalysis{
 
 	public:
 		/*Model processing*/
@@ -39,11 +39,11 @@ class HydrologyIMLGlaDSAnalysis: public Analysis{
 		void SetChannelCrossSectionOld(FemModel* femmodel);
 		void SetLakeOutletDischargeOld(FemModel* femmodel);
 		void UpdateLakeDepth(FemModel* femmodel);
+		void UpdateLakeOutletDischarge(FemModel* femmodel);
 		/*Specific to GlaDS*/
 		void UpdateSheetThickness(FemModel* femmodel);
 		void UpdateSheetThickness(Element*  element);
 		void UpdateChannelCrossSection(FemModel* femmodel);
-		void UpdateLakeOutletDischarge(FemModel* femmodel);
 		void UpdateEffectivePressure(FemModel* femmodel);
 		void UpdateEffectivePressure(Element* element);
 };

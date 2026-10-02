@@ -32,6 +32,7 @@ class HydrologyGlaDSAnalysis: public Analysis{
 		void           UpdateConstraints(FemModel* femmodel);
 
 		/*Specific to GlaDS*/
+		void UpdateOutputs(Element* element);
 		void SetChannelCrossSectionOld(FemModel* femmodel);
 		void UpdateSheetThickness(FemModel* femmodel);
 		void UpdateSheetThickness(Element*  element);

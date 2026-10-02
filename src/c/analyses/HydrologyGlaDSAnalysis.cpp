@@ -478,11 +478,13 @@ void           HydrologyGlaDSAnalysis::GradientJ(Vector<IssmDouble>* gradient,El
 }/*}}}*/
 void           HydrologyGlaDSAnalysis::InputUpdateFromSolution(IssmDouble* solution,Element* element){/*{{{*/
 	element->InputUpdateFromSolutionOneDof(solution,HydraulicPotentialEnum);
-
+	HydrologyGlaDSAnalysis::UpdateOutputs(element);
+}/*}}}*/
+void           HydrologyGlaDSAnalysis::UpdateOutputs(Element* element){/*{{{*/
 	/*Compute Hydrology Vx and Vy for time stepping purposes, and Sheet Discharge as an optional output (These inputs do not affect GlaDS)*/
 
 	/*Intermediaries*/
-   IssmDouble  dphi[3],h,k,phi;
+    IssmDouble  dphi[3],h,k,phi;
 	IssmDouble  h_r;
 	IssmDouble  oceanLS,iceLS;
 	IssmDouble* xyz_list = NULL;
