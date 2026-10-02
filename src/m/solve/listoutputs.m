@@ -210,6 +210,7 @@
 %HydrologyDissipation
 %HydrologyDrainageRate
 %HydrologyEnglacialInput
+%HydrologyEnglacialVoidRatio
 %HydrologyFrictionHeat
 %HydrologyGapHeight
 %HydrologyGapHeightX
@@ -218,6 +219,18 @@
 %HydrologyGapHeightYY
 %HydrologyHead
 %HydrologyHeadOld
+%HydrologyLakeChannelQr
+%HydrologyLakeChannelQrOld
+%HydrologyLakeOutletLength
+%HydrologyLakeHeight
+%HydrologyLakeHeightOld
+%HydrologyLakeMask
+%HydrologyLakeOutletQr
+%HydrologyLakeOutletQrOld
+%HydrologyLakeQin
+%HydrologyLakeArea
+%HydrologyLakeAreaOld
+%HydrologyMaxLakeArea
 %HydrologyMeltRate
 %HydrologyMoulinInput
 %HydrologyNeumannflux

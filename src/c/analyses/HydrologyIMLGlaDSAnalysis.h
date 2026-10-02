@@ -1,14 +1,14 @@
-/*! \file HydrologyGlaDSAnalysis.h 
+/*! \file HydrologyIMLGlaDSAnalysis.h 
  *  \brief: header file for generic external result object
  */
 
-#ifndef _HydrologyGlaDSAnalysis_
-#define _HydrologyGlaDSAnalysis_
+#ifndef _HydrologyIMLGlaDSAnalysis_
+#define _HydrologyIMLGlaDSAnalysis_
 
 /*Headers*/
-#include "./Analysis.h"
+#include "./HydrologyGlaDSAnalysis.h"
 
-class HydrologyGlaDSAnalysis: public Analysis{
+class HydrologyIMLGlaDSAnalysis: public HydrologyGlaDSAnalysis{
 
 	public:
 		/*Model processing*/
@@ -31,9 +31,16 @@ class HydrologyGlaDSAnalysis: public Analysis{
 		void           InputUpdateFromSolution(IssmDouble* solution,Element* element);
 		void           UpdateConstraints(FemModel* femmodel);
 
-		/*Specific to GlaDS*/
-		void UpdateOutputs(Element* element);
+		/*Specific to GlaDS with an ice-marginal lake*/
+		void UpdateLakeOutletPhiOld(FemModel* femmodel);
+		void UpdateLakeOutletPhiOld(Element* element);
+		void UpdateLakeOutletPhi(FemModel* femmodel);
+		void UpdateLakeOutletPhi(Element* element);
 		void SetChannelCrossSectionOld(FemModel* femmodel);
+		void SetLakeOutletDischargeOld(FemModel* femmodel);
+		void UpdateLakeDepth(FemModel* femmodel);
+		void UpdateLakeOutletDischarge(FemModel* femmodel);
+		/*Specific to GlaDS*/
 		void UpdateSheetThickness(FemModel* femmodel);
 		void UpdateSheetThickness(Element*  element);
 		void UpdateChannelCrossSection(FemModel* femmodel);

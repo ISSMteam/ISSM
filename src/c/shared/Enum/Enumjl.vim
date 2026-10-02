@@ -281,9 +281,10 @@ syn keyword juliaConstC HydrologyCavitySpacingEnum
 syn keyword juliaConstC HydrologyChannelSheetWidthEnum
 syn keyword juliaConstC HydrologyGapHeightMinEnum
 syn keyword juliaConstC HydrologyGapHeightMaxEnum
-syn keyword juliaConstC HydrologyEnglacialVoidRatioEnum
 syn keyword juliaConstC HydrologyIschannelsEnum
 syn keyword juliaConstC HydrologyIsIncludeSheetThicknessEnum
+syn keyword juliaConstC HydrologyIsLakeScaledEnum
+syn keyword juliaConstC HydrologyLakeFlagEnum
 syn keyword juliaConstC HydrologyCreepOpenFlagEnum
 syn keyword juliaConstC HydrologyIsTransitionEnum
 syn keyword juliaConstC HydrologyIsWaterPressureArmaEnum
@@ -294,6 +295,7 @@ syn keyword juliaConstC HydrologyAbstolEnum
 syn keyword juliaConstC HydrologyMeltFlagEnum
 syn keyword juliaConstC HydrologyModelEnum
 syn keyword juliaConstC HydrologyNumBasinsEnum
+syn keyword juliaConstC HydrologyNumLakesEnum
 syn keyword juliaConstC HydrologyNumRequestedOutputsEnum
 syn keyword juliaConstC HydrologyOmegaEnum
 syn keyword juliaConstC HydrologyPressureMeltCoefficientEnum
@@ -303,6 +305,11 @@ syn keyword juliaConstC HydrologySedimentKmaxEnum
 syn keyword juliaConstC HydrologySheetAlphaEnum
 syn keyword juliaConstC HydrologySheetBetaEnum
 syn keyword juliaConstC HydrologyStepsPerStepEnum
+syn keyword juliaConstC HydrologyIsIncludeElasticSheetEnum
+syn keyword juliaConstC HydrologyElasticSheetDepthScaleEnum
+syn keyword juliaConstC HydrologyElasticSheetExponentEnum
+syn keyword juliaConstC HydrologyUpliftRegRateEnum
+syn keyword juliaConstC HydrologyRegPressureForUpliftEnum
 syn keyword juliaConstC HydrologydcEplColapseThicknessEnum
 syn keyword juliaConstC HydrologydcEplConductivityEnum
 syn keyword juliaConstC HydrologydcEplInitialThicknessEnum
@@ -990,6 +997,7 @@ syn keyword juliaConstC HydrologydcSedimentTransmitivityEnum
 syn keyword juliaConstC HydrologyDissipationEnum
 syn keyword juliaConstC HydrologyDrainageRateEnum
 syn keyword juliaConstC HydrologyEnglacialInputEnum
+syn keyword juliaConstC HydrologyEnglacialVoidRatioEnum
 syn keyword juliaConstC HydrologyFrictionHeatEnum
 syn keyword juliaConstC HydrologyGapHeightEnum
 syn keyword juliaConstC HydrologyGapHeightXEnum
@@ -998,6 +1006,18 @@ syn keyword juliaConstC HydrologyGapHeightYEnum
 syn keyword juliaConstC HydrologyGapHeightYYEnum
 syn keyword juliaConstC HydrologyHeadEnum
 syn keyword juliaConstC HydrologyHeadOldEnum
+syn keyword juliaConstC HydrologyLakeChannelQrEnum
+syn keyword juliaConstC HydrologyLakeChannelQrOldEnum
+syn keyword juliaConstC HydrologyLakeOutletLengthEnum
+syn keyword juliaConstC HydrologyLakeHeightEnum
+syn keyword juliaConstC HydrologyLakeHeightOldEnum
+syn keyword juliaConstC HydrologyLakeMaskEnum
+syn keyword juliaConstC HydrologyLakeOutletQrEnum
+syn keyword juliaConstC HydrologyLakeOutletQrOldEnum
+syn keyword juliaConstC HydrologyLakeQinEnum
+syn keyword juliaConstC HydrologyLakeAreaEnum
+syn keyword juliaConstC HydrologyLakeAreaOldEnum
+syn keyword juliaConstC HydrologyMaxLakeAreaEnum
 syn keyword juliaConstC HydrologyMeltRateEnum
 syn keyword juliaConstC HydrologyMoulinInputEnum
 syn keyword juliaConstC HydrologyNeumannfluxEnum
@@ -3602,6 +3622,8 @@ syn keyword juliaConstC HydrologyDCEfficientAnalysisEnum
 syn keyword juliaConstC HydrologyDCInefficientAnalysisEnum
 syn keyword juliaConstC HydrologyGlaDSAnalysisEnum
 syn keyword juliaConstC HydrologyGlaDSEnum
+syn keyword juliaConstC HydrologyIMLGlaDSAnalysisEnum
+syn keyword juliaConstC HydrologyIMLGlaDSEnum
 syn keyword juliaConstC HydrologyPismAnalysisEnum
 syn keyword juliaConstC HydrologyShaktiAnalysisEnum
 syn keyword juliaConstC HydrologyShreveAnalysisEnum

@@ -153,6 +153,7 @@ class Element: public Object{
 		bool               IsAllFloating();
 		bool               IsAllGrounded();
 		bool               IsFloating();
+		bool               IsAnyLake();
 		bool               IsGrounded();
 		bool               IsOnBase();
 		bool               IsOnSurface();

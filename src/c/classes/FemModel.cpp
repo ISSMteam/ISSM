@@ -780,6 +780,9 @@ void FemModel::SolutionAnalysesList(int** panalyses,int* pnumanalyses,IoModel* i
 			else if(hydrology_model==HydrologyGlaDSEnum){
 				analyses_temp[numanalyses++]=HydrologyGlaDSAnalysisEnum;
 			}
+			else if(hydrology_model==HydrologyIMLGlaDSEnum){
+				analyses_temp[numanalyses++]=HydrologyIMLGlaDSAnalysisEnum;
+			}
 			if(hydrology_model==HydrologyshaktiEnum){
 				analyses_temp[numanalyses++]=HydrologyShaktiAnalysisEnum;
 			}
@@ -2459,7 +2462,8 @@ void FemModel::RequestedOutputsx(Results **presults,char** requested_outputs, in
 					case ChannelAreaEnum:
 					case ChannelDischargeEnum:{
 
-							if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
+							if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum &&
+   							this->analysis_type_list[this->analysis_counter] != HydrologyIMLGlaDSAnalysisEnum){
 								_printf0_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
 								continue;
 							}
@@ -3155,7 +3159,7 @@ void FemModel::TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled){/*{{{*/
 }/*}}}*/
 void FemModel::TotalHydrologyGroundinglineDischargex(IssmDouble* pM, bool scaled){/*{{{*/
 
-	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum){
+	if(this->analysis_type_list[this->analysis_counter] != HydrologyGlaDSAnalysisEnum && this->analysis_type_list[this->analysis_counter] != HydrologyIMLGlaDSAnalysisEnum){
 		_error_("WARNING: you requested channel information outside of hydrology analysis. Hydrology requested outputs should only be prescribed in md.hydrology.requested_outputs\n");
 		*pM = 0;
 	}

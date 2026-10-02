@@ -433,7 +433,7 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
 
     elif gname == 'hydrology':
         known = [
-            'hydrologyshreve', 'hydrologydc', 'hydrologyglads',
+            'hydrologyshreve', 'hydrologydc', 'hydrologyglads','hydrologyimlglads',
             'hydrologypism', 'hydrologyshakti', 'hydrologytws', 'hydrologyarmapw',
         ]
         if ct in known:

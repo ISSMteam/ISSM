@@ -5,11 +5,11 @@ from project3d import project3d
 from WriteData import WriteData
 
 
-class hydrologyglads(object):
-    """hydrologyglads class definition
+class hydrologyimlglads(object):
+    """hydrologyimlglads class definition
 
     Usage:
-        hydrologyglads = hydrologyglads()
+        hydrologyimlglads = hydrologyimlglads()
     """
 
     def __init__(self, *args):  # {{{
@@ -24,7 +24,6 @@ class hydrologyglads(object):
         self.rheology_B_base = np.nan
         self.isincludesheetthickness = 0
         self.creep_open_flag = 1
-        self.rheology_B_base = np.nan
 
         # Channels
         self.ischannels = 0
@@ -46,6 +45,14 @@ class hydrologyglads(object):
         self.reltol = 0
         self.abstol = 0
 
+        #Ice marginal lakes
+        self.islakes = 0
+        self.lake_mask = 0
+        self.num_lakes = 0
+        self.characteristic_outlet_length = 0.
+        self.max_lake_area = 0.
+        self.lake_Qin = 0.
+
         nargs = len(args)
         if nargs == 0:
             self.setdefaultparameters()
@@ -56,42 +63,53 @@ class hydrologyglads(object):
             raise Exception('constructor not supported')
         # }}}
 
+
     def __repr__(self):  # {{{
-        s = '   GlaDS (hydrologyglads) solution parameters:\n'
+        s = '   GlaDS (hydrologyimlglads) solution parameters:\n'
         s += '\t--SHEET\n'
-        s += '{}\n'.format(fielddisplay(self, 'pressure_melt_coefficient', 'Pressure melt coefficient (c_t) [K Pa^ - 1]'))
-        s += '{}\n'.format(fielddisplay(self, 'sheet_conductivity', 'sheet conductivity (k) [m^(7 / 4) kg^(- 1 / 2)]'))
-        s += '{}\n'.format(fielddisplay(self, 'sheet_alpha', 'First sheet-flow exponent (alpha_s) []')) #TH
-        s += '{}\n'.format(fielddisplay(self, 'sheet_beta', 'Second sheet-flow exponent (beta_s) []')) #TH
-        s += '{}\n'.format(fielddisplay(self, 'cavity_spacing', 'cavity spacing (l_r) [m]'))
-        s += '{}\n'.format(fielddisplay(self, 'bump_height', 'typical bump height (h_r) [m]'))
-        s += '{}\n'.format(fielddisplay(self, 'omega', 'transition parameter (omega) []')) #TH
-        s += '{}\n'.format(fielddisplay(self, 'rheology_B_base', 'ice rheology factor B at base of ice (B) [Pa s^(-1/3)]')) #SE
-        s += '{}\n'.format(fielddisplay(self, 'isincludesheetthickness', 'Do we add rho_w*g*h in effective pressure calculation? 1: yes, 0: no'))
-        s += '{}\n'.format(fielddisplay(self, 'creep_open_flag', 'Do we allow cavities to open by creep when N<0? 1: yes, 0: no'))
+        s += '{}\n'.format(fielddisplay(self, 'pressure_melt_coefficient', 'Pressure melt coefficient ($c_t$) [K Pa$^{-1}$]'))
+        s += '{}\n'.format(fielddisplay(self, 'sheet_conductivity', 'sheet conductivity ($k$) [m$^{7/4}$ kg$^{-1/2}$]'))
+        s += '{}\n'.format(fielddisplay(self, 'sheet_alpha', 'First sheet-flow exponent ($\\alpha_s$) []')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'sheet_beta', 'Second sheet-flow exponent ($\\beta_s$) []')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'cavity_spacing', 'cavity spacing ($l_r$) [m]'))
+        s += '{}\n'.format(fielddisplay(self, 'bump_height', 'typical bump height ($h_r$) [m]'))
+        s += '{}\n'.format(fielddisplay(self, 'omega', 'transition parameter ($\\omega$) []')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'rheology_B_base', 'ice rheology factor B at base of ice ($B$) [Pa s$^{-1/3}$]')) #SE
+        s += '{}\n'.format(fielddisplay(self, 'isincludesheetthickness', 'Do we add $\\rho_w g h$ in effective pressure calculation? 1: yes, 0: no'))
+        s += '{}\n'.format(fielddisplay(self, 'creep_open_flag', 'Do we allow cavities to open by creep when $N < 0$? 1: yes, 0: no'))
+
         s += '\t--CHANNELS\n'
         s += '{}\n'.format(fielddisplay(self, 'ischannels', 'Do we allow for channels? 1: yes, 0: no'))
-        s += '{}\n'.format(fielddisplay(self, 'channel_conductivity', 'channel conductivity (k_c) [m^(3 / 2) kg^(- 1 / 2)]'))
+        s += '{}\n'.format(fielddisplay(self, 'channel_conductivity', 'channel conductivity ($k_c$) [m$^{3/2}$ kg$^{-1/2}$]'))
         s += '{}\n'.format(fielddisplay(self, 'channel_sheet_width', 'channel sheet width [m]'))
-        s += '{}\n'.format(fielddisplay(self, 'channel_alpha', 'First channel-flow exponent (alpha_s) []')) #TH
-        s += '{}\n'.format(fielddisplay(self, 'channel_beta', 'Second channel-flow exponent (beta_s) []')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'channel_alpha', 'First channel-flow exponent ($\\alpha_s$) []')) #TH
+        s += '{}\n'.format(fielddisplay(self, 'channel_beta', 'Second channel-flow exponent ($\\beta_s$) []')) #TH
         s += '\t--OTHER\n'
         s += '{}\n'.format(fielddisplay(self, 'spcphi', 'Hydraulic potential Dirichlet constraints [Pa]'))
-        s += '{}\n'.format(fielddisplay(self, 'neumannflux', 'water flux applied along the model boundary (m^2 / s)'))
-        s += '{}\n'.format(fielddisplay(self, 'moulin_input', 'moulin input (Q_s) [m^3 / s]'))
-        s += '{}\n'.format(fielddisplay(self, 'englacial_void_ratio', 'englacial void ratio (e_v)'))
+        s += '{}\n'.format(fielddisplay(self, 'neumannflux', 'water flux applied along the model boundary [m$^2$ s$^{-1}$]'))
+        s += '{}\n'.format(fielddisplay(self, 'moulin_input', 'moulin input ($Q_s$) [m$^3$ s$^{-1}$]'))
+        s += '{}\n'.format(fielddisplay(self, 'englacial_void_ratio', 'englacial void ratio ($e_v$)'))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         s += '{}\n'.format(fielddisplay(self, 'melt_flag', 'User specified basal melt? 0: no (default), 1: use md.basalforcings.groundedice_melting_rate'))
-        s += '{}\n'.format(fielddisplay(self, 'istransition','do we use standard [0, default] or transition model [1]'))
+        s += '{}\n'.format(fielddisplay(self, 'istransition', 'do we use standard [0, default] or transition model [1]')) #TH
         s += '{}\n'.format(fielddisplay(self, 'maxiter', 'maximum number of nonlinear iterations'))
         s += '{}\n'.format(fielddisplay(self, 'restol', 'hydraulic potential equilibrium residual convergence criterion'))
         s += '{}\n'.format(fielddisplay(self, 'reltol', 'hydraulic potential relative convergence criterion, NaN: not applied'))
         s += '{}\n'.format(fielddisplay(self, 'abstol', 'hydraulic potential absolute convergence criterion [Pa], NaN: not applied'))
+        s += '\t--LAKES\n'
+        s += '{}\n'.format(fielddisplay(self, 'islakes', 'Do we allow for lakes? 1: yes, 0: no')) #AJH
+        s += '{}\n'.format(fielddisplay(self, 'lake_mask', 'lake mask (0: for no lake, 1,2,...n for n lakes)')) #AJH
+        s += '{}\n'.format(fielddisplay(self, 'num_lakes', 'Number of lakes (0 if no lakes)')) #AJH
+        s += '{}\n'.format(fielddisplay(self, 'characteristic_outlet_length', 'Characteristic outlet length [m]')) #AJH
+        s += '{}\n'.format(fielddisplay(self, 'lake_Qin', 'Inflow to the lake [m$^3$ s$^{-1}$]')) #AJH
+        s += '{}\n'.format(fielddisplay(self, 'max_lake_area', 'The maximum area of the lake [m$^2$]')) #AJH
         return s
     # }}}
 
     def defaultoutputs(self, md):  # {{{
         list = ['EffectivePressure', 'HydraulicPotential', 'HydrologySheetThickness', 'ChannelArea', 'ChannelDischarge']
+        if self.islakes==1:
+            list = ['EffectivePressure', 'HydraulicPotential', 'HydrologySheetThickness', 'ChannelArea', 'ChannelDischarge','HydrologyLakeChannelQr','HydrologyLakeOutletQr','HydrologyLakeHeight']
         return list
     # }}}
 
@@ -132,12 +150,20 @@ class hydrologyglads(object):
         self.reltol = 0.01
         self.abstol = np.nan  # not applied by default
 
+        #Ice marginal lakes
+        self.islakes = False
+        self.lake_mask = 0
+        self.num_lakes = 0
+        self.characteristic_outlet_length = 0.
+        self.max_lake_area = 0.
+        self.lake_Qin = 0.
+
         return self
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
         # Early return
-        if 'HydrologyGladsAnalysis' not in analyses:
+        if 'HydrologyIMLGladsAnalysis' not in analyses:
             return md
 
         # Sheet
@@ -151,7 +177,6 @@ class hydrologyglads(object):
         md = checkfield(md,'fieldname','hydrology.rheology_B_base', 'size', [md.mesh.numberofvertices], '>=', 0, 'np.nan', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.isincludesheetthickness', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'hydrology.creep_open_flag', 'numel', [1], 'values', [0, 1])
-        md = checkfield(md,'fieldname','hydrology.rheology_B_base', 'size', [md.mesh.numberofvertices], '>=', 0, 'np.nan', 1, 'Inf', 1)
 
         # Channels
         md = checkfield(md, 'fieldname', 'hydrology.ischannels', 'numel', [1], 'values', [0, 1])
@@ -172,16 +197,24 @@ class hydrologyglads(object):
         md = checkfield(md, 'fieldname', 'hydrology.restol', 'numel', [1], '>', 0, 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.reltol', 'numel', [1])
         md = checkfield(md, 'fieldname', 'hydrology.abstol', 'numel', [1])
+        # Lakes
+        if self.islakes == 1:
+            md = checkfield(md,'fieldname','hydrology.lake_mask','Inf',1,'NaN',1,'timeseries',1)
+            md = checkfield(md,'fieldname','hydrology.num_lakes', 'numel', [1], '>=', 0)
+            md = checkfield(md,'fieldname','hydrology.max_lake_area','size',[md.mesh.numberofvertices],'>=',0,'NaN',1,'Inf',1)
+            md = checkfield(md,'fieldname','hydrology.lake_Qin','timeseries',1,'>=',0,'NaN',1,'Inf',1)
+            
         if self.melt_flag == 1 or self.melt_flag == 2:
             md = checkfield(md, 'fieldname', 'basalforcings.groundedice_melting_rate', 'NaN', 1, 'Inf', 1, 'timeseries', 1)
     # }}}
 
+
     def marshall(self, prefix, md, fid):  # {{{
         yts = md.constants.yts
         # Marshall model code first
-        WriteData(fid, prefix, 'name', 'md.hydrology.model', 'data', 5, 'format', 'Integer')
+        WriteData(fid, prefix, 'name', 'md.hydrology.model', 'data', 8, 'format', 'Integer')
 
-       # Sheet
+        # Sheet
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'pressure_melt_coefficient', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'sheet_conductivity', 'format', 'DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'cavity_spacing', 'format', 'Double')
@@ -192,7 +225,7 @@ class hydrologyglads(object):
         WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','rheology_B_base','format','DoubleMat', 'mattype', 1)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'isincludesheetthickness', 'format', 'Boolean')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'creep_open_flag', 'format', 'Boolean')
-        WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','rheology_B_base','format','DoubleMat', 'mattype', 1);
+
 
         # Channels
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'ischannels', 'format', 'Boolean')
@@ -212,6 +245,13 @@ class hydrologyglads(object):
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'restol', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'reltol', 'format', 'Double')
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'abstol', 'format', 'Double')
+        # Lakes
+        WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','islakes','format','Boolean')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'lake_mask', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'num_lakes', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'characteristic_outlet_length', 'format',  'DoubleMat', 'mattype', 1)
+        WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','max_lake_area','format','DoubleMat','mattype',1)
+        WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','lake_Qin','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts)
 
         outputs = self.requested_outputs
         indices = [i for i, x in enumerate(outputs) if x == 'default']

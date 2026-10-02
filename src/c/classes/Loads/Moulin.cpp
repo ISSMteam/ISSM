@@ -175,6 +175,9 @@ void  Moulin::CreateKMatrix(Matrix<IssmDouble>* Kff, Matrix<IssmDouble>* Kfs){/*
 		case HydrologyGlaDSAnalysisEnum:
 			Ke = this->CreateKMatrixHydrologyGlaDS();
 			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
+			Ke = this->CreateKMatrixHydrologyGlaDS();
+			break;
 		case HydrologyShaktiAnalysisEnum:
 			/*do nothing: */
 			return;
@@ -204,6 +207,9 @@ void  Moulin::CreatePVector(Vector<IssmDouble>* pf){/*{{{*/
 
 	switch(analysis_type){
 		case HydrologyGlaDSAnalysisEnum:
+			pe = this->CreatePVectorHydrologyGlaDS();
+			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
 			pe = this->CreatePVectorHydrologyGlaDS();
 			break;
 		case HydrologyShaktiAnalysisEnum:
