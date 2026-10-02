@@ -508,7 +508,8 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 						temp_gauss->GaussVertex(jv);
 						IssmDouble temp_lake_id;
 						lakeID_input->GetInputValue(&temp_lake_id, temp_gauss);
-						if((int)temp_lake_id == 0){ //non-lake vertex
+						int lakeID = reCast<int>(temp_lake_id);
+						if(lakeID == 0){ //non-lake vertex
 							IssmDouble phi_temp;
 							phi_input->GetInputValue(&phi_temp, temp_gauss);
 							phi_avg += phi_temp;
@@ -588,7 +589,7 @@ void HydrologyIMLGlaDSAnalysis::UpdateLakeDepth(FemModel* femmodel){/*{{{*/
 			/*Read lakeID safely here too*/
 			IssmDouble lake_id_double;
 			lakeID_input->GetInputValue(&lake_id_double,gauss);
-			int lakeID = (int)lake_id_double;
+			int lakeID = reCast<int>(lake_id_double);
 
 			if(lakeID > 0){
 				/*use the pre-calculate values from our arrays*/
