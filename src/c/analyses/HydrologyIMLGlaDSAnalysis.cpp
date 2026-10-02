@@ -4,7 +4,6 @@
 #include "../classes/classes.h"
 #include "../shared/shared.h"
 #include "../modules/modules.h"
-#include <mpi.h> 
 
 /*Model processing*/
 void HydrologyIMLGlaDSAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
