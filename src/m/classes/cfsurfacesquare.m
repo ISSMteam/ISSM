@@ -51,6 +51,7 @@ classdef cfsurfacesquare
 				self.weights            = getfieldvalue(options,'weights',NaN);
 				self.datatime           = getfieldvalue(options, 'datatime', 0.);
 
+				displayunused(options)
 			end
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
