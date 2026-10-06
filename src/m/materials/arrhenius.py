@@ -1,7 +1,7 @@
 import numpy as np
 from TMeltingPoint import TMeltingPoint
 
-def arrhenius(temperature, waterfraction, pressure):
+def arrhenius(temperature, pressure, waterfraction=np.nan):
     """
     ARRHENIUS - figure out the rigidity of ice for a given temperature and waterfraction
 
@@ -9,7 +9,8 @@ def arrhenius(temperature, waterfraction, pressure):
        temperature is in Kelvin degrees
 
        Usage:
-          rigidity=arrhenius(temperature, waterfraction, pressure)
+          rigidity=arrhenius(temperature, pressure)
+          rigidity=arrhenius(temperature, pressure, waterfraction)
     """
 
     #variables
@@ -27,21 +28,21 @@ def arrhenius(temperature, waterfraction, pressure):
 
     if np.any(np.isnan(waterfraction)):
         waterfraction=np.zeros_like(temperature)
+    else:
+        if np.any(waterfraction<0):
+            raise Exception('waterfraction is negative')
 
-    if np.any(waterfraction<0):
-        raise Exception('waterfraction is negative')
+        wf_max=1.
+        if np.any(waterfraction>wf_max):
+            raise Exception('waterfraction exceeds permitted maximum of ' + str(wf_max) + '.')
 
-    wf_max=1.
-    if np.any(waterfraction>wf_max):
-        raise Exception('waterfraction exceeds permitted maximum of ' + str(wf_max) + '.')
+        #limit waterfraction to 1%
+        pos1p=np.where(waterfraction>0.01)[0]
+        waterfraction[pos1p]=0.01
 
-    #limit waterfraction to 1%
-    pos1p=np.where(waterfraction>0.01)[0]
-    waterfraction[pos1p]=0.01
-
-    pos=np.where((temperature<TMeltingPoint(T0,pressure)) & (waterfraction>0))[0] # cold, wet ice
-    if (len(pos)>0):
-        raise Exception('cold ice with positive waterfraction detected.')
+        pos=np.where((temperature<TMeltingPoint(T0,pressure)) & (waterfraction>0))[0] # cold, wet ice
+        if (len(pos)>0):
+            raise Exception('cold ice with positive waterfraction detected.')
 
     #   values for Activation energy Q and pre-exponential constants from
     #   Grewe/Blatter 2009, p54
