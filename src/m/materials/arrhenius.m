@@ -1,11 +1,12 @@
-function rigidity=arrhenius(temperature, waterfraction, pressure)
+function rigidity=arrhenius(temperature, pressure, waterfraction)
 %ARRHENIUS - figure out the rigidity of ice for a given temperature and waterfraction
 %
 %   rigidity (in s^(1/3)Pa) is the flow law parameter in the flow law sigma=B*e(1/3) (Paterson, p97).
 %   temperature is in Kelvin degrees
 %
 %   Usage:
-%      rigidity=arrhenius(temperature, waterfraction, pressure)
+%      rigidity=arrhenius(temperature, pressure);
+%		 rigidity=arrhenius(temperature, pressure, waterfraction)
 
 %variables
 T0=273.15;
@@ -13,6 +14,11 @@ n=3.;
 beta=7.9e-8; % K Pa^-1
 R=8.314; % J mol^-1 K^-1  
 T_switch=T0-10.;
+
+%set default value with NaN in water fraction
+if nargin == 2
+	waterfraction=NaN;
+end
 
 if(temperature<0)
     error('input temperature should be in Kelvin (positive)');
@@ -23,25 +29,25 @@ if(temperature>TMeltingPoint(T0,pressure))
 end
 
 if(isnan(waterfraction))
-    waterfraction=zeros(size(temperature));
-end
+	waterfraction=zeros(size(temperature));
+else
+	if(waterfraction<0)
+		error('waterfraction is negative');
+	end
 
-if(waterfraction<0)
-    error('waterfraction is negative');
-end
+	wf_max=1.;
+	if(any(waterfraction>wf_max))
+		 error(['waterfraction exceeds permitted maximum of ' num2str(wf_max) '.']);
+	end
 
-wf_max=1.;
-if(any(waterfraction>wf_max))
-    error(['waterfraction exceeds permitted maximum of ' num2str(wf_max) '.']);
-end
+	%limit waterfraction to 1%
+	pos1p=find(waterfraction>0.01);
+	waterfraction(pos1p)=0.01;
 
-%limit waterfraction to 1%
-pos1p=find(waterfraction>0.01);
-waterfraction(pos1p)=0.01;
-
-pos=find((temperature<TMeltingPoint(T0,pressure)) & (waterfraction>0)); % cold, wet ice
-if (length(pos)>0)
-    error('cold ice with positive waterfraction detected.');
+	pos=find((temperature<TMeltingPoint(T0,pressure)) & (waterfraction>0)); % cold, wet ice
+	if (length(pos)>0)
+		error('cold ice with positive waterfraction detected.');
+	end
 end
 
 %   values for Activation energy Q and pre-exponential constants from
