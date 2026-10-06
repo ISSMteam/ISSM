@@ -1,8 +1,8 @@
-%Test Name: SquareShelfTranSemicStandaloneTransient
+%Test Name: SemicTransectTranSemicStandaloneTransient
 
 % Initialize coordinates from '../Data/semic_transect_input.txt'
 md=model;
-md.miscellaneous.name='SquareShelfTranSemicStandaloneTransient';
+md.miscellaneous.name='SecmiTransectTranSemicStandaloneTransient';
 xy = [[0,1,0,1,0,1,0];...
 		[0,0,1,1,2,2,3]];
 elements= [[2,3,1];...
