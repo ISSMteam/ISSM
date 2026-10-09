@@ -92,7 +92,7 @@ classdef gadi
 
 			%Mail option
 			mail_alarm = cluster.mail_alarm;
-			assert(isa(mail_alarm,'str'),'Error: mail_alarm should be "string".');
+			assert(isa(mail_alarm,'char'),'Error: mail_alarm should be "string".');
 			for i = 1:length(mail_alarm)
 				if ~any(strcmpi(mail_alarm(i),{'b','a','e','n'}))
 					error(['Error: option in mail_alarm (=' mail_alarm(i) ') is not valid in ''b'',''a'',''e'',''n''']);
