@@ -18,6 +18,8 @@
 namespace py = pybind11;
 #endif
 
+#define MAXVERTICES 6 /*Maximum number of vertices per element, currently Penta, to avoid dynamic mem allocation*/
+
 void SmbForcingx(FemModel* femmodel){/*{{{*/
 
 	// void SmbForcingx(smb,ni){
@@ -31,53 +33,42 @@ void SmbGradientsx(FemModel* femmodel){/*{{{*/
 	//    INPUT parameters: ni: working size of arrays
 	//    INPUT: surface elevation (m): hd(NA)
 	//    OUTPUT: mass-balance (m/yr ice): agd(NA)
-	int v;
-	IssmDouble yts;								// conversion factor year to second
+
+	IssmDouble Href[MAXVERTICES];
+	IssmDouble Smbref[MAXVERTICES];
+	IssmDouble b_pos[MAXVERTICES];
+	IssmDouble b_neg[MAXVERTICES];
+	IssmDouble s[MAXVERTICES];
+	IssmDouble smb[MAXVERTICES];
 
 	/*Loop over all the elements of this partition*/
 	for(Object* & object : femmodel->elements->objects){
 		Element* element=xDynamicCast<Element*>(object);
-
-		/*Allocate all arrays*/
-		int         numvertices = element->GetNumberOfVertices();
-		IssmDouble* Href        = xNew<IssmDouble>(numvertices); // reference elevation from which deviations are used to calculate the SMB adjustment
-		IssmDouble* Smbref      = xNew<IssmDouble>(numvertices); // reference SMB to which deviations are added
-		IssmDouble* b_pos       = xNew<IssmDouble>(numvertices); // Hs-SMB relation parameter
-		IssmDouble* b_neg       = xNew<IssmDouble>(numvertices); // Hs-SMB relation paremeter
-		IssmDouble* s           = xNew<IssmDouble>(numvertices); // surface elevation (m)
-		IssmDouble* smb         = xNew<IssmDouble>(numvertices);
+		int      numvertices = element->GetNumberOfVertices();
+		_assert_(numvertices<=MAXVERTICES);
 
 		/*Recover SmbGradients*/
-		element->GetInputListOnVertices(Href,SmbHrefEnum);
-		element->GetInputListOnVertices(Smbref,SmbSmbrefEnum);
-		element->GetInputListOnVertices(b_pos,SmbBPosEnum);
-		element->GetInputListOnVertices(b_neg,SmbBNegEnum);
+		element->GetInputListOnVertices(&Href[0],SmbHrefEnum);
+		element->GetInputListOnVertices(&Smbref[0],SmbSmbrefEnum);
+		element->GetInputListOnVertices(&b_pos[0],SmbBPosEnum);
+		element->GetInputListOnVertices(&b_neg[0],SmbBNegEnum);
 
 		/*Recover surface elevation at vertices: */
-		element->GetInputListOnVertices(s,SurfaceEnum);
-
-		/* Get constants */
-		femmodel->parameters->FindParam(&yts,ConstantsYtsEnum);
+		element->GetInputListOnVertices(&s[0],SurfaceEnum);
 
 		// loop over all vertices
-		for(v=0;v<numvertices;v++){
-			if(Smbref[v]>0){
-				smb[v]=Smbref[v]+b_pos[v]*(s[v]-Href[v]);
+		for(int i=0;i<numvertices;i++){
+			if(Smbref[i]>0){
+				smb[i]=Smbref[i]+b_pos[i]*(s[i]-Href[i]);
 			}
 			else{
-				smb[v]=Smbref[v]+b_neg[v]*(s[v]-Href[v]);
+				smb[i]=Smbref[i]+b_neg[i]*(s[i]-Href[i]);
 			}
 
-		}  //end of the loop over the vertices
+		} 
 
-		/*Add input to element and Free memory*/
-		element->AddInput(SmbMassBalanceEnum,smb,P1Enum);
-		xDelete<IssmDouble>(Href);
-		xDelete<IssmDouble>(Smbref);
-		xDelete<IssmDouble>(b_pos);
-		xDelete<IssmDouble>(b_neg);
-		xDelete<IssmDouble>(s);
-		xDelete<IssmDouble>(smb);
+		/*Add input to element*/
+		element->AddInput(SmbMassBalanceEnum,&smb[0],P1Enum);
 	}
 
 }/*}}}*/
