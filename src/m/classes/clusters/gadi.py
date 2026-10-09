@@ -46,6 +46,7 @@ class gadi(object):
         self.bbftp          = 0
         self.numstreams     = 8
         self.hyperthreading = 0
+        self.mail_alarm     = 'bae' # Mail is sent when begin (b), end (e), and abort (a).
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -89,6 +90,7 @@ class gadi(object):
         s += '    bbftp: {}\n'.format(self.bbftp)
         s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
+		s += '    mail_alarm : {} (n: no mail, a: abort, b: begin, e: end)'.format(self.mail_alarm)
         return s
     # }}}
 
@@ -103,6 +105,13 @@ class gadi(object):
             'hugemem': [48*60, 3072],
         }
         QueueRequirements(queuedict, self.queue, self.nprocs(), self.time)
+
+        # Mail option
+        mail_alarm=self.mail_alarm
+        assert isinstance(mail_alarm,str), 'Error: mail_alarm should be "string".'
+        for i in range(len(mail_alarm)):
+            if not mail_alarm in ['b','a','e','n']:
+                raise Exception('Error: option in mail_alarm (=' + mail_alarm[i] ') is not valid in ''b'',''a'',''e'',''n''')
 
         # Some minimal checks
         if not self.login:
@@ -158,7 +167,7 @@ class gadi(object):
         fid.write('#PBS -l wd\n')  
         fid.write('#PBS -j oe\n')
         fid.write('#PBS -l storage={}\n'.format(self.storage))
-        fid.write('#PBS -m bea\n')
+        fid.write('#PBS -m {}\n'.format(self.mail_alarm))
         fid.write('#PBS -o {}/{}/{}.outlog \n'.format(self.executionpath, dirname, modelname))
         fid.write('#PBS -e {}/{}/{}.errlog \n\n'.format(self.executionpath, dirname, modelname))   
 

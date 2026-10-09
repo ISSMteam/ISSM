@@ -29,6 +29,7 @@ classdef gadi
 		bbftp          = 0;
 		numstreams     = 8;
 		hyperthreading = 0;
+		mail_alarm     = 'bae'; % Mail is sent when begin (b), end (e), and abort (a).
 	end
 	%}}}
 	methods
@@ -36,7 +37,6 @@ classdef gadi
 
 			%initialize cluster using default settings if provided
 			if (exist('gdai_settings')==2), gadi_settings; end
-			gadi_settings
 
 			%use provided options to change fields
 			cluster=AssignObjectFields(pairoptions(varargin{:}),cluster);
@@ -66,6 +66,7 @@ classdef gadi
 			disp(sprintf('    bbftp: %i',cluster.bbftp));
 			disp(sprintf('    numstreams: %i',cluster.numstreams));
 			disp(sprintf('    hyperthreading: %i',cluster.hyperthreading));
+			disp(sprintf('    mail_alarm : %s (n: no mail, a: abort, b: begin, e: end)',cluster.mail_alarm));
 		end
 		%}}}
 		function numprocs=nprocs(cluster) % {{{
@@ -88,6 +89,15 @@ classdef gadi
 			end
 
 			QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,cluster.queue,cluster.nprocs(),1)
+
+			%Mail option
+			mail_alarm = cluster.mail_alarm;
+			assert(isa(mail_alarm,'str'),'Error: mail_alarm should be "string".');
+			for i = 1:length(mail_alarm)
+				if ~any(strcmpi(mail_alarm(i),{'b','a','e','n'}))
+					error(['Error: option in mail_alarm (=' mail_alarm(i) ') is not valid in ''b'',''a'',''e'',''n''']);
+				end
+			end
 
 			%Miscellaneous
 			if isempty(cluster.login), md = checkmessage(md,'login empty'); end
@@ -124,7 +134,7 @@ classdef gadi
 			fprintf(fid,'#PBS -l wd\n');
 			fprintf(fid,'#PBS -j oe\n');
 			fprintf(fid,'#PBS -l storage=%s\n',cluster.storage);
-			fprintf(fid,'#PBS -m bea\n');
+			fprintf(fid,'#PBS -m %s\n',cluster.mail_alarm);
 			fprintf(fid,'#PBS -o %s.outlog \n',modelname);
 			fprintf(fid,'#PBS -e %s.errlog \n\n',modelname);
 
@@ -178,7 +188,7 @@ classdef gadi
 			fprintf(fid,'#PBS -l wd\n');
 			fprintf(fid,'#PBS -j oe\n');
 			fprintf(fid,'#PBS -l storage=%s\n',cluster.storage);
-			fprintf(fid,'#PBS -m bea\n');
+			fprintf(fid,'#PBS -m %s\n',cluster.mail_alarm);
 			fprintf(fid,'#PBS -o %s.outlog \n',modelname);
 			fprintf(fid,'#PBS -e %s.errlog \n\n',modelname);
 
@@ -190,9 +200,6 @@ classdef gadi
 			for i=1:length(cluster.moduleload);
 				fprintf(fid,'module load %s\n',cluster.moduleload{i});
 			end
-
-			fprintf(fid,'export ISSM_DIR="%s/../"\n',cluster.codepath); %FIXME
-			fprintf(fid,'source $ISSM_DIR/etc/environment.sh\n');       %FIXME
 
 			fprintf(fid,'\n# Switch to run directory (if not using -l wd):\n');
 			fprintf(fid,'cd %s/%s\n\n',cluster.executionpath,dirname);
