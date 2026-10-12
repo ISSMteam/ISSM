@@ -65,6 +65,12 @@ def processmesh(md, data, options):
             y = md.mesh.y
             if hasattr(md.mesh, 'y2d'):
                 y2d = md.mesh.y2d
+        else:
+            x=md.mesh.long
+            y=md.mesh.lat
+            if options.getfieldvalue('coordcent','atlantic') == 'pacific':
+                #TODO: Implement "coordcent" option as like MATLAB
+                raise Exception('Error: "coordcent" for pacific is not supported.')
 
     if hasattr(md.mesh, 'z'):
         z = md.mesh.z
@@ -76,7 +82,7 @@ def processmesh(md, data, options):
 
     force2D = numofelements2d in np.shape(data) or numofvertices2d in np.shape(data)
     #is it a 2D plot?
-    if md.mesh.dimension() == 2 or options.getfieldvalue('layer', 0) >= 1 or force2D:
+    if md.mesh.dimension() == 2 or options.getfieldvalue('layer', 0) >= 1 or force2D or options.getfieldvalue('depthaverage',0) == 1:
         is2d = 1
     else:
         is2d = 0
@@ -97,6 +103,12 @@ def processmesh(md, data, options):
         x = x * unit
         y = y * unit
         z = z * unit
+
+    #Quiver plot for elements?
+    if np.ndim(data) >= 2:
+        if (np.shape(data)[1]>1) & (np.shape(data)[0] == np.shape(elements)[0]):
+            x = np.mean(x[elements],axis=1)
+            y = np.mean(y[elements],axis=1)
 
     #is model a member of planet class?
     #
