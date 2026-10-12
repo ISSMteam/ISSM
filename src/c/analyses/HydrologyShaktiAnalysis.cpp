@@ -110,6 +110,7 @@ void HydrologyShaktiAnalysis::UpdateElements(Elements* elements,Inputs* inputs,I
 
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.thickness",ThicknessEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.base",BaseEnum);
+	iomodel->FetchDataToInput(inputs,elements,"md.geometry.bed",BedEnum);
 	if(iomodel->domaintype!=Domain2DhorizontalEnum){
 		iomodel->FetchDataToInput(inputs,elements,"md.mesh.vertexonbase",MeshVertexonbaseEnum);
 		iomodel->FetchDataToInput(inputs,elements,"md.mesh.vertexonsurface",MeshVertexonsurfaceEnum);
@@ -493,6 +494,9 @@ void           HydrologyShaktiAnalysis::UpdateConstraints(FemModel* femmodel){/*
 	GetMaskOfIceVerticesLSMx(femmodel,true);
 	SetActiveNodesLSMx(femmodel,true);
 
+	IssmDouble rho_fw = femmodel->parameters->FindParam(MaterialsRhoFreshwaterEnum);
+	IssmDouble rho_sw = femmodel->parameters->FindParam(MaterialsRhoSeawaterEnum);
+
 	/*Constrain all nodes that are grounded and unconstrain the ones that float*/
 	for(Object* & object : femmodel->elements->objects){
 
@@ -503,28 +507,24 @@ void           HydrologyShaktiAnalysis::UpdateConstraints(FemModel* femmodel){/*
 		int         numnodes  = element->GetNumberOfNodes();
 		IssmDouble *mask      = xNew<IssmDouble>(numnodes);
 		IssmDouble *bed       = xNew<IssmDouble>(numnodes);
-		IssmDouble *thickness = xNew<IssmDouble>(numnodes);
 		IssmDouble *ls_active = xNew<IssmDouble>(numnodes);
 
 		element->GetInputListOnNodes(&mask[0],MaskOceanLevelsetEnum);
-		element->GetInputListOnNodes(&bed[0],BaseEnum);
-		element->GetInputListOnNodes(&thickness[0],ThicknessEnum);
+		element->GetInputListOnNodes(&bed[0],BedEnum);
 		element->GetInputListOnNodes(&ls_active[0],HydrologyMaskNodeActivationEnum);
 
-		//for(int in=0;in<numnodes;in++){ //
-		for(int in=0;in<3;in++){ //
+		for(int in=0;in<3;in++){ 
 			Node* node=element->GetNode(in);
-			if(mask[in]>0. && ls_active[in]==1.){
-				node->Activate(); //Not sure if we need this!
+			node->Activate();
+			if(mask[in]<=0.){
+				node->ApplyConstraint(0, bed[in]*(rho_fw-rho_sw)/rho_fw);
 			}
-			else{
-			   node->Deactivate();// node should be inactive
-            node->ApplyConstraint(0,0.0); // set head (dof 0) to 0.0 m
+			else if(ls_active[in]!=1.){
+            node->ApplyConstraint(0,bed[in]);
 			}
 		}
 		xDelete<IssmDouble>(mask);
 		xDelete<IssmDouble>(bed);
-		xDelete<IssmDouble>(thickness);
 		xDelete<IssmDouble>(ls_active);
 	}
 
