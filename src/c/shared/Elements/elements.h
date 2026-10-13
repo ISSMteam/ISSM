@@ -11,7 +11,7 @@ IssmDouble Cuffey(IssmDouble temperature);
 IssmDouble BuddJacka(IssmDouble temperature);
 IssmDouble CuffeyTemperate(IssmDouble temperature, IssmDouble waterfraction, IssmDouble stressexp);
 IssmDouble Paterson(IssmDouble temperature);
-IssmDouble Arrhenius(IssmDouble temperature,IssmDouble depth,IssmDouble n);
+IssmDouble Arrhenius(IssmDouble temperature,IssmDouble depth,IssmDouble n,IssmDouble beta);
 IssmDouble NyeH2O(IssmDouble temperature);
 IssmDouble NyeCO2(IssmDouble temperature);
 IssmDouble LliboutryDuval(IssmDouble enthalpy, IssmDouble pressure, IssmDouble n, IssmDouble betaCC, IssmDouble referencetemperature, IssmDouble heatcapacity, IssmDouble latentheat);
