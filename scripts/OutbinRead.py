@@ -39,7 +39,7 @@ def OutbinRead(filin, filout='', verbose=0):  #{{{
         code = struct.unpack('i', f.read(struct.calcsize('i')))[0]
         print("Format = {} (code {})".format(CodeToFormat(code), code))
 
-		  #read size:
+          #read size:
         M = struct.unpack('i', f.read(struct.calcsize('i')))[0]
         N = 1 #default
 
@@ -73,15 +73,14 @@ def OutbinRead(filin, filout='', verbose=0):  #{{{
             s[0] = M
             s[1] = struct.unpack('i', f.read(struct.calcsize('i')))[0]
             print("size = [{}x{}]".format(s[0], s[1]))
-            if True:
-               f.read(struct.calcsize('d')*s[0]*s[1])
+            if verbose <= 2:
+                f.read(struct.calcsize('d')*s[0]*s[1])
             else:
-					data = np.zeros((s[0], s[1]))
-					for i in range(s[0]):
-						 for j in range(s[1]):
-							  data[i][j] = struct.unpack('d', f.read(struct.calcsize('d')))[0]    #get to the "c" convention, hence the transpose
-							  if verbose > 2:
-									print("data[{}, {}] = {}".format(i, j, data[i][j]))
+                data = np.zeros((s[0], s[1]))
+                for i in range(s[0]):
+                     for j in range(s[1]):
+                          data[i][j] = struct.unpack('d', f.read(struct.calcsize('d')))[0]    #get to the "c" convention, hence the transpose
+                          print("data[{}, {}] = {}".format(i, j, data[i][j]))
 
         else:
             raise TypeError('OutbinRead error message: data type: {} not supported yet! ({})'.format(code, recordname))
@@ -124,7 +123,7 @@ def CodeToFormat(code):  # {{{
     elif code == 3:
         format = 'DoubleMat'
     elif code == 4:
-		 format = 'IntMat'
+         format = 'IntMat'
     else:
         raise TypeError('FormatToCode error message: code {} not supported yet!'.format(code))
 
@@ -138,5 +137,5 @@ if __name__ == '__main__':  #{{{
     parser.add_argument('-v', '--verbose', help='optional level of output', default=0)
     args = parser.parse_args()
 
-    OutbinRead(args.filin, args.filout, args.verbose)
+    OutbinRead(args.filin, args.filout, int(args.verbose))
 #}}}
