@@ -746,6 +746,7 @@ const char* EnumToStringx(int en){
 		case StressbalanceRiftPenaltyThresholdEnum : return "StressbalanceRiftPenaltyThreshold";
 		case StressbalanceShelfDampeningEnum : return "StressbalanceShelfDampening";
 		case StressbalanceThetaEnum : return "StressbalanceTheta";
+		case StressbalanceTheta2Enum : return "StressbalanceTheta2";
 		case ThermalForcingMonthlyEffectsEnum : return "ThermalForcingMonthlyEffects";
 		case ThermalIsdrainicecolumnEnum : return "ThermalIsdrainicecolumn";
 		case ThermalIsdynamicbasalspcEnum : return "ThermalIsdynamicbasalspc";

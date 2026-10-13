@@ -737,6 +737,7 @@ syn keyword juliaConstC StressbalanceRestolEnum
 syn keyword juliaConstC StressbalanceRiftPenaltyThresholdEnum
 syn keyword juliaConstC StressbalanceShelfDampeningEnum
 syn keyword juliaConstC StressbalanceThetaEnum
+syn keyword juliaConstC StressbalanceTheta2Enum
 syn keyword juliaConstC ThermalForcingMonthlyEffectsEnum
 syn keyword juliaConstC ThermalIsdrainicecolumnEnum
 syn keyword juliaConstC ThermalIsdynamicbasalspcEnum
