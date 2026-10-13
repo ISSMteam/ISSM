@@ -957,6 +957,7 @@ void StressbalanceAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.FSreconditioning",StressbalanceFSreconditioningEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.shelf_dampening",StressbalanceShelfDampeningEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.theta",StressbalanceThetaEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.stressbalance.theta2",StressbalanceTheta2Enum));
 
 	/*XTH LATH parameters*/
 	iomodel->FindConstant(&fe_FS,"md.flowequation.fe_FS");
@@ -1552,8 +1553,8 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 	/*Intermediaries*/
 	int         dim,domaintype;
 	int         solution_type;
-	bool        ismasstransport=false;
-	IssmDouble  viscosity,thickness,Jdet,dt=0.,theta=0.;
+	bool        ismasstransport=false,ismovingfront=false;
+	IssmDouble  viscosity,thickness,Jdet,dt=0.,theta=0.,theta2=0.;
 	IssmDouble  thickness_slope[2]={0.,0.},base_slope[2]={0.,0.};
 	IssmDouble  gllevelset,grounded,hydrostatic_factor;
 	IssmDouble  rho_ice=0.,rho_ocean=0.,gravity=0.,rhog=0.;
@@ -1581,13 +1582,20 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 	Input* thickness_input=element->GetInput(ThicknessEnum); _assert_(thickness_input);
 	Input* vx_input=element->GetInput(VxEnum);               _assert_(vx_input);
 	element->FindParam(&solution_type,SolutionTypeEnum);
-	if(solution_type==TransientSolutionEnum) element->FindParam(&ismasstransport,TransientIsmasstransportEnum);
-	element->FindParam(&theta,StressbalanceThetaEnum);
+	if(solution_type==TransientSolutionEnum){
+		element->FindParam(&ismasstransport,TransientIsmasstransportEnum);
+		element->FindParam(&ismovingfront,TransientIsmovingfrontEnum);
+	}
+	element->FindParam(&theta,StressbalanceThetaEnum);   // theta_1 in eq(40) SSA calving front, was eq(4) in the SSA formulation
+	element->FindParam(&theta2,StressbalanceTheta2Enum); // theta_2 in eq(40)
 	bool use_thickness_coupling=(solution_type==TransientSolutionEnum && ismasstransport && theta>0.);
+	bool use_calvingfront_coupling=(solution_type==TransientSolutionEnum && ismovingfront && theta2>0.);
 	Input* base_input=NULL;
 	Input* gllevelset_input=NULL;
 	if(use_thickness_coupling){
-		base_input       = element->GetInput(BaseEnum);              _assert_(base_input);
+		base_input = element->GetInput(BaseEnum); _assert_(base_input);
+	}
+	if(use_thickness_coupling || use_calvingfront_coupling){
 		gllevelset_input = element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
 		element->FindParam(&dt,TimesteppingTimeStepEnum);
 		rho_ice   = element->FindParam(MaterialsRhoIceEnum);
@@ -1680,6 +1688,48 @@ ElementMatrix* StressbalanceAnalysis::CreateKMatrixSSAViscous(Element* element){
 				}
 			}
 		}
+	}
+
+	/* Calving-front stabilization
+	 * -theta_2 dt int_Gamma 1/2 rho_i g c_f H^2 div(v) (u.n) dGamma. */
+	if(use_calvingfront_coupling && element->IsIcefront()){
+		IssmDouble* xyz_list_front = NULL;
+		IssmDouble  normal[2];
+		element->GetIcefrontCoordinates(&xyz_list_front,xyz_list,MaskIceLevelsetEnum);
+		element->NormalSection(&normal[0],xyz_list_front);
+
+		Gauss* gauss_front=element->NewGauss(xyz_list,xyz_list_front,3);
+		while(gauss_front->next()){
+			element->JacobianDeterminantSurface(&Jdet,xyz_list_front,gauss_front);
+			element->NodalFunctions(basis,gauss_front);
+			element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss_front);
+			thickness_input->GetInputValue(&thickness,gauss_front);
+			gllevelset_input->GetInputValue(&gllevelset,gauss_front);
+
+			grounded = gllevelset>0. ? 1. : 0.;
+			hydrostatic_factor = 1. - (1.-grounded)*rho_ice/rho_ocean;
+			IssmDouble factor_front=-0.5*theta2*dt*rhog*hydrostatic_factor*thickness*thickness*gauss_front->weight*Jdet;
+
+			if(dim==2){
+				for(int i=0;i<numnodes;i++){
+					for(int j=0;j<numnodes;j++){
+						Ke->values[(2*i+0)*2*numnodes+2*j+0] += factor_front*dbasis[0*numnodes+i]*basis[j]*normal[0];
+						Ke->values[(2*i+0)*2*numnodes+2*j+1] += factor_front*dbasis[0*numnodes+i]*basis[j]*normal[1];
+						Ke->values[(2*i+1)*2*numnodes+2*j+0] += factor_front*dbasis[1*numnodes+i]*basis[j]*normal[0];
+						Ke->values[(2*i+1)*2*numnodes+2*j+1] += factor_front*dbasis[1*numnodes+i]*basis[j]*normal[1];
+					}
+				}
+			}
+			else{
+				for(int i=0;i<numnodes;i++){
+					for(int j=0;j<numnodes;j++){
+						Ke->values[i*numnodes+j] += factor_front*dbasis[i]*basis[j]*normal[0];
+					}
+				}
+			}
+		}
+		delete gauss_front;
+		xDelete<IssmDouble>(xyz_list_front);
 	}
 
 	/*Transform Coordinate System*/
@@ -1902,8 +1952,9 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 	IssmDouble  Jdet,thickness,base,sealevel,water_pressure,ice_pressure;
 	IssmDouble  surface_under_water,base_under_water,pressure;
 	int         solution_type;
-	bool        ismasstransport=false;
-	IssmDouble  gllevelset,grounded,theta=0.;
+	bool        ismasstransport=false,ismovingfront=false;
+	int         calvinglaw=DefaultCalvingEnum;
+	IssmDouble  gllevelset,grounded,hydrostatic_factor,theta=0.,theta2=0.,dt=0.;
 	IssmDouble *xyz_list = NULL;
 	IssmDouble *xyz_list_front = NULL;
 	IssmDouble  normal[2];
@@ -1921,18 +1972,38 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 	int numnodes = element->GetNumberOfNodes();
 
 	/*Initialize Element vector and other vectors*/
-	ElementVector* pe    = element->NewElementVector(SSAApproximationEnum);
-	IssmDouble*    basis = xNew<IssmDouble>(numnodes);
+	ElementVector* pe     = element->NewElementVector(SSAApproximationEnum);
+	IssmDouble*    basis  = xNew<IssmDouble>(numnodes);
+	IssmDouble*    dbasis = NULL;
 
 	/*Retrieve all inputs and parameters*/
 	Input* thickness_input = element->GetInput(ThicknessEnum); _assert_(thickness_input);
 	Input* base_input       = element->GetInput(BaseEnum);       _assert_(base_input);
 	Input* sealevel_input       = element->GetInput(SealevelEnum);       _assert_(sealevel_input);
 	element->FindParam(&solution_type,SolutionTypeEnum);
-	if(solution_type==TransientSolutionEnum) element->FindParam(&ismasstransport,TransientIsmasstransportEnum);
-	element->FindParam(&theta,StressbalanceThetaEnum);
+	if(solution_type==TransientSolutionEnum){
+		element->FindParam(&ismasstransport,TransientIsmasstransportEnum);
+		element->FindParam(&ismovingfront,TransientIsmovingfrontEnum);
+	}
+	element->FindParam(&theta,StressbalanceThetaEnum);   // theta_1 in Eq. (40)
+	element->FindParam(&theta2,StressbalanceTheta2Enum); // theta_2 in Eq. (40)
 	bool use_thickness_coupling=(solution_type==TransientSolutionEnum && ismasstransport && theta>0.);
+	bool use_calvingfront_coupling=(solution_type==TransientSolutionEnum && ismovingfront && theta2>0.);
+	bool use_conservative_ssa=(use_thickness_coupling || use_calvingfront_coupling);
 	Input* gllevelset_input = element->GetInput(MaskOceanLevelsetEnum); _assert_(gllevelset_input);
+	Input* calvingrate_input=NULL;
+	Input* calvingratex_input=NULL;
+	Input* calvingratey_input=NULL;
+	Input* meltingrate_input=NULL;
+	if(use_calvingfront_coupling){
+		dbasis = xNew<IssmDouble>(dim*numnodes);
+		element->FindParam(&dt,TimesteppingTimeStepEnum);
+		element->FindParam(&calvinglaw,CalvingLawEnum);
+		calvingrate_input  = element->GetInput(CalvingCalvingrateEnum);
+		calvingratex_input = element->GetInput(CalvingratexEnum);
+		if(dim==2) calvingratey_input = element->GetInput(CalvingrateyEnum);
+		meltingrate_input  = element->GetInput(CalvingMeltingrateEnum);
+	}
 	IssmDouble rho_water   = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble rho_ice     = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble gravity     = element->FindParam(ConstantsGEnum);
@@ -1954,7 +2025,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 		base_under_water    = min(0.,base-sealevel);           // 0 if the bottom of the glacier is above water level
 		water_pressure = 1.0/2.0*gravity*rho_water*(surface_under_water*surface_under_water - base_under_water*base_under_water);
 		ice_pressure   = 1.0/2.0*gravity*rho_ice*thickness*thickness;
-		if(use_thickness_coupling){
+		if(use_conservative_ssa){
 			grounded = gllevelset>0. ? 1. : 0.;
 			/* The conservative div(v) term already contains the ice-front
 			 * pressure, and on floating ice also the hydrostatic ocean-pressure
@@ -1971,6 +2042,42 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 			pe->values[dim*i+0]+= factor*normal[0]*basis[i];
 			if(dim==2) pe->values[dim*i+1]+= factor*normal[1]*basis[i];
 		}
+
+		/* Calving-front stabilization RHS (pink term in Eq. 40):
+		 * -theta_2 dt int_Gamma 1/2 rho_i g c_f H^2 div(v) (c_k+m_k) dGamma. */
+		if(use_calvingfront_coupling){
+			IssmDouble calvingrate=0.,meltingrate=0.;
+			if(meltingrate_input) {
+				meltingrate_input->GetInputValue(&meltingrate,gauss);
+			}
+			else {
+				_error_("theta2 calving-front stabilization requires m_k to be available before the stressbalance solve");
+			}
+
+			if(calvingrate_input){
+				calvingrate_input->GetInputValue(&calvingrate,gauss);
+			}
+			else if(calvingratex_input){
+				IssmDouble cx,cy=0.;
+				calvingratex_input->GetInputValue(&cx,gauss);
+				if(dim==2 && calvingratey_input) calvingratey_input->GetInputValue(&cy,gauss);
+				calvingrate=cx*normal[0];
+				if(dim==2) calvingrate+=cy*normal[1];
+			}
+			else if(!(calvinglaw==CalvingMinthicknessEnum || calvinglaw==CalvingHabEnum ||
+			          calvinglaw==CalvingCrevasseDepthEnum || calvinglaw==CalvingStochasticEnum)){
+				_error_("theta2 calving-front stabilization requires c_k to be available before the stressbalance solve");
+			}
+
+			IssmDouble arate=calvingrate+meltingrate;
+			hydrostatic_factor = 1. - (1.-grounded)*rho_ice/rho_water;
+			element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
+			IssmDouble factor_front=-0.5*theta2*dt*gravity*rho_ice*hydrostatic_factor*thickness*thickness*arate*Jdet*gauss->weight;
+			for(int i=0;i<numnodes;i++){
+				pe->values[dim*i+0] += factor_front*dbasis[0*numnodes+i];
+				if(dim==2) pe->values[dim*i+1] += factor_front*dbasis[1*numnodes+i];
+			}
+		}
 	}
 
 	/*Transform coordinate system*/
@@ -1980,6 +2087,7 @@ ElementVector* StressbalanceAnalysis::CreatePVectorSSAFront(Element* element){/*
 	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(xyz_list_front);
 	xDelete<IssmDouble>(basis);
+	xDelete<IssmDouble>(dbasis);
 	delete gauss;
 	return pe;
 }/*}}}*/
