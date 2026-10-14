@@ -662,6 +662,7 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 	int        *doflist   = NULL;
 	IssmDouble *xyz_list  = NULL;
 	bool        hack      = false;
+	IssmDouble  beta, rho_i, g;
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
@@ -696,6 +697,10 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 
 	/*Get all inputs and parameters*/
 	element->GetInputValue(&converged,ConvergedEnum);
+	element->FindParam(&beta,MaterialsBetaEnum);
+	element->FindParam(&rho_i,MaterialsRhoIceEnum);
+	element->FindParam(&g,ConstantsGEnum);
+	beta = beta*rho_i*g; /* pressure melting point in K m-1 for Arrhenius law*/
 	if(converged){
 		element->AddInput(TemperatureEnum,values,element->GetElementType());
 
@@ -738,7 +743,7 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 				break;
 			case ArrheniusEnum:{
 				element->GetVerticesCoordinates(&xyz_list);
-				for(i=0;i<numnodes;i++) B[i]=Arrhenius(values[i],surface[i]-xyz_list[i*3+2],n[i]);
+				for(i=0;i<numnodes;i++) B[i]=Arrhenius(values[i],surface[i]-xyz_list[i*3+2],n[i],beta);
 				element->AddInput(MaterialsRheologyBEnum,&B[0],element->GetElementType());
 				break;
 				}
