@@ -26,6 +26,7 @@ classdef generic
 		valgrindsup   = [issmdir() '/externalpackages/valgrind/issm.supp'];
 		verbose       = 1;
 		shell         = '/bin/sh';
+		transfermethod = 'auto';
 		%}}}
 	end
 	methods
@@ -68,6 +69,7 @@ classdef generic
 			disp(sprintf('    valgrindsup: %s',cluster.valgrindsup));
 			disp(sprintf('    verbose: %i',cluster.verbose));
 			disp(sprintf('    shell: %s',cluster.shell));
+			disp(sprintf('    transfermethod: %s',cluster.transfermethod));
 		end
 		%}}}
 		function numprocs=nprocs(cluster) % {{{
@@ -310,7 +312,7 @@ classdef generic
 				end
 				system(compressstring);
 
-				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
+				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
 			end
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
@@ -327,7 +329,7 @@ classdef generic
 
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
 		end %}}}
 	end
 end

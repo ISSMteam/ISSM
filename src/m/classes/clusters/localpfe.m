@@ -21,6 +21,7 @@ classdef localpfe
 		valgrindsup   = [issmdir() '/externalpackages/valgrind/issm.supp'];
 		verbose       = 1;
 		shell         = '/bin/sh';
+		transfermethod = 'auto';
 		%}}}
 	end
 	methods
@@ -63,6 +64,7 @@ classdef localpfe
 			disp(sprintf('    valgrindsup: %s',cluster.valgrindsup));
 			disp(sprintf('    verbose: %s',cluster.verbose));
 			disp(sprintf('    shell: %s',cluster.shell));
+			disp(sprintf('    transfermethod: %s',cluster.transfermethod));
 		end
 		%}}}
 		function md = checkconsistency(cluster,md,solution,analyses) % {{{
@@ -262,7 +264,7 @@ classdef localpfe
 				end
 				system(compressstring);
 
-				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']});
+				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
 			end
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
@@ -279,7 +281,7 @@ classdef localpfe
 			end
 
 			%copy files from cluster to current directory
-			issmscpin(cluster.name,cluster.login,cluster.port,cluster.executionpath,filelist);
+			issmscpin(cluster.name,cluster.login,cluster.port,cluster.executionpath,filelist,1,cluster.transfermethod);
 		end %}}}
 	end
 end

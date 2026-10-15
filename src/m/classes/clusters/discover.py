@@ -40,10 +40,9 @@ class discover(object):
         self.executionpath = ''
         self.grouplist = ''
         self.interactive = 0
-        self.bbftp = 0
-        self.numstreams = 8
         self.hyperthreading = 0
         self.email = ''
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -76,9 +75,8 @@ class discover(object):
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    grouplist: {}\n'.format(self.grouplist)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
-        s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -187,10 +185,7 @@ class discover(object):
         else:
             directory = self.executionpath
 
-        if self.bbftp:
-            issmbbftpout(self.name, directory, self.login, self.port, self.numstreams, '{}.tar.gz'.format(dirname))
-        else:
-            issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)])
+        issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)], transfermethod=self.transfermethod)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -216,8 +211,5 @@ class discover(object):
         else:
             directory = '{}/{}/'.format(self.executionpath, dirname)
 
-        if self.bbftp:
-            issmbbftpin(self.name, self.login, self.port, self.numstreams, directory, filelist)
-        else:
-            issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

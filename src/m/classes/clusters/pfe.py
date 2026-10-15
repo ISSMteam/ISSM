@@ -42,9 +42,8 @@ class pfe(object):
         self.executionpath = ''
         self.grouplist = ''
         self.interactive = 0
-        self.bbftp = 0
-        self.numstreams = 8
         self.hyperthreading = 0
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -79,9 +78,8 @@ class pfe(object):
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    grouplist: {}\n'.format(self.grouplist)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
-        s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -198,7 +196,7 @@ class pfe(object):
             compressstring += ' {}'.format(os.path.basename(filepath))
         subprocess.call(compressstring, shell=True)
 
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'], transfermethod=self.transfermethod)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -225,5 +223,5 @@ class pfe(object):
     def Download(self, dirname, filelist):  # {{{
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

@@ -23,9 +23,8 @@ classdef pfe
 		executionpath  = '';
 		grouplist      = '';
 		interactive    = 0;
-		bbftp          = 0;
-		numstreams     = 8;
 		hyperthreading = 0;
+		transfermethod = 'auto';
 	end
 	%}}}
 	methods
@@ -57,9 +56,8 @@ classdef pfe
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    grouplist: %s',cluster.grouplist));
 			disp(sprintf('    interactive: %i',cluster.interactive));
-			disp(sprintf('    bbftp: %s',cluster.bbftp));
-			disp(sprintf('    numstreams: %s',cluster.numstreams));
-			disp(sprintf('    hyperthreading: %s',cluster.hyperthreading));
+			disp(sprintf('    hyperthreading: %i',cluster.hyperthreading));
+			disp(sprintf('    transfermethod: %s',cluster.transfermethod));
 		end
 		%}}}
 		function numprocs=nprocs(cluster) % {{{
@@ -370,11 +368,7 @@ classdef pfe
 				directory=cluster.executionpath;
 			end
 
-			if cluster.bbftp
-				issmbbftpout(cluster.name,directory,cluster.login,cluster.port,cluster.numstreams,{[dirname '.tar.gz']});
-			else
-				issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
-			end
+			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
 
 		end
 		%}}}
@@ -410,11 +404,7 @@ classdef pfe
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive) '/'];
 			end
 
-			if cluster.bbftp
-				issmbbftpin(cluster.name, cluster.login, cluster.port, cluster.numstreams, directory, filelist);
-			else
-				issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
-			end
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
 
 		end %}}}
 	end

@@ -48,7 +48,6 @@ class ub_ccr(object):
         self.codepath = '/projects/grid/ghub/ISSM/repos/ISSM/bin'
         self.executionpath = '$HOME/ISSM/execution'
         self.interactive = 0
-        self.bbftp = 0
         self.email = ''
 
         # Use provided options to change fields
@@ -93,7 +92,6 @@ class ub_ccr(object):
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    grouplist: {}\n'.format(self.grouplist)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
         s += '    login: {}\n'.format(self.email)
         return s
     # }}}
@@ -219,11 +217,6 @@ class ub_ccr(object):
             directory = '{}/Interactive{}'.format(self.executionpath, self.interactive)
         else:
             directory = self.executionpath
-
-        # if self.bbftp:
-        #     issmbbftpout(self.name, directory, self.login, self.port, self.numstreams, '{}.tar.gz'.format(dirname))
-        # else:
-        #     issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)])
 
         # NOTE: Replacement for issmscpout(self.name, directory, self.login, self.port, ['{}.tar.gz'.format(dirname)])
         mkdirstring = 'if [ ! -d {} ]; then mkdir -p {}; fi'.format(self.executionpath, self.executionpath)

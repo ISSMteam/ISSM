@@ -43,8 +43,6 @@ class gadi(object):
         self.project        = ''
         self.storage        = ''
         self.interactive    = 0
-        self.bbftp          = 0
-        self.numstreams     = 8
         self.hyperthreading = 0
         self.mail_alarm     = 'bae' # Mail is sent when begin (b), end (e), and abort (a).
 
@@ -87,8 +85,6 @@ class gadi(object):
         s += '    project: {}\n'.format(self.project)
         s += '    storage: {}\n'.format(self.storage)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
-        s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
 		s += '    mail_alarm : {} (n: no mail, a: abort, b: begin, e: end)'.format(self.mail_alarm)
         return s

@@ -13,6 +13,7 @@ classdef cloud
 		codepath='';
 		executionpath='';
 		interactive=0;
+		transfermethod='auto';
 		%}}}
 	end
 	methods
@@ -36,6 +37,7 @@ classdef cloud
 			disp(sprintf('    codepath: %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    interactive: %i',cluster.interactive));
+			disp(sprintf('    transfermethod: %s',cluster.transfermethod));
 		end
 		%}}}
 		function md = checkconsistency(cluster,md,solution,analyses) % {{{
@@ -77,7 +79,7 @@ classdef cloud
 			end
 			system(compressstring);
 
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']});
+			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']},1,cluster.transfermethod);
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{

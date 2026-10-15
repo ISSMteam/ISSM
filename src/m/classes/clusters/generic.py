@@ -37,6 +37,7 @@ class generic(object):
         self.valgrindsup = [issmdir() + '/externalpackages/valgrind/issm.supp']  # add any .supp in list form as needed
         self.verbose = 1
         self.shell = '/bin/sh'
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -70,6 +71,7 @@ class generic(object):
         s += '    valgrindsup: {}\n'.format(self.valgrindsup)
         s += '    verbose: {}\n'.format(self.verbose)
         s += '    shell: {}\n'.format(self.shell)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -210,7 +212,7 @@ class generic(object):
             compressstring += ' {}'.format(os.path.basename(filepath))
         call(compressstring, shell=True)
 
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'], transfermethod=self.transfermethod)
 
     # }}}
 
@@ -228,5 +230,5 @@ class generic(object):
     def Download(self, dirname, filelist):  # {{{
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

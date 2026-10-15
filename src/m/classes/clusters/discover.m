@@ -21,10 +21,9 @@ classdef discover
 		executionpath='';
 		grouplist='';
 		interactive=0;
-		bbftp=0;
-		numstreams=8;
 		hyperthreading=0;
 		email='';
+		transfermethod='auto';
 	end
 	%}}}
 	methods
@@ -50,15 +49,13 @@ classdef discover
 			disp(sprintf('    queue: %s',cluster.queue));
 			disp(sprintf('    time: %i',cluster.time));
 			disp(sprintf('    processor: %s',cluster.processor));
-			disp(sprintf('    srcpath: %s',cluster.srcpath));
 			disp(sprintf('    codepath: %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    grouplist: %s',cluster.grouplist));
 			disp(sprintf('    interactive: %i',cluster.interactive));
-			disp(sprintf('    bbftp: %s',cluster.bbftp));
-			disp(sprintf('    numstreams: %s',cluster.numstreams));
 			disp(sprintf('    hyperthreading: %i',cluster.hyperthreading));
 			disp(sprintf('    email: %s',cluster.email));
+			disp(sprintf('    transfermethod: %s',cluster.transfermethod));
 		end
 		%}}}
 		function numprocs=nprocs(cluster) % {{{
@@ -177,11 +174,7 @@ classdef discover
 				directory=cluster.executionpath;
 			end
 
-			if cluster.bbftp
-				issmbbftpout(cluster.name,directory,cluster.login,cluster.port,cluster.numstreams,{[dirname '.tar.gz']});
-			else
-				issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']});
-			end
+			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
 
 		end
 		%}}}
@@ -215,11 +208,7 @@ classdef discover
 				directory=[cluster.executionpath '/' dirname '/'];
 			end
 
-			if cluster.bbftp
-				issmbbftpin(cluster.name, cluster.login, cluster.port, cluster.numstreams, directory, filelist);
-			else
-				issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist);
-			end
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
 
 		end %}}}
 	end

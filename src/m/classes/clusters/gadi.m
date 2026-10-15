@@ -26,8 +26,6 @@ classdef gadi
 		project        = '';
 		storage        = '';
 		interactive    = 0;
-		bbftp          = 0;
-		numstreams     = 8;
 		hyperthreading = 0;
 		mail_alarm     = 'bae'; % Mail is sent when begin (b), end (e), and abort (a).
 	end
@@ -63,8 +61,6 @@ classdef gadi
 			disp(sprintf('    project: %s',cluster.project));
 			disp(sprintf('    storage: %s',cluster.storage));
 			disp(sprintf('    interactive: %i',cluster.interactive));
-			disp(sprintf('    bbftp: %i',cluster.bbftp));
-			disp(sprintf('    numstreams: %i',cluster.numstreams));
 			disp(sprintf('    hyperthreading: %i',cluster.hyperthreading));
 			disp(sprintf('    mail_alarm : %s (n: no mail, a: abort, b: begin, e: end)',cluster.mail_alarm));
 		end

@@ -5,8 +5,8 @@ implementations of UploadQueueJob, LaunchQueueJob, and Download.  Rather than
 duplicating those blocks in every file, each cluster can delegate to the
 corresponding function here.
 
-Clusters whose methods differ from these defaults (e.g. bbftp transfers,
-interactive path variants, qsub/PBS schedulers, or local execution) should
+Clusters whose methods differ from these defaults (e.g. interactive path
+variants, qsub/PBS schedulers, or local execution) should
 keep their own implementations unchanged.
 """
 
@@ -19,7 +19,7 @@ from issmscpout import issmscpout
 from issmssh import issmssh
 
 def UploadQueueJob(cluster, modelname, dirname, filelist):  # {{{
-    """Compress the execution directory into a tar.gz and scp it to the cluster.
+    """Compress the execution directory into a tar.gz and send it to the cluster.
 
     filelist contains full paths; ``-C`` is used so only basenames are stored
     in the archive.
@@ -33,7 +33,8 @@ def UploadQueueJob(cluster, modelname, dirname, filelist):  # {{{
     subprocess.call(compressstring, shell=True)
 
     port = getattr(cluster, 'port', 0)
-    issmscpout(cluster.name, cluster.executionpath, cluster.login, port, [dirname + '.tar.gz'])
+    method = getattr(cluster, 'transfermethod', 'auto')
+    issmscpout(cluster.name, cluster.executionpath, cluster.login, port, [dirname + '.tar.gz'], transfermethod=method)
 # }}}
 
 def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, fmt):  # {{{
@@ -93,8 +94,9 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
 # }}}
 
 def Download(cluster, dirname, filelist):  # {{{
-    """Copy output files from the cluster back to the current directory via scp."""
+    """Copy output files from the cluster back to the current directory."""
     directory = '{}/{}/'.format(cluster.executionpath, dirname)
     port = getattr(cluster, 'port', 0)
-    issmscpin(cluster.name, cluster.login, port, directory, filelist)
+    method = getattr(cluster, 'transfermethod', 'auto')
+    issmscpin(cluster.name, cluster.login, port, directory, filelist, transfermethod=method)
 # }}}
