@@ -28,7 +28,7 @@ classdef cluster_defaults
 			%Copy tar.gz file over
 			port=0; if isprop(cluster,'port'); port=cluster.port; end
 			method='auto'; if isprop(cluster,'transfermethod'); method=cluster.transfermethod; end
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']},1,method);
+			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']},method);
 		end %}}}
 		function LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, format) % {{{
 			% on cluster: open tar.gz file and submit job
@@ -99,7 +99,7 @@ classdef cluster_defaults
 			directory=[cluster.executionpath '/' dirname '/'];
 			port=0; if isprop(cluster,'port'), port=cluster.port; end
 			method='auto'; if isprop(cluster,'transfermethod'), method=cluster.transfermethod; end
-			issmscpin(cluster.name,cluster.login,port,directory,filelist,1,method);
+			issmscpin(cluster.name,cluster.login,port,directory,filelist,method);
 
 		end %}}}
 	end

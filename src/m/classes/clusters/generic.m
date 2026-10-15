@@ -312,7 +312,7 @@ classdef generic
 				end
 				system(compressstring);
 
-				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
+				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},cluster.transfermethod);
 			end
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
@@ -329,7 +329,7 @@ classdef generic
 
 			%copy files from cluster to current directory
 			directory=[cluster.executionpath '/' dirname '/'];
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,cluster.transfermethod);
 		end %}}}
 	end
 end

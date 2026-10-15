@@ -368,7 +368,7 @@ classdef pfe
 				directory=cluster.executionpath;
 			end
 
-			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
+			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},cluster.transfermethod);
 
 		end
 		%}}}
@@ -404,7 +404,7 @@ classdef pfe
 				directory=[cluster.executionpath '/Interactive' num2str(cluster.interactive) '/'];
 			end
 
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,cluster.transfermethod);
 
 		end %}}}
 	end

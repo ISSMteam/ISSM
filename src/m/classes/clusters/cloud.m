@@ -79,7 +79,7 @@ classdef cloud
 			end
 			system(compressstring);
 
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']},1,cluster.transfermethod);
+			issmscpout(cluster.name,cluster.executionpath,cluster.login,0,{[dirname '.tar.gz']},cluster.transfermethod);
 
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart) % {{{

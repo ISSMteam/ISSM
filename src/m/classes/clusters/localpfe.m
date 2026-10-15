@@ -264,7 +264,7 @@ classdef localpfe
 				end
 				system(compressstring);
 
-				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
+				issmscpout(cluster.name,cluster.executionpath,cluster.login,cluster.port,{[dirname '.tar.gz']},cluster.transfermethod);
 			end
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch)% {{{
@@ -281,7 +281,7 @@ classdef localpfe
 			end
 
 			%copy files from cluster to current directory
-			issmscpin(cluster.name,cluster.login,cluster.port,cluster.executionpath,filelist,1,cluster.transfermethod);
+			issmscpin(cluster.name,cluster.login,cluster.port,cluster.executionpath,filelist,cluster.transfermethod);
 		end %}}}
 	end
 end

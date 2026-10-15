@@ -1,26 +1,18 @@
-function issmscpin(host, login, port, path, filelist, bracketstyle, transfermethod)
+function issmscpin(host, login, port, path, filelist, transfermethod)
 %ISSMSCPIN - Get filelist from host
 %
 %   Usage:
-%      issmscpin(host,login,port,path,filelist,bracketstyle,transfermethod)
+%      issmscpin(host,login,port,path,filelist,transfermethod)
 %
-%      bracketstyle:    1 - \{\}    (escaped; default)
-%                       2 - {}      (not escaped)
-%                       Only used by the scp method: rsync sends the file list
-%                       over the protocol and never relies on the remote shell.
-%
-%      transfermethod: 'auto'  - use rsync, fall back to scp if the remote host
-%                                does not have rsync installed (default)
-%                      'rsync' - use rsync only
-%                      'scp'   - use scp only
-
-%does machine require escaped brackets?
-if nargin<6 || isempty(bracketstyle)
-	bracketstyle = 1;
-end
+%      transfermethod: 'auto'         - use rsync, fall back to scp if the remote host
+%                                       does not have rsync installed (default)
+%                      'rsync'        - use rsync only
+%                      'scp'          - use scp only, with escaped brackets \{\}
+%                      'scp-noescape' - use scp only, with unescaped brackets {}
+%                                       (for hosts whose shell must not see backslashes)
 
 %how do we move the files over?
-if nargin<7 || isempty(transfermethod)
+if nargin<6 || isempty(transfermethod)
 	transfermethod = 'auto';
 end
 
@@ -34,7 +26,7 @@ if strcmpi(hostname,host)
 		if(~status) warning(['Could not copy ' path '/' filelist{i} ]); end
 	end
 else
-	usescp = strcmpi(transfermethod,'scp');
+	usescp = strcmpi(transfermethod,'scp') | strcmpi(transfermethod,'scp-noescape');
 	if ~usescp & ~strcmpi(transfermethod,'rsync') & ~strcmpi(transfermethod,'auto')
 		error(['unknown transfermethod ''' transfermethod '''']);
 	end
@@ -60,7 +52,7 @@ else
 	end
 
 	if usescp
-		[status,cmdout]=scpin(host,login,port,path,filelist,bracketstyle);
+		[status,cmdout]=scpin(host,login,port,path,filelist,strcmpi(transfermethod,'scp-noescape'));
 	end
 
 	%check that the transfer worked
@@ -115,7 +107,7 @@ function [status,cmdout]=rsyncin(host,login,port,path,filelist) % {{{
 
 	delete(listfile);
 end % }}}
-function [status,cmdout]=scpin(host,login,port,path,filelist,bracketstyle) % {{{
+function [status,cmdout]=scpin(host,login,port,path,filelist,noescape) % {{{
 %SCPIN - pull filelist with scp, relying on the remote shell to expand \{\}
 
 	if numel(filelist)==1
@@ -127,8 +119,8 @@ function [status,cmdout]=scpin(host,login,port,path,filelist,bracketstyle) % {{{
 		end
 		fileliststr=[fileliststr filelist{end} '\}'];
 
-		%remove \ if bracketstyle is 2
-		if bracketstyle==2
+		%remove \ if noescape is set
+		if noescape
 			fileliststr = [fileliststr(2:end-2) '}'];
 		end
 	end

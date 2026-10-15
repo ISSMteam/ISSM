@@ -174,7 +174,7 @@ classdef discover
 				directory=cluster.executionpath;
 			end
 
-			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},1,cluster.transfermethod);
+			issmscpout(cluster.name,directory,cluster.login,cluster.port,{[dirname '.tar.gz']},cluster.transfermethod);
 
 		end
 		%}}}
@@ -208,7 +208,7 @@ classdef discover
 				directory=[cluster.executionpath '/' dirname '/'];
 			end
 
-			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,1,cluster.transfermethod);
+			issmscpin(cluster.name,cluster.login,cluster.port,directory,filelist,cluster.transfermethod);
 
 		end %}}}
 	end

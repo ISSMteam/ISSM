@@ -1,29 +1,21 @@
-function issmscpout(host, path, login, port, packages, bracketstyle, transfermethod)
+function issmscpout(host, path, login, port, packages, transfermethod)
 %ISSMSCPOUT - Send files to host
 %
 %   Usage:
-%      issmscpout(host,path,login,port,packages,bracketstyle,transfermethod)
+%      issmscpout(host,path,login,port,packages,transfermethod)
 %
-%      bracketstyle:    1 - \{\}    (escaped; default)
-%                       2 - {}      (not escaped)
-%                       Only used by the scp method: rsync sends the file list
-%                       over the protocol and never relies on the remote shell.
-%
-%      transfermethod: 'auto'  - use rsync, fall back to scp if the remote host
-%                                does not have rsync installed (default)
-%                      'rsync' - use rsync only
-%                      'scp'   - use scp only
+%      transfermethod: 'auto'         - use rsync, fall back to scp if the remote host
+%                                       does not have rsync installed (default)
+%                      'rsync'        - use rsync only
+%                      'scp'          - use scp only, with escaped brackets \{\}
+%                      'scp-noescape' - use scp only, with unescaped brackets {}
+%                                       (for hosts whose shell must not see backslashes)
 
 %get hostname
 hostname=oshostname();
 
-%does machine require escaped brackets?
-if nargin<6 || isempty(bracketstyle)
-	bracketstyle = 1;
-end
-
 %how do we move the files over?
-if nargin<7 || isempty(transfermethod)
+if nargin<6 || isempty(transfermethod)
 	transfermethod = 'auto';
 end
 
@@ -41,7 +33,7 @@ if strcmpi(host,hostname)
 end
 
 %General case: this is not a local machine
-usescp = strcmpi(transfermethod,'scp');
+usescp = strcmpi(transfermethod,'scp') | strcmpi(transfermethod,'scp-noescape');
 if ~usescp & ~strcmpi(transfermethod,'rsync') & ~strcmpi(transfermethod,'auto')
 	error(['issmscpout error message: unknown transfermethod ''' transfermethod '''']);
 end
@@ -67,7 +59,7 @@ if ~usescp
 end
 
 if usescp
-	[status,cmdout]=scpout(host,login,port,path,packages,bracketstyle);
+	[status,cmdout]=scpout(host,login,port,path,packages,strcmpi(transfermethod,'scp-noescape'));
 end
 
 %check that the transfer worked
@@ -116,7 +108,7 @@ function [status,cmdout]=rsyncout(host,login,port,path,packages) % {{{
 
 	delete(listfile);
 end % }}}
-function [status,cmdout]=scpout(host,login,port,path,packages,bracketstyle) % {{{
+function [status,cmdout]=scpout(host,login,port,path,packages,noescape) % {{{
 %SCPOUT - push packages with scp, relying on the local shell to expand \{\}
 
 	if numel(packages)==1
@@ -128,8 +120,8 @@ function [status,cmdout]=scpout(host,login,port,path,packages,bracketstyle) % {{
 		end
 		fileliststr=[fileliststr packages{end} '\}'];
 
-		%remove backslashes if bracketstyle is 2
-		if bracketstyle==2
+		%remove backslashes if noescape is set
+		if noescape
 			fileliststr = [fileliststr(2:end-2) fileliststr(end)];
 		end
 	end

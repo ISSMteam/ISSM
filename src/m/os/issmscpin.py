@@ -57,7 +57,7 @@ def rsyncin(host, login, port, path, filelist):  # {{{
 # }}}
 
 
-def scpin(host, login, port, path, filelist, bracketstyle):  # {{{
+def scpin(host, login, port, path, filelist, noescape):  # {{{
     """Pull filelist with scp, relying on the remote shell to expand \\{\\}
     """
 
@@ -68,8 +68,8 @@ def scpin(host, login, port, path, filelist, bracketstyle):  # {{{
         fileliststr += ','.join([file for file in filelist])
         fileliststr += r'\}'
 
-        # Remove backslashes if bracketstyle is 2
-        if bracketstyle == 2:
+        # Remove backslashes if noescape is set
+        if noescape:
             fileliststr = fileliststr[1:-2] + fileliststr[-1]
 
     if port:
@@ -87,21 +87,18 @@ def scpin(host, login, port, path, filelist, bracketstyle):  # {{{
 # }}}
 
 
-def issmscpin(host, login, port, path, filelist=1, bracketstyle=1, transfermethod='auto'):
+def issmscpin(host, login, port, path, filelist=1, transfermethod='auto'):
     """issmscpin get files from host
 
     Usage:
-        issmscpin(host, login, port, path, filelist, bracketstyle, transfermethod)
+        issmscpin(host, login, port, path, filelist, transfermethod)
 
-        bracketstyle:    1 - \\{\\}    (escaped; default)
-                         2 - {}      (not escaped)
-                         Only used by the scp method: rsync sends the file list
-                         over the protocol and never relies on the remote shell.
-
-        transfermethod: 'auto'  - use rsync, fall back to scp if the remote host
-                                  does not have rsync installed (default)
-                        'rsync' - use rsync only
-                        'scp'   - use scp only
+        transfermethod: 'auto'         - use rsync, fall back to scp if the remote host
+                                         does not have rsync installed (default)
+                        'rsync'        - use rsync only
+                        'scp'          - use scp only, with escaped brackets \\{\\}
+                        'scp-noescape' - use scp only, with unescaped brackets {}
+                                         (for hosts whose shell must not see backslashes)
     """
 
     # Get hostname
@@ -117,7 +114,7 @@ def issmscpin(host, login, port, path, filelist=1, bracketstyle=1, transfermetho
                 pass
         return
 
-    usescp = strcmpi(transfermethod, 'scp')
+    usescp = transfermethod.lower() in ('scp', 'scp-noescape')
     if not usescp and not strcmpi(transfermethod, 'rsync') and not strcmpi(transfermethod, 'auto'):
         raise ValueError('unknown transfermethod \'{}\''.format(transfermethod))
 
@@ -138,7 +135,7 @@ def issmscpin(host, login, port, path, filelist=1, bracketstyle=1, transfermetho
             usescp = True
 
     if usescp:
-        status, errs = scpin(host, login, port, path, filelist, bracketstyle)
+        status, errs = scpin(host, login, port, path, filelist, strcmpi(transfermethod, 'scp-noescape'))
 
     # Check that the transfer worked
     if status != 0:
