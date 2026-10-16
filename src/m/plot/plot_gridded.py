@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 import warnings
 import numpy as np
-from numpy import ma
 from InterpFromMeshToGrid import InterpFromMeshToGrid
 from processmesh import processmesh
 from processdata import processdata

@@ -34,7 +34,7 @@ classdef gadi
 		function cluster=gadi(varargin) % {{{
 
 			%initialize cluster using default settings if provided
-			if (exist('gdai_settings')==2), gadi_settings; end
+			if exist('gadi_settings')==2, gadi_settings; end
 
 			%use provided options to change fields
 			cluster=AssignObjectFields(pairoptions(varargin{:}),cluster);
