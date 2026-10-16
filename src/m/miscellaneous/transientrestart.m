@@ -68,4 +68,16 @@ if isfield(results,'Base') & isfield(results,'Thickness')
 	md.geometry.base=base;
 	md.geometry.thickness=thickness;
 	md.geometry.surface=md.geometry.base+md.geometry.thickness;
+elseif isfield(results,'Surface') & isfield(results,'Thickness')
+	surf=results.Surface;
+	thickness=results.Thickness;
+	base=surf-thickness;
+	if isa(md.mesh,'mesh3dprisms')
+      md.mesh.z=base+thickness./md.geometry.thickness.*(md.mesh.z-md.geometry.base);
+   elseif isa(md.mesh,'mesh2dvertical')
+      md.mesh.y=base+thickness./md.geometry.thickness.*(md.mesh.y-md.geometry.base);
+   end
+	md.geometry.surface=surf;
+	md.geometry.thickness=thickness;
+	md.geometry.base=md.geometry.surface-md.geometry.thickness;
 end

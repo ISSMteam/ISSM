@@ -100,9 +100,9 @@ function [status,cmdout]=rsyncout(host,login,port,path,packages) % {{{
 	fclose(fid);
 
 	if port
-		cmd = ['rsync -a --files-from=''' listfile ''' -e ''ssh -p ' num2str(port) ''' ./ ' login '@localhost:''' path ''''];
+		cmd = ['rsync --progress -a --files-from=''' listfile ''' -e ''ssh -p ' num2str(port) ''' ./ ' login '@localhost:''' path ''''];
 	else
-		cmd = ['rsync -a --files-from=''' listfile ''' ./ ' login '@' host ':''' path ''''];
+		cmd = ['rsync --progress -a --files-from=''' listfile ''' ./ ' login '@' host ':''' path ''''];
 	end
 	[status,cmdout]=system(cmd);
 
