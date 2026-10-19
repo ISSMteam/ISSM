@@ -370,7 +370,7 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
         return md
 
     # Only act for fields whose type can vary
-    if gname == 'inversion':
+    if gname == 'inversion': # {{{
         if ct == 'm1qn3inversion':
             from m1qn3inversion import m1qn3inversion
             md.inversion = m1qn3inversion()
@@ -382,8 +382,8 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
             md.inversion = inversion()
         else:
             warnings.warn(f"inversion class '{ct}' not supported yet")
-
-    elif gname == 'smb':
+        # }}}
+    elif gname == 'smb': # {{{
         if ct == 'SMBforcing':
             from SMBforcing import SMBforcing
             md.smb = SMBforcing()
@@ -425,8 +425,8 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
             md.smb = SMBdebrisEvatt()
         else:
             warnings.warn(f"SMB class '{ct}' not supported yet")
-
-    elif gname == 'friction':
+        # }}}
+    elif gname == 'friction': # {{{
         known = [
             'friction', 'frictioncoulomb', 'frictioncoulomb2',
             'frictionhydro', 'frictionjosh', 'frictionpism',
@@ -439,8 +439,8 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
             md.friction = getattr(mod, ct)()
         else:
             warnings.warn(f"friction class '{ct}' not supported yet")
-
-    elif gname == 'hydrology':
+        # }}}
+    elif gname == 'hydrology': # {{{
         known = [
             'hydrologyshreve', 'hydrologydc', 'hydrologyglads','hydrologyimlglads',
             'hydrologypism', 'hydrologyshakti', 'hydrologytws', 'hydrologyarmapw',
@@ -450,8 +450,44 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
             md.hydrology = getattr(mod, ct)()
         else:
             warnings.warn(f"hydrology class '{ct}' not supported yet")
-
-    elif gname == 'mesh':
+        # }}}
+    elif gname == 'basalforcings': # {{{
+        known = [
+                'basalforcings','basalforcingsarma',
+                'basalforcingspico',
+                'linearbasalforcings','linearbasalforcingsarma',
+                'plumebasalforcings',
+                'mismipbasalforcings',
+                #'basalforcingsismip6', # TODO: ismip6 forcing is not yet implemented.
+                'basalforcingsismip7',
+        ]
+        if ct in known:
+            mod = __import__(ct, fromlist=[ct])
+            md.basalforcings = getattr(mod, ct)()
+        else:
+            warnings.warn(f'basalforcings class ''{ct}'' not supported yet.')
+        # }}}
+    elif gname == 'caving': # {{{
+        known = [
+                'calving',
+                #'calvingmip', # TODO: calvingmip is not implemented in python
+                'calvingcrevassedepth',
+                #'calvingdev2', # TODO: calvingdev is not implemented in python
+                'calvinglevermann',
+                'calvingminthickness',
+                'calvingparameterization',
+                #'calvingpollard', # TODO: calvingpollard in python not implemented
+                'calvingvonmises',
+                #'calvingvonmisesAD', # TODO: calvingvonmisesAD in python not implemented
+                #'calvingstochastic', # TODO: calvingstochastic in python not implemented
+        ]
+        if ct in known:
+            mod = __import__(ct, fromlist=[ct])
+            md.calving = getattr(mod, ct)()
+        else:
+            warnings.warn(f'calving class ''{ct}'' not supported yet.')
+        # }}}
+    elif gname == 'mesh': # {{{
         if ct == 'mesh3dprisms':
             from mesh3dprisms import mesh3dprisms
             md.mesh = mesh3dprisms()
@@ -460,6 +496,7 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
             md.mesh = mesh2d()
         else:
             warnings.warn(f"mesh class '{ct}' not supported yet")
+        # }}}
 
     # All other groups keep their default instance; we just overwrite fields
     return md
