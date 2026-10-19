@@ -75,9 +75,18 @@ def read_netCDF(filename: str, verbose: bool = False):
         md.mesh.numberofvertices2d=int(md.mesh.numberofvertices2d)
         md.mesh.numberofelements2d=int(md.mesh.numberofelements2d)
     elif md.mesh.dimension() == 2:
-        md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
-        md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
-        md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
+        try:
+            md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.edges')
+        try:
+            md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.segments')
+        try:            
+            md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.segmentmarkers')        
 
     if verbose:
         print('Model successfully loaded from NetCDF4.')

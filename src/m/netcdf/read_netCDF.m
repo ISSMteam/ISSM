@@ -88,9 +88,21 @@ if md.mesh.dimension() == 3
 	md.mesh.numberofvertices2d=int64(md.mesh.numberofvertices2d);
 	md.mesh.numberofelements2d=int64(md.mesh.numberofelements2d);
 elseif md.mesh.dimension() == 2
-	md.mesh.edges=int64(md.mesh.edges);
-	md.mesh.segments=int64(md.mesh.segments);
-	md.mesh.segmentmarkers=int64(md.mesh.segmentmarkers);
+	try
+		md.mesh.edges=int64(md.mesh.edges);
+	catch
+		warning('Warning: nothing to be done with md.mesh.edges');
+	end
+	try
+		md.mesh.segments=int64(md.mesh.segments);
+	catch
+		warning('Warning: nothing to be done with md.mesh.segments');
+	end
+	try
+		md.mesh.segmentmarkers=int64(md.mesh.segmentmarkers);
+	catch
+		warning('Warning: nothing to be done with md.mesh.segmentmarkers');
+	end
 end
 
 if verbose; disp('Model successfully loaded from NetCDF4.'); end
