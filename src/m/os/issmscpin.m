@@ -84,28 +84,26 @@ function tf=haversync() % {{{
 	tf = found;
 end % }}}
 function [status,cmdout]=rsyncin(host,login,port,path,filelist) % {{{
-%RSYNCIN - pull filelist with rsync, handing the list over the protocol
-
-	%--files-from takes the file names from a local file, so the remote shell
-	%never sees (and never has to expand) a list. Names are relative to path.
-	listfile = [tempname '.lst'];
-	fid = fopen(listfile,'w');
-	if fid==-1
-		error(['could not create temporary file ' listfile]);
-	end
-	for i=1:numel(filelist)
-		fprintf(fid,'%s\n',filelist{i});
-	end
-	fclose(fid);
+%RSYNCIN - pull filelist with rsync, one remote source per file
+%
+%   All sources share the same host, so rsync uses a single connection.
+%   Each source is quoted individually, so no list expansion is needed.
 
 	if port
-		cmd = ['rsync --progress -a --files-from=''' listfile ''' -e ''ssh -p ' num2str(port) ''' ' login '@localhost:''' path '/'' ./'];
+		remote = [login '@localhost:'];
+		sshopt = [' -e ''ssh -p ' num2str(port) ''''];
 	else
-		cmd = ['rsync --progress -a --files-from=''' listfile ''' ' login '@' host ':''' path '/'' ./'];
+		remote = [login '@' host ':'];
+		sshopt = '';
 	end
-	[status,cmdout]=system(cmd);
 
-	delete(listfile);
+	sources = '';
+	for i=1:numel(filelist)
+		sources = [sources ' ' remote '''' path '/' filelist{i} ''''];
+	end
+
+	cmd = ['rsync --progress -a' sshopt sources ' ./'];
+	[status,cmdout]=system(cmd,'-echo');
 end % }}}
 function [status,cmdout]=scpin(host,login,port,path,filelist,noescape) % {{{
 %SCPIN - pull filelist with scp, relying on the remote shell to expand \{\}
@@ -127,17 +125,17 @@ function [status,cmdout]=scpin(host,login,port,path,filelist,noescape) % {{{
 
 	cmdout='';
 	if port
-		[status]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+		[status]=system(['scp -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./'],'-echo');
 		if status ~= 0
 			%List expansion is a bashism. Try again with '-OT'.
-			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./']);
+			[status,cmdout]=system(['scp -OT -P ' num2str(port) ' ' login '@localhost:' path '/' fileliststr ' ./'],'-echo');
 		end
 	else
-		[status]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./']);
+		[status]=system(['scp ' login '@' host ':' path '/' fileliststr ' ./'],'-echo');
 		if status ~= 0
 			%List expansion is a bashism. Try again with '-OT'.
 			disp('issmscp info: standard scp command did not work, trying again with -OT flag');
-			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./']);
+			[status,cmdout]=system(['scp -OT ' login '@' host ':' path '/' fileliststr ' ./'],'-echo');
 		end
 	end
 end % }}}

@@ -1,31 +1,24 @@
 import os
+import shlex
 import subprocess
-import tempfile
 import warnings
 from MatlabFuncs import *
 from issmscpin import haversync, runcmd
 
 
 def rsyncout(host, login, port, path, packages):  # {{{
-    """Push packages with rsync, handing the list over the protocol.
-
-    --files-from takes the file names from a local file, so the remote shell
-    never sees (and never has to expand) a list. Names are relative to './'.
+    """Push packages with rsync, passing every package as a source.
     """
 
-    fid, listfile = tempfile.mkstemp(suffix='.lst')
-    with os.fdopen(fid, 'w') as f:
-        for package in packages:
-            f.write('{}\n'.format(package))
+    if port:
+        remote = '{}@localhost:'.format(login)
+        sshopt = ' -e {}'.format(shlex.quote('ssh -p {}'.format(port)))
+    else:
+        remote = '{}@{}:'.format(login, host)
+        sshopt = ''
 
-    try:
-        if port:
-            subproc_cmd = "rsync -a --files-from='{}' -e 'ssh -p {}' ./ {}@localhost:'{}'".format(listfile, port, login, path)
-        else:
-            subproc_cmd = "rsync -a --files-from='{}' ./ {}@{}:'{}'".format(listfile, login, host, path)
-        return runcmd(subproc_cmd)
-    finally:
-        os.remove(listfile)
+    sources = ' '.join([shlex.quote(package) for package in packages])
+    return runcmd('rsync -a{} {} {}'.format(sshopt, sources, remote + shlex.quote(path)))
 # }}}
 
 
