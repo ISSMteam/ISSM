@@ -21,9 +21,11 @@ function smb = interpISMIP6GreenlandSMB(md,model_name,scenario,surface_ref,path)
 %
 % Version 10/24/2023 Jessica Badgeley jessica.a.badgeley@dartmouth.edu
 
-if (nargin<4) | (length(surface_ref) ~= md.mesh.numberofvertices)
-	disp('Setting surface_ref to md.geometry.surface');
-   surface_ref = md.geometry.surface; 
+if nargin<4 || isempty(surface_ref)
+   disp('Setting surface_ref to md.geometry.surface');
+   surface_ref = md.geometry.surface;
+elseif length(surface_ref) ~= md.mesh.numberofvertices
+   error('surface_ref should be of length md.mesh.numberofvertices');
 end
 if nargin<5
    % Find appropriate directory
@@ -33,6 +35,11 @@ if nargin<5
        otherwise
          error('machine not supported yet, please provide your own path');
    end
+end
+
+%make sure path ends with a slash (needed to build the directory name below)
+if ~strcmp(path(end),'/')
+   path = [path '/'];
 end
 
 rootname = [path model_name '-' scenario '/'];
@@ -59,6 +66,13 @@ for yr = yrs
 	if yr_ind == 1
       xdata = double(ncread(ncfile_anom,'x'));
       ydata = double(ncread(ncfile_anom,'y'));
+      xfull = xdata;
+      yfull = ydata;
+
+      %the subsetting below assumes x and y are strictly ascending
+      if any(diff(xdata)<=0) || any(diff(ydata)<=0)
+         error('x and y in the aSMB files must be strictly ascending, this case is not supported yet.');
+      end
 
       offset=2;
       
@@ -76,25 +90,43 @@ for yr = yrs
       ydata=ydata(id1y:id2y);
 	end
 
+	%make sure all files are on the same grid as the first one, since the subsetting indices are reused
+   for ncfile = {ncfile_anom,ncfile_b}
+      if ~isequal(double(ncread(ncfile{1},'x')),xfull) || ~isequal(double(ncread(ncfile{1},'y')),yfull)
+         error(['grid of ' ncfile{1} ' differs from the grid of the first aSMB file']);
+      end
+   end
+
    data_anom = double(ncread(ncfile_anom,'aSMB',[id1x id1y 1],[id2x-id1x+1 id2y-id1y+1 1],[1 1 1]))';
    data_b = double(ncread(ncfile_b,'dSMBdz',[id1x id1y 1],[id2x-id1x+1 id2y-id1y+1 1],[1 1 1]))';
-
-   data_anom(find(data_anom==9.96921e+36))=NaN;
-	data_b(find(data_b==9.96921e+36))=NaN;
 
 	smb_anom(1:end-1,yr_ind) = InterpFromGrid(xdata,ydata,data_anom,double(X),double(Y));
 	smb_b(1:end-1,yr_ind) = InterpFromGrid(xdata,ydata,data_b,double(X),double(Y));
 
-	smb_anom(end,yr_ind) = yr;
-	smb_b(end,yr_ind) = yr;
+	%yearly means are stamped mid-year (consistent with interpISMIP6GreenlandRetreatMask)
+	smb_anom(end,yr_ind) = yr + 0.5;
+	smb_b(end,yr_ind) = yr + 0.5;
 end
 
-% Convert units: from kg m-2 s-1 to m/yr ice eq using the # seconds/year given by ISMIP6 materials
-smb_anom(1:end-1,:) = smb_anom(1:end-1,:) * 31556926 / 1000 * (md.materials.rho_freshwater/md.materials.rho_ice);
-smb_b(1:end-1,:) = smb_b(1:end-1,:) * 31556926 / 1000 * (md.materials.rho_freshwater/md.materials.rho_ice);
+% Convert units: from kg m-2 s-1 to m/yr ice eq
+% md.constants.yts is used (not the ISMIP6 value of 31556926 s/yr) because ISSM converts back
+% to m/s with md.constants.yts, so this preserves the mass flux given in the files exactly
+smb_anom(1:end-1,:) = smb_anom(1:end-1,:) * md.constants.yts / md.materials.rho_ice;
+smb_b(1:end-1,:) = smb_b(1:end-1,:) * md.constants.yts / md.materials.rho_ice;
 
-% Load the reference period SMB (RACMO mean 1969-1980)  
-smb_ref = interpRACMO1km(X,Y);
+% Load the reference period SMB (RACMO mean 1960-1989)  
+try
+   smb_ref = interpRACMO1km(X,Y);
+catch
+	disp('interpRACMO1km failed, so using RACMO23p2smbFGRN055');
+	smb_ref = interpRACMO23p2smbFGRN055(X,Y,1960,1990);
+	smb_ref = mean(smb_ref(1:end-1,:),2);
+end
+
+% Fill NaNs (off-ice or outside-grid vertices) with the value at the nearest valid vertex
+smb_anom(1:end-1,:) = fill_nan_nearest(smb_anom(1:end-1,:),X,Y,'aSMB');
+smb_b(1:end-1,:)    = fill_nan_nearest(smb_b(1:end-1,:),X,Y,'dSMBdz');
+smb_ref             = fill_nan_nearest(smb_ref,X,Y,'reference SMB');
 
 % Calculate the total SMB
 smb_tot = smb_anom;
@@ -107,4 +139,30 @@ smb.smbref = smb_tot;
 smb.b_pos = smb_b;
 smb.b_neg = smb_b;
 
+end
+
+function field = fill_nan_nearest(field,X,Y,name)
+   %fill_nan_nearest - replace NaNs by the value at the nearest valid mesh vertex, column by column (base MATLAB only)
+   X = double(X(:));
+   Y = double(Y(:));
+   nfilled = 0;
+   pos_prev = [];
+   for ii = 1:size(field,2)
+      pos = isnan(field(:,ii));
+      if ~any(pos), continue; end
+      if all(pos)
+         error([name ' is NaN on all vertices, check that the mesh overlaps the data']);
+      end
+      %only redo the search if the NaN pattern changed
+      if ~isequal(pos,pos_prev)
+         valid = find(~pos);
+         k = dsearchn([X(valid) Y(valid)],[X(pos) Y(pos)]);
+         pos_prev = pos;
+      end
+      field(pos,ii) = field(valid(k),ii);
+      nfilled = max(nfilled,nnz(pos));
+   end
+   if nfilled>0
+      disp(['   -- ' name ': filled up to ' num2str(nfilled) ' NaN vertices with the nearest valid vertex']);
+   end
 end
