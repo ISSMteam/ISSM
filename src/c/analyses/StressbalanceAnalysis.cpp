@@ -3611,7 +3611,7 @@ void           StressbalanceAnalysis::GetSolutionFromInputsMOLHO(Vector<IssmDoub
 	if(approximation!=MOLHOApproximationEnum) _error_("mesh "<<EnumToStringx(approximation)<<" not supported here");
 
 	/*Fetch dof list and allocate solution vector*/
-	element->GetDofList(&doflist,approximation,GsetEnum); 
+	element->GetDofList(&doflist,approximation,GsetEnum,true); 
 	IssmDouble* values = xNew<IssmDouble>(numdof);
 
 	/*Get inputs*/
