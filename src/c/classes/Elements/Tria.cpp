@@ -936,6 +936,7 @@ void       Tria::CalvingFluxLevelset(){/*{{{*/
 	}
 	else{
 		int               domaintype;
+		bool              ismovingfront;
 		const IssmPDouble epsilon = 1.e-15;
 		IssmDouble        s1,s2;
 		IssmDouble        gl[NUMVERTICES];
@@ -946,6 +947,7 @@ void       Tria::CalvingFluxLevelset(){/*{{{*/
 
 		/*Recover parameters and values*/
 		parameters->FindParam(&domaintype,DomainTypeEnum);
+		parameters->FindParam(&ismovingfront,TransientIsmovingfrontEnum);
 		Element::GetInputListOnVertices(&gl[0],MaskIceLevelsetEnum);
 
 		/*Be sure that values are not zero*/
@@ -1029,15 +1031,31 @@ void       Tria::CalvingFluxLevelset(){/*{{{*/
 		IssmDouble calvingratex,calvingratey,thickness,Jdet,flux_per_area;
 		IssmDouble rho_ice=FindParam(MaterialsRhoIceEnum);
 		Input* thickness_input    = this->GetInput(ThicknessEnum); _assert_(thickness_input);
-		Input* calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
-		Input* calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
+		Input* calvingratex_input = NULL;
+		Input* calvingratey_input = NULL;
+		Input* vx_input = NULL;
+		Input* vy_input = NULL;
+		if(ismovingfront){
+			calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
+			calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
+		}
+		else{
+			vx_input = this->GetInput(VxEnum); _assert_(vx_input);
+			vy_input = this->GetInput(VyEnum); _assert_(vy_input);
+		}
 
 		/*Start looping on Gaussian points*/
 		Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
 		while(gauss->next()){
 			thickness_input->GetInputValue(&thickness,gauss);
-			calvingratex_input->GetInputValue(&calvingratex,gauss);
-			calvingratey_input->GetInputValue(&calvingratey,gauss);
+			if(ismovingfront){
+				calvingratex_input->GetInputValue(&calvingratex,gauss);
+				calvingratey_input->GetInputValue(&calvingratey,gauss);
+			}
+			else{
+				vx_input->GetInputValue(&calvingratex,gauss);
+				vy_input->GetInputValue(&calvingratey,gauss);
+			}
 			this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
 
 			flux += rho_ice*Jdet*gauss->weight*thickness*(calvingratex*normal[0] + calvingratey*normal[1]);
@@ -5613,6 +5631,7 @@ IssmDouble Tria::TotalCalvingFluxLevelset(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
+	bool              ismovingfront;
 	int               domaintype;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
@@ -5624,6 +5643,7 @@ IssmDouble Tria::TotalCalvingFluxLevelset(bool scaled){/*{{{*/
 
 	/*Recover parameters and values*/
 	parameters->FindParam(&domaintype,DomainTypeEnum);
+	parameters->FindParam(&ismovingfront,TransientIsmovingfrontEnum);
 	Element::GetInputListOnVertices(&gl[0],MaskIceLevelsetEnum);
 
 	/*Be sure that values are not zero*/
@@ -5703,21 +5723,38 @@ IssmDouble Tria::TotalCalvingFluxLevelset(bool scaled){/*{{{*/
 
 	/*Get inputs*/
 	IssmDouble flux = 0.;
-	IssmDouble calvingratex,calvingratey,thickness,Jdet;
+	IssmDouble calvingratex,calvingratey,thickness,Jdet,vx,vy;
 	IssmDouble rho_ice=FindParam(MaterialsRhoIceEnum);
 	Input* thickness_input    = this->GetInput(ThicknessEnum); _assert_(thickness_input);
-	Input* calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
-	Input* calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
+	Input* calvingratex_input = NULL;
+	Input* calvingratey_input = NULL;
+	Input* vx_input           = NULL;
+	Input* vy_input           = NULL;
+	if(ismovingfront){
+		calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
+		calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
+	}
+	else{
+		vx_input = this->GetInput(VxEnum); _assert_(vx_input);
+		vy_input = this->GetInput(VyEnum); _assert_(vy_input);
+	}
 
 	/*Start looping on Gaussian points*/
 	Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
 	while(gauss->next()){
 		thickness_input->GetInputValue(&thickness,gauss);
-		calvingratex_input->GetInputValue(&calvingratex,gauss);
-		calvingratey_input->GetInputValue(&calvingratey,gauss);
 		this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
 
-		flux += rho_ice*Jdet*gauss->weight*thickness*(calvingratex*normal[0] + calvingratey*normal[1]);
+		if(ismovingfront){
+			calvingratex_input->GetInputValue(&calvingratex,gauss);
+			calvingratey_input->GetInputValue(&calvingratey,gauss);
+			flux += rho_ice*Jdet*gauss->weight*thickness*(calvingratex*normal[0] + calvingratey*normal[1]);
+		}
+		else{
+			vx_input->GetInputValue(&vx,gauss);
+			vy_input->GetInputValue(&vy,gauss);
+			flux += rho_ice*Jdet*gauss->weight*thickness*(vx*normal[0] + vy*normal[1]);
+		}
 	}
 
 	/*Clean up and return*/
@@ -5733,6 +5770,7 @@ IssmDouble Tria::TotalCalvingMeltingFluxLevelset(bool scaled){/*{{{*/
 	/*Scaled not implemented yet...*/
 	_assert_(!scaled);
 
+	bool              ismovingfront;
 	int               domaintype;
 	const IssmPDouble epsilon = 1.e-15;
 	IssmDouble        s1,s2;
@@ -5744,6 +5782,7 @@ IssmDouble Tria::TotalCalvingMeltingFluxLevelset(bool scaled){/*{{{*/
 
 	/*Recover parameters and values*/
 	parameters->FindParam(&domaintype,DomainTypeEnum);
+	parameters->FindParam(&ismovingfront,TransientIsmovingfrontEnum);
 	Element::GetInputListOnVertices(&gl[0],MaskIceLevelsetEnum);
 
 	/*Be sure that values are not zero*/
@@ -5827,29 +5866,41 @@ IssmDouble Tria::TotalCalvingMeltingFluxLevelset(bool scaled){/*{{{*/
 	IssmDouble rho_ice=FindParam(MaterialsRhoIceEnum);
 	Input* thickness_input    = this->GetInput(ThicknessEnum); _assert_(thickness_input);
 	Input *gr_input           = this->GetInput(MaskOceanLevelsetEnum); _assert_(gr_input);
-	Input* calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
-	Input* calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
 	Input* vx_input           = this->GetInput(VxEnum); _assert_(vx_input);
 	Input* vy_input           = this->GetInput(VyEnum); _assert_(vy_input);
-	Input* meltingrate_input  = this->GetInput(CalvingMeltingrateEnum); _assert_(meltingrate_input);
+	Input* meltingrate_input  = NULL;
+	Input* calvingratex_input = NULL;
+	Input* calvingratey_input = NULL;
+	if(ismovingfront){
+		meltingrate_input  = this->GetInput(CalvingMeltingrateEnum); _assert_(meltingrate_input);
+		calvingratex_input = this->GetInput(CalvingratexEnum); _assert_(calvingratex_input);
+		calvingratey_input = this->GetInput(CalvingrateyEnum); _assert_(calvingratey_input);
+	}
 
 	/*Start looping on Gaussian points*/
 	Gauss* gauss=this->NewGauss(&xyz_list[0][0],&xyz_front[0][0],3);
 	while(gauss->next()){
 		thickness_input->GetInputValue(&thickness,gauss);
-		calvingratex_input->GetInputValue(&calvingratex,gauss);
-		calvingratey_input->GetInputValue(&calvingratey,gauss);
 		gr_input->GetInputValue(&groundedice,gauss);
 		vx_input->GetInputValue(&vx,gauss);
 		vy_input->GetInputValue(&vy,gauss);
 		vel=vx*vx+vy*vy;
-		meltingrate_input->GetInputValue(&meltingrate,gauss);
+		if(ismovingfront){
+			calvingratex_input->GetInputValue(&calvingratex,gauss);
+			calvingratey_input->GetInputValue(&calvingratey,gauss);
+			meltingrate_input->GetInputValue(&meltingrate,gauss);
+			meltingratex=meltingrate*vx/(sqrt(vel)+1.e-14);
+			meltingratey=meltingrate*vy/(sqrt(vel)+1.e-14);
+		}
 		if(groundedice<0) meltingrate = 0.;
-		meltingratex=meltingrate*vx/(sqrt(vel)+1.e-14);
-		meltingratey=meltingrate*vy/(sqrt(vel)+1.e-14);
 		this->JacobianDeterminantSurface(&Jdet,&xyz_front[0][0],gauss);
 
-		flux += rho_ice*Jdet*gauss->weight*thickness*((calvingratex+meltingratex)*normal[0] + (calvingratey+meltingratey)*normal[1]);
+		if(ismovingfront){
+			flux += rho_ice*Jdet*gauss->weight*thickness*((calvingratex+meltingratex)*normal[0] + (calvingratey+meltingratey)*normal[1]);
+		}
+		else{
+			flux += rho_ice*Jdet*gauss->weight*thickness*(vx*normal[0] + vy*normal[1]);
+		}
 	}
 
 	/*Clean up and return*/
