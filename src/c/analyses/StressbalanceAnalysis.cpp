@@ -1057,6 +1057,67 @@ void           StressbalanceAnalysis::Core(FemModel* femmodel){/*{{{*/
 		_error_("not supported");
 	}
 
+	/*Update other model fields based on solution (Vel, Pressure, etc)*/
+	this->PostCore(femmodel);
+
+}/*}}}*/
+void           StressbalanceAnalysis::PostCore(FemModel* femmodel){/*{{{*/
+
+	/*Get some parameters once for all*/
+	int        domaintype, approximation;
+	IssmDouble rho_ice,g;
+	femmodel->parameters->FindParam(&rho_ice, MaterialsRhoIceEnum);
+	femmodel->parameters->FindParam(&g, ConstantsGEnum);
+	femmodel->parameters->FindParam(&domaintype, DomainTypeEnum);
+
+	/*Loop over elements and add pressure and vel*/
+	for(Object* & object : femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+
+		int numvertices = element->GetNumberOfVertices();
+		element->GetInputValue(&approximation,ApproximationEnum);
+
+		/*Add pressure if non-FS*/
+		if(approximation!=SSAFSApproximationEnum && approximation!=HOFSApproximationEnum && approximation!=FSApproximationEnum){
+			IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
+			IssmDouble* surface   = xNew<IssmDouble>(numvertices);
+			element->GetInputListOnVertices(surface,SurfaceEnum);
+
+			if(domaintype==Domain3DEnum){
+				for(int i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-element->vertices[i]->z);
+			}
+			else if(domaintype==Domain2DverticalEnum){
+				for(int i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-element->vertices[i]->y);
+			}
+			else{
+				IssmDouble* thickness = xNew<IssmDouble>(numvertices);
+				element->GetInputListOnVertices(thickness,ThicknessEnum);
+				for(int i=0;i<numvertices;i++) pressure[i]=rho_ice*g*thickness[i]; /*makes no send anyway*/
+			}
+
+			element->AddInput(PressureEnum,pressure,P1Enum);
+			xDelete<IssmDouble>(pressure);
+			xDelete<IssmDouble>(surface);
+		}
+
+		/*Compute vel*/
+		IssmDouble* vx = xNew<IssmDouble>(numvertices);
+		IssmDouble* vy = xNew<IssmDouble>(numvertices);
+		IssmDouble* vz = xNew<IssmDouble>(numvertices);
+		IssmDouble* vel= xNew<IssmDouble>(numvertices);
+		element->GetInputListOnVertices(&vx[0],VxEnum,0.);
+		element->GetInputListOnVertices(&vy[0],VyEnum,0.);
+		element->GetInputListOnVertices(&vz[0],VzEnum,0.);
+		for(int i=0;i<numvertices;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
+		element->AddInput(VelEnum, vel, P1Enum);
+
+		/*Free resources:*/
+		xDelete<IssmDouble>(vx);
+		xDelete<IssmDouble>(vy);
+		xDelete<IssmDouble>(vz);
+		xDelete<IssmDouble>(vel);
+	}
+
 }/*}}}*/
 ElementVector* StressbalanceAnalysis::CreateDVector(Element* element){/*{{{*/
 

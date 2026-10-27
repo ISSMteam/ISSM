@@ -21,6 +21,7 @@ class StressbalanceAnalysis: public Analysis{
 
 		/*Finite element Analysis*/
 		void           Core(FemModel* femmodel);
+		void           PostCore(FemModel* femmodel);
 		ElementVector* CreateDVector(Element* element);
 		ElementMatrix* CreateJacobianMatrix(Element* element);
 		ElementMatrix* CreateKMatrix(Element* element);
