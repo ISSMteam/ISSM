@@ -905,8 +905,7 @@ void Friction::GetAlpha2PISM(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	IssmDouble tau_c = N*tan(phi);
 
 	/*Compute basal speed*/
-	IssmDouble ub;
-	element->GetInputValue(&ub,gauss,VelEnum);
+	IssmDouble ub = VelMag(gauss);
 
 	/*now compute alpha^2*/
 	IssmDouble u0,q;
