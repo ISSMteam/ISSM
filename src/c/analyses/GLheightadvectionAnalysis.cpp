@@ -48,9 +48,6 @@ void GLheightadvectionAnalysis::UpdateParameters(Parameters* parameters,IoModel*
 void           GLheightadvectionAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           GLheightadvectionAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* GLheightadvectionAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

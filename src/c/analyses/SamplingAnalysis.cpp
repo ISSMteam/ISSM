@@ -101,9 +101,6 @@ void SamplingAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,
 void           SamplingAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           SamplingAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* SamplingAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

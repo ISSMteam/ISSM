@@ -70,9 +70,6 @@ void MeltingAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,i
 void           MeltingAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           MeltingAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* MeltingAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

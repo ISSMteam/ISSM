@@ -170,9 +170,6 @@ void HydrologyDCEfficientAnalysis::ResetCounter(FemModel* femmodel){/*{{{*/
 void HydrologyDCEfficientAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void HydrologyDCEfficientAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyDCEfficientAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

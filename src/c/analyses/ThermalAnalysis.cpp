@@ -212,9 +212,6 @@ void ThermalAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,i
 void           ThermalAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           ThermalAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ThermalAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

@@ -63,9 +63,6 @@ void HydrologyPismAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 void           HydrologyPismAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyPismAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyPismAnalysis::CreateDVector(Element* element){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/

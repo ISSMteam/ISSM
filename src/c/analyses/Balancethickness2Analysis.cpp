@@ -58,9 +58,6 @@ void Balancethickness2Analysis::UpdateParameters(Parameters* parameters,IoModel*
 void           Balancethickness2Analysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented yet");
 }/*}}}*/
-void           Balancethickness2Analysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented yet");
-}/*}}}*/
 ElementVector* Balancethickness2Analysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

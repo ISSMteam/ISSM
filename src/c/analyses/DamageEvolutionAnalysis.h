@@ -21,7 +21,6 @@ class DamageEvolutionAnalysis: public Analysis{
 
 		/*Finite element Analysis*/
 		void           Core(FemModel* femmodel);
-		void           PreCore(FemModel* femmodel);
 		void           CreateDamageFInput(Element* element);
 		void           CreateDamageFInputArctan(Element* element);
 		void           CreateDamageFInputExp(Element* element);

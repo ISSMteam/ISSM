@@ -207,9 +207,6 @@ void HydrologyGlaDSAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 void           HydrologyGlaDSAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyGlaDSAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyGlaDSAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

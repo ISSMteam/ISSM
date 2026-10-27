@@ -189,9 +189,6 @@ void           StressbalanceVerticalAnalysis::Core(FemModel* femmodel){/*{{{*/
 		femmodel->SetCurrentConfiguration(StressbalanceVerticalAnalysisEnum);
 		solutionsequence_linear(femmodel);
 }/*}}}*/
-void           StressbalanceVerticalAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* StressbalanceVerticalAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

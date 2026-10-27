@@ -454,9 +454,6 @@ void           EnthalpyAnalysis::Core(FemModel* femmodel){/*{{{*/
 	PostProcessing(femmodel);
 
 }/*}}}*/
-void           EnthalpyAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* EnthalpyAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

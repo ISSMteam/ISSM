@@ -207,9 +207,6 @@ void EsaAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 void           EsaAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           EsaAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* EsaAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

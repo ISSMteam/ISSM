@@ -179,9 +179,6 @@ void FreeSurfaceBaseAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           FreeSurfaceBaseAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           FreeSurfaceBaseAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* FreeSurfaceBaseAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

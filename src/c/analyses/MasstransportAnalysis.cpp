@@ -329,9 +329,6 @@ void MasstransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 void           MasstransportAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           MasstransportAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* MasstransportAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

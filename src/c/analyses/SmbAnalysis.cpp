@@ -836,9 +836,6 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
-void           SmbAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* SmbAnalysis::CreateDVector(Element* element){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/

@@ -60,9 +60,6 @@ void BalancevelocityAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           BalancevelocityAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           BalancevelocityAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* BalancevelocityAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

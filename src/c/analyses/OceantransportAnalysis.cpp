@@ -96,9 +96,6 @@ void OceantransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 void           OceantransportAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           OceantransportAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* OceantransportAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

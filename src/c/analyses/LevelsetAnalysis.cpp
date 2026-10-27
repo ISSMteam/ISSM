@@ -363,9 +363,6 @@ void           LevelsetAnalysis::Core(FemModel* femmodel){/*{{{*/
 		solutionsequence_linear(femmodel);
 	}
 }/*}}}*/
-void           LevelsetAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* LevelsetAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

@@ -64,9 +64,6 @@ void HydrologyTwsAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomo
 void           HydrologyTwsAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyTwsAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyTwsAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

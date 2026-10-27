@@ -28,9 +28,6 @@ void BalancethicknessSoftAnalysis::CreateLoads(Loads* loads, IoModel* iomodel){/
 void           BalancethicknessSoftAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           BalancethicknessSoftAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* BalancethicknessSoftAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

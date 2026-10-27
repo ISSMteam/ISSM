@@ -79,9 +79,6 @@ void AgeAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 void           AgeAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           AgeAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* AgeAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

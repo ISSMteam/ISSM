@@ -29,9 +29,6 @@ void AdjointBalancethicknessAnalysis::UpdateParameters(Parameters* parameters,Io
 void           AdjointBalancethicknessAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           AdjointBalancethicknessAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* AdjointBalancethicknessAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

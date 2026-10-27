@@ -30,9 +30,6 @@ void AdjointHorizAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomo
 void AdjointHorizAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void AdjointHorizAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* AdjointHorizAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

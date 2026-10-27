@@ -80,9 +80,6 @@ void MmemasstransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* 
 void           MmemasstransportAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           MmemasstransportAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* MmemasstransportAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

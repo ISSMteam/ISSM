@@ -39,9 +39,6 @@ void DepthAverageAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomo
 void           DepthAverageAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           DepthAverageAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* DepthAverageAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

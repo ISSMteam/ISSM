@@ -21,7 +21,6 @@ class HydrologyShreveAnalysis: public Analysis{
 
 		/*Finite element Analysis*/
 		void           Core(FemModel* femmodel);
-		void           PreCore(FemModel* femmodel);
 		ElementVector* CreateDVector(Element* element);
 		void           CreateHydrologyWaterVelocityInput(Element* element);
 		ElementMatrix* CreateJacobianMatrix(Element* element);

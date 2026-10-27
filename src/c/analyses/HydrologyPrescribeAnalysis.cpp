@@ -83,9 +83,6 @@ void HydrologyPrescribeAnalysis::UpdateParameters(Parameters* parameters,IoModel
 void           HydrologyPrescribeAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyPrescribeAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyPrescribeAnalysis::CreateDVector(Element* element){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/

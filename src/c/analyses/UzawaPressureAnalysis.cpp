@@ -62,9 +62,6 @@ void UzawaPressureAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 void           UzawaPressureAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           UzawaPressureAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* UzawaPressureAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

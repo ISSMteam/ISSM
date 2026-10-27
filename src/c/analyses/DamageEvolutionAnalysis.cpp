@@ -121,9 +121,6 @@ void DamageEvolutionAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           DamageEvolutionAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           DamageEvolutionAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 void           DamageEvolutionAnalysis::CreateDamageFInput(Element* element){/*{{{*/
 
 	/*Fetch number of vertices and allocate output*/

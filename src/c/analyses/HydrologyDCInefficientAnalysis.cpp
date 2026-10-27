@@ -189,9 +189,6 @@ void HydrologyDCInefficientAnalysis::CreateLoads(Loads* loads, IoModel* iomodel)
 void           HydrologyDCInefficientAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyDCInefficientAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyDCInefficientAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

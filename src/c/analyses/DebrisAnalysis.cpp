@@ -135,9 +135,6 @@ void           DebrisAnalysis::Core(FemModel* femmodel){/*{{{*/
 	PostProcessing(femmodel);
 
 }/*}}}*/
-void           DebrisAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* DebrisAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

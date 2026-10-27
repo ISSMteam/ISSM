@@ -1058,9 +1058,6 @@ void           StressbalanceAnalysis::Core(FemModel* femmodel){/*{{{*/
 	}
 
 }/*}}}*/
-void           StressbalanceAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* StressbalanceAnalysis::CreateDVector(Element* element){/*{{{*/
 
 	int approximation;

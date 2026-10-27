@@ -183,9 +183,6 @@ void HydrologyShaktiAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           HydrologyShaktiAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyShaktiAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyShaktiAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

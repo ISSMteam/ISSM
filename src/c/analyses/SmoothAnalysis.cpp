@@ -36,9 +36,6 @@ void SmoothAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,in
 void           SmoothAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           SmoothAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* SmoothAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

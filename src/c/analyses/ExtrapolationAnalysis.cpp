@@ -71,9 +71,6 @@ void           ExtrapolationAnalysis::Core(FemModel* femmodel){/*{{{*/
 		femmodel->RequestedOutputsx(&femmodel->results,&extvar_enum,1);
 	}
 }/*}}}*/
-void           ExtrapolationAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ExtrapolationAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

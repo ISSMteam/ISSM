@@ -161,9 +161,6 @@ void           StressbalanceSIAAnalysis::Core(FemModel* femmodel){/*{{{*/
 		femmodel->SetCurrentConfiguration(StressbalanceSIAAnalysisEnum);
 		solutionsequence_linear(femmodel);
 }/*}}}*/
-void           StressbalanceSIAAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-_error_("not implemented");
-}/*}}}*/
 ElementVector* StressbalanceSIAAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

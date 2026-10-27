@@ -39,9 +39,6 @@ void ExtrudeFromTopAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 void           ExtrudeFromTopAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           ExtrudeFromTopAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ExtrudeFromTopAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

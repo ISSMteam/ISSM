@@ -80,9 +80,6 @@ void LoveAnalysis::UpdateConstraints(FemModel* femmodel){/*{{{*/
 void           LoveAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_(" not needed!");
 }/*}}}*/
-void           LoveAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_(" not needed!");
-}/*}}}*/
 ElementVector* LoveAnalysis::CreateDVector(Element* element){/*{{{*/
 	_error_(" not needed!");
 }/*}}}*/
