@@ -1078,7 +1078,7 @@ void           StressbalanceAnalysis::PostCore(FemModel* femmodel){/*{{{*/
 		element->GetInputValue(&approximation,ApproximationEnum);
 
 		/*Add pressure if non-FS*/
-		if(approximation!=SSAFSApproximationEnum && approximation!=HOFSApproximationEnum && approximation!=FSApproximationEnum){
+		if(approximation!=SSAFSApproximationEnum && approximation!=HOFSApproximationEnum && approximation!=FSApproximationEnum && approximation!=NoneApproximationEnum){
 			IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
 			IssmDouble* surface   = xNew<IssmDouble>(numvertices);
 			element->GetInputListOnVertices(surface,SurfaceEnum);
@@ -2262,59 +2262,30 @@ void           StressbalanceAnalysis::GetBSSAprime(IssmDouble* Bprime,Element* e
 }/*}}}*/
 void           StressbalanceAnalysis::InputUpdateFromSolutionSSA(IssmDouble* solution,Element* element){/*{{{*/
 
-	int         i,dim,domaintype;
-	IssmDouble  rho_ice,g;
-	int*        doflist=NULL;
-	IssmDouble* xyz_list=NULL;
-	Element*    basalelement=NULL;
+	int  i,domaintype;
+	int* doflist=NULL;
 
 	/*Deal with pressure first*/
 	int numvertices = element->GetNumberOfVertices();
-	IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
-	IssmDouble* thickness = xNew<IssmDouble>(numvertices);
-	IssmDouble* surface   = xNew<IssmDouble>(numvertices);
-
 	element->FindParam(&domaintype,DomainTypeEnum);
-	rho_ice =element->FindParam(MaterialsRhoIceEnum);
-	g       =element->FindParam(ConstantsGEnum);
-	switch(domaintype){
-		case Domain2DhorizontalEnum:
-			element->GetInputListOnVertices(thickness,ThicknessEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*thickness[i];
-			dim=2;
-			break;
-		case Domain3DEnum:
-			element->GetVerticesCoordinates(&xyz_list);
-			element->GetInputListOnVertices(surface,SurfaceEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+2]);
-			dim=2;
-			break;
-		case Domain2DverticalEnum:
-			element->GetVerticesCoordinates(&xyz_list);
-			element->GetInputListOnVertices(surface,SurfaceEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+1]);
-			dim=1;
-			break;
-		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
-	}
-	element->AddInput(PressureEnum,pressure,P1Enum);
-	xDelete<IssmDouble>(pressure);
-	xDelete<IssmDouble>(thickness);
-	xDelete<IssmDouble>(surface);
 
 	/*Get basal element*/
+	Element* basalelement=NULL;
 	switch(domaintype){
 		case Domain2DhorizontalEnum:
 			basalelement = element;
 			break;
 		case Domain3DEnum: case Domain2DverticalEnum:
-			if(!element->IsOnBase()){xDelete<IssmDouble>(xyz_list); return;}
+			if(!element->IsOnBase()) return;
 			basalelement=element->SpawnBasalElement();
 			break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
 
+
 	/*Fetch number of nodes and dof for this finite element*/
+	int dim = 2;
+	if(domaintype==Domain2DverticalEnum) dim=1;
 	int numnodes = basalelement->GetNumberOfNodes();
 	int numdof   = numnodes*dim;
 
@@ -2323,8 +2294,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionSSA(IssmDouble* sol
 	IssmDouble* values = xNew<IssmDouble>(numdof);
 	IssmDouble* vx     = xNew<IssmDouble>(numnodes);
 	IssmDouble* vy     = xNew<IssmDouble>(numnodes);
-	IssmDouble* vz     = xNew<IssmDouble>(numnodes);
-	IssmDouble* vel    = xNew<IssmDouble>(numnodes);
 
 	/*Use the dof list to index into the solution vector: */
 	for(i=0;i<numdof;i++) values[i]=solution[doflist[i]];
@@ -2345,35 +2314,21 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionSSA(IssmDouble* sol
 		}
 	}
 
-	/*Get Vz and compute vel*/
-	if(dim==2){
-		basalelement->GetInputListOnNodes(&vz[0],VzEnum,0.);
-		for(i=0;i<numnodes;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
-	}
-	else{
-		basalelement->GetInputListOnNodes(&vy[0],VyEnum,0.);
-		for(i=0;i<numnodes;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i]);
-	}
-
-	/*Add vx and vy as inputs to the tria element: */
+	/*Add vx and vy to inputs*/
 	/*Also add surface vx and vy for the misfit, and base vx and vy for friction*/
 	element->AddBasalInput(VxEnum,vx,element->GetElementType());
 	element->AddBasalInput(VxSurfaceEnum,vx,element->GetElementType());
 	element->AddBasalInput(VxBaseEnum,vx,element->GetElementType());
-	if(dim==2) {
+	if(dim==2){
 		element->AddBasalInput(VyEnum,vy,element->GetElementType());
 		element->AddBasalInput(VySurfaceEnum,vy,element->GetElementType());
 		element->AddBasalInput(VyBaseEnum,vy,element->GetElementType());
 	}
-	element->AddBasalInput(VelEnum,vel,element->GetElementType());
 
 	/*Free resources:*/
-	xDelete<IssmDouble>(vel);
-	xDelete<IssmDouble>(vz);
 	xDelete<IssmDouble>(vy);
 	xDelete<IssmDouble>(vx);
 	xDelete<IssmDouble>(values);
-	xDelete<IssmDouble>(xyz_list);
 	xDelete<int>(doflist);
 	if(basalelement->IsSpawnedElement()){basalelement->DeleteMaterials(); delete basalelement;};
 }/*}}}*/
