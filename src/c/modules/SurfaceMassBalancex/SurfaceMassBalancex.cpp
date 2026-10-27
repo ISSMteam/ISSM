@@ -16,6 +16,7 @@
 #include <sstream>
 #include <vector>
 namespace py = pybind11;
+
 #endif
 
 #define MAXVERTICES 6 /*Maximum number of vertices per element, currently Penta, to avoid dynamic mem allocation*/
@@ -584,6 +585,75 @@ void SmbEmulatorx(FemModel* femmodel){/*{{{*/
 
 	InputUpdateFromVectorx(femmodel,smb_local.data(),SmbMassBalanceEnum,VertexLIdEnum);
 
+}/*}}}*/
+void SmbEmulatorUNetx(FemModel* femmodel){/*{{{*/
+
+	if(!femmodel->parameters->Exist(SmbEmulatorEnum)) _error_("SmbEmulatorEnum not found; SMB emulator was not initialized");
+	Param* emulator_param = femmodel->parameters->FindParamObject(SmbEmulatorEnum);
+	if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Parameter should be EmulatorParam");
+	EmulatorParam* smbemulator = xDynamicCast<EmulatorParam*>(emulator_param);
+
+	int rank = IssmComm::GetRank();
+	int numberofvertices = femmodel->vertices->NumberOfVertices();
+	const IssmDouble dts = 86400.;
+	IssmDouble timeinputs, rho_ice;
+	femmodel->parameters->FindParam(&timeinputs,TimeEnum);
+	femmodel->parameters->FindParam(&rho_ice,MaterialsRhoIceEnum);
+
+	/*Fetch ISSM elevation*/
+	IssmDouble* surface;
+	int surface_size;
+	GetVectorFromInputsx(&surface,&surface_size,femmodel,SurfaceEnum);
+	std::vector<IssmDouble> smb_all(numberofvertices,0.);
+
+	/*Evaluate emulator on rank 0*/
+	if(rank==0){
+		const size_t nvertices = static_cast<size_t>(numberofvertices);
+		const size_t nfeatures = 1;
+		std::vector<float> features(nvertices*nfeatures);
+
+      // unit change
+	   for(size_t i=0;i<nvertices;i++){
+			features[i*nfeatures + 0] = static_cast<float>(surface[i]/1.0);
+		}
+
+		try{
+			py::gil_scoped_acquire gil;
+			std::vector<ssize_t> features_shape = {static_cast<ssize_t>(nvertices),static_cast<ssize_t>(nfeatures)};
+			py::array_t<float> features_np(features_shape,features.data());
+
+			// To-do: interpolation, mesh -> grid
+			//
+
+			py::object output_obj = smbemulator->mod.attr("predict_logits_np")(features_np);
+			py::array_t<float,py::array::c_style | py::array::forcecast> output_array(output_obj);
+			
+			py::buffer_info output_info = output_array.request();
+			const float* output = static_cast<const float*>(output_info.ptr);
+			
+			// To-do: interpolation, grid -> mesh
+			//
+
+			// unit change
+			for(size_t i=0;i<nvertices;i++){
+				smb_all[i] = static_cast<IssmDouble>(output[i]);
+			}
+		}
+		catch(const py::error_already_set& e){
+			_error_("SmbEmulatorx Python exception: " << e.what());
+		}
+		catch(const std::exception& e){
+		   _error_("SmbEmulatorx exception: " << e.what());
+		}
+	}
+
+	xDelete<IssmDouble>(surface);
+
+	ISSM_MPI_Comm comm = IssmComm::GetComm();
+	ISSM_MPI_Bcast(smb_all.data(),numberofvertices,ISSM_MPI_DOUBLE,0,comm);
+   InputUpdateFromVectorx(femmodel,smb_all.data(),SmbMassBalanceEnum,VertexSIdEnum);
+
+	return;
 }/*}}}*/
 #endif
 void SmbHenningx(FemModel* femmodel){/*{{{*/

@@ -22,6 +22,7 @@ void PositiveDegreeDayFastx(FemModel* femmodel);
 void PositiveDegreeDayGCMx(FemModel* femmodel);
 #ifdef _HAVE_PyBind11_
 void SmbEmulatorx(FemModel* femmodel);
+void SmbEmulatorUNetx(FemModel* femmodel);
 #endif
 void SmbHenningx(FemModel* femmodel);
 void SmbComponentsx(FemModel* femmodel);
