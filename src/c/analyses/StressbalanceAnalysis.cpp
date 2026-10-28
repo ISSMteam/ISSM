@@ -2265,8 +2265,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionSSA(IssmDouble* sol
 	int  i,domaintype;
 	int* doflist=NULL;
 
-	/*Deal with pressure first*/
-	int numvertices = element->GetNumberOfVertices();
 	element->FindParam(&domaintype,DomainTypeEnum);
 
 	/*Get basal element*/
@@ -2966,43 +2964,18 @@ ElementVector* StressbalanceAnalysis::CreatePVectorL1L2Front(Element* element){/
 }/*}}}*/
 void           StressbalanceAnalysis::InputUpdateFromSolutionL1L2(IssmDouble* solution,Element* element){/*{{{*/
 
-	int         i,dim,domaintype;
-	IssmDouble  rho_ice,g;
+	int         i,domaintype;
 	int*        doflist=NULL;
-	IssmDouble* xyz_list=NULL;
 	Element*    basalelement=NULL;
 
-	/*Deal with pressure first*/
-	int numvertices = element->GetNumberOfVertices();
-	IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
-	IssmDouble* thickness = xNew<IssmDouble>(numvertices);
-	IssmDouble* surface   = xNew<IssmDouble>(numvertices);
-
-	element->FindParam(&dim,DomainDimensionEnum);
-	element->FindParam(&domaintype,DomainTypeEnum);
-	rho_ice =element->FindParam(MaterialsRhoIceEnum);
-	g       =element->FindParam(ConstantsGEnum);
-	if(dim==2){
-		element->GetInputListOnVertices(thickness,ThicknessEnum);
-		for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*thickness[i];
-	}
-	else{
-		element->GetVerticesCoordinates(&xyz_list);
-		element->GetInputListOnVertices(surface,SurfaceEnum);
-		for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+2]);
-	}
-	element->AddInput(PressureEnum,pressure,P1Enum);
-	xDelete<IssmDouble>(pressure);
-	xDelete<IssmDouble>(thickness);
-	xDelete<IssmDouble>(surface);
-
 	/*Get basal element*/
+	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
 		case Domain2DhorizontalEnum:
 			basalelement = element;
 			break;
 		case Domain3DEnum:
-			if(!element->IsOnBase()){xDelete<IssmDouble>(xyz_list); return;}
+			if(!element->IsOnBase()) return;
 			basalelement=element->SpawnBasalElement();
 			break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
@@ -3017,8 +2990,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionL1L2(IssmDouble* so
 	IssmDouble* values    = xNew<IssmDouble>(numdof);
 	IssmDouble* vx        = xNew<IssmDouble>(numnodes);
 	IssmDouble* vy        = xNew<IssmDouble>(numnodes);
-	IssmDouble* vz        = xNew<IssmDouble>(numnodes);
-	IssmDouble* vel       = xNew<IssmDouble>(numnodes);
 
 	/*Use the dof list to index into the solution vector: */
 	for(i=0;i<numdof;i++) values[i]=solution[doflist[i]];
@@ -3039,14 +3010,9 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionL1L2(IssmDouble* so
 		if(xIsInf<IssmDouble>(vy[i])) _error_("Inf found in solution vector");
 	}
 
-	/*Get Vz and compute vel*/
-	basalelement->GetInputListOnNodes(&vz[0],VzEnum,0.);
-	for(i=0;i<numnodes;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
-
 	/*Add vx and vy as inputs to the tria element: */
 	element->AddBasalInput(VxEnum,vx,element->GetElementType());
 	element->AddBasalInput(VyEnum,vy,element->GetElementType());
-	element->AddBasalInput(VelEnum,vel,element->GetElementType());
 
 	/*Also add surface vx and vy for the misfit, and base vx and vy for friction*/
 	element->AddBasalInput(VxSurfaceEnum,vx,element->GetElementType());
@@ -3055,12 +3021,9 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionL1L2(IssmDouble* so
 	element->AddBasalInput(VyBaseEnum,vy,element->GetElementType());
 
 	/*Free resources:*/
-	xDelete<IssmDouble>(vel);
-	xDelete<IssmDouble>(vz);
 	xDelete<IssmDouble>(vy);
 	xDelete<IssmDouble>(vx);
 	xDelete<IssmDouble>(values);
-	xDelete<IssmDouble>(xyz_list);
 	xDelete<int>(doflist);
 	if(basalelement->IsSpawnedElement()){basalelement->DeleteMaterials(); delete basalelement;};
 }/*}}}*/
@@ -3454,47 +3417,19 @@ ElementVector* StressbalanceAnalysis::CreatePVectorMOLHOFront(Element* element){
 }/*}}}*/
 void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* solution,Element* element){/*{{{*/
 
-	int         i,dim,domaintype;
-	IssmDouble  rho_ice,g;
+	int         i,domaintype;
 	int*        doflist=NULL;
-	IssmDouble* xyz_list=NULL;
 	Element*    basalelement=NULL;
 
-	/*Deal with pressure first*/
-	int numvertices = element->GetNumberOfVertices();
-	IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
-	IssmDouble* thickness = xNew<IssmDouble>(numvertices);
-	IssmDouble* surface   = xNew<IssmDouble>(numvertices);
-
-	element->FindParam(&domaintype,DomainTypeEnum);
-	rho_ice =element->FindParam(MaterialsRhoIceEnum);
-	g       =element->FindParam(ConstantsGEnum);
-	switch(domaintype){
-		case Domain2DhorizontalEnum:
-			element->GetInputListOnVertices(thickness,ThicknessEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*thickness[i];
-			dim=2;
-			break;
-		case Domain3DEnum:
-			element->GetVerticesCoordinates(&xyz_list);
-			element->GetInputListOnVertices(surface,SurfaceEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+2]);
-			dim=2;
-			break;
-		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
-	}
-	element->AddInput(PressureEnum,pressure,P1Enum);
-	xDelete<IssmDouble>(pressure);
-	xDelete<IssmDouble>(thickness);
-	xDelete<IssmDouble>(surface);
-
 	/*Get basal element*/
+	int dim = 2;
+	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
 		case Domain2DhorizontalEnum:
 			basalelement = element;
 			break;
 		case Domain3DEnum:
-			if(!element->IsOnBase()){xDelete<IssmDouble>(xyz_list); return;}
+			if(!element->IsOnBase()){return;}
 			basalelement=element->SpawnBasalElement();
 			break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
@@ -3515,8 +3450,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* s
 	IssmDouble* vsy       = xNew<IssmDouble>(numnodes);
 	IssmDouble* vx        = xNew<IssmDouble>(numnodes);
 	IssmDouble* vy        = xNew<IssmDouble>(numnodes);
-	IssmDouble* vz        = xNew<IssmDouble>(numnodes);
-	IssmDouble* vel       = xNew<IssmDouble>(numnodes);
 	IssmDouble* n			 = xNew<IssmDouble>(numnodes);
 	IssmDouble* H			 = xNew<IssmDouble>(numnodes);
 	IssmDouble* s			 = xNew<IssmDouble>(numnodes);
@@ -3568,11 +3501,9 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* s
 			for(i=0;i<numnodes;i++){ //numnodes of the 2D mesh in which the MOLHO is written
 				vx[i]=vbx[i]+vshx[i]*(n[i]+1)/(n[i]+2);
 				vy[i]=vby[i]+vshy[i]*(n[i]+1)/(n[i]+2);
-				vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i]); 
 			}
 			element->AddBasalInput(VxEnum,vx,element->GetElementType());
 			element->AddBasalInput(VyEnum,vy,element->GetElementType());
-			element->AddBasalInput(VelEnum,vel,element->GetElementType()); 
          break;
       case Domain3DEnum:
 		   basalelement->GetInputListOnNodes(&H[0],ThicknessEnum,0.);
@@ -3584,10 +3515,8 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* s
 	}
 
 	/*Free resources:*/
-	xDelete<IssmDouble>(vel);
 	xDelete<IssmDouble>(vx);
 	xDelete<IssmDouble>(vy);
-	xDelete<IssmDouble>(vz);
 	xDelete<IssmDouble>(vby);
 	xDelete<IssmDouble>(vbx);
 	xDelete<IssmDouble>(vsy);
@@ -3595,7 +3524,6 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionMOLHO(IssmDouble* s
 	xDelete<IssmDouble>(vshy);
 	xDelete<IssmDouble>(vshx);
 	xDelete<IssmDouble>(values);
-	xDelete<IssmDouble>(xyz_list);
 	xDelete<IssmDouble>(n);
 	xDelete<IssmDouble>(s);
 	xDelete<IssmDouble>(H);
@@ -4141,46 +4069,27 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionHO(IssmDouble* solu
 
 	int         i,domaintype,dim;
 	int*        doflist=NULL;
-	IssmDouble* xyz_list=NULL;
-
-	/*Deal with pressure first*/
-	int numvertices = element->GetNumberOfVertices();
-	IssmDouble* pressure  = xNew<IssmDouble>(numvertices);
-	IssmDouble* surface   = xNew<IssmDouble>(numvertices);
 
 	element->FindParam(&domaintype,DomainTypeEnum);
-	IssmDouble rho_ice =element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble g       =element->FindParam(ConstantsGEnum);
 	switch(domaintype){
 		case Domain3DEnum:
-			element->GetVerticesCoordinates(&xyz_list);
-			element->GetInputListOnVertices(surface,SurfaceEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+2]);
 			dim=3;
 			break;
 		case Domain2DverticalEnum:
-			element->GetVerticesCoordinates(&xyz_list);
-			element->GetInputListOnVertices(surface,SurfaceEnum);
-			for(i=0;i<numvertices;i++) pressure[i]=rho_ice*g*(surface[i]-xyz_list[i*3+1]);
 			dim=2;
 			break;
 		default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
-	element->AddInput(PressureEnum,pressure,P1Enum);
-	xDelete<IssmDouble>(pressure);
-	xDelete<IssmDouble>(surface);
 
 	/*Fetch number of nodes and dof for this finite element*/
-	int numnodes = element->GetNumberOfNodes();
-	int numdof   = numnodes*(dim-1);
+	int numnodes    = element->GetNumberOfNodes();
+	int numdof      = numnodes*(dim-1);
 
 	/*Fetch dof list and allocate solution vectors*/
 	element->GetDofListLocal(&doflist,HOApproximationEnum,GsetEnum);
 	IssmDouble* values = xNew<IssmDouble>(numdof);
 	IssmDouble* vx     = xNew<IssmDouble>(numnodes);
 	IssmDouble* vy     = xNew<IssmDouble>(numnodes);
-	IssmDouble* vz     = xNew<IssmDouble>(numnodes);
-	IssmDouble* vel    = xNew<IssmDouble>(numnodes);
 
 	/*Use the dof list to index into the solution vector: */
 	for(i=0;i<numdof;i++) values[i]=solution[doflist[i]];
@@ -4200,28 +4109,14 @@ void           StressbalanceAnalysis::InputUpdateFromSolutionHO(IssmDouble* solu
 		}
 	}
 
-	/*Get Vz and compute vel*/
-	if(dim==3){
-		element->GetInputListOnNodes(&vz[0],VzEnum,0.);
-		for(i=0;i<numnodes;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
-	}
-	else{
-		element->GetInputListOnNodes(&vy[0],VyEnum,0.);
-		for(i=0;i<numnodes;i++) vel[i]=sqrt(vx[i]*vx[i] + vy[i]*vy[i]);
-	}
-
 	/*Add vx and vy as inputs to the element: */
 	element->AddInput(VxEnum,vx,element->GetElementType());
 	if(dim==3)element->AddInput(VyEnum,vy,element->GetElementType());
-	element->AddInput(VelEnum,vel,element->GetElementType());
 
 	/*Free resources:*/
-	xDelete<IssmDouble>(vel);
-	xDelete<IssmDouble>(vz);
 	xDelete<IssmDouble>(vy);
 	xDelete<IssmDouble>(vx);
 	xDelete<IssmDouble>(values);
-	xDelete<IssmDouble>(xyz_list);
 	xDelete<int>(doflist);
 }/*}}}*/
 
