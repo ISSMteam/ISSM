@@ -13,7 +13,7 @@ rm -rf ${PREFIX}
 mkdir -p ${PREFIX}
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "http://www.soest.hawaii.edu/pwessel/gshhg/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/GenericMappingTools/gshhg-gmt/releases/download/${VER}/gshhg-gmt-${VER}.tar.gz" "gshhg-gmt-${VER}.tar.gz"
 
 # Unpack source
 tar -zxvf gshhg-gmt-${VER}.tar.gz
