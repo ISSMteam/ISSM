@@ -203,7 +203,7 @@ class pairoptions(object):
 
             #remove duplicates from the options list
             del self.list[field]
-            self.used = self.used[pos]
+            self.used = self.used[np.where(pos)[0]]
 
             #warn user if requested
             if warn:
