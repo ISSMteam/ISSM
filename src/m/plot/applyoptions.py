@@ -165,7 +165,7 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
     if options.exist('caxis'):
         lims = options.getfieldvalue('caxis')
         assert len(lims) == 2, 'error, caxis should be passed as a list of length 2'
-        options.addfielddefault('caxis', lims)
+        options.changefieldvalue('caxis', lims)
     else:
         if len(data) > 0:
             lims = [data.min(), data.max()]
