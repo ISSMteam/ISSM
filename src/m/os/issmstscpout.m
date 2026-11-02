@@ -1,8 +1,8 @@
 function issmstscpout(host,path,login,packages)
-%ISSMSTSCPOUT send packages to a host, using starcluster put on unix
+%ISSMSTSCPOUT - Send packages to a host, using starcluster put on unix
 %
-%   usage: issmstscpout(host,path,login,packages)
-%
+%   Usage:
+%      issmstscpout(host,path,login,packages)
 %
 
 %create string of packages being sent

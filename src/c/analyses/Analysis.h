@@ -42,8 +42,9 @@ class Analysis{
 		virtual void UpdateParameters(Parameters* parameters,IoModel* iomodel,int solution_enum,int analysis_enum)=0;
 
 		/*Finite element Analysis*/
+		virtual void           PreCore(FemModel* femmodel){};
+		virtual void           PostCore(FemModel* femmodel){};
 		virtual void           Core(FemModel* femmodel)=0;
-		virtual void           PreCore(FemModel* femmodel)=0;
 		virtual ElementVector* CreateDVector(Element* element)=0;
 		virtual ElementMatrix* CreateJacobianMatrix(Element* element)=0;
 		virtual ElementMatrix* CreateKMatrix(Element* element)=0;

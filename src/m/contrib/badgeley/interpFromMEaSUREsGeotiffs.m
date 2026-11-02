@@ -40,15 +40,15 @@ p_ind = 1; % index for the product
 for p = product
 
    if p == 481
-   	foldername = [src_dir 'Greenland_2009_2022_pairs_radar_v4/'];
+   	foldername = [src_dir 'GrIMP_0481/'];
    elseif p == 646
-   	foldername = [src_dir 'Greenland_2006_2022_monthly_optical_v3/'];
+   	foldername = [src_dir 'GrIMP_0646/'];
    elseif p == 731
-      foldername = [src_dir 'Greenland_2014_2022_monthly_mosaic_v5/'];
+      foldername = [src_dir 'GrIMP_0731/'];
    elseif p == 725 
-      foldername = [src_dir 'Greenland_2014_2022_annual_mosaic_v5/'];
+      foldername = [src_dir 'GrIMP_0725/'];
 	elseif p == 670
-		foldername = [src_dir 'Greenland_1995_2015_decadal_average_mosaic_v1/'];
+		foldername = [src_dir 'GrIMP_0670/'];
    else
    	error(['The velocity data for ', product, ' is not available, either download it first or double check the ID number.']);
    end
@@ -90,9 +90,8 @@ for p = product
 		elseif p == 670
          dataVers(ii) = dataVers_temp(1);
 			dataPrefix(ii) = join(tempConv(1:3), '_');
-			% TODO: should I make all the functions decyear or stick with date2decyear?
-			dataTstart(ii) = decyear(datetime('01-12-1995','InputFormat','dd-MM-yyyy'));
-			dataTend(ii) = decyear(datetime('31-10-2015','InputFormat','dd-MM-yyyy')); 
+			dataTstart(ii) = date2decyear(datenum(1995,12,1));
+			dataTend(ii) = date2decyear(datenum(2015,10,31));
    	end
    end
 	fprintf(['   == Found ', num2str(Ndata), ' records in ', foldername(numel(src_dir)+1:end)]);

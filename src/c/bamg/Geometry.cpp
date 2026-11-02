@@ -638,7 +638,6 @@ namespace bamg {
 					long  n1 = head_v[i];
 					long  n2 = next_p[n1];
 					long  i1 = n1/2, i2 = n2/2; // edge number
-					long  j1 = n1%2, j2 = n2%2; // vertex in the edge
 					/* if the edge type/referencenumber a changing then is SetRequired();*/
 					if (edges[i1].type != edges[i2].type || edges[i1].Required()){
 						vertices[i].SetRequired();
@@ -737,9 +736,7 @@ namespace bamg {
 								curves[nbcurves].FirstEdge=e;
 								curves[nbcurves].FirstVertexIndex=k0;
 							}
-							int nee=0;
 							for(;;){
-								nee++;
 								k1 = 1-k0; // next vertex of the edge
 								e->SetMark();
 								nb_marked_edges++;

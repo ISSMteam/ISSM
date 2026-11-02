@@ -68,8 +68,6 @@ void IntVecParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  IntVecParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void IntVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = IntVecParamEnum;
@@ -83,12 +81,6 @@ void IntVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	else{
 		this->values=NULL;
 	}
-
-}
-/*}}}*/
-int  IntVecParam::ObjectEnum(void){/*{{{*/
-
-	return IntVecParamEnum;
 
 }
 /*}}}*/

@@ -1,3 +1,8 @@
+%GIA class definition
+%
+%   Usage:
+%      gia=gia();
+
 classdef gia
 	properties (SetAccess=public) 
 		mantle_viscosity              = NaN;

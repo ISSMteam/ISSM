@@ -6,7 +6,7 @@
 #include "../Numerics/types.h"
 #include "../Exceptions/exceptions.h"
 
-IssmDouble Arrhenius(IssmDouble temperature,IssmDouble depth,IssmDouble n){
+IssmDouble Arrhenius(IssmDouble temperature,IssmDouble depth,IssmDouble n,IssmDouble beta){
 	/*Use EISMINT Parameterization for the rheology: Payne2000
 	 *
 	 *  A(T*) = A0 exp(-Q/RT*)
@@ -25,7 +25,8 @@ IssmDouble Arrhenius(IssmDouble temperature,IssmDouble depth,IssmDouble n){
 	 *  Convert A to B :  B = A^(-1/n) */
 
 	/*Some physical constants (Payne2000)*/
-	IssmDouble beta=8.66*1.e-4;
+	/*NOTE: Hard-coded temperature calculations fail when different values of md.materials.beta are assigned.*/
+	//IssmDouble beta=8.66*1.e-4; 
 	IssmDouble R=8.314;
 
 	/*Intermediaries*/

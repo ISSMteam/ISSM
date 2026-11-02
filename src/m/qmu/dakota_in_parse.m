@@ -1,33 +1,33 @@
+%DAKOTA_IN_PARSE - read a Dakota .in input file and parse it
 %
-%  read a Dakota .in input file and parse it.
+%   where the required input is:
+%      filei         (character, name of .in file)
 %
-%  [method,dvar,dresp]=dakota_in_parse(filei)
+%   the required output is:
+%      method        (character, dakota method name)
+%      dvar          (structure array, variables)
+%      dresp         (structure array, responses)
 %
-%  where the required input is:
-%    filei         (character, name of .in file)
+%   the filei will be prompted if empty.  the fields of dvar and
+%   dresp are particular to the data contained within the file.
 %
-%  the required output is:
-%    method        (character, dakota method name)
-%    dvar          (structure array, variables)
-%    dresp         (structure array, responses)
+%   this function reads a dakota .in input file and parses it
+%   into the matlab workspace.  it operates in a content-driven
+%   fashion, where it parses whatever input data it encounters
+%   in the file, rather than searching for data based on the
+%   particular method.  (this makes it independent of method.)
 %
-%  the filei will be prompted if empty.  the fields of dvar and
-%  dresp are particular to the data contained within the file.
+%   as of now, parameters are generally not parsed.  also, the
+%   variable and response classes are not used for output.
 %
-%  this function reads a dakota .in input file and parses it
-%  into the matlab workspace.  it operates in a content-driven
-%  fashion, where it parses whatever input data it encounters
-%  in the file, rather than searching for data based on the
-%  particular method.  (this makes it independent of method.)
+%   this data would typically be used for modifying and submitting
+%   a subsequent dakota run.  it could also be used with output
+%   data for post-processing or annotation purposes.
 %
-%  as of now, parameters are generally not parsed.  also, the
-%  variable and response classes are not used for output.
+%   Usage:
+%      [method,dvar,dresp]=dakota_in_parse(filei)
 %
-%  this data would typically be used for modifying and submitting
-%  a subsequent dakota run.  it could also be used with output
-%  data for post-processing or annotation purposes.
-%
-%  "Copyright 2009, by the California Institute of Technology.
+%   "Copyright 2009, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship
 %  acknowledged. Any commercial use must be negotiated with
 %  the Office of Technology Transfer at the California Institute

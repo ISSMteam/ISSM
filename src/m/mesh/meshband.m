@@ -1,6 +1,10 @@
 function band=meshband(mh,outerdomain,varargin)
+%MESHBAND - mesh the band between a mesh's outline and an outer domain
+%
+%   Usage:
+%      band=meshband(mh,outerdomain);
 
-	%process options: 
+	%process options:
 	options=pairoptions(varargin{:});
 
 	%some checks on the mesh: 

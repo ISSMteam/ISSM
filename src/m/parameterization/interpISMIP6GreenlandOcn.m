@@ -1,13 +1,16 @@
 function frontalforcing = interpISMIP6GreenlandOcn(md,model_name)
-%interpISMIP6GreenlandOcn - interpolate chosen ISMIP6 frontal forcing to model
+%INTERPISMIP6GREENLANDOCN - interpolate chosen ISMIP6 frontal forcing to model
 %
 %   This frontal melting implementation follows the parameterization proposed
 %   by Slater et al. 2020 https://tc.copernicus.org/articles/14/985/2020/
 %
+%   Usage:
+%      frontalforcing = interpISMIP6GreenlandOcn(md,model_name)
+%
 %   Input:
 %     - md (model object)
 %     - model_name (string): name of the climate model and scenario
-%     - suppported models:
+%     - supported models:
 %
 %             2.6 scenario             8.5 scenario
 %             ---------------------------------------------
@@ -19,7 +22,7 @@ function frontalforcing = interpISMIP6GreenlandOcn(md,model_name)
 %                                      noresm1-m_rcp8.5      
 %                                      ukesm1-cm6_ssp585
 %   Output:
-%     - undercutting: prepared to be input directly into md.basalforcings
+%     - frontalforcing: prepared to be input directly into md.frontalforcings
 %                      time series from 1950-2100
 %
 %   Examples:

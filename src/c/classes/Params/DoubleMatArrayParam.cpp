@@ -116,8 +116,6 @@ void DoubleMatArrayParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int    DoubleMatArrayParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleMatArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleMatArrayParamEnum;
@@ -138,12 +136,6 @@ void DoubleMatArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		mdim_array=NULL;
 		ndim_array=NULL;
 	}
-}
-/*}}}*/
-int DoubleMatArrayParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleMatArrayParamEnum;
-
 }
 /*}}}*/
 

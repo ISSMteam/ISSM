@@ -35,6 +35,7 @@ class ub_ccr_from_ghub(object):
         self.jobname = ''
         self.output = ''
         self.mailuser = ''
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -69,6 +70,7 @@ class ub_ccr_from_ghub(object):
         s += '    jobname: {}\n'.format(self.jobname)
         s += '    output: {}\n'.format(self.output)
         s += '    mailuser: {}\n'.format(self.mailuser)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -162,7 +164,7 @@ class ub_ccr_from_ghub(object):
         #upload input files
         directory = issmexecdir
 
-        issmscpout(self.name, directory, self.login, 0, ['{}.tar.gz'.format(dirname)])
+        issmscpout(self.name, directory, self.login, 0, ['{}.tar.gz'.format(dirname)], transfermethod=self.transfermethod)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -176,5 +178,5 @@ class ub_ccr_from_ghub(object):
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)
 
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

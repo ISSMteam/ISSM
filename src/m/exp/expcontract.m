@@ -2,7 +2,7 @@ function normal_node=expcontract(newfile,oldfile,distance)
 %EXPCONTRACT - contract or expand a profile, according to the normal.
 % 
 %   Usage:
-%      expcontract(newfile,oldfile,distance)
+%      normal_node=expcontract(newfile,oldfile,distance)
 %
 %   See also EXPMASTER, EXPDOC
 

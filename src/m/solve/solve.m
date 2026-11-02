@@ -107,7 +107,7 @@ end
 
 %recover some fields
 cluster=md.cluster;
-if strcmpi(getfieldvalue(options,'batch','no'),'yes')
+if strcmpi(getfieldvalue(options,'batch','no'),'yes') || getfieldvalue(options,'batch',0)==1
 	batch=1;
 else
 	batch=0;
@@ -183,8 +183,8 @@ LaunchQueueJob(cluster,md.miscellaneous.name,md.private.runtimename,filelist,res
 
 %return if batch:
 if batch
-	disp('batch mode requested: not launching job interactively');
-	disp('launch solution sequence on remote cluster by hand');
+	disp('batch mode requested: job not submitted');
+	disp(['Files available in ' cluster.executionpath '/' md.private.runtimename]);
 	return;
 end
 

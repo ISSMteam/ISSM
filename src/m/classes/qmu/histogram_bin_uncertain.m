@@ -1,17 +1,17 @@
-%HISTOGRAM BIN UNCERTAIN class definition
+%HISTOGRAM_BIN_UNCERTAIN class definition
 %
-%	Usage: 
-%   hbu=histogram_bin_uncertain('descriptor',descriptor,'pairs_per_variable',pairs_per_variable,...
+%   Usage:
+%      hbu=histogram_bin_uncertain('descriptor',descriptor,'pairs_per_variable',pairs_per_variable,...
 %           'abscissas',abscissas,'counts',counts,'partition',partition)
-%      
-%      where hbu is the histogram_bin_uncertain object returned by the constructor, pairs_per_variable the 
-%      size of the histogram, 'abscissas' and 'counts' describe the histogram itself. 
-%      If the variable is distributed, then a partition vector can be supplied, which can be a 
-%      partition vector over elements or vertices. In which case counts, 
+%
+%      where hbu is the histogram_bin_uncertain object returned by the constructor, pairs_per_variable the
+%      size of the histogram, 'abscissas' and 'counts' describe the histogram itself.
+%      If the variable is distributed, then a partition vector can be supplied, which can be a
+%      partition vector over elements or vertices. In which case counts,
 %
 %   Example:
 %      md.qmu.variables.giaid=histogram_bin_uncertain('descriptor','GiammeModelId','pairs_per_variable',3,...
-%           'count',[.6 .4 0],''abscissas',[1 2 3]);
+%           'counts',[.6 .4 0],'abscissas',[1 2 3]);
 %      md.qmu.variables.surfaceloadid=histogram_bin_uncertain(...
 %           'descriptor','distributed_SurfaceloadModelId','pairs_per_variable',[2 3 4],...
 %           'counts',{[1 0],[.6 .4 0],[.4 .4 .2 0]},...

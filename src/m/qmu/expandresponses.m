@@ -1,5 +1,8 @@
 function dresp=expandresponses(md,responses)
-%EXPANDRESPONSES - expand responses
+%EXPANDRESPONSES - expand a qmu responses structure into a dresp structure array
+%
+%   Usage:
+%      dresp=expandresponses(md,responses)
 
 fnames=fieldnames(responses);
 

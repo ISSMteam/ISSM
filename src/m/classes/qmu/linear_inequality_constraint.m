@@ -1,7 +1,7 @@
+%LINEAR_INEQUALITY_CONSTRAINT class definition
 %
-%  constructor for the linear_inequality_constraint class.
-%
-%  [lic]=linear_inequality_constraint(varargin)
+%   Usage:
+%      lic=linear_inequality_constraint(varargin)
 %
 %  where the required varargin are:
 %    matrix        (double row, variable coefficients, NaN)

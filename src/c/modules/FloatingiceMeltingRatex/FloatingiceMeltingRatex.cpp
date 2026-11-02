@@ -95,7 +95,7 @@ void MismipFloatingiceMeltingRatex(FemModel* femmodel){/*{{{*/
 void FloatingiceMeltingRateIsmip6x(FemModel* femmodel){/*{{{*/
 
 	int         num_basins, basinid, num_depths, domaintype;
-	IssmDouble  area, tf, base, time;
+	IssmDouble  area, tf;
 	bool        islocal;
 	IssmDouble* tf_depths = NULL;
 
@@ -220,7 +220,6 @@ void FloatingiceMeltingRateIsmip6x(FemModel* femmodel){/*{{{*/
 void FloatingiceMeltingRateIsmip7x(FemModel* femmodel){/*{{{*/
 
 	IssmDouble  time;
-	IssmDouble  g;
 	IssmDouble* tf_depths=NULL;
 	int		   num_depths;
 	bool        islocal;
@@ -348,7 +347,7 @@ void LinearFloatingiceMeltingRatearmax(FemModel* femmodel){/*{{{*/
    /*Load parameters*/
    bool isstochastic;
    bool isdeepmeltingstochastic = false;
-   int M,N,arorder,maorder,numbasins,numparams,numbreaks,my_rank;
+   int M,N,arorder,maorder,numbasins,numparams,numbreaks;
    femmodel->parameters->FindParam(&numbasins,BasalforcingsLinearNumBasinsEnum);
 	femmodel->parameters->FindParam(&arorder,BasalforcingsARMAarOrderEnum);
 	femmodel->parameters->FindParam(&maorder,BasalforcingsARMAmaOrderEnum);

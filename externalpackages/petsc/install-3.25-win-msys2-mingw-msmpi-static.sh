@@ -4,7 +4,7 @@ set -u # NOTE: Do not set -e as it will cause this script to fail when there are
 # NOTE:
 # - You must install various needed packages with,
 #
-#		pacman -S mingw-w64-x86_64-msmpi mingw-w64-x86_64-toolchain python
+#		pacman -S mingw-w64-x86_64-toolchain python
 #
 # - You must use MSYS2 MinGW 64-bit version of cmake to be able to install 
 #	external packages correctly,
@@ -17,7 +17,7 @@ set -u # NOTE: Do not set -e as it will cause this script to fail when there are
 
 ## Constants
 #
-VER="3.25.3"
+VER="3.25.4"
 
 PETSC_ARCH="arch-mswin-c-opt"
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS

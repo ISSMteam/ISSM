@@ -39,9 +39,6 @@ void ExtrudeFromBaseAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           ExtrudeFromBaseAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           ExtrudeFromBaseAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ExtrudeFromBaseAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

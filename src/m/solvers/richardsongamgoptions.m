@@ -1,4 +1,8 @@
 function solverOptions=richardsongamgoptions(varargin)
+%RICHARDSONGAMGOPTIONS - return PETSc options for the Richardson iteration Krylov solver with a GAMG (geometric-algebraic multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=richardsongamgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

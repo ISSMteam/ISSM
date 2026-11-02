@@ -7,18 +7,21 @@ from hydrologyprescribe import hydrologyprescribe
 
 def effectivepressure(md, *args):
     '''
-    EFFECTIVEPRESSURE - Calculate the effective basal pressure N from md.geometry and effective pressure coupling rule in md.friction
+    EFFECTIVEPRESSURE - Calculate effective pressure
 
-    USEAGE:
-      N = effectivepressure(md); 
+    Calculate the effective basal pressure N from md.geometry and effective
+    pressure coupling rule in md.friction
+
+    USAGE:
+       N = effectivepressure(md); 
 
     INPUT:
-      md      ISSM model from which to calculate pressure
+       md      ISSM model from which to calculate pressure
 
     OUTPUT:
-      N			effective pressure at base (Pa)
+       N			effective pressure at base (Pa)
     
-      See also: BASALSTRESS
+    See also: BASALSTRESS
     '''
 
     # Get options
@@ -41,7 +44,7 @@ def effectivepressure(md, *args):
     elif coupling == 1: # effective pressure is equal to the overburden pressure
         N = p_ice
     elif coupling == 2: # uniform sheet (water pressure >= 0)
-        p_water=max(p_water,0.0)
+        p_water=np.maximum(p_water,0.0)
         N = p_ice-p_water
     elif coupling == 3: # Use effective pressure prescribed in md.friction.effective_pressure
         N = np.maximum(md.friction.effective_pressure, 0)

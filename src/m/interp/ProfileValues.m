@@ -5,7 +5,7 @@ function [Z,data_interp]=ProfileValues(md,data,xprof,yprof,resolution)
 %   a point given by its coordinates
 %
 %   Usage:
-%      [z,data]=ProfileValues(md,data,xcoord,ycoord,resolution)
+%      [Z,data_interp]=ProfileValues(md,data,xprof,yprof,resolution)
 
 %Get bed and surface for each 2d point, offset to make sure that it is inside the glacier system
 offset=10^-3;

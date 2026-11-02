@@ -153,7 +153,16 @@ classdef solidearthsettings
 					end
 				else
 					if self.grdmodel==1
-						error('model requires a 3D surface mesh to run GRD computations (change mesh from mesh2d to mesh3dsurface)');
+						% A regional 2D elastic GRD run is supported when the
+						% spherical load geometry is supplied explicitly.
+						if ~strcmpi(class(md.mesh),'mesh2d')
+							error('model requires a 3D surface mesh or mesh2d for elastic GRD computations');
+						end
+						md = checkfield(md,'fieldname','mesh.lat','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+						md = checkfield(md,'fieldname','mesh.long','NaN',1,'Inf',1,'size',[md.mesh.numberofvertices 1]);
+						if self.grdocean || self.sealevelloading
+							error('regional mesh2d elastic GRD requires solidearth.settings.grdocean=0 and sealevelloading=0');
+						end
 					end
 				end
 				if self.sealevelloading==1 & self.grdocean==0

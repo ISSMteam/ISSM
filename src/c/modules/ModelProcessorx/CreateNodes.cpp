@@ -557,7 +557,6 @@ void CreateNodes(Nodes* nodes, IoModel* iomodel,int analysis,int finite_element,
 				if(e2!=-2){
 					if(epart[e1]!=epart[e2]){
 						int i1=iomodel->faces[4*i+0];
-						int i2=iomodel->faces[4*i+1];
 						int pos=-1;
 						for(int j=0;j<3;j++) if(iomodel->elements[3*e2+j]==i1) pos=j;
 						if(     pos==0){ node_list[0] = e2*3+0; node_list[1] = e2*3+2;}
@@ -580,7 +579,6 @@ void CreateNodes(Nodes* nodes, IoModel* iomodel,int analysis,int finite_element,
 			}
 		}
 		else if(finite_element==P0DGEnum){
-			int node_list[2];
 			if(iomodel->domaintype!=Domain2DhorizontalEnum) _error_("not implemented yet");
 			CreateEdges(iomodel);
 			CreateFaces(iomodel);

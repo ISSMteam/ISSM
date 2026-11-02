@@ -1,19 +1,19 @@
 function V = sphere_project(v,r,c)
-
-% sphere_project - project point X,Y,Z to the surface of sphere radius r
-% 
-% V = sphere_project(v,r,c)
-% 
-% Cartesian inputs:
-% v is the vertex matrix, Nx3 (XYZ)
-% r is the sphere radius, 1x1 (default 1)
-% c is the sphere centroid, 1x3 (default 0,0,0)
+%SPHERE_PROJECT - project point X,Y,Z to the surface of sphere radius r
 %
-% XYZ are converted to spherical coordinates and their radius is
-% adjusted according to r, from c toward XYZ (defined with theta,phi)
-% 
-% V is returned as Cartesian 3D coordinates
-% 
+%   Cartesian inputs:
+%   v is the vertex matrix, Nx3 (XYZ)
+%   r is the sphere radius, 1x1 (default 1)
+%   c is the sphere centroid, 1x3 (default 0,0,0)
+%
+%   XYZ are converted to spherical coordinates and their radius is
+%   adjusted according to r, from c toward XYZ (defined with theta,phi)
+%
+%   V is returned as Cartesian 3D coordinates
+%
+%   Usage:
+%      V = sphere_project(v,r,c);
+%
 
 % $Revision: 1.1 $ $Date: 2004/11/12 01:32:36 $
 

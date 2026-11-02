@@ -1,4 +1,8 @@
 function dresp=QmuSetupResponses(md,dresp,responses)
+%QMUSETUPRESPONSES - append a qmu response to a dresp array, expanding it over the partition if scaled
+%
+%   Usage:
+%      dresp=QmuSetupResponses(md,dresp,responses)
 
 %get descriptor
 descriptor=responses.descriptor;

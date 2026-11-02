@@ -1,5 +1,4 @@
 function plot_basaldrag(md,options,width,i,type)
-
 %PLOT_BASALDRAG - plot basal drag
 %
 %   Usage:

@@ -2,10 +2,15 @@ function data_prime = InterpFromModelToModel3d(md1,data,md2,default_value);
 %INTERPFROMMODELTOMODEL3D - Interpolation from a 3d hexahedron mesh onto another 3d hexahedron mesh
 %
 %   Usage:
+%      data_prime = InterpFromModelToModel3d(md1,data,md2,default_value);
+%
+%   Input:
 %      md1:  3d model holding the data to be interpolated onto another 3d model
 %      data:  matrix holding the data to be interpolated onto another 3d mesh
 %      md2:  3d model for which the data will be interpolated
 %      default_value:  default value if no data is found (holes)
+%
+%   Output:
 %      data_prime:  vector of 3d mesh interpolated data
 %
 %   Example:

@@ -1,5 +1,5 @@
 function string = epsg2proj(epsg)
-%EPSG2PROJ - uses gdalsrsinfo to provide PROJ.4 compatible string from 
+%EPSG2PROJ - uses projinfo to provide PROJ.4 compatible string from
 %EPSG code
 %
 %   Usage:

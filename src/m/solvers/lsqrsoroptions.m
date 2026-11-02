@@ -1,4 +1,8 @@
 function solverOptions=lsqrsoroptions(varargin)
+%LSQRSOROPTIONS - return PETSc options for the LSQR Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrsoroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -4,9 +4,9 @@ function mask = gmtmask(lat,long,varargin)
 %   Usage:
 %      mask.ocean = gmtmask(md.mesh.lat,md.mesh.long);
 %
-%	TODO: Standardize discovery of GMT bin path and whether or not we have GMT 
-%	modules (i.e. `gmt select`) between this file, gmtmask.py, and 
-%	gmtmaskparallel.m
+%   TODO: Standardize discovery of GMT bin path and whether or not we have GMT
+%   modules (i.e. `gmt select`) between this file, gmtmask.py, and
+%   gmtmaskparallel.m
 
 	%are we doing a recursive call? 
 	if nargin==3

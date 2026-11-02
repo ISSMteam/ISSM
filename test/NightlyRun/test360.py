@@ -18,7 +18,6 @@ md.miscellaneous.name = 'testChannels'
 # Miscellaneous
 md = setmask(md, '', '') # Everywhere grounded
 md = setflowequation(md, 'SSA', 'all')
-md.stressbalance.maxiter = 10 # Make sure it runs quickly...
 
 # Some constants
 md.constants.g = 9.8
@@ -60,13 +59,14 @@ md.timestepping.final_time = 0.4 / 365
 
 #Change hydrology class to Glads model
 md.hydrology = hydrologyglads()
+md.hydrology.maxiter = 10 # Make sure it runs quickly...
 md.hydrology.ischannels = 1
 md.hydrology.creep_open_flag = 0
 md.hydrology.istransition = 1
 md.hydrology.omega = 1/2000.
 md.hydrology.sheet_alpha = 3./2.
 md.hydrology.sheet_beta = 3./2.
-md.hydrology.englacial_void_ratio = 1.e-5
+md.hydrology.englacial_void_ratio = 1.e-5 * np.ones((md.mesh.numberofvertices))
 md.hydrology.moulin_input = np.zeros((md.mesh.numberofvertices))
 md.hydrology.neumannflux = np.zeros((md.mesh.numberofelements))
 md.hydrology.bump_height = 1.e-1 * np.ones((md.mesh.numberofvertices))

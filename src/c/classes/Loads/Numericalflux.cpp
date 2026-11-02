@@ -38,7 +38,6 @@ Numericalflux::Numericalflux(int numericalflux_id,int i,int index,IoModel* iomod
 	int numericalflux_vertex_ids[2];
 	int numericalflux_node_ids[4];
 	int numericalflux_type;
-   int numericalflux_degree;
 
 	/*Get edge*/
 	int i1 = iomodel->faces[4*index+0];

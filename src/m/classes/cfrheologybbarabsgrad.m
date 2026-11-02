@@ -1,12 +1,11 @@
 %CFRHEOLOGYBBARABSGRAD class definition
 %
 %   Usage:
-%      cfrheologybbarabsgrad=cfdragcoeffabsgrad();
-%      cfrheologybbarabsgrad=cfdragcoeffabsgrad('name','SurfaceAltimetry',...
+%      cfrheologybbarabsgrad=cfrheologybbarabsgrad();
+%      cfrheologybbarabsgrad=cfrheologybbarabsgrad('name','SurfaceAltimetry',...
 %                    'definitionstring','Outputdefinition1',... 
 %							'model_string','Surface',...
-%                    'weights',ones(md.mesh.numberofvertices,1),...
-%                    'weights_string','WeightsSurfaceObservations');
+%                    'weights',ones(md.mesh.numberofvertices,1));
 %
 %
 
@@ -16,7 +15,6 @@ classdef cfrheologybbarabsgrad
 		name               = '';
 		definitionstring   = ''; %string that identifies this output definition uniquely, from 'Outputdefinition[1-100]'
 		weights            = NaN; %weight coefficients for every vertex
-		weights_string     = ''; %string to identify this particular set of weights
 		cumulated          = NaN; %do we cumulate cfrheologybbarabsgrad through time?
 	end
 	
@@ -37,7 +35,6 @@ classdef cfrheologybbarabsgrad
 				self.name=getfieldvalue(options,'name','');
 				self.definitionstring=getfieldvalue(options,'definitionstring');
 				self.weights=getfieldvalue(options,'weights',NaN);
-				self.weights_string=getfieldvalue(options,'weights_string','');
 
 			end
 		end % }}}
@@ -64,7 +61,6 @@ classdef cfrheologybbarabsgrad
 			fielddisplay(self,'name','identifier for this cfrheologybbarabsgrad response');
 			fielddisplay(self,'definitionstring','string that identifies this output definition uniquely, from ''Outputdefinition[1-10]''');
 			fielddisplay(self,'weights','weights (at vertices) to apply to the cfrheologybbarabsgrad');
-			fielddisplay(self,'weights_string','string for weights for identification purposes');
 
 		end % }}}
 		function md = marshall(self,prefix,md,fid) % {{{
@@ -72,7 +68,6 @@ classdef cfrheologybbarabsgrad
 		WriteData(fid,prefix,'data',self.name,'name','md.cfrheologybbarabsgrad.name','format','String');
 		WriteData(fid,prefix,'data',self.definitionstring,'name','md.cfrheologybbarabsgrad.definitionstring','format','String');
 		WriteData(fid,prefix,'data',self.weights,'name','md.cfrheologybbarabsgrad.weights','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-		WriteData(fid,prefix,'data',self.weights_string,'name','md.cfrheologybbarabsgrad.weights_string','format','String');
 		end % }}}
 	end
 end

@@ -1,4 +1,4 @@
-%ISMIP7 BASAL FORCINGS class definition
+%BASALFORCINGSISMIP7 class definition
 %
 %   Usage:
 %      basalforcingsismip7=basalforcingsismip7();

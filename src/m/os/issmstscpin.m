@@ -1,7 +1,8 @@
 function issmstscpin(host, login,path, packages)
-%ISSMSCPIN get packages from host, using scp on unix, and pscp on windows
+%ISSMSTSCPIN - Get packages from host, using scp on unix, and pscp on windows
 %
-%   usage: issmstscpin(host,long, path, packages)
+%   Usage:
+%      issmstscpin(host,login,path,packages)
 %
 
 %get initial warning mode

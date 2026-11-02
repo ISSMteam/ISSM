@@ -1,7 +1,8 @@
 function varargout=loadmodellist(path)
-%LOADMODELLIST- load a model using built-in load module
+%LOADMODELLIST - load a list of models from a .mat file
 %
-%   check that modellist prototype has not changed. if so, adapt to new modellist prototype.
+%   Loads the modellist instance saved in a .mat file, converting from an
+%   older structure format to a modellist object if necessary.
 %
 %   Usage:
 %      mds=loadmodellist(path)

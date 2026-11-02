@@ -19,7 +19,7 @@ void solutionsequence_la(FemModel* femmodel){
 	Vector<IssmDouble>*  ys      = NULL;
 	Vector<IssmDouble>*  pug     = NULL;
 	Vector<IssmDouble>*  pug_old = NULL;
-	IssmDouble           eps_rel,r,theta; // 0<theta<.5   -> .15<theta<.45
+	IssmDouble           eps_rel;
 	int                  max_nonlinear_iterations;
 	bool                 vel_converged      = false;
 	bool                 pressure_converged = false;

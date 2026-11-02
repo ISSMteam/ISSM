@@ -1,5 +1,5 @@
 function md=meshconvert(md,varargin)
-%CONVERTMESH - convert mesh to bamg mesh
+%MESHCONVERT - convert mesh to bamg mesh
 %
 %   Usage:
 %      md=meshconvert(md);

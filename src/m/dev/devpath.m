@@ -1,5 +1,10 @@
+%DEVPATH - set up ISSM development paths
+%
+%   Usage:
+%      devpath;
+
 % clear the last warning to focus on the warnings of the ISSM path
-lastwarn(''); 
+lastwarn('');
 
 %Recover ISSM_DIR , or if on a Windows machine, ISSM_DIR_WIN
 if ispc

@@ -149,7 +149,7 @@ def WriteData(fid, prefix, *args):
         # Get size
         s = data.shape
         # If matrix = NaN, then do not write anything
-        if np.ndim(data) == 2 and np.prod(s) == 1 and np.all(np.isnan(data)):
+        if np.ndim(data) == 1 and np.prod(s) == 1 and np.all(np.isnan(data)):
             s = (0, 0)
 
         # First write length of record

@@ -67,6 +67,11 @@ class friction(object):
         md = checkfield(md, 'fieldname', 'friction.effective_pressure_limit', 'numel', [1], '>=', 0)
         if self.coupling == 3:
             md = checkfield(md, 'fieldname', 'friction.effective_pressure', 'NaN', 1, 'Inf', 1, 'timeseries', 1)
+        elif self.coupling ==4:
+            # check turn-on md.transient.ishydrology=1 
+            if not md.transient.ishydrology:
+                md.checkmessage("md.friction.coupling = 4 but md.transient.ishydrology = 0!");
+
         return md
     # }}}
     def marshall(self, prefix, md, fid):  # {{{

@@ -13,9 +13,6 @@ from frictioncoulomb import frictioncoulomb
 md = triangle(model(), '../Exp/Square.exp', 150000.)
 md = setmask(md, '../Exp/SquareShelf.exp', '')
 md = parameterize(md, '../Par/SquareSheetShelf.py')
-md.geometry.bed = copy.deepcopy(md.geometry.base)
-pos = np.nonzero(md.mask.ocean_levelset < 0.)
-md.geometry.bed[pos] = md.geometry.bed[pos] - 10
 md.friction = frictioncoulomb()
 md.friction.coefficient = 20 * np.ones(md.mesh.numberofvertices)
 md.friction.p = 1 * np.ones(md.mesh.numberofelements)

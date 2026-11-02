@@ -49,7 +49,6 @@ class Inputs{
 		void     ZAXPY(IssmDouble alpha, int xenum, int yenum, int zenum);
 		void     AXPY(IssmDouble alpha, int xenum, int yenum);
 		void     Shift(int inputenum, IssmDouble alpha);
-		void     AverageAndReplace(int inputenum);
 		void     DeepEcho(void);
 		void     DeepEcho(int enum_in);
 		void     Echo(void);
@@ -87,13 +86,10 @@ class Inputs{
 		TransientInput* SetDatasetTransientInput(int enum_in,int id,IssmDouble* times,int numtimes);
 		void  SetArrayInput(int enum_in,int row,IssmDouble* layers,int numlayers);
 		void  SetIntArrayInput(int enum_in,int row,int* layers,int numlayers);
-		void  SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);
-		void  SetTriaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values,int n);
 		void  SetTriaDatasetInput(int enum_in,int id,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetTriaInput(int enum_in,int interpolation,int row,IssmDouble values);
 		void  SetTriaInput(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetTriaInput(int enum_in,int interpolation,int row,int numindices,IssmDouble* values);
-		void  SetPentaControlInputGradient(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetPentaDatasetInput(int enum_in,int id,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetPentaInput(int enum_in,int interpolation,int row,IssmDouble values);
 		void  SetPentaInput(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);

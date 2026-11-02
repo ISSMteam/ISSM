@@ -150,6 +150,7 @@ Node::Node(int node_id,int node_sid,int io_index,bool node_clone,IoModel* iomode
 				analysis_enum==HydrologyDCEfficientAnalysisEnum ||
 				analysis_enum==HydrologyShaktiAnalysisEnum ||
 				analysis_enum==HydrologyGlaDSAnalysisEnum ||
+				analysis_enum==HydrologyIMLGlaDSAnalysisEnum ||
 				analysis_enum==GLheightadvectionAnalysisEnum ||
 				analysis_enum==LevelsetAnalysisEnum
 	  ){

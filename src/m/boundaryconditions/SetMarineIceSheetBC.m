@@ -1,5 +1,5 @@
 function md=SetMarineIceSheetBC(md,varargin)
-%SETICEMARINESHEETBC - Create the boundary conditions for stressbalance and thermal models for a  Marine Ice Sheet with Ice Front
+%SETMARINEICESHEETBC - Create the boundary conditions for stressbalance and thermal models for a Marine Ice Sheet with Ice Front
 %
 %   Neumann BC are used on the ice front (an ARGUS contour around the ice front
 %   can be given in input, or it will be deduced as onfloatingice & onboundary)

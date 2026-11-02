@@ -1,4 +1,4 @@
-%BECKMANNGOOSSE BASAL FORCINGS class definition
+%BASALFORCINGSBECKMANNGOOSSE class definition
 %
 %   Usage:
 %      basalforcingsbeckmanngoosse=basalforcingsbeckmanngoosse();

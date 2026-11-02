@@ -123,10 +123,9 @@ void controlvalidation_core(FemModel* femmodel){
 	int         solution_type,n;
 	int         num_responses;
 	IssmDouble  j0,j;
-	IssmDouble  Ialpha,exponent,alpha;
+	IssmDouble  Ialpha,alpha;
 	IssmDouble* scaling_factors = NULL;
 	IssmDouble* jlist = NULL;
-	int my_rank=IssmComm::GetRank();
 
 	/*Recover parameters used throughout the solution*/
 	femmodel->parameters->FindParam(&solution_type,SolutionTypeEnum);
@@ -148,6 +147,7 @@ void controlvalidation_core(FemModel* femmodel){
 
 	#if defined(_HAVE_ADOLC_)
 	/*{{{*/
+	int my_rank=IssmComm::GetRank();
 	IssmDouble* aX=xNew<IssmDouble>(n);
 	if(my_rank==0){
 		for(int i=0;i<n;i++){
@@ -158,6 +158,7 @@ void controlvalidation_core(FemModel* femmodel){
 	/*}}}*/
 	#elif defined(_HAVE_CODIPACK_)
 	/*{{{*/
+	int my_rank=IssmComm::GetRank();
 	simul_starttrace2(femmodel);
 	IssmDouble* aX=xNew<IssmDouble>(n);
 
@@ -274,15 +275,9 @@ void controlvalidation_core(FemModel* femmodel){
 	for(int i=0;i<2*num;i++) J_passive[i]=reCast<IssmPDouble>(output[i]);
 	femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,J_passive,num,2,0,0));
 	xDelete<IssmPDouble>(J_passive);
-	IssmDouble* aG=xNew<IssmDouble>(n);
-	for(int i=0;i<n;i++) aG[i] = G[i];
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
-	xDelete<IssmDouble>(aG);
 	#else
 	femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,output,num,2,0,0));
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,G);
 	#endif
-	femmodel->OutputControlsx(&femmodel->results);
 
 	/*Clean up and return*/
 	xDelete<IssmDouble>(output);

@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=modifyposition(A,numprofiles,numpoints,closed,prevplot,root,options)
-%MODIFYPOSITION - modify the prosition of a point of a profile
+%MODIFYPOSITION - modify the position of a point of a profile
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

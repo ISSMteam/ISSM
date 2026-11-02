@@ -58,7 +58,7 @@ void solutionsequence_sampling(FemModel* femmodel){
   Vector<IssmDouble>*  Mscale = NULL;  // square root of diagonal lumped factor matrix
 
   /*parameters:*/
-  int alpha, seed, nsize;
+  int alpha, seed;
 
   /*Recover parameters: */
   femmodel->parameters->FindParam(&seed,SamplingSeedEnum);

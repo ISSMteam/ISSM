@@ -38,9 +38,8 @@ class TransientFileInput: public Input{
 		void    Configure(Parameters* params);
 		void    DeepEcho();
 		void    Echo();
-		int     Id();
 		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
+		int     ObjectEnum(){return TransientFileInputEnum;}
 
 		/*TransientFileInput management:*/
 		bool IsFileInputUpdate(IssmDouble time);

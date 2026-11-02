@@ -61,6 +61,6 @@ def cuffey(temperature):
 
     # Now make sure that rigidity is positive
     pos = np.nonzero(rigidity < 0)
-    rigidity[pos] = pow(1, 6)
+    rigidity[pos] = pow(10, 6)
 
     return rigidity

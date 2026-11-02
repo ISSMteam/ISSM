@@ -1,4 +1,8 @@
 function solverOptions=bcgsgasmoptions(varargin)
+%BCGSGASMOPTIONS - return BiCGStab PETSc options with a generalized additive Schwartz method (GASM) preconditioner
+%
+%   Usage:
+%      options=bcgsgasmoptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

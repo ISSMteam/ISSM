@@ -1,5 +1,5 @@
 function md=setmask2(md,landname,floatingicename,groundedicename)
-%GEOGRAPHY2 - establish land, ice sheet and ice shelf areas in a domains.
+%SETMASK2 - establish land, ice sheet and ice shelf areas in a domains.
 %
 %   Usage:
 %      md=setmask2(md,landname,floatingicename,groundedicename)

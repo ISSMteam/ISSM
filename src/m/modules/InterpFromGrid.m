@@ -2,8 +2,8 @@ function dataout = InterpFromGrid(x, y, data, x_interp,y_interp, method)
 %INTERPFROMGRID - Interpolation from a grid onto a list of points (faster than InterpFromGridToMesh)
 %
 %   Usage:
-%      dataout = InterpFromGrid2(x, y, data, x_interp,y_interp)
-%      dataout = InterpFromGrid2(x, y, data, x_interp,y_interp, method)
+%      dataout = InterpFromGrid(x, y, data, x_interp,y_interp)
+%      dataout = InterpFromGrid(x, y, data, x_interp,y_interp, method)
 %
 %   data:    matrix holding the data to be interpolated onto the mesh
 %   x,y:     coordinates of matrix data (x and y must be in increasing order)

@@ -143,7 +143,7 @@ void SealevelGeometry::BuildSphericalHarmonics(){ /*{{{*/
 	//0: used for global average
 	//1: used for geocenter motion
 	//2: used for rotational feedback
-	int intj, count;
+	int intj;
 
 	IssmDouble YlmNorm[9];
 

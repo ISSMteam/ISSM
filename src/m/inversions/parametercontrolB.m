@@ -2,9 +2,9 @@ function md=parametercontrolB(md,varargin),
 %PARAMETERCONTROLB - parameterization for control method on B
 %
 %   It is possible to specify the number of steps, values for the
-%   minimum and maximum values of B, the 
-%   kind of cm_responses to use or the optscal.
-%   
+%   minimum and maximum values of B, the
+%   kind of cm_responses to use, or the optscal.
+%
 %   Usage:
 %       md=parametercontrolB(md,varargin)
 %
@@ -14,7 +14,8 @@ function md=parametercontrolB(md,varargin),
 %      md=parametercontrolB(md,'cm_min',10,'cm_max',10^8,'cm_jump',0.99,'maxiter',20)
 %      md=parametercontrolB(md,eps_cm',10^-4,'optscal',[10^7 10^8])
 %
-%   See also  PARAMETERCONTROLDRAG
+%   See Also:
+%      PARAMETERCONTROLDRAG
 
 %process options
 options=pairoptions(varargin{:});

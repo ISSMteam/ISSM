@@ -1,9 +1,8 @@
-%
-%  function to find the structural fields of a specified class
-%  
-%  [sclasso]=struc_class(sclass,cstr)
-%
 function [sclasso]=struc_class(sclass,cstr)
+%STRUC_CLASS - find the structural fields of a specified class
+%
+%   Usage:
+%      sclasso=struc_class(sclass,cstr);
 
 %  collect only the objects of the appropriate class
 

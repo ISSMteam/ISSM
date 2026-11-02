@@ -1,6 +1,9 @@
+%DAKOTA_ROSENBROCK_NOND - monte carlo sampling for rosenbrock case
 %
-%  monte carlo sampling for rosenbrock case
-%  (see Users4.2.pdf, Sec. 2.4.9)
+%   (see Users4.2.pdf, Sec. 2.4.9)
+%
+%   Usage:
+%      [dout,ddat,scm,pcm,srcm,prcm]=dakota_rosenbrock_nond()
 %
 %  "Copyright 2009, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship

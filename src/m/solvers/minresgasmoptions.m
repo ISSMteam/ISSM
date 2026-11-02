@@ -1,4 +1,8 @@
 function solverOptions=minresgasmoptions(varargin)
+%MINRESGASMOPTIONS - return PETSc options for the MINRES (minimum residual) Krylov solver with a GASM (Generalized Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=minresgasmoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

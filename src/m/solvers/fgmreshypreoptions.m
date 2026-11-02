@@ -1,4 +1,8 @@
 function solverOptions=fgmreshypreoptions(varargin)
+%FGMRESHYPREOPTIONS - PETSc solver options using the flexible GMRES (fgmres) Krylov method with Hypre preconditioning
+%
+%   Usage:
+%      solverOptions=fgmreshypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

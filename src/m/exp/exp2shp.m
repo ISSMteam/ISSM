@@ -1,5 +1,5 @@
 function exp2shp(expfilename,shpfilename,geometry)
-%SHPWRITE - write a shape file from a contour structure
+%EXP2SHP - write a shape file from an exp contour file
 %
 %   Usage:
 %      exp2shp(expfilename,shpfilename,geometry)

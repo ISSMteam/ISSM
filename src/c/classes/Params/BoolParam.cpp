@@ -45,8 +45,6 @@ void BoolParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    BoolParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void BoolParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = BoolParamEnum;
@@ -55,9 +53,3 @@ void BoolParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->value);
 
 }/*}}}*/
-int BoolParam::ObjectEnum(void){/*{{{*/
-
-	return BoolParamEnum;
-
-}
-/*}}}*/

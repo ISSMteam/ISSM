@@ -2,7 +2,7 @@ function [variable fpos]=loadresultfromdisk(filename,step,name,varargin)
 %LOADRESULTFROMDISK - load specific result of solution sequence from disk file "filename"
 %
 %   Usage:
-%      variable=loadresultfromdisk(filename,step,name);
+%      [variable,fpos]=loadresultfromdisk(filename,step,name);
 
 	%Open file
 	fid=fopen(filename,'rb');

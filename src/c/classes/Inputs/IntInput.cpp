@@ -51,8 +51,6 @@ void IntInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  IntInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void IntInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = IntInputEnum;
@@ -63,12 +61,6 @@ void IntInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		marshallhandle->call(this->values,this->size);
 	}
 	else this->values = NULL;
-
-}
-/*}}}*/
-int  IntInput::ObjectEnum(void){/*{{{*/
-
-	return IntInputEnum;
 
 }
 /*}}}*/
@@ -90,5 +82,3 @@ void IntInput::SetInput(int index,int value){/*{{{*/
 	this->values[index] = value;
 }
 /*}}}*/
-
-/*Object functions*/

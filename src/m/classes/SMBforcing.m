@@ -1,4 +1,4 @@
-%SMBforcing Class definition
+%SMBFORCING class definition
 %
 %   Usage:
 %      SMB=SMBforcing();

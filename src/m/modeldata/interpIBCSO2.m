@@ -1,4 +1,8 @@
 function [bedout tid] = interpIBCSO2(X,Y)
+%INTERPIBCSO2 - interpolate IBCSO v2 Antarctic bathymetry (and TID) onto X and Y
+%
+%   Usage:
+%      [bedout,tid] = interpIBCSO2(X,Y)
 
 %read data
 switch (oshostname())

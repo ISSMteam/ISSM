@@ -1,4 +1,8 @@
 function solverOptions=dgmrespbjacobioptions(varargin)
+%DGMRESPBJACOBIOPTIONS - PETSc solver options using the deflated GMRES (dgmres) Krylov method with point-block Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=dgmrespbjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

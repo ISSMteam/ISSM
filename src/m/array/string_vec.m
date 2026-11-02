@@ -1,9 +1,8 @@
-%
-%  function to return the string of an vector
-%
-%  function [svec]=string_vec(a)
-%
 function [svec]=string_vec(a)
+%STRING_VEC - return the string of a vector
+%
+%   Usage:
+%      svec=string_vec(a);
 
 if ~nargin
     help string_vec

@@ -158,17 +158,9 @@ void EmulatorParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  EmulatorParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void EmulatorParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	_error_("Not implemented yet");
-
-}
-/*}}}*/
-int EmulatorParam::ObjectEnum(void){/*{{{*/
-
-	return EmulatorParamEnum;
 
 }
 /*}}}*/

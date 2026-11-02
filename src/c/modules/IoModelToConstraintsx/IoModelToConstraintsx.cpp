@@ -596,11 +596,9 @@ void IoModelToConstraintsx(Constraints* constraints,IoModel* iomodel,IssmDouble*
 void IoModelToDynamicConstraintsx(Constraints* constraints,IoModel* iomodel,IssmDouble* spcdata,int M,int N,int analysis_type,int finite_element,int dof){/*{{{*/
 
 	/*intermediary: */
-	int         i,j,elementnbv,numfacevertices;
-	IssmDouble  value;
+	int         i;
 	IssmDouble *times            = NULL;
 	IssmDouble *values           = NULL;
-	bool        spcpresent       = false;
 
 	/*Higher-order finite elements*/
 	int   v1,v2;
@@ -612,9 +610,9 @@ void IoModelToDynamicConstraintsx(Constraints* constraints,IoModel* iomodel,Issm
 			break;
 		case P1bubbleEnum:
 			switch(iomodel->meshelementtype){
-				case TriaEnum:  elementnbv = 3; break;
-				case TetraEnum: elementnbv = 4; break;
-				case PentaEnum: elementnbv = 6; break;
+				case TriaEnum:  break;
+				case TetraEnum: break;
+				case PentaEnum: break;
 				default: _error_("mesh type not supported yet");
 			}
 			break;
@@ -644,9 +642,9 @@ void IoModelToDynamicConstraintsx(Constraints* constraints,IoModel* iomodel,Issm
 			}
 			EdgeOnBoundaryFlags(&boundaryedge,iomodel);
 			switch(iomodel->meshelementtype){
-				case TriaEnum:  elementnbv = 3; break;
-				case TetraEnum: elementnbv = 4; break;
-				case PentaEnum: elementnbv = 6; break;
+				case TriaEnum:  break;
+				case TetraEnum: break;
+				case PentaEnum: break;
 				default: _error_("mesh type not supported yet");
 			}
 			break;

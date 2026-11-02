@@ -1,7 +1,8 @@
-%
-%  wrapper for normfit to avoid using the matlab statistics toolbox.
-%
 function [muhat,sigmahat,muci,sigmaci]=normfit_issm(x,alpha)
+%NORMFIT_ISSM - wrapper for normfit to avoid using the MATLAB statistics toolbox
+%
+%   Usage:
+%      [muhat,sigmahat,muci,sigmaci]=normfit_issm(x,alpha);
 
 	if ~exist('alpha','var')
 		alpha=0.05;

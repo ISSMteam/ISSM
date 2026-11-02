@@ -1,4 +1,4 @@
-%AMRNEOPZ Class definition
+%AMRNEOPZ class definition
 %
 %   Usage:
 %      md.amr=amrneopz();

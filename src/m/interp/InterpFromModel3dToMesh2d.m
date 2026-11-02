@@ -2,11 +2,16 @@ function data_prime = InterpFromModel3dToMesh2d(md,data,x_prime,y_prime,sigma,de
 %INTERPFROMMODEL3DTOMESH2D - Interpolation from a 3d hexahedron mesh onto a list of 2d points
 %
 %   Usage:
+%      data_prime = InterpFromModel3dToMesh2d(md,data,x_prime,y_prime,sigma,default_value);
+%
+%   Input:
 %      md:  3d model holding the data to be interpolated onto the 2d mesh
 %      data:	matrix holding the data to be interpolated onto the 2d mesh
 %      x_prime,y_prime:	coordinates of the points onto which we interpolate
 %      sigma:  scaled vertical coordinates from which the data will be interpolated (from base=0; from surface=1, NaN=vertical average of data)
 %      default_value:	default value if no data is found (holes)
+%
+%   Output:
 %      data_prime:	vector of mesh interpolated data
 %
 %   Example:

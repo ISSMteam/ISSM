@@ -1,6 +1,10 @@
 function export_gl(md,varargin)
+%EXPORT_GL - export model mesh and results to a WebGL/JavaScript database file
+%
+%   Usage:
+%      export_gl(md,varargin)
 
-	templist=plotoptions(varargin{:}); 
+	templist=plotoptions(varargin{:});
 	optionslist=templist.list;
 	options=optionslist{1};
 	options=checkplotoptions(md,options);

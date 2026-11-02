@@ -10,17 +10,17 @@
 #include "../solutionsequences/solutionsequences.h"
 #include "../classes/Inputs/TransientInput.h"
 
-void debris_core(FemModel* femmodel){ /*{{{*/
+void debris_core(FemModel* femmodel){
 
 	/*Start profiler*/
 	femmodel->profiler->Start(DEBRISCORE);
 
 	/*parameters: */
-	int    numoutputs,domaintype;
-	bool   save_results;
-	int    solution_type,stabilization;
-	char** requested_outputs = NULL;
-	DebrisAnalysis * debris_analysis = NULL;
+	int              numoutputs,domaintype;
+	bool             save_results;
+	int              solution_type;
+	char           **requested_outputs = NULL;
+	DebrisAnalysis  *debris_analysis   = NULL;
 
 	/*activate configuration*/
 	femmodel->SetCurrentConfiguration(DebrisAnalysisEnum);
@@ -29,6 +29,7 @@ void debris_core(FemModel* femmodel){ /*{{{*/
 	femmodel->parameters->FindParam(&save_results,SaveResultsEnum);
 	femmodel->parameters->FindParam(&solution_type,SolutionTypeEnum);
 	femmodel->parameters->FindParam(&numoutputs,DebrisNumRequestedOutputsEnum);
+	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
 	if(numoutputs) femmodel->parameters->FindParam(&requested_outputs,&numoutputs,DebrisRequestedOutputsEnum);
 
 	if(VerboseSolution()) _printf0_("   computing debris transport\n");
@@ -65,4 +66,4 @@ void debris_core(FemModel* femmodel){ /*{{{*/
 
 	/*profiler*/
 	femmodel->profiler->Stop(DEBRISCORE);
-} /*}}}*/
+}

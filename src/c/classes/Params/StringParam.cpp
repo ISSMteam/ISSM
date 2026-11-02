@@ -48,20 +48,12 @@ void StringParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    StringParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void StringParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = StringParamEnum;
    marshallhandle->call(object_enum);
 	marshallhandle->call(this->enum_type);
 	marshallhandle->call(this->value);
-}
-/*}}}*/
-int StringParam::ObjectEnum(void){/*{{{*/
-
-	return StringParamEnum;
-
 }
 /*}}}*/
 

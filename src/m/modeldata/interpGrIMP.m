@@ -1,4 +1,8 @@
 function sout = interpGrIMP(X,Y)
+%INTERPGRIMP - interpolate GrIMP Greenland surface DEM onto X and Y
+%
+%   Usage:
+%      sout = interpGrIMP(X,Y)
 
 switch oshostname(),
 	case {'totten'}

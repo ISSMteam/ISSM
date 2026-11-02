@@ -1,4 +1,4 @@
-%DISCOVERY(Dartmouth) cluster class definition
+%DISCOVERY (Dartmouth) cluster class definition
 %
 %   Usage:
 %      cluster=discovery();

@@ -132,9 +132,6 @@ void FreeSurfaceTopAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 void           FreeSurfaceTopAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           FreeSurfaceTopAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* FreeSurfaceTopAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

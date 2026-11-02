@@ -1,5 +1,5 @@
 function [assgn] = Chaco(A,vwgts,ewgts,x,y,z,options,nparts,goal);
-%CHACO
+%CHACO - partition a graph using the Chaco graph partitioning package
 %
 %   Usage:
 %      [assgn] = Chaco(A,vwgts,ewgts,x,y,z,options,nparts,goal);

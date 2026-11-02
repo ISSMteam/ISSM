@@ -4,7 +4,7 @@ function plot_segments(md,options,width,i,datai)
 %   Usage:
 %      plot_segments(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %plot mesh boundaries
 subplot(width,width,i); 

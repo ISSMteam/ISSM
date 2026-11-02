@@ -1,12 +1,12 @@
-%  function to return an empty array if all array elements are
-%  equal to the given value, which may also be empty but not nan.
-%
-%  (note that by definition, nan is not equal to nan.  this could
-%  be changed by using isequalwithequalnans.)
-%
-%  function [aout]=allequal(ain,aval)
-%
 function [aout]=allequal(ain,aval)
+%ALLEQUAL - return an empty array if all array elements are equal to the given value
+%
+%   The given value may also be empty but not nan (note that by
+%   definition, nan is not equal to nan; this could be changed by
+%   using isequalwithequalnans).
+%
+%   Usage:
+%      aout=allequal(ain,aval);
 
 if ~nargin
     help allequal

@@ -1,4 +1,8 @@
 function plot_coastlines(mesh,varargin);
+%PLOT_COASTLINES - plot Antarctic coastline outline on the current axes
+%
+%   Usage:
+%      plot_coastlines(mesh,varargin)
 
 %define coastline: {{{
 coast=[-90 -180; ...

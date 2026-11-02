@@ -1,4 +1,8 @@
 function solverOptions=lcdmgoptions(varargin)
+%LCDMGOPTIONS - return PETSc options for the LCD (left conjugate direction) Krylov solver with a multigrid preconditioner
+%
+%   Usage:
+%      solverOptions=lcdmgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

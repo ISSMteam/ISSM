@@ -123,6 +123,9 @@ void GetMaskOfIceVerticesLSMx(FemModel* femmodel,bool ishydrology,bool isdebris)
 		else if(hydrology_model==HydrologyGlaDSEnum){
 			femmodel->SetCurrentConfiguration(HydrologyGlaDSAnalysisEnum);
 		}
+		else if(hydrology_model==HydrologyIMLGlaDSEnum){
+			femmodel->SetCurrentConfiguration(HydrologyIMLGlaDSAnalysisEnum);
+		}
 		else{
 			_error_("hydrology model not supported yet");
 		}

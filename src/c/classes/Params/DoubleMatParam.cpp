@@ -59,14 +59,6 @@ void DoubleMatParam::DeepEcho(void){/*{{{*/
 	}
 }
 /*}}}*/
-int    DoubleMatParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
-int DoubleMatParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleMatParamEnum;
-
-}
-/*}}}*/
 Param* DoubleMatParam::copy() {/*{{{*/
 
 	return new DoubleMatParam(this->enum_type,this->value,this->M,this->N);
@@ -96,10 +88,6 @@ void  DoubleMatParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,in
 	if(pM) *pM=M;
 	if(pN) *pN=N;
 	*pIssmDoublearray=output;
-}
-/*}}}*/
-void  DoubleMatParam::GetParameterValue(int** pintarray,int* pM,int* pN){/*{{{*/
-	_error_("DoubleMat of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of int");
 }
 /*}}}*/
 void  DoubleMatParam::SetValue(IssmDouble* IssmDoublearray,int in_M,int in_N){/*{{{*/

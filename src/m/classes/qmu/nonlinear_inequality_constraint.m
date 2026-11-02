@@ -1,7 +1,7 @@
+%NONLINEAR_INEQUALITY_CONSTRAINT class definition
 %
-%  constructor for the nonlinear_inequality_constraint class.
-%
-%  [nic]=nonlinear_inequality_constraint(varargin)
+%   Usage:
+%      nic=nonlinear_inequality_constraint(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

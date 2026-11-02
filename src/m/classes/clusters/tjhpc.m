@@ -1,4 +1,4 @@
-%HPC (Tongji) cluster class definition
+%TJHPC (Tongji) cluster class definition
 %
 %   Usage:
 %      cluster=tjhpc();
@@ -10,12 +10,12 @@ classdef tjhpc
 		% {{{
 		name          = 'tj'
 		login         = '';
-		modules       = {'intel/oneapi/24.0', 'cmake/3.31.6', 'gcc/13.2.0'};
+		modules       = {'cmake/3.31.6', 'gcc/13.2.0'};
 		numnodes      = 1;
 		cpuspernode   = 16;
 		codepath      = '';
 		executionpath = '';
-		partition	  = 'intel';
+		partition	  = 'amd';
 		interactive   = 0;
 		time          = 10; %in hours
 		memory        = 10;  %in Gb

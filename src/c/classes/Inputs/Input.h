@@ -19,9 +19,11 @@ class Input: public Object{
 
 	private:
 		int enum_type;
+
 	public:
 
 		/*Non virtual functions*/
+		int  Id(){return -1;};
 		int  InstanceEnum(){return this->enum_type;};
 		void ChangeEnum(int newenumtype){this->enum_type=newenumtype;};
 
@@ -35,11 +37,11 @@ class Input: public Object{
 		virtual IssmDouble GetInputMaxAbs(void){_error_("Not implemented yet");};
 		virtual IssmDouble GetInputMin(void){_error_("Not implemented yet");};
 		virtual void GetInputDerivativeValue(IssmDouble* derivativevalues, IssmDouble* xyz_list, Gauss* gauss){_error_("Not implemented yet");};
-		virtual void GetInputValue(IssmDouble* pvalue,Gauss* gauss){int* temp = xNew<int>(3); _error_("Not implemented yet for");};
+		virtual void GetInputValue(IssmDouble* pvalue,Gauss* gauss){_error_("Not implemented yet for");};
 		virtual int  GetInputInterpolationType(){_error_("Not implemented yet");};
-		virtual SegInput*   GetSegInput(){ int* temp = xNew<int>(3); this->Echo(); _error_("Not implemented yet");};
-		virtual TriaInput*  GetTriaInput(){ int* temp = xNew<int>(3); this->Echo(); _error_("Not implemented yet");};
-		virtual PentaInput* GetPentaInput(){int* temp = xNew<int>(3); this->Echo(); _error_("Not implemented yet");};
+		virtual SegInput*   GetSegInput(){ this->Echo(); _error_("Not implemented yet");};
+		virtual TriaInput*  GetTriaInput(){ this->Echo(); _error_("Not implemented yet");};
+		virtual PentaInput* GetPentaInput(){ this->Echo(); _error_("Not implemented yet");};
 		//virtual void GetInputUpToCurrentTimeAverages(IssmDouble** pvalues, IssmDouble** ptimes, int* pnumtimes, IssmDouble currenttime){_error_("Not implemented yet");};
 
 		virtual void   AXPY(Input* xinput,IssmDouble scalar){_error_("Not implemented yet");};
@@ -47,7 +49,6 @@ class Input: public Object{
 		virtual void   PointWiseMult(Input* xinput){_error_("Not implemented yet");};
 		virtual void   Pow(IssmDouble scale_factor){_error_("Not implemented yet");};
 		virtual void   Scale(IssmDouble scale_factor){_error_("Not implemented yet");};
-		virtual void   AverageAndReplace(void){_error_("Not implemented yet");};
 
 		virtual int  GetResultArraySize(void){_error_("Not implemented yet");};
 		virtual int  GetResultInterpolation(void){_error_("Not implemented yet");};

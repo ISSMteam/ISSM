@@ -76,36 +76,35 @@ Friction::Friction(Element* element_in){/*{{{*/
       default: _error_("mesh "<<EnumToStringx(domaintype)<<" not supported yet");
 	}
 
-	if(this->law==1 || this->law==2){
-		element_in->FindParam(&linearization_type,FrictionLinearizeEnum);
-		if(linearization_type==0){
-			/*Don't do anything*/
+	/*How is friction integrated (linearized or not)*/
+	element_in->FindParam(&linearization_type,FrictionLinearizeEnum);
+	if(linearization_type==0){
+		/*Don't do anything*/
+	}
+	else if(linearization_type==1){
+		int numvertices = this->element->GetNumberOfVertices();
+		this->alpha2_list            = xNew<IssmDouble>(numvertices);
+		this->alpha2_complement_list = xNew<IssmDouble>(numvertices);
+		Gauss* gauss=this->element->NewGauss();
+		for(int iv=0;iv<numvertices;iv++){
+			gauss->GaussVertex(iv);
+			this->GetAlpha2(&this->alpha2_list[iv], gauss);
+			this->GetAlphaComplement(&this->alpha2_complement_list[iv], gauss);
 		}
-		else if(linearization_type==1){
-			int numvertices = this->element->GetNumberOfVertices();
-			this->alpha2_list            = xNew<IssmDouble>(numvertices);
-			this->alpha2_complement_list = xNew<IssmDouble>(numvertices);
-			Gauss* gauss=this->element->NewGauss();
-			for(int iv=0;iv<numvertices;iv++){
-				gauss->GaussVertex(iv);
-				this->GetAlpha2(&this->alpha2_list[iv], gauss);
-				this->GetAlphaComplement(&this->alpha2_complement_list[iv], gauss);
-			}
-			this->linearize = linearization_type; /*Change back, we are now all set!*/
-			delete gauss;
-		}
-		else if(linearization_type==2){
-			this->alpha2_list            = xNew<IssmDouble>(1);
-			this->alpha2_complement_list = xNew<IssmDouble>(1);
-			Gauss* gauss=element->NewGauss(1); gauss->GaussPoint(0);
-			this->GetAlpha2(&this->alpha2_list[0], gauss);
-			this->GetAlphaComplement(&this->alpha2_complement_list[0], gauss);
-			this->linearize = linearization_type; /*Change back, we are now all set!*/
-			delete gauss;
-		}
-		else{
-			_error_("not supported yet");
-		}
+		this->linearize = linearization_type; /*Change back, we are now all set!*/
+		delete gauss;
+	}
+	else if(linearization_type==2){
+		this->alpha2_list            = xNew<IssmDouble>(1);
+		this->alpha2_complement_list = xNew<IssmDouble>(1);
+		Gauss* gauss=element->NewGauss(1); gauss->GaussPoint(0);
+		this->GetAlpha2(&this->alpha2_list[0], gauss);
+		this->GetAlphaComplement(&this->alpha2_complement_list[0], gauss);
+		this->linearize = linearization_type; /*Change back, we are now all set!*/
+		delete gauss;
+	}
+	else{
+		_error_("not supported yet");
 	}
 
 	#ifdef _HAVE_PyBind11_
@@ -233,7 +232,7 @@ void Friction::GetAlphaTempComplement(IssmDouble* palpha_complement, Gauss* gaus
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha_complement;
 
 	/*Get viscous part*/
@@ -498,9 +497,6 @@ void Friction::GetAlpha2Coulomb(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	element->GetInputValue(&drag_q,gauss,FrictionQEnum);
 	element->GetInputValue(&drag_coefficient, gauss,FrictionCoefficientEnum);
 	element->GetInputValue(&drag_coefficient_coulomb, gauss,FrictionCoefficientcoulombEnum);
-	IssmDouble rho_water = element->FindParam(MaterialsRhoSeawaterEnum);
-	IssmDouble rho_ice   = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble gravity   = element->FindParam(ConstantsGEnum);
 
 	//compute r and q coefficients: */
 	r=drag_q/drag_p;
@@ -637,7 +633,7 @@ void Friction::GetAlpha2Temp(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha2;
 
 	/*Get viscous part*/
@@ -664,9 +660,8 @@ void Friction::GetAlpha2Josh(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  T,Tpmp,deltaT,deltaTref,pressure,diff,drag_coefficient;
+	IssmDouble  T,Tpmp,deltaT,deltaTref,pressure,drag_coefficient;
 	IssmDouble  alpha2,time,gamma,ref,alp_new,alphascaled,max_coefficient;
-	const IssmDouble yts = 365*24*3600.;
 
 	/*Get viscous part*/
 	this->GetAlpha2Budd(&alpha2,gauss);
@@ -838,7 +833,7 @@ void Friction::GetAlpha2WeertmanTemp(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	 */
 
 	/*Intermediaries: */
-	IssmDouble  f,T,pressure,Tpmp,gamma;
+	IssmDouble  T,pressure,Tpmp,gamma;
 	IssmDouble  alpha2;
 
 	/*Get viscous part*/
@@ -910,8 +905,7 @@ void Friction::GetAlpha2PISM(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	IssmDouble tau_c = N*tan(phi);
 
 	/*Compute basal speed*/
-	IssmDouble ub;
-	element->GetInputValue(&ub,gauss,VelEnum);
+	IssmDouble ub = VelMag(gauss);
 
 	/*now compute alpha^2*/
 	IssmDouble u0,q;
@@ -1149,7 +1143,7 @@ IssmDouble Friction::EffectivePressure(Gauss* gauss){/*{{{*/
 
 	/*diverse: */
 	int         coupled_flag;
-	IssmDouble  thickness,base,sealevel;
+	IssmDouble  base,sealevel;
 	IssmDouble  p_ice,p_water;
 	IssmDouble  Neff,Neff_limit;
 
@@ -1454,7 +1448,7 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 	int frictionlaw;
 	iomodel->FindConstant(&frictionlaw,"md.friction.law");
 	switch(frictionlaw){
-		case 1:
+		case 1: /*friction*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
@@ -1497,7 +1491,8 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.delta",FrictionDeltaEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.void_ratio",FrictionVoidRatioEnum));
 			break;
-		case 11:
+		case 11: /*frictionschoof*/
+			parameters->AddObject(iomodel->CopyConstantObject("md.friction.linearize",FrictionLinearizeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.coupling",FrictionCouplingEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
 			break;

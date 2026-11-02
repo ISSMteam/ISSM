@@ -32,6 +32,10 @@ classdef hydrologyglads
 		requested_outputs    = {};
 		melt_flag            = 0;
 		istransition         = 0;
+		maxiter              = 0;
+		restol               = 0;
+		reltol               = 0;
+		abstol               = 0;
 	end
 	methods
 		function self = hydrologyglads(varargin) % {{{
@@ -70,6 +74,10 @@ classdef hydrologyglads
 			self.melt_flag=0;
 			self.istransition = 0; %by default use GlaDS default turbulent code
 			self.creep_open_flag = 1;
+			self.maxiter = 100;
+			self.restol  = 1.e-4;
+			self.reltol  = 0.01;
+			self.abstol  = NaN; %not applied by default
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
 
@@ -97,12 +105,16 @@ classdef hydrologyglads
 
 			%Other
 			md = checkfield(md,'fieldname','hydrology.spcphi','Inf',1,'timeseries',1);
-			md = checkfield(md,'fieldname','hydrology.englacial_void_ratio','numel',[1],'>=',0);
+			md = checkfield(md,'fieldname','hydrology.englacial_void_ratio','size',[md.mesh.numberofvertices 1],'>=',0,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.moulin_input','>=',0,'timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.neumannflux','timeseries',1,'NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.requested_outputs','stringrow',1);
 			md = checkfield(md,'fieldname','hydrology.melt_flag','numel',[1],'values',[0 1 2]);
 			md = checkfield(md,'fieldname','hydrology.istransition','numel',[1],'values',[0 1]);
+			md = checkfield(md,'fieldname','hydrology.maxiter','numel',[1],'>=',1);
+			md = checkfield(md,'fieldname','hydrology.restol','numel',[1],'>',0,'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','hydrology.reltol','numel',[1]);
+			md = checkfield(md,'fieldname','hydrology.abstol','numel',[1]);
 			md = checkfield(md,'fieldname','hydrology.creep_open_flag','numel',[1],'values',[0 1]);
 			if self.melt_flag==1 || self.melt_flag==2
 				md = checkfield(md,'fieldname','basalforcings.groundedice_melting_rate','NaN',1,'Inf',1,'timeseries',1);
@@ -135,6 +147,10 @@ classdef hydrologyglads
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 			fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default), 1: use md.basalforcings.groundedice_melting_rate');
 			fielddisplay(self,'istransition','do we use standard [0, default] or transition model [1]');
+			fielddisplay(self,'maxiter','maximum number of nonlinear iterations');
+			fielddisplay(self,'restol','hydraulic potential equilibrium residual convergence criterion');
+			fielddisplay(self,'reltol','hydraulic potential relative convergence criterion, NaN: not applied');
+			fielddisplay(self,'abstol','hydraulic potential absolute convergence criterion [Pa], NaN: not applied');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
 
@@ -166,9 +182,13 @@ classdef hydrologyglads
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','spcphi','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','neumannflux','format','DoubleMat','mattype',2,'timeserieslength',md.mesh.numberofelements+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','moulin_input','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','englacial_void_ratio','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','englacial_void_ratio','format','DoubleMat','mattype',1);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','melt_flag','format','Integer');
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','istransition','format','Boolean');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','maxiter','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','restol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','reltol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','abstol','format','Double');
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));
 			if ~isempty(pos)

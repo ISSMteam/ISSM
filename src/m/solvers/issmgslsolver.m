@@ -1,8 +1,8 @@
 function issmoptions=issmgslsolver(varargin)
-%ISSMSOLVER - 
+%ISSMGSLSOLVER - return ISSM options for the built-in GSL dense direct solver
 %
 %   Usage:
-%      options=issmsolver;
+%      issmoptions=issmgslsolver();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

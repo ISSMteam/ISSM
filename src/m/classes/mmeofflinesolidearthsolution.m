@@ -1,7 +1,9 @@
 %MMEOFFLINESOLIDEARTHSOLUTION class definition
 %
 %   Usage:
-%      addsol=mmeofflinesolidearthsolution(); where the offline solid earth solutions %                               are based on a multi-model ensemble (ex: Caron et al 2017 statistics) 
+%      addsol=mmeofflinesolidearthsolution();
+%      where the offline solid earth solutions are based on a multi-model
+%      ensemble (ex: Caron et al 2017 statistics)
 
 classdef mmeofflinesolidearthsolution < offlinesolidearthsolution 
 	properties (SetAccess=public) 

@@ -1,4 +1,8 @@
 function [lat,lon]=projlatlong(proj)
+%PROJLATLONG - extract the lat_0 and lon_0 projection center from a PROJ.4 string
+%
+%   Usage:
+%      [lat,lon]=projlatlong(proj);
 
 	%lat: 
 	ind=findstr(proj,'+lat_0');

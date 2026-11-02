@@ -1,4 +1,4 @@
-%SMBpddGCM Class definition
+%SMBPDDGCM class definition
 %
 %   Usage:
 %      SMBpddGCM=SMBpddGCM();

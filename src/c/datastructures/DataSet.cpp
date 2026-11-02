@@ -92,23 +92,16 @@ DataSet::~DataSet(){/*{{{*/
 /*Specific methods*/
 void  DataSet::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
-	vector<Object*>::iterator obj;
 	int obj_enum=0;
-	int i;
-
 	int obj_size=0;
+	vector<Object*>::iterator obj;
+
 	if(marshallhandle->OperationNumber()!=MARSHALLING_LOAD){
 		obj_size=objects.size();
-	}
-	else{
-		/*FIXME: if the assert below does not go off, then remove else{}*/
-		_assert_(this->Size()==0);
-		//clear();
 	}
 
 	int object_enum = DataSetEnum;
 	marshallhandle->call(object_enum);
-
 	marshallhandle->call(this->enum_type);
 	marshallhandle->call(this->sorted);
 	marshallhandle->call(this->presorted);
@@ -145,7 +138,7 @@ void  DataSet::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		  in, and we are supposed to create a dataset out of it. No such thing
 		  as class orientation for buffers, we need to key off the enum of each
 		  object stored in the buffer. */
-		for(i=0;i<obj_size;i++){
+		for(int i=0;i<obj_size;i++){
 
 			/*Recover enum of object first: */
 			marshallhandle->call(obj_enum); 
@@ -325,15 +318,9 @@ int   DataSet::AddObject(Object* object){/*{{{*/
 /*}}}*/
 void  DataSet::clear(){/*{{{*/
 
-/*  use reverse_iterator for efficiency in matlab memory manager
-	(keeping old code in case it needs to revert back)  */
-
-//	vector<Object*>::iterator object;
+	/*  use reverse_iterator for efficiency in matlab memory manager*/
 	vector<Object*>::reverse_iterator object;
 
-//	for ( object=objects.begin() ; object < objects.end(); object++ ){
-//		delete (*object);
-//	}
 	for ( object=objects.rbegin() ; object < objects.rend(); object++ ){
 		delete (*object);
 	}
@@ -351,9 +338,7 @@ int   DataSet::DeleteObject(Object* object){/*{{{*/
 	}
 
 	return 1;
-
-}
-/*}}}*/
+}/*}}}*/
 void  DataSet::DeepEcho(){/*{{{*/
 
 	vector<Object*>::iterator object;
@@ -465,8 +450,7 @@ void  DataSet::Presort(){/*{{{*/
 }
 /*}}}*/
 int   DataSet::Size(void){/*{{{*/
-	_assert_(this!=NULL);
-
+	_assert_(this);
 	return objects.size();
 }
 /*}}}*/

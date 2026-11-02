@@ -1,8 +1,8 @@
 function [i1,i2]=parallelrange(rank,numprocs,globalsize)
 %PARALLELRANGE - from a rank, and a number of processors, figure out a range, for parallel tasks.
 %
-%   Usage: 
-%      [i1,i1]=parallelrange(rank,numprocs,globalsize)
+%   Usage:
+%      [i1,i2]=parallelrange(rank,numprocs,globalsize);
 
 num_local_rows=zeros(numprocs,1);
 

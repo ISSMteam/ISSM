@@ -1,9 +1,6 @@
 function [FV] = sphere_tri(shape,maxlevel,r,winding)
-
-% sphere_tri - generate a triangle mesh approximating a sphere
-% 
-% Usage: FV = sphere_tri(shape,Nrecurse,r,winding)
-% 
+%SPHERE_TRI - generate a triangle mesh approximating a sphere
+%
 %   shape is a string, either of the following:
 %   'ico'   starts with icosahedron (most even, default)
 %   'oct'   starts with octahedron
@@ -39,7 +36,10 @@ function [FV] = sphere_tri(shape,maxlevel,r,winding)
 % patch('vertices',FV.vertices,'faces',FV.faces,...
 %       'facecolor',[1 0 0],'edgecolor',[.2 .2 .6]);
 % axis off; camlight infinite; camproj('perspective');
-% 
+%
+%   Usage:
+%      FV = sphere_tri(shape,maxlevel,r,winding);
+%
 % See also: mesh_refine, sphere_project
 %
 

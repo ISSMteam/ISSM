@@ -75,8 +75,6 @@ void TransientArrayParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  TransientArrayParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void TransientArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = TransientArrayParamEnum;
@@ -93,11 +91,6 @@ void TransientArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	}
 	marshallhandle->call(this->values,M*N);
 	marshallhandle->call(this->timesteps,N);
-
-}/*}}}*/
-int  TransientArrayParam::ObjectEnum(void){/*{{{*/
-
-	return TransientArrayParamEnum;
 
 }/*}}}*/
 

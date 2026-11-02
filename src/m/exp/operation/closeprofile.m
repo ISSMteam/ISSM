@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=closeprofile(A,numprofiles,numpoints,closed,prevplot,root,options)
-%CLOSEPROFILE - close one or several profile
+%CLOSEPROFILE - close one or several profiles
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

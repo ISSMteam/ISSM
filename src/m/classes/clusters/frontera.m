@@ -170,7 +170,7 @@ classdef frontera
 			cluster_defaults.UploadQueueJob(cluster,modelname,dirname,filelist);
 		end %}}}
 		function LaunchQueueJob(cluster,modelname,dirname,filelist,restart,batch) % {{{
-			cluster_defaults.LaunchQueueJobSbatch(cluster,modelname,dirname,filelist,restart,batch);
+			cluster_defaults.LaunchQueueJobSbatch(cluster,modelname,dirname,filelist,restart,batch,2);
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 			cluster_defaults.Download(cluster,dirname,filelist);

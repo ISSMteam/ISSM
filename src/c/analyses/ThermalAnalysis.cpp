@@ -212,9 +212,6 @@ void ThermalAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,i
 void           ThermalAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           ThermalAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ThermalAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -261,7 +258,6 @@ ElementMatrix* ThermalAnalysis::CreateKMatrixShelf(Element* element){/*{{{*/
 	/*Retrieve all inputs and parameters*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
-	IssmDouble gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
@@ -312,9 +308,7 @@ ElementMatrix* ThermalAnalysis::CreateKMatrixVolume(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,ThermalStabilizationEnum);
-	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
 	IssmDouble  thermalconductivity = element->FindParam(MaterialsThermalconductivityEnum);
 	IssmDouble  kappa = thermalconductivity/(rho_ice*heatcapacity);
@@ -530,7 +524,6 @@ ElementVector* ThermalAnalysis::CreatePVectorShelf(Element* element){/*{{{*/
 	element->GetVerticesCoordinatesBase(&xyz_list_base);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	Input*      pressure_input=element->GetInput(PressureEnum); _assert_(pressure_input);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
@@ -666,6 +659,7 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 	int        *doflist   = NULL;
 	IssmDouble *xyz_list  = NULL;
 	bool        hack      = false;
+	IssmDouble  beta, rho_i, g;
 
 	/*Fetch number of nodes and dof for this finite element*/
 	int numnodes = element->GetNumberOfNodes();
@@ -700,6 +694,10 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 
 	/*Get all inputs and parameters*/
 	element->GetInputValue(&converged,ConvergedEnum);
+	element->FindParam(&beta,MaterialsBetaEnum);
+	element->FindParam(&rho_i,MaterialsRhoIceEnum);
+	element->FindParam(&g,ConstantsGEnum);
+	beta = beta*rho_i*g; /* pressure melting point in K m-1 for Arrhenius law*/
 	if(converged){
 		element->AddInput(TemperatureEnum,values,element->GetElementType());
 
@@ -742,7 +740,7 @@ void           ThermalAnalysis::InputUpdateFromSolution(IssmDouble* solution,Ele
 				break;
 			case ArrheniusEnum:{
 				element->GetVerticesCoordinates(&xyz_list);
-				for(i=0;i<numnodes;i++) B[i]=Arrhenius(values[i],surface[i]-xyz_list[i*3+2],n[i]);
+				for(i=0;i<numnodes;i++) B[i]=Arrhenius(values[i],surface[i]-xyz_list[i*3+2],n[i],beta);
 				element->AddInput(MaterialsRheologyBEnum,&B[0],element->GetElementType());
 				break;
 				}

@@ -13,7 +13,6 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
-#include <iostream>
 #include <chrono>
 
 #include "CoDiPackTypes.h"

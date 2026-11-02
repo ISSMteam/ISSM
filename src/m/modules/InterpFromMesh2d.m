@@ -1,5 +1,5 @@
 function data_prime=InterpFromMesh2d(varargin);
-%INTERPFROMMESH2D
+%INTERPFROMMESH2D - Interpolation from a 2d triangular mesh onto a list of points, with optional contour-based cropping
 %
 %   Usage:
 %      data_prime=InterpFromMesh2d(index,x,y,data,x_prime,y_prime);

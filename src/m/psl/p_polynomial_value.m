@@ -1,4 +1,8 @@
 function v = p_polynomial_value ( m, n, x )
+%P_POLYNOMIAL_VALUE - evaluate the Legendre polynomials P(n,x)
+%
+%   Usage:
+%      v = p_polynomial_value(m,n,x);
 
 %*****************************************************************************80
 %

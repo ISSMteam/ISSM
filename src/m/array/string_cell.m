@@ -1,9 +1,8 @@
-%
-%  function to return the string of a cell array
-%
-%  function [svec]=string_cell(a)
-%
 function [svec]=string_cell(a)
+%STRING_CELL - return the string of a cell array
+%
+%   Usage:
+%      svec=string_cell(a);
 
 if ~nargin
     help string_cell

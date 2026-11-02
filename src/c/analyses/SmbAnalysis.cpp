@@ -312,11 +312,11 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 
 	int     numoutputs;
 	char**  requestedoutputs = NULL;
-	bool    isdelta18o,ismungsm,isd18opd,issetpddfac,interp,cycle,isfirnwarming;
-	bool    ismappedforcing,isprecipforcingremapped,ismappingusingneighbors,ismappingneighborxy;
-	int     smb_model, smbslices, averaging;
+	bool    isdelta18o,ismungsm,isd18opd,issetpddfac,interp,cycle;
+	bool    ismappedforcing,ismappingusingneighbors,ismappingneighborxy;
+	int     smb_model, smbslices;
 	IssmDouble *temp = NULL;
-	int         N,M,Nt,Nx,Ny;
+	int         N,M,Nx,Ny;
 
 	parameters->AddObject(iomodel->CopyConstantObject("md.smb.model",SmbEnum));
 
@@ -835,9 +835,6 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
 	}
 
-}/*}}}*/
-void           SmbAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
 }/*}}}*/
 ElementVector* SmbAnalysis::CreateDVector(Element* element){/*{{{*/
 	_error_("not implemented");

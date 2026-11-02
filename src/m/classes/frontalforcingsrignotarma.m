@@ -1,4 +1,4 @@
-%FRONTAL FORCINGS rignot arma class definition
+%FRONTALFORCINGSRIGNOTARMA class definition
 %
 %   Usage:
 %      frontalforcingsrignotarma=frontalforcingsrignotarma();

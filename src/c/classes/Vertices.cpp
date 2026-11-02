@@ -139,12 +139,6 @@ void Vertices::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 /*}}}*/
 void Vertices::LatLonList(IssmDouble** plat,IssmDouble** plon){/*{{{*/
 
-	/*output: */
-	IssmDouble* xyz_serial=NULL;
-
-	/*recover my_rank:*/
-	int my_rank=IssmComm::GetRank();
-
 	/*First, figure out number of vertices: */
 	int num_vertices=this->NumberOfVertices();
 
@@ -175,12 +169,6 @@ void Vertices::LatLonList(IssmDouble** plat,IssmDouble** plon){/*{{{*/
 }
 /*}}}*/
 void Vertices::XYList(IssmDouble** pxcoords,IssmDouble** pycoords){/*{{{*/
-
-	/*output: */
-	IssmDouble* xyz_serial=NULL;
-
-	/*recover my_rank:*/
-	int my_rank=IssmComm::GetRank();
 
 	/*First, figure out number of vertices: */
 	int num_vertices=this->NumberOfVertices();

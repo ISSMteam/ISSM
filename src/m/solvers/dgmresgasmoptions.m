@@ -1,4 +1,8 @@
 function solverOptions=dgmresgasmoptions(varargin)
+%DGMRESGASMOPTIONS - PETSc solver options using the deflated GMRES (dgmres) Krylov method with generalized additive Schwarz (GASM) preconditioning
+%
+%   Usage:
+%      solverOptions=dgmresgasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

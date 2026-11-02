@@ -394,7 +394,6 @@ template <> inline void GenericExternalResult<int*>::WriteData(FILE* fid,bool io
 	int     my_rank;
 	int     type;
 	int     rows,cols;
-	char   *name    = NULL;
 	IssmPDouble passiveDouble;
 
 	/*recover my_rank:*/
@@ -524,7 +523,6 @@ template <> inline void GenericExternalResult<IssmPDouble*>::WriteData(FILE* fid
 	int     my_rank;
 	int     type;
 	int     rows,cols;
-	char   *name    = NULL;
 	IssmPDouble passiveDouble;
 
 	/*recover my_rank:*/
@@ -673,7 +671,6 @@ template <> inline void GenericExternalResult<IssmComplex*>::WriteData(FILE* fid
 	int     my_rank;
 	int     type;
 	int     rows,cols;
-	char   *name    = NULL;
 	IssmPDouble passiveDouble;
 	IssmDouble* reals=NULL;
 	IssmDouble* imags=NULL;
@@ -807,7 +804,6 @@ template <> inline GenericExternalResult<Vector<IssmDouble>*>::~GenericExternalR
 	template <> inline void GenericExternalResult<Vector<IssmDouble>*>::WriteData(FILE* fid,bool io_gather){ /*{{{*/
 
 		int i;
-		char *name   = NULL;
 		int   length,rows,cols=1;
 		IssmDouble*  serialvalues = NULL;
 		IssmPDouble* pserialvalues = NULL;

@@ -1,4 +1,4 @@
-%SMBgradientscomponents Class definition
+%SMBGRADIENTSCOMPONENTS class definition
 %
 %   Usage:
 %      SMBgradientscomponents=SMBgradientscomponents();

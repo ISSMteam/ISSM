@@ -1,4 +1,8 @@
 function solverOptions=cgnoneoptions(varargin)
+%CGNONEOPTIONS - define PETSc solver options for the Conjugate Gradient (CG) Krylov method with no preconditioning
+%
+%   Usage:
+%      solverOptions=cgnoneoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

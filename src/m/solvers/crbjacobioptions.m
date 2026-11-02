@@ -1,4 +1,8 @@
 function solverOptions=crbjacobioptions(varargin)
+%CRBJACOBIOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Block Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=crbjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -1,4 +1,8 @@
 function plot_qmuhistnorm(md,options,nlines,ncols,index)
+%PLOT_QMUHISTNORM - plot a normalized histogram from qmu results
+%
+%   Usage:
+%      plot_qmuhistnorm(md,options,nlines,ncols,index);
 
 %prepare plot
 subplot(nlines,ncols,index); 

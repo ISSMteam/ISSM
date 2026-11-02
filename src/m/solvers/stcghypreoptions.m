@@ -1,4 +1,8 @@
 function solverOptions=stcghypreoptions(varargin)
+%STCGHYPREOPTIONS - return PETSc options for the STCG solver with a Hypre preconditioner
+%
+%   Usage:
+%      solverOptions=stcghypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

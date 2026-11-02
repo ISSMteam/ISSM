@@ -16,7 +16,7 @@ function dhdt=interpShepherd2019(X,Y,string,varargin)
 %      12.  uncert_1992_2017
 %
 %   Usage:
-%      [dataout] = interpShepherd2019(X,Y,'dhdt_1992_2017')
+%      dhdt = interpShepherd2019(X,Y,'dhdt_1992_2017')
 
 options={'dhdt_1992_1996','dhdt_1997_2001','dhdt_2002_2006','dhdt_2007_2011','dhdt_2012_2016','dhdt_1992_2017',...
 			'uncert_1992_1996','uncert_1997_2001','uncert_2002_2006','uncert_2007_2011','uncert_2012_2016','uncert_1992_2017'};

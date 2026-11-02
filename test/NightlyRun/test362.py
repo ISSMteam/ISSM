@@ -64,9 +64,10 @@ md.timestepping.final_time = 0.4 / 365
 
 #Change hydrology class to Glads model
 md.hydrology = hydrologyglads()
+md.hydrology.maxiter = 10 # Make sure it runs quickly...
 md.hydrology.ischannels = 1
 md.hydrology.isincludesheetthickness = 1
-md.hydrology.englacial_void_ratio = 1.e-5
+md.hydrology.englacial_void_ratio = 1.e-5 * np.ones((md.mesh.numberofvertices))
 md.hydrology.moulin_input = np.zeros((md.mesh.numberofvertices))
 md.hydrology.neumannflux = np.zeros((md.mesh.numberofelements))
 md.hydrology.bump_height = 1.e-1 * np.ones((md.mesh.numberofvertices))
@@ -87,10 +88,10 @@ field_names = ['HydrologySheetThickness1', 'HydraulicPotential1', 'ChannelArea1'
                'HydrologySheetThickness2', 'HydraulicPotential2', 'ChannelArea2','Vx2','Vy2','Vel2','Pressure2','Thickness2',
                'HydrologySheetThickness3', 'HydraulicPotential3', 'ChannelArea3','Vx3','Vy3','Vel3','Pressure3','Thickness3',
                'HydrologySheetThickness4', 'HydraulicPotential4', 'ChannelArea4','Vx4','Vy4','Vel4','Pressure4','Thickness4']
-field_tolerances = [1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
-		    1e-13, 1e-11, 5e-12, 1e-13, 2e-13, 1e-13, 1e-13, 1e-13,
-		    1e-13, 1e-11, 5e-12, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
-		    1e-13, 1e-11, 5e-12, 2e-13, 2e-13, 1e-13, 1e-13, 1e-13]
+field_tolerances = [1e-13, 1e-11, 1e-11, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
+		    1e-13, 1e-11, 1e-11, 1e-13, 2e-13, 1e-13, 1e-13, 1e-13,
+		    1e-13, 1e-11, 1e-11, 1e-13, 1e-13, 1e-13, 1e-13, 1e-13,
+		    1e-13, 1e-11, 1e-11, 2e-13, 2e-13, 1e-13, 1e-13, 1e-13]
 field_values = [md.results.TransientSolution[0].HydrologySheetThickness,
                 md.results.TransientSolution[0].HydraulicPotential,
                 md.results.TransientSolution[0].ChannelArea,

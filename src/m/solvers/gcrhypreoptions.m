@@ -1,4 +1,8 @@
 function solverOptions=gcrhypreoptions(varargin)
+%GCRHYPREOPTIONS - PETSc solver options using the generalized conjugate residual (gcr) Krylov method with Hypre preconditioning
+%
+%   Usage:
+%      solverOptions=gcrhypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

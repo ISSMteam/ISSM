@@ -1,4 +1,8 @@
 function solverOptions=ibcgspbjacobioptions(varargin)
+%IBCGSPBJACOBIOPTIONS - return PETSc options for the IBCGS (improved stabilized biconjugate gradient squared) Krylov solver with a point-block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=ibcgspbjacobioptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

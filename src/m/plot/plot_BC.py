@@ -4,6 +4,7 @@ from applyoptions import applyoptions
 from plot_icefront import plot_icefront
 from hydrologydc import hydrologydc
 from hydrologyglads import hydrologyglads
+from hydrologyimlglads import hydrologyimlglads
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
@@ -47,6 +48,9 @@ def plot_BC(md, options, fig, axgrid, gridindex):
                 spc_dict['spcsediment_head'] = ['hydrology', '^', 'b', 240, 'IDS Head']
 
         if isinstance(md.hydrology, hydrologyglads):
+            spc_dict['spcphi'] = ['hydrology', 'v', 'r', 240, 'phi']
+
+        if isinstance(md.hydrology, hydrologyimlglads):
             spc_dict['spcphi'] = ['hydrology', 'v', 'r', 240, 'phi']
 
         for key in spc_dict:

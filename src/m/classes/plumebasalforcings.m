@@ -1,4 +1,4 @@
-%PLUME BASAL FORCINGS class definition
+%PLUMEBASALFORCINGS class definition
 %
 %   Usage:
 %      plumebasalforcings=plumebasalforcings();

@@ -1,5 +1,5 @@
 function shpdisp3d(domainoutline,varargin)
-%SHPDISP - plot the contours of a domain outline file on a globe in 3d
+%SHPDISP3D - plot the contours of a domain outline file on a globe in 3d
 %
 %   This routine reads in a domain outline file (Shape format) and plots all the contours on a 3D rendition of the earth.
 %

@@ -1,10 +1,11 @@
 function node_in_element=NodeInElement(newx,newy,elements,x,y,nodeconnectivity)
-% NODEINELEMENT - find for a list of nodes (in newx,newy), which elements in the mesh (elements,x,y) they belong to.
+%NODEINELEMENT - find for a list of nodes (in newx,newy), which elements in the mesh (elements,x,y) they belong to.
 %
-%    Usage:
+%   Usage:
 %      node_in_element=NodeInElement(newx,newy,elements,x,y,md.mesh.vertexconnectivity);
 %
-%  See also Nodeconnectivity
+%   See Also:
+%      NodeConnectivity
 %
 epsilon=10^-10;
 

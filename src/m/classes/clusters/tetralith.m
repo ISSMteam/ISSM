@@ -1,4 +1,4 @@
-%TERALITH cluster class definition
+%TETRALITH cluster class definition
 %
 %   Usage:
 %      cluster=tetralith();
@@ -46,7 +46,7 @@ classdef tetralith
 			disp(sprintf('    codepath: %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
 			disp(sprintf('    interactive: %i',cluster.interactive));
-			disp(sprintf('    port: %s',cluster.port));
+			disp(sprintf('    port: %i',cluster.port));
 			disp(sprintf('    accountname: %s',cluster.accountname));
 		end
 		%}}}

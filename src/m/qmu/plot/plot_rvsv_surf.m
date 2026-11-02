@@ -1,63 +1,63 @@
+%PLOT_RVSV_SURF - plot surface plots of variables vs. responses
 %
-%  plot surface plots of variables vs. responses.
+%   Usage:
+%      []=plot_rvsv_surf(dvar       ,dresp      ,params)
+%      []=plot_rvsv_surf(dvar ,descv,dresp,descr,params)
+%      []=plot_rvsv_surf(sampv,descv,sampr,descr,params)
 %
-%  []=plot_rvsv_surf(dvar       ,dresp      ,params)
-%  []=plot_rvsv_surf(dvar ,descv,dresp,descr,params)
-%  []=plot_rvsv_surf(sampv,descv,sampr,descr,params)
+%   where the required input is:
+%     dvar          (structure array, variables)
+%       or
+%     dvar          (structure array, variables)
+%     descv         (cell array, list of variable descriptions desired)
+%       or
+%     sampv         (double array, lists of variable samples)
+%     descv         (cell array, list of variable descriptions)
 %
-%  where the required input is:
-%    dvar          (structure array, variables)
-%      or
-%    dvar          (structure array, variables)
-%    descv         (cell array, list of variable descriptions desired)
-%      or
-%    sampv         (double array, lists of variable samples)
-%    descv         (cell array, list of variable descriptions)
+%     dresp         (structure array, responses)
+%       or
+%     dresp         (structure array, responses)
+%     descr         (cell array, list of response descriptions desired)
+%       or
+%     sampr         (double array, lists of response samples)
+%     descr         (cell array, list of response descriptions)
 %
-%    dresp         (structure array, responses)
-%      or
-%    dresp         (structure array, responses)
-%    descr         (cell array, list of response descriptions desired)
-%      or
-%    sampr         (double array, lists of response samples)
-%    descr         (cell array, list of response descriptions)
+%   the required fields of dvar and dresp are:
+%     descriptor    (char, description)
+%     sample        (double vector, list of samples)
 %
-%  the required fields of dvar and dresp are:
-%    descriptor    (char, description)
-%    sample        (double vector, list of samples)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   where the optional parameters are:
+%     nplotr        (numeric, number of plot rows)
+%     nplotc        (numeric, number of plot columns)
+%     zmin          (numeric, minimum of z-axis)
+%     zmax          (numeric, maximum of z-axis)
+%     cmin          (numeric, minimum of colorbar)
+%     cmax          (numeric, maximum of colorbar)
 %
-%  where the optional parameters are:
-%    nplotr        (numeric, number of plot rows)
-%    nplotc        (numeric, number of plot columns)
-%    zmin          (numeric, minimum of z-axis)
-%    zmax          (numeric, maximum of z-axis)
-%    cmin          (numeric, minimum of colorbar)
-%    cmax          (numeric, maximum of colorbar)
+%   for each response in the input array, this function plots a
+%   surface plot.  there should be two and only two variables.
+%   each response will be in a separate surface plot; hence the
+%   need for nplotr and nplotc.
 %
-%  for each response in the input array, this function plots a
-%  surface plot.  there should be two and only two variables.
-%  each response will be in a separate surface plot; hence the
-%  need for nplotr and nplotc.
+%   dvar and dresp data would typically be contained in the dakota
+%   tabular output file from a sampling or parametric analysis, and
+%   read by dakota_out_parse.
 %
-%  dvar and dresp data would typically be contained in the dakota
-%  tabular output file from a sampling or parametric analysis, and
-%  read by dakota_out_parse.
+%   "Copyright 2009, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2009, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_rvsv_surf(varargin)
 

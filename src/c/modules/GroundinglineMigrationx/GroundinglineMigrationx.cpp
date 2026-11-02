@@ -92,7 +92,7 @@ IssmDouble*    ContactFSLevelset(Elements* elements,Vertices* vertices){ /*{{{*/
 /*}}}*/
 IssmDouble*    PotentialUngrounding(Elements* elements,Vertices* vertices,Parameters* parameters){ /*{{{*/
 
-	int                 i,numberofvertices;
+	int                 numberofvertices;
 	IssmDouble*         vertices_potentially_ungrounding      = NULL;
 	Vector<IssmDouble>* vec_vertices_potentially_ungrounding  = NULL;
 	Element*            element                               = NULL;
@@ -117,7 +117,7 @@ IssmDouble*    PotentialUngrounding(Elements* elements,Vertices* vertices,Parame
 }
 /*}}}*/
 IssmDouble*    PropagateFloatingiceToGroundedNeighbors(Elements* elements,Nodes* nodes,Vertices* vertices,Parameters* parameters,IssmDouble* vertices_potentially_ungrounding){ /*{{{*/
-	int                 i,analysis_type;
+	int                 analysis_type;
 	int                 nflipped,local_nflipped;
 	IssmDouble*         phi                                  = NULL;
 	IssmDouble*         elements_neighboring_floatingce      = NULL;

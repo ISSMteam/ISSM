@@ -1,5 +1,5 @@
 function [alpha beta varargout]=GetNodalFunctionsCoeff(index,x,y)
-%GETNODELFUNCTIONSCOEFF - compute nodal functions coefficients
+%GETNODALFUNCTIONSCOEFF - compute nodal functions coefficients
 %
 %   Compute the coefficients alpha beta and optionaly gamma of
 %   2d triangular elements. For each element, the nodal function

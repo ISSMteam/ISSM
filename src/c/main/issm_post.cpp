@@ -7,11 +7,6 @@
 
 int main(int argc,char **argv){ /*{{{*/
 
-	char* dakota_input_file=NULL;
-	char* dakota_output_file = NULL;
-	char* dakota_error_file = NULL;
-	bool statistics=false;
-
 	/*Initialize MPI: */
 	ISSM_MPI_Init(&argc, &argv); // initialize MPI
 

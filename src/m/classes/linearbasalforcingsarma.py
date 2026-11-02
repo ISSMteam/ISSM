@@ -65,7 +65,12 @@ class linearbasalforcingsarma(object):
     # }}}
 
     def extrude(self, md):  # {{{
-        return self # Nothing for now
+        self.groundedice_melting_rate = project3d(md, 'vector', self.groundedice_melting_rate, 'type', 'node', 'layer', 1)
+        self.deepwater_elevation = project3d(md, 'vector', self.deepwater_elevation, 'type', 'node', 'layer', 1)
+        self.upperwater_melting_rate = project3d(md, 'vector', self.upperwater_melting_rate, 'type', 'node', 'layer', 1)
+        self.upperwater_elevation = project3d(md, 'vector', self.upperwater_elevation, 'type', 'node', 'layer', 1)
+        self.geothermalflux = project3d(md, 'vector', self.geothermalflux, 'type', 'node', 'layer', 1)  # Bedrock only gets geothermal flux
+        return self
     # }}}
 
     def initialize(self, md):  # {{{

@@ -112,8 +112,6 @@ void TransientInput::Echo(void){/*{{{*/
 	}
 }
 /*}}}*/
-int  TransientInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	bool       isnull;
@@ -183,12 +181,6 @@ void TransientInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	_assert_(this->timesteps.size()==this->numtimesteps);
 	_assert_(this->inputs.size()==this->numtimesteps);
-}
-/*}}}*/
-int  TransientInput::ObjectEnum(void){/*{{{*/
-
-	return TransientInputEnum;
-
 }
 /*}}}*/
 
@@ -518,7 +510,7 @@ void TransientInput::SetAverageAsCurrentTimeInput(IssmDouble start_time,IssmDoub
 	IssmDouble  dt,durinv;
 	IssmDouble  dtsum=0;
 	IssmDouble  timespan,mid_step;
-	int         found,start_offset,end_offset,input_offset;
+	int         found,start_offset,end_offset;
 
 	/*go through the timesteps, and grab offset for start and end*/
 	found = binary_search(&start_offset, start_time,this->timesteps.data(), this->numtimesteps);

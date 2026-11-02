@@ -55,6 +55,15 @@ static void ecube(double& t, double f, double fp, double ta, double fa, double f
    double b      = z1 + fp;
    double discri;
 
+   /* The |z1|>1 branch below is the Fortran's anti-overflow reformulation: it
+    * computes sqrt(z1)*sqrt(z1-fp*fpa/z1) == sqrt(z1^2-fp*fpa), i.e. it already
+    * yields sqrt(discriminant).  In the Fortran it therefore does "go to 120",
+    * jumping PAST the shared "discri=dsqrt(discri)" that only the |z1|<=1 branch
+    * needs.  'rooted' reproduces that bypass: without it discri would be
+    * square-rooted twice (giving D^(1/4)) and the interpolated step t would be
+    * wrong whenever |z1|>1. */
+   bool rooted = false;
+
    if (fabs(z1) <= 1.0) {
       discri = z1 * z1 - fp * fpa;
    }
@@ -65,20 +74,22 @@ static void ecube(double& t, double f, double fp, double ta, double fa, double f
 
       if (z1 >= 0.0 && discri >= 0.0) {
          discri = sqrt(z1) * sqrt(discri);
+         rooted = true;
       }
       else if (z1 <= 0.0 && discri <= 0.0) {
          discri = sqrt(-z1) * sqrt(-discri);
+         rooted = true;
       }
       else {
          discri = -1.0;
       }
    }
 
-   if (discri < 0.0) {
+   if (!rooted && discri < 0.0) {
       t = (fp < 0.0) ? tupper : tlower;
    }
    else {
-      discri = sqrt(discri);
+      if (!rooted) discri = sqrt(discri);
       if (t - ta < 0.0) discri = -discri;
 
       double sign = (t - ta) / fabs(t - ta);
@@ -182,22 +193,20 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
    double       barr    = barmin;
 
    double td = 0.0, tg = 0.0;
-   double fn = f, fg = fn, fpg = fpn;
+   double fn = f, fg = fn;
    double ta = 0.0, fa = fn, fpa = fpn;
-   double d2 = dot(n, d, d);
 
    /* eliminate ridiculously small initial t */
    if (t < tmin) {
       t = tmin;
       if (t > tmax) tmin = tmax;
    }
-   bool t_increased = false;
    while (fn + t * fpn >= fn + 0.9 * t * fpn) {
-      t_increased = true;
       t *= 2.0;
    }
 
    int  indica = 1;
+   int  indicd = 1;   /* indic associated with the current td (right bracket) */
    logic = 0;
    if (t > tmax) { t = tmax; logic = 1; }
 
@@ -205,27 +214,22 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
    for (long i = 0; i < n; ++i) { xn[i] = x[i]; x[i] = xn[i] + t * d[i]; }
 
    /* ---- main loop ---- */
-   bool done        = false;
-   bool napmax_exit = false;   /* true when we exit via napmax (no simul called) */
+   bool done = false;
    while (!done) {
       nap++;
       if (nap > napmax) {
-         /* napmax exceeded: restore fn/xn to left bracket, but leave x at the
-          * current trial position (matching Fortran: x is not restored here,
-          * only xn/fn are updated; the final x = xn assignment below is
-          * skipped via napmax_exit so that x stays at the last trial point
-          * where g was evaluated). */
+         /* napmax exceeded (Fortran: nap>napmax at the top of the loop, before
+          * any simulation): fall back to the left bracket. */
          logic = 4;
          fn = fg;
          for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
-         napmax_exit = true;
          break;
       }
 
       /* call simulator: ask for f and g */
       bool need_advance = false;
+      long indic = 4;
       {
-         long indic = 4;
          simul(&indic, &n, x, &f, g, izs, rzs, dzs);
 
          if (indic == 0) {
@@ -238,11 +242,10 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
          else if (indic < 0) {
             /* computation failed: shrink interval and re-enter advance.
              * Fortran goes to label 905 (skipping fa=f;fpa=fp update). */
-            td    = t;
-            logic = 0;
-            t     = tg + 0.1 * (td - tg);
-            /* indica = indic (goes to 905, NOT 900 — do not update fa/fpa) */
-            indica = (int)indic;
+            td     = t;
+            indicd = (int)indic;
+            logic  = 0;
+            t      = tg + 0.1 * (td - tg);
             need_advance = true;
          }
       }
@@ -257,6 +260,7 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
              * ecube must be called with the OLD fa/fpa (previous anchor),
              * so do NOT overwrite fa/fpa before calling ecube. */
             td     = t;
+            indicd = (int)indic;
             logic  = 0;
 
             /* interpolation (label 500 in Fortran) */
@@ -280,22 +284,25 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
             fa = f; fpa = fp;
             need_advance = true;
          }
-         else if (fp > tesd) {
-            /* first Wolfe ok, curvature condition satisfied: serious step → accept.
-             * Fortran: fp > tesd → logic=0; go to 320 (accept). */
-            logic = 0;
+         else if (fp > tesd || logic != 0) {
+            /* Accept (Fortran label 320).  Two ways to get here:
+             *   - fp > tesd: curvature condition satisfied -> logic=0, goto 320.
+             *   - otherwise Fortran does "if (logic.eq.0) go to 350", so when
+             *     logic != 0 (i.e. the step is blocked on tmax) control FALLS
+             *     THROUGH to 320 and the step is accepted with logic still 1.
+             *     m1qn3a then skips the L-BFGS update for that iteration.
+             * Omitting this fall-through made the C++ re-extrapolate, clamp back
+             * to tmax and re-evaluate the same x until napmax. */
+            if (fp > tesd) logic = 0;
             fn = f;
             for (long i = 0; i < n; ++i) xn[i] = x[i];
             done = true;
          }
          else {
-            /* first Wolfe ok, curvature condition NOT satisfied.
+            /* first Wolfe ok, curvature condition NOT satisfied, and logic==0.
              * Fortran label 350: tg=t; fg=f; fpg=fp; then extrapolate (td==0)
-             * or interpolate (td!=0) — regardless of whether logic==0 or logic==1.
-             * The old "else if (logic==0) accept" branch was WRONG: it caused the
-             * line search to return a step that doesn't satisfy the strong Wolfe
-             * curvature condition, corrupting (y,s) pairs and producing <y,s><=0. */
-            tg = t; fg = f; fpg = fp;
+             * or interpolate (td!=0). */
+            tg = t; fg = f;
 
             if (td != 0.0) {
                /* interpolation (label 500 in Fortran) */
@@ -338,7 +345,7 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
       }
 
       if (!done && need_advance) {
-         indica = 1; /* treated as "computed" for next cubic */
+         indica = (int)indic;   /* Fortran label 905: indica=indic */
 
          /* check stopping: td - tg < tmin? */
          if (td != 0.0) {
@@ -358,6 +365,10 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
 
             if (stop_dxmin) {
                logic = 6;
+               /* Fortran label 920: "if (indicd.lt.0) logic=indicd" — if the
+                * last simulation at the right bracket failed, report that
+                * failure code instead of the generic dxmin stop. */
+               if (indicd < 0) logic = indicd;
                if (tg != 0.0) {
                   fn = fg;
                   for (long i = 0; i < n; ++i) xn[i] += tg * d[i];
@@ -373,14 +384,21 @@ static void mlis3(long n, M1qn3SimulFunc simul, double* x, double& f, double& fp
       }
    }
 
-   /* restore x = best point found.
-    * For normal exits (accepted step, dxmin, user-stop): x <- xn (best safe point).
-    * For napmax exit: leave x as the last trial point where simul was called,
-    * matching Fortran m1qn3 behaviour (x is not explicitly restored there). */
+   /* Return the (xn,fn) pair, which is always self-consistent.
+    *
+    * On the accepted-step / user-stop exits this is a no-op: Fortran label 320
+    * has already done fn=f and xn=x, so (x,f) == (xn,fn).
+    *
+    * On the terminal exits (logic = 4 napmax, 6 dxmin, <0 failure) Fortran does
+    * NOT copy xn/fn back into x/f, so it returns x at the last (possibly
+    * unevaluated) trial point while f comes from a different point.  We return
+    * the coherent left-bracket point instead: it is the deliberate "return the
+    * best X" deviation from the Fortran, and it keeps (x,f) consistent so the
+    * best-point tracking in m1qn3a can never latch onto a mismatched pair.
+    * These exits all terminate the optimization, so the iterate sequence up to
+    * that point is unaffected. */
    f = fn;
-   if (!napmax_exit) {
-      for (long i = 0; i < n; ++i) x[i] = xn[i];
-   }
+   for (long i = 0; i < n; ++i) x[i] = xn[i];
 }
 
 /* =========================================================================
@@ -426,6 +444,8 @@ static void m1qn3a(M1qn3SimulFunc simul,
    if (gnorms < rmin) {
       omode = 2;
       if (impres >= 1) _printf0_("   >>> m1qn3a: initial gradient is too small\n");
+      /* Fortran goes to label 1000, which always sets nsim=isim and epsg=eps1 */
+      epsg = eps1; nsim = isim;
       return;
    }
 
@@ -583,22 +603,18 @@ static void m1qn3a(M1qn3SimulFunc simul,
 
       if (eps1 < epsg) {
          omode = 1;
-         epsg  = eps1;
-         nsim  = isim;
          goto m1qn3a_exit;
       }
       if (niter == itmax) {
          omode = 4;
          if (impres >= 1)
             _printf0_("   >>> m1qn3 (iter " << niter << "): max iterations reached\n");
-         epsg = eps1; nsim = isim;
          goto m1qn3a_exit;
       }
       if (isim > nsim) {
          omode = 5;
          if (impres >= 1)
             _printf0_("   >>> m1qn3 (iter " << niter << "): max simulations reached\n");
-         epsg = eps1; nsim = isim;
          goto m1qn3a_exit;
       }
 
@@ -622,12 +638,15 @@ static void m1qn3a(M1qn3SimulFunc simul,
          if (impres >= 1)
             _printf0_("   >>> m1qn3 (iter " << niter
                       << "): d is not a descent direction: (g,d)=" << hp0 << "\n");
-         epsg = eps1; nsim = isim;
          goto m1qn3a_exit;
       }
    } /* end main loop */
 
 m1qn3a_exit:
+   /* Fortran label 1000 sets nsim=isim and epsg=eps1 on EVERY exit path */
+   nsim = isim;
+   epsg = eps1;
+
    /* Restore the best (f, x, g) triplet seen during the run */
    if (return_best && f_best < f) {
       f = f_best;

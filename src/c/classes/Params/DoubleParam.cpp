@@ -43,8 +43,6 @@ void DoubleParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  DoubleParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleParamEnum;
@@ -54,35 +52,4 @@ void DoubleParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 }
 /*}}}*/
-int  DoubleParam::ObjectEnum(void){/*{{{*/
 
-	return DoubleParamEnum;
-
-}
-/*}}}*/
-
-/*DoubleParam virtual functions definitions: */
-void DoubleParam::GetParameterValue(int* pinteger){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an integer");
-}
-/*}}}*/
-void DoubleParam::GetParameterValue(bool* pbool){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an bool");
-}
-/*}}}*/
-void DoubleParam::GetParameterValue(int** pintarray,int* pM){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of integers");
-}
-/*}}}*/
-void DoubleParam::GetParameterValue(int** pintarray,int* pM,int* pN){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of integers");
-}
-/*}}}*/
-void DoubleParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of IssmDouble");
-}
-/*}}}*/
-void DoubleParam::GetParameterValue(IssmDouble** pIssmDoublearray,int* pM,int* pN){/*{{{*/
-	_error_("Double param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of IssmDouble");
-}
-/*}}}*/

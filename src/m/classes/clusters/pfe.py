@@ -30,21 +30,20 @@ class pfe(object):
         self.name = ''
         self.login = ''
         self.modules = ['comp-intel/2018.3.222', 'mpi-intel/2018.3.222', 'scicon/app-tools']
-        self.numnodes = 20
-        self.cpuspernode = 8
+        self.numnodes = 1 
+        self.cpuspernode = 40
         self.port = 1025
-        self.queue = 'long'
-        self.time = 12 * 60
-        self.processor = 'ivy'
+        self.queue = 'devel'
+        self.time = 2 * 60
+        self.processor = 'cas_ait'
         self.srcpath = ''
         self.extpkgpath = ''
         self.codepath = ''
         self.executionpath = ''
         self.grouplist = ''
         self.interactive = 0
-        self.bbftp = 0
-        self.numstreams = 8
         self.hyperthreading = 0
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -79,9 +78,8 @@ class pfe(object):
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    grouplist: {}\n'.format(self.grouplist)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
-        s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -97,34 +95,20 @@ class pfe(object):
         QueueRequirements(queuedict, self.queue, self.nprocs(), self.time)
 
         # Now, check cluster.cpuspernode according to processor type
-        if self.processor == 'ivy':
-            if self.hyperthreading:
-                if self.cpuspernode > 40 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 40 for \'ivy\' processors in hyperthreading mode')
-            else:
-                if self.cpuspernode > 20 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 20 for \'ivy\' processors')
-        elif self.processor == 'bro':
+        if self.processor == 'bro_ele':
             if self.hyperthreading:
                 if self.cpuspernode > 56 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 56 for \'bro\' processors in hyperthreading mode')
+                    md = md.checkmessage('cpuspernode should be between 1 and 56 for \'bro_ele\' processors in hyperthreading mode')
             else:
                 if self.cpuspernode > 28 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 28 for \'bro\' processors')
-        elif self.processor == 'has':
+                    md = md.checkmessage('cpuspernode should be between 1 and 28 for \'bro_ele\' processors')
+        elif self.processor == 'sky_ele':
             if self.hyperthreading:
-                if self.cpuspernode > 48 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 48 for \'has\' processors in hyperthreading mode')
+                if self.cpuspernode > 80 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 80 for \'sky_ele\' processors in hyperthreading mode')
             else:
-                if self.cpuspernode > 24 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 24 for \'has\' processors')
-        elif self.processor == 'san':
-            if self.hyperthreading:
-                if self.cpuspernode > 32 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 32 for \'san\' processors in hyperthreading mode')
-            else:
-                if self.cpuspernode > 16 or self.cpuspernode < 1:
-                    md = md.checkmessage('cpuspernode should be between 1 and 16 for \'san\' processors')
+                if self.cpuspernode > 40 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 40 for \'sky_ele\' processors')
         elif self.processor == 'cas_ait':
             if self.hyperthreading:
                 if self.cpuspernode > 80 or self.cpuspernode < 1:
@@ -132,8 +116,22 @@ class pfe(object):
             else:
                 if self.cpuspernode > 40 or self.cpuspernode < 1:
                     md = md.checkmessage('cpuspernode should be between 1 and 40 for \'cas_ait\' processors')
+        elif self.processor == 'rom_ait':
+            if self.hyperthreading:
+                if self.cpuspernode > 256 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 256 for \'rom_ait\' processors in hyperthreading mode')
+            else:
+                if self.cpuspernode > 128 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 128 for \'rom_ait\' processors')
+        elif self.processor == 'mil_ait':
+            if self.hyperthreading:
+                if self.cpuspernode > 256 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 256 for \'mil_ait\' processors in hyperthreading mode')
+            else:
+                if self.cpuspernode > 128 or self.cpuspernode < 1:
+                    md = md.checkmessage('cpuspernode should be between 1 and 128 for \'mil_ait\' processors')
         else:
-            md = md.checkmessage('unknown processor type, should be \'bro\', \'has\', \'ivy\', \'san\', or \'cas_ait\'')
+            md = md.checkmessage('unknown processor type, should be \'bro_ele\', \'sky_ele\', \'mil_ait\', \'rom_ait\', or \'cas_ait\'')
 
         # Miscellaneous
         if not self.login:
@@ -198,7 +196,7 @@ class pfe(object):
             compressstring += ' {}'.format(os.path.basename(filepath))
         subprocess.call(compressstring, shell=True)
 
-        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'])
+        issmscpout(self.name, self.executionpath, self.login, self.port, [dirname + '.tar.gz'], transfermethod=self.transfermethod)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -225,5 +223,5 @@ class pfe(object):
     def Download(self, dirname, filelist):  # {{{
         # Copy files from cluster to current directory
         directory = '{}/{}/'.format(self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

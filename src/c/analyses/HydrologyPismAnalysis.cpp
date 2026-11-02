@@ -24,7 +24,7 @@ int  HydrologyPismAnalysis::DofsPerNode(int** doflist,int domaintype,int approxi
 void HydrologyPismAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	/*Fetch data needed: */
-	int    hydrology_model,frictionlaw;
+	int    hydrology_model;
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
 	/*Now, do we really want Pism?*/
@@ -61,9 +61,6 @@ void HydrologyPismAnalysis::UpdateParameters(Parameters* parameters,IoModel* iom
 
 /*Finite Element Analysis*/
 void           HydrologyPismAnalysis::Core(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
-void           HydrologyPismAnalysis::PreCore(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
 ElementVector* HydrologyPismAnalysis::CreateDVector(Element* element){/*{{{*/
@@ -106,7 +103,7 @@ void HydrologyPismAnalysis::UpdateWaterColumn(Element* element){/*{{{*/
 	if(element->IsAllFloating()) return;
 
 	/*Intermediaries */
-	IssmDouble  dt,drainage_rate,water_column;
+	IssmDouble  dt;
 
 	/*Retrieve all inputs and parameters*/
 	element->FindParam(&dt,TimesteppingTimeStepEnum);

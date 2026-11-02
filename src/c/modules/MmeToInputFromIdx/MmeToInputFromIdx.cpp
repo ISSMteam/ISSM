@@ -19,7 +19,6 @@ void MmeToInputFromIdx(Inputs* inputs, Elements* elements, Parameters* parameter
 
 	TransientInput* transientinput  = NULL;
 	TransientInput* transientinput2 = NULL;
-	Tria* element                    = NULL;
 	IssmDouble value;
 	IssmDouble* values               = NULL;
 	IssmDouble* times                = NULL;

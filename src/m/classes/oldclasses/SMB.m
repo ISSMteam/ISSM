@@ -1,4 +1,4 @@
-%SMB Class definition
+%SMB class definition
 %
 %   Usage:
 %      SMB=SMB();

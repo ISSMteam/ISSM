@@ -23,9 +23,6 @@ int  MmemasstransportAnalysis::DofsPerNode(int** doflist,int domaintype,int appr
 }/*}}}*/
 void MmemasstransportAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
-	int  nature=0;
-	bool isdakota=0;
-
 	/*Update elements: */
 	int counter=0;
 	for(int i=0;i<iomodel->numberofelements;i++){
@@ -83,9 +80,6 @@ void MmemasstransportAnalysis::UpdateParameters(Parameters* parameters,IoModel* 
 void           MmemasstransportAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           MmemasstransportAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* MmemasstransportAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -114,8 +108,7 @@ void           MmemasstransportAnalysis::InputUpdateFromSolution(IssmDouble* sol
 	IssmDouble ice[3];
 	IssmDouble ocean[3];
 	IssmDouble height;
-	int numnodes = element->GetNumberOfNodes();
-	
+
 	element->parameters->FindParam(&time,TimeEnum);
 
 	TriaInput* h_input=xDynamicCast<TriaInput*>(element->GetInput(MmemasstransportThicknessEnum,time)); _assert_(h_input);

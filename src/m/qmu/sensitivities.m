@@ -2,10 +2,10 @@ function sens=sensitivies(md,variablename,responsename)
 %SENSITIVIES - compute sensitivities for a certain variable and response.
 %
 %   Usage:
-%      sens=sensitivities(md,variablename,responsename)
+%      sens=sensitivies(md,variablename,responsename)
 %
-%
-%   Example: sens=sensitivities(md,'DragCoefficient','MaxVel');
+%   Example:
+%      sens=sensitivies(md,'DragCoefficient','MaxVel');
 %
 
 variablenamelength=length(variablename);

@@ -1,7 +1,7 @@
 function latlonoverlay(md,options)
 %LATLONOVERLAY - overlay latitude and longitude lines on current figure
 %
-%   latstep,lonstep, in latitude and longitude degreees, between two latitudinal, longitudinal profiles.
+%   latstep,lonstep, in latitude and longitude degrees, between two latitudinal, longitudinal profiles.
 %   color: [1 1 1] for example
 %   resolution: profile resolution ( in lat,lon degrees) 
 %   gap: gap (in meters) to plug lat,lon degree numbers;

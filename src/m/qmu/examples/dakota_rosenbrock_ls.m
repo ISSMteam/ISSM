@@ -1,6 +1,9 @@
+%DAKOTA_ROSENBROCK_LS - least squares study for rosenbrock case
 %
-%  least squares study for rosenbrock case
-%  (see Users4.2.pdf, Sec. 2.4.1)
+%   (see Users4.2.pdf, Sec. 2.4.1)
+%
+%   Usage:
+%      [dout,ddat]=dakota_rosenbrock_ls()
 %
 %  "Copyright 2009, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship

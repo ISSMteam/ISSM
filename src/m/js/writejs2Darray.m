@@ -1,4 +1,8 @@
 function writejs2Darray(fid,prefix,array)
+%WRITEJS2DARRAY - write a 2-D array to a JavaScript file as an assignment statement
+%
+%   Usage:
+%      writejs2Darray(fid,prefix,array)
 
 	if  isscalar(array)
 		fprintf(fid,'%s=%g;\n',prefix,array);

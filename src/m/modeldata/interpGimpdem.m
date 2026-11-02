@@ -1,4 +1,8 @@
 function sout = interpGimpdem(X,Y),
+%INTERPGIMPDEM - interpolate GIMP (Howat) Greenland surface DEM onto X and Y
+%
+%   Usage:
+%      sout = interpGimpdem(X,Y)
 
 switch oshostname(),
 	case {'murdo','thwaites','astrid'}
@@ -8,6 +12,8 @@ switch oshostname(),
 	case {'totten'}
 		%howatpath='/totten_1/ModelData/Greenland/gimpdem/gimpdem_90m_v01.1.tif';
 		howatpath='/totten_1/ModelData/Greenland/gimpdem/gimpdem_90m.tif';
+	case{'fenris'}
+		howatpath='/home/badgeley/ModelData/Greenland/gimpdem/gimpdem_90m.tif';
 	otherwise
 		error('machine not supported yet');
 end

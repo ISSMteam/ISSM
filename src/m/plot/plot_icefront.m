@@ -2,7 +2,7 @@ function h2 = plot_icefront(md,options,width,i,data)
 %PLOT_ICEFRONT - plot segment on neumann BC
 %
 %   Usage:
-%      plot_icefront(md,options,width,i);
+%      plot_icefront(md,options,width,i,data);
 %
 %   See also: PLOTMODEL
 

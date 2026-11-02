@@ -1,7 +1,7 @@
-%GIA class definition for Caron model (Caron et al, Geophysical Journal International, 2017)
+%GIACARON class definition for Caron model (Caron et al, Geophysical Journal International, 2017)
 %
-%	Usage:
-%		giacaron=giacaron();
+%   Usage:
+%      giacaron=giacaron();
 classdef giacaron
 	properties (SetAccess=public) 
 		

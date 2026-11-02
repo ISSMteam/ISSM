@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=removeseveralpoints(A,numprofiles,numpoints,closed,prevplot,root,options)
-%REMOVESEVERALPOINTS - remove several point
+%REMOVESEVERALPOINTS - remove several points
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

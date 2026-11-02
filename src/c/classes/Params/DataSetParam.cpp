@@ -49,8 +49,6 @@ void DataSetParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    DataSetParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DataSetParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	if(marshallhandle->OperationNumber()==MARSHALLING_LOAD)value=new DataSet();
@@ -59,12 +57,6 @@ void DataSetParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(object_enum);
 	marshallhandle->call(this->enum_type);
 	value->Marshall(marshallhandle);
-
-}
-/*}}}*/
-int DataSetParam::ObjectEnum(void){/*{{{*/
-
-	return DataSetParamEnum;
 
 }
 /*}}}*/

@@ -1,23 +1,23 @@
 function series=love_numbers(varargin)
-%LOVE_NUMBERS: provide love numbers 
-%	retrieved from: http://www.srosat.com/iag-jsg/loveNb.php 
-%	in a chosen reference frame 
-%  
-%	Usage: 
-%	series = love_numbers('type','loadingverticaldisplacement','referenceframe','CM','maxdeg',1001) 
-% 
-%	- type = one of 'loadingverticaldisplacement', 'loadinggravitationalpotential', 'loadinghorizontaldisplacement',  ...
+%LOVE_NUMBERS - provide love numbers
+%   retrieved from: http://www.srosat.com/iag-jsg/loveNb.php
+%   in a chosen reference frame
+%
+%   Usage:
+%      series=love_numbers('type','loadingverticaldisplacement','referenceframe','CM','maxdeg',1001)
+%
+%   - type = one of 'loadingverticaldisplacement', 'loadinggravitationalpotential', 'loadinghorizontaldisplacement',  ...
 %                    'tidalverticaldisplacement', 'tidalgravitationalpotential', 'tidalhorizontaldisplacement'
-%	- reference_frame = one of 'CM' (default) and 'CF'.
+%   - reference_frame = one of 'CM' (default) and 'CF'.
 %   - maxdeg = default 1001
 %
-%	Example:  
-%	h=love_number('type','loadingverticaldisplacement','referenceframe','CM','maxdeg',maxdeg);
-%	k=love_number('type','loadinggravitationalpotential','referenceframe','CM','maxdeg',maxdeg);
-%	l=love_number('type','loadinghorizontaldisplacement','referenceframe','CM','maxdeg',maxdeg);
-%	th=love_number('type','tidalverticaldisplacement','referenceframe','CM','maxdeg',maxdeg);
-%	tk=love_number('type','tidalgravitationalpotential','referenceframe','CM','maxdeg',maxdeg);
-%	tl=love_number('type','tidalhorizontaldisplacement','referenceframe','CM','maxdeg',maxdeg);
+%   Example:
+%      h=love_numbers('type','loadingverticaldisplacement','referenceframe','CM','maxdeg',maxdeg);
+%      k=love_numbers('type','loadinggravitationalpotential','referenceframe','CM','maxdeg',maxdeg);
+%      l=love_numbers('type','loadinghorizontaldisplacement','referenceframe','CM','maxdeg',maxdeg);
+%      th=love_numbers('type','tidalverticaldisplacement','referenceframe','CM','maxdeg',maxdeg);
+%      tk=love_numbers('type','tidalgravitationalpotential','referenceframe','CM','maxdeg',maxdeg);
+%      tl=love_numbers('type','tidalhorizontaldisplacement','referenceframe','CM','maxdeg',maxdeg);
 
 %recover options: 
 options=pairoptions(varargin{:});

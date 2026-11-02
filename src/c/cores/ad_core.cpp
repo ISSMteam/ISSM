@@ -21,18 +21,7 @@
 void ad_core(FemModel* femmodel){
 
 	/*diverse: */
-	int     i;
-	int     dummy;
-	int     num_dependents=0;
-	int     num_independents=0;
 	bool    isautodiff,iscontrol;
-	char   *driver           = NULL;
-	size_t  tape_stats[15];
-
-	/*state variables: */
-	IssmDouble *axp = NULL;
-	double     *xp  = NULL;
-	int my_rank=IssmComm::GetRank();
 
 	/*AD mode on?: */
 	femmodel->parameters->FindParam(&isautodiff,AutodiffIsautodiffEnum);
@@ -40,7 +29,24 @@ void ad_core(FemModel* femmodel){
 
 	if(isautodiff && !iscontrol){
 
+		/*variables shared by the ADOLC and CoDiPack drivers below: */
+		#if defined(_HAVE_ADOLC_) || defined(_HAVE_CODIPACK_)
+		int     num_dependents=0;
+		int     num_independents=0;
+		char   *driver           = NULL;
+		int     my_rank=IssmComm::GetRank();
+		#endif
+
 		#if defined(_HAVE_ADOLC_)
+			/*diverse: */
+			int     i;
+			int     dummy;
+			size_t  tape_stats[15];
+
+			/*state variables: */
+			IssmDouble *axp = NULL;
+			double     *xp  = NULL;
+
 			if(VerboseAutodiff())_printf0_("   start ad core\n");
 
 			/*First, stop tracing: */

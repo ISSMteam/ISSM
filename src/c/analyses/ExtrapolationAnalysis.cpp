@@ -71,9 +71,6 @@ void           ExtrapolationAnalysis::Core(FemModel* femmodel){/*{{{*/
 		femmodel->RequestedOutputsx(&femmodel->results,&extvar_enum,1);
 	}
 }/*}}}*/
-void           ExtrapolationAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ExtrapolationAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -87,7 +84,7 @@ ElementMatrix* ExtrapolationAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	/*Intermediaries */
 	bool	      extrapolatebydiffusion = true;
 	int	      dim, domaintype, extrapolationcase;
-	int	      i,row,col,stabilization;
+	int	      i,stabilization;
 	IssmDouble  Jdet,D_scalar,h;
 	IssmDouble  norm_dlsf;
 	IssmDouble  hx,hy,hz,kappa;

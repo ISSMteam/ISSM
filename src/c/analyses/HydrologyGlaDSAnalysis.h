@@ -21,7 +21,6 @@ class HydrologyGlaDSAnalysis: public Analysis{
 
 		/*Finite element Analysis*/
 		void           Core(FemModel* femmodel);
-		void           PreCore(FemModel* femmodel);
 		ElementVector* CreateDVector(Element* element);
 		ElementMatrix* CreateJacobianMatrix(Element* element);
 		ElementMatrix* CreateKMatrix(Element* element);
@@ -32,6 +31,7 @@ class HydrologyGlaDSAnalysis: public Analysis{
 		void           UpdateConstraints(FemModel* femmodel);
 
 		/*Specific to GlaDS*/
+		void UpdateOutputs(Element* element);
 		void SetChannelCrossSectionOld(FemModel* femmodel);
 		void UpdateSheetThickness(FemModel* femmodel);
 		void UpdateSheetThickness(Element*  element);

@@ -16,11 +16,12 @@ void stressbalance_core(FemModel* femmodel){
 	femmodel->profiler->Start(STRESSBALANCECORE);
 
 	/*parameters: */
-	bool       dakota_analysis,control_analysis;
+	bool       control_analysis;
 	int        domaintype;
-	bool       isSIA,isSSA,isL1L2,isMOLHO,isHO,isFS,isNitsche;
+	bool       isSIA,isSSA,isL1L2,isMOLHO,isHO,isFS,isNitsche,ismasstransport=false;
 	bool       save_results;
 	int        solution_type;
+	IssmDouble theta=0.;
 	int        numoutputs        = 0;
 	char     **requested_outputs = NULL;
 	Analysis  *analysis          = NULL;
@@ -36,6 +37,8 @@ void stressbalance_core(FemModel* femmodel){
 	femmodel->parameters->FindParam(&isNitsche,FlowequationIsNitscheEnum);
 	femmodel->parameters->FindParam(&save_results,SaveResultsEnum);
 	femmodel->parameters->FindParam(&solution_type,SolutionTypeEnum);
+	femmodel->parameters->FindParam(&theta,StressbalanceThetaEnum);
+	if(solution_type==TransientSolutionEnum) femmodel->parameters->FindParam(&ismasstransport,TransientIsmasstransportEnum);
 	femmodel->parameters->FindParam(&numoutputs,StressbalanceNumRequestedOutputsEnum);
 	femmodel->parameters->FindParam(&control_analysis,InversionIscontrolEnum);
 	if(numoutputs) femmodel->parameters->FindParam(&requested_outputs,&numoutputs,StressbalanceRequestedOutputsEnum);
@@ -49,7 +52,11 @@ void stressbalance_core(FemModel* femmodel){
 		femmodel->SetCurrentConfiguration(StressbalanceAnalysisEnum);
 		ResetFSBasalBoundaryConditionx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters);
 
-		/*We need basal melt rates for the shelf dampening*/
+	}
+
+	/*FS shelf dampening and the transient SSA thickness/velocity coupling both
+	 * need the basal melt rate before the momentum solve. */
+	if(isFS || (isSSA && solution_type==TransientSolutionEnum && ismasstransport && theta>0.)){
 		bmb_core(femmodel);
 	}
 

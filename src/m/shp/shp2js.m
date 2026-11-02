@@ -1,4 +1,8 @@
 function shp2js(jsname,shpname,domainname)
+%SHP2JS - write a shape file out as a JavaScript variable declaration
+%
+%   Usage:
+%      shp2js(jsname,shpname,domainname)
 
 	shp=shpread(shpname);
 	

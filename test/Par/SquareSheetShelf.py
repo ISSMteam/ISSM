@@ -23,6 +23,11 @@ pos = np.nonzero(md.mesh.y <= ymax / 2.)
 md.geometry.base[pos] = bed_sheet
 md.geometry.surface = md.geometry.base + md.geometry.thickness
 
+#Set up bed
+md.geometry.bed = np.copy(md.geometry.base)
+pos = np.nonzero(md.mask.ocean_levelset < 0)
+md.geometry.bed[pos] = md.geometry.base[pos] - 10
+
 #Initial velocity
 x = np.array(archread('../Data/SquareSheetShelf.arch', 'x'))
 y = np.array(archread('../Data/SquareSheetShelf.arch', 'y'))

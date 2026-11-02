@@ -1,5 +1,5 @@
 function [A,numprofiles,numpoints,closed]=addendprofile(A,numprofiles,numpoints,closed,prevplot,root,options)
-%ADDENDPROFILE - add point at the end of a n existing profile
+%ADDENDPROFILE - add point at the end of an existing profile
 %
 %   this script is used by exptool as an elementary operation
 %   on an ARGUS profile

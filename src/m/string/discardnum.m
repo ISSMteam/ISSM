@@ -1,5 +1,8 @@
 function string2=discardnum(string)
-%DISCARDNUM -  ??????
+%DISCARDNUM - truncate a string at its first digit
+%
+%   Return the leading, non-numeric portion of a string, discarding the
+%   first digit found and everything that follows it.
 %
 %   Usage:
 %      string2=discardnum(string)

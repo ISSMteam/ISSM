@@ -1,4 +1,4 @@
-%TIMESTEPPING Class definition
+%TIMESTEPPING class definition
 %
 %   Usage:
 %      timestepping=timestepping();

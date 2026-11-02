@@ -1,4 +1,8 @@
 function solverOptions=symmlqpbjacobioptions(varargin)
+%SYMMLQPBJACOBIOPTIONS - return PETSc options for the SYMMLQ solver with a point-block Jacobi preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqpbjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

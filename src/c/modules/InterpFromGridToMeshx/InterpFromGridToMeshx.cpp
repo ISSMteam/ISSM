@@ -122,10 +122,7 @@ void* InterpFromGridToMeshxt(void* vpthread_handle){
 	double *data                  = gate->data;
 	double  default_value         = gate->default_value;
 	const char* interptype        = gate->interp;
-	int     M                     = gate->M;
 	int     N                     = gate->N;
-
-	bool debug = M*N>1? true:false;
 
 	/*partition loop across threads: */
 	PartitionRange(&i0,&i1,nods,num_threads,my_thread);

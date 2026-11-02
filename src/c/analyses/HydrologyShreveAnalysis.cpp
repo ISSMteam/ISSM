@@ -94,9 +94,6 @@ void HydrologyShreveAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           HydrologyShreveAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           HydrologyShreveAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* HydrologyShreveAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

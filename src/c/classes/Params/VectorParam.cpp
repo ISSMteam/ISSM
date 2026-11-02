@@ -58,14 +58,6 @@ void VectorParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int  VectorParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
-int VectorParam::ObjectEnum(void){/*{{{*/
-
-	return VectorParamEnum;
-
-}
-/*}}}*/
 
 /*VectorParam virtual functions definitions: */
 void  VectorParam::GetParameterValue(Vector<IssmDouble>** poutput){/*{{{*/

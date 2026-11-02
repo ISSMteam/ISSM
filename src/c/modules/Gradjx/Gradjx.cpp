@@ -8,7 +8,6 @@
 
 void Gradjx(Vector<IssmDouble>** pgradient,IssmDouble** pnorm_list, Elements* elements,Nodes* nodes, Vertices* vertices, Loads* loads, Materials* materials, Parameters* parameters){
 
-	int         numberofvertices;
 	int         num_controls,analysisenum;
 	IssmDouble  norm_inf;
 	IssmDouble *norm_list      = NULL;
@@ -28,7 +27,6 @@ void Gradjx(Vector<IssmDouble>** pgradient,IssmDouble** pnorm_list, Elements* el
    parameters->FindParam(&control_interp,NULL,ControlInputInterpolationEnum);
 	parameters->FindParam(&M,NULL,ControlInputSizeMEnum);
 	parameters->FindParam(&N,NULL,ControlInputSizeNEnum);
-	numberofvertices=vertices->NumberOfVertices();
 
 	/*Get current analysis*/
 	parameters->FindParam(&analysisenum,AnalysisTypeEnum);

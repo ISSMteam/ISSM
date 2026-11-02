@@ -372,7 +372,7 @@ void  IoModel::AddDataIndependent(IoData* in_data){/*{{{*/
 void  IoModel::CheckFile(void){/*{{{*/
 
 	bool        found;
-	int         record_enum,record_name_size;
+	int         record_name_size;
 	long long   record_length;
 	char       *record_name = NULL;
 	const char *mddot = "md.";
@@ -497,11 +497,6 @@ void  IoModel::ConstantToInput(Inputs* inputs,Elements* elements,IssmDouble valu
 void  IoModel::DeclareIndependents(bool trace,IssmPDouble* X){/*{{{*/
 
 	bool autodiff,iscontrol;
-	int  num_independent_objects,temp;
-	int  Xcount=0;
-
-	char** names = NULL;
-	int *types = NULL;
 
 	/*Initialize array detecting whether data[i] is an independent AD mode variable: */
 	this->FetchData(&autodiff,"md.autodiff.isautodiff");
@@ -511,6 +506,10 @@ void  IoModel::DeclareIndependents(bool trace,IssmPDouble* X){/*{{{*/
 
 		#ifdef _HAVE_AD_
 		// FIXME codi here we should be able to execute codi version as normal
+		int    num_independent_objects,temp;
+		int    Xcount=0;
+		char** names = NULL;
+
 		this->FetchData(&num_independent_objects,"md.autodiff.num_independent_objects");
 		if(num_independent_objects){
 			this->FetchMultipleData(&names,&temp,"md.autodiff.independent_name"); _assert_(temp==num_independent_objects);
@@ -1407,7 +1406,7 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 	}
 
 	/*Intermediaries */
-	int          M,N,M_local,M_local2;
+	int          M,N,M_local;
    int          code,layout;
 	bool         istimeseries = false;
 	IssmPDouble *matrix       = NULL;
@@ -1484,7 +1483,12 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 			}
 		}
 		else if(layout==2){
-			_error_("not supported yet");
+			if(M==this->numberofelements){
+				for(int rank=0;rank<num_procs;rank++) M_local_list[rank] = this->numelements_per_proc[rank];
+			}
+			else{
+				_error_("not supported yet");
+			}
 		}
 		else{
 			_error_("layout "<<layout<<" not support yet (while fetching "<<data_name<<")");
@@ -1510,17 +1514,28 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 
 			/*Construct matrix relevant to this rank*/
 			all_matrices[rank] = xNew<IssmPDouble>(M_local_list[rank]*N);
-			for(int i=0; i<this->numvertices_per_proc[rank]; i++){
-				for(int j=0; j<N; j++){
-					all_matrices[rank][i*N+j] = fullmatrix[this->rank0_vert_send_ids[rank][i]*N+j];
+			if(layout==1){
+				for(int i=0; i<this->numvertices_per_proc[rank]; i++){
+					for(int j=0; j<N; j++){ all_matrices[rank][i*N+j] = fullmatrix[this->rank0_vert_send_ids[rank][i]*N+j]; }
 				}
+			}
+			else if(layout==2){
+				int counter = 0;
+				for(int i=0; i<this->numberofelements; i++){
+					if(this->epart[i]==rank){
+						for(int j=0; j<N; j++){ all_matrices[rank][counter*N+j] = fullmatrix[i*N+j]; }
+						counter++;
+					}
+				}
+				_assert_(counter==this->numelements_per_proc[rank]);
+			}
+			else{
+				_error_("layout "<<layout<<" not support yet (while fetching "<<data_name<<")");
 			}
 
 			/*Add time for time series*/
 			if(istimeseries){
-				for(int j=0; j<N; j++){
-					all_matrices[rank][this->numvertices_per_proc[rank]*N+j] = fullmatrix[(M-1)*N+j];
-				}
+				for(int j=0; j<N; j++){ all_matrices[rank][(M_local_list[rank]-1)*N+j] = fullmatrix[(M-1)*N+j]; }
 			}
 			ISSM_MPI_Isend(all_matrices[rank], M_local_list[rank]*N, ISSM_MPI_PDOUBLE, rank, 0, IssmComm::GetComm(), &send_requests[rank]);
 		}
@@ -2104,7 +2119,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	/*Defaulting only supported for double arrays*/
 	if(code!=7 && code!=10) _error_(vector_name<<" is not a double array");
 
-	bool testnewapproach = false;
+	bool testnewapproach = true;
 	if(testnewapproach){
 		this->FetchDataLocal(&doublearray,&M,&N,vector_name);
 	}
@@ -2147,7 +2162,6 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	}
 
 	/*intermediary: */
-	int     i;
 	int     code,vector_layout;
 
 	/*variables being fetched: */
@@ -2156,6 +2170,7 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 	IssmDouble  scalar;
 	IssmDouble *doublearray = NULL;
 	int         M,N;
+	bool testnewapproach = false;
 
 	/*First of, find the record for the name, and get code  of data type: */
 	this->SetFilePointerToData(&code, &vector_layout,vector_name);
@@ -2335,11 +2350,21 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 				break;
 		case 7: //IssmDouble vector
 		case 10:
-				this->FetchData(&doublearray,&M,&N,vector_name);
+				if(testnewapproach){
+					this->FetchDataLocal(&doublearray,&M,&N,vector_name);
+				}
+				else{
+					this->FetchData(&doublearray,&M,&N,vector_name);
+				}
 				if(!doublearray) _error_("\""<<vector_name<<"\" not found in binary file");
 				for(Object* & object : elements->objects){
 					Element* element=xDynamicCast<Element*>(object);
-					element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);//we need i to index into elements.
+					if(testnewapproach){
+						element->InputCreateLocal(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+					}
+					else{
+						element->InputCreate(doublearray,inputs,this,M,N,vector_layout,input_enum,code);
+					} 
 				}
 				break;
 		default:
@@ -2358,7 +2383,7 @@ void  IoModel::FetchDataToDatasetInput(Inputs* inputs,Elements* elements,const c
 		IoData* iodata=*iter;
 		if(strcmp(iodata->name,vector_name)==0){
 			for(Object* & object : elements->objects){
-				Element* element=xDynamicCast<Element*>(object);
+				(void)object;
 				_error_("to be implemented...");
 				//element->InputCreate(iodata->data,inputs,this,iodata->M,iodata->N,iodata->layout,input_enum,iodata->code);//we need i to index into elements.
 			}
@@ -2431,14 +2456,14 @@ void  IoModel::FetchDataToDatasetInput(Inputs* inputs,Elements* elements,const c
 /*}}}*/
 void  IoModel::FetchIndependentConstant(int* pXcount,IssmPDouble* X,const char* constant_name){/*{{{*/
 
+	#ifdef _HAVE_AD_ //cannot come here unless you are running AD mode, from DeclaredIndependents:
+
 	/*recover my_rank:*/
 	int my_rank=IssmComm::GetRank();
 
 	/*recover Xcount if X is not NULL:*/
 	int Xcount = 0;
 	if(X) Xcount=*pXcount;
-
-	#ifdef _HAVE_AD_ //cannot come here unless you are running AD mode, from DeclaredIndependents:
 
 	/*output: */
 	IssmPDouble  pscalar;
@@ -2482,14 +2507,14 @@ void  IoModel::FetchIndependentConstant(int* pXcount,IssmPDouble* X,const char* 
 /*}}}*/
 void  IoModel::FetchIndependentData(int* pXcount,IssmPDouble* X,const char* data_name){/*{{{*/
 
+	#ifdef _HAVE_AD_ //cannot come here unless you are running AD mode, from DeclaredIndependents:
+
 	/*recover my_rank:*/
 	int my_rank=IssmComm::GetRank();
 
 	/*recover Xcount if X is not NULL:*/
 	int Xcount = 0;
 	if(X) Xcount=*pXcount;
-
-	#ifdef _HAVE_AD_ //cannot come here unless you are running AD mode, from DeclaredIndependents:
 
 	/*Intermediaries*/
 	int M,N;
@@ -2573,14 +2598,12 @@ void  IoModel::FetchMultipleData(char*** pstrings,int* pnumstrings,const char* d
 	int  num_instances;
 
 	/*output: */
-	int    numstrings = 0;
 	char **strings    = NULL;
 
 	/*intermediary: */
 	char   *string         = NULL;
 	int     string_size;
 	int    *codes          = NULL;
-	int    *code           = NULL;
 	fpos_t *file_positions = NULL;
 
 	/*recover my_rank:*/
@@ -2854,7 +2877,6 @@ void  IoModel::FetchMultipleData(int*** pmatrices,int** pmdims,int** pndims, int
 	/*intermediary: */
 	int          M, N;
 	IssmPDouble *pmatrix = NULL;
-	IssmDouble  *matrix  = NULL;
 	int         *integer_matrix=NULL;
 	int         *codes   = NULL;
 	int          code;
@@ -3116,7 +3138,6 @@ void  IoModel::PrintDebugMessage(void){/*{{{*/
 /*}}}*/
 fpos_t* IoModel::SetFilePointersToData(int** pcodes,int** pvector_types, int* pnum_instances,const char* data_name){/*{{{*/
 
-	int     found          = 0;
 	const char* mddot = "md.";
 	char* record_name = NULL;
 	int   record_name_size;
@@ -3350,15 +3371,6 @@ void  IoModel::StartTrace(bool trace){/*{{{*/
 
 	bool autodiff = false;
 	bool iscontrol = false;
-	bool keep=false;
-	IssmDouble gcTriggerRatio;
-	IssmDouble gcTriggerMaxSize;
-	IssmDouble obufsize;
-	IssmDouble lbufsize;
-	IssmDouble cbufsize;
-	IssmDouble tbufsize;
-
-	int my_rank=IssmComm::GetRank();
 
 	this->FetchData(&autodiff,"md.autodiff.isautodiff");
 	this->FetchData(&iscontrol,"md.inversion.iscontrol");
@@ -3367,6 +3379,15 @@ void  IoModel::StartTrace(bool trace){/*{{{*/
 
 		#if defined(_HAVE_ADOLC_)
 		/*Retrieve parameters: */
+		bool       keep=false;
+		IssmDouble gcTriggerRatio;
+		IssmDouble gcTriggerMaxSize;
+		IssmDouble obufsize;
+		IssmDouble lbufsize;
+		IssmDouble cbufsize;
+		IssmDouble tbufsize;
+		int        my_rank=IssmComm::GetRank();
+
 		this->FetchData(&keep,"md.autodiff.keep");
 		int keepTaylors=keep?1:0;
 		this->FetchData(&gcTriggerRatio,"md.autodiff.gcTriggerRatio");

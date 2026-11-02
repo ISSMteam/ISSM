@@ -69,8 +69,6 @@ void StringArrayParam::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int    StringArrayParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void StringArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = StringArrayParamEnum;
@@ -90,12 +88,6 @@ void StringArrayParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	else{
 		this->value=NULL;
 	}
-}
-/*}}}*/
-int StringArrayParam::ObjectEnum(void){/*{{{*/
-
-	return StringArrayParamEnum;
-
 }
 /*}}}*/
 
@@ -130,6 +122,14 @@ void  StringArrayParam::GetParameterValue(char*** pstringarray,int* pM){/*{{{*/
 	*pstringarray=outstrings;
 }
 /*}}}*/
+bool  StringArrayParam::IsMember(const char* string){/*{{{*/
+
+	for(int i=0;i<this->numstrings;i++){
+		if(strcmp(this->value[i],string)==0) return true;
+	}
+
+	return false;
+}/*}}}*/
 void  StringArrayParam::SetValue(char** stringarray,int M){/*{{{*/
 
 	int   i;

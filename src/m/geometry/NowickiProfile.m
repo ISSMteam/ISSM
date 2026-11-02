@@ -2,11 +2,12 @@ function [b h sea] = NowickiProfile(x),
 %NOWICKIPROFILE - Create profile at the transition zone based on Sophie Nowicki's thesis
 %
 %   Usage:
-%      [b h] = NowickiProfile(x)
+%      [b h sea] = NowickiProfile(x)
 %
-%      - h = ice thickness
-%      - b = ice base
-%      - x = along flow coordinate
+%      - h   = ice thickness
+%      - b   = ice base
+%      - sea = sea level
+%      - x   = along flow coordinate
 
 %Constant for theoretical profile
 delta = 0.1;          % ratio of water density and ice density -1

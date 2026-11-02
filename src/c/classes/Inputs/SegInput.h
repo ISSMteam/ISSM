@@ -8,20 +8,19 @@
 class SegInput: public ElementInput, public SegRef{
 
 	public:
-		/*SegInput constructors, destructors: {{{*/
+		/*SegInput constructors, destructors:*/
 		SegInput();
 		SegInput(int nbe_in,int nbv_in,int interp_in);
 		~SegInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
-		/*SegInput management: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return SegInputEnum;}
+
+		/*SegInput management:*/
 		void SetInput(int interp_in,int row,IssmDouble value_in);
 		void SetInput(int interp_in,int numinds,int* rows,IssmDouble* values_in);
 		void SetInput(int interp_in,int row,int numinds,IssmDouble* values_in);
@@ -42,7 +41,7 @@ class SegInput: public ElementInput, public SegRef{
 		int  GetResultArraySize(void);
 		int  GetResultInterpolation(void);
 		int  GetResultNumberOfNodes(void);
-		/*}}}*/
+
 		void Reset(int interp_in);
 
 };

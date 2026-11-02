@@ -4,7 +4,7 @@ function plot_tensor(md,options,width,i,type)
 %   Usage:
 %      plot_tensor(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 h=subplot(width,width,i); axis off; pos=get(h,'Position');
 

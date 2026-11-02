@@ -1,11 +1,14 @@
 function md=adjacency(md)
-%ADJACENCY -  compute adjacency matrix, list of vertices and list of weights.
+%ADJACENCY - compute adjacency matrix, list of vertices and list of weights.
 %
-%  function to create the adjacency matrix from the connectivity table.
+%   function to create the adjacency matrix from the connectivity table.
 %
-%  the required output is:
-%    md.adj_mat     (double [sparse nv x nv], vertex adjacency matrix)
-%    md.qmu.vertex_weight        (double [nv], vertex weights)
+%   the required output is:
+%     md.qmu.adjacency      (double [sparse nv x nv], vertex adjacency matrix)
+%     md.qmu.vertex_weight  (double [nv], vertex weights)
+%
+%   Usage:
+%      md=adjacency(md)
 
 indi=[md.mesh.elements(:,1);md.mesh.elements(:,2);md.mesh.elements(:,3)];
 indj=[md.mesh.elements(:,2);md.mesh.elements(:,3);md.mesh.elements(:,1)];

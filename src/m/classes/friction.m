@@ -1,7 +1,7 @@
 %FRICTION class definition
 %
-%	Usage:
-%		friction=friction();
+%   Usage:
+%      friction=friction();
 
 classdef friction
 	properties (SetAccess=public) 
@@ -53,14 +53,19 @@ classdef friction
 			md = checkfield(md,'fieldname','friction.effective_pressure_limit','numel',[1],'>=',0);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
+			elseif self.coupling==4
+				% check turn-on md.transient.ishydrology=1 
+				if ~md.transient.ishydrology
+					md = checkmessage(md, 'md.friction.coupling = 4 but md.transient.ishydrology = 0!');
+				end
 			end
 		end % }}}
 		function disp(self) % {{{
-			disp(sprintf('Basal shear stress parameters: Sigma_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)'));
+			disp('Basal shear stress parameters: Sigma_b = coefficient^2 * Neff ^r * |u_b|^(s-1) * u_b\n(effective stress Neff=rho_ice*g*thickness+rho_water*g*bed, r=q/p and s=1/p)');
 			fielddisplay(self,'coefficient','friction coefficient [SI]');
 			fielddisplay(self,'p','p exponent');
 			fielddisplay(self,'q','q exponent');
-			fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model (not implemented yet)');
+			fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model');
 			fielddisplay(self,'linearize','0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)');
 			fielddisplay(self,'effective_pressure','Effective Pressure for the forcing if not coupled [Pa]');
 			fielddisplay(self,'effective_pressure_limit','Neff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)');

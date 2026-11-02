@@ -4,8 +4,8 @@ function clicktoflowline(index,x,y,u,v,filename)
 %   create a flowline contour file (named 'filename') by clicking
 %   on a velocity field once (velocity must be plotted first)
 %
-%   Usage: 
-%      clicktoflowline(index,x,y,u,v,x0,y0,filename)
+%   Usage:
+%      clicktoflowline(index,x,y,u,v,filename)
 %
 %   Example: 
 %      clicktoflowline(md.mesh.elements,md.mesh.x,md.mesh.y,md.inversion.vx_obs,md.inversion.vy_obs,'flowline.exp')

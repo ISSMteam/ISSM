@@ -1,4 +1,8 @@
 function theta = colinearity(md)
+%COLINEARITY - compute the angle between the observed velocity direction and the surface slope direction
+%
+%   Usage:
+%      theta=colinearity(md);
 
 %load some variables (it is much faster if the variab;es are loaded from md once for all) 
 if ~strcmpi(meshtype(md.mesh),'3D')

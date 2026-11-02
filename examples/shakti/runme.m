@@ -47,6 +47,11 @@ if any(steps==2)
 	pos=find(md.mesh.vertexonboundary & md.mesh.x==min(md.mesh.x));
 	md.hydrology.spchead(pos)=md.geometry.base(pos);
 
+	% Convergence criteria of the SHAKTI nonlinear solver
+	md.hydrology.restol = 0.05;
+	md.hydrology.reltol = 0.05;
+	md.hydrology.abstol = NaN;
+
 	save MoulinParam md;
 end 
 

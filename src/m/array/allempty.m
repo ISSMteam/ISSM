@@ -1,8 +1,8 @@
-%  function to return an empty cell array if all array elements are empty
-%
-%  function [cout]=allempty(cin)
-%
 function [cout]=allempty(cin)
+%ALLEMPTY - return an empty cell array if all array elements are empty
+%
+%   Usage:
+%      cout=allempty(cin);
 
 if ~nargin
     help allempty

@@ -122,7 +122,12 @@ class solidearthsettings(object):
                     raise Exception('model requires a 2D mesh to run gia Ivins computations (change mesh from mesh3dsurface to mesh2d)')
             else:
                 if self.grdmodel == 1:
-                    raise Exception('model requires a 3D surface mesh to run GRD computations (change mesh from mesh2d to mesh3dsurface)')
+                    if md.mesh.__class__.__name__ != 'mesh2d':
+                        raise Exception('model requires a 3D surface mesh or mesh2d for elastic GRD computations')
+                    md = checkfield(md, 'fieldname', 'mesh.lat', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices, 1])
+                    md = checkfield(md, 'fieldname', 'mesh.long', 'NaN', 1, 'Inf', 1, 'size', [md.mesh.numberofvertices, 1])
+                    if self.grdocean or self.sealevelloading:
+                        raise Exception('regional mesh2d elastic GRD requires solidearth.settings.grdocean=0 and sealevelloading=0')
             if self.sealevelloading and not self.grdocean:
                 raise Exception('solidearthsettings checkconsistency error message: need grdocean on if sealevelloading flag is set')
 

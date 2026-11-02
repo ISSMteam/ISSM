@@ -358,7 +358,6 @@ void           Pengrid::ConstraintActivateHydrologyDCInefficient(int* punstable)
 	int        unstable=0;
 	int        new_active;
 	int        penalty_lock;
-	IssmDouble pressure;
 	IssmDouble h;
 	IssmDouble h_max;
 	HydrologyDCInefficientAnalysis* inefanalysis = NULL;

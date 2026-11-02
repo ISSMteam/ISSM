@@ -2,7 +2,7 @@ function WriteData(fid,prefix,varargin)
 %WRITEDATA - write model field in binary file
 %
 %   Usage:
-%      WriteData(fid,varargin);
+%      WriteData(fid,prefix,varargin);
 
 %process options
 options=pairoptions(varargin{:});

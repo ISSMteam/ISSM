@@ -1,11 +1,12 @@
 function list=listfilesparallel(rank,numprocs)
-%LISTFILESPARALLEL list files inside a directory, depending on rank  and number of processors running this routine.
+%LISTFILESPARALLEL - list files inside a directory, depending on rank and number of processors running this routine.
 %        this is very OS dependent.
 %
-%   usage: list=listfilesparallel(rank,numprocs);
+%   Usage:
+%      list=listfilesparallel(rank,numprocs);
 %
-%
-%   see also LS DIR LISTFILES
+%   See Also:
+%      LS, DIR, LISTFILES
 
 list=listfiles';
 numfiles=numel(list);

@@ -1,4 +1,4 @@
-%SMBmeltcomponents Class definition
+%SMBMELTCOMPONENTS class definition
 %
 %   Usage:
 %      SMBmeltcomponents=SMBmeltcomponents();

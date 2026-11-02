@@ -1,10 +1,10 @@
 function plot_tensor_components(md,options,width,i,tensor,type,plot_options)
-%PLOT_TENSOR_COMPONENT - plot component of a tensor
+%PLOT_TENSOR_COMPONENTS - plot components of a tensor
 %
 %   Usage:
 %      plot_tensor_components(md,options,width,i,tensor,type,plot_option);
 %
-%   See also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
+%   See Also: PLOTMODEL, PLOT_UNIT, PLOT_MANAGER
 
 %Compute the indexes of the components plots
 upperplots=fix((i-1)/width);

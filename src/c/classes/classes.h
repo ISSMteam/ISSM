@@ -119,6 +119,9 @@
 #ifdef _HAVE_PyBind11_
 #include "./Params/EmulatorParam.h"
 #endif
+#ifdef _HAVE_GPU_HO_
+#include "./Params/GPUHOParam.h"
+#endif
 
 /*matrix: */
 #include "./matrix/matrixobjects.h"

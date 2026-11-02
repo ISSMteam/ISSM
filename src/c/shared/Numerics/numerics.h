@@ -33,7 +33,7 @@ IssmPDouble  max(IssmPDouble a,IssmPDouble b);
 
 int         min(int a,int b);
 int         max(int a,int b);
-void        BrentSearch(IssmDouble** pJ,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(IssmDouble*,void*),IssmDouble (*g)(IssmDouble**,IssmDouble*,void*),void* usr);
+void        BrentSearch(IssmDouble** pJ,IssmDouble** pG,OptPars optpars,IssmDouble* X0,IssmDouble (*f)(IssmDouble*,void*),IssmDouble (*g)(IssmDouble**,IssmDouble*,void*),void* usr);
 void        cross(IssmDouble *result,IssmDouble*vector1,IssmDouble*vector2);
 bool        XZvectorsToCoordinateSystem(IssmDouble *T,IssmDouble*xzvectors);
 int         cubic(IssmDouble a, IssmDouble b, IssmDouble c, IssmDouble d,IssmDouble X[3], int *num);

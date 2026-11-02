@@ -21,7 +21,6 @@ class OceantransportAnalysis: public Analysis{
 
 		/*Finite element Analysis*/
 		void           Core(FemModel* femmodel);
-		void           PreCore(FemModel* femmodel);
 		ElementVector* CreateDVector(Element* element);
 		ElementMatrix* CreateJacobianMatrix(Element* element);
 		ElementMatrix* CreateKMatrix(Element* element);

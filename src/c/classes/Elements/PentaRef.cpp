@@ -1073,7 +1073,7 @@ void PentaRef::GetNodalFunctionsDerivativesReference(IssmDouble* dbasis,Gauss* g
 void PentaRef::GetQuadJacobianDeterminant(IssmDouble* Jdet,IssmDouble* xyz_list,Gauss* gauss){/*{{{*/
 	/*This routine returns the values of the nodal functions  at the gaussian point.*/
 
-	IssmDouble x1,x2,x3,x4,y1,y2,y3,y4,z1,z2,z3,z4;
+	IssmDouble x1,x2,y1,y2,z1,z2,z3,z4;
 
 	x1=xyz_list[0*3+0];
 	y1=xyz_list[0*3+1];
@@ -1081,11 +1081,7 @@ void PentaRef::GetQuadJacobianDeterminant(IssmDouble* Jdet,IssmDouble* xyz_list,
 	x2=xyz_list[1*3+0];
 	y2=xyz_list[1*3+1];
 	z2=xyz_list[1*3+2];
-	x3=xyz_list[2*3+0];
-	y3=xyz_list[2*3+1];
 	z3=xyz_list[2*3+2];
-	x4=xyz_list[3*3+0];
-	y4=xyz_list[3*3+1];
 	z4=xyz_list[3*3+2];
 
 	/*Jdet = (Area of the trapezoid)/(Area trapezoid ref) with AreaRef = 4*/

@@ -66,8 +66,6 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		void           ComputeStressTensor();
 		//void           ComputeMeanEla(IssmDouble* paltitude, int* pcounter);
 		void           Configure(Elements* elements,Loads* loads,Nodes* nodes,Vertices* vertices,Materials* materials,Parameters* parameters,Inputs* inputsin);
-		void           ControlInputSetGradient(IssmDouble* gradient,int enum_type,int control_index,int offset,int M,int N,int interp);
-		void           ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp);
 		void				CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum);
 		ElementMatrix* CreateBasalMassMatrix(void);
 		void           CreateInputTimeAverage(int transientinput_enum,int averagedinput_enum,IssmDouble start_time,IssmDouble end_time,int averaging_method);
@@ -199,7 +197,7 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		IssmDouble		TotalCalvingMeltingFluxLevelset(bool scaled);
 		IssmDouble     TotalFloatingBmb(bool scaled);
 		IssmDouble     TotalGroundedBmb(bool scaled);
-		IssmDouble     TotalHydrologyBasalFlux(bool scaled){_error_("not implemented yet");};
+		IssmDouble     TotalHydrologyGroundinglineDischarge(bool scaled){_error_("not implemented yet");};
 		IssmDouble     TotalSmb(bool scaled);
 		IssmDouble     TotalSmbMelt(bool scaled);
 		IssmDouble     TotalSmbRefreeze(bool scaled);
@@ -238,6 +236,9 @@ class Penta: public Element,public ElementHook,public PentaRef{
 		void       SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom){_error_("not implemented yet");};
 		void       SealevelchangeDeformationConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads,  IssmDouble* rotationvector,SealevelGeometry* slgeom){_error_("not implemented yet");};
 		void       SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newindex, int offset){_error_("not implemented yet");};
+		#endif
+		#ifdef _HAVE_GPU_HO_
+		void GetHOMetadataArraySizes(void);
 		#endif
 
 		/*}}}*/

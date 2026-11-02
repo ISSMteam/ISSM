@@ -1,9 +1,10 @@
 #ifndef _CONTAINER_PARAMETERS_H_
-#define  _CONTAINER_PARAMETERS_H_
+#define _CONTAINER_PARAMETERS_H_
 #include <stdio.h>
 
 /*forward declarations */
 class Param;
+class GPUHOParam;
 class DataSet;
 class MarshallHandle;
 template <class doublematrix> class Matrix;
@@ -47,6 +48,7 @@ class Parameters{
 		void  FindParam(IssmDouble* pscalar, int row, IssmDouble time, int timestepping, IssmDouble dt, int enum_type);
 		void  FindParam(char** pstring,int enum_type);
 		void  FindParam(char*** pstringarray,int* pM,int enum_type);
+		bool  IsInRequestedOutput(int requested_outputs_enum,int output_enum);
 		void  FindParam(int** pintarray,int* pM,int enum_type);
 		void  FindParam(int** pintarray,int* pM,int* PN,int enum_type);
 		void  FindParam(IssmDouble** pIssmDoublearray,int* pM,int* pN,IssmDouble time,int enum_type);
@@ -58,6 +60,9 @@ class Parameters{
 		void  FindParam(Matrix<IssmDouble>** pmat,int enum_type);
 		void  FindParam(FILE** pfid,int enum_type);
 		void  FindParam(DataSet** pdataset, int enum_type);
+		#ifdef _HAVE_GPU_HO_
+		void  FindParam(GPUHOParam** p_metadata, int enum_type);
+		#endif
 		void  FindParamAndMakePassive(IssmPDouble* pscalar, int enum_type);
 		void  FindParamAndMakePassive(IssmPDouble** pvec,int* pM,int enum_type);
 		void  FindControlParam(IssmDouble** pvec,int* pM, int param_enum, const char* data);
@@ -79,7 +84,6 @@ class Parameters{
 		void  SetParam(FILE* fid,int enum_type);
 		void  SetParam(DataSet* dataset,int enum_type);
 		void  SetControlFromVector(IssmDouble* array, int enum_type, int M, int N, int offset);
-		void  SetGradientFromVector(IssmDouble* array, int enum_type, int M, int N, int offset);
 		void  GetVectorFromControl(Vector<IssmDouble>* vector,int control_enum,int control_index,int N,const char* data,int offset);
 		Param* FindParamObject(int enum_type);
 

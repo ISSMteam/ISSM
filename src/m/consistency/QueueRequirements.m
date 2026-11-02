@@ -1,8 +1,8 @@
 function QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,queue,np,time)
 %QUEUEREQUIREMENTS - queue requirements in time, number of cpus, by name of queue.
 %
-%   Usage: 
-%      QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,np,time)
+%   Usage:
+%      QueueRequirements(available_queues,queue_requirements_time,queue_requirements_np,queue,np,time)
 
 %Ok, go through requirements for current queue:
 index=ismemberi(queue,available_queues);

@@ -1,7 +1,10 @@
 function map = turbo(m)
-%TURBO   Turbo colormap.
+%TURBO - Turbo colormap.
 %   TURBO(M) returns an M-by-3 matrix containing the turbo colormap, a
 %   variant of the jet colormap that is more perceptually uniform.
+%
+%   Usage:
+%      map = turbo(m)
 %
 %   See also JET, COLORMAP.
 %	 

@@ -1,6 +1,9 @@
 function md=bamg(md,varargin)
 %BAMG - mesh generation
 %
+%   Usage:
+%      md=bamg(md,options);
+%
 %   Available options (for more details see ISSM website http://issm.jpl.nasa.gov/):
 %
 %   - domain :            followed by an ARGUS file that prescribes the domain outline
@@ -48,7 +51,7 @@ function md=bamg(md,varargin)
 %   - tol :               if the distance between 2 points of the domain outline is less than tol, they
 %                         will be merged
 %
-%   Examples:
+%   Example:
 %      md=bamg(md,'domain','DomainOutline.exp','hmax',3000);
 %      md=bamg(md,'field',[md.inversion.vel_obs md.geometry.thickness],'hmax',20000,'hmin',1000);
 %      md=bamg(md,'metric',A,'hmin',1000,'hmax',20000,'gradation',3,'anisomax',1);

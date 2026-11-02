@@ -42,7 +42,7 @@ void solutionsequence_hydro_nonlinear(FemModel* femmodel, bool* pconv_fail){
 	int        num_unstable_constraints;
 	int        sedcount,eplcount,hydrocount;
 	int        hydro_maxiter;
-	int        epl_fsize,epl_sub_fsize,epl_main_fsize;
+	int        epl_fsize,epl_sub_fsize;
 	IssmDouble sediment_kmax;
 	IssmDouble eps_res,eps_rel,eps_abs;
 	IssmDouble ndu_sed,nu_sed;

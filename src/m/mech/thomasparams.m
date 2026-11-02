@@ -34,13 +34,15 @@ function [alpha,beta,theta,ex,sigxx]=thomasparams(md,varargin)
 %		'theta' which is a combination of alpha and beta arising from the form of
 %		the equivalent stress
 %
-%		'exx' is the strain rate along a coordinate system defined by 'coordsys' 
+%		'ex' is the strain rate along a coordinate system defined by 'coordsys'
 %
-%		'sigxx' is the deviatoric stress along a coordinate system defined by 'coordsys' 
+%		'sigxx' is the deviatoric stress along a coordinate system defined by 'coordsys'
 %
-%   Usage: [alpha,beta,theta,exx,sigxx]=ThomasParams(md,options)
+%   Usage:
+%      [alpha,beta,theta,ex,sigxx]=thomasparams(md,options);
 %
-%   Example: [alpha,beta,theta,exx,sigxx]=ThomasParams(md,'eq','Thomas','smoothing',2,'coordsys','longitudinal')
+%   Example:
+%      [alpha,beta,theta,ex,sigxx]=thomasparams(md,'eq','Thomas','smoothing',2,'coordsys','longitudinal');
 
 %some checks
 if (nargin<4)

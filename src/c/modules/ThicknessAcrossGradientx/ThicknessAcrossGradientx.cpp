@@ -31,9 +31,9 @@ void ThicknessAcrossGradientx( IssmDouble* pJ, Elements* elements,Nodes* nodes, 
 
 IssmDouble ThicknessAcrossGradient(Element* element){
 
-	IssmDouble  thickness,thicknessobs,weight;
+	IssmDouble  thickness,weight;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble* xyz_list = NULL;
 	IssmDouble  dp[3];
 	IssmDouble  vx,vy,vel;

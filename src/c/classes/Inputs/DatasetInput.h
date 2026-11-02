@@ -22,21 +22,20 @@ class DatasetInput: public Input{
 
 	public:
 		int GetNumIds() const {return this->numids;};
-		/*DatasetInput constructors, destructors: {{{*/
+		/*DatasetInput constructors, destructors:*/
 		DatasetInput();
 		DatasetInput(int nbe, int nbv);
 		~DatasetInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input* copy();
-		void    Configure(Parameters* params);
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		void    SetTriaInput(int interp_in,int numinds,int* rows,IssmDouble* values_in);
-		/*}}}*/
+		void   Configure(Parameters* params);
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return DatasetInputEnum;}
+		void   SetTriaInput(int interp_in,int numinds,int* rows,IssmDouble* values_in);
+
 		IssmDouble GetInputMin();
 		void SetTriaInput(int id,int interp_in,int numinds,int* rows,IssmDouble* values_in);
 		void SetPentaInput(int id,int interp_in,int numinds,int* rows,IssmDouble* values_in);

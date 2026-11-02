@@ -17,23 +17,24 @@ function dataout = interpFromMEaSUREsGeotiff(X,Y,Tstart,Tend,varargin)
 %      - 'glacier':  which glacier to look for
 options    = pairoptions(varargin{:});
 glacier    = getfieldvalue(options,'glacier','Greenland');
+folder	  = getfieldvalue(options,'folder', '/totten_1/ModelData/');
 data_version = 'v04.0';
 
 if strcmp(glacier, 'Greenland')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Greenland_2014_2022_monthly_mosaic_v5/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Greenland_2014_2022_monthly_mosaic_v5/'];
 	data_version = 'v05.0';
 elseif strcmp(glacier, 'Jakobshavn')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Jakobshavn_2008_2024/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Jakobshavn_2008_2024/'];
 elseif strcmp(glacier, 'Kangerlussuaq')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Kangerlussuaq_2006_2021/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Kangerlussuaq_2006_2021/'];
 elseif strcmp(glacier, 'Store')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Store_2008_2021/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Store_2008_2021/'];
 elseif strcmp(glacier, 'Rink')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Rink_2008_2022/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Rink_2008_2022/'];
 elseif strcmp(glacier, 'Upernavik')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Upernavik_2008_2022/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Upernavik_2008_2022/'];
 elseif strcmp(glacier, 'Helheim')
-	foldername = '/totten_1/ModelData/Greenland/VelMEaSUREs/Helheim_2008_2023/';
+	foldername = [folder, '/Greenland/VelMEaSUREs/Helheim_2008_2023/'];
 else
 	error(['The velocity data for ', glacier, ' is not available, please download from NSIDC first.']);
 end

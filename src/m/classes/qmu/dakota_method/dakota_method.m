@@ -1,7 +1,7 @@
+%DAKOTA_METHOD class definition
 %
-%  definition for the dakota_method class.
-%
-%  [dm]=dakota_method(method)
+%   Usage:
+%      dm=dakota_method(method)
 %
 %  where the required input is:
 %    method       (char, beginning of method name)

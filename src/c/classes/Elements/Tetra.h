@@ -48,8 +48,6 @@ class Tetra: public Element,public ElementHook,public TetraRef{
 		void        ComputeDeviatoricStressTensor(){_error_("not implemented yet");};
 		void        ComputeEsaStrainAndVorticity(){_error_("not implemented yet!");};
 		void        Configure(Elements* elements,Loads* loads,Nodes* nodesin,Vertices* verticesin,Materials* materials,Parameters* parameters,Inputs* inputsin);
-		void        ControlInputSetGradient(IssmDouble* gradient,int enum_type,int control_index,int offset,int M,int N,int interp){_error_("not implemented yet");};
-		void        ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp){_error_("not implemented yet");};
 		IssmDouble  DragCoefficientAbsGradient(void){_error_("not implemented yet");};
 		void        ElementResponse(IssmDouble* presponse,int response_enum){_error_("not implemented yet");};
 		void        ElementCoordinates(Vector<IssmDouble>* vxe,Vector<IssmDouble>* vye,Vector<IssmDouble>* vze,Vector<IssmDouble>* vareae,bool spherical=false){_error_("not implemented yet");};
@@ -164,7 +162,7 @@ class Tetra: public Element,public ElementHook,public TetraRef{
 		IssmDouble  TimeAdapt(){_error_("not implemented yet");};
 		IssmDouble  TotalFloatingBmb(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalGroundedBmb(bool scaled){_error_("not implemented yet");};
-		IssmDouble  TotalHydrologyBasalFlux(bool scaled){_error_("not implemented yet");};
+		IssmDouble  TotalHydrologyGroundinglineDischarge(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmb(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmbMelt(bool scaled){_error_("not implemented yet");};
 		IssmDouble  TotalSmbRefreeze(bool scaled){_error_("not implemented yet");};

@@ -99,9 +99,7 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 	IssmDouble  *matrix                     = NULL;
 	int          count;
 
-	IssmDouble *temp = NULL;
 	IssmDouble *transparam = NULL;
-	IssmDouble  yts;
 	int         N,M;
 
 	/*Copy some constants from iomodel */
@@ -539,6 +537,9 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 	else if(hydrology_model==HydrologyGlaDSEnum){
 		/*Nothing to add*/
 	}
+	else if (hydrology_model==HydrologyIMLGlaDSEnum){
+		/*Nothing to add*/
+	}
 	else if(hydrology_model==HydrologyTwsEnum){
 		/*Nothing to add*/
 	}
@@ -585,7 +586,7 @@ void CreateParameters(Parameters* parameters,IoModel* iomodel,char* rootpath,FIL
 	/*Stochastic Effective Pressure false by default*/
 	parameters->AddObject(new BoolParam(StochasticForcingIsWaterPressureEnum,false));
    if(isstochasticforcing){
-      int num_fields,num_tcov,stochastic_dim;
+      int num_fields;
       char** fields;
       parameters->AddObject(iomodel->CopyConstantObject("md.stochasticforcing.num_fields",StochasticForcingNumFieldsEnum));
       parameters->AddObject(iomodel->CopyConstantObject("md.stochasticforcing.defaultdimension",StochasticForcingDefaultDimensionEnum));

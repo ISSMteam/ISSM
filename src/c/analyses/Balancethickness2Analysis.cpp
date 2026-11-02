@@ -58,9 +58,6 @@ void Balancethickness2Analysis::UpdateParameters(Parameters* parameters,IoModel*
 void           Balancethickness2Analysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented yet");
 }/*}}}*/
-void           Balancethickness2Analysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented yet");
-}/*}}}*/
 ElementVector* Balancethickness2Analysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -86,9 +83,6 @@ ElementMatrix* Balancethickness2Analysis::CreateKMatrix(Element* element){/*{{{*
 	element->GetVerticesCoordinates(&xyz_list);
 	Input* vx_input = element->GetInput(VxEnum); _assert_(vx_input); 
 	Input* vy_input = element->GetInput(VyEnum); _assert_(vy_input);
-
-	/*Get element characteristic length*/
-	IssmDouble h = element->CharacteristicLength();
 
 	/* Start  looping on the number of gaussian points: */
 	Gauss* gauss=element->NewGauss(2);

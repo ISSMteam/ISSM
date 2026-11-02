@@ -1,4 +1,8 @@
 function solverOptions=minressoroptions(varargin)
+%MINRESSOROPTIONS - return PETSc options for the MINRES (minimum residual) Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=minressoroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

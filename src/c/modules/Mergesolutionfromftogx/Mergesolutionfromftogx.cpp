@@ -13,7 +13,6 @@ void	Mergesolutionfromftogx( Vector<IssmDouble>** pug, Vector<IssmDouble>* uf, V
 	/*first, get gsize, fsize and ssize: */
 	int gsize=nodes->NumberOfDofs(GsetEnum);
 	int gsize_local=nodes->NumberOfDofsLocal(GsetEnum);
-	int fsize=nodes->NumberOfDofs(FsetEnum);
 	int ssize=nodes->NumberOfDofs(SsetEnum);
 
 	/*serialize uf and ys: those two vectors will be indexed by the nodes, who are the only ones

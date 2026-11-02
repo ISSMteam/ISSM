@@ -1,4 +1,8 @@
 function kmlgridded(md,data,varargin)
+%KMLGRIDDED - export gridded data as a KML ground overlay image
+%
+%   Usage:
+%      kmlgridded(md,data,varargin)
 
 %process options
 options=pairoptions(varargin{:});

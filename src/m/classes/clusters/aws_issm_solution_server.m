@@ -50,15 +50,13 @@ classdef aws_issm_solution_server
 			disp(sprintf('    cpuspernode: %i',cluster.cpuspernode));
 			disp(sprintf('    np: %i',cluster.nprocs()));
 			disp(sprintf('    time: %i',cluster.time));
-			disp(sprintf('    processor: %i',cluster.processor));
 			disp(sprintf('    srcpath: %s',cluster.srcpath));
 			disp(sprintf('    extpkgpath: %s',cluster.extpkgpath));
 			disp(sprintf('    codepath: %s',cluster.codepath));
 			disp(sprintf('    executionpath: %s',cluster.executionpath));
-			disp(sprintf('    grouplist: %s',cluster.grouplist));
 			disp(sprintf('    interactive: %i',cluster.interactive));
-			disp(sprintf('    numstreams: %s',cluster.numstreams));
-			disp(sprintf('    hyperthreading: %s',cluster.hyperthreading));
+			disp(sprintf('    numstreams: %i',cluster.numstreams));
+			disp(sprintf('    hyperthreading: %i',cluster.hyperthreading));
 			disp(sprintf('    email: %s',cluster.email));
 		end
 		%}}}

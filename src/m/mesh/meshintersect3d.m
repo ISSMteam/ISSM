@@ -1,7 +1,11 @@
 function indices=meshintersect3d(x,y,z,xs,ys,zs,varargin)
-%MESHINTERSECT - return indices (into x,y and z) of common values between 
+%MESHINTERSECT3D - return indices (into x,y,z) of common values between
 %(x,y,z) and (xs,ys,zs).
-%   i.e: x(index)=xs; y(index)=ys;
+%
+%   i.e: x(index)=xs; y(index)=ys; z(index)=zs;
+%
+%   Usage:
+%      indices=meshintersect3d(x,y,z,xs,ys,zs);
 %
 
 

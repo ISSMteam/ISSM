@@ -413,7 +413,7 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
 	double *G               = NULL;
 	int    *N               = NULL;
 	int    *M               = NULL;
-	int    *control_enum;
+	int    *control_enum    = NULL;
 
 	/*Recover some parameters*/
 	femmodel->parameters->FindParam(&solution_type,SolutionTypeEnum);
@@ -522,52 +522,22 @@ void controladm1qn3_core(FemModel* femmodel){/*{{{*/
       offset += M[c]*N[c];
    }
 
-	/*Set X as our new control*/
+	/*Set X as our new control (needs to be an active variable)*/
 	IssmDouble* aX=xNew<IssmDouble>(intn);
-	IssmDouble* aG=xNew<IssmDouble>(intn);
-
-	for(int i=0;i<intn;i++) {
-		aX[i] = reCast<IssmDouble>(X[i]);
-		aG[i] = reCast<IssmDouble>(G[i]);
-	}
-
-	ControlInputSetGradientx(femmodel->elements,femmodel->nodes,femmodel->vertices,femmodel->loads,femmodel->materials,femmodel->parameters,aG);
+	for(int i=0;i<intn;i++) aX[i] = reCast<IssmDouble>(X[i]);
 	SetControlInputsFromVectorx(femmodel,aX);
 	xDelete(aX);
 
+	femmodel->results->AddObject(new GenericExternalResult<int>(femmodel->results->Size()+1,InversionStopFlagEnum,int(omode)));
 	if (solution_type == TransientSolutionEnum){
 		int step = 1;
 		femmodel->parameters->SetParam(step,StepEnum);
 		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N));
-
-		int offset = 0;
-		for(int i=0;i<num_controls;i++){
-
-			/*Disect results*/
-			GenericExternalResult<IssmPDouble*>* G_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,Gradient1Enum+i,&G[offset],N[i],M[i]);
-			GenericExternalResult<IssmPDouble*>* X_output = new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,control_enum[i],&X[offset],N[i],M[i]);
-
-			/*transpose for consistency with MATLAB's formating*/
-			G_output->Transpose();
-			X_output->Transpose();
-
-			/*Add to results*/
-			femmodel->results->AddObject(G_output);
-			femmodel->results->AddObject(X_output);
-
-			offset += N[i]*M[i];
-		}
 	}
 	else{
-		//FIXME: merge with code above?
 		femmodel->results->AddObject(new GenericExternalResult<IssmPDouble*>(femmodel->results->Size()+1,JEnum,mystruct.Jlist,(*mystruct.i),mystruct.N,0,0));
-		femmodel->OutputControlsx(&femmodel->results);
 	}
-	femmodel->results->AddObject(new GenericExternalResult<int>(femmodel->results->Size()+1,InversionStopFlagEnum,int(omode)));
-
-	xDelete(aG);
-
-	/*Add last cost function to results*/
+	ControlSaveResults(femmodel, G);
 
 	/*Finalize*/
 	if(VerboseControl()) _printf0_("   preparing final solution\n");

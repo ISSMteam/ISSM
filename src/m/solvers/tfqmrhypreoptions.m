@@ -1,4 +1,8 @@
 function solverOptions=tfqmrhypreoptions(varargin)
+%TFQMRHYPREOPTIONS - return PETSc options for the TFQMR solver with a Hypre preconditioner
+%
+%   Usage:
+%      solverOptions=tfqmrhypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

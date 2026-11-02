@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
+from project3d import project3d
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 from WriteData import WriteData
@@ -31,6 +32,7 @@ class hydrologyprescribe(object):
         # }}}
 
     def extrude(self,md): # {{{
+        self.head=project3d(md,'vector',self.head,'type','node','layer', 1);
         return self
     # }}}
 

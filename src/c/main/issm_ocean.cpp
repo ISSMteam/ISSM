@@ -12,9 +12,7 @@ int main(int argc,char **argv){
 	int    my_rank,my_local_rank,my_size,my_local_size;
 	ISSM_MPI_Comm worldcomm;
 	ISSM_MPI_Comm modelcomm;
-	ISSM_MPI_Comm frommitgcm;
 	ISSM_MPI_Comm tomitgcmcomm;
-	ISSM_MPI_Status status;
 
 	/*Initialize exception trapping: */
 	ExceptionTrapBegin();

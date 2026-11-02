@@ -1,10 +1,13 @@
 function smb = interpISMIP6AntarcticaSMB(md,model_name)
-%interpISMIP6AntarcticaSMB - interpolate chosen ISMIP6 atmospheric forcing to model
+%INTERPISMIP6ANTARCTICASMB - interpolate chosen ISMIP6 atmospheric forcing to model
+%
+%   Usage:
+%      smb = interpISMIP6AntarcticaSMB(md,model_name)
 %
 %   Input:
 %     - md (model object)
 %     - model_name (string): name of the climate model and scenario
-%       - suppported options from /totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/
+%       - supported options from /totten_1/ModelData/ISMIP6/Projections/AIS/Atmosphere_Forcing/
 %             2.6 scenario             8.5 scenario
 %             ---------------------------------------------
 %             ccsm4_rcp2.6             ccsm4_rcp8.5
@@ -22,7 +25,7 @@ function smb = interpISMIP6AntarcticaSMB(md,model_name)
 %            time series from 1995-2100
 %
 %   Examples:
-%      Omd.smb = interpISMIP6AntarcticaSMB(md,'miroc-esm-chem_rcp8.5');
+%      md.smb = interpISMIP6AntarcticaSMB(md,'miroc-esm-chem_rcp8.5');
 
 % Find appropriate directory
 switch oshostname(),

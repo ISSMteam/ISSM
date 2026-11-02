@@ -42,7 +42,6 @@ void AgeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 		}
 	}
 
-	bool dakota_analysis, ismovingfront;
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.thickness",ThicknessEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.surface",SurfaceEnum);
 	iomodel->FetchDataToInput(inputs,elements,"md.geometry.base",BaseEnum);
@@ -80,9 +79,6 @@ void AgeAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 void           AgeAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           AgeAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* AgeAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -116,9 +112,7 @@ ElementMatrix* AgeAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	element->GetVerticesCoordinates(&xyz_list);
 	element->FindParam(&dt,TimesteppingTimeStepEnum);
 	element->FindParam(&stabilization,AgeStabilizationEnum);
-	IssmDouble  rho_water           = element->FindParam(MaterialsRhoSeawaterEnum);
 	IssmDouble  rho_ice             = element->FindParam(MaterialsRhoIceEnum);
-	IssmDouble  gravity             = element->FindParam(ConstantsGEnum);
 	IssmDouble  heatcapacity        = element->FindParam(MaterialsHeatcapacityEnum);
 	IssmDouble  thermalconductivity = 1.;
 	IssmDouble  kappa = thermalconductivity/(rho_ice*heatcapacity);

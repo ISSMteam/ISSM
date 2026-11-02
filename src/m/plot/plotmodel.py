@@ -87,24 +87,30 @@ def plotmodel(md, *args):
                                   width_ratios=options.list[0].getfieldvalue('width_ratios',[1]*ncols),
                                   height_ratios=options.list[0].getfieldvalue('height_ratios',[1]*nrows),
                                   squeeze=True)
+            if options.list[0].getfieldvalue('tightsubplot',0):
+                hmargin = options.list[0].getfieldvalue('hmargin',[0.1, 0.1])
+                vmargin = options.list[0].getfieldvalue('vmargin',[0.1, 0.1])
+                gap     = options.list[0].getfieldvalue('gap',[0.02, 0.02])
+                fig.subplots_adjust(
+                        left=hmargin[0],right=1-hmargin[1],
+                        bottom=vmargin[0],top=1-vmargin[1],
+                        hspace=gap[0],wspace=gap[1],
+                        )
+
             if (nrows == 1) & (ncols == 1):
                 axgrid = [axgrid] # make axgrid iterable contents.
-            axgrid = axgrid.flatten() # flattening...
+            else:
+                axgrid = axgrid.flatten() # flattening from (nrows, ncols) to (nrows*ncols,)
 
             # Control axes vertical and horizontal spaces.
             if options.list[0].exist('axes_pad'):
                 axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)
-                if len(axes_pad) == 1: axes_pad = 2*axes_pad
+                if isinstance(axes_pad,float): axes_pad = [axes_pad, axes_pad]
+                if isinstance(axes_pad,list) & (len(axes_pad)==1): axes_pad = 2*axes_pad
                 fig.subplots_adjust(wspace=axes_pad[0],hspace=axes_pad[1])
 
             for ax in axgrid:
                 ax.set_aspect('equal')
-
-            # Control axes vertical and horizontal spaces.
-            if options.list[0].exist('axes_pad'):
-                axes_pad = options.list[0].getfieldvalue('axes_pad', 0.25)
-                if len(axes_pad) == 1: axes_pad = 2*axes_pad
-                fig.subplots_adjust(wspace=axes_pad[0],hspace=axes_pad[1])
         else:
             # NOTE: The inline comments for each of the following parameters are
             #       taken from https://matplotlib.org/api/_as_gen/mpl_toolkits.axes_grid1.axes_grid.ImageGrid.html

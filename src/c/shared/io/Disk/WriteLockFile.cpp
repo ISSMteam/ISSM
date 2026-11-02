@@ -5,7 +5,6 @@
 #include "../../Exceptions/exceptions.h"
 #include "../Comm/IssmComm.h"
 #include "../Print/Print.h"
-#include <cstdio>
 
 void WriteLockFile(char* filename){
 

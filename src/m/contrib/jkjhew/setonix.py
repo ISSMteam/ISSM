@@ -45,9 +45,8 @@ class setonix(object):
         self.executionpath  = ''
         self.project        = ''  # Slurm account => e.g. "--account=xx00"
         self.interactive    = 0
-        self.bbftp          = 0
-        self.numstreams     = 8
         self.hyperthreading = 0
+        self.transfermethod = 'auto'
 
         # Use provided options to change fields
         options = pairoptions(*args)
@@ -84,9 +83,8 @@ class setonix(object):
         s += '    executionpath: {}\n'.format(self.executionpath)
         s += '    project (account): {}\n'.format(self.project)
         s += '    interactive: {}\n'.format(self.interactive)
-        s += '    bbftp: {}\n'.format(self.bbftp)
-        s += '    numstreams: {}\n'.format(self.numstreams)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
+        s += '    transfermethod: {}\n'.format(self.transfermethod)
         return s
     # }}}
 
@@ -220,7 +218,7 @@ class setonix(object):
 
         print('Uploading input files and queue script to Setonix...')
         directory = self.executionpath
-        issmscpout(self.name, directory, self.login, self.port, [dirname + '.tar.gz'])
+        issmscpout(self.name, directory, self.login, self.port, [dirname + '.tar.gz'], transfermethod=self.transfermethod)
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
@@ -256,5 +254,5 @@ class setonix(object):
     def Download(self, dirname, filelist):  # {{{
         # Copy files back from Setonix to local machine
         directory = '{}/{}/'.format(self.executionpath, dirname)
-        issmscpin(self.name, self.login, self.port, directory, filelist)
+        issmscpin(self.name, self.login, self.port, directory, filelist, transfermethod=self.transfermethod)
     # }}}

@@ -151,7 +151,7 @@ IssmDouble Cfsurfacesquare::Response(FemModel* femmodel){/*{{{*/
 /*}}}*/
 IssmDouble Cfsurfacesquare::Cfsurfacesquare_Calculation(Element* element, int model_enum){/*{{{*/
 
-	int        domaintype,numcomponents;
+	int        domaintype;
 	IssmDouble Jelem=0.;
 	IssmDouble misfit,Jdet;
 	IssmDouble model,obs,weight;
@@ -174,9 +174,9 @@ IssmDouble Cfsurfacesquare::Cfsurfacesquare_Calculation(Element* element, int mo
 	/*Get problem dimension*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DverticalEnum:   numcomponents   = 1; break;
-		case Domain3DEnum:           numcomponents   = 2; break;
-		case Domain2DhorizontalEnum: numcomponents   = 2; break;
+		case Domain2DverticalEnum:   break;
+		case Domain3DEnum:           break;
+		case Domain2DhorizontalEnum: break;
 		default: _error_("not supported yet");
 	}
 

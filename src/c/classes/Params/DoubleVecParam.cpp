@@ -57,8 +57,6 @@ void DoubleVecParam::Echo(void){/*{{{*/
 
 }
 /*}}}*/
-int    DoubleVecParam::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void DoubleVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = DoubleVecParamEnum;
@@ -66,12 +64,6 @@ void DoubleVecParam::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(this->enum_type);
 	marshallhandle->call(this->M);
 	marshallhandle->call(this->values,this->M);
-}
-/*}}}*/
-int DoubleVecParam::ObjectEnum(void){/*{{{*/
-
-	return DoubleVecParamEnum;
-
 }
 /*}}}*/
 
@@ -98,10 +90,6 @@ void  DoubleVecParam::GetParameterValue(IssmDouble** poutput,int* pM,int* pN){/*
 	if(pM) *pM=this->M;
 	if(pN) *pN=1;
 	*poutput=output;
-}
-/*}}}*/
-void  DoubleVecParam::GetParameterValue(int** pintarray,int* pM){/*{{{*/
-	_error_("DoubleVec param of enum " << enum_type << " (" << EnumToStringx(enum_type) << ") cannot return an array of int");
 }
 /*}}}*/
 void  DoubleVecParam::SetValue(IssmDouble* IssmDoublearray,int in_M){/*{{{*/

@@ -1,8 +1,8 @@
 function plot_edges(md,options,width,i,datai)
-%PLOT_SEGMENTS - plot edges, with different colors according to segment markers.
+%PLOT_EDGES - plot edges, with different colors according to segment markers.
 %
 %   Usage:
-%      plot_edges(md,options,width,i);
+%      plot_edges(md,options,width,i,datai);
 %
 %   See also: PLOTMODEL
 

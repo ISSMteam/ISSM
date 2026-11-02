@@ -1,4 +1,8 @@
 function solverOptions=gltrhypreoptions(varargin)
+%GLTRHYPREOPTIONS - PETSc solver options using the generalized Lanczos trust-region (gltr) Krylov method with Hypre preconditioning
+%
+%   Usage:
+%      solverOptions=gltrhypreoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

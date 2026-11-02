@@ -1,5 +1,5 @@
 function plot_profile(md,data,options,nlines,ncols,ii)
-%PLOT_SECTION - plot a given field on a profile
+%PLOT_PROFILE - plot a given field on a profile
 %
 %   Usage:
 %      plot_profile(md,data,options,nlines,ncols,i)

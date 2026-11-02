@@ -1,4 +1,4 @@
-%LINEAR BASAL FORCINGS class definition
+%LINEARBASALFORCINGS class definition
 %
 %   Usage:
 %      linearbasalforcings=linearbasalforcings();

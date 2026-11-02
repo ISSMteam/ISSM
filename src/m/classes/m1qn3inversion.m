@@ -76,7 +76,7 @@ classdef m1qn3inversion
 			%Early return
 			if ~self.iscontrol, return; end
 			num_controls=numel(md.inversion.control_parameters);
-			num_costfunc=size(md.inversion.cost_functions,2);
+			num_costfunc=numel(md.inversion.cost_functions);
 
 			md = checkfield(md,'fieldname','inversion.iscontrol','values',[0 1]);
 			md = checkfield(md,'fieldname','inversion.incomplete_adjoint','values',[0 1]);
@@ -87,7 +87,7 @@ classdef m1qn3inversion
 			md = checkfield(md,'fieldname','inversion.dxmin','numel',1,'>',0);
 			md = checkfield(md,'fieldname','inversion.dfmin_frac','numel',1,'>=',0,'<=',1);
 			md = checkfield(md,'fieldname','inversion.gttol','numel',1,'>',0);
-			md = checkfield(md,'fieldname','inversion.cost_functions','size',[1 num_costfunc],'values',supportedcostfunctions());
+			md = checkfield(md,'fieldname','inversion.cost_functions','numel',num_costfunc,'values',supportedcostfunctions());
 			md = checkfield(md,'fieldname','inversion.cost_functions_coefficients','size',[md.mesh.numberofvertices num_costfunc],'>=',0);
 			md = checkfield(md,'fieldname','inversion.min_parameters','size',[NaN num_controls]);
 			md = checkfield(md,'fieldname','inversion.max_parameters','size',[NaN num_controls]);

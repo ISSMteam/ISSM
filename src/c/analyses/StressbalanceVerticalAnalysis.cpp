@@ -189,9 +189,6 @@ void           StressbalanceVerticalAnalysis::Core(FemModel* femmodel){/*{{{*/
 		femmodel->SetCurrentConfiguration(StressbalanceVerticalAnalysisEnum);
 		solutionsequence_linear(femmodel);
 }/*}}}*/
-void           StressbalanceVerticalAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* StressbalanceVerticalAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -427,7 +424,7 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorSurface(Element* elem
 	IssmDouble *xyz_list_surface= NULL;
 	IssmDouble  Jdet,slope[3];
 	IssmDouble  vx,vy,vz=0.,dsdx,dsdy;
-	IssmDouble  smb,smbvalue;
+	IssmDouble  smb;
 
 	if(!element->IsOnSurface()) return NULL;
 

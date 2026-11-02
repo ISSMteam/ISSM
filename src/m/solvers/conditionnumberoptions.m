@@ -1,8 +1,8 @@
 function cn=conditionnumberoptions(varargin)
-%MULTIGRIDOPTIONS - use Multigrid 
+%CONDITIONNUMBEROPTIONS - define PETSc GMRES solver options to estimate the condition number of the system matrix
 %
 %   Usage:
-%      options=mgoptions;
+%      cn=conditionnumberoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

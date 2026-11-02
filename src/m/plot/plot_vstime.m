@@ -1,4 +1,8 @@
 function plot_vstime(md,options,nlines,ncols,i)
+%PLOT_VSTIME - plot a field value at a given point as a function of time
+%
+%   Usage:
+%      plot_vstime(md,options,nlines,ncols,i);
 
 %plot mesh
 subplot(nlines,ncols,i); 

@@ -1,4 +1,4 @@
-%BASAL FORCINGS class definition
+%BASALFORCINGS class definition
 %
 %   Usage:
 %      basalforcings=basalforcings();

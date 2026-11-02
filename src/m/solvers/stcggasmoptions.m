@@ -1,4 +1,8 @@
 function solverOptions=stcggasmoptions(varargin)
+%STCGGASMOPTIONS - return PETSc options for the STCG solver with a GASM (Generalized Additive Schwarz Method) preconditioner
+%
+%   Usage:
+%      solverOptions=stcggasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

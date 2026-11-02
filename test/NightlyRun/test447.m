@@ -2,9 +2,6 @@
 md=triangle(model(),'../Exp/Square.exp',150000.);
 md=setmask(md,'../Exp/SquareShelf.exp','');
 md=parameterize(md,'../Par/SquareSheetShelf.par');
-md.geometry.bed=md.geometry.base;
-pos=find(md.mask.ocean_levelset<0);
-md.geometry.bed(pos)=md.geometry.base(pos)-10;
 md.friction=frictioncoulomb();
 md.friction.coefficient=20.*ones(md.mesh.numberofvertices,1);
 md.friction.p=ones(md.mesh.numberofelements,1);

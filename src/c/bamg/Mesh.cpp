@@ -1550,7 +1550,6 @@ namespace bamg {
 		//initialize edge4 again
 		edge4= new SetOfEdges4(nbe,nbv);  
 		double hmin = HUGE_VAL;
-		int kreq=0;
 		for (i=0;i<nbe;i++){
 
 			long i0 = GetId(edges[i][0]);
@@ -1566,8 +1565,7 @@ namespace bamg {
 			Gh.edges[i].tg[0]=R2();
 			Gh.edges[i].tg[1]=R2();
 
-			bool required= edges[i].GeomEdgeHook; 
-			if(required) kreq++;
+			bool required= edges[i].GeomEdgeHook;
 			edges[i].GeomEdgeHook =  Gh.edges + i;
 			if(required){
 				Gh.edges[i].v[0]->SetRequired();
@@ -2098,11 +2096,10 @@ namespace bamg {
 					} // for real all triangles 
 				}
 
-				long kk=0;
 				for ( iv=0,k=0 ; iv<nbv; iv++){
 					if(Mmassxx[iv]>0){
 						dxdx[iv] /= 2*Mmassxx[iv];
-						// warning optimization (1) on term dxdy[iv]*ci/2 
+						// warning optimization (1) on term dxdy[iv]*ci/2
 						dxdy[iv] /= 4*Mmassxx[iv];
 						dydy[iv] /= 2*Mmassxx[iv];
 						// Compute the matrix with abs(eigen value)
@@ -2114,7 +2111,6 @@ namespace bamg {
 						dxdy[iv] = M.a21;
 						dydy[iv] = M.a22;
 					}
-					else kk++;
 				}
 
 				// correction of second derivative
@@ -3212,8 +3208,7 @@ namespace bamg {
 		}while(nbv!=nbvold);
 		delete [] first_np_or_next_t;
 
-		long NbSwapf =0;
-		for(i=0;i<nbv;i++) NbSwapf += vertices[i].Optim(0);
+		for(i=0;i<nbv;i++) vertices[i].Optim(0);
 	}/*}}}*/
 	GeomEdge*   Mesh::ProjectOnCurve( Edge & BhAB, BamgVertex &  vA, BamgVertex & vB,/*{{{*/
 				double theta,BamgVertex & R,VertexOnEdge &  BR,VertexOnGeom & GR) {
@@ -3516,14 +3511,13 @@ namespace bamg {
 		quadtree->Add(*v1);
 
 		// vertices are added one by one
-		long NbSwap=0;
 		for (int icount=2; icount<nbvb; icount++) {
 			BamgVertex *vi  = orderedvertices[icount];
 			long long det3[3];
 			Triangle *tcvi = TriangleFindFromCoord(vi->i,det3);
-			quadtree->Add(*vi); 
+			quadtree->Add(*vi);
 			AddVertex(*vi,tcvi,det3);
-			NbSwap += vi->Optim(1,1);
+			vi->Optim(1,1);
 		}
 
 		//enforce the boundary 
@@ -3545,10 +3539,8 @@ namespace bamg {
 		FindSubDomain(bamgopts,1);
 		// remove all the hole 
 		// remove all the good sub domain
-		long krm =0;
 		for (i=0;i<nbt;i++){
 			if (triangles[i].link){ // remove triangles
-				krm++;
 				for (int j=0;j<3;j++){
 					AdjacentTriangle ta =  triangles[i].Adj(j);
 					Triangle &tta = *(Triangle*)ta;
@@ -4160,7 +4152,6 @@ namespace bamg {
 		/*Intermediaries*/
 		int                i,k;
 		int					 verbose=0;
-		int                nbcurves    = 0;
 		int                NbNewPoints,NbEdgeCurve;
 		double             lcurve,lstep,s;
 		const int          MaxSubEdge  = 10;
@@ -4226,8 +4217,7 @@ namespace bamg {
 			long nbex=0;
 			nbe=0;
 			long NbVerticesOnGeomEdge0=NbVerticesOnGeomEdge;
-			Gh.UnMarkEdges();	
-			nbcurves=0;
+			Gh.UnMarkEdges();
 
 			//go through the edges of the geometry
 			for (i=0;i<Gh.nbe;i++){
@@ -4412,7 +4402,6 @@ namespace bamg {
 								NbNewPoints = NbEdgeCurve-1;
 								if(!kstep){
 									NbVerticesOnGeomEdge0 += NbNewPoints;
-									nbcurves++;
 								}
 								nbvend=nbv+NbNewPoints; 
 								lstep = lcurve / NbEdgeCurve; //approximately one

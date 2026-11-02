@@ -1,4 +1,8 @@
 function solverOptions=symmlqmgoptions(varargin)
+%SYMMLQNONEOPTIONS - return PETSc options for the SYMMLQ solver with no preconditioner
+%
+%   Usage:
+%      solverOptions=symmlqnoneoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

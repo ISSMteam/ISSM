@@ -5,14 +5,14 @@
 %   Rather than duplicating those ~30 lines in every file, each cluster can
 %   delegate to the corresponding static method here.
 %
-%   Clusters whose methods differ from these defaults (e.g. bbftp transfers,
-%   interactive path variants, ...) should have their own implementations.
+%   Clusters whose methods differ from these defaults (e.g. interactive path
+%   variants, ...) should have their own implementations.
 
 classdef cluster_defaults
 	methods (Static)
 		function UploadQueueJob(cluster,modelname,dirname,filelist) % {{{
 
-			% Compress the execution directory into a tar.gz and scp it to the cluster.
+			% Compress the execution directory into a tar.gz and send it to the cluster.
 			% filelist contains full paths; tar with -C so only basenames are stored.
 			root=[issmdir() '/execution/' dirname];
 			compressstring=['tar -C ' root ' -zcf ' dirname '.tar.gz'];
@@ -26,8 +26,9 @@ classdef cluster_defaults
 			system(compressstring);
 
 			%Copy tar.gz file over
-			port=0; if isprop(cluster,'port'), port=cluster.port; end
-			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']});
+			port=0; if isprop(cluster,'port'); port=cluster.port; end
+			method='auto'; if isprop(cluster,'transfermethod'); method=cluster.transfermethod; end
+			issmscpout(cluster.name,cluster.executionpath,cluster.login,port,{[dirname '.tar.gz']},method);
 		end %}}}
 		function LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, format) % {{{
 			% on cluster: open tar.gz file and submit job
@@ -36,49 +37,69 @@ classdef cluster_defaults
 			% format 2: SLURM, use sbatch
 			% format 3: PBS, use qsub
 
-			if format==1
-				%No scheduler: source .queue directly
-				if ~isempty(restart)
-					launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && cd ' dirname ' && source ' modelname '.queue '];
-				else
-					if ~batch
-						launchcommand=['source ' cluster.etcpath '/environment.sh && source ' cluster.executionpath '/' dirname '/'  modelname '.queue '];
-					else
-						launchcommand=['source ' cluster.etcpath '/environment.sh && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-							' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
-					end
-				end
-
-			elseif format==2
-				%SLURM sbatch launch: unpack the tar and submit the queue script via SSH.
-				if ~isempty(restart)
-					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && sbatch ' modelname '.queue'];
-				else
-					launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && sbatch ' modelname '.queue'];
-				end
-			elseif format==3
-				%BPS: use qsub
-				if ~isempty(restart)
-					launchcommand=['cd ' cluster.executionpath ' && cd ' dirname ' && /PBS/bin/qsub ' modelname '.queue '];
-				else
-					launchcommand=['cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ...
-						' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz && /PBS/bin/qsub ' modelname '.queue '];
-				end
-
+			%defaults
+			%Not all cluster classes carry an etcpath property (only generic/local/localpfe do):
+			%fall back to srcpath (e.g. pfe), then to codepath/.. (the convention used by most
+			%remote clusters) to locate ISSM_DIR/etc.
+			if isprop(cluster,'etcpath')
+				etcpath = cluster.etcpath;
+			elseif isprop(cluster,'srcpath')
+				etcpath = [cluster.srcpath '/etc'];
 			else
-				error('format not supported');
+				etcpath = [cluster.codepath '/../etc'];
 			end
-			port=0; if isprop(cluster,'port'), port=cluster.port; end
-			issmssh(cluster.name,cluster.login,port,launchcommand);
+			sourceetc_str = ['source ' etcpath '/environment.sh '];
+			untar_str     = [' && cd ' cluster.executionpath ' && rm -rf ./' dirname ' && mkdir ' dirname ' && cd ' dirname ' && mv ../' dirname '.tar.gz ./ && tar -zxf ' dirname '.tar.gz '];
+
+			if ~batch
+				if format==1
+					%No scheduler: source .queue directly
+					submit_str = [' && source ' modelname '.queue '];
+				elseif format==2
+					%SLURM sbatch launch: unpack the tar and submit the queue script via SSH.
+					submit_str = [' && sbatch ' modelname '.queue '];
+				elseif format==3
+					%BPS: use qsub
+					submit_str = [' && /PBS/bin/qsub ' modelname '.queue '];
+				else
+					error('format not supported');
+				end
+			else
+				submit_str = [' '];
+			end
+
+			if strcmp(cluster.name, oshostname())
+				untar_str = [' '];
+				if ~batch && format==1
+					%Special case, do not change directory
+					submit_str = [' && source ' cluster.executionpath '/' dirname '/'  modelname '.queue '];
+				end
+			end
+
+			%Prepare launchcommand
+			if ~isempty(restart)
+				launchcommand=[sourceetc_str ' && cd ' cluster.executionpath '/' dirname submit_str];
+			else
+				launchcommand=[sourceetc_str untar_str submit_str];
+			end
+
+			%Figure out port
+			port=0;
+			if isprop(cluster,'port')
+				port=cluster.port; 
+			end
+
+			%execute launch command
+			issmssh(cluster.name, cluster.login, port, launchcommand);
 
 		end %}}}
 		function Download(cluster,dirname,filelist) % {{{
 
-			%Copy output files from the cluster back to the current directory via scp.
+			%Copy output files from the cluster back to the current directory.
 			directory=[cluster.executionpath '/' dirname '/'];
 			port=0; if isprop(cluster,'port'), port=cluster.port; end
-			issmscpin(cluster.name,cluster.login,port,directory,filelist);
+			method='auto'; if isprop(cluster,'transfermethod'), method=cluster.transfermethod; end
+			issmscpin(cluster.name,cluster.login,port,directory,filelist,method);
 
 		end %}}}
 	end

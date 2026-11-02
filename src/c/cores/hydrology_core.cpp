@@ -249,6 +249,31 @@ void hydrology_core(FemModel* femmodel){ /*{{{*/
 		delete analysis;
 	}
 
+	/*Using the IML-GlaDS model*/
+	else if (hydrology_model==HydrologyIMLGlaDSEnum){
+		HydrologyIMLGlaDSAnalysis* analysis = new HydrologyIMLGlaDSAnalysis();
+		femmodel->SetCurrentConfiguration(HydrologyIMLGlaDSAnalysisEnum);
+
+		bool islakes;
+		femmodel->parameters->FindParam(&islakes,HydrologyLakeFlagEnum);
+
+		/*Set fields as old*/
+		InputDuplicatex(femmodel,HydraulicPotentialEnum,HydraulicPotentialOldEnum);
+		InputDuplicatex(femmodel,HydrologySheetThicknessEnum,HydrologySheetThicknessOldEnum);
+		if(islakes){
+			InputDuplicatex(femmodel,HydrologyLakeHeightEnum,HydrologyLakeHeightOldEnum);
+			InputDuplicatex(femmodel,HydrologyLakeChannelQrEnum,HydrologyLakeChannelQrOldEnum);
+		}
+		analysis->SetChannelCrossSectionOld(femmodel);
+		
+		/*Solve for new potential*/
+		solutionsequence_imlglads_nonlinear(femmodel);
+
+		if(VerboseSolution()) _printf0_("   updating effective pressure\n");
+		analysis->UpdateEffectivePressure(femmodel);
+		delete analysis;
+	}
+
 	/*Using the PISM hydrology model*/
 	else if (hydrology_model==HydrologypismEnum){
 		femmodel->SetCurrentConfiguration(HydrologyPismAnalysisEnum);

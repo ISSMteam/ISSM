@@ -103,8 +103,7 @@ void UpdateBoxIdsPico(FemModel* femmodel){/*{{{*/
 }/*}}}*/
 void ComputeBoxAreasPico(FemModel* femmodel){/*{{{*/
 
-	int num_basins,maxbox,basinid,boxid,domaintype;
-	IssmDouble dist_max,area;
+	int num_basins,maxbox,basinid,boxid;
 
 	femmodel->parameters->FindParam(&num_basins,BasalforcingsPicoNumBasinsEnum);
 	femmodel->parameters->FindParam(&maxbox,BasalforcingsPicoMaxboxcountEnum);

@@ -123,7 +123,9 @@ classdef glaciermip < handle
 				masses(find(masses==0))=NaN;
 			end
 			if strcmpi(unit,'mmSLE')
-				masses=masses/sletogt();
+				rho_water= 1023;
+				sletogt  = rho_water/1000*361.9; %361.9 Gigatons to 1 mm sea-level equivalent.
+				masses=masses/sletogt;
 			end
 
 
@@ -147,7 +149,9 @@ classdef glaciermip < handle
 			end
 
 			if strcmpi(unit,'mmSLE/yr')
-				massrates=massrates/sletogt();
+				rho_water= 1023;
+				sletogt  = rho_water/1000*361.9; %361.9 Gigatons to 1 mm sea-level equivalent.
+				massrates=massrates/sletogt;
 			end
 
 		end % }}}

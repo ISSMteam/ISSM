@@ -1,7 +1,7 @@
-function varargout=loadmodel(path)
-%LOADMODEL - load a model using built-in load module 
+function vargout = loadmodel(path)
+%LOADMODEL - load model from MATLAB file
 %
-%   check that model prototype has not changed. if so, adapt to new model prototype.
+%   Loads the model instance saved in a MATLAB file
 %
 %   Usage:
 %      md=loadmodel(path)
@@ -22,25 +22,34 @@ else
 	error(['loadmodel error message: file ' path ' does not exist']);
 end
 
-try,
-	%recover model on file and name it md
+try
+	%load variables in file 
 	warning off MATLAB:unknownElementsNowStruc;
 	warning off MATLAB:load:classNotFound
-	struc=load(path,'-mat');
+	struc = load(path,'-mat');
 	warning on MATLAB:unknownElementsNowStruc;
 	warning on MATLAB:load:classNotFound
 
-	name=char(fieldnames(struc));
-	if size(name,1)>1
+	%Check that only one variable is present
+	name = char(fieldnames(struc));
+	if size(name, 1)>1
 		error(['loadmodel error message: file ' path ' contains several variables. Only one model should be present.']); 
 	end
-	md=struc.(name);
-	if nargout
-		varargout{1}=md;
-	else
-		assignin('caller',name,md);
+
+	%Extract model and make sure it is a model
+	md = struc.(name);
+	if ~isa(md, 'model')
+		error(['variable ''' name ''' saved in ''' path ''' is not of class ''model''']);
 	end
+
+	%return model or save in workspace
+	if ~nargout
+		assignin('caller', name, md);
+	else
+		vargout(1) = md;
+	end
+
 catch me
 	disp(getReport(me))
-	error(['could not load model ' path]);
+	error(['could not load model from ''' path ''' (see error above)']);
 end

@@ -1,9 +1,8 @@
-%
-%  function to return the string dimension of an array element
-%
-%  function [sdim]=string_dim(a,idim,varargin)
-%
 function [sdim]=string_dim(a,idim,varargin)
+%STRING_DIM - return the string dimension of an array element
+%
+%   Usage:
+%      sdim=string_dim(a,idim,varargin);
 
 if ~nargin
     help string_dim

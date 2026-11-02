@@ -119,9 +119,6 @@ void BalancethicknessAnalysis::UpdateParameters(Parameters* parameters,IoModel* 
 void           BalancethicknessAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           BalancethicknessAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* BalancethicknessAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -256,7 +253,7 @@ ElementMatrix* BalancethicknessAnalysis::CreateKMatrixDG(Element* element){/*{{{
 
 	/*Intermediaries */
 	int        domaintype;
-	IssmDouble Jdet,D_scalar,vx,vy,dvxdx,dvydy,vel;
+	IssmDouble Jdet,D_scalar,vx,vy,dvxdx,dvydy;
 	IssmDouble dvx[2],dvy[2];
 	IssmDouble* xyz_list = NULL;
 
@@ -294,6 +291,8 @@ ElementMatrix* BalancethicknessAnalysis::CreateKMatrixDG(Element* element){/*{{{
 		vyaverage_input->GetInputValue(&vy,gauss);
 		vxaverage_input->GetInputDerivativeValue(&dvx[0],xyz_list,gauss);
 		vyaverage_input->GetInputDerivativeValue(&dvy[0],xyz_list,gauss);
+		dvxdx=dvx[0];
+		dvydy=dvy[1];
 		D_scalar=gauss->weight*Jdet;
 
 		/*WARNING: inverted compared to CG*/
@@ -411,7 +410,6 @@ ElementVector* BalancethicknessAnalysis::CreatePVectorDG(Element* element){/*{{{
 		mb_input->GetInputValue(&mb,gauss);
 		dhdt_input->GetInputValue(&dhdt,gauss);
 
-		IssmDouble factor = Jdet*gauss->weight*(ms-mb-dhdt);
 		for(int i=0;i<numnodes;i++) pe->values[i]+=Jdet*gauss->weight*(ms-mb-dhdt)*basis[i];
 	}
 
@@ -432,7 +430,7 @@ void           BalancethicknessAnalysis::GradientJ(Vector<IssmDouble>* gradient,
 
 	/*Intermediaries*/
 	IssmDouble Jdet,weight,factor;
-	IssmDouble thickness,thicknessobs,dH[3],dp[3];
+	IssmDouble thickness,thicknessobs,dH[3];
 	IssmDouble  vx,vy,vel,dvx[2],dvy[2],dhdt,basal_melting,surface_mass_balance;
 	IssmDouble *xyz_list= NULL;
 

@@ -227,7 +227,7 @@ def ReadData(fid, md):  # {{{
             field = field / pow(10.0, 12) * yts # (GigaTon/year)
         elif fieldname == 'IcefrontMassFluxLevelset':
             field = field / pow(10.0, 12) * yts # (GigaTon/year)
-        elif fieldname == 'TotalHydrologyBasalFlux':
+        elif fieldname == 'TotalHydrologyGroundinglineDischarge':
             field = field / pow(10.0, 12) * yts # (GigaTon/year)
         elif fieldname == 'SmbMassBalance':
             field = field * yts

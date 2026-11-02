@@ -44,7 +44,7 @@ class FemModel {
 		Elements    *elements;             //elements (one set for all analyses)
 		Materials   *materials;            //one set of materials, for each element
 		Parameters  *parameters;           //one set of parameters, independent of the analysis_type
-		Inputs     *inputs;              //one set of inputs, independent of the analysis_type
+		Inputs      *inputs;               //one set of inputs, independent of the analysis_type
 		Results     *results;              //results that cannot be fit into the elements
 		Vertices    *vertices;             //one set of vertices
 
@@ -143,7 +143,7 @@ class FemModel {
 		void TotalCalvingMeltingFluxLevelsetx(IssmDouble* pGbmb, bool scaled);
 		void TotalFloatingBmbx(IssmDouble* pFbmb, bool scaled);
 		void TotalGroundedBmbx(IssmDouble* pGbmb, bool scaled);
-		void TotalHydrologyBasalFluxx(IssmDouble* pM, bool scaled);
+		void TotalHydrologyGroundinglineDischargex(IssmDouble* pM, bool scaled);
 		void TotalSmbx(IssmDouble* pSmb, bool scaled);
 		void TotalSmbMeltx(IssmDouble* pSmbMelt, bool scaled);
 		void TotalSmbRefreezex(IssmDouble* pSmbRefreeze, bool scaled);
@@ -151,7 +151,6 @@ class FemModel {
 		void DakotaResponsesx(double* d_responses,char** responses_descriptors,int numresponsedescriptors,int d_numresponses);
 		#endif
 		void CostFunctionx(IssmDouble* pJ,IssmDouble** pJlist,int* pn);
-		void OutputControlsx(Results **presults);
 		void RequestedDependentsx(void);
 		void RequestedOutputsx(Results **presults,char** requested_outputs, int numoutputs,bool save_results=true);
 		void RequestedOutputsx(Results **presults,int* requested_outputs, int numoutputs,bool save_results=true);

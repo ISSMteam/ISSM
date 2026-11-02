@@ -19,6 +19,10 @@ classdef hydrologyshakti
 		relaxation      = 0;
 		storage         = NaN;
 		melt_flag       = 0;
+		maxiter         = 0;
+		restol          = 0;
+		reltol          = 0;
+		abstol          = 0;
 		requested_outputs = {};
 	end
 	methods
@@ -54,6 +58,10 @@ classdef hydrologyshakti
 			self.relaxation=1;
 			self.storage=0;
 			self.melt_flag=0;
+			self.maxiter=100;
+			self.restol=1.e-4;
+			self.reltol=0.01;
+			self.abstol=NaN; %not applied by default
 			self.requested_outputs={'default'};
 		end % }}}
 		function md = checkconsistency(self,md,solution,analyses) % {{{
@@ -77,6 +85,10 @@ classdef hydrologyshakti
 			md = checkfield(md,'fieldname','hydrology.relaxation','>=',0);	
 			md = checkfield(md,'fieldname','hydrology.storage','>=',0,'size','universal','NaN',1,'Inf',1);
 			md = checkfield(md,'fieldname','hydrology.melt_flag','numel',[1],'NaN',1,'Inf',1,'values',[0,1]);
+			md = checkfield(md,'fieldname','hydrology.maxiter','numel',[1],'>=',1);
+			md = checkfield(md,'fieldname','hydrology.restol','numel',[1],'>',0,'NaN',1,'Inf',1);
+			md = checkfield(md,'fieldname','hydrology.reltol','numel',[1]);
+			md = checkfield(md,'fieldname','hydrology.abstol','numel',[1]);
 			md = checkfield(md,'fieldname','hydrology.requested_outputs','stringrow',1);
 		end % }}}
 		function disp(self) % {{{
@@ -95,6 +107,10 @@ classdef hydrologyshakti
 			fielddisplay(self,'relaxation','under-relaxation coefficient for nonlinear iteration');
 			fielddisplay(self,'storage','englacial storage coefficient (void ratio)');
 			fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2018), 1: use md.basalforcings.grounded_melting_rate');
+			fielddisplay(self,'maxiter','maximum number of nonlinear iterations');
+			fielddisplay(self,'restol','hydraulic head equilibrium residual convergence criterion');
+			fielddisplay(self,'reltol','hydraulic head relative convergence criterion, NaN: not applied');
+			fielddisplay(self,'abstol','hydraulic head absolute convergence criterion [m], NaN: not applied');
 			fielddisplay(self,'requested_outputs','additional outputs requested');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
@@ -121,6 +137,10 @@ classdef hydrologyshakti
 			end
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','storage','format','DoubleMat','mattype',mattype,'timeserieslength',tsl+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','melt_flag','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','maxiter','format','Integer');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','restol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','reltol','format','Double');
+			WriteData(fid,prefix,'object',self,'class','hydrology','fieldname','abstol','format','Double');
 
 			outputs = self.requested_outputs;
 			pos  = find(ismember(outputs,'default'));

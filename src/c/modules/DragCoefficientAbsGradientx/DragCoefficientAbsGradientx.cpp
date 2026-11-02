@@ -34,7 +34,7 @@ IssmDouble DragCoefficientAbsGradient(Element* element){
 	int         domaintype,numcomponents;
 	int frictionlaw;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  dp[2],weight;
 	IssmDouble* xyz_list      = NULL;
 

@@ -1,5 +1,8 @@
 function [lat,lon]=utm2ll(x,y,f,datum,varargin)
-%UTM2LL UTM to Lat/Lon coordinates precise conversion.
+%UTM2LL - UTM to Lat/Lon coordinates precise conversion.
+%
+%	Usage:
+%		[lat,lon]=utm2ll(x,y,zone);
 %	[LAT,LON]=UTM2LL(X,Y,ZONE) converts UTM coordinates X,Y (in meters)
 %	defined in the UTM ZONE (integer) to latitude LAT and longitude LON 
 %	(in degrees). Default datum is WGS84.

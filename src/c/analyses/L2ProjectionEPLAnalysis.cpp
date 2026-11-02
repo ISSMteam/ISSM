@@ -73,9 +73,6 @@ void L2ProjectionEPLAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           L2ProjectionEPLAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           L2ProjectionEPLAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* L2ProjectionEPLAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;

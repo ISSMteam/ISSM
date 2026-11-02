@@ -23,7 +23,7 @@ def mumpsoptions(*args):
         mumps['mat_type'] = options.getfieldvalue('mat_type', 'aijmumps')
         mumps['ksp_type'] = options.getfieldvalue('ksp_type', 'preonly')
         mumps['pc_type'] = options.getfieldvalue('pc_type', 'lu')
-        mumps['mat_mumps_icntl_14'] = options.options.getfieldvalue('mat_mumps_icntl_14', 120)
+        mumps['mat_mumps_icntl_14'] = options.getfieldvalue('mat_mumps_icntl_14', 120)
     if PETSC_MAJOR == 3.:
         mumps['toolkit'] = 'petsc'
         mumps['mat_type'] = options.getfieldvalue('mat_type', 'mpiaij')
@@ -36,7 +36,7 @@ def mumpsoptions(*args):
         mumps['mat_mumps_icntl_14'] = options.getfieldvalue('mat_mumps_icntl_14', 120)
 
         #These 2 lines make raijin break (ptwgts error during solver with PETSc 3.3)
-        mumps['mat_mumps_icntl_28'] = options.getfieldvalue('mat_mumps_icntl_28', 1)  #1=serial, 2=parallel
-        mumps['mat_mumps_icntl_29'] = options.getfieldvalue('mat_mumps_icntl_29', 2)  #parallel ordering 1 = ptscotch, 2 = parmetis
+        mumps['mat_mumps_icntl_28'] = 2  #1=serial, 2=parallel
+        mumps['mat_mumps_icntl_29'] = 2  #parallel ordering 1 = ptscotch, 2 = parmetis
 
     return mumps

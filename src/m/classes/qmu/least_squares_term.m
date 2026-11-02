@@ -1,7 +1,7 @@
+%LEAST_SQUARES_TERM class definition
 %
-%  definition for the least_squares_term class.
-%
-%  [lst]=least_squares_term(varargin)
+%   Usage:
+%      lst=least_squares_term(varargin)
 %
 %  where the required varargin are:
 %    descriptor    (char, description, '')

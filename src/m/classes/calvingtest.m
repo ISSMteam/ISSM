@@ -1,5 +1,6 @@
 %CALVINGTEST class definition
-%  For testing calving laws and coefficients
+%   For testing calving laws and coefficients
+%
 %   Usage:
 %      calvingtest=calvingtest();
 

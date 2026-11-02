@@ -289,6 +289,20 @@ fi
 AM_CONDITIONAL([GLHEIGHTADVECTION], [test x$HAVE_GLHEIGHTADVECTION = xyes])
 AC_MSG_RESULT($HAVE_GLHEIGHTADVECTION)
 dnl }}}
+dnl with-HydrologyArmapw{{{
+AC_ARG_WITH([HydrologyArmapw],
+	AS_HELP_STRING([--with-HydrologyArmapw = YES], [compile with HydrologyArmapw capabilities (default is yes)]),
+	[HYDROLOGYARMAPW=$withval],[HYDROLOGYARMAPW=yes])
+AC_MSG_CHECKING(for HydrologyArmapw capability compilation)
+
+HAVE_HYDROLOGYARMAPW=no 
+if test "x$HYDROLOGYARMAPW" = "xyes"; then
+	HAVE_HYDROLOGYARMAPW=yes
+	AC_DEFINE([_HAVE_HYDROLOGYARMAPW_],[1],[with HydrologyArmapw capability])
+fi
+AM_CONDITIONAL([HYDROLOGYARMAPW], [test x$HAVE_HYDROLOGYARMAPW = xyes])
+AC_MSG_RESULT($HAVE_HYDROLOGYARMAPW)
+dnl }}}
 dnl with-HydrologyDCEfficient{{{
 AC_ARG_WITH([HydrologyDCEfficient],
 	AS_HELP_STRING([--with-HydrologyDCEfficient = YES], [compile with HydrologyDCEfficient capabilities (default is yes)]),
@@ -331,6 +345,20 @@ fi
 AM_CONDITIONAL([HYDROLOGYGLADS], [test x$HAVE_HYDROLOGYGLADS = xyes])
 AC_MSG_RESULT($HAVE_HYDROLOGYGLADS)
 dnl }}}
+dnl with-HydrologyIMLGlaDS{{{
+AC_ARG_WITH([HydrologyIMLGlaDS],
+	AS_HELP_STRING([--with-HydrologyIMLGlaDS = YES], [compile with HydrologyIMLGlaDS capabilities (default is yes)]),
+	[HYDROLOGYIMLGLADS=$withval],[HYDROLOGYIMLGLADS=yes])
+AC_MSG_CHECKING(for HydrologyIMLGlaDS capability compilation)
+
+HAVE_HYDROLOGYIMLGLADS=no 
+if test "x$HYDROLOGYIMLGLADS" = "xyes"; then
+	HAVE_HYDROLOGYIMLGLADS=yes
+	AC_DEFINE([_HAVE_HYDROLOGYIMLGLADS_],[1],[with HydrologyIMLGlaDS capability])
+fi
+AM_CONDITIONAL([HYDROLOGYIMLGLADS], [test x$HAVE_HYDROLOGYIMLGLADS = xyes])
+AC_MSG_RESULT($HAVE_HYDROLOGYIMLGLADS)
+dnl }}}
 dnl with-HydrologyPism{{{
 AC_ARG_WITH([HydrologyPism],
 	AS_HELP_STRING([--with-HydrologyPism = YES], [compile with HydrologyPism capabilities (default is yes)]),
@@ -372,20 +400,6 @@ if test "x$HYDROLOGYSHREVE" = "xyes"; then
 fi
 AM_CONDITIONAL([HYDROLOGYSHREVE], [test x$HAVE_HYDROLOGYSHREVE = xyes])
 AC_MSG_RESULT($HAVE_HYDROLOGYSHREVE)
-dnl }}}
-dnl with-HydrologyArmapw{{{
-AC_ARG_WITH([HydrologyArmapw],
-	AS_HELP_STRING([--with-HydrologyArmapw = YES], [compile with HydrologyArmapw capabilities (default is yes)]),
-	[HYDROLOGYARMAPW=$withval],[HYDROLOGYARMAPW=yes])
-AC_MSG_CHECKING(for HydrologyArmapw capability compilation)
-
-HAVE_HYDROLOGYARMAPW=no 
-if test "x$HYDROLOGYARMAPW" = "xyes"; then
-	HAVE_HYDROLOGYARMAPW=yes
-	AC_DEFINE([_HAVE_HYDROLOGYARMAPW_],[1],[with HydrologyArmapw capability])
-fi
-AM_CONDITIONAL([HYDROLOGYARMAPW], [test x$HAVE_HYDROLOGYARMAPW = xyes])
-AC_MSG_RESULT($HAVE_HYDROLOGYARMAPW)
 dnl }}}
 dnl with-HydrologyPrescribe{{{
 AC_ARG_WITH([HydrologyPrescribe],

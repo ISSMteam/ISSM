@@ -1,4 +1,8 @@
 function [vxout vyout]= interpMouginotAnt2016(X,Y),
+%INTERPMOUGINOTANT2016 - interpolate Mouginot 2016 Antarctic ice velocity mosaic onto X and Y
+%
+%   Usage:
+%      [vxout,vyout] = interpMouginotAnt2016(X,Y)
 
 %read data
 switch (oshostname()),

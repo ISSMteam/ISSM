@@ -1,4 +1,8 @@
 function solverOptions=gltrjacobioptions(varargin)
+%GLTRJACOBIOPTIONS - PETSc solver options using the generalized Lanczos trust-region (gltr) Krylov method with Jacobi preconditioning
+%
+%   Usage:
+%      solverOptions=gltrjacobioptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

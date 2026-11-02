@@ -166,7 +166,7 @@ def processdata(md, data, options):
         procdata=project2d(md,procdata,options.getfieldvalue('layer'))
 
     if options.getfieldvalue('depthaverage',0):
-        raise Exception('Error: "depthaverage" option is not supported in Python.')
+        # NOTE: The "depthaverage" option now behaves the same way as in MATLAB.
         procdata=DepthAverage(md,data) #project onto 2d mesh
     # }}}
 

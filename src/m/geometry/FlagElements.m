@@ -30,7 +30,7 @@ function flag=FlagElements(md,region),
 
 			%does the region domain outline exist or do we have to look for xlim,ylim in basinzoom?
 			if ~exist(region,'file')
-				if (length(region)>3 & ~strcmp(region(end-3),'.exp'))
+				if (length(region)>3 & ~strcmp(region(end-3:end),'.exp'))
 					error(['Error: File ' region ' not found!']);
 				end
 				[xlim,ylim]=basinzoom('basin',region);

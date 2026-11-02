@@ -4,11 +4,12 @@
 %      frictionschoof=frictionschoof();
 
 classdef frictionschoof
-	properties (SetAccess=public) 
+	properties (SetAccess=public)
 		C                        = NaN;
 		Cmax                     = NaN;
 		m                        = NaN;
 		coupling                 = 0;
+		linearize                = 0;
 		effective_pressure       = NaN;
 		effective_pressure_limit = 0;
 	end
@@ -33,7 +34,8 @@ classdef frictionschoof
 		end % }}}
 		function self = setdefaultparameters(self) % {{{
 
-         self.coupling = 0;
+			self.coupling  = 0;
+			self.linearize = 0;
 			self.effective_pressure_limit = 0;
 
 		end % }}}
@@ -41,13 +43,21 @@ classdef frictionschoof
 
 			%Early return
 			if ~ismember('StressbalanceAnalysis',analyses) & ~ismember('ThermalAnalysis',analyses), return; end
+			if (strcmp(solution,'TransientSolution') &  md.transient.isstressbalance ==0 & md.transient.isthermal == 0), return; end
+
 			md = checkfield(md,'fieldname','friction.C','timeseries',1,'NaN',1,'Inf',1,'>=',0.);
 			md = checkfield(md,'fieldname','friction.Cmax','timeseries',1,'NaN',1,'Inf',1,'>',0.);
 			md = checkfield(md,'fieldname','friction.m','NaN',1,'Inf',1,'>',0.,'size',[md.mesh.numberofelements,1]);
+			md = checkfield(md,'fieldname','friction.linearize','numel',[1],'values',[0:2]);
 			md = checkfield(md,'fieldname','friction.effective_pressure_limit','numel',[1],'>=',0);
-         md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
+			md = checkfield(md,'fieldname','friction.coupling','numel',[1],'values',[0:4]);
          if self.coupling==3
             md = checkfield(md,'fieldname','friction.effective_pressure','NaN',1,'Inf',1,'timeseries',1);
+			elseif self.coupling==4
+				% check turn-on md.transient.ishydrology=1 
+				if ~md.transient.ishydrology
+					md = checkmessage(md, 'md.friction.coupling = 4 but md.transient.ishydrology = 0!');
+				end
          end
 		end % }}}
 		function disp(self) % {{{
@@ -61,8 +71,9 @@ classdef frictionschoof
 			fielddisplay(self,'C','friction coefficient [SI]');
 			fielddisplay(self,'Cmax','Iken''s bound (typically between 0.17 and 0.84) [SI]');
 			fielddisplay(self,'m','m exponent (generally taken as m = 1/n = 1/3)');
+			fielddisplay(self,'linearize','0: not linearized, 1: interpolated linearly, 2: constant per element (default is 0)');
 			fielddisplay(self,'effective_pressure','Effective Pressure for the forcing if not coupled [Pa]');
-         fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model (not implemented yet)');
+			fielddisplay(self,'coupling','Coupling flag 0: uniform sheet (negative pressure ok, default), 1: ice pressure only, 2: water pressure assuming uniform sheet (no negative pressure), 3: use provided effective_pressure, 4: use coupled model');
 			fielddisplay(self,'effective_pressure_limit','Neff do not allow to fall below a certain limit: effective_pressure_limit*rho_ice*g*thickness (default 0)');
 		end % }}}
 		function marshall(self,prefix,md,fid) % {{{
@@ -73,10 +84,11 @@ classdef frictionschoof
 			WriteData(fid,prefix,'class','friction','object',self,'fieldname','Cmax','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
 			WriteData(fid,prefix,'class','friction','object',self,'fieldname','m','format','DoubleMat','mattype',2);
 			WriteData(fid,prefix,'object',self,'class','friction','fieldname','effective_pressure_limit','format','Double');
-         WriteData(fid,prefix,'class','friction','object',self,'fieldname','coupling','format','Integer');
-         if self.coupling==3 || self.coupling==4
-            WriteData(fid,prefix,'class','friction','object',self,'fieldname','effective_pressure','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
-         end
+			WriteData(fid,prefix,'class','friction','object',self,'fieldname','coupling','format','Integer');
+			WriteData(fid, prefix, 'class', 'friction', 'object', self, 'fieldname', 'linearize', 'format', 'Integer')
+			if self.coupling==3 || self.coupling==4
+				WriteData(fid,prefix,'class','friction','object',self,'fieldname','effective_pressure','format','DoubleMat','mattype',1,'timeserieslength',md.mesh.numberofvertices+1,'yts',md.constants.yts);
+			end
 		end % }}}
 	end
 end

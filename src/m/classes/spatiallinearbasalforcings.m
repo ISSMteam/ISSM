@@ -1,4 +1,4 @@
-%SPATIAL LINEAR BASAL FORCINGS class definition
+%SPATIALLINEARBASALFORCINGS class definition
 %
 %   Usage:
 %      spatiallinearbasalforcings=spatiallinearbasalforcings();

@@ -61,8 +61,6 @@ void RiftConstrain(int* pnum_unstable_constraints,Loads* loads,int configuration
 /*RiftIsFrozen(Loads* loads,int configuration_type){{{*/
 int RiftIsFrozen(Loads* loads,int configuration_type){
 
-	int			i;
-
 	/* generic object pointer: */
 	Load*      load=NULL;
 	Riftfront* riftfront=NULL;
@@ -91,8 +89,6 @@ int RiftIsFrozen(Loads* loads,int configuration_type){
 /*}}}*/
 /*RiftFreezeConstraints(Loads* loads,int configuration_type){{{*/
 void RiftFreezeConstraints(Loads* loads,int configuration_type){
-
-	int			i;
 
 	/* generic object pointer: */
 	Load*      load=NULL;

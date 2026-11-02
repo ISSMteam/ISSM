@@ -52,8 +52,6 @@ void BoolInput::Echo(void){/*{{{*/
 	this->DeepEcho();
 }
 /*}}}*/
-int  BoolInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void BoolInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	int object_enum = BoolInputEnum;
@@ -64,12 +62,6 @@ void BoolInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 		marshallhandle->call(this->values,this->size);
 	}
 	else this->values = NULL;
-
-}
-/*}}}*/
-int  BoolInput::ObjectEnum(void){/*{{{*/
-
-	return BoolInputEnum;
 
 }
 /*}}}*/

@@ -1,5 +1,5 @@
 function mask = gmtmaskparallel(lat,long,ncores)
-%GMTMASKPARALLEL- parallel driver for the gmtmask utility
+%GMTMASKPARALLEL - parallel driver for the gmtmask utility
 %
 %   Usage:
 %      mask.ocean = gmtmaskparallel(md.mesh.lat,md.mesh.long,8);

@@ -1,9 +1,8 @@
-% Explain
-%  upload landsatmap to md.radaroverlay
+%LANDSATMAP - retrieve a Landsat Image Mosaic of Antarctica (LIMA) tile and assign it to md.radaroverlay
 %
-% Usage
-%  md = landsatmap(md);
-%  md = landsatmap(md,'highres',1);
+%   Usage:
+%      md = landsatmap(md);
+%      md = landsatmap(md,'highres',1);
 function md = landsatmap(md,varargin),
 
 % check input variables

@@ -2,9 +2,9 @@ function md=parametercontroldrag(md,varargin),
 %PARAMETERCONTROLDRAG - parameterization for control method on drag
 %
 %   It is possible to specify the number of steps, values for the
-%   minimum and maximum values of the drag, the 
-%   kind of cm_responses to use or the optscal.
-%   
+%   minimum and maximum values of the drag, the
+%   kind of cm_responses to use, or the optscal.
+%
 %   Usage:
 %       md=parametercontroldrag(md,varargin)
 %
@@ -14,7 +14,8 @@ function md=parametercontroldrag(md,varargin),
 %      md=parametercontroldrag(md,'cm_min',1,'cm_max',150,'cm_jump',0.99,'maxiter',20)
 %      md=parametercontroldrag(md,eps_cm',10^-4,'optscal',[10^7 10^8])
 %
-%   See also PARAMETERCONTROLB
+%   See Also:
+%      PARAMETERCONTROLB
 
 %process options
 options=pairoptions(varargin{:});

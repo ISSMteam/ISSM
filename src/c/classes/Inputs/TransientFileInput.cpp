@@ -124,8 +124,6 @@ void TransientFileInput::Echo(void){/*{{{*/
 	}
 }
 /*}}}*/
-int  TransientFileInput::Id(void){ return -1; }/*{{{*/
-/*}}}*/
 void TransientFileInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 
 	bool isnull;
@@ -191,12 +189,6 @@ void TransientFileInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 			}
 		}
 	}
-
-}
-/*}}}*/
-int  TransientFileInput::ObjectEnum(void){/*{{{*/
-
-	return TransientFileInputEnum;
 
 }
 /*}}}*/

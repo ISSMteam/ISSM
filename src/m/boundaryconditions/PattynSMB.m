@@ -1,6 +1,6 @@
 function smb=PattynSMB(md,Tf)
-%PATTYNSMB- Compute SMB over Antarctica (from Pattyn 2006, pg. 18, "GRANTISM: An ExcelTM model for Greenland and 
-%           Antarctic ice-sheet response to climate changes")
+%PATTYNSMB - Compute SMB over Antarctica (from Pattyn 2006, pg. 18, "GRANTISM: An ExcelTM model for Greenland and
+%            Antarctic ice-sheet response to climate changes")
 %
 %   Usage:
 %      md=PattynSMB(md,Tf)

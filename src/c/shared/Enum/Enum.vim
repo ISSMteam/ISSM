@@ -124,6 +124,7 @@ syn keyword cConstant BasalforcingsUpperwaterMeltingRateEnum
 syn keyword cConstant CalvingADStressThresholdFloatingiceEnum
 syn keyword cConstant CalvingADStressThresholdGroundediceEnum
 syn keyword cConstant CalvingCrevasseDepthEnum
+syn keyword cConstant CalvingCrevasseDepthTypeEnum
 syn keyword cConstant CalvingCrevasseThresholdEnum
 syn keyword cConstant CalvingHeightAboveFloatationEnum
 syn keyword cConstant CalvingLawEnum
@@ -141,6 +142,10 @@ syn keyword cConstant CalvingVelThresholdEnum
 syn keyword cConstant CalvingVelUpperboundEnum
 syn keyword cConstant CalvingRcEnum
 syn keyword cConstant CalvingNumberofBasinsEnum
+syn keyword cConstant CalvingFEnum
+syn keyword cConstant CalvingChiCritEnum
+syn keyword cConstant CalvingChiMaxEnum
+syn keyword cConstant CalvingKEnum
 syn keyword cConstant ConfigurationTypeEnum
 syn keyword cConstant ConstantsGEnum
 syn keyword cConstant ConstantsNewtonGravityEnum
@@ -283,15 +288,21 @@ syn keyword cConstant HydrologyCavitySpacingEnum
 syn keyword cConstant HydrologyChannelSheetWidthEnum
 syn keyword cConstant HydrologyGapHeightMinEnum
 syn keyword cConstant HydrologyGapHeightMaxEnum
-syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyIschannelsEnum
 syn keyword cConstant HydrologyIsIncludeSheetThicknessEnum
+syn keyword cConstant HydrologyIsLakeScaledEnum
+syn keyword cConstant HydrologyLakeFlagEnum
 syn keyword cConstant HydrologyCreepOpenFlagEnum
 syn keyword cConstant HydrologyIsTransitionEnum
 syn keyword cConstant HydrologyIsWaterPressureArmaEnum
+syn keyword cConstant HydrologyMaxiterEnum
+syn keyword cConstant HydrologyRestolEnum
+syn keyword cConstant HydrologyReltolEnum
+syn keyword cConstant HydrologyAbstolEnum
 syn keyword cConstant HydrologyMeltFlagEnum
 syn keyword cConstant HydrologyModelEnum
 syn keyword cConstant HydrologyNumBasinsEnum
+syn keyword cConstant HydrologyNumLakesEnum
 syn keyword cConstant HydrologyNumRequestedOutputsEnum
 syn keyword cConstant HydrologyOmegaEnum
 syn keyword cConstant HydrologyPressureMeltCoefficientEnum
@@ -301,6 +312,11 @@ syn keyword cConstant HydrologySedimentKmaxEnum
 syn keyword cConstant HydrologySheetAlphaEnum
 syn keyword cConstant HydrologySheetBetaEnum
 syn keyword cConstant HydrologyStepsPerStepEnum
+syn keyword cConstant HydrologyIsIncludeElasticSheetEnum
+syn keyword cConstant HydrologyElasticSheetDepthScaleEnum
+syn keyword cConstant HydrologyElasticSheetExponentEnum
+syn keyword cConstant HydrologyUpliftRegRateEnum
+syn keyword cConstant HydrologyRegPressureForUpliftEnum
 syn keyword cConstant HydrologydcEplColapseThicknessEnum
 syn keyword cConstant HydrologydcEplConductivityEnum
 syn keyword cConstant HydrologydcEplInitialThicknessEnum
@@ -727,6 +743,8 @@ syn keyword cConstant StressbalanceRequestedOutputsEnum
 syn keyword cConstant StressbalanceRestolEnum
 syn keyword cConstant StressbalanceRiftPenaltyThresholdEnum
 syn keyword cConstant StressbalanceShelfDampeningEnum
+syn keyword cConstant StressbalanceThetaEnum
+syn keyword cConstant StressbalanceTheta2Enum
 syn keyword cConstant ThermalForcingMonthlyEffectsEnum
 syn keyword cConstant ThermalIsdrainicecolumnEnum
 syn keyword cConstant ThermalIsdynamicbasalspcEnum
@@ -987,6 +1005,7 @@ syn keyword cConstant HydrologydcSedimentTransmitivityEnum
 syn keyword cConstant HydrologyDissipationEnum
 syn keyword cConstant HydrologyDrainageRateEnum
 syn keyword cConstant HydrologyEnglacialInputEnum
+syn keyword cConstant HydrologyEnglacialVoidRatioEnum
 syn keyword cConstant HydrologyFrictionHeatEnum
 syn keyword cConstant HydrologyGapHeightEnum
 syn keyword cConstant HydrologyGapHeightXEnum
@@ -995,6 +1014,18 @@ syn keyword cConstant HydrologyGapHeightYEnum
 syn keyword cConstant HydrologyGapHeightYYEnum
 syn keyword cConstant HydrologyHeadEnum
 syn keyword cConstant HydrologyHeadOldEnum
+syn keyword cConstant HydrologyLakeChannelQrEnum
+syn keyword cConstant HydrologyLakeChannelQrOldEnum
+syn keyword cConstant HydrologyLakeOutletLengthEnum
+syn keyword cConstant HydrologyLakeHeightEnum
+syn keyword cConstant HydrologyLakeHeightOldEnum
+syn keyword cConstant HydrologyLakeMaskEnum
+syn keyword cConstant HydrologyLakeOutletQrEnum
+syn keyword cConstant HydrologyLakeOutletQrOldEnum
+syn keyword cConstant HydrologyLakeQinEnum
+syn keyword cConstant HydrologyLakeAreaEnum
+syn keyword cConstant HydrologyLakeAreaOldEnum
+syn keyword cConstant HydrologyMaxLakeAreaEnum
 syn keyword cConstant HydrologyMeltRateEnum
 syn keyword cConstant HydrologyMoulinInputEnum
 syn keyword cConstant HydrologyNeumannfluxEnum
@@ -1029,6 +1060,7 @@ syn keyword cConstant InversionThicknessObsEnum
 syn keyword cConstant InversionVelObsEnum
 syn keyword cConstant InversionVxObsEnum
 syn keyword cConstant InversionVyObsEnum
+syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetfunctionSlopeXEnum
 syn keyword cConstant LevelsetfunctionSlopeYEnum
 syn keyword cConstant LevelsetObservationEnum
@@ -3487,6 +3519,7 @@ syn keyword cConstant CalvingCalvingMIPEnum
 syn keyword cConstant CalvingVonmisesEnum
 syn keyword cConstant CalvingVonmisesADEnum
 syn keyword cConstant CalvingPollardEnum
+syn keyword cConstant CalvingStochasticEnum
 syn keyword cConstant CfdragcoeffabsgradEnum
 syn keyword cConstant CfdragcoeffabsgradtransientEnum
 syn keyword cConstant CfrheologybbarabsgradEnum
@@ -3577,6 +3610,7 @@ syn keyword cConstant GaussTriaEnum
 syn keyword cConstant GenericOptionEnum
 syn keyword cConstant GenericParamEnum
 syn keyword cConstant GenericExternalResultEnum
+syn keyword cConstant GPUHOParamEnum
 syn keyword cConstant Gradient1Enum
 syn keyword cConstant Gradient2Enum
 syn keyword cConstant Gradient3Enum
@@ -3596,6 +3630,8 @@ syn keyword cConstant HydrologyDCEfficientAnalysisEnum
 syn keyword cConstant HydrologyDCInefficientAnalysisEnum
 syn keyword cConstant HydrologyGlaDSAnalysisEnum
 syn keyword cConstant HydrologyGlaDSEnum
+syn keyword cConstant HydrologyIMLGlaDSAnalysisEnum
+syn keyword cConstant HydrologyIMLGlaDSEnum
 syn keyword cConstant HydrologyPismAnalysisEnum
 syn keyword cConstant HydrologyShaktiAnalysisEnum
 syn keyword cConstant HydrologyShreveAnalysisEnum
@@ -3635,7 +3671,6 @@ syn keyword cConstant L2ProjectionBaseAnalysisEnum
 syn keyword cConstant L2ProjectionEPLAnalysisEnum
 syn keyword cConstant LACrouzeixRaviartEnum
 syn keyword cConstant LATaylorHoodEnum
-syn keyword cConstant LambdaSEnum
 syn keyword cConstant LevelsetAnalysisEnum
 syn keyword cConstant LevelsetfunctionPicardEnum
 syn keyword cConstant LinearFloatingMeltRateEnum
@@ -3830,7 +3865,7 @@ syn keyword cConstant TotalFloatingBmbEnum
 syn keyword cConstant TotalFloatingBmbScaledEnum
 syn keyword cConstant TotalGroundedBmbEnum
 syn keyword cConstant TotalGroundedBmbScaledEnum
-syn keyword cConstant TotalHydrologyBasalFluxEnum
+syn keyword cConstant TotalHydrologyGroundinglineDischargeEnum
 syn keyword cConstant TotalSmbEnum
 syn keyword cConstant TotalSmbScaledEnum
 syn keyword cConstant TotalSmbRefreezeEnum
@@ -3932,6 +3967,7 @@ syn keyword cType GenericExternalResult
 syn keyword cType GenericOption
 syn keyword cType GenericParam
 syn keyword cType GiaDeflectionCoreArgs
+syn keyword cType GPUHOParam
 syn keyword cType GrdLoads
 syn keyword cType Hook
 syn keyword cType Input
@@ -3969,7 +4005,6 @@ syn keyword cType Observation
 syn keyword cType Observations
 syn keyword cType Option
 syn keyword cType Options
-syn keyword cType OptionUtilities
 syn keyword cType Param
 syn keyword cType Parameters
 syn keyword cType Pengrid
@@ -4035,6 +4070,7 @@ syn keyword cType HydrologyArmapwAnalysis
 syn keyword cType HydrologyDCEfficientAnalysis
 syn keyword cType HydrologyDCInefficientAnalysis
 syn keyword cType HydrologyGlaDSAnalysis
+syn keyword cType HydrologyIMLGlaDSAnalysis
 syn keyword cType HydrologyPismAnalysis
 syn keyword cType HydrologyPrescribeAnalysis
 syn keyword cType HydrologyShaktiAnalysis

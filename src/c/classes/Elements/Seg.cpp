@@ -259,7 +259,6 @@ Input*    Seg::GetInput(int inputenum,IssmDouble time){/*{{{*/
 IssmDouble Seg::GetGroundedPortion(IssmDouble* xyz_list){/*{{{*/
 	/*Computeportion of the element that is grounded*/ 
 
-	bool              mainlyfloating = true;
 	const IssmPDouble epsilon        = 1.e-15;
 	IssmDouble        phi;
 	IssmDouble        gl[NUMVERTICES];

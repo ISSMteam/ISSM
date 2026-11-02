@@ -244,7 +244,6 @@ namespace bamg {
 		BamgQuadtreeBox* b = this->root;
 
 		/*Initialize level and sizes for largest box*/
-		int levelbin = (1L<<MAXDEPTH);// = 2^30
 		int        h = MAXISIZE;
 		int       hb = MAXISIZE;
 		int       i0 = 0;

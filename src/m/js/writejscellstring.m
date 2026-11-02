@@ -1,5 +1,8 @@
 function writejscellstring(fid,prefix,cell)
-
+%WRITEJSCELLSTRING - write a cell array of strings to a JavaScript file as an array assignment
+%
+%   Usage:
+%      writejscellstring(fid,prefix,cell)
 
 	if ~iscell(cell)
 		fprintf(fid,'%s=%g;\n',prefix,cell);

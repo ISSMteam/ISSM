@@ -1,11 +1,11 @@
 function [px,py,pmag]=drivingstress(md)
-%DRIVINGSTRESS -  evaluates the driving stress
+%DRIVINGSTRESS - evaluates the driving stress
 %
-%   The driving stress is computed according to the following formula: 
+%   The driving stress is computed according to the following formula:
 %   driving stress= rho_ice*g*H*slope
 %
 %   Usage:
-%      [Fx,Fy,Fmag]=drivingstress(md)
+%      [px,py,pmag]=drivingstress(md)
 
 %Get slope
 [sx,sy,s]=slope(md);

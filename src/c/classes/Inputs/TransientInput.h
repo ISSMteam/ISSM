@@ -27,7 +27,7 @@ class TransientInput: public Input{
 		IssmDouble   current_step;
 		Input       *current_input;
 
-		/*TransientInput constructors, destructors: {{{*/
+		/*TransientInput constructors, destructors:*/
 		TransientInput();
 		TransientInput(int in_enum_type,int nbe,int nbv,IssmDouble* times,int N);
 		~TransientInput();
@@ -35,16 +35,15 @@ class TransientInput: public Input{
 		void AddPentaTimeInput(IssmDouble time,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddTriaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in);
 		void AddPentaTimeInput(int step,int numindices,int* indices,IssmDouble* values_in,int interp_in);
-		/*}}}*/
-		/*Object virtual functions definitions:{{{*/
+
+		/*Object virtual functions definitions:*/
 		Input*  copy();
 		void    Configure(Parameters* params);
 		void    DeepEcho();
 		void    Echo();
-		int     Id();
 		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
+		int     ObjectEnum(){return TransientInputEnum;}
+
 		/*TransientInput management:*/
 		void         GetAllTimes(IssmDouble** ptimesteps,int* pnumtimesteps);
 		TriaInput*  GetTriaInput();
@@ -55,7 +54,6 @@ class TransientInput: public Input{
 		PentaInput* GetPentaInput(IssmDouble time);
 		PentaInput* GetPentaInput(int offset);
 		PentaInput* GetPentaInput(IssmDouble start_time,IssmDouble end_time,int averaging_method);
-		Input*      GetTimeInput(IssmDouble time){_error_("This should not happen!");};
 		IssmDouble   GetTimeByOffset(int offset);
 		int          GetTimeInputOffset(IssmDouble time);
 		void         SetCurrentTimeInput(IssmDouble time);

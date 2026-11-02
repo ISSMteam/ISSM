@@ -1,10 +1,10 @@
 function plot_thermaltransient_results(md,options,width,i)
-%PLOT_THERMALTRANSIENT_RESULTS - plot  results of a thermal transient solution
+%PLOT_THERMALTRANSIENT_RESULTS - plot results of a thermal transient solution
 %
 %   Usage:
 %      plot_thermaltransient_results(md,options,width,i);
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 string='plot(md';
 for i=1:length(md.thermaltransient_results)

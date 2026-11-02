@@ -1,4 +1,8 @@
 function writejs1Darray(fid,prefix,array)
+%WRITEJS1DARRAY - write a 1-D array to a JavaScript file as an assignment statement
+%
+%   Usage:
+%      writejs1Darray(fid,prefix,array)
 
 	if isempty(array)
 		fprintf(fid,'%s=[];\n',prefix);

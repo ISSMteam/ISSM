@@ -153,6 +153,7 @@ class Element: public Object{
 		bool               IsAllFloating();
 		bool               IsAllGrounded();
 		bool               IsFloating();
+		bool               IsAnyLake();
 		bool               IsGrounded();
 		bool               IsOnBase();
 		bool               IsOnSurface();
@@ -211,7 +212,7 @@ class Element: public Object{
 		void               SubglacialWaterPressure(int output_enum);
 		IssmDouble         TotalFloatingBmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalGroundedBmb(IssmDouble* mask, bool scaled);
-		IssmDouble         TotalHydrologyBasalFlux(IssmDouble* mask, bool scaled);
+		IssmDouble         TotalHydrologyGroundinglineDischarge(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmb(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbMelt(IssmDouble* mask, bool scaled);
 		IssmDouble         TotalSmbRefreeze(IssmDouble* mask, bool scaled);
@@ -270,8 +271,6 @@ class Element: public Object{
 		virtual void       ComputeStressTensor(void)=0;
 		virtual void       ComputeEsaStrainAndVorticity(void)=0;
 		virtual void       Configure(Elements* elements,Loads* loads,Nodes* nodes,Vertices* vertices,Materials* materials,Parameters* parameters,Inputs* inputsin)=0;
-		virtual void       ControlInputSetGradient(IssmDouble* gradient,int enum_type,int control_index,int offset,int M,int N,int interp)=0;
-		virtual void       ControlToVectors(Vector<IssmPDouble>* vector_control, Vector<IssmPDouble>* vector_gradient,int control_enum,int control_interp)=0;
 		virtual void       CreateDistanceInputFromSegmentlist(IssmDouble* distances,int distanceenum){_error_("not implemented yet");};
 		virtual void       CreateInputTimeAverage(int transientinput_enum,int averagedinput_enum,IssmDouble init_time,IssmDouble end_time,int averaging_method){_error_("not implemented yet "<<this->ObjectEnum());};
 		virtual void       ElementResponse(IssmDouble* presponse,int response_enum)=0;
@@ -400,7 +399,7 @@ class Element: public Object{
 		virtual IssmDouble TotalCalvingMeltingFluxLevelset(bool scaled){_error_("not implemented");};
 		virtual IssmDouble TotalFloatingBmb(bool scaled)=0;
 		virtual IssmDouble TotalGroundedBmb(bool scaled)=0;
-		virtual IssmDouble TotalHydrologyBasalFlux(bool scaled)=0;
+		virtual IssmDouble TotalHydrologyGroundinglineDischarge(bool scaled)=0;
 		virtual IssmDouble TotalSmb(bool scaled)=0;
 		virtual IssmDouble TotalSmbMelt(bool scaled)=0;
 		virtual IssmDouble TotalSmbRefreeze(bool scaled)=0;
@@ -438,6 +437,10 @@ class Element: public Object{
 		virtual void       SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom)=0;
 		virtual void       SealevelchangeDeformationConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom)=0;
 		virtual void       SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newindex, int offset)=0;
+		#endif
+
+		#ifdef _HAVE_GPU_HO_
+		virtual void GetHOMetadataArraySizes(void){_error_("not implemented yet");};
 		#endif
 
 };

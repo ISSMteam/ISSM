@@ -1,4 +1,8 @@
 function dvar=QmuSetupVariables(md,dvar,variables)
+%QMUSETUPVARIABLES - append a qmu variable to a dvar array, expanding it over the partition and time steps if scaled or distributed
+%
+%   Usage:
+%      dvar=QmuSetupVariables(md,dvar,variables)
 
 %get descriptor
 descriptor=variables.descriptor;

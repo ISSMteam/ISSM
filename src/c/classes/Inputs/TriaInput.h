@@ -11,20 +11,19 @@ class TriaInput: public ElementInput, public TriaRef{
 		int isserved_collapsed;
 		int collapsed_ids[2];
 	public:
-		/*TriaInput constructors, destructors: {{{*/
+		/*TriaInput constructors, destructors:*/
 		TriaInput();
 		TriaInput(int nbe_in,int nbv_in,int interp_in);
 		~TriaInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
-		/*TriaInput management: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return TriaInputEnum;}
+
+		/*TriaInput management:*/
 		void SetInput(int interp_in,int row,IssmDouble value_in);
 		void SetInput(int interp_in,int numinds,int* rows,IssmDouble* values_in);
 		void SetInput(int interp_in,int row,int numinds,IssmDouble* values_in);
@@ -40,7 +39,6 @@ class TriaInput: public ElementInput, public TriaRef{
 		void Pow(IssmDouble scalar);
 		void AXPY(Input* xinput,IssmDouble scalar);
 		void Shift(IssmDouble scalar);
-		void AverageAndReplace(void);
 		void PointWiseMult(Input* xinput);
 		void Serve(int numindices,int* indices);
 		void Serve(int row,int numindices);
@@ -49,7 +47,7 @@ class TriaInput: public ElementInput, public TriaRef{
 		int  GetResultArraySize(void);
 		int  GetResultInterpolation(void);
 		int  GetResultNumberOfNodes(void);
-		/*}}}*/
+
 		void Reset(int interp_in);
 
 };

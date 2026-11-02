@@ -1,4 +1,8 @@
 function solverOptions=bcgslsoroptions(varargin)
+%BCGSLSOROPTIONS - return BiCGStab(L) PETSc options with a successive over-relaxation (SOR) preconditioner
+%
+%   Usage:
+%      options=bcgslsoroptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

@@ -181,8 +181,6 @@ namespace bamg {
 
 		vP.i = Th.R2ToI2(PNew);
 
-		BamgVertex vPnew = vP;
-
 		int ok=1;
 		int loop=1;
 		k=0;

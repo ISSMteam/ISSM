@@ -1,4 +1,8 @@
 function solverOptions=crasmoptions(varargin)
+%CRASMOPTIONS - define PETSc solver options for the Conjugate Residual (CR) Krylov method with Additive Schwarz Method (ASM) preconditioning
+%
+%   Usage:
+%      solverOptions=crasmoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

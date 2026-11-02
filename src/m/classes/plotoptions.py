@@ -81,7 +81,7 @@ class plotoptions(object):
             elif '#' in rawlist[i][0]:
                 #get subplots associated
                 string = rawlist[i][0].split('#')
-                plotnums = string[-1].split(', ')
+                plotnums = string[-1].replace(" ",'').split(',')
                 field = string[0]
 
                 #loop over plotnums

@@ -4,7 +4,7 @@ function plot_section(md,data,options,nlines,ncols,i)
 %   Usage:
 %      plot_section(md,data,options,nlines,ncols,i)
 %
-%   See also: PLOTMODEL
+%   See Also: PLOTMODEL
 
 %How many subplots?
 if exist(options,'showsection')
@@ -24,9 +24,12 @@ end
 
 %Get number of curves and generate random colors
 numcurves=size(data,2);
-colorm=getfieldvalue(options,'colormap','lines');
-color=eval([ colorm '(numcurves);']);
-options=removefield(options,'colormap',0); %back to default colormap
+if is2d
+	%NOTE: It seems that this colormap is only used for 2D dataset.
+	colorm=getfieldvalue(options,'colormap','lines');
+	color=eval([ colorm '(numcurves);']);
+	options=removefield(options,'colormap',0); %back to default colormap
+end
 
 %replug x and y onto model so that SectionValue treats the problem correctly
 md3d=md;

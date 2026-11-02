@@ -25,7 +25,6 @@ class EnthalpyAnalysis: public Analysis{
 		static void       ComputeBasalMeltingrate(FemModel* femmodel);
 		static void       ComputeBasalMeltingrate(Element* element);
 		void              Core(FemModel* femmodel);
-		void              PreCore(FemModel* femmodel);
 		ElementVector*    CreateDVector(Element* element);
 		ElementMatrix*    CreateJacobianMatrix(Element* element);
 		ElementMatrix*    CreateKMatrix(Element* element);

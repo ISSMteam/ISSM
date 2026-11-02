@@ -1,4 +1,8 @@
 function solverOptions=stcggamgoptions(varargin)
+%STCGGAMGOPTIONS - return PETSc options for the STCG solver with a GAMG (Geometric Algebraic Multigrid) preconditioner
+%
+%   Usage:
+%      solverOptions=stcggamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

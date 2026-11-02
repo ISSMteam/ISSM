@@ -1,68 +1,67 @@
+%PLOT_HIST_NORM_CI - plot a relative histogram and cdf optionally along with a normal distribution for the sample and confidence intervals
 %
-%  plot a relative histogram and cdf optionally along with a
-%  normal distribution for the sample and confidence intervals.
+%   Usage:
+%      []=plot_hist_norm_ci(dresp      ,params)
+%      []=plot_hist_norm_ci(dresp,descr,params)
+%      []=plot_hist_norm_ci(sampr,descr,params)
 %
-%  []=plot_hist_norm_ci(dresp      ,params)
-%  []=plot_hist_norm_ci(dresp,descr,params)
-%  []=plot_hist_norm_ci(sampr,descr,params)
+%   where the required input is:
+%     dresp         (structure array, responses)
+%       or
+%     dresp         (structure array, responses)
+%     descr         (cell array, list of response descriptions desired)
+%       or
+%     sampr         (double array, lists of samples)
+%     descr         (cell array, list of descriptions)
 %
-%  where the required input is:
-%    dresp         (structure array, responses)
-%      or
-%    dresp         (structure array, responses)
-%    descr         (cell array, list of response descriptions desired)
-%      or
-%    sampr         (double array, lists of samples)
-%    descr         (cell array, list of descriptions)
+%   the required fields of dresp are:
+%     descriptor    (char, description)
+%     sample        (double vector, list of samples)
 %
-%  the required fields of dresp are:
-%    descriptor    (char, description)
-%    sample        (double vector, list of samples)
+%   and the optional fields of dresp are:
+%     mean          (double, mean of sample)
+%     stddev        (double, standard deviation of sample)
+%     meanci(2)     (double, confidence interval of mean)
+%     stddevci(2)   (double, confidence interval of standard deviation)
 %
-%  and the optional fields of dresp are:
-%    mean          (double, mean of sample)
-%    stddev        (double, standard deviation of sample)
-%    meanci(2)     (double, confidence interval of mean)
-%    stddevci(2)   (double, confidence interval of standard deviation)
+%   the optional input is:
+%     params        (string/numeric, parameter names and values)
 %
-%  the optional input is:
-%    params        (string/numeric, parameter names and values)
+%   and the optional input is:
+%     hmin          (numeric, minimum for histogram)
+%     hmax          (numeric, maximum for histogram)
+%     hnint         (numeric, number of intervals for histogram)
+%     ymin1         (numeric, minimum of histogram y-axis)
+%     ymax1         (numeric, maximum of histogram y-axis)
+%     ymin2         (numeric, minimum of cdf y-axis)
+%     ymax2         (numeric, maximum of cdf y-axis)
+%     nrmplt        (char, 'line' or 'off' to change nrm plots from 'bar')
+%     ciplt         (char, 'line' or 'off' to change ci plots from 'bar')
+%     cdfplt        (char, 'off' to turn off cdf line plots)
+%     cdfleg        (char, 'off' to turn off cdf legends)
+%     cmap          (char or numeric, colormap definition)
 %
-%  and the optional input is:
-%    hmin          (numeric, minimum for histogram)
-%    hmax          (numeric, maximum for histogram)
-%    hnint         (numeric, number of intervals for histogram)
-%    ymin1         (numeric, minimum of histogram y-axis)
-%    ymax1         (numeric, maximum of histogram y-axis)
-%    ymin2         (numeric, minimum of cdf y-axis)
-%    ymax2         (numeric, maximum of cdf y-axis)
-%    nrmplt        (char, 'line' or 'off' to change nrm plots from 'bar')
-%    ciplt         (char, 'line' or 'off' to change ci plots from 'bar')
-%    cdfplt        (char, 'off' to turn off cdf line plots)
-%    cdfleg        (char, 'off' to turn off cdf legends)
-%    cmap          (char or numeric, colormap definition)
+%   for each response in the input array, this function
+%   calculates and plots a relative histogram and CDF of the list
+%   of samples, and annotates it with the description.  in
+%   addition, the normal distribution and CDF are plotted, and
+%   four CDF's are plotted for the confidence intervals.
 %
-%  for each response in the input array, this function
-%  calculates and plots a relative histogram and CDF of the list
-%  of samples, and annotates it with the description.  in
-%  addition, the normal distribution and CDF are plotted, and
-%  four CDF's are plotted for the confidence intervals.
+%   dresp data would typically be contained in the dakota tabular
+%   output file from a sampling analysis, read by dakota_out_parse.
 %
-%  dresp data would typically be contained in the dakota tabular
-%  output file from a sampling analysis, read by dakota_out_parse.
+%   "Copyright 2009, by the California Institute of Technology.
+%   ALL RIGHTS RESERVED. United States Government Sponsorship
+%   acknowledged. Any commercial use must be negotiated with
+%   the Office of Technology Transfer at the California Institute
+%   of Technology.  (J. Schiermeier, NTR 47078)
 %
-%  "Copyright 2009, by the California Institute of Technology.
-%  ALL RIGHTS RESERVED. United States Government Sponsorship
-%  acknowledged. Any commercial use must be negotiated with
-%  the Office of Technology Transfer at the California Institute
-%  of Technology.  (J. Schiermeier, NTR 47078)
-%
-%  This software may be subject to U.S. export control laws.
-%  By accepting this  software, the user agrees to comply with
-%  all applicable U.S. export laws and regulations. User has the
-%  responsibility to obtain export licenses, or other export
-%  authority as may be required before exporting such information
-%  to foreign countries or providing access to foreign persons."
+%   This software may be subject to U.S. export control laws.
+%   By accepting this  software, the user agrees to comply with
+%   all applicable U.S. export laws and regulations. User has the
+%   responsibility to obtain export licenses, or other export
+%   authority as may be required before exporting such information
+%   to foreign countries or providing access to foreign persons."
 %
 function []=plot_hist_norm_ci(varargin)
 

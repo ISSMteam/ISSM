@@ -1,6 +1,9 @@
+%DAKOTA_ROSENBROCK_VECTOR - vector parameter study for rosenbrock case
 %
-%  vector parameter study for rosenbrock case
-%  (see Users4.2.pdf, Sec. 2.4.2)
+%   (see Users4.2.pdf, Sec. 2.4.2)
+%
+%   Usage:
+%      [dout,ddat]=dakota_rosenbrock_vector()
 %
 %  "Copyright 2009, by the California Institute of Technology.
 %  ALL RIGHTS RESERVED. United States Government Sponsorship

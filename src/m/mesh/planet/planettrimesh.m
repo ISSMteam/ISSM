@@ -1,7 +1,8 @@
 function md=planettrimesh(md,shape,radius,refinement)
-%PLANETTRIMESH: build 2d shell mesh
+%PLANETTRIMESH - build a 3D triangulated spherical shell mesh
 %
-% Usage: md=planettrimesh(md,shape,radius,refinement)
+%   Usage:
+%      md=planettrimesh(md,shape,radius,refinement);
 %
 
 results = sphere_tri(shape,refinement,radius);

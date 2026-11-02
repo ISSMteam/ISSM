@@ -1,4 +1,8 @@
 function [vxout vyout]= interpMouginotAnt2017(X,Y,ncdata),
+%INTERPMOUGINOTANT2017 - interpolate Mouginot 2017 Antarctic ice velocity mosaic onto X and Y
+%
+%   Usage:
+%      [vxout,vyout] = interpMouginotAnt2017(X,Y,ncdata)
 
 %read data
 if nargin < 3

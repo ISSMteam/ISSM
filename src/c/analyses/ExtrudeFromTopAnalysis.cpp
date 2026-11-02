@@ -39,9 +39,6 @@ void ExtrudeFromTopAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 void           ExtrudeFromTopAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           ExtrudeFromTopAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* ExtrudeFromTopAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -52,7 +49,7 @@ _error_("Not implemented");
 ElementMatrix* ExtrudeFromTopAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries */
-	IssmDouble  Jdet,D;
+	IssmDouble  Jdet;
 	IssmDouble *xyz_list = NULL;
 
 	/*Get dimension*/
@@ -74,7 +71,6 @@ ElementMatrix* ExtrudeFromTopAnalysis::CreateKMatrix(Element* element){/*{{{*/
 	while(gauss->next()){
 
 		element->JacobianDeterminant(&Jdet,xyz_list,gauss);
-		D=gauss->weight*Jdet;
 		element->NodalFunctionsDerivatives(dbasis,xyz_list,gauss);
 
 		IssmDouble factor = gauss->weight*Jdet;

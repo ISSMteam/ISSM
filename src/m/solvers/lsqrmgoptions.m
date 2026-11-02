@@ -1,4 +1,8 @@
 function solverOptions=lsqrmgoptions(varargin)
+%LSQRMGOPTIONS - return PETSc options for the LSQR Krylov solver with a multigrid preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrmgoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

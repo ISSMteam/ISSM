@@ -36,9 +36,6 @@ void SmoothAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,in
 void           SmoothAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           SmoothAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* SmoothAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -122,7 +119,7 @@ ElementVector* SmoothAnalysis::CreatePVector(Element* element){/*{{{*/
 
 	/*SPECIFICS: Driving stress for balance velocities*/
 	Input*      H_input = NULL, *surface_input = NULL, *vx_input = NULL, *vy_input = NULL;
-	IssmDouble  taud_x,norms,normv,vx,vy;
+	IssmDouble  norms,normv,vx,vy;
 	IssmDouble  rho_ice,gravity,slope[2],thickness;
 
 	/*Fetch number of nodes and dof for this finite element*/
@@ -212,7 +209,7 @@ void           SmoothAnalysis::GradientJ(Vector<IssmDouble>* gradient,Element*  
 	_error_("Not implemented yet");
 }/*}}}*/
 void           SmoothAnalysis::InputUpdateFromSolution(IssmDouble* solution,Element* element){/*{{{*/
-	int inputenum,domaintype,elementtype;
+	int inputenum,domaintype;
 
 	element->FindParam(&inputenum,InputToSmoothEnum);
 	element->FindParam(&domaintype,DomainTypeEnum);

@@ -24,9 +24,6 @@ from triangle import *
 md = triangle(model(), '../Exp/Square.exp', 150000.)
 md = setmask(md, '../Exp/SquareShelf.exp', '')
 md = parameterize(md, '../Par/SquareSheetShelf.py')
-md.geometry.bed = md.geometry.base.copy()
-pos = np.where(md.mask.ocean_levelset < 0)
-md.geometry.bed[pos] = md.geometry.base[pos] - 10
 md.friction.coefficient = 20. * np.ones((md.mesh.numberofvertices, ))
 md.friction.p = np.ones((md.mesh.numberofelements, ))
 md.friction.q = np.ones((md.mesh.numberofelements, ))

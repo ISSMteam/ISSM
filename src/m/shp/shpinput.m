@@ -1,4 +1,8 @@
 function shpinput(num)
+%SHPINPUT - interactively pick a point and save it as a point shapefile
+%
+%   Usage:
+%      shpinput(num)
 
 a=ginput(num);
 

@@ -2,6 +2,7 @@ import numpy as np
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 from WriteData import WriteData
+from project3d import project3d
 
 
 class hydrologyshakti(object):
@@ -26,6 +27,10 @@ class hydrologyshakti(object):
         self.relaxation = 0
         self.storage = np.nan
         self.melt_flag         = 0
+        self.maxiter           = 0
+        self.restol            = 0
+        self.reltol            = 0
+        self.abstol            = 0
         self.requested_outputs = []
 
         #set defaults
@@ -49,11 +54,24 @@ class hydrologyshakti(object):
         s += '{}\n'.format(fielddisplay(self, 'relaxation', 'under - relaxation coefficient for nonlinear iteration'))
         s += '{}\n'.format(fielddisplay(self, 'storage', 'englacial storage coefficient (void ratio)'))
         s += '{}\n'.format(fielddisplay(self,'melt_flag','User specified basal melt? 0: no (default, Sommers et al. 2018), 1: use md.basalforcings.grounded_melting_rate'))
+        s += '{}\n'.format(fielddisplay(self, 'maxiter', 'maximum number of nonlinear iterations'))
+        s += '{}\n'.format(fielddisplay(self, 'restol', 'hydraulic head equilibrium residual convergence criterion'))
+        s += '{}\n'.format(fielddisplay(self, 'reltol', 'hydraulic head relative convergence criterion, NaN: not applied'))
+        s += '{}\n'.format(fielddisplay(self, 'abstol', 'hydraulic head absolute convergence criterion [m], NaN: not applied'))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         return s
     # }}}
 
     def extrude(self, md):  # {{{
+        self.head = project3d(md, 'vector', self.head, 'type', 'node')
+        self.gap_height = project3d(md, 'vector', self.gap_height, 'type', 'element')
+        self.bump_spacing = project3d(md, 'vector', self.bump_spacing, 'type', 'element')
+        self.bump_height = project3d(md, 'vector', self.bump_height, 'type', 'element')
+        self.englacial_input = project3d(md, 'vector', self.englacial_input, 'type', 'node')
+        self.moulin_input = project3d(md, 'vector', self.moulin_input, 'type', 'node')
+        self.reynolds = project3d(md, 'vector', self.reynolds, 'type', 'element')
+        self.neumannflux = project3d(md, 'vector', self.neumannflux, 'type', 'element')
+        self.spchead = project3d(md, 'vector', self.spchead, 'type', 'node')
         return self
     # }}}
 
@@ -64,6 +82,10 @@ class hydrologyshakti(object):
         self.relaxation = 1
         self.storage = 0
         self.melt_flag = 0
+        self.maxiter = 100
+        self.restol = 1.e-4
+        self.reltol = 0.01
+        self.abstol = np.nan  # not applied by default
         self.requested_outputs = ['default']
         return self
     # }}}
@@ -92,6 +114,10 @@ class hydrologyshakti(object):
         md = checkfield(md, 'fieldname', 'hydrology.relaxation', '>=', 0)
         md = checkfield(md, 'fieldname', 'hydrology.storage', '>=', 0, 'size', 'universal', 'NaN', 1, 'Inf', 1)
         md = checkfield(md, 'fieldname', 'hydrology.melt_flag', 'numel', 1, 'NaN', 1, 'Inf', 1, 'values', [0,1])
+        md = checkfield(md, 'fieldname', 'hydrology.maxiter', 'numel', 1, '>=', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.restol', 'numel', 1, '>', 0, 'NaN', 1, 'Inf', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.reltol', 'numel', 1)
+        md = checkfield(md, 'fieldname', 'hydrology.abstol', 'numel', 1)
         md = checkfield(md, 'fieldname', 'hydrology.requested_outputs', 'stringrow', 1)
         return md
     # }}}
@@ -121,6 +147,10 @@ class hydrologyshakti(object):
             tsl = md.mesh.numberofelements
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'storage', 'format', 'DoubleMat', 'mattype', mattype, 'timeserieslength', tsl + 1, 'yts', md.constants.yts)
         WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'melt_flag', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'maxiter', 'format', 'Integer')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'restol', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'reltol', 'format', 'Double')
+        WriteData(fid, prefix, 'object', self, 'class', 'hydrology', 'fieldname', 'abstol', 'format', 'Double')
 
         # Process requested outputs
         outputs = self.requested_outputs

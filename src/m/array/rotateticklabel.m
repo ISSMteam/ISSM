@@ -1,5 +1,5 @@
 function th=rotateticklabel(h,rot,demo)
-%ROTATETICKLABEL rotates tick labels
+%ROTATETICKLABEL - rotates tick labels
 %   TH=ROTATETICKLABEL(H,ROT) is the calling form where H is a handle to
 %   the axis that contains the XTickLabels that are to be rotated. ROT is
 %   an optional parameter that specifies the angle of rotation. The default
@@ -13,6 +13,9 @@ function th=rotateticklabel(h,rot,demo)
 %
 %   Known deficiencies: if tick labels are raised to a power, the power
 %   will be lost after rotation.
+%
+%   Usage:
+%      th=rotateticklabel(h,rot);
 %
 %   See also datetick.
 

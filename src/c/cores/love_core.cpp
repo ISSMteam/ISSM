@@ -403,7 +403,7 @@ template<typename doubletype> void         postwidder_transform(doubletype* Love
 }/*}}}*/
 
 template <typename doubletype> doubletype HypergeomTableLookup(doubletype z1, doubletype alpha, IssmDouble* h1, IssmDouble* z, int nz, int nalpha){/*{{{*/
-	int iz1, iz2;	
+	int iz1;
 	doubletype hf,h00,h10, h01, h11, za, zd, ha, hb,hc,hd, m0,m1,t;
 	doubletype dalpha=1.0/(nalpha-1); // alpha table resolution given 0 <= alpha <= 1
 	int        ialpha  = static_cast<int>(DownCastVarToDouble(alpha/dalpha));
@@ -694,7 +694,7 @@ template <typename doubletype> void        fill_yi_prefactor(doubletype* yi_pref
 	mu0=mu0p;
 	starting_layer=vars->starting_layer;
 
-	doubletype frh,frhg0,fgr0,fgr,fn,rm0,rlm,flm;
+	doubletype frh,frhg0,fgr,fn,rm0,rlm,flm;
 	doubletype xmin,xmax,x,dr;
 	doubletype g,ro;
 	bool       issolid;
@@ -842,10 +842,9 @@ template <typename doubletype> void        yi_derivatives(doubletype* dydx, doub
 	//computes yi derivatives at r=radius[layer_index]+ n/nstep*(radius[layer_index+1]-radius[layer_index])
 
 	bool issolid=matlitho->issolid[layer_index];
-	int iy,id,ny, nindex, nstep, nsteps;
+	int iy,id,ny, nindex, nsteps;
 	//femmodel->parameters->FindParam(&nstep,LoveIntStepsPerLayerEnum);
 
-	nstep=vars->nstep[layer_index];
 	nsteps=0;
 	for (int i=0;i<layer_index;i++) nsteps+=vars->nstep[i];
 
@@ -955,11 +954,7 @@ template <typename doubletype> void        propagate_yi_RK2(doubletype* y, doubl
 
 	doubletype k1[6]={0};
 	doubletype k2[6]={0};
-	doubletype k3[6]={0};
-	doubletype k4[6]={0};
 	doubletype y1[6]={0};
-	doubletype y2[6]={0};
-	doubletype y3[6]={0};
 
 	doubletype dr = (xmax -xmin)/reCast<doubletype>(nstep);
 	doubletype x=xmin;
@@ -1040,7 +1035,6 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 	nyi=vars->nyi;
 
 
-	doubletype g=GetGravity<doubletype>(r,layer_index,femmodel,matlitho,vars);
 	doubletype la,mu,ro;
 	
 	int i=layer_index-1;
@@ -1120,9 +1114,9 @@ template <typename doubletype> void        Innersphere_boundaryconditions(double
 }/*}}}*/
 template <typename doubletype> void        build_yi_system(doubletype* yi, int deg, doubletype omega, doubletype* yi_prefactor, FemModel* femmodel, Matlitho* matlitho,LoveVariables<doubletype>* vars) { /*{{{*/
 
-	doubletype	g0,r0,mu0,x,ro1, GG;
-	int		nyi,starting_layer, nstep;
-	doubletype 	xmin,xmax,one,ro,g, ra;
+	doubletype	g0,r0,mu0,ro1, GG;
+	int		nyi,starting_layer;
+	doubletype 	xmin,xmax,one,g, ra;
 	IssmDouble 	mu0p, GGp;
 	bool 		debug;
 	int ny,is,ii,jj;
@@ -1246,7 +1240,7 @@ template <typename doubletype> void        build_yi_system(doubletype* yi, int d
 template <typename doubletype> void        yi_boundary_conditions(doubletype* yi_righthandside, int degree, FemModel* femmodel, Matlitho* matlitho,LoveVariables<doubletype>* vars, int forcing_type){ /*{{{*/
 
 	doubletype  g0,r0,mu0,ra,rb,rc;
-	int nyi,icb,cmb,starting_layer;
+	int nyi,icb,cmb;
 	doubletype* EarthMass;
 	IssmDouble mu0p;
 	doubletype deg = reCast<doubletype>(degree);
@@ -1254,7 +1248,6 @@ template <typename doubletype> void        yi_boundary_conditions(doubletype* yi
 	g0=vars->g0;
 	r0=vars->r0;
 	nyi=vars->nyi;
-	starting_layer=vars->starting_layer;
 	EarthMass=vars->EarthMass;
 
 	femmodel->parameters->FindParam(&mu0p,LoveMu0Enum);
@@ -1333,7 +1326,7 @@ template <typename doubletype> void        solve_yi_system(doubletype* loveh, do
 
 	doubletype  g0,r0,mu0;
 	//IssmDouble* frequencies;
-	int nyi,starting_layer, dummy,cmb;
+	int nyi,starting_layer, cmb;
 	bool allow_layer_deletion, debug;
 	doubletype* EarthMass=NULL;
 	IssmDouble mu0p,loveratio,underflow_tol;
@@ -1503,7 +1496,7 @@ save_results:
 }/*}}}*/
 template <typename doubletype> void        love_freq_to_temporal(LoveNumbers<doubletype>* Lovet, LoveNumbers<doubletype>* Tidalt, doubletype* pmtf_colineart, doubletype* pmtf_orthot, LoveNumbers<doubletype>* Lovef,LoveNumbers<doubletype>* Tidalf, IssmDouble* frequencies, FemModel* femmodel, bool verbosecpu){ /*{{{*/
 	//Transforms all frequency-dependent love numbers into time-dependent love numbers
-	int nfreq,sh_nmax,sh_nmin,indxi,indf, NTit, forcing_type, nt;
+	int nfreq,sh_nmax,sh_nmin, NTit, forcing_type, nt;
 	IssmDouble kf,Omega,moi_e,moi_p,alpha;
 	doubletype* pmtf_colinearf=NULL;
 	doubletype* pmtf_orthof=NULL;
@@ -1578,15 +1571,13 @@ template <typename doubletype> void        love_freq_to_temporal(LoveNumbers<dou
 
 template <typename doubletype> void        compute_love_numbers(LoveNumbers<doubletype>* Lovef, LoveNumbers<doubletype>* Elastic, int forcing_type, int sh_cutoff, IssmDouble* frequencies, FemModel* femmodel, Matlitho* matlitho, LoveVariables<doubletype>* vars, bool verbosecpu){
 
-	int nsteps, kernel_index,kernel_indexe,deleted_layer_offset, deg, sh_nmin, sh_nmax, nfreq;
-	doubletype  lovek, loveh, lovel, loveratio;
+	int nsteps, kernel_index,kernel_indexe,deleted_layer_offset, sh_nmin, sh_nmax, nfreq;
+	doubletype  lovek, loveh, lovel;
 	doubletype  omega;
 	doubletype* yi_prefactor=NULL;
 	doubletype* yi_righthandside=NULL;
 	doubletype* yi=NULL;
-	doubletype  underflow_tol;
-	IssmDouble dr;
-	bool freq_skip, istemporal;
+	bool istemporal;
 	int cmb=0;
 	int nyi_init=0;
 
@@ -1684,7 +1675,6 @@ template <typename doubletype> LoveVariables<doubletype>*	love_init(FemModel* fe
 
 	/*initialize Planet_Mass(r) for efficient computation of gravity, value of surface gravity and inital size of the yi equation system*/
 
-	bool        verbosemod = (int)VerboseModule();
 	int         numlayers  = matlitho->numlayers;
 	int 	    minsteps;
 	doubletype* r=NULL;
@@ -1748,9 +1738,8 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 
 	Matlitho*   matlitho=NULL;
 	int         nfreq, NTit,nt, forcing_type,dummy, sh_cutoff;
-	int         sh_nmin,sh_nmax,kernel_index,deleted_layer_offset;
-	bool        allow_layer_deletion,love_kernels, istemporal, freq_skip;
-	bool        verbosemod = (int)VerboseModule();
+	int         sh_nmin,sh_nmax;
+	bool        allow_layer_deletion,love_kernels, istemporal;
 	IssmDouble *frequencies = NULL;
 	IssmDouble *frequencies_local=NULL;
 	bool        save_results;
@@ -1758,8 +1747,6 @@ template <typename doubletype> void        love_core_template(FemModel* femmodel
 	bool	    quad_precision;
 	bool	    verbosecpu=false;
 
-	doubletype  omega;
-	doubletype  lovek, loveh, lovel, loveratio;
 	IssmDouble pw_threshold, pw_test_h, pw_test_l,pw_test_k;
 
 	/* parallel computing */

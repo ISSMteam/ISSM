@@ -1,4 +1,8 @@
 function solverOptions=richardsonsoroptions(varargin)
+%RICHARDSONSOROPTIONS - return PETSc options for the Richardson iteration Krylov solver with an SOR (Successive Over-Relaxation) preconditioner
+%
+%   Usage:
+%      solverOptions=richardsonsoroptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

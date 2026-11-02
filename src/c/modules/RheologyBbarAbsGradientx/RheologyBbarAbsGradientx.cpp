@@ -31,9 +31,9 @@ void RheologyBbarAbsGradientx( IssmDouble* pJ, Elements* elements,Nodes* nodes, 
 
 IssmDouble RheologyBbarAbsGradient(Element* element){
 
-	int         domaintype,numcomponents;
+	int         domaintype;
 	IssmDouble  Jelem=0.;
-	IssmDouble  misfit,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  dp[2],weight;
 	IssmDouble* xyz_list      = NULL;
 
@@ -46,9 +46,9 @@ IssmDouble RheologyBbarAbsGradient(Element* element){
 	/*Get problem dimension*/
 	element->FindParam(&domaintype,DomainTypeEnum);
 	switch(domaintype){
-		case Domain2DverticalEnum:   numcomponents   = 1; break;
-		case Domain3DEnum:           numcomponents   = 2; break;
-		case Domain2DhorizontalEnum: numcomponents   = 2; break;
+		case Domain2DverticalEnum:   break;
+		case Domain3DEnum:           break;
+		case Domain2DhorizontalEnum: break;
 		default: _error_("not supported yet");
 	}
 

@@ -1,5 +1,8 @@
 function edges=projectedges(edges,shppath,epsg)
-%Gothrough edges (shapefiles), and project them in the epsg reference frame. 
+%PROJECTEDGES - go through edges (shapefiles), and project them in the epsg reference frame
+%
+%   Usage:
+%      edges=projectedges(edges,shppath,epsg)
 
 for i=1:length(edges)/3 
 	shpname=[shppath '/' edges{3*(i-1)+1}];

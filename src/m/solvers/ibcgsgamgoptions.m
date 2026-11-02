@@ -1,4 +1,8 @@
 function solverOptions=ibcgsgamgoptions(varargin)
+%IBCGSGAMGOPTIONS - PETSc solver options using the improved stabilized biconjugate gradient squared (ibcgs) Krylov method with geometric algebraic multigrid (GAMG) preconditioning
+%
+%   Usage:
+%      solverOptions=ibcgsgamgoptions(varargin);
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

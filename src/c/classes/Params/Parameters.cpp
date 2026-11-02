@@ -420,6 +420,15 @@ void Parameters::FindParam(FILE** pfid,int param_enum){ _assert_(this);/*{{{*/
 	this->params[index]->GetParameterValue(pfid);
 }
 /*}}}*/
+#ifdef _HAVE_GPU_HO_
+void Parameters::FindParam(GPUHOParam** p_metada,int param_enum){ _assert_(this);/*{{{*/
+
+	int index = EnumToIndex(param_enum);
+	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
+	this->params[index]->GetParameterValue(p_metada);
+}
+/*}}}*/
+#endif
 void Parameters::FindParam(DataSet** pdataset,int param_enum){ /*{{{*/
 	_assert_(this);
 
@@ -471,10 +480,6 @@ void Parameters::FindParamAndMakePassive(IssmPDouble** pvec,int* pM, int param_e
 void Parameters::FindControlParam(IssmDouble** pvec,int* pM, int param_enum, const char* data){ _assert_(this);/*{{{*/
 
 	int index = EnumToIndex(param_enum);
-
-	/*Output*/
-	int         n;
-	IssmDouble* vector = NULL;
 
 	if(!this->params[index]) _error_("Parameter " << EnumToStringx(param_enum) <<" not set");
 	this->params[index]->GetParameterValue(pvec,pM,data);
@@ -683,16 +688,6 @@ void   Parameters::SetControlFromVector(IssmDouble* vector, int enum_type, int M
 	else _error_("Param "<< EnumToStringx(enum_type) << " cannot setValue");
 }
 /*}}}*/
-void   Parameters::SetGradientFromVector(IssmDouble* vector, int enum_type, int M, int N, int offset){/*{{{*/
-
-	/*first, figure out if the param has already been created: */
-	Param* param=NULL;
-	param=xDynamicCast<Param*>(this->FindParamObject(enum_type));
-
-	if(param) param->SetGradient(&vector[offset], M, N);
-	else _error_("Param "<< EnumToStringx(enum_type) << " cannot setValue");
-}
-/*}}}*/
 
 void  Parameters::GetVectorFromControl(Vector<IssmDouble>* vector,int control_enum,int control_index,int N,const char* data,int offset){/*{{{*/
 
@@ -703,6 +698,18 @@ void  Parameters::GetVectorFromControl(Vector<IssmDouble>* vector,int control_en
 	param->GetVectorFromControl(vector, control_index, N, data, offset);
 }/*}}}*/
 
+bool Parameters::IsInRequestedOutput(int requested_outputs_enum,int output_enum){/*{{{*/
+
+	Param* param=this->FindParamObject(requested_outputs_enum);
+	if(!param) return false;
+
+	if(param->ObjectEnum()!=StringArrayParamEnum){
+		_error_("Parameter "<<EnumToStringx(requested_outputs_enum)<<" is not a StringArrayParam");
+	}
+
+	StringArrayParam* requested_outputs=xDynamicCast<StringArrayParam*>(param);
+	return requested_outputs->IsMember(EnumToStringx(output_enum));
+}/*}}}*/
 Param* Parameters::FindParamObject(int param_enum){/*{{{*/
 
 	return this->params[EnumToIndex(param_enum)];
@@ -722,9 +729,7 @@ char* OptionsFromAnalysis(char** pouttoolkit,Parameters* parameters,int analysis
 	int          dummy;
 	int         *analyses    = NULL;
 	char       **strings     = NULL;
-	char        *string      = NULL;
 	char       **toolkits    = NULL;
-	char        *toolkit     = NULL;
 	int          numanalyses;
 	int          found       = -1;
 	int          i;

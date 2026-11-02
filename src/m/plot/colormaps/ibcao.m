@@ -1,5 +1,5 @@
 function map = ibcap(nsea,nland)
-%IBCAO - IBCAO color map
+%IBCAP - IBCAO color map
 %
 %   Usage:
 %      map = ibcap(nsea,nland)

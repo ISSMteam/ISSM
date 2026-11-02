@@ -10,20 +10,19 @@ class PentaInput: public ElementInput, public PentaRef{
 	private:
 		int isserved_collapsed;
 	public:
-		/*PentaInput constructors, destructors: {{{*/
+		/*PentaInput constructors, destructors:*/
 		PentaInput();
 		PentaInput(int nbe_in,int nbv_in,int interp_in);
 		~PentaInput();
-		/*}}}*/
-		/*Object virtual functions definitions:{{{ */
+
+		/*Object virtual functions definitions:*/
 		Input *copy();
-		void    DeepEcho();
-		void    Echo();
-		int     Id();
-		void    Marshall(MarshallHandle* marshallhandle);
-		int     ObjectEnum();
-		/*}}}*/
-		/*PentaInput management: {{{*/
+		void   DeepEcho();
+		void   Echo();
+		void   Marshall(MarshallHandle* marshallhandle);
+		int    ObjectEnum(){return PentaInputEnum;}
+
+		/*PentaInput management:*/
 		void SetInput(int interp_in,int row,IssmDouble value_in);
 		void SetInput(int interp_in,int numinds,int* rows,IssmDouble* values_in);
 		void SetInput(int interp_in,int row,int numinds,IssmDouble* values_in);
@@ -46,7 +45,7 @@ class PentaInput: public ElementInput, public PentaRef{
 		int  GetResultArraySize(void);
 		int  GetResultInterpolation(void);
 		int  GetResultNumberOfNodes(void);
-		/*}}}*/
+
 		void Reset(int interp_in);
 
 };

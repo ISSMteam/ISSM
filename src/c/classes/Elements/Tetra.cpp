@@ -751,7 +751,6 @@ void     Tetra::Update(Inputs* inputs,int index,IoModel* iomodel,int analysis_co
 	/*Intermediaries*/
 	int        i;
 	int        tetra_vertex_ids[6];
-	IssmDouble nodeinputs[6];
 	IssmDouble yts;
 	bool       dakota_analysis;
 	bool       isFS;

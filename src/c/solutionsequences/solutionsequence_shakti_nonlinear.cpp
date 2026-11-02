@@ -24,11 +24,11 @@ void solutionsequence_shakti_nonlinear(FemModel* femmodel){
 	int max_nonlinear_iterations;
 	IssmDouble eps_res,eps_rel,eps_abs;
 
-	/*Recover parameters: */
-	femmodel->parameters->FindParam(&max_nonlinear_iterations,StressbalanceMaxiterEnum);
-	femmodel->parameters->FindParam(&eps_res,StressbalanceRestolEnum);
-	femmodel->parameters->FindParam(&eps_rel,StressbalanceReltolEnum);
-	femmodel->parameters->FindParam(&eps_abs,StressbalanceAbstolEnum);
+	/*Recover parameters:*/
+	femmodel->parameters->FindParam(&max_nonlinear_iterations,HydrologyMaxiterEnum);
+	femmodel->parameters->FindParam(&eps_res,HydrologyRestolEnum);
+	femmodel->parameters->FindParam(&eps_rel,HydrologyReltolEnum);
+	femmodel->parameters->FindParam(&eps_abs,HydrologyAbstolEnum);
 	femmodel->UpdateConstraintsx();
 
 	int  count=0;

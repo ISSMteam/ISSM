@@ -60,9 +60,6 @@ void BalancevelocityAnalysis::UpdateParameters(Parameters* parameters,IoModel* i
 void           BalancevelocityAnalysis::Core(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
-void           BalancevelocityAnalysis::PreCore(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
 ElementVector* BalancevelocityAnalysis::CreateDVector(Element* element){/*{{{*/
 	/*Default, return NULL*/
 	return NULL;
@@ -73,7 +70,7 @@ _error_("Not implemented");
 ElementMatrix* BalancevelocityAnalysis::CreateKMatrix(Element* element){/*{{{*/
 
 	/*Intermediaries */
-	IssmDouble  dhdt,mb,ms,Jdet;
+	IssmDouble  Jdet;
 	IssmDouble  h,gamma,thickness;
 	IssmDouble  hnx,hny,dhnx[2],dhny[2];
 	IssmDouble *xyz_list = NULL;

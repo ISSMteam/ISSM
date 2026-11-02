@@ -36,8 +36,13 @@ classdef issmsettings
 			end
 
 			%2026 Jun 10
+			default = [issmdir() '/execution'];
 			if isempty(self.stagingpath)
-				self.stagingpath = [issmdir() '/execution'];
+				self.stagingpath = default;
+			end
+			if exist(self.stagingpath,'dir')~=7
+				disp(['WARNING: staging path points to a non-existent directory, changing to ' default ]);
+				self.stagingpath = default;
 			end
 
 		end % }}}

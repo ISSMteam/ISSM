@@ -175,6 +175,9 @@ void  Moulin::CreateKMatrix(Matrix<IssmDouble>* Kff, Matrix<IssmDouble>* Kfs){/*
 		case HydrologyGlaDSAnalysisEnum:
 			Ke = this->CreateKMatrixHydrologyGlaDS();
 			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
+			Ke = this->CreateKMatrixHydrologyGlaDS();
+			break;
 		case HydrologyShaktiAnalysisEnum:
 			/*do nothing: */
 			return;
@@ -204,6 +207,9 @@ void  Moulin::CreatePVector(Vector<IssmDouble>* pf){/*{{{*/
 
 	switch(analysis_type){
 		case HydrologyGlaDSAnalysisEnum:
+			pe = this->CreatePVectorHydrologyGlaDS();
+			break;
+		case HydrologyIMLGlaDSAnalysisEnum:
 			pe = this->CreatePVectorHydrologyGlaDS();
 			break;
 		case HydrologyShaktiAnalysisEnum:
@@ -435,7 +441,6 @@ ElementVector* Moulin::CreatePVectorHydrologyDCInefficient(void){/*{{{*/
 	if(node->IsClone()) return NULL;
 	bool isefficientlayer, active_element;
 	IssmDouble moulin_load,dt;
-	IssmDouble epl_active;
 	/*Initialize Element matrix*/
 	ElementVector* pe=new ElementVector(&node,1,this->parameters);
 

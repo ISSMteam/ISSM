@@ -1,4 +1,8 @@
 function solverOptions=lsqrhypreoptions(varargin)
+%LSQRHYPREOPTIONS - return PETSc options for the LSQR Krylov solver with a Hypre (BoomerAMG) preconditioner
+%
+%   Usage:
+%      solverOptions=lsqrhypreoptions();
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

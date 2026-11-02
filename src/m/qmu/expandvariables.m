@@ -1,4 +1,8 @@
 function dvar=expandvariables(md,variables)
+%EXPANDVARIABLES - expand a qmu variables structure into a dvar structure array
+%
+%   Usage:
+%      dvar=expandvariables(md,variables)
 
 fnames=fieldnames(variables);
 

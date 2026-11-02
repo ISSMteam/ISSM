@@ -1,4 +1,8 @@
 function solverOptions=bcgslhypreoptions(varargin)
+%BCGSLHYPREOPTIONS - return BiCGStab(L) PETSc options with a Hypre preconditioner
+%
+%   Usage:
+%      options=bcgslhypreoptions;
 
 %retrieve options provided in varargin
 options=pairoptions(varargin{:});

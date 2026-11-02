@@ -3,11 +3,11 @@ function ice_levelset = interpISMIP6GreenlandRetreatMask(md,model_name,scenario,
 %
 %   Input:
 %     - optional 5th input argument (boolean): default is FALSE, set to TRUE if md.mask.ice_levelset is not fully consistent
-%                                              with the chosen IMSIP6 model mask. In essence it makes sure no artificial 
+%                                              with the chosen ISMIP6 model mask. In essence it makes sure no artificial 
 %                                              ice front advance occurs at the first time step. It may mean less retreat over
 %                                              the simulation occurs. WARNING: this processing is not in full alignment
 %                                              with ISMIP6 protocols
-%     - optional 6th input argument (string):  directory path for model forcings - should end in something like "/aSMB_observed/v1/" 
+%     - optional 6th input argument (string):  directory path for model forcings - should end in something like "/ISSM_UCIJPL/v1/" 
 %
 %   Output:
 %     - ice_levelset: prepared to be input directly into md.levelset.spclevelset
@@ -20,6 +20,7 @@ function ice_levelset = interpISMIP6GreenlandRetreatMask(md,model_name,scenario,
 %      1) This function provides retreat for 2015 to 2100. If you want other years, you will need to implement this option.
 %      2) Reinitializing each levelset takes a very long time, so only do this when ready (uncomment appropriate line below), or perhaps reinitialize in your own code
 %
+% Version 10/19/2026 Jessica Badgeley badgeley@uw.edu
 % Version 10/25/2023 Jessica Badgeley jessica.a.badgeley@dartmouth.edu
 
 if nargin<5
@@ -34,6 +35,11 @@ if nargin<6
        otherwise
          error('machine not supported yet, please provide your own path');
    end
+end
+
+%make sure path ends with a slash (needed to extract ice_model and build the file name below)
+if ~strcmp(path(end),'/')
+   path = [path '/'];
 end
 
 path_parts = strsplit(path,'/');
@@ -51,6 +57,11 @@ Y = double(md.mesh.y);
 
 xdata = double(ncread(rootname,'x'));
 ydata = double(ncread(rootname,'y'));
+
+%the subsetting below assumes x and y are strictly ascending
+if any(diff(xdata)<=0) || any(diff(ydata)<=0)
+   error('x and y in the retreat mask file must be strictly ascending, this case is not supported yet.');
+end
 
 offset=2;
       
@@ -73,24 +84,26 @@ data = double(ncread(rootname,'sftgif',[id1x id1y 1],[id2x-id1x+1 id2y-id1y+1 In
 ice_levelset = zeros(md.mesh.numberofvertices+1,size(data,3)-1)*NaN;
 %skip the first time step (2014.5) and start at 2015.5
 for ii = 2:size(data,3)
-	ils = InterpFromGrid(xdata,ydata,data(:,:,ii)',X,Y,'nearest');
-   ils(ils > 0) = -1;
-   ils(ils == 0) = 1;
-	if make_consistent
-		md_ils = md.mask.ice_levelset;
-		md_ils(md_ils >= 0) = 1;
-		md_ils(md_ils < 0) = -1;
+   ils = InterpFromGrid(xdata,ydata,data(:,:,ii)',X,Y,'nearest');
+   %sftgif is an ice fraction (0-1 or 0-100%): anything else (NaN, fill values,
+   %mesh vertices outside the grid) is treated as no ice
+   isice = (ils > 0 & ils <= 100);
+   ils(isice) = -1;
+   ils(~isice) = 1;
+   if make_consistent
+      md_ils = md.mask.ice_levelset;
+      md_ils(md_ils >= 0) = 1;
+      md_ils(md_ils < 0) = -1;
       adjust = md_ils - ils;
-		%this next line ensures no advance from md.mask.ice_levelset occurs
-		ils(adjust == 2) = 1;
-	end
-  	ice_levelset(1:end-1,ii-1) = ils; %reinitializelevelset(md,ils);
-	% replace the righthand side above with the commented code if you want to reinitialize. This takes a VERY long time.
+      %this next line ensures no advance from md.mask.ice_levelset occurs
+      ils(adjust == 2) = 1;
+   end
+   ice_levelset(1:end-1,ii-1) = ils; %reinitializelevelset(md,ils);
+   % replace the righthand side above with the commented code if you want to reinitialize. This takes a VERY long time.
 end
 
 % Transform time and insert
 tdata = double(ncread(rootname,'time'));
-base_date = datetime('1900-1-1 00:00:00');
-ice_levelset(end,:) = decyear(base_date + days(tdata(2:end)));
+ice_levelset(end,:) = date2decyear(datenum(1900,1,1) + tdata(2:end));
 
 end

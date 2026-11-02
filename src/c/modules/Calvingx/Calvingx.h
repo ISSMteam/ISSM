@@ -7,5 +7,6 @@
 /* local prototypes: */
 void Calvingx(FemModel* femmodel);
 void MovingFrontalVelx(FemModel* femmodel);
+void CalvingStochasticx(FemModel* femmodel);
 
 #endif

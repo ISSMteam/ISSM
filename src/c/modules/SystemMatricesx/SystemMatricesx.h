@@ -8,6 +8,6 @@
 #include "../../analyses/analyses.h"
 
 /* local prototypes: */
-void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vector<IssmDouble>** ppf, Vector<IssmDouble>** pdf, IssmDouble* pkmax,FemModel* femmodel, bool isAllocated=false);
+void SystemMatricesx(Matrix<IssmDouble>** pKff, Matrix<IssmDouble>** pKfs, Vector<IssmDouble>** ppf, Vector<IssmDouble>** pdf, IssmDouble* pkmax,FemModel* femmodel, bool isAllocated=false, bool isGPU=false);
 
 #endif  /* _SYSTEMMATRICESX_H */

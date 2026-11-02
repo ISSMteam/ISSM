@@ -1,4 +1,8 @@
 function list = supportedcontrols(),
+%SUPPORTEDCONTROLS - list the control parameters supported by ISSM inversions
+%
+%   Usage:
+%      list=supportedcontrols()
 
 	list = {...
 		'BalancethicknessThickeningRate',...

@@ -1,7 +1,7 @@
+%DMETH_PARAMS_MERGE - merge a structure of parameters into a dakota_method object
 %
-%  merge a structure of parameters into a dakota_method object.
-%
-%  [dm]=dmeth_params_merge(dm,params)
+%   Usage:
+%      dm=dmeth_params_merge(dm,params)
 %
 function [dm]=dmeth_params_merge(dm,params)
 

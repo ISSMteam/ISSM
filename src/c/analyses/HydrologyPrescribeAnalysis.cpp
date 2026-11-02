@@ -31,7 +31,7 @@ int  HydrologyPrescribeAnalysis::DofsPerNode(int** doflist,int domaintype,int ap
 void HydrologyPrescribeAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomodel,int analysis_counter,int analysis_type){/*{{{*/
 
 	/*Fetch data needed: */
-	int    hydrology_model,frictionlaw;
+	int    hydrology_model;
 	iomodel->FindConstant(&hydrology_model,"md.hydrology.model");
 
 	/*Now, do we really want Prescribe?*/
@@ -81,9 +81,6 @@ void HydrologyPrescribeAnalysis::UpdateParameters(Parameters* parameters,IoModel
 
 /*Finite Element Analysis*/
 void           HydrologyPrescribeAnalysis::Core(FemModel* femmodel){/*{{{*/
-	_error_("not implemented");
-}/*}}}*/
-void           HydrologyPrescribeAnalysis::PreCore(FemModel* femmodel){/*{{{*/
 	_error_("not implemented");
 }/*}}}*/
 ElementVector* HydrologyPrescribeAnalysis::CreateDVector(Element* element){/*{{{*/
