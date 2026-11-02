@@ -165,9 +165,18 @@ def processdata(md, data, options):
     if options.getfieldvalue('layer',0)>=1:
         procdata=project2d(md,procdata,options.getfieldvalue('layer'))
 
+        if options.exist('mask'):
+            mask = project2d(md,options.getfieldvalue('mask'),options.getfieldvalue('layer'))
+            hide = np.invert(mask)
+            procdata = np.ma.array(procdata, mask=hide)
+
     if options.getfieldvalue('depthaverage',0):
         # NOTE: The "depthaverage" option now behaves the same way as in MATLAB.
         procdata=DepthAverage(md,data) #project onto 2d mesh
+        if options.exist('mask'):
+            mask = project2d(md,options.getfieldvalue('mask'),1)
+            hide = np.invert(mask)
+            procdata = np.ma.array(procdata, mask=hide)
     # }}}
 
     # spc time series {{{
