@@ -1100,6 +1100,7 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 
 	IssmDouble* viscouspolarmotion=NULL;
 	IssmDouble* viscoustimes=NULL;
+	int         M,N;
 	int         viscousnumsteps;
 	int         viscousindex=0; 
 	int         newindex=0;
@@ -1113,10 +1114,12 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 
 	if(viscous){
 		femmodel->parameters->FindParam(&viscousnumsteps,SealevelchangeViscousNumStepsEnum);
+		if(viscousnumsteps<2) _error_("viscosity needs at least 2 time steps to interpolate (got " << viscousnumsteps << ").");
 		femmodel->parameters->FindParam(&viscoustimes,NULL,SealevelchangeViscousTimesEnum);
 		femmodel->parameters->FindParam(&viscousindex,SealevelchangeViscousIndexEnum);
 		femmodel->parameters->FindParam(&currenttime,TimeEnum);
-		if (rotation) 	femmodel->parameters->FindParam(&viscouspolarmotion,NULL,NULL,SealevelchangeViscousPolarMotionEnum);
+		if(rotation) femmodel->parameters->FindParam(&viscouspolarmotion,&M,&N,SealevelchangeViscousPolarMotionEnum);
+		if(viscousindex<0 || viscousindex>=viscousnumsteps) _error_("SealevelchangeViscousIndex (" << viscousindex << ") is out of range [0," << viscousnumsteps-1 << "]");
 
 		if(currenttime<viscoustimes[viscousindex]){
 			_error_("current time (" << currenttime << ") is earlier than the current viscous stack time (" << viscoustimes[viscousindex] << "). Check timestepping.start_time, current model time, and SealevelchangeViscousIndex.");
@@ -1128,7 +1131,7 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 		newindex=viscousnumsteps-2;
 
 		for(int t=viscousindex;t<viscousnumsteps;t++){
-			if (viscoustimes[t]>currenttime){
+			if(viscoustimes[t]>currenttime){
 				newindex=t-1;
 				foundtime=true;
 				lincoeff=(currenttime-viscoustimes[newindex])/(viscoustimes[t]-viscoustimes[newindex]);
@@ -1137,10 +1140,13 @@ void       SealevelchangeUpdateViscousTimeSeries(FemModel* femmodel){ /*{{{*/
 			}
 		}
 
+		_assert_(newindex>=0 && newindex+1<viscousnumsteps);
+
 		if(rotation){
 			int index=0;
-			for (int i=0;i<3;i++){
-				index=i*viscousnumsteps+newindex;
+			for(int i=0;i<3;i++){
+				index = i*viscousnumsteps+newindex;
+				_assert_(index>=0 && index+1<M*N);
 				viscouspolarmotion[index+offset]=(1-lincoeff)*viscouspolarmotion[index]+lincoeff*viscouspolarmotion[index+1];
 			}
 			femmodel->parameters->SetParam(viscouspolarmotion,viscousnumsteps,3,SealevelchangeViscousPolarMotionEnum);

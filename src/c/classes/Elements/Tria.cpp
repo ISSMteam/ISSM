@@ -8117,6 +8117,7 @@ void       Tria::SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newi
 			this->inputs->GetArrayPtr(SealevelchangeViscousEEnum,this->lid,&viscousE,&size);
 		}
 
+		_assert_(newindex>=0 && newindex+1<viscousnumsteps && size==NUMVERTICES*viscousnumsteps);
 		for(int i=0;i<NUMVERTICES;i++){
 			viscousRSL[i*viscousnumsteps+newindex+offset]=(1-lincoeff)*viscousRSL[i*viscousnumsteps+newindex]+lincoeff*viscousRSL[i*viscousnumsteps+newindex+1];
 			viscousU[i*viscousnumsteps+newindex+offset]=(1-lincoeff)*viscousU[i*viscousnumsteps+newindex]+lincoeff*viscousU[i*viscousnumsteps+newindex+1];
