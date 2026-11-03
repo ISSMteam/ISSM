@@ -1043,7 +1043,7 @@ void FemModel::Solve(void){/*{{{*/
 		solution_flops  = profiler->TotalFlops(ADCORE);
 		solution_memory = profiler->Memory(ADCORE);
 
-		_printf0_("AD profiling\n");
+		_printf0_("\nAD profiling\n");
 		_printf0_("   elapsed time    : " << solution_time   << " Seconds\n");
 		_printf0_("   number of flops : " << solution_flops  << " Flops\n");
 		_printf0_("   memory used     : " << solution_memory << " Bytes\n");
