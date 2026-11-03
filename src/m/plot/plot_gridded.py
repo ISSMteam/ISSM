@@ -46,7 +46,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     isAxis = options.exist('axis')
     if isAxis:
         myaxis = options.getfieldvalue('axis');
-        if isinstance(myaxis,'char'):
+        if isinstance(myaxis,str):
             xlim = [myaxis[0], myaxis[1]]
             ylim = [myaxis[2], myaxis[3]]
 

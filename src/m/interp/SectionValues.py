@@ -1,6 +1,8 @@
 import os
 
 import numpy as np
+import warnings
+from collections import OrderedDict
 
 from expread import expread
 #from InterpFromMesh2d import InterpFromMesh2d
@@ -21,11 +23,22 @@ def SectionValues(md, data, infile, resolution):
         [elements, x, y, z, s, data] = SectionValues(md, data, profile_structure, resolution)
     """
 
-    if os.path.isfile(infile):
+    if isinstance(infile,str):
+        if not os.path.isfile(infile):
+            raise Exception('Error: We cannot find file: %s'%(infile))
         profile = expread(infile)[0]
         nods = profile['nods']
         x = profile['x']
         y = profile['y']
+    elif isinstance(infile,list):
+        warnings.warn('Warning: We only load first section value')
+        nods=infile[0]['nods']
+        x=infile[0]['x']
+        y=infile[0]['y']
+    elif isinstance(infile,OrderedDict):
+        nods=infile['nods']
+        x=infile['x']
+        y=infile['y']
     else:
         raise IOError('file %s not found' % infile)
 
@@ -96,9 +109,11 @@ def SectionValues(md, data, infile, resolution):
         #Get base and surface for each 2d point, offset to make sure that it is inside the glacier system
         offset = 1.e-3
         base = InterpFromMeshToMesh2d(md.mesh.elements2d, md.mesh.x2d, md.mesh.y2d, project2d(md, md.geometry.base, 1), X, Y) + offset
-        base = base.reshape(-1, )
         surface = InterpFromMeshToMesh2d(md.mesh.elements2d, md.mesh.x2d, md.mesh.y2d, project2d(md, md.geometry.surface, 1), X, Y) - offset
-        surface = surface.reshape(-1, )
+
+        #Coerce array to 1-D vector
+        base = np.ravel(base)
+        surface = np.ravel(surface)
 
     #Some useful parameters
         layers = int(np.ceil(np.mean(md.geometry.thickness) / res_v))
@@ -134,6 +149,8 @@ def SectionValues(md, data, infile, resolution):
         Z = Z3
         S = S3
 
-        index = index3
+        # Coerce array with integer
+        index = np.asarray(index3,dtype=int)
+        data_interp = data_interp[0]
 
     return index, X, Y, Z, S, data_interp
