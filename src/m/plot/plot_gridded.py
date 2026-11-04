@@ -86,6 +86,10 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     else:
         data_min=np.nanmin(data_grid[:])
         data_max=np.nanmax(data_grid[:])
+        if data_max == 0.0 and data_min == 0.0:
+            data_max =  1
+            data_min = -1
+
         caxis_opt=[data_min, data_max] # Back-up caxis for "applyoptions".
 
     #TODO: Select plot area 
@@ -165,7 +169,7 @@ def plot_gridded(md,data,options,fig,axgrid,gridindex):
     #Apply options
     if (not np.isnan(data_min)) & (not np.isinf(data_min)):
         options.changefieldvalue('caxis',caxis_opt) # force caxis so that the colorbar is ready
-    options.addfielddefault('axis','xy equal'); # default axis
+    options.addfielddefault('axis','equal'); # default axis
     applyoptions(md,data,options,fig,axgrid,gridindex)
 
 def nmedian(x,n=0.5):

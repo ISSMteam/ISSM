@@ -137,6 +137,12 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
             ax.ticklabel_format(style='plain')
             p.setp(ax.get_xticklabels(), visible=False)
             p.setp(ax.get_yticklabels(), visible=False)
+        else:
+            axisopts = options.getfieldvalue('axis')
+            if isinstance(axisopts,str):
+                ax.set_aspect(axisopts)
+            else:
+                ax.set_aspect(axisopts)
     # }}}
     # {{{ box
     if options.exist('box'):
@@ -238,17 +244,27 @@ def applyoptions(md, data, options, fig, axgrid, gridindex):
         else:
             if 1:
                 from mpl_toolkits.axes_grid1 import make_axes_locatable
-                cb_pos        =options.getfieldvalue('colorbarpos','right')
-                if cb_pos in ['right','left']:
-                    cb_orientation=options.getfieldvalue('orientation','vertical')
-                elif cb_pos in ['top','bottom']:
-                    cb_orientation=options.getfieldvalue('orientation','horizontal')
+                from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
                 fig=ax.get_figure()
                 driver = make_axes_locatable(ax)
-                cax    = driver.append_axes(cb_pos,
-                                            size=options.getfieldvalue('colorbarsize','5%'),
-                                            pad=options.getfieldvalue('colorbarpad',0.025))
+
+                cb_pos        =options.getfieldvalue('colorbarpos','right')
+                if cb_pos in ['right','left']: # vertical
+                    cb_orientation=options.getfieldvalue('orientation','vertical')
+                    cax = driver.append_axes(cb_pos,
+                                    size=options.getfieldvalue('colorbarsize','5%'),
+                                    pad=options.getfieldvalue('colorbarpad',0.025))
+                elif cb_pos in ['top','bottom']: # horizontal
+                    cb_orientation=options.getfieldvalue('orientation','horizontal')
+                    cax = inset_axes(ax,
+                                    width="100%",
+                                    height=options.getfieldvalue('colorbarsize','5%'),
+                                    loc='lower left',
+                                    bbox_to_anchor=(0,0,1,1),
+                                    bbox_transform=ax.transAxes,
+                                    borderpad=[0, options.getfieldvalue('colorbarpad',-0.5)],
+                                    )
 
                 # Dummy colormap image
                 dummy = mpl.cm.ScalarMappable(cmap=cmap,norm=norm)

@@ -161,6 +161,16 @@ def processdata(md, data, options):
 
         # }}}
 
+    # spc time series {{{
+    elif datasize[0] == numberofvertices + 1:
+        datatype = 2
+        spccol = options.getfieldvalue('spccol', 0)
+        print('multiple-column spc field; specify column to plot using option "spccol"')
+        print(('column ', spccol, ' plotted for time: ', procdata[-1, spccol]))
+        procdata = procdata[0:-1, spccol]
+
+    # }}}
+
     # layer processing? {{{
     if options.getfieldvalue('layer',0)>=1:
         procdata=project2d(md,procdata,options.getfieldvalue('layer'))
@@ -177,16 +187,6 @@ def processdata(md, data, options):
             mask = project2d(md,options.getfieldvalue('mask'),1)
             hide = np.invert(mask)
             procdata = np.ma.array(procdata, mask=hide)
-    # }}}
-
-    # spc time series {{{
-    elif datasize[0] == numberofvertices + 1:
-        datatype = 2
-        spccol = options.getfieldvalue('spccol', 0)
-        print('multiple-column spc field; specify column to plot using option "spccol"')
-        print(('column ', spccol, ' plotted for time: ', procdata[-1, spccol]))
-        procdata = procdata[0:-1, spccol]
-
     # }}}
 
     # convert rank -2 array to rank -1 {{{
