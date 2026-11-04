@@ -10,7 +10,7 @@ def drivingstress(md):
     thickness = np.asarray(md.geometry.thickness).flatten()
 
     # average thickness over elements
-    thickness_bar = thickness[index].sum(axis=1) / 3.0
+    thickness_bar = np.mean(thickness[index],axis=1)
 
     px = -md.materials.rho_ice * md.constants.g * thickness_bar * sx
     py = -md.materials.rho_ice * md.constants.g * thickness_bar * sy
