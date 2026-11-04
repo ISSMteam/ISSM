@@ -1,6 +1,5 @@
 import numpy as np
-from model import model
-from contourlevelzero import *
+from isoline import *
 from ExpToLevelSet import *
 
 def reinitializelevelset(md,levelset):
@@ -17,12 +16,12 @@ def reinitializelevelset(md,levelset):
     if md.mesh.dimension() == 3:
         if len(levelset)!=md.mesh.numberofvertices2d:
             raise IOError("levelset provided should be specified at the 2d vertices of the mesh")
-        else:
-            if len(levelset)!=md.mesh.numberofvertices:
-                raise IOError("levelset provided should be specified at the vertices of the mesh")
+    else:
+        if len(levelset)!=md.mesh.numberofvertices:
+            raise IOError("levelset provided should be specified at the vertices of the mesh")
             
     #First: extract segments
-    contours=contourlevelzero(md,levelset,0)
+    contours=isoline(md,levelset,'value',0)
     
     #Now, make this a distance field (might not be closed)
     levelsetnew=np.abs(ExpToLevelSet(md.mesh.x,md.mesh.y,contours)).T # levelsetnew comes on the 3d vertices, if mesh is 3d
@@ -35,5 +34,5 @@ def reinitializelevelset(md,levelset):
             levelsetnew[pos3d]=-levelsetnew[pos3d]
     else:
         levelsetnew[pos[0]]=-1*levelsetnew[pos[0]]
-        
-    return levelsetnew
+    # squeeze to remove unnecessary axis 
+    return levelsetnew.squeeze()
