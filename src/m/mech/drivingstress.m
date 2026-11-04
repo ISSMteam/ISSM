@@ -11,7 +11,7 @@ function [px,py,pmag]=drivingstress(md)
 [sx,sy,s]=slope(md);
 
 %Average thickness over elements
-thickness_bar=(md.geometry.thickness(md.mesh.elements(:,1))+md.geometry.thickness(md.mesh.elements(:,2))+md.geometry.thickness(md.mesh.elements(:,3)))/3;
+thickness_bar= mean(md.geometry.thickness(md.mesh.elements),2)
 
 px=-md.materials.rho_ice*md.constants.g*thickness_bar.*sx;
 py=-md.materials.rho_ice*md.constants.g*thickness_bar.*sy;
