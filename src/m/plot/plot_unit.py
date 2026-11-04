@@ -55,13 +55,13 @@ def plot_unit(x, y, z, elements, data, is2d, isplanet, datatype, options, fig, a
     options.addfield('colormap', cmap)
     # }}}
     # if plotting only one of several layers reduce dataset, same for surface {{{
-    if options.getfieldvalue('layer', 0) >= 1:
-        plotlayer = options.getfieldvalue('layer', 0)
-        if datatype == 1:
-            slicesize = np.shape(elements)[0]
-        elif datatype in [2, 3]:
-            slicesize = len(x)
-        data = data[(plotlayer - 1) * slicesize:plotlayer * slicesize]
+    # if options.getfieldvalue('layer', 0) >= 1:
+    #     plotlayer = options.getfieldvalue('layer', 0)
+    #     if datatype == 1:
+    #         slicesize = np.shape(elements)[0]
+    #     elif datatype in [2, 3]:
+    #         slicesize = len(x)
+    #     data = data[(plotlayer - 1) * slicesize:plotlayer * slicesize]
     # }}}
     # Get the colormap limits {{{
     dataspread = np.nanmax(data) - np.nanmin(data)
