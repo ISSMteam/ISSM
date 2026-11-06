@@ -11,7 +11,7 @@ rm -rf ${PREFIX} src
 mkdir -p ${PREFIX} ${PREFIX}/include ${PREFIX}/lib src
 
 # Download source
-$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ExternalPackages/raw/refs/heads/main/triangle.zip" "triangle.zip"
+$ISSM_DIR/scripts/DownloadExternalPackage.sh "https://github.com/ISSMteam/ISSM-ExternalPackages/raw/refs/heads/main/triangle.zip" "triangle.zip"
 
 # Unpack source
 unzip triangle.zip -d src
