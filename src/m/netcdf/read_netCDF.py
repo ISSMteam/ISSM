@@ -83,10 +83,10 @@ def read_netCDF(filename: str, verbose: bool = False):
             md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
         except:
             warnings.warn('Warning: nothing to be done with md.mesh.segments')
-        try:            
+        try:
             md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
         except:
-            warnings.warn('Warning: nothing to be done with md.mesh.segmentmarkers')        
+            warnings.warn('Warning: nothing to be done with md.mesh.segmentmarkers')
 
     if verbose:
         print('Model successfully loaded from NetCDF4.')
@@ -494,6 +494,9 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
         elif ct == 'mesh2d':
             from mesh2d import mesh2d
             md.mesh = mesh2d()
+        elif ct == 'mesh2dvertical':
+            from mesh2dvertical import mesh2dvertical
+            md.mesh = mesh2dvertical()
         else:
             warnings.warn(f"mesh class '{ct}' not supported yet")
         # }}}

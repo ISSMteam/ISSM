@@ -213,6 +213,7 @@ function md  = instantiate_subclass(md, gname, gid, verbose) % {{{
 			switch ct
 				case 'mesh3dprisms', md.mesh = mesh3dprisms();
 				case 'mesh2d',       md.mesh = mesh2d();
+                case 'mesh2dvertical',md.mesh = mesh2dvertical();
 				otherwise, warning(['mesh class ''' ct ''' not supported yet']);
 			end
 			% }}}
