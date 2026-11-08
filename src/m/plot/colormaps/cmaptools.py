@@ -31,7 +31,8 @@ def getcolormap(options):
         return map_name
     elif isinstance(map_name, mpl.colors.LinearSegmentedColormap):
         # NOTE: If "colormap" is given with "matplotlib.cm.jet", the class of the object is matplotlib.colors.LinearSegmentedColormap. Coerce to ListedColormap
-        return mpl.colors.ListedColormap(map_name(range(128)))
+        ncolor=128
+        return mpl.colors.ListedColormap(map_name(np.linspace(0,1,ncolor)))
     elif map_name in plt.colormaps():
         # NOTE: String color map to ListedColormap
         return  mpl.colormaps[map_name]
