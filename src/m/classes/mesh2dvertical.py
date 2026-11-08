@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 from fielddisplay import fielddisplay
 from checkfield import checkfield
 import MatlabFuncs as m
@@ -124,6 +125,108 @@ class mesh2dvertical(object):
         flags[pos] = 1
         return flags
     # }}}
+
+    def processdata(self,md,data,options): # {{{
+
+        #transpose data if necessary
+        s = np.shape(data)
+        if s[1] > s[0]:
+            data = np.transpose(data)
+        datasize=np.shape(data)
+
+        #convert to double if necessary
+        if not np.isnumeric(data):
+            warnings.warn('processdata info message: data is not numeric (logical?). Converted to double')
+            data=np.asarray(data,dtype=float)
+
+        #check length
+        if (datasize[0] != md.mesh.numberofvertices) and (datasize[0] != md.mesh.numberofelements):
+            raise Exception('plotmodel error message: data not supported yet')
+
+        #quiver?
+        if datasize[1]>1:
+            datatype=3
+
+        #smoothing?
+        if options.exist('smooth'):
+            data=averaging(md,data,options.getfieldvalue('smooth'))
+            datasize[0]=md.mesh.numberofvertices
+            #---> go to node data
+
+        #element data
+        if (datasize[0]==md.mesh.numberofelements) & (datasize[1]==1):
+            datatype=1
+
+            #Mask?
+            if options.exist('mask'):
+                flags=options.getfieldvalue('mask')
+                pos=np.invert(flags)
+                if len(flags)==md.mesh.numberofvertices:
+                    index=md.mesh.elements-1
+                    if hasattr(np,'isin'): # Numpy 2017+
+                        tmp = np.isin(index, pos)
+                        pos2 = np.where(tmp)[0]
+                    else: # for backward compatibility
+                        tmp = np.in1d(index, pos)
+                        pos2 = np.where(tmp)[0]
+                    data[pos2,:] = np.nan
+                elif len(flags)==md.mesh.numberofelements:
+                    data[pos,:]=np.nan
+                else:
+                    warnings.warn('plotmodel warning: mask length not supported yet (supported length are md.mesh.numberofvertices and md.mesh.numberofelements')
+            
+            #log?
+            if options.exist('log'):
+                bounds=options.getfieldvalue('caxis',[np.amin(data), np.amax(data)])
+                data[data<bounds[0]]=bounds[0]
+                if np.any(data<0):
+                    raise Exception('Error: Log option cannot be applied on negative values. Use caxis option (Rignot''s settings: [1.5 max(data)])')
+                pos=np.where(not np.isnan(data))[0]
+                data[pos]=np.log(data[pos])/np.log(options.getfieldvalue('log'))
+
+        #node data
+        if (datasize[0]==md.mesh.numberofvertices) and (datasize[1]==1):
+            datatype=2
+
+            #Mask?
+            if options.exist('mask'):
+                flags=options.getfieldvalue('mask')
+                pos=np.invert(flags)
+                if len(flags)==md.mesh.numberofvertices:
+                    data[pos,:]=np.nan
+                elif len(flags)==md.mesh.numberofelements:
+                    index=md.mesh.elements-1
+                    data[index[pos,:],:]=np.nan
+                else:
+                    warnings.warn('plotmodel warning: mask length not supported yet (supported length are md.mesh.numberofvertices and md.mesh.numberofelements')
+
+            #log?
+            if options.exist('log'):
+                data=np.log(data)/np.log(options.getfieldvalue('log'))
+
+        return data, datatype
+        # }}}
+
+    def processmesh(self,options): # {{{
+
+        isplanet = 0
+        is2d     = 1
+        
+        elements = self.elements-1
+        x        = self.x
+        y        = self.y
+        z        = np.zeros((self.numberofvertices))
+
+        if options.exist('xunit'):
+            unit=options.getfieldvalue('xunit')
+            x=x*unit # Apply to x only
+
+        if options.exist('yunit'):
+            unit=options.getfieldvalue('yunit')
+            x=x*unit # Apply to x only
+
+        return x, y, z, elements, is2d, isplanet
+        # }}}
 
     def marshall(self, prefix, md, fid):  # {{{
         WriteData(fid, prefix, 'name', 'md.mesh.domain_type', 'data', "Domain" + self.domaintype(), 'format', 'String')

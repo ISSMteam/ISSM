@@ -24,7 +24,7 @@ def processmesh(md, data, options):
 
     #special case for mesh 2dvertical
     if md.mesh.domaintype() == '2Dvertical':
-        x, y, z, elements, is2d, isplanet = processmesh(md.mesh, options)
+        x, y, z, elements, is2d, isplanet = md.mesh.processmesh(options)
         return x, y, z, elements, is2d, isplanet
 
     # # special case for mesh 3dsurface
