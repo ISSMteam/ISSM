@@ -69,6 +69,63 @@ EmulatorParam::EmulatorParam(int in_enum_type, char* module_dir_in, char* pt_nam
 	}	
 }
 /*}}}*/
+EmulatorParam::EmulatorParam(int in_enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in, IssmDouble* x_in, int nx_in, IssmDouble* y_in, int ny_in){/*{{{*/
+
+	this->enum_type=in_enum_type;
+	_assert_(x_in && y_in && nx_in>1 && ny_in>1);
+	this->nx=nx_in;
+	this->ny=ny_in;
+	this->x=xNew<IssmDouble>(nx_in);
+	this->y=xNew<IssmDouble>(ny_in);
+	xMemCpy<IssmDouble>(this->x,x_in,nx_in);
+	xMemCpy<IssmDouble>(this->y,y_in,ny_in);
+
+	/*Copy path to emulator*/
+	this->module_dir = xNew<char>(strlen(module_dir_in)+1);
+	xMemCpy<char>(this->module_dir, module_dir_in,(strlen(module_dir_in)+1));
+	this->pt_name = xNew<char>(strlen(pt_name_in)+1);
+	xMemCpy<char>(this->pt_name, pt_name_in,(strlen(pt_name_in)+1));
+	this->py_name = xNew<char>(strlen(py_name_in)+1);
+	xMemCpy<char>(this->py_name, py_name_in,(strlen(py_name_in)+1));
+
+	/*Activate interpretor*/
+   this->guard = NULL;
+	if(IssmComm::GetRank()!=0) return;
+	try{
+		/*What if multi-emulator are activated?*/
+		this->guard = new py::scoped_interpreter();
+
+		py::module_ sys = py::module_::import("sys");
+		sys.attr("path").attr("insert")(0,this->module_dir);
+		std::string pt_path(this->module_dir);
+      if(!pt_path.empty() && pt_path.back() != '/'){
+      	pt_path += "/";
+      }
+      pt_path += this->pt_name;
+		std::string py_module_name(this->py_name);
+      std::size_t dot = py_module_name.rfind('.');
+      if(dot != std::string::npos){
+	       py_module_name = py_module_name.substr(0,dot);
+      }
+
+		this->mod = py::module_::import(py_module_name.c_str());
+		this->mod.attr("init_model")(pt_path.c_str(), "auto");
+	}
+	catch(const py::error_already_set& e){
+		_printf_("EmulatorParam: Python exception in constructor\n");
+		_printf_("   " << e.what() << "\n");
+		this->mod = py::module_();
+		delete this->guard;
+		this->guard = NULL;
+		xDelete<IssmDouble>(this->x);
+		xDelete<IssmDouble>(this->y);
+		xDelete<char>(this->module_dir);
+		xDelete<char>(this->pt_name);
+		xDelete<char>(this->py_name);
+		throw;
+	}	
+}
+/*}}}*/
 EmulatorParam::EmulatorParam(int in_enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in, int* edge_src, int nsrc, int* edge_dst, int ndst, int num_nodes){/*{{{*/
    /*This constructor is for GNN only.*/
 	
@@ -131,6 +188,8 @@ EmulatorParam::EmulatorParam(int in_enum_type, char* module_dir_in, char* pt_nam
 }
 /*}}}*/
 EmulatorParam::~EmulatorParam(){/*{{{*/
+	xDelete<IssmDouble>(this->x);
+	xDelete<IssmDouble>(this->y);
 	xDelete<char>(this->module_dir);
 	xDelete<char>(this->pt_name);
 	xDelete<char>(this->py_name);

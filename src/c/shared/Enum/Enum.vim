@@ -3808,6 +3808,7 @@ syn keyword cConstant SMBpddGCMEnum
 syn keyword cConstant SMBpddFastEnum
 syn keyword cConstant SMBsemicEnum
 syn keyword cConstant SMBmariaEnum
+syn keyword cConstant SMBunetEnum
 syn keyword cConstant SSAApproximationEnum
 syn keyword cConstant SSAFSApproximationEnum
 syn keyword cConstant SSAHOApproximationEnum

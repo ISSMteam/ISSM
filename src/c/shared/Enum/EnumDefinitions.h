@@ -3807,6 +3807,7 @@ enum definitions{
 	SMBpddFastEnum,
 	SMBsemicEnum,
 	SMBmariaEnum,
+	SMBunetEnum,
 	SSAApproximationEnum,
 	SSAFSApproximationEnum,
 	SSAHOApproximationEnum,

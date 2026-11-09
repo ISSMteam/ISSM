@@ -24,9 +24,16 @@ class EmulatorParam: public Param{
 		py::scoped_interpreter*   guard;
 		py::module_                 mod;
 
+		/*Fixed neural network grid axes in EPSG:3413 metres.*/
+		IssmDouble* x = NULL;
+		IssmDouble* y = NULL;
+		int nx = 0;
+		int ny = 0;
+
 		/*EmulatorParam constructors, destructors:*/
 		EmulatorParam();
 		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in);
+		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in, IssmDouble* x_in, int nx_in, IssmDouble* y_in, int ny_in);
 		EmulatorParam(int enum_type, char* module_dir_in, char* pt_name_in, char* py_name_in, int* edge_src, int nsrc, int* edge_dst, int ndst, int num_nodes);
 		~EmulatorParam();
 

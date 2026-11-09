@@ -3797,6 +3797,7 @@
 	SMBpddFastEnum
 	SMBsemicEnum
 	SMBmariaEnum
+	SMBunetEnum
 	SSAApproximationEnum
 	SSAFSApproximationEnum
 	SSAHOApproximationEnum
@@ -7695,6 +7696,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SMBpddFastEnum) return "SMBpddFast" end
 	if(enum==SMBsemicEnum) return "SMBsemic" end
 	if(enum==SMBmariaEnum) return "SMBmaria" end
+	if(enum==SMBunetEnum) return "SMBunet" end
 	if(enum==SSAApproximationEnum) return "SSAApproximation" end
 	if(enum==SSAFSApproximationEnum) return "SSAFSApproximation" end
 	if(enum==SSAHOApproximationEnum) return "SSAHOApproximation" end
@@ -11593,6 +11595,7 @@ function StringToEnum(name::String)
 	if(name=="SMBpddFast") return SMBpddFastEnum  end
 	if(name=="SMBsemic") return SMBsemicEnum  end
 	if(name=="SMBmaria") return SMBmariaEnum  end
+	if(name=="SMBunet") return SMBunetEnum  end
 	if(name=="SSAApproximation") return SSAApproximationEnum  end
 	if(name=="SSAFSApproximation") return SSAFSApproximationEnum  end
 	if(name=="SSAHOApproximation") return SSAHOApproximationEnum  end
