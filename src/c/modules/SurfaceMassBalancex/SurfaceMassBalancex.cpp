@@ -12,6 +12,7 @@
 
 #ifdef _HAVE_PyBind11_
 #include <exception>
+#include <limits>
 #include <pybind11/numpy.h>
 #include <sstream>
 #include <vector>
@@ -592,68 +593,97 @@ void SmbEmulatorUNetx(FemModel* femmodel){/*{{{*/
 	Param* emulator_param = femmodel->parameters->FindParamObject(SmbEmulatorEnum);
 	if(emulator_param->ObjectEnum()!=EmulatorParamEnum) _error_("Parameter should be EmulatorParam");
 	EmulatorParam* smbemulator = xDynamicCast<EmulatorParam*>(emulator_param);
+	int nx = smbemulator->nx;
+	int ny = smbemulator->ny;
+	_assert_(smbemulator->x && smbemulator->y && nx>=2 && ny>=2);
 
 	int rank = IssmComm::GetRank();
 	int numberofvertices = femmodel->vertices->NumberOfVertices();
-	const IssmDouble dts = 86400.;
-	IssmDouble timeinputs, rho_ice;
-	femmodel->parameters->FindParam(&timeinputs,TimeEnum);
+	int numberofelements = femmodel->elements->NumberOfElements();
+	int domaintype;
+	IssmDouble time,starttime,rho_ice;
+	femmodel->parameters->FindParam(&time,TimeEnum);
+	femmodel->parameters->FindParam(&starttime,TimesteppingStartTimeEnum);
 	femmodel->parameters->FindParam(&rho_ice,MaterialsRhoIceEnum);
+	femmodel->parameters->FindParam(&domaintype,DomainTypeEnum);
+	if(domaintype!=Domain2DhorizontalEnum) _error_("SmbEmulatorUNetx currently requires a 2D horizontal triangular mesh");
 
-	/*Fetch ISSM elevation*/
-	IssmDouble* surface;
+	/*Collective operations: every rank participates. Coordinates, connectivity,
+	 * and P1 surface values use global vertex SIds (connectivity is one-based).*/
+	IssmDouble* surface = NULL;
 	int surface_size;
 	GetVectorFromInputsx(&surface,&surface_size,femmodel,SurfaceEnum);
+	if(surface_size!=numberofvertices) _error_("SmbEmulatorUNetx requires vertex surface elevations");
+	IssmDouble* x_mesh = NULL;
+	IssmDouble* y_mesh = NULL;
+	int* triangles = NULL;
+	femmodel->GetMesh(femmodel->vertices,femmodel->elements,&x_mesh,&y_mesh,&triangles);
 	std::vector<IssmDouble> smb_all(numberofvertices,0.);
 
-	/*Evaluate emulator on rank 0*/
 	if(rank==0){
-		const size_t nvertices = static_cast<size_t>(numberofvertices);
-		const size_t nfeatures = 1;
-		std::vector<float> features(nvertices*nfeatures);
-
-      // unit change
-	   for(size_t i=0;i<nvertices;i++){
-			features[i*nfeatures + 0] = static_cast<float>(surface[i]/1.0);
+		/*Interpolation routines use passive doubles. All coordinates are metres.*/
+		std::vector<double> xm(numberofvertices),ym(numberofvertices),z(numberofvertices);
+		std::vector<double> xg(nx),yg(ny);
+		for(int i=0;i<numberofvertices;i++){
+			xm[i]=reCast<double>(x_mesh[i]);
+			ym[i]=reCast<double>(y_mesh[i]);
+			z[i]=reCast<double>(surface[i]);
 		}
+		for(int i=0;i<nx;i++) xg[i]=reCast<double>(smbemulator->x[i]);
+		for(int j=0;j<ny;j++) yg[j]=reCast<double>(smbemulator->y[j]);
 
+		/*Mesh -> regular U-Net grid. NaN marks cells beyond the mesh so
+		 * Python can use their reference MAR elevation.*/
+		double* surface_grid = NULL;
+		InterpFromMeshToGridx(&surface_grid,triangles,xm.data(),ym.data(),
+				numberofvertices,numberofelements,z.data(),numberofvertices,
+				xg.data(),yg.data(),ny,nx,std::numeric_limits<double>::quiet_NaN());
 		try{
 			py::gil_scoped_acquire gil;
-			std::vector<ssize_t> features_shape = {static_cast<ssize_t>(nvertices),static_cast<ssize_t>(nfeatures)};
-			py::array_t<float> features_np(features_shape,features.data());
-
-			// To-do: interpolation, mesh -> grid
-			//
-
-			py::object output_obj = smbemulator->mod.attr("predict_logits_np")(features_np);
-			py::array_t<float,py::array::c_style | py::array::forcecast> output_array(output_obj);
-			
+			std::vector<ssize_t> grid_shape = {static_cast<ssize_t>(ny),static_cast<ssize_t>(nx)};
+			py::array_t<double> surface_np(grid_shape,surface_grid);
+			/*Python interface must accept physical grid elevation and return a
+			 * physical SMB grid in ISSM internal units (m ice/s). No normalization
+			 * or physical-unit conversion is performed by this C++ routine.*/
+			py::array_t<double> x_np(nx,xg.data());
+			py::array_t<double> y_np(ny,yg.data());
+			py::object output_obj = smbemulator->mod.attr("predict_smb_at_time_np")(
+					surface_np,reCast<double>(time-starttime),reCast<double>(rho_ice),x_np,y_np);
+			py::array_t<double,py::array::c_style | py::array::forcecast> output_array(output_obj);
 			py::buffer_info output_info = output_array.request();
-			const float* output = static_cast<const float*>(output_info.ptr);
-			
-			// To-do: interpolation, grid -> mesh
-			//
+			if(output_info.ndim!=2 || output_info.shape[0]!=ny || output_info.shape[1]!=nx)
+				_error_("SmbEmulatorUNetx Python output must have shape (ny,nx)");
 
-			// unit change
-			for(size_t i=0;i<nvertices;i++){
-				smb_all[i] = static_cast<IssmDouble>(output[i]);
+			/*Regular SMB grid -> global ISSM vertices, using bilinear interpolation.*/
+			IssmSeqVec<IssmPDouble>* smb_mesh = NULL;
+			InterpFromGridToMeshx(&smb_mesh,xg.data(),nx,yg.data(),ny,
+					static_cast<double*>(output_info.ptr),ny,nx,
+					xm.data(),ym.data(),numberofvertices,0.,"bilinear");
+			for(int i=0;i<numberofvertices;i++){
+				IssmPDouble value;
+				smb_mesh->GetValue(&value,i);
+				smb_all[i]=static_cast<IssmDouble>(value);
 			}
+			delete smb_mesh;
 		}
 		catch(const py::error_already_set& e){
-			_error_("SmbEmulatorx Python exception: " << e.what());
+			xDelete<double>(surface_grid);
+			_error_("SmbEmulatorUNetx Python exception: " << e.what());
 		}
 		catch(const std::exception& e){
-		   _error_("SmbEmulatorx exception: " << e.what());
+			xDelete<double>(surface_grid);
+			_error_("SmbEmulatorUNetx exception: " << e.what());
 		}
+		xDelete<double>(surface_grid);
 	}
 
 	xDelete<IssmDouble>(surface);
-
+	xDelete<IssmDouble>(x_mesh);
+	xDelete<IssmDouble>(y_mesh);
+	xDelete<int>(triangles);
 	ISSM_MPI_Comm comm = IssmComm::GetComm();
 	ISSM_MPI_Bcast(smb_all.data(),numberofvertices,ISSM_MPI_DOUBLE,0,comm);
-   InputUpdateFromVectorx(femmodel,smb_all.data(),SmbMassBalanceEnum,VertexSIdEnum);
-
-	return;
+	InputUpdateFromVectorx(femmodel,smb_all.data(),SmbMassBalanceEnum,VertexSIdEnum);
 }/*}}}*/
 #endif
 void SmbHenningx(FemModel* femmodel){/*{{{*/

@@ -3810,6 +3810,7 @@ const char* EnumToStringx(int en){
 		case SMBpddFastEnum : return "SMBpddFast";
 		case SMBsemicEnum : return "SMBsemic";
 		case SMBmariaEnum : return "SMBmaria";
+		case SMBunetEnum : return "SMBunet";
 		case SSAApproximationEnum : return "SSAApproximation";
 		case SSAFSApproximationEnum : return "SSAFSApproximation";
 		case SSAHOApproximationEnum : return "SSAHOApproximation";

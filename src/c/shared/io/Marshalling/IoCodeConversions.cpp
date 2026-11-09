@@ -275,6 +275,7 @@ int IoCodeToEnumSMB(int enum_in){/*{{{*/
 		case 15: return SMBpddGCMEnum;
 		case 16: return SMBpddFastEnum;
       case 20: return SMBmariaEnum;
+		case 21: return SMBunetEnum;
 		default: _error_("Marshalled SMB code \""<<enum_in<<"\" not supported yet");
 	}
 }/*}}}*/
