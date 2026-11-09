@@ -10,7 +10,8 @@ class TransientInput;
 class ElementInput;
 class DatasetInput;
 class ArrayInput;
-class IntArrayInput;
+template<typename T> class TIntArrayInput;
+typedef TIntArrayInput<int> IntArrayInput;
 class ControlInput;
 class Parameters;
 #include "../../shared/shared.h"
@@ -56,9 +57,9 @@ class Inputs{
 		bool     Exist(int enum_type);
 		void     GetInputsInterpolations(int* pnuminputs,int** pinterpolations,int** penum);
 		void             GetArray(int enum_in,int row,IssmDouble** pvalues,int* pN);
-		void             GetIntArray(int enum_in,int row,int** pvalues,int* pN);
+		template<typename T> void GetIntArray(int enum_in,int row,T** pvalues,int* pN);
 		void             GetArrayPtr(int enum_in,int row,IssmDouble** pvalues,int* pN);
-		void             GetIntArrayPtr(int enum_in,int row,int** pvalues,int* pN);
+		template<typename T> void GetIntArrayPtr(int enum_in,int row,T** pvalues,int* pN);
 		SegInput*       GetSegInput(int enum_type);
 		TriaInput*      GetTriaInput(int enum_type);
 		TriaInput*      GetTriaInput(int enum_type,IssmDouble time);
@@ -85,7 +86,7 @@ class Inputs{
 		void  SetTransientControlInput(int enum_in,int control_id,IssmDouble* times,int numtimes);
 		TransientInput* SetDatasetTransientInput(int enum_in,int id,IssmDouble* times,int numtimes);
 		void  SetArrayInput(int enum_in,int row,IssmDouble* layers,int numlayers);
-		void  SetIntArrayInput(int enum_in,int row,int* layers,int numlayers);
+		template<typename T> void SetIntArrayInput(int enum_in,int row,T* layers,int numlayers);
 		void  SetTriaDatasetInput(int enum_in,int id,int interpolation,int numindices,int* indices,IssmDouble* values);
 		void  SetTriaInput(int enum_in,int interpolation,int row,IssmDouble values);
 		void  SetTriaInput(int enum_in,int interpolation,int numindices,int* indices,IssmDouble* values);

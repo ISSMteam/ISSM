@@ -3564,6 +3564,7 @@ enum definitions{
 	DoubleArrayInputEnum,
 	ArrayInputEnum,
 	IntArrayInputEnum,
+	Int16ArrayInputEnum,
 	DoubleExternalResultEnum,
 	DoubleMatArrayParamEnum,
 	DoubleMatExternalResultEnum,
