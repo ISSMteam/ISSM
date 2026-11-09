@@ -1093,6 +1093,7 @@ void           StressbalanceAnalysis::PostCore(FemModel* femmodel){/*{{{*/
 				IssmDouble* thickness = xNew<IssmDouble>(numvertices);
 				element->GetInputListOnVertices(thickness,ThicknessEnum);
 				for(int i=0;i<numvertices;i++) pressure[i]=rho_ice*g*thickness[i]; /*makes no send anyway*/
+				xDelete<IssmDouble>(thickness);
 			}
 
 			element->AddInput(PressureEnum,pressure,P1Enum);
