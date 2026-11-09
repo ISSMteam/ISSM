@@ -153,6 +153,8 @@ class IoModel {
 		void        FetchData(Options *options,const char* data_name);
 		void        FetchData(int num,...);
 		void        FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN, const char* data_name);
+		void        FetchDataLocal(IssmDouble*** pmatrixarray,int** pmdims,int** pndims,int** pmlocal,int* pnumrecords,const char* data_name);
+		void        ScatterRowsFromRank0(IssmPDouble* fullmatrix,int M,int N,int kind,bool istimeseries,IssmPDouble** plocal,int* pM_local);
 		void        FetchDataToInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum);
 		void        FetchDataToInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum,IssmDouble default_value);
 		void        FetchDataToDatasetInput(Inputs* inputs,Elements* elements,const char* vector_name,int input_enum);
