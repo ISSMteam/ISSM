@@ -3930,8 +3930,8 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	IssmDouble* s0p=xNew<IssmDouble>(NUM_VERTICES);		// reference elevation for precip.
 	IssmDouble* s0t=xNew<IssmDouble>(NUM_VERTICES);		// reference elevation for temperature
 	IssmDouble* smbcorr=xNew<IssmDouble>(NUM_VERTICES); // surface mass balance correction; will be added after pdd call
-	IssmDouble* p_ampl=xNew<IssmDouble>(NUM_VERTICES);	// precip anomaly
-	IssmDouble* t_ampl=xNew<IssmDouble>(NUM_VERTICES);	// remperature anomaly
+	IssmDouble* p_ampl=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);	// precip anomaly, [iv*12+month]
+	IssmDouble* t_ampl=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);	// temperature anomaly, [iv*12+month]
 	IssmDouble rho_water,rho_ice,desfac,rlaps;
 	IssmDouble pdd_fac_ice,pdd_fac_snow;
 	IssmDouble inv_twelve=1./12.;								//factor for monthly average
@@ -3982,19 +3982,55 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	GetInputListOnVertices(&s0p[0],SmbS0pEnum);
 	GetInputListOnVertices(&s0t[0],SmbS0tEnum);
 	GetInputListOnVertices(&smbcorr[0],SmbSmbCorrEnum);
-	GetInputListOnVertices(&t_ampl[0],SmbTemperaturesAnomalyEnum);
-	GetInputListOnVertices(&p_ampl[0],SmbPrecipitationsAnomalyEnum);
+
+	/*Anomalies. Two supported forms, both expanded to t_ampl[iv*12+month] / p_ampl[iv*12+month]:
+	 *  - legacy: one value per vertex (static or annual time series), replicated over the 12 months
+	 *    (results identical to the previous behaviour)
+	 *  - monthly: a dataset of 12 members (one per calendar month), each possibly a time series,
+	 *    set to the current model time*/
+	if(this->inputs->GetInputObjectEnum(SmbTemperaturesAnomalyEnum)==DatasetInputEnum){
+		DatasetInput* tinput=this->GetDatasetInput(SmbTemperaturesAnomalyEnum); _assert_(tinput);
+		tinput->SetCurrentTimeInput(time);
+		for(int month=0;month<12;month++){
+			for(int iv=0;iv<NUM_VERTICES;iv++){
+				gauss->GaussVertex(iv);
+				tinput->GetInputValue(&t_ampl[iv*12+month],gauss,month);
+			}
+		}
+	}
+	else{
+		IssmDouble* tmp=xNew<IssmDouble>(NUM_VERTICES);
+		GetInputListOnVertices(&tmp[0],SmbTemperaturesAnomalyEnum);
+		for(int iv=0;iv<NUM_VERTICES;iv++) for(int month=0;month<12;month++) t_ampl[iv*12+month]=tmp[iv];
+		xDelete<IssmDouble>(tmp);
+	}
+	if(this->inputs->GetInputObjectEnum(SmbPrecipitationsAnomalyEnum)==DatasetInputEnum){
+		DatasetInput* pinput=this->GetDatasetInput(SmbPrecipitationsAnomalyEnum); _assert_(pinput);
+		pinput->SetCurrentTimeInput(time);
+		for(int month=0;month<12;month++){
+			for(int iv=0;iv<NUM_VERTICES;iv++){
+				gauss->GaussVertex(iv);
+				pinput->GetInputValue(&p_ampl[iv*12+month],gauss,month);
+			}
+		}
+	}
+	else{
+		IssmDouble* tmp=xNew<IssmDouble>(NUM_VERTICES);
+		GetInputListOnVertices(&tmp[0],SmbPrecipitationsAnomalyEnum);
+		for(int iv=0;iv<NUM_VERTICES;iv++) for(int month=0;month<12;month++) p_ampl[iv*12+month]=tmp[iv];
+		xDelete<IssmDouble>(tmp);
+	}
 
 	/*measure the surface mass balance*/
 	for (int iv = 0; iv<NUM_VERTICES; iv++){
 		smb[iv]=PddSurfaceMassBalanceSicopolis(&monthlytemperatures[iv*12], &monthlyprec[iv*12],
-					&melt[iv], &accu[iv], &melt_star[iv], &t_ampl[iv], &p_ampl[iv], yts, s[iv],
+					&melt[iv], &accu[iv], &melt_star[iv], &t_ampl[iv*12], &p_ampl[iv*12], yts, s[iv],
 					desfac, s0t[iv], s0p[iv],rlaps,rho_water,rho_ice,pdd_fac_ice,pdd_fac_snow);
 
 		/* make correction */
 		smb[iv] = smb[iv]+smbcorr[iv];
 		/*Get yearlytemperatures */
-		for(int month=0;month<12;month++) yearlytemperatures[iv]=yearlytemperatures[iv]+((monthlytemperatures[iv*12+month]+273.15)+t_ampl[iv])*inv_twelve; // Has to be in Kelvin
+		for(int month=0;month<12;month++) yearlytemperatures[iv]=yearlytemperatures[iv]+((monthlytemperatures[iv*12+month]+273.15)+t_ampl[iv*12+month])*inv_twelve; // Has to be in Kelvin
 
 		if(isfirnwarming){
 			if(melt_star[iv]>=melt[iv]){

@@ -7,6 +7,9 @@
 #include "../Exceptions/exceptions.h"
 #include <cmath>
 
+/* t_ampl and p_ampl are arrays of 12 monthly values (additive temperature anomaly,
+   multiplicative precipitation factor). Callers with a single annual anomaly must
+   replicate it over the 12 months (Element::PositiveDegreeDaySicopolis does this). */
 IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmDouble* monthlyprec,
 				 IssmDouble* melt, IssmDouble* accu, IssmDouble* melt_star, IssmDouble* t_ampl, IssmDouble* p_ampl,
 				 IssmDouble yts, IssmDouble s, IssmDouble desfac,
@@ -47,7 +50,7 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
 
     /******** Monhtly temperature correction *******/
     monthlytemperatures[imonth]=monthlytemperatures[imonth]-rlaps*st;//*max(st,1e-3);
-    tstar=monthlytemperatures[imonth]+t_ampl[0];
+    tstar=monthlytemperatures[imonth]+t_ampl[imonth];
 
     /********* Precipitation correction *************/
     /* Ref: Vizcaino et al 2010; DOI 10.1007/s00382-009-0591-y */
@@ -56,7 +59,7 @@ IssmDouble PddSurfaceMassBalanceSicopolis(IssmDouble* monthlytemperatures, IssmD
 	 else
       q=exp(desfac*(max(s,2000.0)-s0p));
 
-    precip_star=q*monthlyprec[imonth]*sconv*p_ampl[0]*yts; // convert precip from m/s -> m/a
+    precip_star=q*monthlyprec[imonth]*sconv*p_ampl[imonth]*yts; // convert precip from m/s -> m/a
     precip=precip+precip_star*inv_twelve;
 
     /********* compute PDD **************************/
