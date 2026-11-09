@@ -3923,6 +3923,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	IssmDouble* melt=xNew<IssmDouble>(NUM_VERTICES);		// melting comp. of surface mass balance
 	IssmDouble* accu=xNew<IssmDouble>(NUM_VERTICES);		// accuumulation comp. of surface mass balance
 	IssmDouble* melt_star=xNew<IssmDouble>(NUM_VERTICES);
+	IssmDouble* runoff=xNew<IssmDouble>(NUM_VERTICES);		// runoff [m w.e. s-1], used by frontal forcings
 	IssmDouble* monthlytemperatures=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);
 	IssmDouble* monthlyprec=xNew<IssmDouble>(NUM_VERTICES_MONTHS_PER_YEAR);
 	IssmDouble* yearlytemperatures=xNew<IssmDouble>(NUM_VERTICES); memset(yearlytemperatures, 0., NUM_VERTICES*sizeof(IssmDouble));
@@ -4027,6 +4028,10 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 					&melt[iv], &accu[iv], &melt_star[iv], &t_ampl[iv*12], &p_ampl[iv*12], yts, s[iv],
 					desfac, s0t[iv], s0p[iv],rlaps,rho_water,rho_ice,pdd_fac_ice,pdd_fac_snow);
 
+		/*PddSurfaceMassBalanceSicopolis returns runoff (meltwater + excess rain) in m ice eq. s-1 as "melt".
+		 * Convert back to m water eq. s-1 with the same density used there to convert precip (rho_water)*/
+		runoff[iv] = max(melt[iv],0.)*rho_ice/rho_water;
+
 		/* make correction */
 		smb[iv] = smb[iv]+smbcorr[iv];
 		/*Get yearlytemperatures */
@@ -4050,6 +4055,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 			this->AddInput(SmbMassBalanceEnum,&smb[0],P1Enum);
 			this->AddInput(SmbAccumulationEnum,&accu[0],P1Enum);
 			this->AddInput(SmbMeltEnum,&melt[0],P1Enum);
+			this->AddInput(SmbRunoffEnum,&runoff[0],P1Enum);
 			break;
 		case PentaEnum:
 			bool isthermal;
@@ -4113,10 +4119,12 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 			this->AddInput(TemperaturePDDEnum,&yearlytemperatures[0],P1Enum);
 			this->AddInput(SmbAccumulationEnum,&accu[0],P1Enum);
 			this->AddInput(SmbMeltEnum,&melt[0],P1Enum);
+			this->AddInput(SmbRunoffEnum,&runoff[0],P1Enum);
 			this->InputExtrude(TemperaturePDDEnum,-1);
 			this->InputExtrude(SmbMassBalanceEnum,-1);
 			this->InputExtrude(SmbAccumulationEnum,-1);
 			this->InputExtrude(SmbMeltEnum,-1);
+			this->InputExtrude(SmbRunoffEnum,-1);
 			break;
 		default: _error_("Not implemented yet");
 	}
@@ -4136,6 +4144,7 @@ void       Element::PositiveDegreeDaySicopolis(bool isfirnwarming){/*{{{*/
 	xDelete<IssmDouble>(p_ampl);
 	xDelete<IssmDouble>(smbcorr);
 	xDelete<IssmDouble>(melt_star);
+	xDelete<IssmDouble>(runoff);
 }
 /*}}}*/
 void       Element::PositiveDegreeDayFast(bool isfirnwarming){/*{{{*/
@@ -5025,6 +5034,18 @@ void       Element::RignotMeltParameterization(){/*{{{*/
 	/*Cleanup and return*/
 	delete gauss;
 	xDelete<IssmDouble>(basin_icefront_area);
+}
+/*}}}*/
+void       Element::SetSubglacialDischargeFromBasins(IssmDouble* basin_discharge){/*{{{*/
+
+	int basinid;
+	const int numvertices = this->GetNumberOfVertices();
+	IssmDouble qsg[MAXVERTICES];
+
+	this->GetInputValue(&basinid,FrontalForcingsBasinIdEnum);
+	for(int iv=0;iv<numvertices;iv++) qsg[iv] = (basinid<0) ? 0. : basin_discharge[basinid];
+
+	this->AddInput(FrontalForcingsSubglacialDischargeEnum,&qsg[0],P1Enum);
 }
 /*}}}*/
 void       Element::SetBoolInput(Inputs* inputs,int enum_in,bool value){/*{{{*/

@@ -249,6 +249,7 @@ const char* EnumToStringx(int en){
 		case FrontalForcingsARMAmonthtrendsEnum : return "FrontalForcingsARMAmonthtrends";
 		case FrontalForcingsARMApolyparamsEnum : return "FrontalForcingsARMApolyparams";
 		case FrontalForcingsIsDischargeARMAEnum : return "FrontalForcingsIsDischargeARMA";
+		case FrontalForcingsIsDischargeRunoffEnum : return "FrontalForcingsIsDischargeRunoff";
 		case FrontalForcingsNumberofBasinsEnum : return "FrontalForcingsNumberofBasins";
 		case FrontalForcingsNumberofBreaksEnum : return "FrontalForcingsNumberofBreaks";
 		case FrontalForcingsNumberofMonthBreaksEnum : return "FrontalForcingsNumberofMonthBreaks";

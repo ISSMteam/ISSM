@@ -158,12 +158,15 @@ void LevelsetAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel*
 				iomodel->FetchDataToInput(inputs,elements,"md.frontalforcings.ablationrate",CalvingAblationrateEnum);
 			}
 			break;
-		case FrontalForcingsRignotEnum:
+		case FrontalForcingsRignotEnum:{
          /*Retrieve thermal forcing only in the case of non-arma FrontalForcingsRignot*/
+         bool isdischargerunoff;
+         iomodel->FindConstant(&isdischargerunoff,"md.frontalforcings.isdischargerunoff");
          iomodel->FetchDataToInput(inputs,elements,"md.frontalforcings.thermalforcing",ThermalForcingEnum);
          iomodel->FetchDataToInput(inputs,elements,"md.frontalforcings.basin_id",FrontalForcingsBasinIdEnum);
-         iomodel->FetchDataToInput(inputs,elements,"md.frontalforcings.subglacial_discharge",FrontalForcingsSubglacialDischargeEnum);
-			break;
+         /*If isdischargerunoff, discharge is computed from SMB runoff at each step*/
+         if(isdischargerunoff==false) iomodel->FetchDataToInput(inputs,elements,"md.frontalforcings.subglacial_discharge",FrontalForcingsSubglacialDischargeEnum);
+			break;}
 		case FrontalForcingsRignotarmaEnum:
 			bool isdischargearma;
 			iomodel->FindConstant(&isdischargearma,"md.frontalforcings.isdischargearma");
@@ -339,6 +342,7 @@ void LevelsetAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,
 			break;
 		case FrontalForcingsRignotEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.frontalforcings.num_basins",FrontalForcingsNumberofBasinsEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.frontalforcings.isdischargerunoff",FrontalForcingsIsDischargeRunoffEnum));
 			break;
 		default:
 			_error_("Frontal forcings "<<EnumToStringx(melt_parameterization)<<" not supported yet");
