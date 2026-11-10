@@ -35,8 +35,8 @@ def mumpsoptions(*args):
             mumps['pc_factor_mat_solver_package'] = options.getfieldvalue('pc_factor_mat_solver_package', 'mumps')
         mumps['mat_mumps_icntl_14'] = options.getfieldvalue('mat_mumps_icntl_14', 120)
 
-        #These 2 lines make raijin break (ptwgts error during solver with PETSc 3.3)
-        mumps['mat_mumps_icntl_28'] = 2  #1=serial, 2=parallel
-        mumps['mat_mumps_icntl_29'] = 2  #parallel ordering 1 = ptscotch, 2 = parmetis
+        # These 2 lines make raijin break (ptwgts error during solver with PETSc 3.3)
+        mumps['mat_mumps_icntl_28'] = options.getfieldvalue('mat_mumps_icntl_28', 2)  #1=serial, 2=parallel
+        mumps['mat_mumps_icntl_29'] = options.getfieldvalue('mat_mumps_icntl_29', 2)  #parallel ordering 1 = ptscotch, 2 = parmetis
 
     return mumps

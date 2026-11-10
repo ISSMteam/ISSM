@@ -41,10 +41,6 @@ from balancethickness import balancethickness
 from stressbalance import stressbalance
 from groundingline import groundingline
 from hydrologyshreve import hydrologyshreve
-from hydrologydc import hydrologydc
-from hydrologyglads import hydrologyglads
-from hydrologypism import hydrologypism
-from hydrologyshakti import hydrologyshakti
 from debris import debris
 from masstransport import masstransport
 from thermal import thermal

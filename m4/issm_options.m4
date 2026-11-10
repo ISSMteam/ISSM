@@ -2273,34 +2273,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 	fi
 	AM_CONDITIONAL([NEOPZ], [test "x${HAVE_NEOPZ}" == "xyes"])
 	dnl }}}
-	dnl Gmsh{{{
-	AC_MSG_CHECKING([for Gmsh])
-	AC_ARG_WITH(
-		[gmsh-dir],
-		AS_HELP_STRING([--with-gmsh-dir=DIR], [Gmsh root directory]),
-		[GMSH_ROOT=${withval}],
-		[GMSH_ROOT="no"]
-	)
-	if test "x${GMSH_ROOT}" == "xno"; then
-		HAVE_GMSH=no
-	else
-		HAVE_GMSH=yes
-		if ! test -d "${GMSH_ROOT}"; then
-			AC_MSG_ERROR([Gmsh directory provided (${GMSH_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_GMSH}])
-	AM_CONDITIONAL([GMSH], [test "x${HAVE_GMSH}" == "xyes"])
-
-	if test "x${HAVE_GMSH}" == "xyes"; then
-		AC_DEFINE([_HAVE_GMSH_], [1], [with Gmsh in ISSM src])
-
-		AC_MSG_CHECKING(for Gmsh version)
-		GMSH_VERSION_MAJOR=`${GMSH_ROOT}/bin/gmsh -info | grep "Version" | sed -e "s/Version@<:@@<:@:blank:@:>@@:>@*:@<:@@<:@:blank:@:>@@:>@//" | cut -d "." -f 1`
-		AC_MSG_RESULT([${GMSH_VERSION_MAJOR}])
-		AC_DEFINE_UNQUOTED([_GMSH_VERSION_MAJOR_], ${GMSH_VERSION_MAJOR}, [Gmsh major version])
-	fi
-	dnl }}}
 	dnl PyBind11{{{
 	AC_MSG_CHECKING([for pybind11])
 	AC_ARG_WITH(

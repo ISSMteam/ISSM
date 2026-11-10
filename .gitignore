@@ -82,12 +82,15 @@ nightlylog
 #===============
 test/NightlyRun/*.bin
 test/NightlyRun/*.errlog
+test/NightlyRun/*.out
 test/NightlyRun/*.outlog
 test/NightlyRun/*.qmu*
 test/NightlyRun/*.queue
+test/NightlyRun/*.rst
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits
 test/NightlyRun/*_vertices-*.txt
+Test/NightlyRun/S4
 
 # Examples #
 #===========

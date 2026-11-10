@@ -10,7 +10,7 @@
 % Outputs
 %}
 function md = loadmodel_netcdf(fname)
-	warning('WARNING: this script is under developement.');
+	warning('WARNING: this script is under development.');
 
 	% initialize model
 	md = model;
