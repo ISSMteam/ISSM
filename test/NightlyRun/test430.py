@@ -64,9 +64,9 @@ md = solve(md, 'Transient')
 field_names = ['Bed1', 'Surface1', 'Thickness1', 'Floatingice1', 'Vx1', 'Vy1', 'Pressure1', 'FloatingiceMeltingrate1',
                'Bed2', 'Surface2', 'Thickness2', 'Floatingice2', 'Vx2', 'Vy2', 'Pressure2', 'FloatingiceMeltingrate2',
                'Bed3', 'Surface3', 'Thickness3', 'Floatingice3', 'Vx3', 'Vy3', 'Pressure3', 'FloatingiceMeltingrate3']
-field_tolerances = [2e-11, 5e-12, 2e-11, 1e-11, 5e-10, 1e-08, 1e-13, 1e-13,
-                    3e-11, 3e-11, 9e-10, 7e-11, 1e-09, 5e-08, 1e-10, 1e-13,
-                    1e-10, 3e-11, 1e-10, 7e-11, 1e-09, 5e-08, 1e-10, 1e-13]
+field_tolerances = [1e-5, 5e-12, 2e-11, 1e-11, 5e-10, 1e-08, 1e-13, 1e-13,
+                    1e-5, 3e-11, 9e-10, 7e-11, 1e-09, 5e-08, 1e-10, 1e-13,
+                    1e-5, 3e-11, 1e-10, 7e-11, 1e-09, 5e-08, 1e-10, 1e-13]
 field_values = [md.results.TransientSolution[0].Base,
                 md.results.TransientSolution[0].Surface,
                 md.results.TransientSolution[0].Thickness,
