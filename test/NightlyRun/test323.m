@@ -6,7 +6,7 @@ md=setflowequation(md,'SSA','all');
 md.cluster=generic('name',oshostname(),'np',3);
 md.timestepping = timesteppingadaptive(md.timestepping);
 md.timestepping.time_step_max = 10000.;
-md.timestepping.final_time=1120.;
+md.timestepping.final_time=1170.;
 md=solve(md,'Transient');
 
 %Fields and tolerances to track changes

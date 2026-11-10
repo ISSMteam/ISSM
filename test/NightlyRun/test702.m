@@ -18,7 +18,7 @@ md.mask.ice_levelset(find(vertexflags(md.mesh,2))) = 0;
 md.mask.ocean_levelset = double(md.mesh.x<0)-.5;
 
 md.initialization.temperature=(273.-20.)*ones(md.mesh.numberofvertices,1);
-md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_B=cuffey(md.initialization.temperature);
 md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
 md.damage.D=zeros(md.mesh.numberofvertices,1);
 md.damage.spcdamage=NaN(md.mesh.numberofvertices,1);

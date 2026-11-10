@@ -6,7 +6,7 @@ from triangle import *
 from setmask import *
 from parameterize import *
 from setflowequation import *
-from paterson import *
+from cuffey import *
 from solve import *
 
 
@@ -31,7 +31,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices, 1), int)
 md.initialization.temperature = 273.15 * np.ones((md.mesh.numberofvertices))
 pos = np.nonzero(md.mesh.vertexonsurface)[0]
 md.thermal.spctemperature[pos] = md.initialization.temperature[pos]
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 
 #analytical results
 #melting heat = geothermal flux

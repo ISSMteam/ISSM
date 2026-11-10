@@ -4,7 +4,7 @@ from model import *
 from solve import *
 from setflowequation import *
 from bamgflowband import *
-from paterson import *
+from cuffey import *
 
 x = np.arange(1, 3001, 100).T
 h = np.linspace(1000, 300, np.size(x)).T
@@ -24,7 +24,7 @@ md.mask.ocean_levelset = np.zeros((md.mesh.numberofvertices)) - 0.5
 
 #materials
 md.initialization.temperature = (273. - 20.) * np.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * np.ones((md.mesh.numberofelements))
 
 #friction

@@ -6,7 +6,7 @@ from gmtmask import *
 from lovenumbers import *
 from MatlabFuncs import *
 from model import *
-from paterson import *
+from cuffey import *
 from solve import *
 
 

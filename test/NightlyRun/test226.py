@@ -14,7 +14,7 @@ md = parameterize(md, '../Par/SquareShelf.py')
 md = setflowequation(md, 'SSA', 'all')
 md.cluster = generic('name', gethostname(), 'np', 3)
 md.timestepping = timesteppingadaptive(md.timestepping)
-md.timestepping.final_time = 15.
+md.timestepping.final_time = 30.
 md = solve(md, 'Transient')
 
 #Fields and tolerances to track changes

@@ -2,7 +2,7 @@ import os.path
 import numpy as np
 import copy
 import inspect
-from paterson import paterson
+from cuffey import cuffey
 from verbose import verbose
 
 #Start defining model parameters here
@@ -64,7 +64,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices))
 
 #Materials
 md.initialization.temperature = (273. - 20.) * np.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * np.ones((md.mesh.numberofelements))
 
 #Surface mass balance and basal melting

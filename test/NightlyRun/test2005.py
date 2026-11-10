@@ -6,7 +6,7 @@ from lovenumbers import *
 from materials import *
 from model import *
 from parameterize import *
-from paterson import *
+from cuffey import *
 from solve import *
 
 

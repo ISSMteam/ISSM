@@ -4,7 +4,7 @@ from arch import *
 import numpy
 from verbose import verbose
 from InterpFromMeshToMesh2d import InterpFromMeshToMesh2d
-from paterson import paterson
+from cuffey import cuffey
 from SetMarineIceSheetBC import SetMarineIceSheetBC
 
 #Start defining model parameters here
@@ -26,7 +26,7 @@ md.geometry.base = md.geometry.surface - md.geometry.thickness
 
 #Materials
 md.initialization.temperature = (273. - 20.) * numpy.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * numpy.ones((md.mesh.numberofelements))
 md.initialization.temperature = md.initialization.temperature
 

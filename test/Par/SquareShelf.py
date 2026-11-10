@@ -5,7 +5,7 @@ import os.path
 import numpy as np
 
 from InterpFromMeshToMesh2d import InterpFromMeshToMesh2d
-from paterson import paterson
+from cuffey import cuffey
 from SetIceShelfBC import SetIceShelfBC
 from verbose import verbose
 
@@ -60,7 +60,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices))
 
 # Materials
 md.initialization.temperature = (273 - 20) * np.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3 * np.ones((md.mesh.numberofelements))
 
 # Friction

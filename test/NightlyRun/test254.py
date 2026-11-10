@@ -6,7 +6,7 @@ from triangle import triangle
 from setmask import setmask
 from parameterize import parameterize
 from setflowequation import setflowequation
-from paterson import paterson
+from cuffey import cuffey
 from solve import solve
 from SetMOLHOBC import SetMOLHOBC
 from generic import generic
@@ -45,7 +45,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices))
 
 # Materials
 md.initialization.temperature = (273. - 20.) * np.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * np.ones((md.mesh.numberofelements))
 
 # Boundary conditions:

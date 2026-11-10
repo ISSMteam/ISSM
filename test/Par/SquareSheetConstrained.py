@@ -3,7 +3,7 @@ import os.path
 import numpy as np
 from arch import *
 from InterpFromMeshToMesh2d import InterpFromMeshToMesh2d
-from paterson import paterson
+from cuffey import cuffey
 from SetIceSheetBC import SetIceSheetBC
 from verbose import verbose
 
@@ -35,7 +35,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices))
 
 #Materials
 md.initialization.temperature = (273.0 - 20.0) * np.ones((md.mesh.numberofvertices))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3.0 * np.ones((md.mesh.numberofelements))
 
 #Calving
