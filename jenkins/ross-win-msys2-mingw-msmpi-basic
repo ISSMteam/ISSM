@@ -10,15 +10,16 @@ ISSM_CONFIG='\
 	--enable-debugging \
 	--with-numthreads=4 \
 	--with-matlab-dir="${MATLAB_PATH}" \
-	--with-mpi-include="${MSMPI_ROOT}/include" \
-	--with-mpi-libdir="-Wl,-L${MSMPI_ROOT}/lib" \
-	--with-mpi-libflags="-Wl,-lmsmpi" \
-	--with-fortran-lib="-Wl,-L/c/msys64/mingw64/lib -Wl,-lgfortran -Wl,-lquadmath" \
+	--with-mpi-include="/ucrt64/include" \
+	--with-mpi-libdir="-Wl,-L/ucrt64/lib" \
+	--with-mpi-libflags="-Wl,-lmsmpi -Wl,-lmsmpifec" \
+	--with-fortran-lib="-Wl,-L/ucrt64/lib -Wl,-lgfortran" \
+	--with-math-lib="-Wl,-L/ucrt64/lib -Wl,-lquadmath -Wl,-lm" \
 	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-mumps-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+	--with-mumps-dir="${ISSM_DIR}/externalpackages/mumps/install" \
 	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
 	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 '
@@ -28,8 +29,9 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	msmpi		install.sh
 	petsc		install-3.25-win-msys2-mingw-msmpi.sh
+	mumps		install-win-msys2-mingw-msmpi.sh
+	petsc		reconfigure-win-msys2-mingw-ext-mumps.sh
 	triangle	install-win-msys2-mingw.sh
 	shell2junit	install.sh
 "
