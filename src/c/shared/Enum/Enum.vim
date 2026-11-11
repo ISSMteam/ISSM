@@ -802,6 +802,8 @@ syn keyword cConstant ZzeEnum
 syn keyword cConstant AreaeEnum
 syn keyword cConstant WorldCommEnum
 syn keyword cConstant FrictionEmulatorEnum
+syn keyword cConstant FrictionNNWeightsEnum
+syn keyword cConstant FrictionNNNormalizationEnum
 syn keyword cConstant SmbEmulatorEnum
 syn keyword cConstant StressbalanceEmulatorEnum
 syn keyword cConstant ParametersENDEnum

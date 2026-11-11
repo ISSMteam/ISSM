@@ -791,6 +791,8 @@
 	AreaeEnum
 	WorldCommEnum
 	FrictionEmulatorEnum
+	FrictionNNWeightsEnum
+	FrictionNNNormalizationEnum
 	SmbEmulatorEnum
 	StressbalanceEmulatorEnum
 	ParametersENDEnum
@@ -4690,6 +4692,8 @@ function EnumToString(enum::IssmEnum)
 	if(enum==AreaeEnum) return "Areae" end
 	if(enum==WorldCommEnum) return "WorldComm" end
 	if(enum==FrictionEmulatorEnum) return "FrictionEmulator" end
+	if(enum==FrictionNNWeightsEnum) return "FrictionNNWeights" end
+	if(enum==FrictionNNNormalizationEnum) return "FrictionNNNormalization" end
 	if(enum==SmbEmulatorEnum) return "SmbEmulator" end
 	if(enum==StressbalanceEmulatorEnum) return "StressbalanceEmulator" end
 	if(enum==ParametersENDEnum) return "ParametersEND" end
@@ -8589,6 +8593,8 @@ function StringToEnum(name::String)
 	if(name=="Areae") return AreaeEnum  end
 	if(name=="WorldComm") return WorldCommEnum  end
 	if(name=="FrictionEmulator") return FrictionEmulatorEnum  end
+	if(name=="FrictionNNWeights") return FrictionNNWeightsEnum  end
+	if(name=="FrictionNNNormalization") return FrictionNNNormalizationEnum  end
 	if(name=="SmbEmulator") return SmbEmulatorEnum  end
 	if(name=="StressbalanceEmulator") return StressbalanceEmulatorEnum  end
 	if(name=="ParametersEND") return ParametersENDEnum  end

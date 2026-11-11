@@ -804,6 +804,8 @@ const char* EnumToStringx(int en){
 		case AreaeEnum : return "Areae";
 		case WorldCommEnum : return "WorldComm";
 		case FrictionEmulatorEnum : return "FrictionEmulator";
+		case FrictionNNWeightsEnum : return "FrictionNNWeights";
+		case FrictionNNNormalizationEnum : return "FrictionNNNormalization";
 		case SmbEmulatorEnum : return "SmbEmulator";
 		case StressbalanceEmulatorEnum : return "StressbalanceEmulator";
 		case ParametersENDEnum : return "ParametersEND";

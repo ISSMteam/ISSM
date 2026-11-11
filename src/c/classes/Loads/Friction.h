@@ -64,6 +64,7 @@ class Friction{
 		void  GetAlpha2Temp(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2Budd(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2WaterLayer(IssmDouble* palpha2,Gauss* gauss);
+		void  GetAlpha2NN(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2Weertman(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2WeertmanTemp(IssmDouble* palpha2,Gauss* gauss);
 		void  GetAlpha2PISM(IssmDouble* palpha2,Gauss* gauss);
