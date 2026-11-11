@@ -87,6 +87,7 @@ test/NightlyRun/*.outlog
 test/NightlyRun/*.qmu*
 test/NightlyRun/*.queue
 test/NightlyRun/*.rst
+test/NightlyRun/*.tap
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits
 test/NightlyRun/*_vertices-*.txt
