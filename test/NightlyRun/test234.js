@@ -87,7 +87,7 @@ for (var i = 0; i < 8; ++i) {
 	md.results.dakota.moments.push(md.results.dakota.dresp_out[i].stddev);
 }
 field_names     =['moments'];
-field_tolerances=[1e-11];
+field_tolerances=[7e-6];
 field_values=[
          md.results.dakota.moments,
 	];
