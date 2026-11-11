@@ -4,6 +4,7 @@ import numpy as np
 from frictionshakti import frictionshakti
 from socket import gethostname
 from model import *
+from hydrologyshakti import hydrologyshakti
 from operator import itemgetter
 from parameterize import parameterize
 from setflowequation import setflowequation

@@ -822,6 +822,8 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"Areae")==0) return AreaeEnum;
 	      else if (strcmp(name,"WorldComm")==0) return WorldCommEnum;
 	      else if (strcmp(name,"FrictionEmulator")==0) return FrictionEmulatorEnum;
+	      else if (strcmp(name,"FrictionNNWeights")==0) return FrictionNNWeightsEnum;
+	      else if (strcmp(name,"FrictionNNNormalization")==0) return FrictionNNNormalizationEnum;
 	      else if (strcmp(name,"SmbEmulator")==0) return SmbEmulatorEnum;
 	      else if (strcmp(name,"StressbalanceEmulator")==0) return StressbalanceEmulatorEnum;
 	      else if (strcmp(name,"ParametersEND")==0) return ParametersENDEnum;

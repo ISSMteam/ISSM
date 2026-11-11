@@ -1,6 +1,7 @@
 #Test Name: SquareSheetHydrologyGlaDS
 import numpy as np
 from model import *
+from hydrologyglads import hydrologyglads
 from triangle import triangle
 from setmask import setmask
 from setflowequation import setflowequation

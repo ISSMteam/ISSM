@@ -795,6 +795,8 @@ syn keyword juliaConstC ZzeEnum
 syn keyword juliaConstC AreaeEnum
 syn keyword juliaConstC WorldCommEnum
 syn keyword juliaConstC FrictionEmulatorEnum
+syn keyword juliaConstC FrictionNNWeightsEnum
+syn keyword juliaConstC FrictionNNNormalizationEnum
 syn keyword juliaConstC SmbEmulatorEnum
 syn keyword juliaConstC StressbalanceEmulatorEnum
 syn keyword juliaConstC ParametersENDEnum

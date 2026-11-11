@@ -137,6 +137,11 @@ void FieldAndEnumFromCode(int* out_enum,char** pfield,const char* string_in){/*{
 		input_enum        = FrictionEffectivePressureEnum;
 		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
 	}
+	else if(strcmp(string_in,"FrictionNNWeights")==0 || strcmp(string_in,"md.friction.nn_weights")==0){
+		const char* field = "md.friction.nn_weights";
+		input_enum        = FrictionNNWeightsEnum;
+		fieldname=xNew<char>((strlen(field)+1)); xMemCpy<char>(fieldname,field,(strlen(field)+1));
+	}
 	else if(strcmp(string_in,"Vx")==0){
 		 const char* field = "md.initialization.vx";
 		 input_enum        = VxEnum;

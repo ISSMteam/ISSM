@@ -1,5 +1,6 @@
 import numpy as np
 from model import *
+from hydrologydc import hydrologydc
 from socket import gethostname
 from triangle import *
 from setmask import *
