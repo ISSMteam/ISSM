@@ -200,12 +200,6 @@ fi
 MINGW=0
 if [[ ${OS_NAME} == MINGW* ]]; then
 	MINGW=1
-	MSMPI_ROOT="${ISSM_EXT_DIR}/msmpi/install"
-	if [ -d "${MSMPI_ROOT}" ]; then
-		export MSMPI_ROOT # Used in installation of ParMETIS, ScaLAPACK
-		cpath_prepend "${MSMPI_ROOT}/include"
-		library_path_prepend "${MSMPI_ROOT}/lib"
-	fi
 
 	MPIEXEC_DIR=$(cygpath -u $(cygpath -ms "/c/Program Files/Microsoft MPI/Bin"))
 	if [ -d "${MPIEXEC_DIR}" ]; then
