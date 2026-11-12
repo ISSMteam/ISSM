@@ -39,7 +39,7 @@ def write_netCDF(md, filename: str, verbose: bool = False) -> None:
 
     # check file format
     if not filename.endswith('.nc'):
-		warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
+        warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
         filename = filename + '.nc'
 
     # Overwrite silently
@@ -339,7 +339,11 @@ def _write_cell_strings(strings: list, vname: str, grp) -> None:  # {{{
     v = grp.createVariable(vname, 'S1', (rows_name, cols_name))
     v.type_is = 'cell_of_strings'
 
-    arr = np.chararray((nrows, max_len))
+    if np.__version__ < '2.0':
+        #NOTE: "chararray" only support numpy < 2.0.
+        arr = np.chararray((nrows, max_len))
+    else:
+        arr = np.empty((nrows, max_len),dtype='U1')
     for i, s in enumerate(strings):
         padded = s.ljust(max_len)
         arr[i] = list(padded.encode('utf-8'))
