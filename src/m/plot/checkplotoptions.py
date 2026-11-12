@@ -157,7 +157,7 @@ def checkplotoptions(md, options):
     # }}}
     # {{{ scale ruler
     if options.exist('scaleruler'):
-        if 'on' in options.getfieldvalue('scaleruler', 'off'):
+        if 'on' == options.getfieldvalue('scaleruler', 'off'):
             Lx = max(md.mesh.x) - min(md.mesh.x)
             Ly = max(md.mesh.y) - min(md.mesh.y)
             options.changefieldvalue('scaleruler', [min(md.mesh.x) + 6. / 8. * Lx, min(md.mesh.y) + 1. / 10. * Ly, 10**(np.ceil(np.log10(Lx))) / 5, np.floor(Lx / 100), 5])
