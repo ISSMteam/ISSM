@@ -22,7 +22,7 @@ mv MUMPS_${VER}/* src
 rm -rf MUMPS_${VER}
 
 # Copy Makefile to 'src' directory
-cp configs/${VER}/Make.inc/Makefile.WIN-MSYS2-UCRT.PAR src/Makefile.inc
+cp configs/${VER}/Make.inc/Makefile.WIN-MSYS2-MINGW.PAR src/Makefile.inc
 
 # Patch source where needed
 patch src/src/cana_aux_par.F < configs/${VER}/src/cana_aux_par.F.patch

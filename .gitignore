@@ -47,13 +47,15 @@ m4/ltsugar.m4
 m4/ltversion.m4
 m4/lt~obsolete.m4
 src/Makefile
+src/c/*.exe
 src/c/Makefile
+src/c/Makefile
+src/c/kriging
 src/c/issm
 src/c/issm_dakota
+src/c/issm_ocean
 src/c/issm_post
 src/c/issm_slc
-src/c/kriging
-src/c/issm_ocean
 src/m/Makefile
 src/wrappers/Makefile
 src/wrappers/javascript/Makefile

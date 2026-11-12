@@ -94,3 +94,6 @@ echo "Reconfiguring with Unix-style prefix before installation..."
 # Compile and install
 make PETSC_ARCH="${PETSC_ARCH_RECONF}" all
 make PETSC_ARCH="${PETSC_ARCH_RECONF}" install
+
+# Cleanup
+rm -rf ${TMPDIR}

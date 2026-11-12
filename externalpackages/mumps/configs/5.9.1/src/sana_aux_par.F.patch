@@ -1,0 +1,65 @@
+--- ./src/src/sana_aux_par.F	2026-07-20 02:00:59.000000000 -0700
++++ ./sana_aux_par.F	2026-11-07 19:58:04.755771600 -0800
+@@ -16,7 +16,7 @@
+       USE MUMPS_MEMORY_MOD
+       USE MUMPS_ANA_ORD_WRAPPERS
+       USE MUMPS_ANA_BLK_M, ONLY : LMATRIX_T, COMPACT_GRAPH_T
+-      INCLUDE 'mpif.h'
++      USE MPI
+       PUBLIC SMUMPS_ANA_F_PAR
+       INTERFACE SMUMPS_ANA_F_PAR
+       MODULE PROCEDURE SMUMPS_ANA_F_PAR
+@@ -656,7 +656,7 @@
+       END IF
+       CALL MPI_ALLGATHERV ( ORDER(1), VERTLOCNBR, MPI_INTEGER,
+      &     ord%PERMTAB(1),
+-     &     RCVCNTS(1), FIRST(1), MPI_INTEGER, ord%COMM, IERR )
++     &     RCVCNTS, FIRST, MPI_INTEGER, ord%COMM, IERR )
+       DO I=1, N
+          ord%PERITAB(ord%PERMTAB(I)) = I
+       END DO
+@@ -822,7 +822,7 @@
+         END IF
+         CALL MPI_GATHERV ( ORDER(1), VERTLOCNBR, MPI_INTEGER,
+      &     ord%PERMTAB(1),
+-     &     RCVCNTS(1), FIRST(1), MPI_INTEGER, MASTER,
++     &     RCVCNTS, FIRST, MPI_INTEGER, MASTER,
+      &     ord%COMM_PARAORD, IERR )
+       END IF 
+       IF (ord%MYID_PARAORD.EQ.MASTER) THEN
+@@ -2333,7 +2333,7 @@
+      &     MPI_INTEGER8, ord%COMM, IERR)
+       CALL MUMPS_I8DEALLOC(SNDCNT, MEMCNT=MEMCNT)
+       RDISPL(:) = MAXS
+-      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG(1), RDISPL(1), 
++      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG, RDISPL, 
+      &     MPI_INTEGER, MPI_SUM, ord%COMM, IERR )
+       DEALLOCATE(SIPES)
+       TLEN = 0_8
+@@ -2552,7 +2552,7 @@
+       IF(MEMCNT .GT. MAXMEM) MAXMEM=MEMCNT
+       CALL MUMPS_I8DEALLOC(SNDCNT, MEMCNT=MEMCNT)
+       RDISPL(:) = MAXS
+-      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG(1), RDISPL(1), 
++      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG, RDISPL, 
+      &     MPI_INTEGER, MPI_SUM, ord%COMM, IERR )
+       DEALLOCATE(SIPES)
+       I = ceiling(real(NROWS_LOC+1)*1.20E0)
+@@ -2857,7 +2857,7 @@
+       IF(MEMCNT .GT. MAXMEM) MAXMEM=MEMCNT
+       CALL MUMPS_I8DEALLOC(SNDCNT, MEMCNT=MEMCNT)
+       RDISPL(:) = MAXS
+-      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG(1), RDISPL(1), 
++      CALL MPI_REDUCE_SCATTER ( SIPES(1,1), LENG, RDISPL, 
+      &     MPI_INTEGER, MPI_SUM, ord%COMM, IERR )
+       DEALLOCATE(SIPES)
+       I = ceiling(real(NROWS_LOC+1)*1.20E0)
+@@ -3292,7 +3292,7 @@
+            CALL MUMPS_ABORT()
+          ENDIF
+          TMP    => WORK(1:N)
+-         NZ_ROW => WORK(int(N+1,8):2-8*int(N,8))
++         NZ_ROW => WORK(int(N+1,8):2_8*int(N,8))
+          TMP = 0
+          LOCOFFDIAG = 0_8
+          LOCNNZ = id%KEEP8(29)
