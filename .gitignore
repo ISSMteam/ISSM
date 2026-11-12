@@ -82,6 +82,10 @@ nightlylog
 
 # Nightly runs #
 #===============
+test/MITgcm/build/
+test/MITgcm/checkpoint*.tar.gz
+test/MITgcm/code/SIZE.h
+test/MITgcm/install/
 test/NightlyRun/*.bin
 test/NightlyRun/*.errlog
 test/NightlyRun/*.out
@@ -93,6 +97,9 @@ test/NightlyRun/*.tap
 test/NightlyRun/*.tar.gz
 test/NightlyRun/*.toolkits
 test/NightlyRun/*_vertices-*.txt
+Test/NightlyRun/Models/
+Test/NightlyRun/run/
+Test/NightlyRun/run.old/
 Test/NightlyRun/S4
 
 # Examples #
