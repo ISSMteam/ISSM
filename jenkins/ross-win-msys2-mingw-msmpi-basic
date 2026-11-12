@@ -29,7 +29,7 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	petsc		install-3.25-win-msys2-mingw-msmpi.sh
+	petsc		install-3.26-win-msys2-mingw-msmpi.sh
 	mumps		install-win-msys2-mingw-msmpi.sh
 	petsc		reconfigure-win-msys2-mingw-ext-mumps.sh
 	triangle	install-win-msys2-mingw.sh
