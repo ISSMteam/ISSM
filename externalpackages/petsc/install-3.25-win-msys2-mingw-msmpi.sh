@@ -39,7 +39,7 @@ tar -zxvf petsc-${VER}.tar.gz
 
 # Cleanup
 rm -rf ${PREFIX} ${PETSC_DIR}
-mkdir -p ${PREFIX} ${PETSC_DIR}
+mkdir -p ${PREFIX} ${PETSC_DIR} ${TMPDIR}
 
 # Move source to $PETSC_DIR
 mv petsc-${VER}/* ${PETSC_DIR}
