@@ -300,6 +300,16 @@ def _read_variable(grp, vname: str, var, verbose: bool):  # {{{
     # Single-element array -> Python scalar
     if data.ndim == 0 or (data.ndim == 1 and len(data) == 1):
         v = data.item()
+
+        # NOTE: large number at e.g., md.solidearth.rotational.equatorialmoi > 1e+37 save as float, not integer.
+        if isinstance(v, float) and (np.log10(v) >= 30):
+            # NOTE: for debugging mode
+            # Check message for equatorialmoi / polarmoi in solidearth.
+            if not vname in ['equatorialmoi','polarmoi']:
+                warnings.warn(f'Warning: The scalar value "md.{grp.name}.{vname}" exceeds 1e+30. It should be treated as a float rather than an integer.')
+            return float(v)
+
+        # FIXME: Sometimes, we set value with float e.g., 10.0; however, it would treat value integer.
         # Return int if value is a whole number (guard against nan/inf first)
         if isinstance(v, float) and np.isfinite(v) and v == int(v):
             return int(v)
