@@ -7,6 +7,7 @@ from write_netCDF import write_netCDF
 from transient import transient
 from setmask import setmask
 from triangle import triangle
+from loadmodel import loadmodel
 
 
 steps = [1, 2, 3]
