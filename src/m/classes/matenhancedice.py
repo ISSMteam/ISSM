@@ -14,7 +14,7 @@ class matenhancedice(object):
         matenhancedice = matenhancedice()
     """
 
-    def __init__(self):  # {{{
+    def __init__(self, *args):  # {{{
         self.rho_ice = 0
         self.rho_water = 0
         self.rho_freshwater = 0
