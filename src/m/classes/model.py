@@ -43,6 +43,7 @@ from groundingline import groundingline
 from hydrologyshreve import hydrologyshreve
 from debris import debris
 from masstransport import masstransport
+from mmemasstransport import mmemasstransport
 from thermal import thermal
 from steadystate import steadystate
 from transient import transient
@@ -104,6 +105,7 @@ class model(object):
         self.hydrology = None
         self.debris = None
         self.masstransport = None
+        self.mmemasstransport = None
         self.thermal = None
         self.steadystate = None
         self.transient = None
@@ -162,6 +164,7 @@ class model(object):
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('groundingline', '[%s %s]' % ('1x1', obj.groundingline.__class__.__name__), 'parameters for groundingline solution'))
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('hydrology', '[%s %s]' % ('1x1', obj.hydrology.__class__.__name__), 'parameters for hydrology solution'))
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('masstransport', '[%s %s]' % ('1x1', obj.masstransport.__class__.__name__), 'parameters for masstransport solution'))
+        s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('mmemasstransport', '[%s %s]' % ('1x1', obj.mmemasstransport.__class__.__name__), 'parameters for mmemasstransport solution'))
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('thermal', '[%s %s]' % ('1x1', obj.thermal.__class__.__name__), 'parameters for thermal solution'))
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('steadystate', '[%s %s]' % ('1x1', obj.steadystate.__class__.__name__), 'parameters for steadystate solution'))
         s = '%s\n%s' % (s, '%19s: %-23s -- %s' % ('transient', '[%s %s]' % ('1x1', obj.transient.__class__.__name__), 'parameters for transient solution'))
@@ -261,6 +264,7 @@ class model(object):
         self.hydrology = hydrologyshreve()
         self.debris = debris()
         self.masstransport = masstransport()
+        self.mmemasstransport = mmemasstransport()
         self.thermal = thermal()
         self.steadystate = steadystate()
         self.transient = transient()
@@ -927,6 +931,7 @@ class model(object):
         md.stressbalance.extrude(md)
         md.thermal.extrude(md)
         md.masstransport.extrude(md)
+        md.mmemasstransport.extrude(md)
         md.levelset.extrude(md)
         md.calving.extrude(md)
         md.frontalforcings.extrude(md)
