@@ -158,10 +158,20 @@ class solution(object):  #{{{
         Call specficific step as like matlab's struct.
 
         Usage:
+            # Call specific step
             md.results.TransientSolution[0]
+            
+            # assign variable in specific step
+            setattr(md.results.TransientSolution[0],'Vel',[])
         """
         if isinstance(index, (int, float)):
-            return self.steps[index]
+            while True:
+                try:
+                    return self.steps[index]
+                except:
+                    self.steps.append(solutionstep())
+            else:
+                raise Exception('<results>.<solution>: either request a specific result by index or make sure that there is only a single result for this solution (cannot be a transient solution)')
         elif isinstance(index,str):
             # First, check index in step
             if not hasattr(self.steps[0],index):
@@ -170,16 +180,6 @@ class solution(object):  #{{{
             return np.stack(temp).T
         else:
             raise Exception('Error: unsupported format')
-
-        # BUG: This "while" would triggers infinite loop
-        #while True:
-        #    try:
-        #        return self.steps[index]
-        #    except:
-        #        self.steps.append(solutionstep())
-        #        break
-        #else:
-        #    raise Exception('<results>.<solution>: either request a specific result by index or make sure that there is only a single result for this solution (cannot be a transient solution)')
     # }}}
 
     def setdefaultparameters(self):  #{{{
