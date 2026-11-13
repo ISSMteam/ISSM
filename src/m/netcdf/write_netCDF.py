@@ -222,12 +222,23 @@ def _write_struct_value(obj, grp, root_nc, path, verbose) -> None: # {{{
     grp.classtype = 'struct'
     grp.nsteps    = len(obj)
 
-    for k in range(n):
+    if n > 1: # multi step in Solution: e.g., TransientSolution
+        for k in range(n):
+            step_name  = 'step_%i'%(k+1)
+            #print(f'   step: {step_name}')
+            step_grp   = grp.createGroup(step_name)
+            for sfield, sval in obj[k].__dict__.items():
+                #print(f'        {sfield}')
+                if sfield in ['errlog','outlog']:
+                    continue
+
+                # write fields
+                _write_value(sval, sfield, step_grp, root_nc, path+'.'+step_name+'.'+sfield, verbose)
+    else: # single step: e.g., StressbalanceSolution
+        k=0
         step_name  = 'step_%i'%(k+1)
-        #print(f'   step: {step_name}')
         step_grp   = grp.createGroup(step_name)
-        for sfield, sval in obj[k].__dict__.items():
-            #print(f'        {sfield}')
+        for sfield, sval in obj.__dict__.items():
             if sfield in ['errlog','outlog']:
                 continue
 
