@@ -31,6 +31,9 @@ import warnings
 import numpy as np
 from netCDF4 import Dataset
 
+# ISSM
+from results import results, solution, solutionstep
+
 
 def write_netCDF(md, filename: str, verbose: bool = False) -> None:
     """Save model *md* to *filename* (NetCDF4).  Overwrites silently."""
@@ -209,29 +212,53 @@ def _write_list(val: list, vname: str, grp, root_nc, path: str, verbose: bool) -
             print(f'    [SKIP]    {path} – list of mixed/unsupported types')
 # }}}
 def _write_struct_value(obj, grp, root_nc, path, verbose) -> None: # {{{
-	# =====================================================================
-	#  write_struct_value  –  handle a struct field (scalar or 1-D array)
-	# =====================================================================
+    """
+	write_struct_value  –  handle a struct field (scalar or 1-D array)
 
-    n = len(obj) # check number of steps
+
+    Note:
+    In "loadresultsfromdisk.py":Line 68, if the length of results is (1,), the results class is coerced to class "solutionstep" rather than "solution". Therefore, we need to explicitly check "results.SolutionType" to determine whether it is "solution" or "solutionstep".
+    """
+
+    if isinstance(obj,solutionstep):
+        n = 1
+    else:
+        n = len(obj) # check number of steps
     try:
         items = obj.__dict__.items()
     except AttributeError:
         return
 
     grp.classtype = 'struct'
-    grp.nsteps    = len(obj)
+    grp.nsteps    = n
 
-    # single/multi step in Solution: e.g., StressbalanceSolution, TransientSolution
-    for k in range(n):
-        step_name  = 'step_%i'%(k+1)
-        step_grp   = grp.createGroup(step_name)
-        for sfield, sval in obj[k].__dict__.items():
+    # multi step in Solution: e.g., TransientSolution
+    if isinstance(obj,solution):
+        for k in range(n):
+            step_name  = 'step_%i'%(k+1)
+            step_grp   = grp.createGroup(step_name)
+            for sfield, sval in obj[k].__dict__.items():
+                if sfield in ['errlog','outlog']:
+                    continue
+
+                # write fields
+                _write_value(sval, sfield, step_grp, root_nc, path+'.'+step_name+'.'+sfield, verbose)
+    elif isinstance(obj,solutionstep): #single step in Solution e.g., StressbalanceSolution
+        print('catch =========')
+        print(obj)
+        print(obj.__dict__)
+        k=0
+        step_name = 'step_%i'%(k+1)
+        step_grp = grp.createGroup(step_name)
+        for sfield, sval in obj.__dict__.items():
             if sfield in ['errlog','outlog']:
                 continue
 
             # write fields
             _write_value(sval, sfield, step_grp, root_nc, path+'.'+step_name+'.'+sfield, verbose)
+    else:
+        raise Exception('Error: given obj class is not supported')
+
     if verbose:
         print('    [struct]  %s  (1x%i)'%(path, n))
     # }}}
