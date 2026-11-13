@@ -1,10 +1,6 @@
 import os
 import subprocess
 
-try:
-    from cloud_settings import cloud_settings
-except ImportError:
-    print('You need cloud_settings.py to proceed, check presence and sys.path')
 from issmdir import issmdir
 
 class cloud(object):
@@ -25,8 +21,9 @@ class cloud(object):
 
         # Initialize cluster using user settings if provided
         try:
+            from cloud_settings import cloud_settings
             self = cloud_settings(self)
-        except NameError:
+        except ImportError:
             print('cloud_settings.py not found, using default settings')
 
         # OK get other fields

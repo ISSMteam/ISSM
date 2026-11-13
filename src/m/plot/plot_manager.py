@@ -2,7 +2,6 @@ try:
     from osgeo import gdal
     overlaysupport = True
 except ImportError:
-    print('OSGeo/GDAL for Python not installed, overlay plots are not enabled')
     overlaysupport = False
 
 from applyoptions import applyoptions
@@ -56,6 +55,8 @@ def plot_manager(md, options, fig, axgrid, gridindex):
     #    plot_basemap(md, data, options, nrows, ncols, i)
     # }}}
     # {{{ overlay plot
+    if options.exist('overlay') and not overlaysupport:
+        print('OSGeo/GDAL for Python not installed, overlay plots are not enabled')
     if options.exist('overlay') and overlaysupport:
         plot_overlay(md, data, options, ax)
         options.addfielddefault('alpha', 0.5)
