@@ -19,7 +19,7 @@ class groundingline(object):
         self.melt_interpolation = ''
         self.nomelt_under_lakes = 0
         self.intrusion_distance = 0
-        self.requested_outptuts = []
+        self.requested_outputs = []
 
         # Set defaults
         self.setdefaultparameters()
@@ -31,7 +31,7 @@ class groundingline(object):
         s += '{}\n'.format(fielddisplay(self, 'migration', 'type of grounding line migration: \'SoftMigration\', \'SubelementMigration\', \'AggressiveMigration\', \'Contact\', \'None\''))
         s += '{}\n'.format(fielddisplay(self, 'migration', 'type of friction interpolation on partially floating elements: ''SubelementFriction1'', ''SubelementFriction2'', ''NoFrictionOnPartiallyFloating'''))
         s += '{}\n'.format(fielddisplay(self, 'migration', 'type of melt interpolation on partially floating elements: \'NoMeltOnPartiallyFloating\', \'FullMeltOnPartiallyFloating\', \'SubelementMelt1\', \'SubelementMelt2\', \'IntrusionMelt\''))
-        s += '{}\n'.format(fielddisplay(self, 'mo_melt_under_lakes', 'remove (1) or allow (0) melt under lakes disconnected from the ocean'))
+        s += '{}\n'.format(fielddisplay(self, 'nomelt_under_lakes', 'remove (1) or allow (0) melt under lakes disconnected from the ocean'))
         s += '{}\n'.format(fielddisplay(self, 'requested_outputs', 'additional outputs requested'))
         return s
     # }}}
