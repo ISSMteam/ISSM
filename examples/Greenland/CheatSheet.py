@@ -36,7 +36,7 @@ if 7 in steps:
     md.cluster = generic('name', gethostname(), 'np', 2)
     md = solve(md, 'Transient')
 
-    export_netCDF(md, './Models/Greenland.HistoricTransient_200yr.nc')
+    write_netCDF(md, './Models/Greenland.HistoricTransient_200yr.nc')
     # }}}
 
 if 8 in steps:
