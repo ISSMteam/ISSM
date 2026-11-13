@@ -6,7 +6,7 @@ from setflowequation import setflowequation
 from generic import generic
 from solve import solve
 from plotmodel import plotmodel
-from export_netCDF import export_netCDF
+from write_netCDF import write_netCDF
 from m1qn3inversion import m1qn3inversion
 from verbose import verbose
 from loadmodel import loadmodel
@@ -25,7 +25,7 @@ if 1 in steps:
     md = solve(md, 'Stressbalance')
     plotmodel(md, 'axis#all', 'tight', 'data', md.materials.rheology_B, 'caxis', Clims, 'title', '"True" B',
               'data', md.results.StressbalanceSolution.Vel, 'title', '"observed velocities"')
-    export_netCDF(md, 'model1.nc')
+    write_netCDF(md, 'model1.nc')
 
 if 2 in steps:
     #Modify rheology, now constant
@@ -41,7 +41,7 @@ if 2 in steps:
     md = solve(md, 'Stressbalance')
     plotmodel(md, 'axis#all', 'tight', 'data', md.materials.rheology_B, 'caxis', Clims, 'title', 'B first guess',
               'data', md.results.StressbalanceSolution.Vel, 'title', 'modeled velocities')
-    export_netCDF(md, 'model2.nc')
+    write_netCDF(md, 'model2.nc')
 
 
 if 3 in steps:

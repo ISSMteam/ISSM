@@ -6,7 +6,7 @@ from InterpFromGridToMesh import InterpFromGridToMesh
 from bamg import bamg
 from xy2ll import xy2ll
 from plotmodel import plotmodel
-from export_netCDF import export_netCDF
+from write_netCDF import write_netCDF
 from loadmodel import loadmodel
 from setmask import setmask
 from parameterize import parameterize
@@ -48,7 +48,7 @@ if 1 in steps:
     #convert x, y coordinates (Polar stereo) to lat / lon
     [md.mesh.lat, md.mesh.long] = xy2ll(md.mesh.x, md.mesh.y, + 1, 39, 71)
 
-    export_netCDF(md, './Models/Greenland.Mesh_generation.nc')
+    write_netCDF(md, './Models/Greenland.Mesh_generation.nc')
     plotmodel(md, 'data', 'mesh')
     # }}}
 
@@ -61,7 +61,7 @@ if 2 in steps:
     md = parameterize(md, './Greenland.py')
     md = setflowequation(md, 'SSA', 'all')
 
-    export_netCDF(md, "./Models/Greenland.Parameterization.nc")
+    write_netCDF(md, "./Models/Greenland.Parameterization.nc")
     # }}}
 
 if 3 in steps:
@@ -102,7 +102,7 @@ if 3 in steps:
     #Update model friction fields accordingly
     md.friction.coefficient = md.results.StressbalanceSolution.FrictionCoefficient
 
-    export_netCDF(md, "./Models/Greenland.Control_drag.nc")
+    write_netCDF(md, "./Models/Greenland.Control_drag.nc")
     # }}}
 
 if 4 in steps:
@@ -135,7 +135,7 @@ if 4 in steps:
     md.cluster = generic('name', gethostname(), 'np', 2)
     md = solve(md, 'Transient')
 
-    export_netCDF(md, './Models/Greenland.Transient.nc')
+    write_netCDF(md, './Models/Greenland.Transient.nc')
     # }}}
 
 if 5 in steps:
@@ -255,7 +255,7 @@ if 7 in steps:
     md.cluster = generic('name', gethostname(), 'np', 2)
     md = solve(md, 'Transient')
 
-    export_netCDF(md, './Models/Greenland.HistoricTransient.nc')
+    write_netCDF(md, './Models/Greenland.HistoricTransient.nc')
     # }}}
 
 if 8 in steps:
@@ -341,7 +341,7 @@ if 9 in steps:
     md.cluster = generic('name', gethostname(), 'np', 2)
     md = solve(md, 'Transient')
 
-    export_netCDF(md, './Models/Greenland.BoxTransient.nc')
+    write_netCDF(md, './Models/Greenland.BoxTransient.nc')
     # }}}
 
 if 10 in steps:
