@@ -305,8 +305,11 @@ def _write_string(s: str, vname: str, grp) -> None:  # {{{
     except Exception:
         pass
     v = grp.createVariable(vname, 'S1', (dim_name,))
-    from netCDF4 import stringtochar
-    v[:] = stringtochar(np.array([s], dtype=f'S{n}'))
+    try: # FIXME: This may fail if netCDF4 is not available or stringtochar fails
+        from netCDF4 import stringtochar
+        v[:] = stringtochar(np.array(s, dtype=f'S{n}'))
+    except Exception:
+        v[:] = list(s)
     v.type_is = 'string'
 # }}}
 def _write_cell_strings(strings: list, vname: str, grp) -> None:  # {{{
@@ -343,10 +346,12 @@ def _write_cell_strings(strings: list, vname: str, grp) -> None:  # {{{
         #NOTE: "chararray" only support numpy < 2.0.
         arr = np.chararray((nrows, max_len))
     else:
-        arr = np.empty((nrows, max_len),dtype='U1')
+        arr = np.empty((nrows, max_len),dtype='S1')
     for i, s in enumerate(strings):
         padded = s.ljust(max_len)
-        arr[i] = list(padded.encode('utf-8'))
+        #arr[i] = list(padded.encode('utf-8'))
+        encoded= padded.encode('utf-8')
+        arr[i] = np.frombuffer(encoded, dtype='S1')
     v[:] = arr
 # }}}
 def _write_bool(arr: np.ndarray, vname: str, grp, root_nc) -> None:  # {{{
