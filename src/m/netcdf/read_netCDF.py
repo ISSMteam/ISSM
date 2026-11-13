@@ -301,6 +301,11 @@ def _read_variable(grp, vname: str, var, verbose: bool):  # {{{
     if data.ndim == 0 or (data.ndim == 1 and len(data) == 1):
         v = data.item()
 
+        # NOTE: infinity value: md.settings.waitonlock = np.inf
+        if isinstance(v,float) and (np.isinf(v) | np.isnan(v)):
+            # nothting to be done with inf/nan value
+            return v
+
         # NOTE: large number at e.g., md.solidearth.rotational.equatorialmoi > 1e+37 save as float, not integer.
         if isinstance(v, float) and (np.log10(v) >= 30):
             # NOTE: for debugging mode
