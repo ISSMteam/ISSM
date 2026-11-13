@@ -17,7 +17,7 @@ class issmsettings(object):
         self.io_gather = 0
         self.lowmem = 0
         self.output_frequency = 0
-        self.coupling_frequency = 0
+        self.sb_coupling_frequency = 0
         self.checkpoint_frequency = 0
         self.waitonlock = 0
         self.stagingpath = ''
