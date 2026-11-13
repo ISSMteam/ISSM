@@ -164,7 +164,7 @@ class solution(object):  #{{{
             # assign variable in specific step
             setattr(md.results.TransientSolution[0],'Vel',[])
         """
-        if isinstance(index, (int, float)):
+        if isinstance(index, (int, np.int64, np.int32)):
             while True:
                 try:
                     return self.steps[index]
@@ -179,7 +179,7 @@ class solution(object):  #{{{
             temp = [getattr(self.steps[i],index) for i in range(len(self))]
             return np.stack(temp).T
         else:
-            raise Exception('Error: unsupported format')
+            raise Exception(f'Error: Given index unsupported format: {type(index)}')
     # }}}
 
     def setdefaultparameters(self):  #{{{
