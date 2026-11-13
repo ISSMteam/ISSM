@@ -60,50 +60,8 @@ catch me
 end
 netcdf.close(ncid);
 
-% Coerce elements
-md.mesh.elements=int64(md.mesh.elements);
-try
-	md.mesh.vertexconnectivity=int64(md.mesh.vertexconnectivity);
-catch
-end
-try
-	md.mesh.elementconnectivity=int64(md.mesh.elementconnectivity);
-catch
-end
-
-md.mesh.numberofvertices=int64(md.mesh.numberofvertices);
-md.mesh.numberofelements=int64(md.mesh.numberofelements);
-
-try
-	md.mesh.extractedvertices=int64(md.mesh.extractedvertices);
-catch
-end
-try
-	md.mesh.extractedelements=int64(md.mesh.extractedelements);
-catch
-end
-
-if md.mesh.dimension() == 3
-	md.mesh.elements2d=int64(md.mesh.elements2d);
-	md.mesh.numberofvertices2d=int64(md.mesh.numberofvertices2d);
-	md.mesh.numberofelements2d=int64(md.mesh.numberofelements2d);
-elseif md.mesh.dimension() == 2
-	try
-		md.mesh.edges=int64(md.mesh.edges);
-	catch
-		warning('Warning: nothing to be done with md.mesh.edges');
-	end
-	try
-		md.mesh.segments=int64(md.mesh.segments);
-	catch
-		warning('Warning: nothing to be done with md.mesh.segments');
-	end
-	try
-		md.mesh.segmentmarkers=int64(md.mesh.segmentmarkers);
-	catch
-		warning('Warning: nothing to be done with md.mesh.segmentmarkers');
-	end
-end
+% Coerce some arrays
+md = coerce_array(md);
 
 if verbose; disp('Model successfully loaded from NetCDF4.'); end
 end
@@ -216,6 +174,9 @@ function md  = instantiate_subclass(md, gname, gid, verbose) % {{{
                 case 'mesh2dvertical',md.mesh = mesh2dvertical();
 				otherwise, warning(['mesh class ''' ct ''' not supported yet']);
 			end
+			% }}}
+		case 'materials' % {{{
+			md.materials = feval(ct);
 			% }}}
 	end
 	if verbose && ~isempty(ct)
@@ -486,3 +447,53 @@ function val = get_group_int_att(gid, att_name, default_val) % {{{
 	end
 end
 % }}}
+function md = coerce_array(md) % {{{
+	% We want to coerce some array as specific format
+
+	try
+		md.mesh.elements=int64(md.mesh.elements);
+	catch
+	end
+	try
+		md.mesh.vertexconnectivity=int64(md.mesh.vertexconnectivity);
+	catch
+	end
+	try
+		md.mesh.elementconnectivity=int64(md.mesh.elementconnectivity);
+	catch
+	end
+
+	md.mesh.numberofvertices=int64(md.mesh.numberofvertices);
+	md.mesh.numberofelements=int64(md.mesh.numberofelements);
+
+	try
+		md.mesh.extractedvertices=int64(md.mesh.extractedvertices);
+	catch
+	end
+	try
+		md.mesh.extractedelements=int64(md.mesh.extractedelements);
+	catch
+	end
+
+	if md.mesh.dimension() == 3
+		md.mesh.elements2d=int64(md.mesh.elements2d);
+		md.mesh.numberofvertices2d=int64(md.mesh.numberofvertices2d);
+		md.mesh.numberofelements2d=int64(md.mesh.numberofelements2d);
+	elseif md.mesh.dimension() == 2
+		try
+			md.mesh.edges=int64(md.mesh.edges);
+		catch
+			warning('Warning: nothing to be done with md.mesh.edges');
+		end
+		try
+			md.mesh.segments=int64(md.mesh.segments);
+		catch
+			warning('Warning: nothing to be done with md.mesh.segments');
+		end
+		try
+			md.mesh.segmentmarkers=int64(md.mesh.segmentmarkers);
+		catch
+			warning('Warning: nothing to be done with md.mesh.segmentmarkers');
+		end
+	end
+end % }}}
