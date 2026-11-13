@@ -4,6 +4,7 @@ from checkfield import checkfield
 from fielddisplay import fielddisplay
 from project3d import project3d
 from WriteData import WriteData
+from matice import matice
 
 
 class matestar(object):
@@ -35,8 +36,26 @@ class matestar(object):
         # SLC
         self.earth_density = 0
 
-        # Set default parameters
-        self.setdefaultparameters()
+        if len(args) == 0:
+            # Set default parameters
+            self.setdefaultparameters()
+        elif len(args) == 1:
+            inputstruct = args[0]
+
+            # Set default parameters
+            self.setdefaultparameters()
+
+            # Use parameter in netcdf
+            self = structtoobj(self, inputstruct)
+
+            if isinstance(inputstruct,matice):
+                print('Converting materials to ESTAR, keeping a Glen type relation')
+                #Set parameter so that we still use a Glen's like flow relation
+                self.rheology_Es = np.ones(np.shape(inputstruct.rheology_B))
+                self.rheology_Ec = np.ones(np.shape(inputstruct.rheology_B))
+                self.rheology_B  =  inputstruct.rheology_B
+        else:
+            raise RuntimeError('constructor not supported.')
     # }}}
 
     def __repr__(self):  # {{{

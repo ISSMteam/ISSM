@@ -35,11 +35,16 @@ class matdamageice(object):
         #SLC
         self.earth_density = 0
 
-        if not len(args):
+        if len(args) == 0:
+            # Set default parameters
             self.setdefaultparameters()
         elif len(args) == 1:
+            inputstruct = args[0]
+
+            # Set default parameters
             self.setdefaultparameters()
-            self = structtoobj(self, args[0])
+
+            self = structtoobj(self, inputstruct)
         else:
             raise RuntimeError('constructor not supported.')
     # }}}
