@@ -236,6 +236,7 @@
 	FrontalForcingsARMAmonthtrendsEnum
 	FrontalForcingsARMApolyparamsEnum
 	FrontalForcingsIsDischargeARMAEnum
+	FrontalForcingsIsDischargeRunoffEnum
 	FrontalForcingsNumberofBasinsEnum
 	FrontalForcingsNumberofBreaksEnum
 	FrontalForcingsNumberofMonthBreaksEnum
@@ -4137,6 +4138,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==FrontalForcingsARMAmonthtrendsEnum) return "FrontalForcingsARMAmonthtrends" end
 	if(enum==FrontalForcingsARMApolyparamsEnum) return "FrontalForcingsARMApolyparams" end
 	if(enum==FrontalForcingsIsDischargeARMAEnum) return "FrontalForcingsIsDischargeARMA" end
+	if(enum==FrontalForcingsIsDischargeRunoffEnum) return "FrontalForcingsIsDischargeRunoff" end
 	if(enum==FrontalForcingsNumberofBasinsEnum) return "FrontalForcingsNumberofBasins" end
 	if(enum==FrontalForcingsNumberofBreaksEnum) return "FrontalForcingsNumberofBreaks" end
 	if(enum==FrontalForcingsNumberofMonthBreaksEnum) return "FrontalForcingsNumberofMonthBreaks" end
@@ -8038,6 +8040,7 @@ function StringToEnum(name::String)
 	if(name=="FrontalForcingsARMAmonthtrends") return FrontalForcingsARMAmonthtrendsEnum  end
 	if(name=="FrontalForcingsARMApolyparams") return FrontalForcingsARMApolyparamsEnum  end
 	if(name=="FrontalForcingsIsDischargeARMA") return FrontalForcingsIsDischargeARMAEnum  end
+	if(name=="FrontalForcingsIsDischargeRunoff") return FrontalForcingsIsDischargeRunoffEnum  end
 	if(name=="FrontalForcingsNumberofBasins") return FrontalForcingsNumberofBasinsEnum  end
 	if(name=="FrontalForcingsNumberofBreaks") return FrontalForcingsNumberofBreaksEnum  end
 	if(name=="FrontalForcingsNumberofMonthBreaks") return FrontalForcingsNumberofMonthBreaksEnum  end

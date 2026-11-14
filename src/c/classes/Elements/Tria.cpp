@@ -2079,6 +2079,17 @@ IssmDouble Tria::GetArea3D(void){/*{{{*/
 	return sqrt(pow(detm1,2) + pow(detm2,2) + pow(detm3,2))/2;
 }
 /*}}}*/
+IssmDouble Tria::GetRunoffDischarge(void){/*{{{*/
+
+	/*Runoff volume rate of this element [m^3/d] = runoff [m w.e./s] x ice-covered area [m^2] x 86400 s/d*/
+	if(!IsIceInElement()) return 0.;
+
+	IssmDouble runoff;
+	Input* runoff_input = this->GetInput(SmbRunoffEnum); _assert_(runoff_input);
+	runoff_input->GetInputAverage(&runoff);
+
+	return max(runoff,0.)*this->GetAreaIce()*86400.;
+}/*}}}*/
 IssmDouble Tria::GetAreaIce(void){/*{{{*/
 
 	/*return area of element covered by ice*/

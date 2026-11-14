@@ -1567,6 +1567,169 @@ void  IoModel::FetchDataLocal(IssmDouble** pmatrix,int* pM,int* pN,const char* d
 	if(pN) *pN=N;
 }
 /*}}}*/
+void  IoModel::ScatterRowsFromRank0(IssmPDouble* fullmatrix,int M,int N,int kind,bool istimeseries,IssmPDouble** plocal,int* pM_local){/*{{{*/
+
+	/*Scatter the rows of a matrix that only rank 0 holds, so that each rank only receives the rows it needs.
+	 * kind: 1 = vertex rows (rank0_vert_send_ids order), 2 = element rows (epart order)
+	 * If istimeseries, the last row (time) is appended to every local matrix.
+	 * fullmatrix is only used on rank 0 (other ranks pass NULL).*/
+
+	int my_rank   = IssmComm::GetRank();
+	int num_procs = IssmComm::GetSize();
+	ISSM_MPI_Status   status;
+	ISSM_MPI_Request *send_requests = xNew<ISSM_MPI_Request>(num_procs);
+	int* M_local_list = xNew<int>(num_procs);
+	int  M_local;
+
+	/*Tell each rank how many rows it will receive*/
+	if(my_rank==0){
+		for(int r=0;r<num_procs;r++){
+			M_local_list[r] = (kind==1 ? this->numvertices_per_proc[r] : this->numelements_per_proc[r]) + (istimeseries?1:0);
+			ISSM_MPI_Isend(&M_local_list[r],1,ISSM_MPI_INT,r,0,IssmComm::GetComm(),&send_requests[r]);
+		}
+	}
+	ISSM_MPI_Recv(&M_local,1,ISSM_MPI_INT,0,0,IssmComm::GetComm(),&status);
+	if(my_rank==0){ for(int r=0;r<num_procs;r++) ISSM_MPI_Wait(&send_requests[r],&status); }
+
+	/*Rank 0 extracts and sends the relevant rows to every rank*/
+	IssmPDouble** all = NULL;
+	if(my_rank==0){
+		all = xNew<IssmPDouble*>(num_procs);
+		for(int r=0;r<num_procs;r++){
+			all[r] = xNew<IssmPDouble>(M_local_list[r]*N);
+			if(kind==1){
+				for(int i=0;i<this->numvertices_per_proc[r];i++){
+					for(int j=0;j<N;j++) all[r][i*N+j] = fullmatrix[this->rank0_vert_send_ids[r][i]*N+j];
+				}
+			}
+			else if(kind==2){
+				int counter = 0;
+				for(int i=0;i<this->numberofelements;i++){
+					if(this->epart[i]==r){
+						for(int j=0;j<N;j++) all[r][counter*N+j] = fullmatrix[i*N+j];
+						counter++;
+					}
+				}
+				_assert_(counter==this->numelements_per_proc[r]);
+			}
+			else _error_("kind "<<kind<<" not supported");
+
+			if(istimeseries){
+				for(int j=0;j<N;j++) all[r][(M_local_list[r]-1)*N+j] = fullmatrix[(M-1)*N+j];
+			}
+			ISSM_MPI_Isend(all[r],M_local_list[r]*N,ISSM_MPI_PDOUBLE,r,0,IssmComm::GetComm(),&send_requests[r]);
+		}
+	}
+
+	*plocal = xNew<IssmPDouble>(M_local*N);
+	ISSM_MPI_Recv(*plocal,M_local*N,ISSM_MPI_PDOUBLE,0,0,IssmComm::GetComm(),&status);
+	if(my_rank==0){
+		for(int r=0;r<num_procs;r++){
+			ISSM_MPI_Wait(&send_requests[r],&status);
+			xDelete<IssmPDouble>(all[r]);
+		}
+		xDelete<IssmPDouble*>(all);
+	}
+
+	xDelete<ISSM_MPI_Request>(send_requests);
+	xDelete<int>(M_local_list);
+	*pM_local = M_local;
+}/*}}}*/
+void  IoModel::FetchDataLocal(IssmDouble*** pmatrices,int** pmdims,int** pndims,int** pmlocal,int* pnumrecords,const char* data_name){/*{{{*/
+
+	/*Local version of FetchData(IssmDouble***,...) for mat arrays: every record is read on rank 0 only
+	 * and only the rows needed by each rank are sent, and the full record is freed before the next one
+	 * is read. Output matrices are LOCAL (pmlocal[i] rows, same row order as FetchDataLocal for matrices),
+	 * while pmdims[i] is the GLOBAL number of rows.
+	 *
+	 * Each record is classified by its number of rows:
+	 *  - numberofvertices (+1 time row)  -> vertex rows
+	 *  - numberofelements (+1 time row)  -> element rows
+	 *  - 1 or 2 rows                     -> tiny, replicated on every rank */
+
+	int code,layout,numrecords=0;
+	int my_rank = IssmComm::GetRank();
+
+	fid=this->SetFilePointerToData(&code,&layout,data_name);
+	if(code!=8) _error_("expecting a IssmDouble mat array for \""<<data_name<<"\"");
+
+	if(my_rank==0){
+		if(fread(&numrecords,sizeof(int),1,fid)!=1) _error_("could not read number of records in matrix array");
+	}
+	ISSM_MPI_Bcast(&numrecords,1,ISSM_MPI_INT,0,IssmComm::GetComm());
+
+	IssmDouble** matrices = NULL;
+	int*         mdims    = NULL;
+	int*         ndims    = NULL;
+	int*         mlocal   = NULL;
+
+	if(numrecords){
+		matrices = xNew<IssmDouble*>(numrecords);
+		mdims    = xNew<int>(numrecords);
+		ndims    = xNew<int>(numrecords);
+		mlocal   = xNew<int>(numrecords);
+		for(int i=0;i<numrecords;i++){ matrices[i]=NULL; mdims[i]=0; ndims[i]=0; mlocal[i]=0; }
+	}
+
+	for(int i=0;i<numrecords;i++){
+
+		int buffer[2] = {0,0};
+		if(my_rank==0){
+			if(fread(&buffer[0],sizeof(int),1,fid)!=1) _error_("could not read number of rows in "<<i<<"th matrix of matrix array");
+			if(fread(&buffer[1],sizeof(int),1,fid)!=1) _error_("could not read number of columns in "<<i<<"th matrix of matrix array");
+		}
+		ISSM_MPI_Bcast(&buffer[0],2,ISSM_MPI_INT,0,IssmComm::GetComm());
+		int M = buffer[0];
+		int N = buffer[1];
+		mdims[i] = M;
+		ndims[i] = N;
+		if(M*N==0) continue;
+
+		/*Only rank 0 reads the full record*/
+		IssmPDouble* full = NULL;
+		if(my_rank==0){
+			full = xNew<IssmPDouble>(M*N);
+			if(fread(full,M*N*sizeof(IssmPDouble),1,fid)!=1){
+				_error_("could not read matrix "<<i<<" of \""<<data_name<<"\" (you may not have enough memory, size is "<<M<<"x"<<N<<")");
+			}
+		}
+
+		IssmPDouble* local = NULL;
+		int          Ml;
+		if(M==1 || M==2){
+			/*Tiny record: replicate*/
+			if(my_rank!=0) full = xNew<IssmPDouble>(M*N);
+			ISSM_MPI_Bcast(full,M*N,ISSM_MPI_PDOUBLE,0,IssmComm::GetComm());
+			local = full; full = NULL;
+			Ml    = M;
+		}
+		else if(M==this->numberofvertices || M==this->numberofvertices+1){
+			this->ScatterRowsFromRank0(full,M,N,1,(M==this->numberofvertices+1),&local,&Ml);
+		}
+		else if(M==this->numberofelements || M==this->numberofelements+1){
+			this->ScatterRowsFromRank0(full,M,N,2,(M==this->numberofelements+1),&local,&Ml);
+		}
+		else{
+			_error_("record "<<i<<" of \""<<data_name<<"\" has size "<<M<<"x"<<N<<", which is not supported (expecting numberofvertices(+1), numberofelements(+1), 1 or 2 rows)");
+		}
+
+		/*Rank 0 frees the full record before reading the next one*/
+		if(full) xDelete<IssmPDouble>(full);
+
+		/*Recast to active Double for AD*/
+		matrices[i] = xNew<IssmDouble>(Ml*N);
+		for(int k=0;k<Ml*N;++k) matrices[i][k] = reCast<IssmDouble>(local[k]);
+		xDelete<IssmPDouble>(local);
+		mlocal[i] = Ml;
+	}
+
+	/*Assign output pointers: */
+	*pmatrices   = matrices;
+	*pmdims      = mdims;
+	*pndims      = ndims;
+	*pmlocal     = mlocal;
+	*pnumrecords = numrecords;
+}/*}}}*/
 #ifdef _HAVE_AD_
 void  IoModel::FetchData(IssmPDouble** pmatrix,int* pM,int* pN,const char* data_name){/*{{{*/
 
@@ -2215,138 +2378,118 @@ void  IoModel::FetchDataToInput(Inputs* inputs,Elements* elements,const char* ve
 			break;
 		case 8: { //MatArray {{{
 
-					  /*variables:*/
-					  int numarray;
-					  IssmDouble** array=NULL; 
-					  IssmDouble*  matrix=NULL;
-					  IssmDouble*  times = NULL;
-					  int* pM = NULL;
-					  int* pN = NULL;
-					  int M,N;
+				/*Fetch the array of matrices. With testnewapproach, only the rows relevant to this rank
+				 * are kept (rank 0 reads one record at a time and scatters it), otherwise every rank
+				 * holds the full array*/
+				int          numarray;
+				IssmDouble **array = NULL;
+				int         *pM    = NULL;
+				int         *pN    = NULL;
+				int         *pMl   = NULL;
 
-					  /*fetch array of matrices:*/
-					  this->FetchData(&array,&pM,&pN,&numarray,vector_name);
+				if(testnewapproach) this->FetchDataLocal(&array,&pM,&pN,&pMl,&numarray,vector_name);
+				else                this->FetchData(&array,&pM,&pN,&numarray,vector_name);
 
-					  for (int i=0;i<numarray;i++){
+				/*Global -> local row maps (same ordering as the rank 0 scatter: ascending global id)*/
+				int *vrow = NULL;
+				int *erow = NULL;
+				if(testnewapproach){
+					int c = 0;
+					vrow = xNew<int>(this->numberofvertices);
+					for(int g=0;g<this->numberofvertices;g++) vrow[g] = this->my_vertices[g] ? c++ : -1;
+					c = 0;
+					erow = xNew<int>(this->numberofelements);
+					for(int e=0;e<this->numberofelements;e++) erow[e] = this->my_elements[e] ? c++ : -1;
+				}
 
-						  M=pM[i];
-						  N=pN[i];
-						  matrix=array[i];
+				for(int i=0;i<numarray;i++){
 
-						  //initialize times:
-						  if(M==this->numberofvertices || M==(this->numberofvertices+1)){
-							  times=xNew<IssmDouble>(N);
-							  if(M==this->numberofvertices) times[0] = matrix[M-1];
-							  if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-						  }
-						  else if(M==this->numberofelements || M==(this->numberofelements+1)){
-							  times=xNew<IssmDouble>(N);
-							  if(M==this->numberofelements) times[0] = matrix[M-1];
-							  if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-						  }
-						  else if(M==2 || M==1){
-							  times=xNew<IssmDouble>(N);
-							  if(M==1) times[0] = 0;
-							  if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-						  }
-						  else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
+					const int M  = pM[i];
+					const int N  = pN[i];
+					const int Ml = testnewapproach ? pMl[i] : M; //number of rows actually held (incl. time row)
+					IssmDouble* matrix = array[i];
 
+					const bool isvertex = (M==this->numberofvertices || M==this->numberofvertices+1);
+					const bool iselem   = (!isvertex && (M==this->numberofelements || M==this->numberofelements+1));
+					const bool hastime  = (M==this->numberofvertices+1 || M==this->numberofelements+1);
+					if(!isvertex && !iselem && M!=1 && M!=2){
+						_error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
+					}
 
-						  //initialize transient input dataset:
-						  TransientInput* transientinput=inputs->SetDatasetTransientInput(input_enum,i, times,N);
-						  for(Object* & object : elements->objects){
+					/*Time vector, built once per record (TransientInput copies it)*/
+					IssmDouble* times = xNew<IssmDouble>(N);
+					for(int t=0;t<N;t++) times[t] = 0.;
+					if(hastime)   for(int t=0;t<N;t++) times[t] = matrix[(Ml-1)*N+t];
+					else if(M==2) for(int t=0;t<N;t++) times[t] = matrix[N+t];
 
-							  /*Get the right transient input*/
-							  Element* element=xDynamicCast<Element*>(object);
+					/*Initialize transient input dataset*/
+					TransientInput* transientinput = inputs->SetDatasetTransientInput(input_enum,i,times,N);
 
-							  /*Get values and lid list*/
-							  const int   numvertices = element->GetNumberOfVertices();
-							  int        *vertexlids = xNew<int>(numvertices);
-							  int        *vertexsids = xNew<int>(numvertices);
+					for(Object* & object : elements->objects){
 
-							  /*Recover vertices ids needed to initialize inputs*/
-							  _assert_(this->elements);
-							  for(int k=0;k<numvertices;k++){
-								  vertexsids[k] =reCast<int>(this->elements[numvertices*element->Sid()+k]-1); //ids for vertices are in the elements array from Matlab
-								  vertexlids[k]=this->my_vertices_lids[vertexsids[k]];
-							  }
+						Element* element=xDynamicCast<Element*>(object);
 
-							  if(M==this->numberofvertices || M==(this->numberofvertices+1)){
+						if(isvertex){
+							const int   numvertices = element->GetNumberOfVertices();
+							int        *vertexlids  = xNew<int>(numvertices);
+							int        *rows        = xNew<int>(numvertices);
+							IssmDouble *values      = xNew<IssmDouble>(numvertices);
 
-								  //recover time vector: 
-								  times=xNew<IssmDouble>(N);
-								  if(M==this->numberofvertices) times[0] = matrix[M-1];
-								  if(M==this->numberofvertices+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
+							/*Recover vertices ids needed to initialize inputs*/
+							_assert_(this->elements);
+							for(int k=0;k<numvertices;k++){
+								int sid       = reCast<int>(this->elements[numvertices*element->Sid()+k]-1); //ids for vertices are in the elements array from Matlab
+								vertexlids[k] = this->my_vertices_lids[sid];
+								rows[k]       = testnewapproach ? vrow[sid] : sid;
+								_assert_(rows[k]>=0);
+							}
 
-								  IssmDouble* values=xNew<IssmDouble>(numvertices);
+							for(int t=0;t<N;t++){
+								for(int k=0;k<numvertices;k++) values[k] = matrix[N*rows[k]+t];
 
-								  for(int t=0;t<N;t++){
-									  for (int k=0;k<numvertices;k++)values[k]=matrix[N*vertexsids[k]+t];
+								switch(element->ObjectEnum()){
+									case TriaEnum:  transientinput->AddTriaTimeInput( t,numvertices,vertexlids,values,P1Enum); break;
+									case PentaEnum: transientinput->AddPentaTimeInput(t,numvertices,vertexlids,values,P1Enum); break;
+									default: _error_("Not implemented yet");
+								}
+							}
+							xDelete<int>(vertexlids);
+							xDelete<int>(rows);
+							xDelete<IssmDouble>(values);
+						}
+						else{
+							/*Element-based (iselem) or replicated scalar time series (1 or 2 rows)*/
+							int row = -1;
+							if(iselem){
+								row = testnewapproach ? erow[element->Sid()] : element->Sid();
+								_assert_(row>=0);
+							}
+							for(int t=0;t<N;t++){
+								IssmDouble value = iselem ? matrix[N*row+t] : matrix[t];
+								switch(element->ObjectEnum()){
+									case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
+									case PentaEnum: transientinput->AddPentaTimeInput(t,1,&element->lid,&value,P0Enum); break;
+									default: _error_("Not implemented yet");
+								}
+							}
+						}
+					}
 
-									  switch(element->ObjectEnum()){
-										  case TriaEnum:  transientinput->AddTriaTimeInput( t,numvertices,vertexlids,values,P1Enum); break;
-										  case PentaEnum: transientinput->AddPentaTimeInput(t,numvertices,vertexlids,values,P1Enum); break;
-										  default: _error_("Not implemented yet");
-									  }
-								  }
-								  xDelete<IssmDouble>(values);
-							  }
-							  else if(M==this->numberofelements || M==(this->numberofelements+1)){
+					xDelete<IssmDouble>(times);
 
-								  IssmDouble value;
+					/*Free this record as soon as it has been consumed*/
+					xDelete<IssmDouble>(matrix);
+					array[i] = NULL;
+				}
 
-								  //recover time vector: 
-								  times=xNew<IssmDouble>(N);
-								  if(M==this->numberofelements) times[0] = matrix[M-1];
-								  if(M==this->numberofelements+1) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-
-								  for(int t=0;t<N;t++){ 
-
-									  value=matrix[N*element->Sid()+t];
-									  switch(element->ObjectEnum()){
-										  case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-										  case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-										  default: _error_("Not implemented yet");
-									  }
-								  }
-							  }
-							  else if(M==2 || M==1){
-								  IssmDouble value;
-
-								  //recover time vector: 
-								  times=xNew<IssmDouble>(N);
-								  if(M==1) times[0] = 0;
-								  if(M==2) for(int t=0;t<N;t++) times[t] = matrix[(M-1)*N+t];
-
-								  for(int t=0;t<N;t++){ 
-
-									  value=matrix[t];
-									  switch(element->ObjectEnum()){
-										  case TriaEnum:  transientinput->AddTriaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-										  case PentaEnum:  transientinput->AddPentaTimeInput( t,1,&element->lid,&value,P0Enum); break;
-										  default: _error_("Not implemented yet");
-									  }
-								  }
-
-							  }
-							  else _error_("FetchDataToInput error message: row size of MatArray elements should be either numberofelements (+1) or numberofvertices (+1)");
-
-							  xDelete<int>(vertexlids);
-							  xDelete<int>(vertexsids);
-						  }
-
-						  xDelete<IssmDouble>(times);
-					  }
-
-					  /*Delete data:*/
-					  for(int i=0;i<numarray;i++){
-						  IssmDouble* matrix=array[i];
-						  xDelete<IssmDouble>(matrix);
-					  }
-					  xDelete<IssmDouble*>(array);
-					  xDelete<int>(pM);
-					  xDelete<int>(pN); 
-				  } //}}}
+				/*Delete data:*/
+				xDelete<IssmDouble*>(array);
+				xDelete<int>(pM);
+				xDelete<int>(pN);
+				if(pMl) xDelete<int>(pMl);
+				if(vrow) xDelete<int>(vrow);
+				if(erow) xDelete<int>(erow);
+			} //}}}
 				break;
 		case 7: //IssmDouble vector
 		case 10:

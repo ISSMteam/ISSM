@@ -247,6 +247,7 @@ syn keyword cConstant FrontalForcingsARMAmonthinterceptsEnum
 syn keyword cConstant FrontalForcingsARMAmonthtrendsEnum
 syn keyword cConstant FrontalForcingsARMApolyparamsEnum
 syn keyword cConstant FrontalForcingsIsDischargeARMAEnum
+syn keyword cConstant FrontalForcingsIsDischargeRunoffEnum
 syn keyword cConstant FrontalForcingsNumberofBasinsEnum
 syn keyword cConstant FrontalForcingsNumberofBreaksEnum
 syn keyword cConstant FrontalForcingsNumberofMonthBreaksEnum

@@ -240,6 +240,7 @@ syn keyword juliaConstC FrontalForcingsARMAmonthinterceptsEnum
 syn keyword juliaConstC FrontalForcingsARMAmonthtrendsEnum
 syn keyword juliaConstC FrontalForcingsARMApolyparamsEnum
 syn keyword juliaConstC FrontalForcingsIsDischargeARMAEnum
+syn keyword juliaConstC FrontalForcingsIsDischargeRunoffEnum
 syn keyword juliaConstC FrontalForcingsNumberofBasinsEnum
 syn keyword juliaConstC FrontalForcingsNumberofBreaksEnum
 syn keyword juliaConstC FrontalForcingsNumberofMonthBreaksEnum

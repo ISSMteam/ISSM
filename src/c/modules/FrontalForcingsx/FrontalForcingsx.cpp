@@ -17,16 +17,21 @@ void FrontalForcingsx(FemModel* femmodel){/*{{{*/
 	switch(melt_parameterization){
 		case FrontalForcingsDefaultEnum:
 			break;
-		case FrontalForcingsRignotarmaEnum:
+		case FrontalForcingsRignotarmaEnum:{
 			Thermalforcingarmax(femmodel);
 			bool isdischargearma;
 			femmodel->parameters->FindParam(&isdischargearma,FrontalForcingsIsDischargeARMAEnum);
 			if(isdischargearma==true) Subglacialdischargearmax(femmodel);
-			/*Do not break here, call IcefrontAreax(),RignotMeltParameterizationx()*/
-		case FrontalForcingsRignotEnum:
 			femmodel->IcefrontAreax();
 			femmodel->RignotMeltParameterizationx();
-			break;
+			break;}
+		case FrontalForcingsRignotEnum:{
+			bool isdischargerunoff;
+			femmodel->parameters->FindParam(&isdischargerunoff,FrontalForcingsIsDischargeRunoffEnum);
+			if(isdischargerunoff==true) Subglacialdischargerunoffx(femmodel);
+			femmodel->IcefrontAreax();
+			femmodel->RignotMeltParameterizationx();
+			break;}
 		default:
 			_error_("Frontal forcings "<<EnumToStringx(melt_parameterization)<<" not supported yet");
 	}
@@ -173,4 +178,34 @@ void Subglacialdischargearmax(FemModel* femmodel){/*{{{*/
    xDelete<IssmDouble>(monthlyfrac);
    xDelete<IssmDouble>(polyparams);
    xDelete<IssmDouble>(datebreaks);
+}/*}}}*/
+void Subglacialdischargerunoffx(FemModel* femmodel){/*{{{*/
+
+	int numbasins;
+	femmodel->parameters->FindParam(&numbasins,FrontalForcingsNumberofBasinsEnum);
+	IssmDouble* local_discharge = xNewZeroInit<IssmDouble>(numbasins);
+	IssmDouble* basin_discharge = xNewZeroInit<IssmDouble>(numbasins);
+
+	/*Sum runoff volume rate [m^3/d] over the ice-covered area of each basin*/
+	for(Object* &object:femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		int basinid;
+		element->GetInputValue(&basinid,FrontalForcingsBasinIdEnum);
+		if(basinid<0 || basinid>=numbasins) continue;
+		local_discharge[basinid] += element->GetRunoffDischarge();
+	}
+
+	/*Sum across partitions*/
+	ISSM_MPI_Reduce(local_discharge,basin_discharge,numbasins,ISSM_MPI_DOUBLE,ISSM_MPI_SUM,0,IssmComm::GetComm());
+	ISSM_MPI_Bcast(basin_discharge,numbasins,ISSM_MPI_DOUBLE,0,IssmComm::GetComm());
+
+	/*Store as element input so RignotMeltParameterization works unchanged*/
+	for(Object* &object:femmodel->elements->objects){
+		Element* element = xDynamicCast<Element*>(object);
+		element->SetSubglacialDischargeFromBasins(basin_discharge);
+	}
+
+	/*Cleanup*/
+	xDelete<IssmDouble>(local_discharge);
+	xDelete<IssmDouble>(basin_discharge);
 }/*}}}*/
