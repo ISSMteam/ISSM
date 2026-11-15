@@ -103,6 +103,15 @@ def plot_section(md,data,options,fig,axgrid,gridindex):
                 z=z*unit
                 s=s*unit
 
+            #caxis
+            if not options.exist('caxis'):
+                caxis_opt = [min(data_s), max(data_s)]
+                options.changefieldvalue('caxis',caxis_opt)
+            else:
+                caxis_opt = options.getfieldvalue('caxis')
+                data = np.maximum(data, caxis_opt[0]) # min
+                data = np.minimum(data, caxis_opt[1]) # max
+
             #2D
             if is2d:
     # %		%plot section value
@@ -218,9 +227,13 @@ def plot_section(md,data,options,fig,axgrid,gridindex):
                         if not options.exist('colormap'):
                             options.addfielddefault('colormap',mpl.cm.viridis)
 
+                        #NOTE: tricontourf does not support nan value in dataset.
                         data_s[np.isnan(data_s)]=0.0
+
                         ax.tricontourf(tri, data_s, edgecolor='none',
-                                     cmap=options.getfieldvalue('colormap'))
+                                    levels=256,
+                                    cmap=options.getfieldvalue('colormap'),
+                                    vmin=caxis_opt[0],vmax=caxis_opt[1])
                         #ax.tripcolor(tri, data_s, edgecolor='none',
                         #             cmap=options.getfieldvalue('colormap'))
                                     #shading='interp',
