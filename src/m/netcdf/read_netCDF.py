@@ -19,6 +19,7 @@ from collections import OrderedDict
 import numpy as np
 from netCDF4 import Dataset
 from model import model
+from generic import generic
 from results import results, solution, solutionstep
 from toolkits import toolkits
 
@@ -485,6 +486,15 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
         module = importlib.import_module(ct)
         f = getattr(module, ct)
         md.materials = f()
+        # }}}
+    elif gname == 'cluster': # {{{
+        try:
+            module = importlib.import_module(ct)
+            f = getattr(module, ct)
+            md.cluster = f()
+        except:
+            md.cluster = generic()
+            warnings.warn('Warning: cluster "' + ct + '" is not implemented in python. Use "generic" cluster as default.')
         # }}}
 
     # All other groups keep their default instance; we just overwrite fields

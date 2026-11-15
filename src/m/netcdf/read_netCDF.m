@@ -178,6 +178,14 @@ function md  = instantiate_subclass(md, gname, gid, verbose) % {{{
 		case 'materials' % {{{
 			md.materials = feval(ct);
 			% }}}
+		case 'cluster' % {{{
+			try
+				md.cluster = feval(ct);
+			catch
+				md.cluster = generic;
+				warning(['Warning: cluster "' ct '" is not implemented in python. Use "generic" cluster as default.'])
+			end
+			% }}}
 	end
 	if verbose && ~isempty(ct)
 		fprintf(' (class: %s)\n', ct);
