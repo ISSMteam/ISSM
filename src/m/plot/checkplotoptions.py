@@ -14,9 +14,9 @@ def checkplotoptions(md, options):
 
     # {{{ units
     if options.exist('unit'):
-        if 'km' in options.getfieldvalue('unit', 'km'):
+        if options.getfieldvalue('unit','km') in ['km']:
             options.changefieldvalue('unit', pow(10, -3))
-        elif '100km' in options.getfieldvalue('unit', '100km'):
+        elif options.getfieldvalue('unit', '100km') in ['100km']:
             options.changefieldvalue('unit', pow(10, -5))
     # }}}
     # {{{ density
