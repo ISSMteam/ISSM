@@ -557,6 +557,7 @@ syn keyword cConstant SolidearthSettingsGRDEnum
 syn keyword cConstant SolidearthSettingsRunFrequencyEnum
 syn keyword cConstant SolidearthSettingsTimeAccEnum
 syn keyword cConstant SolidearthSettingsHorizEnum
+syn keyword cConstant SolidearthSettingsLowmemEnum
 syn keyword cConstant SolidearthSettingsMaxiterEnum
 syn keyword cConstant SolidearthSettingsGrdOceanEnum
 syn keyword cConstant SolidearthSettingsOceanAreaScalingEnum

@@ -166,6 +166,7 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.maxiter",SolidearthSettingsMaxiterEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.selfattraction",SolidearthSettingsSelfAttractionEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.horiz",SolidearthSettingsHorizEnum));
+	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.lowmem",SolidearthSettingsLowmemEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.elastic",SolidearthSettingsElasticEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.viscous",SolidearthSettingsViscousEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.rotation",SolidearthSettingsRotationEnum));

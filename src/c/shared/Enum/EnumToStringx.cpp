@@ -559,6 +559,7 @@ const char* EnumToStringx(int en){
 		case SolidearthSettingsRunFrequencyEnum : return "SolidearthSettingsRunFrequency";
 		case SolidearthSettingsTimeAccEnum : return "SolidearthSettingsTimeAcc";
 		case SolidearthSettingsHorizEnum : return "SolidearthSettingsHoriz";
+		case SolidearthSettingsLowmemEnum : return "SolidearthSettingsLowmem";
 		case SolidearthSettingsMaxiterEnum : return "SolidearthSettingsMaxiter";
 		case SolidearthSettingsGrdOceanEnum : return "SolidearthSettingsGrdOcean";
 		case SolidearthSettingsOceanAreaScalingEnum : return "SolidearthSettingsOceanAreaScaling";

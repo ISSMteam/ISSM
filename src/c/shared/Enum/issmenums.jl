@@ -546,6 +546,7 @@
 	SolidearthSettingsRunFrequencyEnum
 	SolidearthSettingsTimeAccEnum
 	SolidearthSettingsHorizEnum
+	SolidearthSettingsLowmemEnum
 	SolidearthSettingsMaxiterEnum
 	SolidearthSettingsGrdOceanEnum
 	SolidearthSettingsOceanAreaScalingEnum
@@ -4447,6 +4448,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SolidearthSettingsRunFrequencyEnum) return "SolidearthSettingsRunFrequency" end
 	if(enum==SolidearthSettingsTimeAccEnum) return "SolidearthSettingsTimeAcc" end
 	if(enum==SolidearthSettingsHorizEnum) return "SolidearthSettingsHoriz" end
+	if(enum==SolidearthSettingsLowmemEnum) return "SolidearthSettingsLowmem" end
 	if(enum==SolidearthSettingsMaxiterEnum) return "SolidearthSettingsMaxiter" end
 	if(enum==SolidearthSettingsGrdOceanEnum) return "SolidearthSettingsGrdOcean" end
 	if(enum==SolidearthSettingsOceanAreaScalingEnum) return "SolidearthSettingsOceanAreaScaling" end
@@ -8348,6 +8350,7 @@ function StringToEnum(name::String)
 	if(name=="SolidearthSettingsRunFrequency") return SolidearthSettingsRunFrequencyEnum  end
 	if(name=="SolidearthSettingsTimeAcc") return SolidearthSettingsTimeAccEnum  end
 	if(name=="SolidearthSettingsHoriz") return SolidearthSettingsHorizEnum  end
+	if(name=="SolidearthSettingsLowmem") return SolidearthSettingsLowmemEnum  end
 	if(name=="SolidearthSettingsMaxiter") return SolidearthSettingsMaxiterEnum  end
 	if(name=="SolidearthSettingsGrdOcean") return SolidearthSettingsGrdOceanEnum  end
 	if(name=="SolidearthSettingsOceanAreaScaling") return SolidearthSettingsOceanAreaScalingEnum  end

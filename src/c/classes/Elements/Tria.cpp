@@ -47,6 +47,18 @@ static void GetSLCVertexCoordinates(IssmDouble xyz_list[NUMVERTICES][3],Vertex**
 	}
 }
 
+/*Store azimuth indices (int values in [-32767,32767]) in inputs: as int16 if lowmem==1 (saves memory), as int otherwise*/
+static void SetAzimuthIndexInput(Inputs* inputs,int enum_in,int lid,int* values,int n,int lowmem){
+	if(lowmem==1){
+		int16_t* values16=xNew<int16_t>(n);
+		for(int i=0;i<n;i++) values16[i]=static_cast<int16_t>(values[i]);
+		inputs->SetIntArrayInput(enum_in,lid,values16,n);
+		xDelete<int16_t>(values16);
+	}
+	else{
+		inputs->SetIntArrayInput(enum_in,lid,values,n);
+	}
+}
 /*Constructors/destructor/copy*/
 Tria::Tria(int tria_id,int tria_sid,int tria_lid,IoModel* iomodel,int nummodels)/*{{{*/
 	:ElementHook(nummodels,tria_id,NUMVERTICES,iomodel){
@@ -7039,7 +7051,7 @@ void       Tria::GiaDeflection(Vector<IssmDouble>* wg,Vector<IssmDouble>* dwgdt,
 /*}}}*/
 void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae, int* lids, int* n_activevertices){ /*{{{*/
 
-	/*Declarations:{{{*/
+	/*Intermediaries*/
 	int nel;
 	IssmDouble planetarea,planetradius;
 	IssmDouble rho_earth;
@@ -7069,6 +7081,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	bool computerotation = false;
 	bool computeviscous = false;
 	int  horiz;
+	int  lowmem=0; //0: int azimuth indices (default), 1: int16
 	bool istime=true;
 	IssmDouble timeacc=0.;
 	IssmDouble start_time,final_time;
@@ -7108,6 +7121,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
 	this->parameters->FindParam(&NewtonG,ConstantsNewtonGravityEnum);
 	this->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
+	this->parameters->FindParam(&lowmem,SolidearthSettingsLowmemEnum);
 	this->parameters->FindParam(&grd,SolidearthSettingsGRDEnum); 
 	this->parameters->FindParam(&grdmodel,GrdModelEnum);
 
@@ -7212,7 +7226,7 @@ void       Tria::SealevelchangeGeometryInitial(IssmDouble* xxe, IssmDouble* yye,
 	/*Add in inputs:*/
 	this->inputs->SetIntArrayInput(SealevelchangeConvolutionVerticesEnum,this->lid,activevertices,n_activevertices[this->lid]);
 	this->inputs->SetIntArrayInput(SealevelchangeAlphaIndexEnum,this->lid,AlphaIndex,nel*n_activevertices[this->lid]);
-	if(horiz) this->inputs->SetIntArrayInput(SealevelchangeAzimuthIndexEnum,this->lid,AzimuthIndex,nel*n_activevertices[this->lid]);
+	if(horiz) SetAzimuthIndexInput(this->inputs,SealevelchangeAzimuthIndexEnum,this->lid,AzimuthIndex,nel*n_activevertices[this->lid],lowmem);
 
 	/*}}}*/
 	/*Compute rotation kernel:{{{*/
@@ -7376,6 +7390,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	bool computeelastic = false;
 	bool computeviscous = false;
 	int  horiz;
+	int  lowmem=0; //0: int azimuth indices (default), 1: int16
 	int grd, grdmodel;
 
 	bool istime=true;
@@ -7394,6 +7409,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	this->parameters->FindParam(&planetarea,SolidearthPlanetAreaEnum);
 	this->parameters->FindParam(&planetradius,SolidearthPlanetRadiusEnum);
 	this->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
+	this->parameters->FindParam(&lowmem,SolidearthSettingsLowmemEnum);
 	this->parameters->FindParam(&grd,SolidearthSettingsGRDEnum); 
 	this->parameters->FindParam(&grdmodel,GrdModelEnum);
 	/*}}}*/
@@ -7485,7 +7501,7 @@ void       Tria::SealevelchangeGeometrySubElementKernel(SealevelGeometry* slgeom
 	/*Save all these arrayins for each element:*/
 	for (int l=0;l<SLGEOM_NUMLOADS;l++){
 		this->inputs->SetIntArrayInput(slgeom->AlphaIndexEnum(l),this->lid,AlphaIndex[l],slgeom->nbar[l]*n_activevertices);
-		if(horiz) this->inputs->SetIntArrayInput(slgeom->AzimuthIndexEnum(l),this->lid,AzimIndex[l],slgeom->nbar[l]*n_activevertices);
+		if(horiz) SetAzimuthIndexInput(this->inputs,slgeom->AzimuthIndexEnum(l),this->lid,AzimIndex[l],slgeom->nbar[l]*n_activevertices,lowmem);
 	}
 	/*}}}*/
 	/*Free memory:{{{*/
@@ -8416,6 +8432,9 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	int* AzimIndex=NULL;
 	int* AlphaIndexsub[SLGEOM_NUMLOADS];
 	int* AzimIndexsub[SLGEOM_NUMLOADS];
+	int16_t* AzimIndex16=NULL;               //used instead of AzimIndex if lowmem
+	int16_t* AzimIndexsub16[SLGEOM_NUMLOADS]; //used instead of AzimIndexsub if lowmem
+	int  lowmem=0; //0: int azimuth indices (default), 1: int16
 	int* activevertices = NULL;
 	IssmDouble* grdfield=NULL;
 	int i,e,l,t,it,a,b,c, nbar, av, ae,n_activevertices, size;
@@ -8439,8 +8458,15 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 	this->inputs->GetIntArrayPtr(SealevelchangeConvolutionVerticesEnum,this->lid,&activevertices,&n_activevertices);
 	this->inputs->GetIntArrayPtr(SealevelchangeAlphaIndexEnum,this->lid,&AlphaIndex,&size);
 	for (int l=0;l<SLGEOM_NUMLOADS;l++) this->inputs->GetIntArrayPtr(slgeom->AlphaIndexEnum(l),this->lid,&AlphaIndexsub[l],&size);
-	this->inputs->GetIntArrayPtr(SealevelchangeAzimuthIndexEnum,this->lid,&AzimIndex,&size);
-	for (int l=0;l<SLGEOM_NUMLOADS;l++) this->inputs->GetIntArrayPtr(slgeom->AzimuthIndexEnum(l),this->lid,&AzimIndexsub[l],&size);
+	this->parameters->FindParam(&lowmem,SolidearthSettingsLowmemEnum);
+	if(lowmem==1){
+		this->inputs->GetIntArrayPtr(SealevelchangeAzimuthIndexEnum,this->lid,&AzimIndex16,&size);
+		for (int l=0;l<SLGEOM_NUMLOADS;l++) this->inputs->GetIntArrayPtr(slgeom->AzimuthIndexEnum(l),this->lid,&AzimIndexsub16[l],&size);
+	}
+	else{
+		this->inputs->GetIntArrayPtr(SealevelchangeAzimuthIndexEnum,this->lid,&AzimIndex,&size);
+		for (int l=0;l<SLGEOM_NUMLOADS;l++) this->inputs->GetIntArrayPtr(slgeom->AzimuthIndexEnum(l),this->lid,&AzimIndexsub[l],&size);
+	}
 
 	//First, figure out how many time steps to compute grdfield for
 	this->parameters->FindParam(&computeviscous,SolidearthSettingsViscousEnum);
@@ -8509,26 +8535,26 @@ IssmDouble*       Tria::SealevelchangeHorizGxL(int spatial_component, IssmDouble
 		if (spatial_component==1){ //north
 			for(ae=0;ae<loads->nactiveloads;ae++){
 				e=loads->combined_loads_index[ae];
-				horiz_projection[ae]=cos(2.0*M_PI*reCast<IssmDouble,int>(AzimIndex[av*nel+e])/65535.0); // 65535=2^16-1 = max value of 16 bits unsigned int
+				horiz_projection[ae]=cos(2.0*M_PI*(lowmem==1?reCast<IssmDouble,int16_t>(AzimIndex16[av*nel+e]):reCast<IssmDouble,int>(AzimIndex[av*nel+e]))/65535.0); // 65535=2^16-1 = max value of 16 bits unsigned int
 			}
 			for(l=0;l<SLGEOM_NUMLOADS;l++){
 				nbar=slgeom->nbar[l];
 				for(ae=0;ae<loads->nactivesubloads[l];ae++){
 					e=loads->combined_subloads_index[l][ae];
-					horiz_projectionsub[l][ae]=cos(2.0*M_PI*reCast<IssmDouble,int>(AzimIndexsub[l][av*nbar+e])/65535.0);
+					horiz_projectionsub[l][ae]=cos(2.0*M_PI*(lowmem==1?reCast<IssmDouble,int16_t>(AzimIndexsub16[l][av*nbar+e]):reCast<IssmDouble,int>(AzimIndexsub[l][av*nbar+e]))/65535.0);
 				}
 			}
 		}
 		else if (spatial_component==2){ //east
 			for(ae=0;ae<loads->nactiveloads;ae++){
 				e=loads->combined_loads_index[ae];
-				horiz_projection[ae]=sin(2.0*M_PI*reCast<IssmDouble,int>(AzimIndex[av*nel+e])/65535.0);
+				horiz_projection[ae]=sin(2.0*M_PI*(lowmem==1?reCast<IssmDouble,int16_t>(AzimIndex16[av*nel+e]):reCast<IssmDouble,int>(AzimIndex[av*nel+e]))/65535.0);
 			}
 			for(l=0;l<SLGEOM_NUMLOADS;l++){
 				nbar=slgeom->nbar[l];
 				for(ae=0;ae<loads->nactivesubloads[l];ae++){
 					e=loads->combined_subloads_index[l][ae];
-					horiz_projectionsub[l][ae]=sin(2.0*M_PI*reCast<IssmDouble,int>(AzimIndexsub[l][av*nbar+e])/65535.0);
+					horiz_projectionsub[l][ae]=sin(2.0*M_PI*(lowmem==1?reCast<IssmDouble,int16_t>(AzimIndexsub16[l][av*nbar+e]):reCast<IssmDouble,int>(AzimIndexsub[l][av*nbar+e]))/65535.0);
 				}
 			}
 		}

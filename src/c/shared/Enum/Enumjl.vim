@@ -550,6 +550,7 @@ syn keyword juliaConstC SolidearthSettingsGRDEnum
 syn keyword juliaConstC SolidearthSettingsRunFrequencyEnum
 syn keyword juliaConstC SolidearthSettingsTimeAccEnum
 syn keyword juliaConstC SolidearthSettingsHorizEnum
+syn keyword juliaConstC SolidearthSettingsLowmemEnum
 syn keyword juliaConstC SolidearthSettingsMaxiterEnum
 syn keyword juliaConstC SolidearthSettingsGrdOceanEnum
 syn keyword juliaConstC SolidearthSettingsOceanAreaScalingEnum
