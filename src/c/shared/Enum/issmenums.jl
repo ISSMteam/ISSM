@@ -514,6 +514,7 @@
 	SealevelchangeRunCountEnum
 	SealevelchangeTransitionsEnum
 	SealevelchangeRequestedOutputsEnum
+	SurfaceHydrologyTypeEnum
 	RotationalAngularVelocityEnum
 	RotationalEquatorialMoiEnum
 	RotationalPolarMoiEnum
@@ -977,6 +978,7 @@
 	UGiaRateEnum
 	GradientEnum
 	GroundinglineHeightEnum
+	HurstEnum
 	HydraulicPotentialEnum
 	HydraulicPotentialOldEnum
 	HydrologyBasalFluxEnum
@@ -1053,6 +1055,7 @@
 	InversionVxObsEnum
 	InversionVyObsEnum
 	LambdaSEnum
+	LakeDepthEnum
 	LevelsetfunctionSlopeXEnum
 	LevelsetfunctionSlopeYEnum
 	LevelsetObservationEnum
@@ -1075,6 +1078,7 @@
 	MaterialsRheologyEsEnum
 	MaterialsRheologyEsbarEnum
 	MaterialsRheologyNEnum
+	MeltSupplyEnum
 	MeshScaleFactorEnum
 	MeshVertexonbaseEnum
 	MeshVertexonboundaryEnum
@@ -1184,6 +1188,7 @@
 	SedimentHeadTransientEnum
 	SedimentHeadResidualEnum
 	SedimentHeadStackedEnum
+	SigmaEnum
 	SigmaNNEnum
 	SigmaVMEnum
 	SmbAblationEnum
@@ -1453,6 +1458,7 @@
 	VzSSAEnum
 	WaterColumnOldEnum
 	WatercolumnEnum
+	WaterDepthEnum
 	WaterfractionDrainageEnum
 	WaterfractionDrainageIntegratedEnum
 	WaterfractionEnum
@@ -4416,6 +4422,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SealevelchangeRunCountEnum) return "SealevelchangeRunCount" end
 	if(enum==SealevelchangeTransitionsEnum) return "SealevelchangeTransitions" end
 	if(enum==SealevelchangeRequestedOutputsEnum) return "SealevelchangeRequestedOutputs" end
+	if(enum==SurfaceHydrologyTypeEnum) return "SurfaceHydrologyType" end
 	if(enum==RotationalAngularVelocityEnum) return "RotationalAngularVelocity" end
 	if(enum==RotationalEquatorialMoiEnum) return "RotationalEquatorialMoi" end
 	if(enum==RotationalPolarMoiEnum) return "RotationalPolarMoi" end
@@ -4879,6 +4886,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==UGiaRateEnum) return "UGiaRate" end
 	if(enum==GradientEnum) return "Gradient" end
 	if(enum==GroundinglineHeightEnum) return "GroundinglineHeight" end
+	if(enum==HurstEnum) return "Hurst" end
 	if(enum==HydraulicPotentialEnum) return "HydraulicPotential" end
 	if(enum==HydraulicPotentialOldEnum) return "HydraulicPotentialOld" end
 	if(enum==HydrologyBasalFluxEnum) return "HydrologyBasalFlux" end
@@ -4955,6 +4963,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==InversionVxObsEnum) return "InversionVxObs" end
 	if(enum==InversionVyObsEnum) return "InversionVyObs" end
 	if(enum==LambdaSEnum) return "LambdaS" end
+	if(enum==LakeDepthEnum) return "LakeDepth" end
 	if(enum==LevelsetfunctionSlopeXEnum) return "LevelsetfunctionSlopeX" end
 	if(enum==LevelsetfunctionSlopeYEnum) return "LevelsetfunctionSlopeY" end
 	if(enum==LevelsetObservationEnum) return "LevelsetObservation" end
@@ -4977,6 +4986,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==MaterialsRheologyEsEnum) return "MaterialsRheologyEs" end
 	if(enum==MaterialsRheologyEsbarEnum) return "MaterialsRheologyEsbar" end
 	if(enum==MaterialsRheologyNEnum) return "MaterialsRheologyN" end
+	if(enum==MeltSupplyEnum) return "MeltSupply" end
 	if(enum==MeshScaleFactorEnum) return "MeshScaleFactor" end
 	if(enum==MeshVertexonbaseEnum) return "MeshVertexonbase" end
 	if(enum==MeshVertexonboundaryEnum) return "MeshVertexonboundary" end
@@ -5086,6 +5096,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==SedimentHeadTransientEnum) return "SedimentHeadTransient" end
 	if(enum==SedimentHeadResidualEnum) return "SedimentHeadResidual" end
 	if(enum==SedimentHeadStackedEnum) return "SedimentHeadStacked" end
+	if(enum==SigmaEnum) return "Sigma" end
 	if(enum==SigmaNNEnum) return "SigmaNN" end
 	if(enum==SigmaVMEnum) return "SigmaVM" end
 	if(enum==SmbAblationEnum) return "SmbAblation" end
@@ -5355,6 +5366,7 @@ function EnumToString(enum::IssmEnum)
 	if(enum==VzSSAEnum) return "VzSSA" end
 	if(enum==WaterColumnOldEnum) return "WaterColumnOld" end
 	if(enum==WatercolumnEnum) return "Watercolumn" end
+	if(enum==WaterDepthEnum) return "WaterDepth" end
 	if(enum==WaterfractionDrainageEnum) return "WaterfractionDrainage" end
 	if(enum==WaterfractionDrainageIntegratedEnum) return "WaterfractionDrainageIntegrated" end
 	if(enum==WaterfractionEnum) return "Waterfraction" end
@@ -8318,6 +8330,7 @@ function StringToEnum(name::String)
 	if(name=="SealevelchangeRunCount") return SealevelchangeRunCountEnum  end
 	if(name=="SealevelchangeTransitions") return SealevelchangeTransitionsEnum  end
 	if(name=="SealevelchangeRequestedOutputs") return SealevelchangeRequestedOutputsEnum  end
+	if(name=="SurfaceHydrologyType") return SurfaceHydrologyTypeEnum  end
 	if(name=="RotationalAngularVelocity") return RotationalAngularVelocityEnum  end
 	if(name=="RotationalEquatorialMoi") return RotationalEquatorialMoiEnum  end
 	if(name=="RotationalPolarMoi") return RotationalPolarMoiEnum  end
@@ -8781,6 +8794,7 @@ function StringToEnum(name::String)
 	if(name=="UGiaRate") return UGiaRateEnum  end
 	if(name=="Gradient") return GradientEnum  end
 	if(name=="GroundinglineHeight") return GroundinglineHeightEnum  end
+	if(name=="Hurst") return HurstEnum  end
 	if(name=="HydraulicPotential") return HydraulicPotentialEnum  end
 	if(name=="HydraulicPotentialOld") return HydraulicPotentialOldEnum  end
 	if(name=="HydrologyBasalFlux") return HydrologyBasalFluxEnum  end
@@ -8857,6 +8871,7 @@ function StringToEnum(name::String)
 	if(name=="InversionVxObs") return InversionVxObsEnum  end
 	if(name=="InversionVyObs") return InversionVyObsEnum  end
 	if(name=="LambdaS") return LambdaSEnum  end
+	if(name=="LakeDepth") return LakeDepthEnum  end
 	if(name=="LevelsetfunctionSlopeX") return LevelsetfunctionSlopeXEnum  end
 	if(name=="LevelsetfunctionSlopeY") return LevelsetfunctionSlopeYEnum  end
 	if(name=="LevelsetObservation") return LevelsetObservationEnum  end
@@ -8879,6 +8894,7 @@ function StringToEnum(name::String)
 	if(name=="MaterialsRheologyEs") return MaterialsRheologyEsEnum  end
 	if(name=="MaterialsRheologyEsbar") return MaterialsRheologyEsbarEnum  end
 	if(name=="MaterialsRheologyN") return MaterialsRheologyNEnum  end
+	if(name=="MeltSupply") return MeltSupplyEnum  end
 	if(name=="MeshScaleFactor") return MeshScaleFactorEnum  end
 	if(name=="MeshVertexonbase") return MeshVertexonbaseEnum  end
 	if(name=="MeshVertexonboundary") return MeshVertexonboundaryEnum  end
@@ -8988,6 +9004,7 @@ function StringToEnum(name::String)
 	if(name=="SedimentHeadTransient") return SedimentHeadTransientEnum  end
 	if(name=="SedimentHeadResidual") return SedimentHeadResidualEnum  end
 	if(name=="SedimentHeadStacked") return SedimentHeadStackedEnum  end
+	if(name=="Sigma") return SigmaEnum  end
 	if(name=="SigmaNN") return SigmaNNEnum  end
 	if(name=="SigmaVM") return SigmaVMEnum  end
 	if(name=="SmbAblation") return SmbAblationEnum  end
@@ -9257,6 +9274,7 @@ function StringToEnum(name::String)
 	if(name=="VzSSA") return VzSSAEnum  end
 	if(name=="WaterColumnOld") return WaterColumnOldEnum  end
 	if(name=="Watercolumn") return WatercolumnEnum  end
+	if(name=="WaterDepth") return WaterDepthEnum  end
 	if(name=="WaterfractionDrainage") return WaterfractionDrainageEnum  end
 	if(name=="WaterfractionDrainageIntegrated") return WaterfractionDrainageIntegratedEnum  end
 	if(name=="Waterfraction") return WaterfractionEnum  end
