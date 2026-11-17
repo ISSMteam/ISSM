@@ -69,6 +69,8 @@ def LaunchQueueJobSbatch(cluster, modelname, dirname, filelist, restart, batch, 
             submit_str = ' && sbatch {}.queue '.format(modelname)
         elif fmt == 3:
             submit_str = ' && /PBS/bin/qsub {}.queue '.format(modelname)
+        elif fmt == 4:
+            submit_str = ' && qsub {}.queue '.format(modelname)
         else:
             raise ValueError('fmt={} not supported'.format(fmt))
     else:
