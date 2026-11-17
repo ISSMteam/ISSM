@@ -63,8 +63,8 @@ void InterpFromMeshToGridx(double** pgriddata,int* index_mesh, double* x_mesh, d
 	for(int n=0;n<nels;n++){
 
 		/*display current iteration*/
-		if(debug && n%10000==0)
-		 _printf_("\r      interpolation progress: "<<setw(6)<<setprecision(2)<<double(n)/double(nels)*100<<"%   ");
+		// if(debug && n%10000==0)
+		//  _printf_("\r      interpolation progress: "<<setw(6)<<setprecision(2)<<double(n)/double(nels)*100<<"%   ");
 
 		/*Get extrema coordinates of current elements*/
 		x_tria_min=x_mesh[index_mesh[3*n+0]-1]; x_tria_max=x_tria_min;
