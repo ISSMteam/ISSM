@@ -91,8 +91,11 @@ static void SetSLCIndexInput(Inputs* inputs,int enum_in,int lid,const uint32_t* 
 static uint32_t QuantizeSLCAzimuth(IssmDouble angle,int object_enum){
 	/*Quantize the signed bearing at the selected width, then wrap negative
 	 *bins for unsigned storage. The 16-bit scale matches the old encoding.*/
-	const int64_t signed_index=static_cast<int64_t>(static_cast<IssmDouble>(SLCIndexMax(object_enum))*angle/(2.*M_PI));
-	if(signed_index<0) return static_cast<uint32_t>(static_cast<int64_t>(SLCIndexMax(object_enum))+signed_index);
+	const uint32_t index_max=SLCIndexMax(object_enum);
+	/*The bin is discrete: extract the passive value before scaling and truncating.*/
+	const IssmPDouble bearing=reCast<IssmPDouble,IssmDouble>(angle);
+	const int64_t signed_index=static_cast<int64_t>(static_cast<IssmPDouble>(index_max)*bearing/(2.*M_PI));
+	if(signed_index<0) return static_cast<uint32_t>(static_cast<int64_t>(index_max)+signed_index);
 	return static_cast<uint32_t>(signed_index);
 }
 
