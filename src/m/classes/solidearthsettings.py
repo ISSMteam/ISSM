@@ -29,7 +29,7 @@ class solidearthsettings(object):
         self.degacc                 = 0 # Degree increment for resolution of Green tables
         self.timeacc                = 0 # Time step accuracy required to compute Green tables
         self.horiz                  = 0 # Compute horizontal deformation?
-        self.lowmem                 = 0 # Store azimuth indices as int16 to save memory (only used if horiz=1)?
+        self.lowmem                 = 0 # Recompute GRD distance and azimuth bins on demand
         self.grdmodel               = 0 # GRD model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
         self.cross_section_shape    = 0 # Cross section only used when GRD model is Ivins
 
@@ -54,6 +54,7 @@ class solidearthsettings(object):
         s += '{}\n'.format(fielddisplay(self, 'elastic', 'enables elastic deformation from surface loading'))
         s += '{}\n'.format(fielddisplay(self, 'viscous', 'enables viscous deformation from surface loading'))
         s += '{}\n'.format(fielddisplay(self, 'rotation', 'enables polar motion to feedback on the GRD fields'))
+        s += '{}\n'.format(fielddisplay(self, 'lowmem', 'recompute GRD distance and azimuth bins on demand to save memory (default: 0)'))
         s += '{}\n'.format(fielddisplay(self, 'degacc', 'accuracy (default: .01 deg) for numerical discretization of the Green\'s functions'))
         s += '{}\n'.format(fielddisplay(self, 'timeacc', 'time accuracy (default: 1 year) for numerical discretization of the Green\'s functions'))
         s += '{}\n'.format(fielddisplay(self, 'grdmodel', 'type of deformation model, 0 for no GRD, 1 for spherical GRD model (SESAW model), 2 for half-space planar GRD (visco-elastic model from Ivins)'))
@@ -90,9 +91,6 @@ class solidearthsettings(object):
         # Horizontal displacement? (not on by default)
         self.horiz = 0
 
-        # Low memory mode (off by default)
-        self.lowmem = 0
-
         # Cross section for Ivins model
         self.cross_section_shape = 1 # Square as default (see iedge in GiaDeflectionCorex)
 
@@ -111,7 +109,7 @@ class solidearthsettings(object):
         md = checkfield(md, 'fieldname', 'solidearth.settings.degacc', 'size', [1], '>=', 1e-10)
         md = checkfield(md, 'fieldname', 'solidearth.settings.timeacc', 'size', [1], '>', 0)
         md = checkfield(md, 'fieldname', 'solidearth.settings.horiz', 'NaN', 1, 'Inf', 1, 'values', [0, 1])
-        md = checkfield(md, 'fieldname', 'solidearth.settings.lowmem', 'NaN', 1, 'Inf', 1, 'values', [0, 1])
+        md = checkfield(md, 'fieldname', 'solidearth.settings.lowmem', 'size', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'solidearth.settings.grdmodel', '>=', 0, '<=', 2)
         md = checkfield(md, 'fieldname', 'solidearth.settings.cross_section_shape', 'numel', [1], 'values', [1, 2])
 

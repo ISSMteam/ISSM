@@ -3564,6 +3564,9 @@
 	ArrayInputEnum
 	IntArrayInputEnum
 	Int16ArrayInputEnum
+	UInt8ArrayInputEnum
+	UInt16ArrayInputEnum
+	UInt32ArrayInputEnum
 	DoubleExternalResultEnum
 	DoubleMatArrayParamEnum
 	DoubleMatExternalResultEnum
@@ -7472,6 +7475,9 @@ function EnumToString(enum::IssmEnum)
 	if(enum==ArrayInputEnum) return "ArrayInput" end
 	if(enum==IntArrayInputEnum) return "IntArrayInput" end
 	if(enum==Int16ArrayInputEnum) return "Int16ArrayInput" end
+	if(enum==UInt8ArrayInputEnum) return "UInt8ArrayInput" end
+	if(enum==UInt16ArrayInputEnum) return "UInt16ArrayInput" end
+	if(enum==UInt32ArrayInputEnum) return "UInt32ArrayInput" end
 	if(enum==DoubleExternalResultEnum) return "DoubleExternalResult" end
 	if(enum==DoubleMatArrayParamEnum) return "DoubleMatArrayParam" end
 	if(enum==DoubleMatExternalResultEnum) return "DoubleMatExternalResult" end
@@ -11380,6 +11386,9 @@ function StringToEnum(name::String)
 	if(name=="ArrayInput") return ArrayInputEnum  end
 	if(name=="IntArrayInput") return IntArrayInputEnum  end
 	if(name=="Int16ArrayInput") return Int16ArrayInputEnum  end
+	if(name=="UInt8ArrayInput") return UInt8ArrayInputEnum  end
+	if(name=="UInt16ArrayInput") return UInt16ArrayInputEnum  end
+	if(name=="UInt32ArrayInput") return UInt32ArrayInputEnum  end
 	if(name=="DoubleExternalResult") return DoubleExternalResultEnum  end
 	if(name=="DoubleMatArrayParam") return DoubleMatArrayParamEnum  end
 	if(name=="DoubleMatExternalResult") return DoubleMatExternalResultEnum  end

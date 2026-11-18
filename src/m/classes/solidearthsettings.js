@@ -22,7 +22,7 @@ class solidearthsettings {//{{{
 		this.degacc					= 0; // Degree increment for resolution of Green tables
 		this.timeacc				= 1; // Time step accuracy required to compute Green tables
 		this.horiz					= 0; // Compute horizontal deformation
-		this.lowmem					= 0; // Store azimuth indices as int16 to save memory
+		this.lowmem					= 0; // Recompute GRD distance and azimuth bins on demand
 		this.grdmodel				= 1; // GRD model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
 		this.cross_section_shape	= 0; // Cross section only used when GRD model is Ivins
 
@@ -65,7 +65,6 @@ class solidearthsettings {//{{{
 
 		// Horizontal displacement? (not on by default)
 		this.horiz = 0;
-		this.lowmem = 0;
 
 		// Cross section for Ivins model
 		this.cross_section_shape = 1; // Square as default (see idege in GiaDeflectionCorex)
@@ -86,7 +85,7 @@ class solidearthsettings {//{{{
 		md = checkfield(md, 'fieldname', 'solidearth.settings.degacc', 'size', [1], '>=', 1e-10);
 		md = checkfield(md, 'fieldname', 'solidearth.settings.timeacc', 'size', [1], '>', 0);
 		md = checkfield(md, 'fieldname', 'solidearth.settings.horiz', 'NaN', 1, 'Inf', 1, 'values', [0, 1]);
-		md = checkfield(md, 'fieldname', 'solidearth.settings.lowmem', 'NaN', 1, 'Inf', 1, 'values', [0, 1]);
+		md = checkfield(md, 'fieldname', 'solidearth.settings.lowmem', 'size', [1, 1], 'values', [0, 1]);
 		md = checkfield(md, 'fieldname', 'solidearth.settings.grdmodel', '>=', 0, '<=', 2);
 		md = checkfield(md, 'fieldname', 'solidearth.settings.cross_section_shape', 'numel', [1], 'values', [1, 2]);
 

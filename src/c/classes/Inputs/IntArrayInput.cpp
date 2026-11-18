@@ -45,6 +45,9 @@ template<typename T> int TIntArrayInput<T>::ObjectEnum(){/*{{{*/
 }/*}}}*/
 template<> int TIntArrayInput<int>::ObjectEnum(){return IntArrayInputEnum;}
 template<> int TIntArrayInput<int16_t>::ObjectEnum(){return Int16ArrayInputEnum;}
+template<> int TIntArrayInput<uint8_t>::ObjectEnum(){return UInt8ArrayInputEnum;}
+template<> int TIntArrayInput<uint16_t>::ObjectEnum(){return UInt16ArrayInputEnum;}
+template<> int TIntArrayInput<uint32_t>::ObjectEnum(){return UInt32ArrayInputEnum;}
 
 template<typename T> Input* TIntArrayInput<T>::copy() {/*{{{*/
 
@@ -83,13 +86,13 @@ template<typename T> void TIntArrayInput<T>::Marshall(MarshallHandle* marshallha
 	marshallhandle->call(object_enum);
 	marshallhandle->call(this->numberofelements_local);
 
-	/*Allocate memory if reading restart file*/
+	/*The checkpoint reader allocates N and each row. Only allocate the row
+	 *pointer table here, since that table itself is not serialized.*/
 	if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
 		_assert_(this->numberofelements_local>0);
 		_assert_(this->numberofelements_local<1e11);
 		if(this->numberofelements_local){
-			this->N                      = xNewZeroInit<int>(this->numberofelements_local);
-			this->values                 = xNewZeroInit<T*>(this->numberofelements_local);
+			this->values = xNewZeroInit<T*>(this->numberofelements_local);
 		}
 		else{
 			this->N      = NULL;
@@ -99,6 +102,7 @@ template<typename T> void TIntArrayInput<T>::Marshall(MarshallHandle* marshallha
 	/*Marshall N*/
 	if(this->numberofelements_local){
 		marshallhandle->call(this->N,this->numberofelements_local);
+		_assert_(this->N);
 	}
 
 	/*Marshall individual arrays*/
@@ -106,13 +110,8 @@ template<typename T> void TIntArrayInput<T>::Marshall(MarshallHandle* marshallha
 
 		for(int i=0;i<this->numberofelements_local;i++){
 			if(this->N[i]){
-
-				/*Allocate if reading restart*/
-				if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
-					this->values[i] = xNew<T>(this->N[i]);
-				}
-				_assert_(this->values[i]);
 				marshallhandle->call(this->values[i],this->N[i]);
+				_assert_(this->values[i]);
 			}
 		}
 	}
@@ -128,7 +127,7 @@ template<typename T> void TIntArrayInput<T>::SetInput(int row,int numindices,T* 
 
 	if(this->N[row] != numindices){
 		if(this->values[row]) xDelete<T>(this->values[row]);
-		this->values[row] = xNew<T>(numindices);
+		if(numindices) this->values[row] = xNew<T>(numindices);
 	}
 
 	T *el_values = this->values[row];
@@ -167,3 +166,6 @@ template<typename T> void TIntArrayInput<T>::GetArrayPtr(int row,T** pvalues,int
 /*Explicit instantiations (add new integer types here)*/
 template class TIntArrayInput<int>;
 template class TIntArrayInput<int16_t>;
+template class TIntArrayInput<uint8_t>;
+template class TIntArrayInput<uint16_t>;
+template class TIntArrayInput<uint32_t>;

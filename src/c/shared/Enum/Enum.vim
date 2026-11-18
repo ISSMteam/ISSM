@@ -3575,6 +3575,9 @@ syn keyword cConstant DoubleArrayInputEnum
 syn keyword cConstant ArrayInputEnum
 syn keyword cConstant IntArrayInputEnum
 syn keyword cConstant Int16ArrayInputEnum
+syn keyword cConstant UInt8ArrayInputEnum
+syn keyword cConstant UInt16ArrayInputEnum
+syn keyword cConstant UInt32ArrayInputEnum
 syn keyword cConstant DoubleExternalResultEnum
 syn keyword cConstant DoubleMatArrayParamEnum
 syn keyword cConstant DoubleMatExternalResultEnum
