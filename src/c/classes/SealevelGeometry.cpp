@@ -18,6 +18,9 @@ using namespace std;
 /*Object constructors and destructor*/
 SealevelGeometry::SealevelGeometry(int localnelin,int localnodsin){ /*{{{*/
 	localnel=localnelin;
+	lowmem=false;
+	convolution_bins=0;
+	convolution_radius=0.;
 	for(int i=0;i<SLGEOM_NUMLOADS;i++){
 		for (int j=0;j<SLMAXVERTICES;j++){
 			LoadWeigths[i][j]=xNewZeroInit<IssmDouble>(localnel);
@@ -65,6 +68,30 @@ SealevelGeometry::~SealevelGeometry(){ /*{{{*/
 	xDelete<bool>(isoceanin);
 	xDelete<int>(lids);
 }; /*}}}*/
+
+void SealevelGeometry::PrepareConvolutionCoordinates(int nel,const IssmDouble* xxe,const IssmDouble* yye,const IssmDouble* zze,IssmDouble radius,IssmDouble degacc,bool horiz){ /*{{{*/
+	convolution_radius=radius;
+	convolution_bins=reCast<int,IssmDouble>(180.0/degacc+1.);
+	/*Cache source trig per GRD call, not per receiver-source pair. Subelement
+	 *barycentres have already been assembled for the current level sets. */
+	for(int group=0;group<=SLGEOM_NUMLOADS;group++){
+		const int n=group==0 ? nel : nbar[group-1];
+		convolution_sources[group].resize(n);
+		for(int e=0;e<n;e++){
+			SLCSourceCoordinates& source=convolution_sources[group][e];
+			if(group==0){
+				source.lat=asin(zze[e]/sqrt(pow(xxe[e],2.0)+pow(yye[e],2.0)+pow(zze[e],2.0)));
+				source.lon=atan2(yye[e],xxe[e]);
+			}
+			else{
+				source.lat=latbarycentre[group-1][e]/180*M_PI;
+				source.lon=longbarycentre[group-1][e]/180*M_PI;
+			}
+			source.coslat=cos(source.lat);
+			if(horiz) source.sinlat=sin(source.lat);
+		}
+	}
+} /*}}}*/
 
 void SealevelGeometry::InitializeMappingsAndBarycentres(void){ /*{{{*/
 

@@ -190,7 +190,7 @@ class Tetra: public Element,public ElementHook,public TetraRef{
 		void       SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae){_error_("not implemented yet");};
 		void       SealevelchangeGeometrySubElementLoads(SealevelGeometry* slgeom, IssmDouble* areae){_error_("not implemented yet");};
 		void       SealevelchangeBarystaticLoads(GrdLoads* loads, BarystaticContributions* barycontrib, SealevelGeometry* slgeom){_error_("not implemented yet");};
-		void       SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom){_error_("not implemented yet");};
+		void       SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom,const IssmDouble* G0){_error_("not implemented yet");};
 		void       SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom){_error_("not implemented yet");};
 		void       SealevelchangeDeformationConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads,  IssmDouble* rotationvector,SealevelGeometry* slgeom){_error_("not implemented yet");};
 		void       SealevelchangeUpdateViscousFields(IssmDouble lincoeff, int newindex, int offset){_error_("not implemented yet");};

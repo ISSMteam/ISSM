@@ -3664,6 +3664,9 @@ int  StringToEnumx(const char* name,bool notfounderror){
 	      else if (strcmp(name,"ArrayInput")==0) return ArrayInputEnum;
 	      else if (strcmp(name,"IntArrayInput")==0) return IntArrayInputEnum;
 	      else if (strcmp(name,"Int16ArrayInput")==0) return Int16ArrayInputEnum;
+	      else if (strcmp(name,"UInt8ArrayInput")==0) return UInt8ArrayInputEnum;
+	      else if (strcmp(name,"UInt16ArrayInput")==0) return UInt16ArrayInputEnum;
+	      else if (strcmp(name,"UInt32ArrayInput")==0) return UInt32ArrayInputEnum;
 	      else if (strcmp(name,"DoubleExternalResult")==0) return DoubleExternalResultEnum;
 	      else if (strcmp(name,"DoubleMatArrayParam")==0) return DoubleMatArrayParamEnum;
 	      else if (strcmp(name,"DoubleMatExternalResult")==0) return DoubleMatExternalResultEnum;

@@ -3577,6 +3577,9 @@ const char* EnumToStringx(int en){
 		case ArrayInputEnum : return "ArrayInput";
 		case IntArrayInputEnum : return "IntArrayInput";
 		case Int16ArrayInputEnum : return "Int16ArrayInput";
+		case UInt8ArrayInputEnum : return "UInt8ArrayInput";
+		case UInt16ArrayInputEnum : return "UInt16ArrayInput";
+		case UInt32ArrayInputEnum : return "UInt32ArrayInput";
 		case DoubleExternalResultEnum : return "DoubleExternalResult";
 		case DoubleMatArrayParamEnum : return "DoubleMatArrayParam";
 		case DoubleMatExternalResultEnum : return "DoubleMatExternalResult";

@@ -22,7 +22,7 @@ classdef solidearthsettings
 		timeacc                = 1; %time step accuracy required to compute Green tables
 		viscoussampling        = 8; %number of samples kept before doubling spacing in the viscous memory time grid
 		horiz                  = 0; %compute horizontal deformation
-		lowmem                 = 0; %memory strategy for horizontal GRD indices: 0 (default) store as int, 1 store as int16 (saves memory). Only used if horiz=1
+		lowmem                 = 0; %recompute GRD distance and azimuth bins instead of storing pairwise tables
 		grdmodel               = 1; %grd model (0 by default, 1 for (visco-)elastic, 2 for Ivins)
 		cross_section_shape    = 0; %cross section only used when grd model is Ivins
 	end
@@ -87,9 +87,6 @@ classdef solidearthsettings
 			%horizontal displacement? (not on by default)
 			self.horiz=0;
 
-			%low memory mode (off by default): azimuth indices stored as int16
-			self.lowmem=0;
-
 			%cross section for Ivins model
 			self.cross_section_shape=1; %square as default (see iedge in GiaDeflectionCorex)
 
@@ -109,9 +106,9 @@ classdef solidearthsettings
 			fielddisplay(self,'viscous','enables viscous deformation from surface loading');
 			fielddisplay(self,'rotation','enables polar motion to feedback on the GRD fields');
 			fielddisplay(self,'compute_bp_grd','compute GRD patterns for bottom pressure loads (default: 1)');
-			fielddisplay(self,'lowmem','memory strategy for horizontal GRD convolutions: 0 (default) azimuth indices stored as int, 1 stored as int16 to save memory. Used only if horiz=1');
 			fielddisplay(self,'cross_section_shape','1: square-edged (default). 2: elliptical. See iedge in GiaDeflectionCore. Used only for grdmodel=2 only');
 			disp(sprintf('      resolution:'));
+			fielddisplay(self,'lowmem','recompute GRD distance and azimuth bins on demand to save memory (default: 0)');
 			fielddisplay(self,'degacc','spatial accuracy (default: .01 deg) for numerical discretization of the Green''s functions');
 			fielddisplay(self,'timeacc','time accuracy (default: 1 yr) for numerical discretization of the Green''s functions');
 			fielddisplay(self,'viscoussampling','number of samples kept at each spacing before doubling the spacing in the viscous memory time grid (default: 100)');
@@ -137,7 +134,7 @@ classdef solidearthsettings
 			md = checkfield(md,'fieldname','solidearth.settings.timeacc','size',[1 1],'>',0);
 			md = checkfield(md,'fieldname','solidearth.settings.viscoussampling','size',[1 1],'>=',1);
 			md = checkfield(md,'fieldname','solidearth.settings.horiz','NaN',1,'Inf',1,'values',[0 1]);
-			md = checkfield(md,'fieldname','solidearth.settings.lowmem','NaN',1,'Inf',1,'values',[0 1]);
+			md = checkfield(md,'fieldname','solidearth.settings.lowmem','size',[1 1],'values',[0 1]);
 			md = checkfield(md,'fieldname','solidearth.settings.grdmodel','>=',0,'<=',2);
 			md = checkfield(md,'fieldname','solidearth.settings.cross_section_shape','numel',[1],'values',[1,2]);
 

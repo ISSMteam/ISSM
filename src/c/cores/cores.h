@@ -66,9 +66,10 @@ void debris_core(FemModel* femmodel);
 void sealevelchange_core(FemModel* femmodel);
 void sealevelchange_initialgeometry(FemModel* femmodel);
 void sealevelchange_finalize(FemModel* femmodel);
+void sealevelchange_profile_setup(const char* metric,IssmPDouble seconds);
 SealevelGeometry* sealevelchange_geometry(FemModel* femmodel);
 #endif
-void grd_core(FemModel* femmodel,SealevelGeometry* slgeom);
+void grd_core(FemModel* femmodel,SealevelGeometry* slgeom,bool profiling,IssmPDouble geometry_seconds);
 void solidearthexternal_core(FemModel* femmodel);
 void dynstr_core(FemModel* femmodel);
 void couplerinput_core(FemModel* femmodel);
