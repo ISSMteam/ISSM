@@ -2,7 +2,7 @@
 # ISSM Configuration #
 #--------------------#
 
-MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2023b"))
+MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2026b"))
 
 ISSM_CONFIG='\
 	--prefix=${ISSM_DIR} \

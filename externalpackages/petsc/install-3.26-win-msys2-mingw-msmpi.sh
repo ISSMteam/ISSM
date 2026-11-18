@@ -45,9 +45,6 @@ mkdir -p ${PREFIX} ${PETSC_DIR}
 mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
-# Patch source
-sed -i 's|(MAKEFLAGS)|(MAKEFLAGS:w=)|' ${PETSC_DIR}/makefile ${PETSC_DIR}/lib/petsc/conf/rules # Fix for issue with GNUMake 4.4.1 (https://gitlab.com/petsc/petsc/-/merge_requests/6140)
-
 # Configure
 #
 # NOTE: --prefix="${PREFIX_WIN}" is necessary to, at least, configure and 
@@ -71,6 +68,10 @@ echo "Configuring with Windows-style prefix before compiling..."
     --download-metis=1 \
     --download-parmetis=1 \
     --download-scalapack=1
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
 # Now reconfigure with the Unix-style path, otherwise the installation of 
 # libpetsc fails).
