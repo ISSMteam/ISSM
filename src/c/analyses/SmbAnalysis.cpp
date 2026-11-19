@@ -302,6 +302,8 @@ void SmbAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel* iomo
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.shf",MariaShfEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.smb.lhf",MariaLhfEnum);
 			break;
+		case SMBunetEnum:
+			break;
 		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
@@ -717,6 +719,40 @@ void SmbAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,int s
 			                  xDelete<char>(py_name);
 			                  break;
 								}
+		case SMBunetEnum:{
+			char* module_dir = NULL;
+			char* pt_name = NULL;
+			char* py_name = NULL;
+			IssmDouble* x = NULL;
+			IssmDouble* y = NULL;
+			int nx,ny,N;
+
+			iomodel->FetchData(&module_dir,"md.smb.module_dir");
+			iomodel->FetchData(&pt_name,"md.smb.pt_name");
+			iomodel->FetchData(&py_name,"md.smb.py_name");
+			iomodel->FetchData(&x,&nx,&N,"md.smb.x");
+			if(N!=1 || nx<2) _error_("SMBunet x must be a column vector in metres with at least two points");
+			iomodel->FetchData(&y,&ny,&N,"md.smb.y");
+			if(N!=1 || ny<2) _error_("SMBunet y must be a column vector in metres with at least two points");
+			for(int i=0;i<nx;i++){
+				if(xIsNan<IssmDouble>(x[i]) || xIsInf<IssmDouble>(x[i]) || (i>0 && x[i]<=x[i-1]))
+					_error_("SMBunet x must be finite and strictly increasing");
+			}
+			for(int i=0;i<ny;i++){
+				if(xIsNan<IssmDouble>(y[i]) || xIsInf<IssmDouble>(y[i]) || (i>0 && y[i]<=y[i-1]))
+					_error_("SMBunet y must be finite and strictly increasing");
+			}
+			if(parameters->Exist(SmbEmulatorEnum))
+				_error_("SmbEmulatorEnum already exists in this process");
+			parameters->AddObject(new EmulatorParam(SmbEmulatorEnum,module_dir,pt_name,py_name,x,nx,y,ny));
+			/*EmulatorParam owns copies, not the buffers fetched from IoModel.*/
+			iomodel->DeleteData(x,"md.smb.x");
+			iomodel->DeleteData(y,"md.smb.y");
+			xDelete<char>(module_dir);
+			xDelete<char>(pt_name);
+			xDelete<char>(py_name);
+			break;
+		}
 		#endif
 		default:
 			_error_("Surface mass balance model "<<EnumToStringx(smb_model)<<" not supported yet");
@@ -827,8 +863,12 @@ void           SmbAnalysis::Core(FemModel* femmodel){/*{{{*/
 			break;
 		#ifdef _HAVE_PyBind11_
 		case SMBmariaEnum:
-			if(VerboseSolution()) _printf0_("   call smb emulator module\n");
+			if(VerboseSolution()) _printf0_("   call XGBoost smb emulator module\n");
 			SmbEmulatorx(femmodel);
+			break;
+		case SMBunetEnum:
+			if(VerboseSolution()) _printf0_("   call U-Net smb emulator module\n");
+			SmbEmulatorUNetx(femmodel);
 			break;
 		#endif
 		default:

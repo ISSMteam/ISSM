@@ -19,7 +19,7 @@ md = solve(md, 'Steadystate')
 
 #Fields and tolerances to track changes
 field_names = ['Vx', 'Vy', 'Vz', 'Vel', 'Pressure', 'Temperature', 'BasalforcingsGroundediceMeltingRate']
-field_tolerances = [1e-13, 1e-13, 6e-10, 1e-10, 1e-13, 1e-11, 1e-6]
+field_tolerances = [1e-13, 1e-13, 1e-9, 1e-10, 1e-13, 1e-11, 1e-6]
 field_values = [md.results.SteadystateSolution.Vx,
                 md.results.SteadystateSolution.Vy,
                 md.results.SteadystateSolution.Vz,

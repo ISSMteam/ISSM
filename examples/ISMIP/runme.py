@@ -2,7 +2,7 @@ import numpy as np
 from model import *
 from squaremesh import squaremesh
 from plotmodel import plotmodel
-from export_netCDF import export_netCDF
+from write_netCDF import write_netCDF
 from loadmodel import loadmodel
 from setmask import setmask
 from parameterize import parameterize

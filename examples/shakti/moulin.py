@@ -42,14 +42,6 @@ md.stressbalance.abstol = np.nan
 md.timestepping.time_step = 1.
 md.timestepping.final_time = 3.
 
-#GIA:
-md.gia.lithosphere_thickness = 100. * np.ones(md.mesh.numberofvertices)  # in km
-md.gia.mantle_viscosity = 1.0e21 * np.ones(md.mesh.numberofvertices)  # in Pa.s
-md.materials.lithosphere_shear_modulus = 6.7e10   # in Pa
-md.materials.lithosphere_density = 3.32   # in g / cm^ - 3
-md.materials.mantle_shear_modulus = 1.45e11  # in Pa
-md.materials.mantle_density = 3.34      # in g / cm^ - 3
-
 #Boundary conditions:
 md = SetIceSheetBC(md)
 

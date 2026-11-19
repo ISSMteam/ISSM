@@ -31,6 +31,9 @@ import warnings
 import numpy as np
 from netCDF4 import Dataset
 
+# ISSM
+from results import results, solution, solutionstep
+
 
 def write_netCDF(md, filename: str, verbose: bool = False) -> None:
     """Save model *md* to *filename* (NetCDF4).  Overwrites silently."""
@@ -39,7 +42,7 @@ def write_netCDF(md, filename: str, verbose: bool = False) -> None:
 
     # check file format
     if not filename.endswith('.nc'):
-		warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
+        warnings.warn('Warning: The given file name does not end with ".nc". Appending the extension automatically.')
         filename = filename + '.nc'
 
     # Overwrite silently
@@ -66,7 +69,6 @@ def write_netCDF(md, filename: str, verbose: bool = False) -> None:
 
             grp = nc.createGroup(gname)
             grp.classtype = type(val).__name__
-
             _write_group(val, grp, nc, f'md.{gname}', verbose)
 
     except Exception:
@@ -87,6 +89,10 @@ def _write_group(obj, grp, root_nc, path: str, verbose: bool) -> None:  # {{{
     except AttributeError:
         return   # not an object with attributes
 
+    # Force to write classtype as results. (Synchronize to matlab)
+    if grp.name == 'results':
+        grp.classtype = 'struct'
+
     for fname, val in items:
         if fname in ('errlog', 'outlog'):
             continue
@@ -94,7 +100,7 @@ def _write_group(obj, grp, root_nc, path: str, verbose: bool) -> None:  # {{{
 # }}}
 def _write_value(val, vname: str, grp, root_nc, path: str, verbose: bool) -> None:  # {{{
     # =====================================================================
-    #  _write_value  –  dispatch a single value to the right writer
+    #  _write_value - dispatch a single value to the right writer
     # =====================================================================
 
     # None / empty
@@ -146,6 +152,16 @@ def _write_value(val, vname: str, grp, root_nc, path: str, verbose: bool) -> Non
         _write_dict(val, vname, grp, root_nc, path, verbose)
         return
 
+    # ISSM sub-class (has __dict__) / "results" step is treated as struct (e.g., md.results.TransientSolution which is 1xN)
+    if hasattr(val, '__dict__') and (grp.name == 'results'):
+        if verbose:
+            print(f'    [results] {path}')
+        sub_grp = grp.createGroup(vname)
+        # NOTE: Synchronize "write_struc_value" function in matlab. Not use "_write_obj_with_results".
+        _write_struct_value(val, sub_grp, root_nc, path, verbose)
+        #_write_obj_with_results(val, sub_grp, root_nc, path, verbose)
+        return
+
     # ISSM sub-class (has __dict__)
     if hasattr(val, '__dict__'):
         sub_grp = grp.createGroup(vname)
@@ -195,6 +211,57 @@ def _write_list(val: list, vname: str, grp, root_nc, path: str, verbose: bool) -
         if verbose:
             print(f'    [SKIP]    {path} – list of mixed/unsupported types')
 # }}}
+def _write_struct_value(obj, grp, root_nc, path, verbose) -> None: # {{{
+    """
+	write_struct_value  –  handle a struct field (scalar or 1-D array)
+
+
+    Note:
+    In "loadresultsfromdisk.py":Line 68, if the length of results is (1,), the results class is coerced to class "solutionstep" rather than "solution". Therefore, we need to explicitly check "results.SolutionType" to determine whether it is "solution" or "solutionstep".
+    """
+
+    if isinstance(obj,solutionstep):
+        n = 1
+    else:
+        n = len(obj) # check number of steps
+    try:
+        items = obj.__dict__.items()
+    except AttributeError:
+        return
+
+    grp.classtype = 'struct'
+    grp.nsteps    = n
+
+    # multi step in Solution: e.g., TransientSolution
+    if isinstance(obj,solution):
+        for k in range(n):
+            step_name  = 'step_%i'%(k+1)
+            step_grp   = grp.createGroup(step_name)
+            for sfield, sval in obj[k].__dict__.items():
+                if sfield in ['errlog','outlog']:
+                    continue
+
+                # write fields
+                _write_value(sval, sfield, step_grp, root_nc, path+'.'+step_name+'.'+sfield, verbose)
+    elif isinstance(obj,solutionstep): #single step in Solution e.g., StressbalanceSolution
+        print('catch =========')
+        print(obj)
+        print(obj.__dict__)
+        k=0
+        step_name = 'step_%i'%(k+1)
+        step_grp = grp.createGroup(step_name)
+        for sfield, sval in obj.__dict__.items():
+            if sfield in ['errlog','outlog']:
+                continue
+
+            # write fields
+            _write_value(sval, sfield, step_grp, root_nc, path+'.'+step_name+'.'+sfield, verbose)
+    else:
+        raise Exception('Error: given obj class is not supported')
+
+    if verbose:
+        print('    [struct]  %s  (1x%i)'%(path, n))
+    # }}}
 def _write_obj_with_results(obj, grp, root_nc, path: str, verbose: bool) -> None:  # {{{
     # =====================================================================
     #  Solution / solutionstep special handling
@@ -205,17 +272,19 @@ def _write_obj_with_results(obj, grp, root_nc, path: str, verbose: bool) -> None
     except AttributeError:
         return
 
-    for fname, val in items:
-        if fname in ('errlog', 'outlog'):
+    for fieldname, val in items:
+        if fieldname in ('errlog', 'outlog'):
             continue
 
         # Detect a list of solutionstep-like objects
-        if (isinstance(val, list) and len(val) > 0
-                and hasattr(val[0], '__dict__')
-                and not isinstance(val[0], dict)):
-            _write_solution_steps(val, fname, grp, root_nc, path, verbose)
-        else:
-            _write_value(val, fname, grp, root_nc, f'{path}.{fname}', verbose)
+        _write_solution_steps(val, fieldname, grp, root_nc, path, verbose)
+        #if (isinstance(val, list) and len(val) > 0
+        #        and hasattr(val[0], '__dict__')
+        #        and not isinstance(val[0], dict)):
+        #    print('write solution step??')
+        #    _write_solution_steps(val, fieldname, grp, root_nc, path, verbose)
+        #else:
+        #    _write_value(val, fieldname, grp, root_nc, f'{path}.{fieldname}', verbose)
 # }}}
 def _write_solution_steps(steps: list, vname: str, grp, root_nc, path: str, verbose: bool) -> None:  # {{{
     """Write a list of solutionstep objects as step_1, step_2, … sub-groups."""
@@ -305,8 +374,11 @@ def _write_string(s: str, vname: str, grp) -> None:  # {{{
     except Exception:
         pass
     v = grp.createVariable(vname, 'S1', (dim_name,))
-    from netCDF4 import stringtochar
-    v[:] = stringtochar(np.array([s], dtype=f'S{n}'))
+    try: # FIXME: This may fail if netCDF4 is not available or stringtochar fails
+        from netCDF4 import stringtochar
+        v[:] = stringtochar(np.array(s, dtype=f'S{n}'))
+    except Exception:
+        v[:] = list(s)
     v.type_is = 'string'
 # }}}
 def _write_cell_strings(strings: list, vname: str, grp) -> None:  # {{{
@@ -339,10 +411,16 @@ def _write_cell_strings(strings: list, vname: str, grp) -> None:  # {{{
     v = grp.createVariable(vname, 'S1', (rows_name, cols_name))
     v.type_is = 'cell_of_strings'
 
-    arr = np.chararray((nrows, max_len))
+    if np.__version__ < '2.0':
+        #NOTE: "chararray" only support numpy < 2.0.
+        arr = np.chararray((nrows, max_len))
+    else:
+        arr = np.empty((nrows, max_len),dtype='S1')
     for i, s in enumerate(strings):
         padded = s.ljust(max_len)
-        arr[i] = list(padded.encode('utf-8'))
+        #arr[i] = list(padded.encode('utf-8'))
+        encoded= padded.encode('utf-8')
+        arr[i] = np.frombuffer(encoded, dtype='S1')
     v[:] = arr
 # }}}
 def _write_bool(arr: np.ndarray, vname: str, grp, root_nc) -> None:  # {{{

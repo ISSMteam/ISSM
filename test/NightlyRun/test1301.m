@@ -17,7 +17,7 @@ md.initialization.pressure=zeros(md.mesh.numberofvertices,1);
 md.initialization.temperature=273.15*ones(md.mesh.numberofvertices,1);
 pos=find(md.mesh.vertexonsurface);
 md.thermal.spctemperature(pos)=md.initialization.temperature(pos);
-md.materials.rheology_B=paterson(md.initialization.temperature);
+md.materials.rheology_B=cuffey(md.initialization.temperature);
 
 %analytical results
 %melting heat = geothermal flux

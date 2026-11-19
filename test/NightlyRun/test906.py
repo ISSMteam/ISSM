@@ -1,6 +1,7 @@
 #Test Name: SquareNoDynHydrologyDCtimeadapt
 import numpy as np
 from model import *
+from hydrologydc import hydrologydc
 from solve import *
 from socket import gethostname
 from triangle import triangle

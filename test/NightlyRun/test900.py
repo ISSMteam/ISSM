@@ -1,6 +1,7 @@
 #Test Name: SquareNoDynUnConfinedHydroDC
 import numpy as np
 from model import *
+from hydrologydc import hydrologydc
 from setmask import *
 from triangle import triangle
 from parameterize import parameterize

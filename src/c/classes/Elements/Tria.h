@@ -182,7 +182,7 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		void       SealevelchangeGeometryCentroidLoads(SealevelGeometry* slgeom, IssmDouble* xxe, IssmDouble* yye, IssmDouble* zze, IssmDouble* areae);
 		void       SealevelchangeInitializeOldIceState(void);
 		void       SealevelchangeBarystaticLoads(GrdLoads* loads, BarystaticContributions* barycontrib, SealevelGeometry* slgeom);
-		void       SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom);
+		void       SealevelchangeConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom,const IssmDouble* G0);
 		void       SealevelchangeOceanAverage(GrdLoads* loads, Vector<IssmDouble>* oceanareas, Vector<IssmDouble>* subelementoceanareas, IssmDouble* sealevelpercpu, SealevelGeometry* slgeom);
 		void       SealevelchangeDeformationConvolution(IssmDouble* sealevelpercpu, GrdLoads* loads, IssmDouble* rotationvector,SealevelGeometry* slgeom);
 		void       SealevelchangeShift(GrdLoads* loads,  IssmDouble offset, SealevelGeometry* slgeom);
@@ -250,10 +250,14 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		void           StabilizationParameterAnisotropic(IssmDouble* tau_parameter_ansiotropic, IssmDouble u, IssmDouble v, IssmDouble w, IssmDouble hx, IssmDouble hy, IssmDouble hz, IssmDouble kappa){_error_("not implemented yet");};
 		void           UpdateConstraintsExtrudeFromBase(void);
 		void           UpdateConstraintsExtrudeFromTop(void);
-		IssmDouble*    SealevelchangeGxL(IssmDouble* G, IssmDouble* Grot, GrdLoads* loads, IssmDouble* polarmotionvector, SealevelGeometry* slgeom, int nel, bool computefuture);
+		IssmDouble*    SealevelchangeGxL(const IssmDouble* G, IssmDouble* Grot, GrdLoads* loads, IssmDouble* polarmotionvector, SealevelGeometry* slgeom, int nel, bool computefuture);
 		IssmDouble*    SealevelchangeHorizGxL(int spatial_component, IssmDouble* G, IssmDouble* Grot, GrdLoads* loads, IssmDouble* polarmotionvector, SealevelGeometry* slgeom, int nel, bool computefuture);
 		void	       SealevelchangeCollectGrdfield(IssmDouble* grdfieldout, IssmDouble* grdfield, SealevelGeometry* slgeom, int nel, bool percpu, int viscousenum, bool computefuture);
 		/*}}}*/
 
+	private:
+		void SealevelchangePrepareConvolutionIndices(GrdLoads* loads,SealevelGeometry* slgeom,bool azimuth);
+		template<typename Index,bool ActiveOnly=false> IssmDouble* SealevelchangeGxLTyped(const IssmDouble* G, IssmDouble* Grot, GrdLoads* loads, IssmDouble* polarmotionvector, SealevelGeometry* slgeom, int nel, bool computefuture, Index* const* alpha=NULL);
+		template<typename Index,bool ActiveOnly=false> IssmDouble* SealevelchangeHorizGxLTyped(int spatial_component, IssmDouble* G, IssmDouble* Grot, GrdLoads* loads, IssmDouble* polarmotionvector, SealevelGeometry* slgeom, int nel, bool computefuture, Index* const* alpha=NULL, Index* const* azimuth=NULL);
 };
 #endif  /* _TRIA_H */

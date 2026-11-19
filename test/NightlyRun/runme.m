@@ -222,7 +222,7 @@ for id=test_ids,
 			end
 		%Produce nc files?
 		elseif strcmpi(procedure,'ncExport'),
-			export_netCDF(md, ['test' num2str(id) 'ma.nc'])
+			write_netCDF(md, ['test' num2str(id) 'ma.nc'])
 
 		%Else: Check test
 		else,

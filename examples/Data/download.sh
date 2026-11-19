@@ -10,13 +10,13 @@ else
 	exit 1
 fi
 
-download https://issm.ess.uci.edu/files/tutorials/SquareShelf.nc
-download https://issm.ess.uci.edu/files/tutorials/examples/Antarctica_5km_withshelves_v0.75.nc
-download https://issm.ess.uci.edu/files/tutorials/Greenland_5km_dev1.2.nc
-download https://issm.ess.uci.edu/files/tutorials/Antarctica_ice_velocity.nc
-download https://issm.ess.uci.edu/files/tutorials/greenland_vel_mosaic250_vx_v1.tif
-download https://issm.ess.uci.edu/files/tutorials/greenland_vel_mosaic250_vy_v1.tif
-download https://issm.ess.uci.edu/files/tutorials/CrossOvers2009.mat
-download https://issm.ess.uci.edu/files/tutorials/examples/Box_Greenland_SMB_monthly_1840-2012_5km_cal_ver20141007.nc
+download https://ross.ics.uci.edu/tutorials/SquareShelf.nc
+download https://ross.ics.uci.edu/tutorials/Antarctica_5km_withshelves_v0.75.nc
+download https://ross.ics.uci.edu/tutorials/Greenland_5km_dev1.2.nc
+download https://ross.ics.uci.edu/tutorials/Antarctica_ice_velocity.nc
+download https://ross.ics.uci.edu/tutorials/greenland_vel_mosaic250_vx_v1.tif
+download https://ross.ics.uci.edu/tutorials/greenland_vel_mosaic250_vy_v1.tif
+download https://ross.ics.uci.edu/tutorials/CrossOvers2009.mat
+download https://ross.ics.uci.edu/tutorials/Box_Greenland_SMB_monthly_1840-2012_5km_cal_ver20141007.nc
 download https://data.cresis.ku.edu/data/grids/old_versions/Jakobshavn_2008_2011_Composite.zip
-download https://issm.ess.uci.edu/files/tutorials/GRACE_and_suporting_datasets.zip
+download https://ross.ics.uci.edu/tutorials/GRACE_and_suporting_datasets.zip

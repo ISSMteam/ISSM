@@ -114,8 +114,29 @@ md.solidearth.settings.viscous=1;
 md.solidearth.settings.rotation=0;
 md.solidearth.settings.horiz=1;
 
+% Compare stored and on-demand bins with the same viscous and horizontal loads.
+md_lowmem=md;
+md_lowmem.solidearth.settings.lowmem=1;
+md_lowmem.miscellaneous.name='test2091lowmem';
 md=solve(md,'tr');
+md_lowmem=solve(md_lowmem,'tr');
 
+outputs={'SealevelGRD','BedGRD','BedNorthGRD','BedEastGRD'};
+assert(numel(md.results.TransientSolution)==numel(md_lowmem.results.TransientSolution), ...
+	'Low-memory and stored-index runs returned different numbers of steps.');
+for i=1:numel(md.results.TransientSolution)
+	for j=1:numel(outputs)
+		stored=md.results.TransientSolution(i).(outputs{j});
+        on_demand=md_lowmem.results.TransientSolution(i).(outputs{j});
+		assert(isequal(size(stored),size(on_demand)), ...
+			'Low-memory result shape differs for %s at step %d.',outputs{j},i);
+		scale=max(1,norm(stored(:),inf));
+		maxerror=norm(stored(:)-on_demand(:),inf);
+		assert(maxerror<=1e-12*scale, ...
+			'Low-memory result differs for %s at step %d (max error: %g).',outputs{j},i,maxerror);
+	end
+end
+clear md_lowmem stored on_demand scale maxerror
 clear S B H E
 for i=1:length(time1)-1
 	S(:,i)=md.results.TransientSolution(i).SealevelGRD;

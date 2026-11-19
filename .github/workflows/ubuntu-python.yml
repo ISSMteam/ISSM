@@ -33,7 +33,7 @@ jobs:
   build-test:
     uses: ./.github/workflows/common-workflow.yml 
     with:
-      os: ubuntu-latest
+      os: ubuntu-24.04
       build_type: basic-python
       interface: python
       python_version: 3.12

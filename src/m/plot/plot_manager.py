@@ -2,7 +2,6 @@ try:
     from osgeo import gdal
     overlaysupport = True
 except ImportError:
-    print('OSGeo/GDAL for Python not installed, overlay plots are not enabled')
     overlaysupport = False
 
 from applyoptions import applyoptions
@@ -19,6 +18,7 @@ from processmesh import processmesh
 from plot_gridded import plot_gridded
 from plot_landsat import plot_landsat
 from plot_none import plot_none
+from plot_section import plot_section
 
 
 def plot_manager(md, options, fig, axgrid, gridindex):
@@ -56,6 +56,8 @@ def plot_manager(md, options, fig, axgrid, gridindex):
     #    plot_basemap(md, data, options, nrows, ncols, i)
     # }}}
     # {{{ overlay plot
+    if options.exist('overlay') and not overlaysupport:
+        print('OSGeo/GDAL for Python not installed, overlay plots are not enabled')
     if options.exist('overlay') and overlaysupport:
         plot_overlay(md, data, options, ax)
         options.addfielddefault('alpha', 0.5)
@@ -91,12 +93,15 @@ def plot_manager(md, options, fig, axgrid, gridindex):
         plot_landsat(md,data,options,fig,axgrid,gridindex)
         return
     # }}}
-    # {{{ Gridded plot TODO
+    # {{{ Gridded plot
     if options.exist('gridded'):
         plot_gridded(md,data,options,fig,axgrid,gridindex)
         return
     # }}}
-    # {{{ Section plot TODO
+    # {{{ Section plot
+    if options.exist('sectionvalue'):
+        plot_section(md,data,options,fig,axgrid,gridindex)
+        return
     # }}}
     # {{{ Profile plot TODO
     # }}}

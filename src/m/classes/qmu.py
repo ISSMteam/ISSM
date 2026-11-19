@@ -35,7 +35,6 @@ class qmu(object):
         self.responsedescriptors = []
         self.responsepartitions = []
         self.responsepartitions_npart = []
-        self.responsepartitions_nt = []
         self.mass_flux_profile_directory = float('NaN')
         self.mass_flux_profiles = float('NaN')
         self.mass_flux_segments = []

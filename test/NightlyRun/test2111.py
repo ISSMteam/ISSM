@@ -6,7 +6,7 @@ import numpy as np
 
 from lovenumbers import *
 from model import *
-from paterson import *
+from cuffey import *
 from roundmesh import *
 from solve import *
 
@@ -48,7 +48,7 @@ md.geometry.bed = md.geometry.base
 # }}}
 #materials:  {{{
 md.initialization.temperature = 273.25 * np.ones((md.mesh.numberofvertices, 1))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3 * np.ones((md.mesh.numberofelements, 1))
 # }}}
 #additional parameters, miscellaneous: {{{

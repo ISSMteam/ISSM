@@ -14,10 +14,12 @@ no module-level global state).
 
 import sys
 import warnings
+import importlib
 from collections import OrderedDict
 import numpy as np
 from netCDF4 import Dataset
 from model import model
+from generic import generic
 from results import results, solution, solutionstep
 from toolkits import toolkits
 
@@ -47,46 +49,8 @@ def read_netCDF(filename: str, verbose: bool = False):
     finally:
         nc.close()
 
-    # Coerce elements
-    md.mesh.elements=np.array(md.mesh.elements,dtype=np.int64)
-    try:
-        md.mesh.vertexconnectivity=np.array(md.mesh.vertexconnectivity,dtype=np.int64)
-    except:
-        pass
-    try:
-        md.mesh.elementconnectivity=np.array(md.mesh.elementconnectivity,dtype=np.int64)
-    except:
-        pass
-
-    md.mesh.numberofvertices=int(md.mesh.numberofvertices)
-    md.mesh.numberofelements=int(md.mesh.numberofelements)
-
-    try:
-        md.mesh.extractedvertices=np.array(md.mesh.extractedvertices,dtype=np.int64)
-    except:
-        pass
-    try:
-        md.mesh.extractedelements=np.array(md.mesh.extractedelements,dtype=np.int64)
-    except:
-        pass
-
-    if md.mesh.dimension() == 3:
-        md.mesh.elements2d=np.array(md.mesh.elements2d,dtype=np.int64)
-        md.mesh.numberofvertices2d=int(md.mesh.numberofvertices2d)
-        md.mesh.numberofelements2d=int(md.mesh.numberofelements2d)
-    elif md.mesh.dimension() == 2:
-        try:
-            md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
-        except:
-            warnings.warn('Warning: nothing to be done with md.mesh.edges')
-        try:
-            md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
-        except:
-            warnings.warn('Warning: nothing to be done with md.mesh.segments')
-        try:
-            md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
-        except:
-            warnings.warn('Warning: nothing to be done with md.mesh.segmentmarkers')
+    # Coerce some arrays 
+    md = _coerce_array(md)
 
     if verbose:
         print('Model successfully loaded from NetCDF4.')
@@ -315,7 +279,10 @@ def _read_variable(grp, vname: str, var, verbose: bool):  # {{{
 
     # Bool
     if type_is == 'bool':
-        return np.array(raw, dtype=bool)
+        if len(raw) == 1:
+            return bool(raw)
+        else:
+            return np.array(raw, dtype=bool)
 
     # String / cell-of-strings
     if type_is == 'string' or (hasattr(var, 'dimensions') and
@@ -331,9 +298,24 @@ def _read_variable(grp, vname: str, var, verbose: bool):  # {{{
     # Squeeze trailing size-1 dims
     data = np.squeeze(data)
 
-    # Single-element array → Python scalar
-    if data.ndim == 0:
+    # Single-element array -> Python scalar
+    if data.ndim == 0 or (data.ndim == 1 and len(data) == 1):
         v = data.item()
+
+        # NOTE: infinity value: md.settings.waitonlock = np.inf
+        if isinstance(v,float) and (np.isinf(v) | np.isnan(v)):
+            # nothting to be done with inf/nan value
+            return v
+
+        # NOTE: large number at e.g., md.solidearth.rotational.equatorialmoi > 1e+37 save as float, not integer.
+        if isinstance(v, float) and (np.log10(v) >= 30):
+            # NOTE: for debugging mode
+            # Check message for equatorialmoi / polarmoi in solidearth.
+            if not vname in ['equatorialmoi','polarmoi']:
+                warnings.warn(f'Warning: The scalar value "md.{grp.name}.{vname}" exceeds 1e+30. It should be treated as a float rather than an integer.')
+            return float(v)
+
+        # FIXME: Sometimes, we set value with float e.g., 10.0; however, it would treat value integer.
         # Return int if value is a whole number (guard against nan/inf first)
         if isinstance(v, float) and np.isfinite(v) and v == int(v):
             return int(v)
@@ -500,6 +482,20 @@ def _instantiate_subclass(md, gname: str, ct: str, verbose: bool):  # {{{
         else:
             warnings.warn(f"mesh class '{ct}' not supported yet")
         # }}}
+    elif gname == 'materials': # {{{
+        module = importlib.import_module(ct)
+        f = getattr(module, ct)
+        md.materials = f()
+        # }}}
+    elif gname == 'cluster': # {{{
+        try:
+            module = importlib.import_module(ct)
+            f = getattr(module, ct)
+            md.cluster = f()
+        except:
+            md.cluster = generic()
+            warnings.warn('Warning: cluster "' + ct + '" is not implemented in python. Use "generic" cluster as default.')
+        # }}}
 
     # All other groups keep their default instance; we just overwrite fields
     return md
@@ -544,3 +540,62 @@ def _set_attr(obj, name: str, value, verbose: bool):  # {{{
 def _get_classtype(grp) -> str:  # {{{
     return getattr(grp, 'classtype', '')
 # }}}
+def _coerce_array(md) -> model: # {{{
+    """
+    We want to coerce some array as specific format
+    """
+
+    try:
+        md.mesh.elements=np.array(md.mesh.elements,dtype=np.int64)
+    except:
+        pass
+    try:
+        md.mesh.vertexconnectivity=np.array(md.mesh.vertexconnectivity,dtype=np.int64)
+    except:
+        pass
+    try:
+        md.mesh.elementconnectivity=np.array(md.mesh.elementconnectivity,dtype=np.int64)
+    except:
+        pass
+
+    md.mesh.numberofvertices=int(md.mesh.numberofvertices)
+    md.mesh.numberofelements=int(md.mesh.numberofelements)
+
+    try:
+        md.mesh.extractedvertices=np.array(md.mesh.extractedvertices,dtype=np.int64)
+    except:
+        pass
+    try:
+        md.mesh.extractedelements=np.array(md.mesh.extractedelements,dtype=np.int64)
+    except:
+        pass
+
+    if md.mesh.dimension() == 3:
+        try:
+            md.mesh.elements2d=np.array(md.mesh.elements2d,dtype=np.int64)
+        except:
+            pass
+        try:
+            md.mesh.numberofvertices2d=int(md.mesh.numberofvertices2d)
+        except:
+            pass
+        try:
+            md.mesh.numberofelements2d=int(md.mesh.numberofelements2d)
+        except:
+            pass
+    elif md.mesh.dimension() == 2:
+        try:
+            md.mesh.edges   =np.array(md.mesh.edges,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.edges')
+        try:
+            md.mesh.segments=np.array(md.mesh.segments,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.segments')
+        try:
+            md.mesh.segmentmarkers=np.array(md.mesh.segmentmarkers,dtype=np.int64)
+        except:
+            warnings.warn('Warning: nothing to be done with md.mesh.segmentmarkers')
+    
+    return md
+    # }}}

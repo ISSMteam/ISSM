@@ -234,7 +234,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_DEFINE([_IS_MSYS2_], [1], [is Windows (MSYS2 MinGW)])
 			export CXXFLAGS="-D_MSYS2_ -std=c++11"
 			export LDFLAGS="-no-undefined"
-			export OSLIBS="-Wl,-L/c/msys64/mingw64/lib -Wl,-lstdc++ -Wl,-lmingw32 -Wl,-lgcc_s -Wl,-lmoldname -Wl,-lmsvcrt -Wl,-L/mingw64/lib -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lm -Wl,-lpthread -Wl,-lshell32 -Wl,-luser32 -Wl,-lgdi32 -Wl,-ladvapi32 -Wl,-lkernel32 -Wl,-lgcc"
+			export OSLIBS="-Wl,--start-group -Wl,-L/ucrt64/lib -Wl,-lstdc++ -Wl,-lgcc_s -Wl,-lgcc -Wl,-lmingwex -Wl,-lmsvcrt -Wl,-lkernel32 -Wl,-lpthread -Wl,-ladvapi32 -Wl,-lshell32 -Wl,-luser32 -Wl,-lmingw32 -Wl,-lgdi32 -Wl,--end-group"
 		;;
 		*)
 			AC_MSG_ERROR([unsupported operating system type])
@@ -1164,11 +1164,11 @@ AC_DEFUN([ISSM_OPTIONS],[
 			AC_MSG_ERROR([cannot run AMPI without ADOL-C]);
 		fi
 		dnl AMPILIB="-dy -L${AMPI_ROOT}/lib -lampiCommon -L${ADOLC_ROOT}/lib -ladolc -L${AMPI_ROOT}/lib -lampiCommon -lampiBookkeeping -lampiTape"
-		dnl AMPILIB="-dy -L${AMPI_ROOT}/lib  -L${ADOLC_ROOT}/lib -Wl,--start-group,-lampiCommon,-ladolc,-lampiCommon,-lampiBookkeeping,-lampiTape,-lampiPlainC,-lampiADtoolStubsST,--end-group"
-		dnl AMPILIB="-L${AMPI_ROOT}/lib  -L${ADOLC_ROOT}/lib -Wl,--start-group -lampiCommon -ladolc -lampiCommon -lampiBookkeeping -lampiTape -lampiPlainC -lampiADtoolStubsST -Wl,--end-group"
-		dnl AMPILIB="${AMPI_ROOT}/lib/libampiCommon.so ${ADOLC_ROOT}/lib/libadolc.so  ${AMPI_ROOT}/lib/libampiCommon.so ${AMPI_ROOT}/lib/libampiBookkeeping.so ${AMPI_ROOT}/lib/libampiTape.so ${AMPI_ROOT}/lib/libampiPlainC.so  ${AMPI_ROOT}/lib/libampiADtoolStubsST.so"
+		dnl AMPILIB="-dy -L${AMPI_ROOT}/lib -L${ADOLC_ROOT}/lib -Wl,--start-group,-lampiCommon,-ladolc,-lampiCommon,-lampiBookkeeping,-lampiTape,-lampiPlainC,-lampiADtoolStubsST,--end-group"
+		dnl AMPILIB="-L${AMPI_ROOT}/lib -L${ADOLC_ROOT}/lib -Wl,--start-group -lampiCommon -ladolc -lampiCommon -lampiBookkeeping -lampiTape -lampiPlainC -lampiADtoolStubsST -Wl,--end-group"
+		dnl AMPILIB="${AMPI_ROOT}/lib/libampiCommon.so ${ADOLC_ROOT}/lib/libadolc.so  ${AMPI_ROOT}/lib/libampiCommon.so ${AMPI_ROOT}/lib/libampiBookkeeping.so ${AMPI_ROOT}/lib/libampiTape.so ${AMPI_ROOT}/lib/libampiPlainC.so ${AMPI_ROOT}/lib/libampiADtoolStubsST.so"
 		dnl AMPILIB="-dy -L${AMPI_ROOT}/lib  -L${ADOLC_ROOT}/lib -lampiCommon -ladolc -lampiCommon -lampiBookkeeping -lampiTape -lampiPlainC -lampiADtoolStubsST"
-		AMPILIB="-dy -L${AMPI_ROOT}/lib  -lampiCommon -lampiBookkeeping -lampiTape"
+		AMPILIB="-dy -L${AMPI_ROOT}/lib -lampiCommon -lampiBookkeeping -lampiTape"
 		AC_DEFINE([_HAVE_AMPI_], [1], [with AMPI in ISSM src])
 		AC_SUBST([AMPIINCL])
 		AC_SUBST([AMPILIB])
@@ -1371,7 +1371,7 @@ AC_DEFUN([ISSM_OPTIONS],[
 				fi
 			;;
 			*mingw*)
-				PETSCLIB="-Wl,--start-group -Wl,-L${PETSC_ROOT}/lib -Wl,-lpetsc -Wl,-ldmumps -Wl,-lsmumps -Wl,-lcmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord -Wl,-lscalapack -Wl,-lparmetis -Wl,-lmetis -Wl,--end-group -Wl,-lgdi32 -Wl,-luser32 -Wl,-ladvapi32 -Wl,-lkernel32"
+				PETSCLIB="-Wl,-L${PETSC_ROOT}/lib -Wl,-lpetsc -Wl,-lscalapack -Wl,-lparmetis -Wl,-lmetis"
 			;;
 		esac
 		AC_MSG_RESULT([done])
@@ -1866,14 +1866,10 @@ AC_DEFUN([ISSM_OPTIONS],[
 	dnl MUMPS libraries and header files
 	if test "x${HAVE_MUMPS}" == "xyes"; then
 		MUMPSINCL="-I${MUMPS_ROOT}/include"
-		if test "x${MUMPS_ROOT}" == "x${PETSC_ROOT}"; then
-			if test "x${IS_MSYS2}" == "xyes"; then
-				MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lcmumps -Wl,-ldmumps -Wl,-lsmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
-			else
-				MUMPSLIB="-L${MUMPS_ROOT}/lib -lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lpord"
-			fi
+		if test "x${IS_MSYS2}" == "xyes"; then
+			MUMPSLIB="-Wl,-L${MUMPS_ROOT}/lib -Wl,-lsmumps -Wl,-ldmumps -Wl,-lcmumps -Wl,-lzmumps -Wl,-lmumps_common -Wl,-lpord"
 		else
-			MUMPSLIB="-L${MUMPS_ROOT}/lib -ldmumps -lmumps_common -lpord"
+			MUMPSLIB="-L${MUMPS_ROOT}/lib -lsmumps -ldmumps -lcmumps -lzmumps -lmumps_common -lpord"
 		fi
 		AC_DEFINE([_HAVE_MUMPS_], [1], [with MUMPS in ISSM src])
 		AC_SUBST([MUMPSINCL])
@@ -2272,34 +2268,6 @@ AC_DEFUN([ISSM_OPTIONS],[
 		AC_SUBST([NEOPZLIB])
 	fi
 	AM_CONDITIONAL([NEOPZ], [test "x${HAVE_NEOPZ}" == "xyes"])
-	dnl }}}
-	dnl Gmsh{{{
-	AC_MSG_CHECKING([for Gmsh])
-	AC_ARG_WITH(
-		[gmsh-dir],
-		AS_HELP_STRING([--with-gmsh-dir=DIR], [Gmsh root directory]),
-		[GMSH_ROOT=${withval}],
-		[GMSH_ROOT="no"]
-	)
-	if test "x${GMSH_ROOT}" == "xno"; then
-		HAVE_GMSH=no
-	else
-		HAVE_GMSH=yes
-		if ! test -d "${GMSH_ROOT}"; then
-			AC_MSG_ERROR([Gmsh directory provided (${GMSH_ROOT}) does not exist!]);
-		fi
-	fi
-	AC_MSG_RESULT([${HAVE_GMSH}])
-	AM_CONDITIONAL([GMSH], [test "x${HAVE_GMSH}" == "xyes"])
-
-	if test "x${HAVE_GMSH}" == "xyes"; then
-		AC_DEFINE([_HAVE_GMSH_], [1], [with Gmsh in ISSM src])
-
-		AC_MSG_CHECKING(for Gmsh version)
-		GMSH_VERSION_MAJOR=`${GMSH_ROOT}/bin/gmsh -info | grep "Version" | sed -e "s/Version@<:@@<:@:blank:@:>@@:>@*:@<:@@<:@:blank:@:>@@:>@//" | cut -d "." -f 1`
-		AC_MSG_RESULT([${GMSH_VERSION_MAJOR}])
-		AC_DEFINE_UNQUOTED([_GMSH_VERSION_MAJOR_], ${GMSH_VERSION_MAJOR}, [Gmsh major version])
-	fi
 	dnl }}}
 	dnl PyBind11{{{
 	AC_MSG_CHECKING([for pybind11])

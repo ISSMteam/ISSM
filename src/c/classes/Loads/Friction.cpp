@@ -455,6 +455,9 @@ void Friction::GetAlpha2(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 			case 15:
 				GetAlpha2RegCoulomb2(palpha2,gauss);
 				break;
+			case 21:
+				GetAlpha2NN(palpha2,gauss);
+				break;
 			#ifdef _HAVE_PyBind11_
 			case 20:
 				GetAlpha2Emulator(palpha2, gauss);
@@ -823,6 +826,45 @@ void Friction::GetAlpha2Weertman(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 
 	/*Assign output pointers:*/
 	*palpha2=alpha2;
+}/*}}}*/
+void Friction::GetAlpha2NN(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
+	constexpr int width=32;
+	constexpr int weight_count=width*3+width*(width+1)+width+1;
+	IssmDouble* weights=NULL;
+	IssmDouble* normalization=NULL;
+	int nweights,nnormalization;
+	element->parameters->FindParam(&weights,&nweights,FrictionNNWeightsEnum);
+	element->parameters->FindParam(&normalization,&nnormalization,FrictionNNNormalizationEnum);
+	_assert_(nweights==weight_count && nnormalization==7);
+
+	IssmDouble C;
+	element->GetInputValue(&C,gauss,FrictionCEnum);
+	/* Smooth the speed near zero before applying the square-root transform. */
+	IssmDouble vx,vy;
+	GetBasalSlidingSpeeds(&vx,&vy,gauss);
+	IssmPDouble speed_floor=reCast<IssmPDouble>(normalization[6]);
+	IssmDouble speed=sqrt(vx*vx+vy*vy+speed_floor*speed_floor);
+	IssmDouble features[2]={(fabs(C)-normalization[0])/normalization[2],
+		(sqrt(speed)-normalization[1])/normalization[3]};
+
+	/* Weights are packed by output neuron, with the bias last in each row. */
+	const IssmDouble* row=weights;
+	IssmDouble hidden1[width],hidden2[width];
+	for(int i=0;i<width;i++,row+=3){
+		IssmDouble z=row[0]*features[0]+row[1]*features[1]+row[2];
+		hidden1[i]=z>0.?z:IssmDouble(0.);
+	}
+	for(int i=0;i<width;i++,row+=width+1){
+		IssmDouble z=row[width];
+		for(int j=0;j<width;j++) z+=row[j]*hidden1[j];
+		hidden2[i]=z>0.?z:IssmDouble(0.);
+	}
+	IssmDouble prediction=row[width];
+	for(int j=0;j<width;j++) prediction+=row[j]*hidden2[j];
+	IssmDouble root=normalization[4]+normalization[5]*prediction;
+	*palpha2=root*root;
+	xDelete<IssmDouble>(weights);
+	xDelete<IssmDouble>(normalization);
 }/*}}}*/
 void Friction::GetAlpha2WeertmanTemp(IssmDouble* palpha2, Gauss* gauss){/*{{{*/
 	/*Here, we want to parameterize the friction as a function of temperature
@@ -1428,6 +1470,9 @@ void FrictionUpdateInputs(Elements* elements,Inputs* inputs,IoModel* iomodel){/*
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.m",FrictionMEnum);
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.K",FrictionKEnum);
 			break;
+		case 21:
+			iomodel->FetchDataToInput(inputs,elements,"md.friction.C",FrictionCEnum);
+			break;
 		#ifdef _HAVE_PyBind11_
 		case 20:
 			iomodel->FetchDataToInput(inputs,elements,"md.friction.C",FrictionCEnum);
@@ -1511,6 +1556,20 @@ void FrictionUpdateParameters(Parameters* parameters,IoModel* iomodel){/*{{{*/
 			parameters->AddObject(new IntParam(FrictionCouplingEnum,2));
 			parameters->AddObject(iomodel->CopyConstantObject("md.friction.effective_pressure_limit",FrictionEffectivePressureLimitEnum));
 			break;
+		case 21:{
+			IssmDouble* values=NULL;
+			int M,N;
+			iomodel->FetchData(&values,&M,&N,"md.friction.nn_weights");
+			if(M!=1 || N!=1185) _error_("Neural friction requires a 1 x 1185 weight vector");
+			parameters->AddObject(new DoubleVecParam(FrictionNNWeightsEnum,values,N));
+			xDelete<IssmDouble>(values);
+			iomodel->FetchData(&values,&M,&N,"md.friction.nn_normalization");
+			if(M!=1 || N!=7 || values[2]<=0. || values[3]<=0. || values[5]<=0. || values[6]<=0.)
+				_error_("Invalid neural friction normalization");
+			parameters->AddObject(new DoubleVecParam(FrictionNNNormalizationEnum,values,N));
+			xDelete<IssmDouble>(values);
+			break;
+		}
 		#ifdef _HAVE_PyBind11_
 		case 20:{
 					  /*Get path from iomodel*/

@@ -463,7 +463,7 @@ if perform(org,'ParameterizeIce'),
     md.smb.mass_balance = [1*ones(md.mesh.numberofvertices,1); 1];
 
     %Flow law
-    md.materials.rheology_B=paterson(md.initialization.temperature);
+    md.materials.rheology_B=cuffey(md.initialization.temperature);
     md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
     md.damage.D=zeros(md.mesh.numberofvertices,1);
     md.damage.spcdamage=NaN*ones(md.mesh.numberofvertices,1);

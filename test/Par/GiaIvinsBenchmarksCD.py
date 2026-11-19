@@ -7,7 +7,7 @@ import numpy as np
 from arch import *
 from giaivins import giaivins
 from InterpFromMeshToMesh2d import *
-from paterson import *
+from cuffey import *
 from verbose import *
 from SetIceSheetBC import *
 
@@ -58,7 +58,7 @@ md.initialization.pressure = np.zeros((md.mesh.numberofvertices, 1))
 
 #Materials
 md.initialization.temperature = (273. - 20.) * np.ones((md.mesh.numberofvertices, 1))
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * np.ones((md.mesh.numberofelements, 1))
 
 #Friction

@@ -1,4 +1,5 @@
 #include "./SealevelchangeAnalysis.h"
+#include <chrono>
 #include <math.h>
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
@@ -132,6 +133,8 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 	int  nt,precomputednt;
 	int i, j, k, n, viscoussampling;
 	int* viscoussamplingindex =NULL;
+	int* greensampleindex=NULL;
+	int greensamples=1;
 	IssmDouble* viscoustimes=NULL;
 	IssmDouble* viscouspolarmotion=NULL;
 
@@ -166,6 +169,9 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.maxiter",SolidearthSettingsMaxiterEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.selfattraction",SolidearthSettingsSelfAttractionEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.horiz",SolidearthSettingsHorizEnum));
+	/*A missing record in older model input files selects the stored-table path.*/
+	iomodel->AddConstant(new IoConstant(0,"md.solidearth.settings.lowmem"));
+	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.lowmem",SolidearthSettingsLowmemEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.elastic",SolidearthSettingsElasticEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.viscous",SolidearthSettingsViscousEnum));
 	parameters->AddObject(iomodel->CopyConstantObject("md.solidearth.settings.rotation",SolidearthSettingsRotationEnum));
@@ -260,6 +266,11 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 		iomodel->FetchData(&rotation,"md.solidearth.settings.rotation");
 		iomodel->FetchData(&horiz,"md.solidearth.settings.horiz");
 
+		bool profiling=false;
+		if(selfattraction) parameters->FindParam(&profiling,DebugProfilingEnum);
+		std::chrono::steady_clock::time_point green_start;
+		if(profiling) green_start=std::chrono::steady_clock::now();
+
 		if(selfattraction){
 			/*compute green functions for a range of angles*/
 			iomodel->FetchData(&degacc,"md.solidearth.settings.degacc");
@@ -314,15 +325,14 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 				parameters->AddObject(new IntParam(SealevelchangeViscousIndexEnum,0));
 
 				/*Compute time indices to be used in the convolution:{{{*/
-				/* These samples are spaced by intervals that double into the future.
-				 * This captures fast evolving rates right after loading, then the
-				 * slower relaxation times. */
+				/*Select response lags on the full timeacc grid. The spacing doubles
+				 *after each group to resolve fast changes just after loading while
+				 *sampling the slower response less often.*/
 				nt=reCast<int,IssmDouble>((final_time-start_time)/timeacc)+1; /*initial estimate, we may have to go further*/
-				int* viscoussamplingindex2=NULL;
 				if(viscoussampling>=nt){
 					n=nt;
-					viscoussamplingindex2=xNewZeroInit<int>(n);
-					for(i=0;i<n;i++) viscoussamplingindex2[i]=i;
+					greensampleindex=xNewZeroInit<int>(n);
+					for(i=0;i<n;i++) greensampleindex[i]=i;
 				}
 				else{
 					i=0;
@@ -341,15 +351,14 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 							j*=2;
 						}
 					}
-					viscoussamplingindex2=xNewZeroInit<int>(n);
-					for (i=0;i<n;i++) viscoussamplingindex2[i]=viscoussamplingindex[i];
+					greensampleindex=xNewZeroInit<int>(n);
+					for (i=0;i<n;i++) greensampleindex[i]=viscoussamplingindex[i];
 
-					nt=nt+viscoussamplingindex2[n-1]-viscoussamplingindex2[n-2]; /*compute Green functions up to index of final_time + size of largest interval*/
+					nt=nt+greensampleindex[n-1]-greensampleindex[n-2]; /*extend the history grid past final_time to retain the upper interpolation bracket*/
 				}
-				parameters->AddObject(new IntParam(SealevelchangeViscousSamplingLengthEnum,n));
-				parameters->AddObject(new IntVecParam(SealevelchangeViscousSamplingIndexEnum,viscoussamplingindex2,n));
-
-				xDelete<int>(viscoussamplingindex2);
+				greensamples=n;
+				parameters->AddObject(new IntParam(SealevelchangeViscousSamplingLengthEnum,greensamples));
+				parameters->AddObject(new IntVecParam(SealevelchangeViscousSamplingIndexEnum,greensampleindex,greensamples));
 				/*}}}*/
 
 				viscoustimes=xNew<IssmDouble>(nt);
@@ -501,13 +510,16 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 				}
 			}
 
-			/*Reinterpolate viscoelastic green kernels onto a regular gridded time 
-			 *with steps equal to timeacc:*/
+			/*Packed G, U and H have one row per angular bin and greensamples
+			 *columns. For example, full-grid lags [0,1,2,4] occupy slots
+			 *[0,1,2,3] in each row. These are the same values GxL would read
+			 *from a full table, not a new sampling rule. Rotation and the
+			 *viscous histories still use the full grid of nt time steps.*/
 			if(viscous){
 #ifdef _HAVE_AD_
-				G_viscoelastic_interpolated=xNew<IssmDouble>(M*nt,"t");
-				U_viscoelastic_interpolated=xNew<IssmDouble>(M*nt,"t");
-				if(horiz) H_viscoelastic_interpolated=xNew<IssmDouble>(M*nt,"t");
+				G_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples,"t");
+				U_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples,"t");
+				if(horiz) H_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples,"t");
 				if(rotation){
 					Pmtf_col_interpolated=xNew<IssmDouble>(nt,"t");
 					Pmtf_ortho_interpolated=xNew<IssmDouble>(nt,"t");
@@ -517,9 +529,9 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 					if (horiz) Love_tl2_interpolated=xNew<IssmDouble>(nt,"t");
 				}
 #else
-				G_viscoelastic_interpolated=xNew<IssmDouble>(M*nt);
-				U_viscoelastic_interpolated=xNew<IssmDouble>(M*nt);
-				if(horiz) H_viscoelastic_interpolated=xNew<IssmDouble>(M*nt);
+				G_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples);
+				U_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples);
+				if(horiz) H_viscoelastic_interpolated=xNew<IssmDouble>(M*greensamples);
 				if(rotation){
 					Pmtf_col_interpolated=xNew<IssmDouble>(nt);
 					Pmtf_ortho_interpolated=xNew<IssmDouble>(nt);
@@ -529,6 +541,7 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 					if (horiz) Love_tl2_interpolated=xNew<IssmDouble>(nt);
 				}
 #endif
+				int sample=0;
 				for(int t=0;t<nt;t++){
 					IssmDouble lincoeff;
 					IssmDouble viscoelastic_time=t*timeacc;
@@ -550,12 +563,15 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 						lincoeff=0;
 					}
 
-					for(int index=0;index<M;index++){
-						int timeindex=index*nt+t;
-						int timepreindex= index*ntimesteps+timeindex2;
-						G_viscoelastic_interpolated[timeindex]=(1-lincoeff)*G_viscoelastic[timepreindex]+lincoeff*G_viscoelastic[timepreindex+1];
-						U_viscoelastic_interpolated[timeindex]=(1-lincoeff)*U_viscoelastic[timepreindex]+lincoeff*U_viscoelastic[timepreindex+1];
-						if(horiz)H_viscoelastic_interpolated[timeindex]=(1-lincoeff)*H_viscoelastic[timepreindex]+lincoeff*H_viscoelastic[timepreindex+1];
+					if(sample<greensamples && t==greensampleindex[sample]){
+						for(int index=0;index<M;index++){
+							int timeindex=index*greensamples+sample;
+							int timepreindex= index*ntimesteps+timeindex2;
+							G_viscoelastic_interpolated[timeindex]=(1-lincoeff)*G_viscoelastic[timepreindex]+lincoeff*G_viscoelastic[timepreindex+1];
+							U_viscoelastic_interpolated[timeindex]=(1-lincoeff)*U_viscoelastic[timepreindex]+lincoeff*U_viscoelastic[timepreindex+1];
+							if(horiz)H_viscoelastic_interpolated[timeindex]=(1-lincoeff)*H_viscoelastic[timepreindex]+lincoeff*H_viscoelastic[timepreindex+1];
+						}
+						sample++;
 					}
 
 					if(rotation){
@@ -568,6 +584,7 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 						if (horiz) Love_tl2_interpolated[t]=(1.0-lincoeff)*love_tl[timepreindex]+lincoeff*love_tl[timepreindex+1];
 					}
 				}
+				_assert_(sample==greensamples);
 			}
 			else {
 
@@ -617,12 +634,12 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 
 				}
 			}	
-			/*Save our precomputed tables into parameters*/
+			/*Parameter constructors copy the tables; free the setup buffers below.*/
 			parameters->AddObject(new DoubleVecParam(SealevelchangeGSelfAttractionEnum,G_gravi,M));
-			parameters->AddObject(new DoubleVecParam(SealevelchangeGViscoElasticEnum,G_viscoelastic_interpolated,M*nt));
+			parameters->AddObject(new DoubleVecParam(SealevelchangeGViscoElasticEnum,G_viscoelastic_interpolated,M*greensamples));
 			if(viscous || elastic){
-				parameters->AddObject(new DoubleVecParam(SealevelchangeUViscoElasticEnum,U_viscoelastic_interpolated,M*nt));
-				if(horiz)parameters->AddObject(new DoubleVecParam(SealevelchangeHViscoElasticEnum,H_viscoelastic_interpolated,M*nt));
+				parameters->AddObject(new DoubleVecParam(SealevelchangeUViscoElasticEnum,U_viscoelastic_interpolated,M*greensamples));
+				if(horiz)parameters->AddObject(new DoubleVecParam(SealevelchangeHViscoElasticEnum,H_viscoelastic_interpolated,M*greensamples));
 				if(rotation){
 					parameters->AddObject(new DoubleVecParam(SealevelchangePolarMotionTransferFunctionColinearEnum,Pmtf_col_interpolated,nt));
 					parameters->AddObject(new DoubleVecParam(SealevelchangePolarMotionTransferFunctionOrthogonalEnum,Pmtf_ortho_interpolated,nt));
@@ -638,6 +655,7 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 			xDelete<IssmDouble>(G_viscoelastic);
 			xDelete<IssmDouble>(G_viscoelastic_local);
 			xDelete<IssmDouble>(G_viscoelastic_interpolated);
+			xDelete<int>(greensampleindex);
 			if(elastic){
 				xDelete<IssmDouble>(love_timefreq);
 				xDelete<IssmDouble>(love_h);
@@ -647,16 +665,13 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 				xDelete<IssmDouble>(love_tk);
 				xDelete<IssmDouble>(love_tl);
 
-				xDelete<IssmDouble>(G_viscoelastic_interpolated);
 				xDelete<IssmDouble>(U_viscoelastic);
 				xDelete<IssmDouble>(U_viscoelastic_interpolated);
 				xDelete<IssmDouble>(U_viscoelastic_local);
-				xDelete<IssmDouble>(U_viscoelastic_interpolated);
 				if(horiz){
 					xDelete<IssmDouble>(H_viscoelastic);
 					xDelete<IssmDouble>(H_viscoelastic_interpolated);
 					xDelete<IssmDouble>(H_viscoelastic_local);
-					xDelete<IssmDouble>(H_viscoelastic_interpolated);
 				}
 				if(rotation){
 					xDelete<IssmDouble>(love_pmtf_colinear);
@@ -675,6 +690,11 @@ void SealevelchangeAnalysis::UpdateParameters(Parameters* parameters,IoModel* io
 				}
 			}
 		} /*}}}*/
+
+		if(profiling){
+			const IssmPDouble seconds=std::chrono::duration<IssmPDouble>(std::chrono::steady_clock::now()-green_start).count();
+			sealevelchange_profile_setup("green_setup_s",seconds);
+		}
 
 		/*Indicate we have not yet run the Geometry Core module: */
 		parameters->AddObject(new BoolParam(SealevelchangeGeometryDoneEnum,false));

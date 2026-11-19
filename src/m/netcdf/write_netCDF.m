@@ -41,7 +41,7 @@ function write_netCDF(md, filename, varargin)
 	if nargin > 2 && islogical(varargin{1})
 		verbose = varargin{1};
 	else
-		p.parse(varargin{:});
+		parse(p,varargin{:});
 		verbose = p.Results.verbose;
 	end
 
@@ -307,10 +307,15 @@ function write_numeric(val, vname, gid, root_ncid, path_str, verbose) % {{{
 		return
 	end
 
-	%convert to double
-	data = double(val);
-
-
+	%check data type: int / double
+	if isa(val,'int64')
+		NC_DATATYPE='NC_INT64';
+	elseif isa(val,'double')
+		NC_DATATYPE='NC_DOUBLE';
+	else
+		error(['Error: given data type (=' class(val) ') is not supported in numeric']);
+	end
+	data = val; % Just copy
 
 	% Flatten trailing singleton dimensions (keep at least 2 dims for reshape)
 	sz = size(data);
@@ -331,7 +336,7 @@ function write_numeric(val, vname, gid, root_ncid, path_str, verbose) % {{{
 
 	dim_ids = make_dims(sz, gid, root_ncid);
 
-	varid = netcdf.defVar(gid, vname, 'NC_DOUBLE', dim_ids);
+	varid = netcdf.defVar(gid, vname, NC_DATATYPE, dim_ids);
 	if numel(data) > 1
 		netcdf.defVarDeflate(gid, varid, true, true, 4);
 	end

@@ -86,7 +86,7 @@ class gadi(object):
         s += '    storage: {}\n'.format(self.storage)
         s += '    interactive: {}\n'.format(self.interactive)
         s += '    hyperthreading: {}\n'.format(self.hyperthreading)
-		s += '    mail_alarm : {} (n: no mail, a: abort, b: begin, e: end)'.format(self.mail_alarm)
+        s += '    mail_alarm : {} (n: no mail, a: abort, b: begin, e: end)'.format(self.mail_alarm)
         return s
     # }}}
 
@@ -106,8 +106,8 @@ class gadi(object):
         mail_alarm=self.mail_alarm
         assert isinstance(mail_alarm,str), 'Error: mail_alarm should be "string".'
         for i in range(len(mail_alarm)):
-            if not mail_alarm in ['b','a','e','n']:
-                raise Exception('Error: option in mail_alarm (=' + mail_alarm[i] ') is not valid in ''b'',''a'',''e'',''n''')
+            if not mail_alarm[i] in ['b','a','e','n']:
+                raise Exception('Error: option in mail_alarm (=' + mail_alarm[i] + ') is not valid in ''b'',''a'',''e'',''n''')
 
         # Some minimal checks
         if not self.login:
@@ -197,7 +197,7 @@ class gadi(object):
                     self.nprocs(), supstring, self.codepath, executable,
                     solution, self.executionpath, dirname, modelname))
         # Make *.lock after model done.
-        fid.write('\ntouch %s.lock\n',modelname)
+        fid.write('\ntouch %s.lock\n'%(modelname))
 
         if not io_gather:
             # Merge partial outbin files if your code writes multiple .outbin.#
@@ -211,7 +211,7 @@ class gadi(object):
     # }}}
 
     def LaunchQueueJob(self, modelname, dirname, filelist, restart, batch):  # {{{
-        cluster_defaults.LaunchQueueJobSbatch(self, modelname, dirname, filelist, restart, batch, 3)
+        cluster_defaults.LaunchQueueJobSbatch(self, modelname, dirname, filelist, 0, batch, 4)
     # }}}
 
     def Download(self, dirname, filelist):  # {{{

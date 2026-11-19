@@ -17,6 +17,10 @@ class stressbalance(object):
     """
 
     def __init__(self):  # {{{
+        self.isemulator = 0
+        self.module_dir = ''
+        self.pt_name    = ''
+        self.py_name    = ''
         self.spcvx = np.nan
         self.spcvy = np.nan
         self.spcvx_base = np.nan
@@ -50,6 +54,13 @@ class stressbalance(object):
 
     def __repr__(self):  # {{{
         s = '   StressBalance solution parameters:\n'
+
+        s +='\n      Emulator parameters:\n'
+        s += '{}\n'.format(fielddisplay(self,'isemulator','0: finite element (default), 1: gnn emulator, 2: hybrid (not implementd)'))
+        s += '{}\n'.format(fielddisplay(self,'module_dir', 'directory of the emulator module'))
+        s += '{}\n'.format(fielddisplay(self,'pt_name', 'name of the checkpoint file for pre-trained ML model'))
+        s += '{}\n'.format(fielddisplay(self,'py_name', 'name of the python file that defines ML architecture'))
+
         s += '      Convergence criteria:\n'
         s += '{}\n'.format(fielddisplay(self, 'restol', 'mechanical equilibrium residual convergence criterion'))
         s += '{}\n'.format(fielddisplay(self, 'reltol', 'velocity relative convergence criterion, NaN: not applied'))
@@ -142,6 +153,14 @@ class stressbalance(object):
     # }}}
 
     def checkconsistency(self, md, solution, analyses):  # {{{
+
+        # CHECK EMULATOR
+        md = checkfield(md,'fieldname','stressbalance.isemulator','numel',[1],'values',[0, 1, 2])
+        if self.isemulator:
+            md = checkfield(md,'fieldname','stressbalance.module_dir','filepath',1)
+            md = checkfield(md,'fieldname','stressbalance.py_name','string', 1)
+            md = checkfield(md,'fieldname','stressbalance.pt_name','string', 1)
+
         # Early return
         if 'StressbalanceAnalysis' not in analyses:
             return md
@@ -192,6 +211,11 @@ class stressbalance(object):
     # }}}
 
     def marshall(self, prefix, md, fid):  # {{{
+        WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','isemulator','format','Integer')
+        if self.isemulator:
+           WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','module_dir','format','String')
+           WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','pt_name','format','String')
+           WriteData(fid,prefix,'object',self,'class','stressbalance','fieldname','py_name','format','String')
 
         WriteData(fid, prefix, 'object', self, 'class', 'stressbalance', 'fieldname', 'vertex_pairing', 'format', 'DoubleMat', 'mattype', 3)
 

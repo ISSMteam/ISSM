@@ -13,7 +13,7 @@ class rotational(object):
     def __init__(self, *args):  #{{{
         self.equatorialmoi = 0
         self.polarmoi = 0
-        self.langularvelocity = 0
+        self.angularvelocity = 0
 
         nargin = len(args)
         if nargin == 0:

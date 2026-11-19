@@ -1,6 +1,7 @@
 #Test Name: 79NorthPISMhydrofriction
 import numpy as np
 from model import *
+from hydrologypism import hydrologypism
 from setmask import setmask
 from setflowequation import setflowequation
 from triangle import triangle

@@ -1,6 +1,7 @@
 #Test Name: 79NorthPISMhydro
 import numpy as np
 from model import *
+from hydrologypism import hydrologypism
 from setmask import setmask
 from triangle import triangle
 from parameterize import parameterize

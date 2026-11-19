@@ -356,7 +356,7 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorBase(Element* element
 	int         approximation;
 	IssmDouble *xyz_list      = NULL;
 	IssmDouble *xyz_list_base = NULL;
-	IssmDouble  Jdet,slope[3];
+	IssmDouble  Jdet,slope[3],normal[3];
 	IssmDouble  vx,vy,vz=0.,dbdx,dbdy;
 	IssmDouble  gmb,fmb,phi,basalmeltingvalue;
 
@@ -403,9 +403,11 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorBase(Element* element
 		else basalmeltingvalue=fmb;
 
 		element->JacobianDeterminantBase(&Jdet,xyz_list_base,gauss);
+		element->NormalBase(&normal[0],xyz_list_base);
 		element->NodalFunctions(basis,gauss);
 
-		IssmDouble factor = -Jdet*gauss->weight*(vx*dbdx+vy*dbdy-vz-basalmeltingvalue);;
+		/*n_z*dS = -dx*dy: the normal projects the inclined face onto the horizontal footprint*/
+		IssmDouble factor = Jdet*normal[2]*gauss->weight*(vx*dbdx+vy*dbdy-vz-basalmeltingvalue);
 		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 
@@ -422,7 +424,7 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorSurface(Element* elem
 	int         approximation;
 	IssmDouble *xyz_list      = NULL;
 	IssmDouble *xyz_list_surface= NULL;
-	IssmDouble  Jdet,slope[3];
+	IssmDouble  Jdet,slope[3],normal[3];
 	IssmDouble  vx,vy,vz=0.,dsdx,dsdy;
 	IssmDouble  smb;
 
@@ -463,9 +465,11 @@ ElementVector* StressbalanceVerticalAnalysis::CreatePVectorSurface(Element* elem
 		dsdy=slope[1];
 
 		element->JacobianDeterminantTop(&Jdet,xyz_list_surface,gauss);
+		element->NormalTop(&normal[0],xyz_list_surface);
 		element->NodalFunctions(basis,gauss);
 
-		IssmDouble factor = -Jdet*gauss->weight*(vx*dsdx+vy*dsdy-vz+smb);
+		/*n_z*dS = dx*dy: the normal projects the inclined face onto the horizontal footprint*/
+		IssmDouble factor = -Jdet*normal[2]*gauss->weight*(vx*dsdx+vy*dsdy-vz+smb);
 		for(int i=0;i<numnodes;i++) pe->values[i]+=factor*basis[i];
 	}
 

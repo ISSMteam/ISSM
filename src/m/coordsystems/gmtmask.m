@@ -67,7 +67,6 @@ function mask = gmtmask(lat,long,varargin)
 		line=fgets(fid);
 	end
 
-
 	mask=zeros(nv,1);
 	mask(oce_vertices)=1;
 	

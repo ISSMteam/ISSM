@@ -36,7 +36,7 @@ md.solidearth.lovenumbers=lovenumbers('maxdeg',10000);
 % }}}
 %materials:  {{{
 	md.initialization.temperature=273.25*ones(md.mesh.numberofvertices,1);
-	md.materials.rheology_B=paterson(md.initialization.temperature);
+	md.materials.rheology_B=cuffey(md.initialization.temperature);
 	md.materials.rheology_n=3*ones(md.mesh.numberofelements,1);
 % }}}
 %Miscellaneous: {{{

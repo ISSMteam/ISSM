@@ -1,7 +1,7 @@
 # Mismip3D experiment with AMR using BAMG
 from bamg import bamg
 from model import *
-from export_netCDF import export_netCDF
+from write_netCDF import write_netCDF
 from setmask import setmask
 from loadmodel import loadmodel
 from parameterize import parameterize
@@ -20,7 +20,7 @@ if 1 in steps:
     #Generate an unstructured coarse mesh on the MISMIP domain with typical element edge length equal to 10, 000 m
     md = bamg(model(), 'domain', './domain.exp', 'hmax', 10000, 'splitcorners', 1)
 
-    export_netCDF(md, 'AMRCoarseMesh.nc')
+    write_netCDF(md, 'AMRCoarseMesh.nc')
 
 if 2 in steps:
     print('   Step 2: Parameterization')
@@ -45,7 +45,7 @@ if 2 in steps:
     md.amr.fieldname = 'None'  # no field used here
     md.amr.keepmetric = 0  # no field, no metric
 
-    export_netCDF(md, 'AMRParam.nc')
+    write_netCDF(md, 'AMRParam.nc')
 
 if 3 in steps:
     print('   Step 3: Solve!')
@@ -75,4 +75,4 @@ if 3 in steps:
 
     # Print the solutions and the mesh in VTK format (needs ParaView:    https: / / www.paraview.org)
     exportVTK('./VTKpy', md)
-    export_netCDF(md, 'AMRTransient.nc')
+    write_netCDF(md, 'AMRTransient.nc')

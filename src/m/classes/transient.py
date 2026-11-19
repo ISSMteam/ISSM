@@ -1,6 +1,7 @@
 from checkfield import checkfield
 from fielddisplay import fielddisplay
 from WriteData import WriteData
+from matdamageice import matdamageice
 
 
 class transient(object):
@@ -138,7 +139,7 @@ class transient(object):
 
         if solution != 'TransientSolution' and md.transient.isoceancoupling:
             md.checkmessage("Coupling with ocean can only be done in transient simulations!")
-        if md.transient.isdamageevolution and not hasattr(md.materials, 'matdamageice'):
+        if md.transient.isdamageevolution and not isinstance(md.materials, matdamageice):
             md.checkmessage("requesting damage evolution but md.materials is not of class matdamageice")
         return md
     # }}}

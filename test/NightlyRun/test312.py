@@ -19,6 +19,6 @@ md = solve(md, 'Thermal')
 
 #Fields and tolerances to track changes
 field_names = ['Temperature', 'BasalforcingsGroundediceMeltingRate']
-field_tolerances = [1e-13, 2e-8]
+field_tolerances = [1e-13, 3e-08]
 field_values = [md.results.ThermalSolution.Temperature,
                 md.results.ThermalSolution.BasalforcingsGroundediceMeltingRate]

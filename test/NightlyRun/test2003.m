@@ -1,6 +1,5 @@
 %Test Name: EarthSlc_rotationalFeedback
 
-
 %mesh earth:
 md=model;
 load ../Data/SlcTestMesh.mat;
@@ -12,8 +11,7 @@ md.geometry.base=md.geometry.bed;
 md.geometry.thickness=1000*ones(md.mesh.numberofvertices,1);
 md.geometry.surface=md.geometry.bed+md.geometry.thickness;
 
-%parameterize slc solution:
-%solidearth loading:  {{{
+%solidearth loading
 md.masstransport.spcthickness=[md.geometry.thickness;0];
 md.smb.mass_balance=zeros(md.mesh.numberofvertices,1);
 
@@ -32,8 +30,8 @@ posice=pos;
 
 %elastic loading from love numbers:
 md.solidearth.lovenumbers=lovenumbers('maxdeg',100);
-%}}}
-%mask:  {{{
+
+%mask:
 mask=gmtmask(md.mesh.lat,md.mesh.long);
 icemask=ones(md.mesh.numberofvertices,1);
 icemask(md.mesh.elements(posice,:))=-1;
@@ -86,9 +84,8 @@ md.solidearth.settings.elastic=1;
 md.solidearth.settings.rotation=0;
 md.solidearth.settings.viscous=0;
 md.cluster=generic('name',oshostname(),'np',3);
-%md.verbose=verbose('111111111');
 md=solve(md,'Transient');
-SnoRotation=md.results.TransientSolution.Sealevel;
+SnoRotation =md.results.TransientSolution.Sealevel;
 BUnoRotation=md.results.TransientSolution.Bed;
 BEnoRotation=md.results.TransientSolution.BedEast;
 BNnoRotation=md.results.TransientSolution.BedNorth;
@@ -99,9 +96,8 @@ md.solidearth.settings.elastic=1;
 md.solidearth.settings.rotation=1;
 md.solidearth.settings.viscous=0;
 md.cluster=generic('name',oshostname(),'np',3);
-%md.verbose=verbose('111111111');
 md=solve(md,'Transient');
-SRotation=md.results.TransientSolution.Sealevel;
+SRotation =md.results.TransientSolution.Sealevel;
 BURotation=md.results.TransientSolution.Bed;
 BERotation=md.results.TransientSolution.BedEast;
 BNRotation=md.results.TransientSolution.BedNorth;
@@ -110,4 +106,3 @@ BNRotation=md.results.TransientSolution.BedNorth;
 field_names     ={'Sealevel', 'Uplift', 'NorthDisplacement', 'EastDisplacement'};
 field_tolerances={1e-12,1e-12,1e-12,1e-12};
 field_values={SRotation-SnoRotation,BURotation-BUnoRotation,BNRotation-BNnoRotation,BERotation-BEnoRotation};
-

@@ -57,4 +57,9 @@ def expdisp(ax, options):
             else:
                 x = domain[j]['x'].tolist()  # since expread returns a string representation of the arrays
                 y = domain[j]['y'].tolist()
+
+                # coerce float array
+                x = np.array(x,dtype=float)
+                y = np.array(y,dtype=float)
+
                 ax.plot(x * unitmultiplier, y * unitmultiplier, ls=linestylei, lw=linewidthi, c=linecolori)

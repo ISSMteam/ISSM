@@ -4,6 +4,7 @@ from checkfield import checkfield
 from fielddisplay import fielddisplay
 from project3d import project3d
 from WriteData import WriteData
+from structtoobj import structtoobj
 
 
 class matenhancedice(object):
@@ -13,7 +14,7 @@ class matenhancedice(object):
         matenhancedice = matenhancedice()
     """
 
-    def __init__(self):  # {{{
+    def __init__(self, *args):  # {{{
         self.rho_ice = 0
         self.rho_water = 0
         self.rho_freshwater = 0
@@ -35,7 +36,17 @@ class matenhancedice(object):
         #SLC
         self.earth_density = 0
 
-        self.setdefaultparameters()
+        if len(args) == 0:
+            self.setdefaultparameters()
+        elif len(args) == 1:
+            inputstruct = args[0]
+
+            # Set default parameters
+            self.setdefaultparameters()
+
+            self = structtoobj(self, inputstruct)
+        else:
+            raise RuntimeError('constructor not supported.')
     # }}}
 
     def __repr__(self):  # {{{

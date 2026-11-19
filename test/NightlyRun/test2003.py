@@ -6,7 +6,7 @@ from gmtmask import *
 from lovenumbers import *
 from MatlabFuncs import *
 from model import *
-from paterson import *
+from cuffey import *
 from solve import *
 
 
@@ -121,4 +121,4 @@ BNRotation = md.results.TransientSolution.BedNorth
 # Fields and tolerances to track changes
 field_names = ['Sealevel', 'Uplift', 'NorthDisplacement', 'EastDisplacement']
 field_tolerances = [1e-13, 1e-13, 1e-13, 1e-13]
-field_values = [SRotation - SnoRotation, BURotation - BUnoRotation, BNRotation - BNnoRotation,BERotation - BEnoRotation]
+field_values = [SRotation - SnoRotation, BURotation - BUnoRotation, BNRotation - BNnoRotation, BERotation - BEnoRotation]

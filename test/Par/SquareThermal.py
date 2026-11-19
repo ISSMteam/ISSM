@@ -1,5 +1,5 @@
 import numpy as np
-from paterson import paterson
+from cuffey import cuffey
 from SetMarineIceSheetBC import SetMarineIceSheetBC
 
 #Ok, start defining model parameters here
@@ -31,7 +31,7 @@ md.initialization.waterfraction = np.zeros((md.mesh.numberofvertices, ))
 md.initialization.watercolumn = np.zeros((md.mesh.numberofvertices, ))
 
 print("      creating flow law parameter")
-md.materials.rheology_B = paterson(md.initialization.temperature)
+md.materials.rheology_B = cuffey(md.initialization.temperature)
 md.materials.rheology_n = 3. * np.ones((md.mesh.numberofelements))
 
 print("      creating surface mass balance")

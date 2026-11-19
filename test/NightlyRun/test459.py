@@ -1,6 +1,7 @@
 #Test Name: SquareSheetShelfHydrologyGlaDSTransitionModel
 import numpy as np
 from model import *
+from hydrologyglads import hydrologyglads
 from triangle import triangle
 from setmask import setmask
 from parameterize import parameterize

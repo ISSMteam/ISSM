@@ -1,4 +1,4 @@
-AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @TRIANGLEINCL@ @PETSCINCL@ @AMPIINCL@ @MEDIPACKINCL@ @MPIINCL@ @PARMETISINCL@ @METISINCL@ @CHACOINCL@ @PLAPACKINCL@ @MKLINCL@ @MUMPSINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @ADJOINTPETSCINCL@ @GSLINCL@ @BOOSTINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@ @PyBind11INCL@
+AM_CPPFLAGS = @NEOPZINCL@ @DAKOTAINCL@ @TRIANGLEINCL@ @PETSCINCL@ @MUMPSINCL@ @AMPIINCL@ @MEDIPACKINCL@ @PARMETISINCL@ @METISINCL@ @MPIINCL@ @CHACOINCL@ @PLAPACKINCL@ @MKLINCL@ @SPAIINCL@ @HYPREINCL@ @PROMETHEUSINCL@ @SUPERLUINCL@ @SPOOLESINCL@ @PASTIXINCL@ @MLINCL@ @TAOINCL@ @ADOLCINCL@ @CODIPACKINCL@ @ADJOINTPETSCINCL@ @GSLINCL@ @BOOSTINCL@ @ESMFINCL@ @PROJINCL@ @MPLAPACKINCL@ @PyBind11INCL@
 AM_FCFLAGS = 
 
 AUTOMAKE_OPTIONS = subdir-objects
@@ -339,6 +339,10 @@ issm_sources += \
 	./modules/ModelProcessorx/CreateOutputDefinitions.cpp \
 	./modules/OutputDefinitionsResponsex/OutputDefinitionsResponsex.cpp \
 	./modules/InterpFromMeshToMesh2dx/InterpFromMeshToMesh2dx.cpp \
+	./shared/Threads/LaunchThread.cpp \
+	./shared/Threads/PartitionRange.cpp \
+	./modules/InterpFromGridToMeshx/InterpFromGridToMeshx.cpp \
+	./modules/InterpFromMeshToGridx/InterpFromMeshToGridx.cpp \
 	./classes/Inputs/Inputs.cpp \
 	./classes/Inputs/BoolInput.cpp \
 	./classes/Inputs/DoubleInput.cpp \
@@ -649,8 +653,6 @@ neopz_sources = ./classes/AmrNeopz.cpp
 #}}}
 # Modules sources {{{
 modules_sources = \
-	./shared/Threads/LaunchThread.cpp \
-	./shared/Threads/PartitionRange.cpp \
 	./shared/Exp/exp.cpp \
 	./shared/Triangle/AssociateSegmentToElement.cpp \
 	./shared/Triangle/GridInsideHole.cpp \
@@ -661,11 +663,9 @@ modules_sources = \
 	./modules/ProcessRiftsx/ProcessRiftsx.cpp \
 	./modules/PointCloudFindNeighborsx/PointCloudFindNeighborsx.cpp \
 	./modules/PointCloudFindNeighborsx/PointCloudFindNeighborsxt.cpp \
-	./modules/InterpFromGridToMeshx/InterpFromGridToMeshx.cpp \
 	./modules/InterpFromMesh2dx/InterpFromMesh2dx.cpp \
 	./modules/InterpFromMesh2dx/InterpFromMesh2dxt.cpp \
 	./modules/InterpFromMeshToMesh3dx/InterpFromMeshToMesh3dx.cpp \
-	./modules/InterpFromMeshToGridx/InterpFromMeshToGridx.cpp \
 	./modules/MeshProfileIntersectionx/MeshProfileIntersectionx.cpp \
 	./modules/ContourToMeshx/ContourToMeshx.cpp \
 	./modules/ContourToMeshx/ContourToMeshxt.cpp \
@@ -717,11 +717,11 @@ endif
 libISSMCore_la_SOURCES  = $(issm_sources)
 libISSMCore_la_CXXFLAGS = $(ALL_CXXFLAGS)
 libISSMCore_la_FFLAGS = $(AM_FFLAGS)
-libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MPILIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(PROJLIB) $(ADJOINTPETSCLIB)
+libISSMCore_LIB_ADD = $(CHACOLIB) $(DAKOTALIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(HDF5LIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MPILIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(ADOLCLIB) $(AMPILIB) $(PROJLIB) $(ADJOINTPETSCLIB)
 if FORTRAN
 libISSMCore_LIB_ADD += $(FLIBS) $(FORTRANLIB)
 endif
-libISSMCore_LIB_ADD += $(OSLIBS)
+libISSMCore_LIB_ADD += $(MATHLIB) $(OSLIBS)
 
 if MSYS2
 libISSMCore_la_LIBADD = ${libISSMCore_LIB_ADD}
@@ -867,13 +867,13 @@ LDADD += ./libISSMModules.la $(TRIANGLELIB)
 endif
 
 # External packages
-LDADD += $(DAKOTALIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(MATHLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADOLCLIB) $(MPILIB) $(ESMFLIB)
+LDADD += $(DAKOTALIB) $(CHACOLIB) $(PETSCLIB) $(MUMPSLIB) $(SCALAPACKLIB) $(BLASLAPACKLIB) $(PARMETISLIB) $(METISLIB) $(NEOPZLIB) $(TAOLIB) $(PLAPACKLIB) $(MPLAPACKLIB) $(SUPERLULIB) $(SPOOLESLIB) $(BLACSLIB) $(HDF5LIB) $(HYPRELIB) $(SPAILIB) $(PROMETHEUSLIB) $(PASTIXLIB) $(MLLIB) $(MKLLIB) $(GRAPHICSLIB) $(MULTITHREADINGLIB) $(GSLLIB) $(AMPILIB) $(ADOLCLIB) $(MPILIB) $(ESMFLIB)
 
 if FORTRAN
 LDADD += $(FLIBS) $(FORTRANLIB)
 endif
 
-LDADD += $(OSLIBS)
+LDADD += $(MATHLIB) $(OSLIBS)
 
 issm_SOURCES = main/issm.cpp
 issm_CXXFLAGS= $(CXXFLAGS)

@@ -1,17 +1,18 @@
 import numpy as np
 from model import *
+from triangle import triangle
 from setmask import setmask
 from parameterize import parameterize
 from setflowequation import setflowequation
 from generic import generic
 from solve import solve
 from plotmodel import plotmodel
-from export_netCDF import export_netCDF
+from write_netCDF import write_netCDF
 from m1qn3inversion import m1qn3inversion
 from verbose import verbose
 from loadmodel import loadmodel
 from cuffey import cuffey
-steps = [4]
+steps = [1,2,3,4]
 Clims = [1.3 * 1e8, 1.9 * 1e8]
 
 if 1 in steps:
@@ -23,9 +24,9 @@ if 1 in steps:
     md = setflowequation(md, 'SSA', 'all')
     md.cluster = generic('np', 2)
     md = solve(md, 'Stressbalance')
-    plotmodel(md, 'axis#all', 'tight', 'data', md.materials.rheology_B, 'caxis', Clims, 'title', '"True" B',
+    plotmodel(md, 'data', md.materials.rheology_B, 'caxis', Clims, 'title', '"True" B',
               'data', md.results.StressbalanceSolution.Vel, 'title', '"observed velocities"')
-    export_netCDF(md, 'model1.nc')
+    write_netCDF(md, 'model1.nc')
 
 if 2 in steps:
     #Modify rheology, now constant
@@ -39,9 +40,9 @@ if 2 in steps:
     md.inversion.vel_obs = md.results.StressbalanceSolution.Vel
 
     md = solve(md, 'Stressbalance')
-    plotmodel(md, 'axis#all', 'tight', 'data', md.materials.rheology_B, 'caxis', Clims, 'title', 'B first guess',
+    plotmodel(md, 'data', md.materials.rheology_B, 'caxis', Clims, 'title', 'B first guess',
               'data', md.results.StressbalanceSolution.Vel, 'title', 'modeled velocities')
-    export_netCDF(md, 'model2.nc')
+    write_netCDF(md, 'model2.nc')
 
 
 if 3 in steps:
@@ -61,7 +62,7 @@ if 3 in steps:
     #Go solve!
     md.verbose = verbose(0)
     md = solve(md, 'Stressbalance')
-    plotmodel(md, 'axis#all', 'tight', 'data', md.results.StressbalanceSolution.MaterialsRheologyBbar, 'caxis', Clims, 'title', 'inferred B',
+    plotmodel(md, 'data', md.results.StressbalanceSolution.MaterialsRheologyBbar, 'caxis', Clims, 'title', 'inferred B',
               'data', md.results.StressbalanceSolution.Vel, 'title', 'modeled velocities')
 
 
@@ -83,5 +84,5 @@ if 4 in steps:
     #Go solve!
     md.verbose = verbose(0)
     md = solve(md, 'Stressbalance')
-    plotmodel(md, 'axis#all', 'tight', 'data', md.results.StressbalanceSolution.MaterialsRheologyBbar, 'caxis', Clims, 'title', 'inferred B',
+    plotmodel(md, 'data', md.results.StressbalanceSolution.MaterialsRheologyBbar, 'caxis', Clims, 'title', 'inferred B',
               'data', md.results.StressbalanceSolution.Vel, 'title', 'modeled velocities')
