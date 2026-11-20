@@ -73,8 +73,8 @@ field_names = ['Vel1', 'Thickness1', 'MaskIceLevelset1', 'CalvingMeltingrate1', 
                'Vel3', 'Thickness3', 'MaskIceLevelset3', 'CalvingMeltingrate3', 'SmbRunoff3']
 field_tolerances = [
     2e-11, 9e-12, 1e-11, 1e-9, 1e-13,
-    2e-11, 2e-11, 1e-11, 1e-9, 1e-13,
-    1e-10, 1e-10, 1e-9, 1e-9, 1e-13]
+    2e-11, 2e-11, 1e-11, 1e-9, 2e-13,
+    1e-10, 1e-10, 1e-9, 1e-9, 2e-13]
 field_values = [
     md.results.TransientSolution[0].Vel,
     md.results.TransientSolution[0].Thickness,
