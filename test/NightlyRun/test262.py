@@ -48,8 +48,8 @@ nv = md.mesh.numberofvertices
 
 def grab(md):
     """Copy the fields we track so that a later solve cannot overwrite them"""
-    return [(np.copy(s.TemperaturePDD), np.copy(s.SmbMassBalance)) for s in md.results.TransientSolution]
-
+    steps = md.results.TransientSolution
+    return [(np.copy(steps[i].TemperaturePDD), np.copy(steps[i].SmbMassBalance)) for i in range(2)]
 
 # Run 1: legacy anomalies (one value per vertex, same for all 12 months)
 md.smb.temperature_anomaly = 1.5 * np.ones((nv, 1))
