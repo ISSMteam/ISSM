@@ -95,6 +95,7 @@ class Tria: public Element,public ElementHook,public TriaRef{
 		void        GetBarycenterFromLevelset(IssmDouble* platbar, IssmDouble* plongbar,IssmDouble phi,IssmDouble fraction1,IssmDouble fraction2,IssmDouble late, IssmDouble longe, int point1,int istrapeze1, IssmDouble planetradius);
 		IssmDouble  GetTriangleAreaSpherical(IssmDouble xyz_list[3][3]);
 		IssmDouble  GetIcefrontArea();
+		IssmDouble  GetRunoffDischarge();
 		void	      GetIcefrontCoordinates(IssmDouble** pxyz_front,IssmDouble* xyz_list,int levelsetenum);
 		void        GetInputListOnVertices(IssmDouble* pvalue,Input* input,IssmDouble default_value);
 		void        GetInputListOnNodes(IssmDouble* pvalue,Input* input,IssmDouble default_value);

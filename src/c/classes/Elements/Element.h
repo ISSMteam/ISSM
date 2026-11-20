@@ -189,6 +189,7 @@ class Element: public Object{
 		void               ProjectGridDataToMesh(IssmDouble* griddata,IssmDouble* x_grid,IssmDouble* y_grid,int Nx,int Ny,int input_enum);
 		void               SmbDebrisEvatt();
 		void               RignotMeltParameterization();
+		void               SetSubglacialDischargeFromBasins(IssmDouble* basin_discharge);
 		void               ResultInterpolation(int* pinterpolation,int*nodesperelement,int* parray_size, int output_enum);
 		void               ResultToPatch(IssmDouble* values,int nodesperelement,int output_enum);
 		void               ResultToMatrix(IssmDouble* values,int ncols,int output_enum);
@@ -291,6 +292,7 @@ class Element: public Object{
 		virtual void        GetBarycenterFromLevelset(IssmDouble* platbar, IssmDouble* plongbar,IssmDouble phi,IssmDouble fraction1,IssmDouble fraction2,IssmDouble late, IssmDouble longe, int point1,int istrapeze1, IssmDouble planetradius)=0;
 
 		virtual IssmDouble GetIcefrontArea(){_error_("not implemented");};
+		virtual IssmDouble GetRunoffDischarge(){_error_("not implemented");};
 		virtual void       GetIcefrontCoordinates(IssmDouble** pxyz_front,IssmDouble* xyz_list,int levelsetenum)=0;
 		virtual DatasetInput* GetDatasetInput(int inputenum){_error_("not implemented");};
 		virtual Input*    GetInput(int inputenum)=0;

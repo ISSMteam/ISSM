@@ -241,6 +241,7 @@ enum definitions{
    FrontalForcingsARMAmonthtrendsEnum,
    FrontalForcingsARMApolyparamsEnum,
 	FrontalForcingsIsDischargeARMAEnum,
+	FrontalForcingsIsDischargeRunoffEnum,
 	FrontalForcingsNumberofBasinsEnum,
 	FrontalForcingsNumberofBreaksEnum,
 	FrontalForcingsNumberofMonthBreaksEnum,
