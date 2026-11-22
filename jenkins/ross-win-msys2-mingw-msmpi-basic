@@ -5,23 +5,23 @@
 MATLAB_PATH=$(cygpath -u $(cygpath -ms "/c/Program Files/MATLAB/R2026b"))
 
 ISSM_CONFIG='\
-	--prefix=${ISSM_DIR} \
-	--enable-development \
-	--enable-debugging \
-	--with-numthreads=4 \
-	--with-matlab-dir="${MATLAB_PATH}" \
-	--with-mpi-include="/ucrt64/include" \
-	--with-mpi-libdir="-Wl,-L/ucrt64/lib" \
-	--with-mpi-libflags="-Wl,-lmsmpi -Wl,-lmsmpifec" \
-	--with-fortran-lib="-Wl,-L/ucrt64/lib -Wl,-lgfortran" \
-	--with-math-lib="-Wl,-L/ucrt64/lib -Wl,-lquadmath -Wl,-lm" \
-	--with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-mumps-dir="${ISSM_DIR}/externalpackages/mumps/install" \
-	--with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
-	--with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
+    --prefix=${ISSM_DIR} \
+    --enable-development \
+    --enable-debugging \
+    --with-numthreads=4 \
+    --with-matlab-dir="${MATLAB_PATH}" \
+    --with-mpi-include="/ucrt64/include" \
+    --with-mpi-libdir="-Wl,-L/ucrt64/lib" \
+    --with-mpi-libflags="-Wl,-lmsmpi -Wl,-lmsmpifec" \
+    --with-fortran-lib="-Wl,-L/ucrt64/lib -Wl,-lgfortran" \
+    --with-math-lib="-Wl,-L/ucrt64/lib -Wl,-lquadmath -Wl,-lm" \
+    --with-metis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+    --with-parmetis-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+    --with-blas-lapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+    --with-scalapack-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+    --with-mumps-dir="${ISSM_DIR}/externalpackages/mumps/install" \
+    --with-petsc-dir="${ISSM_DIR}/externalpackages/petsc/install" \
+    --with-triangle-dir="${ISSM_DIR}/externalpackages/triangle/install" \
 '
 
 #-------------------#
@@ -29,11 +29,11 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
-	petsc		install-3.26-win-msys2-mingw-msmpi.sh
-	mumps		install-win-msys2-mingw-msmpi.sh
-	petsc		reconfigure-win-msys2-mingw-ext-mumps.sh
-	triangle	install-win-msys2-mingw.sh
-	shell2junit	install.sh
+    petsc       install-3.26-win-msys2-mingw-msmpi.sh
+    mumps       install-win-msys2-mingw-msmpi.sh
+    petsc       reconfigure-win-msys2-mingw-ext-mumps.sh
+    triangle    install-win-msys2-mingw.sh
+    shell2junit install.sh
 "
 
 #---------#
@@ -49,7 +49,7 @@ EXAMPLES_TEST=0
 # Number of CPUs used in ISSM compilation
 #
 # NOTE: One is usually safer as some packages are very sensitive to parallel
-# 		compilation
+#       compilation
 #
 NUMCPUS_INSTALL=4
 
