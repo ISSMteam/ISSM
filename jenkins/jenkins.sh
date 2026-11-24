@@ -29,8 +29,8 @@ if [ $# -ne 1 ]; then
 	echo "No config file specified. Exiting..." >&2 # Error message to stderr.
 	exit 1
 fi
-if [ ! -f "$1" ]; then
-	echo "File $1 not found!" >&2 # Error message to stderr.
+if [ ! -f "${1}" ]; then
+	echo "File ${1} not found!" >&2 # Error message to stderr.
 	exit 1
 fi
 
@@ -48,7 +48,7 @@ NUMCPUS_RUN=1
 source $1;
 # }}}
 
-if [[ $EXAMPLES_TEST -eq 1 && $MATLAB_TEST+$PYTHON_TEST+$JAVASCRIPT_TEST -ne 0 ]]; then
+if [[ ${EXAMPLES_TEST} -eq 1 && ${MATLAB_TEST}+${PYTHON_TEST}+${JAVASCRIPT_TEST} -ne 0 ]]; then
 	echo "When running examples tests, set *only* EXAMPLES_TEST=1"
 	exit 1
 fi
@@ -133,69 +133,93 @@ NUMPACKAGES=$(($(echo ${EXTERNALPACKAGES} | wc -w ) / 2))
 # Jenkins XML files for individual packages
 EXTERNAL_TEST_FILE="${ISSM_DIR}/nightlylog/results/external.xml"
 mkdir -p ${ISSM_DIR}/nightlylog/results
-echo "<testsuite tests=\"$NUMPACKAGES\">" > $EXTERNAL_TEST_FILE
+echo "<testsuite tests=\"${NUMPACKAGES}\">" > ${EXTERNAL_TEST_FILE}
 
 # Need a source here for when builds start midway through installation of externalpackages
 source ${ISSM_DIR}/etc/environment.sh
 
 EXTERNALPACKAGES_FAILED=0;
 
-for ((i=1;i<=$NUMPACKAGES;i++)); do
-	NUM1=$((2*$i-1))
-	NUM2=$((2*$i))
-	PACKAGENAME=$(echo $EXTERNALPACKAGES | cut -d " " -f $NUM1-$NUM1)
-	PACKAGEINST=$(echo $EXTERNALPACKAGES | cut -d " " -f $NUM2-$NUM2)
+for ((i=1;i<=${NUMPACKAGES};i++)); do
+	NUM1=$((2*${i}-1))
+	NUM2=$((2*${i}))
+	PACKAGENAME=$(echo ${EXTERNALPACKAGES} | cut -d " " -f ${NUM1}-${NUM1})
+	PACKAGEINST=$(echo ${EXTERNALPACKAGES} | cut -d " " -f ${NUM2}-${NUM2})
 
 	# Install if requested or if previous install has not been successful
 	if [ "${ISSM_EXTERNALPACKAGES}" == "yes" ]; then # NOTE: Removed check on if 'install' directory exist
-		cd ${ISSM_DIR}/externalpackages/$PACKAGENAME
+		cd ${ISSM_DIR}/externalpackages/${PACKAGENAME}
 
-		# Do not install package if it already exists
-		#
-		# NOTE: Assumes PREFIX is defined in package installation script
-		#
-		PREFIX=$(egrep "PREFIX=" ./$PACKAGEINST | cut -d'"' -f 2 | envsubst)
-		if [ ! -d "${PREFIX}" ]; then
-			echo "======================================================";
-			echo "       Installing $PACKAGENAME                        ";
-			echo "======================================================";
+		if [ "${PACKAGEINST}" == "reconfigure"* ]; then
+			# Do not reconfigure package if it has already been reconfigured.
+			#
+			# NOTE: Assumes RECONFIGURED is defined in package installation 
+			# script; RECONFIGURED should be an empty file indicating that 
+			# reconfiguration has already taken place.
+			#
+			RECONFIGURED=$(egrep "RECONFIGURED=" ./${PACKAGEINST} | cut -d'"' -f 2 | envsubst)
+			if [ ! -f "${RECONFIGURED}" ]; then
+				RUN_SCRIPT=1;
+				echo "======================================================";
+				echo "       Reconfiguring ${PACKAGENAME}                   ";
+				echo "======================================================";
+			else
+				RUN_SCRIPT=0;
+			fi
+		else
+			# Do not install package if it already exists
+			#
+			# NOTE: Assumes PREFIX is defined in package installation script
+			#
+			PREFIX=$(egrep "PREFIX=" ./${PACKAGEINST} | cut -d'"' -f 2 | envsubst)
+			if [ ! -d "${PREFIX}" ]; then
+				RUN_SCRIPT=1;
+				echo "======================================================";
+				echo "       Installing ${PACKAGENAME}                      ";
+				echo "======================================================";
+			else
+				RUN_SCRIPT=0;
+			fi
+		fi
 
-			./$PACKAGEINST $NUMCPUS_INSTALL &> compil.log
+		if [ ${RUN_SCRIPT} -eq 1 ]; then
+			./${PACKAGEINST} ${NUMCPUS_INSTALL} &> compil.log
 			if [ $? -ne 0 ] && [ "${PACKAGENAME}" != "boost" ]; then
 				cat compil.log
 				echo "======================================================";
-				echo "    ERROR: installation of $PACKAGENAME failed        ";
+				echo "    ERROR: Running ${PACKAGEINST} for ${PACKAGENAME}  ";
+				echo "           failed                                     ";
 				echo "======================================================";
-				echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\">" >> $EXTERNAL_TEST_FILE
-				echo '<failure message="failure">External packages did not install right. Check it.' >> $EXTERNAL_TEST_FILE
-				cat compil.log >> $EXTERNAL_TEST_FILE
-				echo '</failure>' >> $EXTERNAL_TEST_FILE
-				echo '</testcase>' >> $EXTERNAL_TEST_FILE
-				echo '</testsuite>' >> $EXTERNAL_TEST_FILE
+				echo "<testcase classname=\"externalpackages\" name=\"${PACKAGENAME}\">" >> ${EXTERNAL_TEST_FILE}
+				echo '<failure message="failure">External packages did not install right. Check it.' >> ${EXTERNAL_TEST_FILE}
+				cat compil.log >> ${EXTERNAL_TEST_FILE}
+				echo '</failure>' >> ${EXTERNAL_TEST_FILE}
+				echo '</testcase>' >> ${EXTERNAL_TEST_FILE}
+				echo '</testsuite>' >> ${EXTERNAL_TEST_FILE}
 				exit 1;
 			else
-				echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
+				echo "<testcase classname=\"externalpackages\" name=\"${PACKAGENAME}\"/>" >> ${EXTERNAL_TEST_FILE}
 			fi
 			source ${ISSM_DIR}/etc/environment.sh
 
-			#If external package is rebuilt, we also need to recompile
+			# If external package is rebuilt, we also need to recompile ISSM.
 			ISSM_RECONFIGURE="yes"
 			ISSM_COMPILATION="yes"
 		else
 			echo "======================================================";
-			echo "       Skipping $PACKAGENAME                          ";
+			echo "       Skipping ${PACKAGENAME}                        ";
 			echo "======================================================";
-			echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
+			echo "<testcase classname=\"externalpackages\" name=\"${PACKAGENAME}\"/>" >> ${EXTERNAL_TEST_FILE}
 		fi
 	else
 		echo "======================================================";
-		echo "       Skipping $PACKAGENAME                          ";
+		echo "       Skipping ${PACKAGENAME}                        ";
 		echo "======================================================";
-		echo "<testcase classname=\"externalpackages\" name=\"$PACKAGENAME\"/>" >> $EXTERNAL_TEST_FILE
+		echo "<testcase classname=\"externalpackages\" name=\"${PACKAGENAME}\"/>" >> ${EXTERNAL_TEST_FILE}
 	fi
 done
 
-echo '</testsuite>' >> $EXTERNAL_TEST_FILE
+echo '</testsuite>' >> ${EXTERNAL_TEST_FILE}
 
 # Source here to include any newly-installed external packages on the path
 source ${ISSM_DIR}/etc/environment.sh
@@ -215,9 +239,9 @@ fi
 # - Revisit environment variables (especially EMCC_CFLAGS) once support for
 #	Fortran has been accomplished.
 #
-CXX_PREVIOUS=$CXX
-CC_PREVIOUS=$CC
-if [ $JAVASCRIPT_TEST -eq 1 ]; then
+CXX_PREVIOUS=${CXX}
+CC_PREVIOUS=${CC}
+if [ ${JAVASCRIPT_TEST} -eq 1 ]; then
 	export CC=emcc
 	export CXX=em++
 	export AR=emar
@@ -230,7 +254,7 @@ fi
 # }}}
 # ISSM compilation yes/no (ISSM_COMPILATION) {{{
 if [ "${ISSM_COMPILATION}" == "yes" ]; then
-	cd $ISSM_DIR
+	cd ${ISSM_DIR}
 	if [ "${ISSM_RECONFIGURE}" == "yes" ]; then
 		echo "======================================================";
 		echo "             Cleaning up and reconfiguring            "
@@ -245,7 +269,7 @@ if [ "${ISSM_COMPILATION}" == "yes" ]; then
 		eval "./configure ${ISSM_CONFIG}"
 		if [ $? -ne 0 ]; then
 			echo "ISSM configuration failed (see options below)"
-			echo $ISSM_CONFIG
+			echo ${ISSM_CONFIG}
 			echo "ISSM configuration failed!"
 			exit 1
 		fi
@@ -255,17 +279,17 @@ if [ "${ISSM_COMPILATION}" == "yes" ]; then
 	echo "======================================================"
 	echo "                    Compiling ISSM                    "
 	echo "======================================================"
-	if [ $NUMCPUS_INSTALL -gt 1 ]; then
+	if [ ${NUMCPUS_INSTALL} -gt 1 ]; then
 		echo "Making with ${NUMCPUS_INSTALL} CPUs"
 
 		# To debug compilation/linking, add 'V=1' option to the call to make
-		#make -j $NUMCPUS_INSTALL V=1
-		make -j $NUMCPUS_INSTALL
+		#make -j ${NUMCPUS_INSTALL} V=1
+		make -j ${NUMCPUS_INSTALL}
 	else
 		#make V=1
 		make
 	fi
-	if [ $? -ne 0 ] && [ $NUMCPUS_INSTALL -gt 1 ]; then
+	if [ $? -ne 0 ] && [ ${NUMCPUS_INSTALL} -gt 1 ]; then
 		echo " "
 		echo "Compilation failed, trying to compile with only one thread"
 		echo " "
@@ -285,11 +309,11 @@ fi
 # }}}
 
 # Restore CC/CXX to their previous values
-export CC=$CC_PREVIOUS
-export CXX=$CXX_PREVIOUS
+export CC=${CC_PREVIOUS}
+export CXX=${CXX_PREVIOUS}
 
 # MATLAB tests {{{
-if [ $MATLAB_TEST -eq 1 ]; then
+if [ ${MATLAB_TEST} -eq 1 ]; then
 	MINGW=0
 	if [[ $(uname -s) == MINGW* ]]; then
 		MINGW=1
@@ -299,7 +323,7 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	fi
 
 	# Launch all tests on different CPUs
-	for (( i=1;i<=$NUMCPUS_RUN;i++ )); do
+	for (( i=1;i<=${NUMCPUS_RUN};i++ )); do
 		# Launch MATLAB and the nightly run script
 		cat > ${ISSM_DIR}/nightlylog/matlab_run$i.m << EOF
 warning off %necessary to avoid a log of several Go for parallel runs
@@ -321,7 +345,7 @@ end
 disp('MATLABEXITEDCORRECTLY');
 exit
 EOF
-		cd $ISSM_DIR/test/NightlyRun
+		cd ${ISSM_DIR}/test/NightlyRun
 
 		# NOTE: We redirect all output to logfile in order to catch certain errors. For some reason, this does not work under Windows: the logfile option must be used and process must be run in background
 		if [[ ${MINGW} -eq 1 ]]; then
@@ -347,14 +371,14 @@ EOF
 		# Time out after $max_time seconds because sometimes multiple MATLAB processes get locked in race condition
 		timer=0
 		max_time=7200
-		while [[ $timer -lt $max_time && -n "${pid}" ]]; do
+		while [[ ${timer} -lt ${max_time} && -n "${pid}" ]]; do
 			pid=$(ps -W | grep MATLAB | awk '{print $1}')
 			timer=$((timer + 1))
 			sleep 1;
 		done
 
 		# Check if timer hit $max_time
-		if [ $timer -eq $max_time ]; then
+		if [ ${timer} -eq ${max_time} ]; then
 			echo "Testing timed out at ${timer} seconds"
 			# Kill MATLAB processes
 			pid=$(ps -W | grep MATLAB | awk '{print $1}')
@@ -366,7 +390,7 @@ EOF
 	fi
 
 	# Concatenate logs
-	cd $ISSM_DIR/nightlylog
+	cd ${ISSM_DIR}/nightlylog
 
 	if [ -f matlab_log.log ]; then
 		rm matlab_log.log
@@ -374,10 +398,10 @@ EOF
 
 	for job in `jobs -p`; do
 		#echo "Waiting on: ${job}" # Commented out because it really has nothing to do with MATLAB processes
-		wait $job
+		wait ${job}
 	done
 
-	for (( i=1;i<=$NUMCPUS_RUN;i++ )); do
+	for (( i=1;i<=${NUMCPUS_RUN};i++ )); do
 		cat matlab_log$i.log >> matlab_log.log
 	done
 
@@ -390,25 +414,25 @@ fi
 #
 # TODO: Figure out why "Running Python test for Rank $i" is printed twice for each CPU
 #
-if [ $PYTHON_TEST -eq 1 ]; then
+if [ ${PYTHON_TEST} -eq 1 ]; then
 	# Launch all tests on different CPUs
-	if [ -z $PYTHONPATH ]; then
+	if [ -z ${PYTHONPATH} ]; then
 		export PYTHONPATH="${ISSM_DIR}/src/m/dev"
 	else
 		export PYTHONPATH="${ISSM_DIR}/src/m/dev:${PYTHONPATH}"
 	fi
 	export PYTHONSTARTUP="${ISSM_DIR}/src/m/dev/devpath.py"
 	export PYTHONUNBUFFERED=1 # We don't want Python to buffer otherwise issm.exe output is not captured
-	for (( i=1;i<=$NUMCPUS_RUN;i++ ))
+	for (( i=1;i<=${NUMCPUS_RUN};i++ ))
 	do
-		cd $ISSM_DIR/test/NightlyRun
-		echo "--------------Running Python test for Rank $i---------------------"
-		./runme.py --output=nightly --rank=$i --numprocs=$NUMCPUS_RUN $PYTHON_NROPTIONS &> $ISSM_DIR/nightlylog/python_log$i.log &
-		echo "--------------Running Python test for Rank $i---------------------"
+		cd ${ISSM_DIR}/test/NightlyRun
+		echo "--------------Running Python test for Rank ${i}--------------"
+		./runme.py --output=nightly --rank=$i --numprocs=${NUMCPUS_RUN} ${PYTHON_NROPTIONS} &> ${ISSM_DIR}/nightlylog/python_log${i}.log &
+		echo "--------------Running Python test for Rank ${i}--------------"
 	done
 
 	# Concatenate logs
-	cd $ISSM_DIR/nightlylog
+	cd ${ISSM_DIR}/nightlylog
 	if [ -f python_log.log ]; then
 		rm python_log.log
 	fi
@@ -416,39 +440,39 @@ if [ $PYTHON_TEST -eq 1 ]; then
 	for job in `jobs -p`
 	do
 		echo "Waiting on: ${job}"
-		wait $job
+		wait ${job}
 	done
 
-	for (( i=1;i<=$NUMCPUS_RUN;i++ ))
+	for (( i=1;i<=${NUMCPUS_RUN};i++ ))
 	do
-		echo "This is the concatenation phase for rank: python_log$i.log"
-		cat python_log$i.log >> python_log.log
+		echo "This is the concatenation phase for rank: python_log${i}.log"
+		cat python_log${i}.log >> python_log.log
 	done
 fi
 # }}}
 
-# Clean up ADOL-C tape files
-rm -f $ISSM_DIR/execution/*/ADOLC-*
+# Clean up ADOL-C tape files.
+rm -f ${ISSM_DIR}/execution/*/ADOLC-*
 
 # Examples Tests # {{{
-if [ $EXAMPLES_TEST -eq 1 ]; then
+if [ ${EXAMPLES_TEST} -eq 1 ]; then
 	export MATLAB_PATH
 
 	# Download examples datasets if they are not already present
-	if [[ -z $(ls -A1q $ISSM_DIR/examples/Data | grep -vw -E "download.sh") ]]; then
-		$ISSM_DIR/scripts/DownloadExamplesDatasets.sh
+	if [[ -z $(ls -A1q ${ISSM_DIR}/examples/Data | grep -vw -E "download.sh") ]]; then
+		${ISSM_DIR}/scripts/DownloadExamplesDatasets.sh
 	fi
 
-	$ISSM_DIR/jenkins/examples_tests.sh
+	${ISSM_DIR}/jenkins/examples_tests.sh
 fi
 # }}}
 
 # Process logs to be JUnit compatible # {{{
-cd $ISSM_DIR/nightlylog
-source $ISSM_EXT_DIR/shell2junit/install/bin/sh2ju.sh
+cd ${ISSM_DIR}/nightlylog
+source ${ISSM_EXT_DIR}/shell2junit/install/bin/sh2ju.sh
 juLogClean
 
-if [ $MATLAB_TEST -eq 1 ]; then
+if [ ${MATLAB_TEST} -eq 1 ]; then
 	# Strip ANSI color codes
 	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' matlab_log.log
 
@@ -457,7 +481,7 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	testlist=`cat matlab_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
 
 	# NOTE: Matching pattern is "----------------starting:<TEST_NUM>-". Note trailing hyphen, which guards against greedy matching of, for example, "2010" when searching for "201".
-	for i in `echo $testlist`; do
+	for i in `echo ${testlist}`; do
 		juLog -test=MATLAB-$i -name=Error -error=ERROR awk "/starting:${i}-/{flag=1;next}/finished:${i}-/{flag=0} flag{print}" matlab_log.log
 		juLog -test=MATLAB-$i -name=Failure -error=FAILURE awk "/starting:${i}-/{flag=1;next}/finished:${i}-/{flag=0} flag{print}" matlab_log.log
 	done
@@ -465,19 +489,19 @@ if [ $MATLAB_TEST -eq 1 ]; then
 	# Check that MATLAB did not exit in error
 	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab_log.log | wc -l`
 
-	if [ $matlabExitedInError -ne 0 ]; then
+	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"
 		cat matlab_log.log
 		echo "-----------End of matlab_log.log-----------"
 
 		# Clean up execution directory
-		rm -rf $ISSM_DIR/execution/*
+		rm -rf ${ISSM_DIR}/execution/*
 
 		exit 1
 	fi
 fi
 
-if [ $PYTHON_TEST -eq 1 ]; then
+if [ ${PYTHON_TEST} -eq 1 ]; then
 	# Strip ANSI color codes
 	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' python_log.log
 
@@ -486,7 +510,7 @@ if [ $PYTHON_TEST -eq 1 ]; then
 	testlist=`cat python_log.log | grep "\-\-\-\-\-\-\-\-starting" | sed 's/----------------starting://g' | sed 's/-//g'`
 
 	# NOTE: Matching pattern is "----------------starting:<TEST_NUM>-". Note trailing hyphen, which guards against greedy matching of, for example, "2010" when searching for "201".
-	for i in `echo $testlist`; do
+	for i in `echo ${testlist}`; do
 		juLog -test=PYTHON-$i -name=Error -error=ERROR awk "/starting:${i}-/{flag=1;next}/finished:${i}-/{flag=0} flag{print}" python_log.log
 		juLog -test=PYTHON-$i -name=Failure -error=FAILURE awk "/starting:${i}-/{flag=1;next}/finished:${i}-/{flag=0} flag{print}" python_log.log
 	done
@@ -494,19 +518,19 @@ if [ $PYTHON_TEST -eq 1 ]; then
 	# Check that Python did not exit in error
 	pythonExitedInError=`grep -c -E "Error|No such file or directory|Permission denied|Standard exception|Traceback|bad interpreter|syntax error|error:" python_log.log`
 
-	if [ $pythonExitedInError -ne 0 ]; then
+	if [ ${pythonExitedInError} -ne 0 ]; then
 		echo "----------Python exited in error!----------"
 		cat python_log.log
 		echo "-----------End of python_log.log-----------"
 
 		# Clean up execution directory
-		rm -rf $ISSM_DIR/execution/*
+		rm -rf ${ISSM_DIR}/execution/*
 
 		exit 1
 	fi
 fi
 
-if [ $EXAMPLES_TEST -eq 1 ]; then
+if [ ${EXAMPLES_TEST} -eq 1 ]; then
 	# Strip ANSI color codes
 	sed -i -E 's/\x1B\[[0-9;]*[[:alpha:]]//g' matlab_log_examples.log
 
@@ -516,7 +540,7 @@ if [ $EXAMPLES_TEST -eq 1 ]; then
 	numtests=`cat matlab_log_examples.log | grep "starting: " | wc -l`
 	testlist=`cat matlab_log_examples.log | grep "starting: " | sed 's/starting: //'`
 
-	for i in `echo $testlist`; do
+	for i in `echo ${testlist}`; do
 		juLog -test=Example-$i -name=Error -error=ERROR awk "/^starting: ${i}$/{flag=1;next}/^finished: ${i}$/{flag=0} flag{print}" matlab_log_examples.log
 		juLog -test=Example-$i -name=Failure -error=FAILURE awk "/^starting: ${i}$/{flag=1;next}/^finished: ${i}$/{flag=0} flag{print}" matlab_log_examples.log
 	done
@@ -524,18 +548,18 @@ if [ $EXAMPLES_TEST -eq 1 ]; then
 	# Check that MATLAB did not exit in error
 	matlabExitedInError=`grep -E "Activation cannot proceed|Error in|Illegal|Invalid MEX-file|Warning: Name is nonexistent or not a directory" matlab_log_examples.log | wc -l`
 
-	if [ $matlabExitedInError -ne 0 ]; then
+	if [ ${matlabExitedInError} -ne 0 ]; then
 		echo "----------MATLAB exited in error!----------"
 		cat matlab_log_examples.log
 		echo "-----------End of matlab_log.log-----------"
 
 		# Clean up execution directory
-		rm -rf $ISSM_DIR/execution/*
+		rm -rf ${ISSM_DIR}/execution/*
 
 		exit 1
 	fi
 fi
 
 # Clean up execution directory
-rm -rf $ISSM_DIR/execution/*
+rm -rf ${ISSM_DIR}/execution/*
 # }}}
