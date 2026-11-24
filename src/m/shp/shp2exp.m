@@ -60,12 +60,12 @@ for i=1:length(shp)
 	elseif strcmpi(shp(i).Geometry,'Line')
 		x=shp(i).X(:); y=shp(i).Y(:);
 		pos = find(~isnan(x) & ~isnan(y));
-		idx=find(diff(pos)~=1);
-		if numel(idx)==0
+		if isempty(pos)
 			disp(['Skipping Line ' num2str(i)]);
 			continue;
 		end
-		A=[idx(1);diff(idx);numel(pos)-idx(end)];
+		idx=find(diff(pos)>1);
+		A = diff([0; idx; numel(pos)]);
 		Cx=mat2cell(x(pos),A,1);
 		Cy=mat2cell(y(pos),A,1);
 		for i=1:numel(Cx)
