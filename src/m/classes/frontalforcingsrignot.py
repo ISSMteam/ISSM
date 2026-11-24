@@ -14,16 +14,19 @@ class frontalforcingsrignot(object):
         frontalforcingsrignot = frontalforcingsrignot()
     """
 
+    isdischargerunoff = 0  # class-level default: models saved before this field existed still work
+
     def __init__(self, *args):  # {{{
         self.basin_id = np.nan
         self.num_basins = 0
         self.subglacial_discharge = np.nan
         self.thermalforcing = np.nan
+        self.isdischargerunoff = 0
 
         if len(args) == 0:
             self.setdefaultparameters()
         else:
-            error('constructor not supported')
+            raise Exception('constructor not supported')
 
     # }}}
 
@@ -33,6 +36,7 @@ class frontalforcingsrignot(object):
         s += '{}\n'.format(fielddisplay(self, 'num_basins', 'number of basins'))
         s += '{}\n'.format(fielddisplay(self, 'subglacial_discharge', 'sum of subglacial discharge for each basin [m/d]'))
         s += '{}\n'.format(fielddisplay(self, 'thermalforcing', 'thermal forcing [∘C]'))
+        s += '{}\n'.format(fielddisplay(self, 'isdischargerunoff', 'if 1, discharge = basin-integrated SMB runoff over ice-covered area; subglacial_discharge is ignored'))
         return s
     # }}}
 
@@ -41,6 +45,7 @@ class frontalforcingsrignot(object):
         self.num_basins = 0
         self.subglacial_discharge = np.nan
         self.thermalforcing = np.nan
+        self.isdischargerunoff = 0
 
         return self
     # }}}
@@ -54,9 +59,18 @@ class frontalforcingsrignot(object):
         if (solution != 'TransientSolution') or (not md.transient.ismovingfront):
             return md
 
+        md = checkfield(md, 'fieldname', 'frontalforcings.isdischargerunoff', 'numel', [1], 'values', [0, 1])
         md = checkfield(md, 'fieldname', 'frontalforcings.num_basins', 'numel', [1], 'NaN', 1, 'Inf', 1, '>', 0)
         md = checkfield(md, 'fieldname', 'frontalforcings.basin_id', 'Inf', 1, '>=', 0, '<=', md.frontalforcings.num_basins, 'size', [md.mesh.numberofelements])
-        md = checkfield(md, 'fieldname', 'frontalforcings.subglacial_discharge', '>=', 0, 'NaN', 1, 'Inf', 1, 'timeseries', 1)
+        if self.isdischargerunoff:
+            if not md.transient.issmb:
+                raise Exception('frontalforcings.isdischargerunoff requires md.transient.issmb=1')
+            # SmbRunoffEnum is only provided by some SMB models
+            smbclass = md.smb.__class__.__name__
+            if smbclass not in ['SMBpddSicopolis', 'SMBgemb', 'SMBsemic', 'SMBgradientscomponents']:
+                raise Exception('frontalforcings.isdischargerunoff not supported with smb class ' + smbclass)
+        else:
+            md = checkfield(md, 'fieldname', 'frontalforcings.subglacial_discharge', '>=', 0, 'NaN', 1, 'Inf', 1, 'timeseries', 1)
         md = checkfield(md, 'fieldname', 'frontalforcings.thermalforcing', 'NaN', 1, 'Inf', 1, 'timeseries', 1)
         return md
     # }}}
@@ -65,6 +79,8 @@ class frontalforcingsrignot(object):
         WriteData(fid, prefix, 'name', 'md.frontalforcings.parameterization', 'data', 2, 'format', 'Integer')
         WriteData(fid, prefix, 'object', self, 'fieldname', 'basin_id', 'data', self.basin_id - 1, 'name', 'md.frontalforcings.basin_id', 'format', 'IntMat', 'mattype', 2)  # 0-indexed
         WriteData(fid, prefix, 'object', self, 'fieldname', 'num_basins', 'format', 'Integer')
-        WriteData(fid, prefix, 'object', self, 'fieldname', 'subglacial_discharge', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
+        WriteData(fid, prefix, 'object', self, 'fieldname', 'isdischargerunoff', 'format', 'Boolean')
+        if not self.isdischargerunoff:
+            WriteData(fid, prefix, 'object', self, 'fieldname', 'subglacial_discharge', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
         WriteData(fid, prefix, 'object', self, 'fieldname', 'thermalforcing', 'format', 'DoubleMat', 'mattype', 1, 'timeserieslength', md.mesh.numberofvertices + 1, 'yts', md.constants.yts)
     # }}}

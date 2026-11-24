@@ -260,6 +260,17 @@ void DatasetInput::GetInputValue(IssmDouble* pvalue,Gauss* gauss,int id){ /*{{{*
 
 }
 /*}}}*/
+void DatasetInput::SetCurrentTimeInput(IssmDouble time){ /*{{{*/
+
+	/*Update the current input of every TransientInput member to this time
+	 * (static members are left untouched)*/
+	for(int i=0;i<this->numids;i++){
+		if(this->inputs[i]->ObjectEnum()==TransientInputEnum){
+			xDynamicCast<TransientInput*>(this->inputs[i])->SetCurrentTimeInput(time);
+		}
+	}
+}
+/*}}}*/
 IssmDouble DatasetInput::GetInputMin(void){ /*{{{*/
 
 	IssmDouble minvalue,newminvalue;

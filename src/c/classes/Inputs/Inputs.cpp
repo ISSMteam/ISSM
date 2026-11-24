@@ -173,6 +173,31 @@ void Inputs::Marshall(MarshallHandle* marshallhandle){/*{{{*/
 				input->Marshall(marshallhandle);
 				this->inputs[index]=input;
 			}
+			else if(object_enum==IntArrayInputEnum){
+				IntArrayInput* input=new IntArrayInput();
+				input->Marshall(marshallhandle);
+				this->inputs[index]=input;
+			}
+			else if(object_enum==Int16ArrayInputEnum){
+				Int16ArrayInput* input=new Int16ArrayInput();
+				input->Marshall(marshallhandle);
+				this->inputs[index]=input;
+			}
+			else if(object_enum==UInt8ArrayInputEnum){
+				UInt8ArrayInput* input=new UInt8ArrayInput();
+				input->Marshall(marshallhandle);
+				this->inputs[index]=input;
+			}
+			else if(object_enum==UInt16ArrayInputEnum){
+				UInt16ArrayInput* input=new UInt16ArrayInput();
+				input->Marshall(marshallhandle);
+				this->inputs[index]=input;
+			}
+			else if(object_enum==UInt32ArrayInputEnum){
+				UInt32ArrayInput* input=new UInt32ArrayInput();
+				input->Marshall(marshallhandle);
+				this->inputs[index]=input;
+			}
 			else{
 				_error_("input "<<EnumToStringx(object_enum)<<" not supported");
 			}
@@ -1065,3 +1090,12 @@ template void Inputs::SetIntArrayInput<int>(int enum_in,int row,int* values,int 
 template void Inputs::GetIntArray<int16_t>(int enum_in,int row,int16_t** pvalues,int* pN);
 template void Inputs::GetIntArrayPtr<int16_t>(int enum_in,int row,int16_t** pvalues,int* pN);
 template void Inputs::SetIntArrayInput<int16_t>(int enum_in,int row,int16_t* values,int numlayers);
+template void Inputs::GetIntArray<uint8_t>(int enum_in,int row,uint8_t** pvalues,int* pN);
+template void Inputs::GetIntArrayPtr<uint8_t>(int enum_in,int row,uint8_t** pvalues,int* pN);
+template void Inputs::SetIntArrayInput<uint8_t>(int enum_in,int row,uint8_t* values,int numlayers);
+template void Inputs::GetIntArray<uint16_t>(int enum_in,int row,uint16_t** pvalues,int* pN);
+template void Inputs::GetIntArrayPtr<uint16_t>(int enum_in,int row,uint16_t** pvalues,int* pN);
+template void Inputs::SetIntArrayInput<uint16_t>(int enum_in,int row,uint16_t* values,int numlayers);
+template void Inputs::GetIntArray<uint32_t>(int enum_in,int row,uint32_t** pvalues,int* pN);
+template void Inputs::GetIntArrayPtr<uint32_t>(int enum_in,int row,uint32_t** pvalues,int* pN);
+template void Inputs::SetIntArrayInput<uint32_t>(int enum_in,int row,uint32_t* values,int numlayers);

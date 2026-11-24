@@ -76,12 +76,12 @@ void ArrayInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	marshallhandle->call(object_enum);
 	marshallhandle->call(this->numberofelements_local);
 
-	/*Allocate memory if reading restart file*/
+	/*The checkpoint reader allocates N and each row. Only allocate the
+	 *row pointer table here; it is not serialized.*/
 	if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
 		_assert_(this->numberofelements_local>0);
 		_assert_(this->numberofelements_local<1e11);
 		if(this->numberofelements_local){
-			this->N                      = xNewZeroInit<int>(this->numberofelements_local);
 			this->values                 = xNewZeroInit<IssmDouble*>(this->numberofelements_local);
 		}
 		else{
@@ -93,19 +93,15 @@ void ArrayInput::Marshall(MarshallHandle* marshallhandle){ /*{{{*/
 	/*Marshall N*/
 	if(this->numberofelements_local){
 		marshallhandle->call(this->N,this->numberofelements_local);
+		_assert_(this->N);
 	}
 
 	/*Marshall individual arrays*/
 	if(this->numberofelements_local){
 		for(int i=0;i<this->numberofelements_local;i++){
 			if(this->N[i]){
-
-				/*Allocate if reading restart*/
-				if(marshallhandle->OperationNumber() == MARSHALLING_LOAD){
-					this->values[i] = xNew<IssmDouble>(this->N[i]);
-				}
-				_assert_(this->values[i]);
 				marshallhandle->call(this->values[i],this->N[i]);
+				_assert_(this->values[i]);
 			}
 		}
 	}

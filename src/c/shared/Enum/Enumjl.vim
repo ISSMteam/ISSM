@@ -240,6 +240,7 @@ syn keyword juliaConstC FrontalForcingsARMAmonthinterceptsEnum
 syn keyword juliaConstC FrontalForcingsARMAmonthtrendsEnum
 syn keyword juliaConstC FrontalForcingsARMApolyparamsEnum
 syn keyword juliaConstC FrontalForcingsIsDischargeARMAEnum
+syn keyword juliaConstC FrontalForcingsIsDischargeRunoffEnum
 syn keyword juliaConstC FrontalForcingsNumberofBasinsEnum
 syn keyword juliaConstC FrontalForcingsNumberofBreaksEnum
 syn keyword juliaConstC FrontalForcingsNumberofMonthBreaksEnum
@@ -3568,6 +3569,9 @@ syn keyword juliaConstC DoubleArrayInputEnum
 syn keyword juliaConstC ArrayInputEnum
 syn keyword juliaConstC IntArrayInputEnum
 syn keyword juliaConstC Int16ArrayInputEnum
+syn keyword juliaConstC UInt8ArrayInputEnum
+syn keyword juliaConstC UInt16ArrayInputEnum
+syn keyword juliaConstC UInt32ArrayInputEnum
 syn keyword juliaConstC DoubleExternalResultEnum
 syn keyword juliaConstC DoubleMatArrayParamEnum
 syn keyword juliaConstC DoubleMatExternalResultEnum

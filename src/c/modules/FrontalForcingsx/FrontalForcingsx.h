@@ -7,6 +7,7 @@
 /* local prototypes: */
 void FrontalForcingsx(FemModel* femmodel);
 void Subglacialdischargearmax(FemModel* femmodel);
+void Subglacialdischargerunoffx(FemModel* femmodel);
 void Thermalforcingarmax(FemModel* femmodel);
 
 #endif

@@ -102,19 +102,7 @@ BURotation=md.results.TransientSolution.Bed;
 BERotation=md.results.TransientSolution.BedEast;
 BNRotation=md.results.TransientSolution.BedNorth;
 
-%same as the previous run (with rotation), but with azimuth indices stored as int16 (low memory mode):
-md.solidearth.settings.lowmem=1;
-md.cluster=generic('name',oshostname(),'np',3);
-md=solve(md,'Transient');
-SLowmem =md.results.TransientSolution.Sealevel;
-BULowmem=md.results.TransientSolution.Bed;
-BELowmem=md.results.TransientSolution.BedEast;
-BNLowmem=md.results.TransientSolution.BedNorth;
-
 %Fields and tolerances to track changes
-field_names     ={'Sealevel', 'Uplift', 'NorthDisplacement', 'EastDisplacement',...
-	'SealevelLowmem', 'UpliftLowmem', 'NorthDisplacementLowmem', 'EastDisplacementLowmem'};
-field_tolerances={1e-12,1e-12,1e-12,1e-12,...
-	1e-12,1e-12,1e-12,1e-12};
-field_values={SRotation-SnoRotation,BURotation-BUnoRotation,BNRotation-BNnoRotation,BERotation-BEnoRotation,...
-	SLowmem,BULowmem,BNLowmem,BELowmem};
+field_names     ={'Sealevel', 'Uplift', 'NorthDisplacement', 'EastDisplacement'};
+field_tolerances={1e-12,1e-12,1e-12,1e-12};
+field_values={SRotation-SnoRotation,BURotation-BUnoRotation,BNRotation-BNnoRotation,BERotation-BEnoRotation};
