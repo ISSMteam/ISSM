@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <cmath>
 #include <cstdint>
 #include <limits>
 //#include <gsl_cblas.h>
@@ -730,10 +731,14 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 
 	IssmDouble  vx,vy;
 	IssmDouble  water_height, bed,Hab,thickness,surface,sealevel;
+	IssmDouble  hurst, sigma, melt_supply, wd_star, S;
+	IssmDouble  water_depth[NUMVERTICES], lake_depth[NUMVERTICES];
 	IssmDouble  surface_crevasse[NUMVERTICES], basal_crevasse[NUMVERTICES], crevasse_depth[NUMVERTICES];
 	IssmDouble  strainparallel, straineffective,B,n;
 	IssmDouble  s_xx,s_xy,s_yy,s1,s2,vH,Kmax;
 	int         crevasse_opening_stress;
+	int         surface_hydrology_type;
+	this->parameters->FindParam(&surface_hydrology_type,SurfaceHydrologyTypeEnum);
 
 	/*reset if no ice in element*/
 	if(!this->IsIceInElement()){
@@ -741,10 +746,16 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 			surface_crevasse[i] = 0.;
 			basal_crevasse[i] = 0.;
 			crevasse_depth[i] = 0.;
+			water_depth[i] = 0.;
+			lake_depth[i] = 0.;
 		}
 		this->AddInput(SurfaceCrevasseEnum,&surface_crevasse[0],P1DGEnum);
 		this->AddInput(BasalCrevasseEnum,&basal_crevasse[0],P1DGEnum);
 		this->AddInput(CrevasseDepthEnum,&crevasse_depth[0],P1DGEnum);
+		if(surface_hydrology_type==1){
+			this->AddInput(WaterDepthEnum,&water_depth[0],P1DGEnum);}
+		if(surface_hydrology_type==2){
+			this->AddInput(LakeDepthEnum,&lake_depth[0],P1DGEnum);}
 		return;
 	}
 
@@ -759,23 +770,37 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 	Input* H_input           = this->GetInput(ThicknessEnum); _assert_(H_input);
 	Input* bed_input         = this->GetInput(BedEnum); _assert_(bed_input);
 	Input* surface_input     = this->GetInput(SurfaceEnum); _assert_(surface_input);
-   Input* sealevel_input    = this->GetInput(SealevelEnum); _assert_(sealevel_input);
+	Input* sealevel_input    = this->GetInput(SealevelEnum); _assert_(sealevel_input);
 	Input* vx_input          = this->GetInput(VxEnum); _assert_(vx_input);
 	Input* vy_input          = this->GetInput(VxEnum); _assert_(vy_input);
-	Input* waterheight_input = this->GetInput(WaterheightEnum); _assert_(waterheight_input);
 	Input* s_xx_input        = this->GetInput(DeviatoricStressxxEnum);     _assert_(s_xx_input);
 	Input* s_xy_input        = this->GetInput(DeviatoricStressxyEnum);     _assert_(s_xy_input);
 	Input* s_yy_input        = this->GetInput(DeviatoricStressyyEnum);     _assert_(s_yy_input);
 	Input* B_input           = this->GetInput(MaterialsRheologyBbarEnum);   _assert_(B_input);
 	Input* n_input           = this->GetInput(MaterialsRheologyNEnum);   _assert_(n_input);
+	Input* waterheight_input = NULL;
+	Input* hurst_input = NULL;
+	Input* sigma_input = NULL;
+	Input* meltsupply_input = NULL;
 
-   /*Crevasse depth input specific to some*/
-   Input* strainrateparallel_input  = NULL;
-   Input* strainrateeffective_input = NULL;
-   if(crevasse_opening_stress==0 || crevasse_opening_stress==2){
-      strainrateparallel_input  = this->GetInput(StrainRateparallelEnum);  _assert_(strainrateparallel_input);
-      strainrateeffective_input = this->GetInput(StrainRateeffectiveEnum); _assert_(strainrateeffective_input);
-   }
+	if(surface_hydrology_type ==0){
+		waterheight_input =this->GetInput(WaterheightEnum); _assert_(waterheight_input);}
+	else if(surface_hydrology_type ==1){
+		hurst_input = this->GetInput(HurstEnum); _assert_(hurst_input);
+		sigma_input = this->GetInput(SigmaEnum); _assert_(sigma_input);
+		meltsupply_input = this->GetInput(MeltSupplyEnum); _assert_(meltsupply_input);}
+	else if(surface_hydrology_type ==2){
+		hurst_input = this->GetInput(HurstEnum); _assert_(hurst_input);
+		sigma_input = this->GetInput(SigmaEnum); _assert_(sigma_input);
+		meltsupply_input = this->GetInput(MeltSupplyEnum); _assert_(meltsupply_input);}
+
+	/*Crevasse depth input specific to some*/
+	Input* strainrateparallel_input  = NULL;
+	Input* strainrateeffective_input = NULL;
+	if(crevasse_opening_stress==0 || crevasse_opening_stress==2){
+		strainrateparallel_input  = this->GetInput(StrainRateparallelEnum);  _assert_(strainrateparallel_input);
+		strainrateeffective_input = this->GetInput(StrainRateeffectiveEnum); _assert_(strainrateeffective_input);
+	}
 
 	/*Loop over all elements of this partition*/
 	GaussTria gauss;
@@ -785,14 +810,30 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 		H_input->GetInputValue(&thickness,&gauss);
 		bed_input->GetInputValue(&bed,&gauss);
 		surface_input->GetInputValue(&surface,&gauss);
-      sealevel_input->GetInputValue(&sealevel,&gauss);
+		sealevel_input->GetInputValue(&sealevel,&gauss);
 
 		vx_input->GetInputValue(&vx,&gauss);
 		vy_input->GetInputValue(&vy,&gauss);
-		waterheight_input->GetInputValue(&water_height,&gauss);
 		s_xx_input->GetInputValue(&s_xx,&gauss);
 		s_xy_input->GetInputValue(&s_xy,&gauss);
 		s_yy_input->GetInputValue(&s_yy,&gauss);
+
+		if(surface_hydrology_type ==0){
+			waterheight_input->GetInputValue(&water_height,&gauss);}
+		else if(surface_hydrology_type ==1){
+			hurst_input->GetInputValue(&hurst,&gauss);
+			sigma_input->GetInputValue(&sigma,&gauss);
+			meltsupply_input->GetInputValue(&melt_supply,&gauss);
+			wd_star = sigma*(0.2-(0.12*std::pow(hurst,0.6)));
+			S  = melt_supply / wd_star;
+			water_depth[iv] = 0.9*sigma*std::erf(0.27*S)*(1-(0.08*std::pow(hurst,0.6))-(0.72*std::erf(0.76*S)));}
+		else if(surface_hydrology_type==2){
+			hurst_input->GetInputValue(&hurst,&gauss);
+			sigma_input->GetInputValue(&sigma,&gauss);
+			meltsupply_input->GetInputValue(&melt_supply,&gauss);
+			wd_star = sigma*(0.2-(0.12*std::pow(hurst,0.6)));
+			S  = melt_supply / wd_star;
+			lake_depth[iv] = 0.6*sigma*std::erf(67*S)*(1-(0.41*std::pow(hurst,0.6)));}
 
 		/*Get longitudinal or maximum Eigen stress*/
 		if(crevasse_opening_stress==0){
@@ -849,7 +890,18 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
       }
 		else {
 			/*Surface crevasse: sigma'_xx - rho_i g d + rho_fw g d_w = 0*/
-			surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;
+			if(surface_hydrology_type==0){
+				surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_height;}
+			else if(surface_hydrology_type==1){
+				wd_star = sigma*(0.2-(0.12*std::pow(hurst,0.6)));
+				S  = melt_supply / wd_star;
+				water_depth[iv] = 0.9*sigma*std::erf(0.27*S)*(1-(0.08*std::pow(hurst,0.6))-(0.72*std::erf(0.76*S)));
+				surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*water_depth[iv];}
+			else if(surface_hydrology_type==2){
+				wd_star = sigma*(0.2-(0.12*std::pow(hurst,0.6)));
+				S  = melt_supply / wd_star;
+				lake_depth[iv] = 0.6*sigma*std::erf(67*S)*(1-(0.41*std::pow(hurst,0.6)));
+				surface_crevasse[iv] = 2*s1 / (rho_ice*constant_g) + (rho_freshwater/rho_ice)*lake_depth[iv];}
 
 			/*Basal crevasse: sigma'_xx - rho_i g (H-d) - rho_w g (b+d) = 0*/
 			if(sealevel - bed>0.){
@@ -871,6 +923,10 @@ void       Tria::CalvingCrevasseDepth(){/*{{{*/
 	this->AddInput(SurfaceCrevasseEnum,&surface_crevasse[0],P1DGEnum);
 	this->AddInput(BasalCrevasseEnum,&basal_crevasse[0],P1DGEnum);
 	this->AddInput(CrevasseDepthEnum,&crevasse_depth[0],P1DGEnum);
+	if(surface_hydrology_type==1){
+		this->AddInput(WaterDepthEnum,&water_depth[0],P1DGEnum);}
+	if(surface_hydrology_type==2){
+		this->AddInput(LakeDepthEnum,&lake_depth[0],P1DGEnum);}
 }
 /*}}}*/
 void       Tria::CalvingRateLevermann(){/*{{{*/
