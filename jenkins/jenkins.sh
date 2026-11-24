@@ -150,7 +150,7 @@ for ((i=1;i<=${NUMPACKAGES};i++)); do
 	if [ "${ISSM_EXTERNALPACKAGES}" == "yes" ]; then # NOTE: Removed check on if 'install' directory exist
 		cd ${ISSM_DIR}/externalpackages/${PACKAGENAME}
 
-		if [ "${PACKAGEINST}" == "reconfigure"* ]; then
+		if [[ "${PACKAGEINST}" == "reconfigure"* ]]; then
 			# Do not reconfigure package if it has already been reconfigured.
 			#
 			# NOTE: Assumes RECONFIGURED is defined in package installation 
