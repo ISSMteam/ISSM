@@ -27,6 +27,7 @@ md.transient.isgroundingline = 1
 
 md.calving = calvingcrevassedepth()
 md.calving.crevasse_opening_stress=1
+md.calving.surface_hydrology_type =0
 md.calving.water_height = 50 * np.ones((md.mesh.numberofvertices, ))
 md.frontalforcings.meltingrate = np.zeros((md.mesh.numberofvertices, ))
 md.levelset.spclevelset = np.nan * np.ones((md.mesh.numberofvertices, ))
