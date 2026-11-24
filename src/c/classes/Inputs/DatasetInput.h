@@ -45,5 +45,6 @@ class DatasetInput: public Input{
 		TriaInput*  GetTriaInputByOffset(int i);
 		TransientInput* GetTransientInputByOffset(int offset);
 		void GetInputValue(IssmDouble* pvalue,Gauss* gauss,int index);
+		void SetCurrentTimeInput(IssmDouble time);
 };
 #endif  /* _DATASETINPUT2_H */

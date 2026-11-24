@@ -8,6 +8,8 @@
 #error "Cannot compile with HAVE_CONFIG_H symbol! run configure first!"
 #endif
 
+#include <chrono>
+#include <iomanip>
 #include "./cores.h"
 #include "../toolkits/toolkits.h"
 #include "../classes/classes.h"
@@ -33,6 +35,36 @@ IssmDouble* CombineLoads(IssmDouble* load,IssmDouble* subload,FemModel* femmodel
 void slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmodel);
 /*}}}*/
 
+namespace {
+typedef std::chrono::steady_clock SLCClock;
+
+IssmPDouble SLCSecondsSince(SLCClock::time_point start){
+	return std::chrono::duration<IssmPDouble>(SLCClock::now()-start).count();
+}
+
+/*Reduce whole-phase durations, never timestamps. The rank giving the maximum
+ *may differ by phase, so maxima from different phases need not add up.*/
+template<int N> void ReportSLCTimings(int step,const char* const (&names)[N],IssmPDouble (&local)[N]){
+	IssmPDouble totals[N], maxima[N];
+	ISSM_MPI_Comm comm=IssmComm::GetComm();
+	ISSM_MPI_Reduce(local,totals,N,ISSM_MPI_PDOUBLE,ISSM_MPI_SUM,0,comm);
+	ISSM_MPI_Reduce(local,maxima,N,ISSM_MPI_PDOUBLE,ISSM_MPI_MAX,0,comm);
+	if(IssmComm::GetRank()!=0) return;
+
+	const int ranks=IssmComm::GetSize();
+	for(int i=0;i<N;i++){
+		_printf0_("SLC_PROFILE step="<<step<<" ranks="<<ranks<<" metric="<<names[i]
+				<<" mean="<<std::setprecision(9)<<totals[i]/ranks<<" max="<<maxima[i]<<"\n");
+	}
+}
+}
+
+void sealevelchange_profile_setup(const char* metric,IssmPDouble seconds){
+	const char* const names[]={metric};
+	IssmPDouble local[]={seconds};
+	ReportSLCTimings(-1,names,local);
+}
+
 /*main cores:*/
 void              sealevelchange_core(FemModel* femmodel){ /*{{{*/
 
@@ -54,14 +86,21 @@ void              sealevelchange_core(FemModel* femmodel){ /*{{{*/
 	/*Run coupler input transfer:*/
 	couplerinput_core(femmodel);
 
+	/*The phase profiler is opt-in; the standard SLRCORE timer stays unchanged.*/
+	bool profiling=false;
+	femmodel->parameters->FindParam(&profiling,DebugProfilingEnum);
+	SLCClock::time_point geometry_start;
+	if(profiling) geometry_start=SLCClock::now();
+
 	/*run geometry core: */
 	SealevelGeometry* slgeom=sealevelchange_geometry(femmodel);
+	const IssmPDouble geometry_seconds=profiling ? SLCSecondsSince(geometry_start) : 0.;
 
 	/*any external forcings?:*/
 	solidearthexternal_core(femmodel);
 
 	/*Run geodetic:*/
-	grd_core(femmodel,slgeom);
+	grd_core(femmodel,slgeom,profiling,geometry_seconds);
 
 	/*Run steric core for sure:*/
 	dynstr_core(femmodel);
@@ -226,7 +265,17 @@ void              couplerinput_core(FemModel* femmodel){  /*{{{*/
 	}
 
 }; /*}}}*/
-void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{*/
+static void CheckPackedGreenTable(Parameters* parameters,int table_enum,size_t expected_size){ /*{{{*/
+	DoubleVecParam* table=xDynamicCast<DoubleVecParam*>(parameters->FindParamObject(table_enum));
+	IssmDouble* values=NULL;
+	int size=0;
+	table->GetParameterValueByPointer(&values,&size);
+	if(!values || size<0 || static_cast<size_t>(size)!=expected_size){
+		_error_(EnumToStringx(table_enum)<<" has "<<size<<" entries; expected "<<expected_size
+				<<" for a packed GRD Green's table. Start a fresh solve if resuming from an older checkpoint.");
+	}
+} /*}}}*/
+void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom,bool profiling,IssmPDouble geometry_seconds) { /*{{{*/
 
 	/*variables:*/
 	int nel;
@@ -293,6 +342,15 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		return;
 	}
 
+	enum {Geometry,Grd,SLConvolution,SLLoadUpdate,Deformation,SLIterations,ConvolutionVertices,ProfileCount};
+	IssmPDouble profile[ProfileCount];
+	SLCClock::time_point grd_start, phase_start;
+	if(profiling){
+		for(int i=0;i<ProfileCount;i++) profile[i]=0.;
+		profile[Geometry]=geometry_seconds;
+		grd_start=SLCClock::now();
+	}
+
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing GRD patterns\n");
 
@@ -305,6 +363,20 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	femmodel->parameters->FindParam(&eps_abs,SolidearthSettingsAbstolEnum);
 	femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
 	femmodel->parameters->FindParam(&sal,SolidearthSettingsSelfAttractionEnum);
+
+	/*Check the stored stride before using Green's tables, including after restart.*/
+	int greensamples=1;
+	if(sal && viscous && grdmodel==ElasticEnum){
+		IssmDouble degacc;
+		femmodel->parameters->FindParam(&degacc,SolidearthSettingsDegreeAccuracyEnum);
+		femmodel->parameters->FindParam(&greensamples,SealevelchangeViscousSamplingLengthEnum);
+		int bins=reCast<int,IssmDouble>(180./degacc+1.);
+		if(bins<1 || greensamples<1) _error_("Invalid packed GRD Green's table dimensions");
+		size_t expected_size=static_cast<size_t>(bins)*greensamples;
+		CheckPackedGreenTable(femmodel->parameters,SealevelchangeGViscoElasticEnum,expected_size);
+		CheckPackedGreenTable(femmodel->parameters,SealevelchangeUViscoElasticEnum,expected_size);
+		if(horiz) CheckPackedGreenTable(femmodel->parameters,SealevelchangeHViscoElasticEnum,expected_size);
+	}
 
 	/*initialize loads and sea level loads:*/
 	femmodel->parameters->FindParam(&nel,MeshNumberofelementsEnum);
@@ -337,6 +409,24 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 		PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
 	}
 	else{
+		/*All iterations use the same lag-zero response. Extract one contiguous
+		 *value per angular bin; a single-column table already has this layout.*/
+		const IssmDouble* G0=NULL;
+		IssmDouble* lagzero=NULL;
+		if(sal){
+			DoubleVecParam* parameter=xDynamicCast<DoubleVecParam*>(femmodel->parameters->FindParamObject(SealevelchangeGViscoElasticEnum));
+			IssmDouble* G=NULL;
+			int size;
+			parameter->GetParameterValueByPointer(&G,&size);
+			if(greensamples==1) G0=G;
+			else{
+				int bins=size/greensamples;
+				lagzero=xNew<IssmDouble>(bins);
+				for(int bin=0;bin<bins;bin++) lagzero[bin]=G[static_cast<size_t>(bin)*greensamples];
+				G0=lagzero;
+			}
+		}
+
 		if(VerboseSolution()) _printf0_("	  converging GRD convolutions\n");
 		for(;;){
 
@@ -350,9 +440,18 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 
 			/*convolve load and sealevel loads on oceans:*/
 			loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector
+			if(profiling){
+				/*Count the last iteration too, even if it converges immediately.*/
+				profile[SLIterations]++;
+				phase_start=SLCClock::now();
+			}
 			for(Object* & object : femmodel->elements->objects){
 				Element* element = xDynamicCast<Element*>(object);
-				element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
+				element->SealevelchangeConvolution(sealevelpercpu, loads, polarmotionvector,slgeom,G0);
+			}
+			if(profiling){
+				profile[SLConvolution]+=SLCSecondsSince(phase_start);
+				phase_start=SLCClock::now();
 			}
 
 			/*retrieve sea level average  and ocean area:*/
@@ -377,6 +476,7 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 
 			//broadcast sea level loads
 			loads->BroadcastSealevelLoads();
+			if(profiling) profile[SLLoadUpdate]+=SLCSecondsSince(phase_start);
 
 			if(!sal){
 				xDelete<IssmDouble>(oldsealevelloads); break;
@@ -396,6 +496,8 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 			}
 		}
 
+		xDelete<IssmDouble>(lagzero);
+
 		/*recompute polar motion one final time, this time updating viscous stacks for future time steps*/
 		if (viscous)	PolarMotion(&polarmotionvector[0],femmodel,loads, slgeom, computefuture=true);
 	}
@@ -404,10 +506,12 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 
 	/*convolve loads and sea level loads to get the deformation:*/
 	loads->Combineloads(nel,slgeom); //This combines loads and sealevelloads into a single vector 
+	if(profiling) phase_start=SLCClock::now();
 	for(Object* & object : femmodel->elements->objects){
 		Element* element = xDynamicCast<Element*>(object);
 		element->SealevelchangeDeformationConvolution(sealevelpercpu, loads, polarmotionvector,slgeom);
 	}
+	if(profiling) profile[Deformation]=SLCSecondsSince(phase_start);
 
 	if(VerboseSolution()) _printf0_("	  updating GRD fields\n");
 
@@ -462,6 +566,25 @@ void              grd_core(FemModel* femmodel, SealevelGeometry* slgeom) { /*{{{
 	delete subelementoceanareas;
 	delete oceanareas;
 	xDelete<IssmDouble>(sealevelpercpu); 
+
+	if(profiling){
+		profile[Grd]=SLCSecondsSince(grd_start);
+		/*These are the vertex rows GxL visits on this rank, not a global
+		 *vertex count. Count them outside the measured work.*/
+		if(sal){
+			for(Object* & object : femmodel->elements->objects){
+				Element* element=xDynamicCast<Element*>(object);
+				int n_active=0;
+				femmodel->inputs->GetIntArrayPtr<int>(SealevelchangeConvolutionVerticesEnum,element->lid,NULL,&n_active);
+				profile[ConvolutionVertices]+=n_active;
+			}
+		}
+		const char* const names[]={
+			"geometry_update_s","grd_s","sea_level_convolution_s","sea_level_load_update_s",
+			"deformation_convolution_s","sea_level_iterations","convolution_vertices"
+		};
+		ReportSLCTimings(step,names,profile);
+	}
 }
 /*}}}*/
 void              dynstr_core(FemModel* femmodel){ /*{{{*/
@@ -631,6 +754,11 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	/*early return?:*/
 	if(grdmodel!=ElasticEnum) return;
 
+	bool profiling=false;
+	femmodel->parameters->FindParam(&profiling,DebugProfilingEnum);
+	SLCClock::time_point geometry_start;
+	if(profiling) geometry_start=SLCClock::now();
+
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing initial sea level geometrical kernels and weights.\n");
 
@@ -685,6 +813,8 @@ void              sealevelchange_initialgeometry(FemModel* femmodel) {  /*{{{*/
 	xDelete<IssmDouble>(areae);
 	xDelete<int>(lids);
 	xDelete<int>(n_activevertices);
+
+	if(profiling) sealevelchange_profile_setup("initial_geometry_s",SLCSecondsSince(geometry_start));
 
 	return;
 
@@ -768,6 +898,7 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	int nel;
 	int  grdmodel=0;
 	int isgrd=0;
+	int lowmem=0;
 	int count, frequency;
 	SealevelGeometry* slgeom=NULL;
 
@@ -787,6 +918,8 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 
 	/*initialize SealevelloadMasks structure: */
 	slgeom=new SealevelGeometry(femmodel->elements->Size(),femmodel->vertices->Size());
+	if(femmodel->parameters->Exist(SolidearthSettingsLowmemEnum)) femmodel->parameters->FindParam(&lowmem,SolidearthSettingsLowmemEnum);
+	slgeom->lowmem=(lowmem!=0);
 
 	/*Verbose: */
 	if(VerboseSolution()) _printf0_("	  computing sea level geometrical kernel and weight updates.\n");
@@ -809,10 +942,24 @@ SealevelGeometry* sealevelchange_geometry(FemModel* femmodel) {  /*{{{*/
 	/*Assemble barycentres of fraction loading elements:*/
 	slgeom->Assemble();
 
-	/*Create fractional green function kernels: */
-	for(Object* & object : femmodel->elements->objects){
-		Element*   element=xDynamicCast<Element*>(object);
-		element->SealevelchangeGeometrySubElementKernel(slgeom);
+	if(slgeom->lowmem){
+		bool sal=false;
+		femmodel->parameters->FindParam(&sal,SolidearthSettingsSelfAttractionEnum);
+		if(sal){
+			IssmDouble radius,degacc;
+			int horiz;
+			femmodel->parameters->FindParam(&radius,SolidearthPlanetRadiusEnum);
+			femmodel->parameters->FindParam(&degacc,SolidearthSettingsDegreeAccuracyEnum);
+			femmodel->parameters->FindParam(&horiz,SolidearthSettingsHorizEnum);
+			slgeom->PrepareConvolutionCoordinates(nel,xxe,yye,zze,radius,degacc,horiz!=0);
+		}
+	}
+	else{
+		/*Create fractional green function kernels: */
+		for(Object* & object : femmodel->elements->objects){
+			Element*   element=xDynamicCast<Element*>(object);
+			element->SealevelchangeGeometrySubElementKernel(slgeom);
+		}
 	}
 
 	/*Compute spherical harmonic functions for spatial integrations of the loads*/
@@ -868,9 +1015,11 @@ void              slc_geometry_cleanup(SealevelGeometry* slgeom, FemModel* femmo
 	if(grdmodel!=ElasticEnum || !isgrd) return;
 	if(count!=frequency)return;
 
-	for (int l=0;l<SLGEOM_NUMLOADS;l++){
-		femmodel->inputs->DeleteInput(slgeom->AlphaIndexEnum(l));
-		if (horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
+	if(slgeom && !slgeom->lowmem){
+		for (int l=0;l<SLGEOM_NUMLOADS;l++){
+			femmodel->inputs->DeleteInput(slgeom->AlphaIndexEnum(l));
+			if (horiz) femmodel->inputs->DeleteInput(slgeom->AzimuthIndexEnum(l));
+		}
 	}
 
 	if (slgeom) delete slgeom;

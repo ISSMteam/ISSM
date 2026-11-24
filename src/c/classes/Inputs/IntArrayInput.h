@@ -36,11 +36,18 @@ class TIntArrayInput: public Input{
 /*ObjectEnum is specialized for each supported type (see IntArrayInput.cpp)*/
 template<> int TIntArrayInput<int>::ObjectEnum();
 template<> int TIntArrayInput<int16_t>::ObjectEnum();
+template<> int TIntArrayInput<uint8_t>::ObjectEnum();
+template<> int TIntArrayInput<uint16_t>::ObjectEnum();
+template<> int TIntArrayInput<uint32_t>::ObjectEnum();
 
 /*Default (historical) 32-bit version*/
 typedef TIntArrayInput<int> IntArrayInput;
 
 /*Compact 16-bit version (e.g. for quantized indices)*/
 typedef TIntArrayInput<int16_t> Int16ArrayInput;
+
+typedef TIntArrayInput<uint8_t> UInt8ArrayInput;
+typedef TIntArrayInput<uint16_t> UInt16ArrayInput;
+typedef TIntArrayInput<uint32_t> UInt32ArrayInput;
 
 #endif  /* _INTARRAYINPUT_H */

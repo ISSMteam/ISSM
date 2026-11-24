@@ -121,6 +121,7 @@ md.solidearth.settings.selfattraction=1;
 md.solidearth.settings.elastic=1;
 md.solidearth.settings.viscous=1;
 md.solidearth.settings.rotation=1;
+md.solidearth.settings.lowmem=1; % Exercise on-demand bins with rotation and iterative sea-level loading.
 md=solve(md,'tr');
 
 

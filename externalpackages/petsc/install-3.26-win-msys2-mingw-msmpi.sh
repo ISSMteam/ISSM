@@ -4,12 +4,12 @@ set -u # NOTE: Do not set -e as it will cause this script to fail when there are
 # NOTE:
 # - You must install various needed packages with,
 #
-#		pacman -S mingw-w64-x86_64-toolchain python
+#		pacman -S mingw-w64-ucrt-x86_64-toolchain python
 #
-# - You must use MSYS2 MinGW 64-bit version of cmake to be able to install 
+# - You must use MSYS2 MinGW UCRT version of CMake to be able to install 
 #	external packages correctly,
 #
-#		pacman -R mingw-w64-x86_64-cmake
+#		pacman -R mingw-w64-ucrt-x86_64-cmake
 #
 # Sources:
 # - https://gitlab.com/petsc/petsc/-/issues/820#note_487483240
@@ -45,9 +45,6 @@ mkdir -p ${PREFIX} ${PETSC_DIR}
 mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
-# Patch source
-sed -i 's|(MAKEFLAGS)|(MAKEFLAGS:w=)|' ${PETSC_DIR}/makefile ${PETSC_DIR}/lib/petsc/conf/rules # Fix for issue with GNUMake 4.4.1 (https://gitlab.com/petsc/petsc/-/merge_requests/6140)
-
 # Configure
 #
 # NOTE: --prefix="${PREFIX_WIN}" is necessary to, at least, configure and 
@@ -71,6 +68,10 @@ echo "Configuring with Windows-style prefix before compiling..."
     --download-metis=1 \
     --download-parmetis=1 \
     --download-scalapack=1
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
 # Now reconfigure with the Unix-style path, otherwise the installation of 
 # libpetsc fails).
