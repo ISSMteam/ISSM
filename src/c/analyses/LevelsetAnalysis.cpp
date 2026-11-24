@@ -10,6 +10,7 @@
 #include "../modules/modules.h"
 #include "../solutionsequences/solutionsequences.h"
 #include <math.h>
+#include <cmath>
 
 void LevelsetAnalysis::CreateConstraints(Constraints* constraints,IoModel* iomodel){/*{{{*/
 
@@ -86,6 +87,7 @@ void LevelsetAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel*
 	/*Get moving front parameters*/
 	bool isstochastic;
    int  calvinglaw;
+   int	surfacehydrologytype;
    iomodel->FindConstant(&calvinglaw,"md.calving.law");
    iomodel->FindConstant(&isstochastic,"md.stochasticforcing.isstochasticforcing");
    switch(calvinglaw){
@@ -134,9 +136,19 @@ void LevelsetAnalysis::UpdateElements(Elements* elements,Inputs* inputs,IoModel*
 			iomodel->ConstantToInput(inputs,elements,0.,CalvingrateyEnum,P1Enum);
 			break;
 		case CalvingCrevasseDepthEnum:
-			iomodel->FetchDataToInput(inputs,elements,"md.calving.water_height",WaterheightEnum);
+			iomodel->FindConstant(&surfacehydrologytype,"md.calving.surface_hydrology_type");
 			iomodel->ConstantToInput(inputs,elements,0.,CalvingratexEnum,P1Enum);
 			iomodel->ConstantToInput(inputs,elements,0.,CalvingrateyEnum,P1Enum);
+			if(surfacehydrologytype==0){
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.water_height",WaterheightEnum);}
+			else if(surfacehydrologytype==1){
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.hurst",HurstEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.sigma",SigmaEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.melt_supply",MeltSupplyEnum);}
+			else if(surfacehydrologytype==2){
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.hurst",HurstEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.sigma",SigmaEnum);
+				iomodel->FetchDataToInput(inputs,elements,"md.calving.melt_supply",MeltSupplyEnum);}
 			break;
 		case CalvingPollardEnum:
 			break;
@@ -221,6 +233,7 @@ void LevelsetAnalysis::UpdateParameters(Parameters* parameters,IoModel* iomodel,
 		case CalvingCrevasseDepthEnum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.calving.crevasse_opening_stress",CalvingCrevasseDepthTypeEnum));
 			parameters->AddObject(iomodel->CopyConstantObject("md.calving.crevasse_threshold",CalvingCrevasseThresholdEnum));
+			parameters->AddObject(iomodel->CopyConstantObject("md.calving.surface_hydrology_type",SurfaceHydrologyTypeEnum));
 			break;
 		case CalvingDev2Enum:
 			parameters->AddObject(iomodel->CopyConstantObject("md.calving.height_above_floatation",CalvingHeightAboveFloatationEnum));
