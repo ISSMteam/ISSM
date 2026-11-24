@@ -9,6 +9,9 @@ PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package was installed (should match initial PETSc install script)
 RECONFIGURED="${ISSM_DIR}/externalpackages/petsc/reconfigured" # Hack so that jenkins.sh does not skip over this script (cannot be 'install')
 
+# Cleanup
+rm ${RECONFIGURED}
+
 # Reconfigure with external MUMPS installation.
 #
 cd ${PETSC_DIR}
@@ -34,3 +37,6 @@ ${PETSC_ARCH_RECONF}/lib/petsc/conf/reconfigure-${PETSC_ARCH_RECONF}.py \
 # Compile and install
 make PETSC_DIR="${PETSC_DIR}" PETSC_ARCH="${PETSC_ARCH_RECONF}" all
 make PETSC_DIR="${PETSC_DIR}" PETSC_ARCH="${PETSC_ARCH_RECONF}" install
+
+# Indicate that package has been reconfigured
+touch ${RECONFIGURED}
