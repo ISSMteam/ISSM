@@ -17,6 +17,9 @@ rm ${RECONFIGURED}
 cd ${PETSC_DIR}
 echo "Reconfiguring with external MUMPS installation..."
 ${PETSC_ARCH_RECONF}/lib/petsc/conf/reconfigure-${PETSC_ARCH_RECONF}.py \
+    --CFLAGS="-Wl,-static" \
+    --CXXFLAGS="-Wl,-static" \
+    --FFLAGS="-Wl,-static" \
     --with-shared-libraries=0 \
     --with-debugging=0 \
     --with-valgrind=0 \

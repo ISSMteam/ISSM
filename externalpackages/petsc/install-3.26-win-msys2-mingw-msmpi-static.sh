@@ -25,6 +25,12 @@ PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
 PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed (UNIX)
 PREFIX_WIN="${ISSM_DIR_WIN}/externalpackages/petsc/install" # Set to location where external package should be installed (POSIX)
 
+## Environment
+#
+export TMPDIR=/tmp # Fixes permission issue when running CMake when user is not an administrator
+export TMP=/tmp
+export TEMP=/tmp
+
 # Download source
 $ISSM_DIR/scripts/DownloadExternalPackage.sh "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-${VER}.tar.gz" "petsc-${VER}.tar.gz"
 
@@ -39,10 +45,10 @@ mkdir -p ${PETSC_DIR}
 mv petsc-${VER}/* ${PETSC_DIR}
 rm -rf petsc-${VER}
 
-# Patch source
-sed -i 's|(MAKEFLAGS)|(MAKEFLAGS:w=)|' ${PETSC_DIR}/makefile ${PETSC_DIR}/lib/petsc/conf/rules # Fix for issue with GNUMake 4.4.1 (https://gitlab.com/petsc/petsc/-/merge_requests/6140)
-
 # Configure
+#
+# NOTE: --prefix="${PREFIX_WIN}" is necessary to, at least, configure and 
+#       compile ScaLAPACK under UCRT.
 #
 cd ${PETSC_DIR}
 /usr/bin/python ./configure \
