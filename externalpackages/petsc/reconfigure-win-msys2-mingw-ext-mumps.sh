@@ -6,12 +6,13 @@ set -eu
 #
 PETSC_ARCH_RECONF="arch-mswin-reconf"
 PETSC_DIR="${ISSM_DIR}/externalpackages/petsc/src" # DO NOT CHANGE THIS
-PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package should be installed (UNIX)
+PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where external package was installed (should match initial PETSc install script)
 RECONFIGURED="${ISSM_DIR}/externalpackages/petsc/reconfigured" # Hack so that jenkins.sh does not skip over this script (cannot be 'install')
 
-
 # Cleanup
-rm ${RECONFIGURED}
+if [ -f ${RECONFIGURED} ]; then
+    rm ${RECONFIGURED}
+fi
 
 # Reconfigure with external MUMPS installation.
 #

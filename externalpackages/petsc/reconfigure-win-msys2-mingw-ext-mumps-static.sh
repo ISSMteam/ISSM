@@ -10,7 +10,9 @@ PREFIX="${ISSM_DIR}/externalpackages/petsc/install" # Set to location where exte
 RECONFIGURED="${ISSM_DIR}/externalpackages/petsc/reconfigured" # Hack so that jenkins.sh does not skip over this script (cannot be 'install')
 
 # Cleanup
-rm ${RECONFIGURED}
+if [ -f ${RECONFIGURED} ]; then
+    rm ${RECONFIGURED}
+fi
 
 # Reconfigure with external MUMPS installation.
 #
