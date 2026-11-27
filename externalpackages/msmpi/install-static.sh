@@ -35,7 +35,7 @@
 #
 PREFIX="${ISSM_DIR}/externalpackages/msmpi/install"
 
-MSMPI_RUNTIME_DIR=$(cygpath -u $(cygpath -ms "/c/Program Files/Microsoft MPI")
+MSMPI_RUNTIME_DIR=$(cygpath -u $(cygpath -ms "/c/Program Files/Microsoft MPI"))
 MSMPI_SDK_DIR="/ucrt64"
 
 MSMPI_LIB="/c/Windows/System32/msmpi.dll"
