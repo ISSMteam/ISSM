@@ -30,6 +30,7 @@ ISSM_CONFIG='\
 #-------------------#
 
 EXTERNALPACKAGES="
+    msmpi       install-static.sh
     petsc       install-3.26-win-msys2-mingw-msmpi-static.sh
     mumps       install-win-msys2-mingw-msmpi-static.sh
     petsc       reconfigure-win-msys2-mingw-ext-mumps-static.sh

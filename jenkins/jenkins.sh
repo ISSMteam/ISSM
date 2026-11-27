@@ -318,7 +318,7 @@ if [ ${MATLAB_TEST} -eq 1 ]; then
 	if [[ $(uname -s) == MINGW* ]]; then
 		MINGW=1
 		if [ -z "${ISSM_DIR_WIN+x}" ]; then
-			export ISSM_DIR_WIN=$(cygpath -w "${ISSM_DIR}")
+			export ISSM_DIR_WIN=$(cygpath -ms "${ISSM_DIR}")
 		fi
 	fi
 

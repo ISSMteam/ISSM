@@ -70,17 +70,15 @@ mkdir ${PKG}
 cd ${ISSM_DIR}/bin
 
 echo "Moving system and MinGW libraries to bin/"
-cp /c/msys64/mingw64/bin/libgcc_s_seh-1.dll .
-cp /c/msys64/mingw64/bin/libstdc++-6.dll .
-cp /c/msys64/mingw64/bin/libwinpthread-1.dll .
-cp /c/msys64/mingw64/bin/libgfortran-5.dll .
-cp /c/msys64/mingw64/bin/libquadmath-0.dll .
+cp /ucrt64/bin/libgcc_s_seh-1.dll .
+cp /ucrt64/bin/libstdc++-6.dll .
+cp /ucrt64/bin/libwinpthread-1.dll .
+cp /ucrt64/bin/libgfortran-5.dll .
+cp /ucrt64/bin/libquadmath-0.dll .
 
-echo "Moving MSMPI binaries and libraries to bin/"
-if [ -f ${MSMPI_ROOT}/bin/mpiexec.exe ]; then
+echo "Moving MSMPI binaries, libraries, and license files to bin/"
+if [ -d ${MSMPI_ROOT} ]; then
 	cp ${MSMPI_ROOT}/bin/* .
-	cp ${MSMPI_ROOT}/lib/libmsmpi.dll .
-	cp ${MSMPI_ROOT}/lib/msmpi.dll .
 else
 	echo "MSMPI not found"
 	exit 1
